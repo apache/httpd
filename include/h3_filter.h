@@ -40,6 +40,8 @@ typedef struct h3_conn_ctx_t
     int response_too_large;
     /// Back-reference to the h3_stream.
     struct h3_stream* stream;
+    /// True when response buckets stream through the bounded per-stream queue.
+    int streaming;
 } h3_conn_ctx_t;
 
 extern ap_filter_rec_t* h3_net_out_filter_handle;
@@ -59,9 +61,10 @@ apr_status_t h3_filter_out(ap_filter_t* f, apr_bucket_brigade* bb);
 
 /**
  * Protocol-layer output filter callback. Captures the response into the
- * per-request h3_conn_ctx_t: deep-copies headers from r->pool into
- * c3reqpool, appends body bytes to dataheap, and stores the
- * ap_bucket_response pointer.
+ * per-request h3_conn_ctx_t. In the default mode it submits headers early and
+ * feeds body bytes through a bounded per-stream queue with backpressure. When
+ * H3MaxResponseBodySize is finite, it retains bounded whole-response capture
+ * so an over-limit response can be replaced before transmission.
  * @param f  The filter handle.
  * @param bb The outbound brigade.
  * @return APR_SUCCESS, or an APR error if pool/brigade access fails.

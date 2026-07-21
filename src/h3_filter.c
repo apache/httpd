@@ -38,6 +38,7 @@
 #include "h3_check.h"
 #include "h3_config.h"
 #include "h3_filter.h"
+#include "h3_request.h"
 #include "h3_session.h"
 #include "mod_http3.h"
 
@@ -130,30 +131,28 @@ static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucke
     return APR_SUCCESS;
 }
 
-static void capture_body_bucket(request_rec* r, h3_conn_ctx_t* ctx, apr_bucket* b)
+static apr_status_t capture_body_bucket(request_rec* r, h3_conn_ctx_t* ctx, apr_bucket* b)
 {
     CHECK(ctx);
     CHECK(b);
     if (ctx->response_too_large)
     {
-        return;
+        return APR_SUCCESS;
     }
     const char* data = NULL;
     apr_size_t len = 0;
     if (apr_bucket_read(b, &data, &len, APR_BLOCK_READ) != APR_SUCCESS || !data || !len)
     {
-        return;
+        return APR_SUCCESS;
     }
     /* Read from the H3-owning vhost (ctx->s), not r->server: only it is defaulted in h3_post_config. */
     h3_server_conf* conf = ap_get_module_config(ctx->s->module_config, &http3_module);
     apr_size_t limit = conf ? conf->h3_max_response_body_size : H3_MAX_RESPONSE_BODY_SIZE_DEFAULT;
-    if (ctx->dataheaplen + len > limit)
+    if (ctx->dataheaplen > limit || len > limit - ctx->dataheaplen)
     {
         ctx->response_too_large = 1;
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "HTTP/3 response body for %s exceeds H3MaxResponseBodySize (%" APR_SIZE_T_FMT " bytes); aborting response with 500",
-                     r->uri, limit);
-        return;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, "HTTP/3 response body for %s exceeds H3MaxResponseBodySize (%" APR_SIZE_T_FMT " bytes); aborting response with 500", r->uri, limit);
+        return APR_SUCCESS;
     }
     apr_size_t new_len = ctx->dataheaplen + len;
     if (new_len > ctx->dataheapcap)
@@ -173,6 +172,7 @@ static void capture_body_bucket(request_rec* r, h3_conn_ctx_t* ctx, apr_bucket* 
     }
     memcpy(ctx->dataheap + ctx->dataheaplen, data, len);
     ctx->dataheaplen = new_len;
+    return APR_SUCCESS;
 }
 
 apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
@@ -185,8 +185,9 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
         return ap_pass_brigade(f->next, bb);
     }
 
-    for (apr_bucket* b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b))
+    for (apr_bucket* b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb);)
     {
+        apr_bucket* next = APR_BUCKET_NEXT(b);
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "h3_filter_out_proto: received bucket type=%s length=%" APR_SIZE_T_FMT, b->type->name, b->length);
         if (AP_BUCKET_IS_ERROR(b))
         {
@@ -213,11 +214,57 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
             }
             ctx->resp->pool = ctx->c3reqpool;
             APR_BUCKET_REMOVE(b);
+            if (ctx->streaming)
+            {
+                apr_status_t rv = h3_response_start(f->r, ctx);
+                if (rv != APR_SUCCESS)
+                {
+                    apr_brigade_cleanup(bb);
+                    return rv;
+                }
+            }
         }
         else if (!APR_BUCKET_IS_METADATA(b))
         {
-            capture_body_bucket(f->r, ctx, b);
+            apr_status_t rv;
+            if (ctx->streaming)
+            {
+                rv = h3_response_start(f->r, ctx);
+                if (rv == APR_SUCCESS)
+                {
+                    const char* data = NULL;
+                    apr_size_t len = 0;
+                    rv = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+                    if (rv == APR_SUCCESS && data && len > 0)
+                    {
+                        rv = h3_stream_response_append(ctx->stream, (const uint8_t*)data, len);
+                    }
+                }
+            }
+            else
+            {
+                rv = capture_body_bucket(f->r, ctx, b);
+            }
+            if (rv != APR_SUCCESS)
+            {
+                apr_brigade_cleanup(bb);
+                return rv;
+            }
         }
+        else if (ctx->streaming && (APR_BUCKET_IS_EOS(b) || APR_BUCKET_IS_FLUSH(b)))
+        {
+            apr_status_t rv = h3_response_start(f->r, ctx);
+            if (rv != APR_SUCCESS)
+            {
+                apr_brigade_cleanup(bb);
+                return rv;
+            }
+            if (APR_BUCKET_IS_EOS(b))
+            {
+                h3_stream_response_complete(ctx->stream);
+            }
+        }
+        b = next;
     }
 
     apr_brigade_cleanup(bb);

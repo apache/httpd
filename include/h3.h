@@ -37,6 +37,7 @@
 #define H3_MAX_REQUEST_BODY_SIZE_DEFAULT (10 * 1024 * 1024)
 #define H3_MAX_REQUEST_BODY_SIZE_MAX (1024UL * 1024 * 1024)
 
+/* An explicit H3MaxResponseBodySize switches to bounded whole-response buffering. */
 #define H3_MAX_RESPONSE_BODY_SIZE_DEFAULT ((apr_size_t)-1)
 #define H3_MAX_RESPONSE_BODY_SIZE_MAX (2UL * 1024 * 1024 * 1024)
 

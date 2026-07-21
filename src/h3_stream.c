@@ -39,6 +39,10 @@
 #include "h3_stream.h"
 #include "mod_http3.h"
 
+/* Per-pass read budget so one busy stream cannot starve the others. */
+#define H3_STREAM_DRAIN_READ_BUDGET 256
+#define H3_STREAM_DRAIN_BYTE_BUDGET (1024 * 1024)
+
 h3_stream* h3_stream_find(h3_session* session, int64_t sid)
 {
     CHECK(session);
@@ -193,6 +197,15 @@ h3_stream* track_stream(h3_session* session, int64_t sid, SSL* stream_ssl)
     h3s->stream_id = sid;
     h3s->ssl_stream = stream_ssl;
     h3s->is_bidi = H3_SID_IS_BIDI(sid);
+    h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
+    h3s->response_buffer_limit = conf && conf->h3_stream_buffer_size
+        ? (size_t)conf->h3_stream_buffer_size
+        : (size_t)H3_STREAM_BUFFER_SIZE_DEFAULT;
+    if (apr_thread_cond_create(&h3s->response_cond, stream_pool) != APR_SUCCESS)
+    {
+        apr_pool_destroy(stream_pool);
+        return NULL;
+    }
     apr_hash_set(session->streams, &h3s->stream_id, sizeof(h3s->stream_id), h3s);
     SSL_set_app_data(stream_ssl, h3s);
     return h3s;
@@ -216,7 +229,7 @@ static void feed_stream_fin(h3_session* session, h3_stream* h3s)
     h3s->body_complete = 1;
 }
 
-static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
+static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read, size_t* reads_remaining, size_t* bytes_remaining)
 {
     CHECK(session);
     CHECK(h3s);
@@ -254,16 +267,8 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
         return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
     }
 
-    int loop_count = 0;
-    for (;;)
+    while (*reads_remaining > 0 && *bytes_remaining > 0)
     {
-        if (++loop_count > 1000)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "read loop stuck on stream %" APR_INT64_T_FMT " after 1000 iterations; aborting connection", h3s->stream_id);
-            h3s->done = 1;
-            session->aborted = 1;
-            break;
-        }
         if (!h3s->ssl_stream)
         {
             h3s->done = 1;
@@ -271,9 +276,12 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
         }
 
         size_t nread = 0;
-        int rv = SSL_read_ex(h3s->ssl_stream, buf, buf_size, &nread);
+        size_t read_size = buf_size < *bytes_remaining ? buf_size : *bytes_remaining;
+        int rv = SSL_read_ex(h3s->ssl_stream, buf, read_size, &nread);
         if (rv == 1 && nread > 0)
         {
+            (*reads_remaining)--;
+            *bytes_remaining -= nread;
             if (child_h3_io)
             {
                 apr_atomic_add64(&child_h3_io->total_bytes_read, nread);
@@ -332,12 +340,16 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         }
     }
 
-    for (int i = 0; i < snapshot->nelts; i++)
+    size_t reads_remaining = H3_STREAM_DRAIN_READ_BUDGET;
+    size_t bytes_remaining = H3_STREAM_DRAIN_BYTE_BUDGET;
+    size_t start = snapshot->nelts > 0 ? session->stream_drain_cursor % (size_t)snapshot->nelts : 0;
+    for (int offset = 0; offset < snapshot->nelts; offset++)
     {
         if (session->ngh3_dead)
         {
             break;
         }
+        size_t i = (start + (size_t)offset) % (size_t)snapshot->nelts;
         h3_stream* h3s = ((h3_stream**)snapshot->elts)[i];
 
         if (h3s->done || !h3s->ssl_stream)
@@ -348,10 +360,16 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         {
             continue;
         }
-        if (drain_one_stream(session, h3s, data_read) && !session->ngh3_dead)
+        if (drain_one_stream(session, h3s, data_read, &reads_remaining, &bytes_remaining) && !session->ngh3_dead)
         {
             h3_stream** slot = (h3_stream**)apr_array_push(completed);
             *slot = h3s;
+        }
+        if (reads_remaining == 0 || bytes_remaining == 0)
+        {
+            /* Budget spent: resume from the next stream on the following pass. */
+            session->stream_drain_cursor = (i + 1) % (size_t)snapshot->nelts;
+            break;
         }
     }
 
@@ -364,22 +382,16 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
             /* Only request streams are reclaimed; control streams live for the connection. */
             if (h3s->is_bidi && !H3_SID_IS_SERVER(h3s->stream_id))
             {
-                if (h3s->done && h3s->ssl_stream == NULL && h3s->dispatched)
+                if (h3s->done && h3s->ssl_stream == NULL && h3s->dispatched && h3s->worker_done)
                 {
-                    /* response_data is malloc'd on a worker thread, so free it explicitly. */
+                    /* Closed, SSL freed, worker returned: no other thread can reach its pool. */
                     if (h3s->write_blocked)
                     {
                         h3s->write_blocked = 0;
                         session->blocked_streams--;
                     }
                     apr_hash_set(session->streams, &h3s->stream_id, sizeof(h3s->stream_id), NULL);
-                    if (h3s->response_data)
-                    {
-                        free((void*)h3s->response_data);
-                        h3s->response_data = NULL;
-                        h3s->response_len = 0;
-                        h3s->response_offset = 0;
-                    }
+                    h3_stream_response_cleanup_locked(h3s);
                     if (h3s->pool)
                     {
                         apr_pool_destroy(h3s->pool);

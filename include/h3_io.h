@@ -38,11 +38,17 @@ APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_added, (void));
 APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_removed, (void));
 
 typedef struct h3_session h3_session;
+typedef struct h3_peer_datagram h3_peer_datagram;
 
 typedef struct h3_io_t
 {
     SSL_CTX* ssl_ctx;
     SSL* ssl_listener;
+    BIO_METHOD* peer_addr_bio_method;
+    BIO_ADDR* current_peer_addr;
+    int peer_addr_ex_index;
+    h3_peer_datagram* peer_rx_head;
+    h3_peer_datagram* peer_rx_tail;
     apr_pool_t* pool;
     server_rec* server;
     int udp_fd;
@@ -98,12 +104,29 @@ void h3_io_listen_stop(h3_io_t* io);
  */
 int h3_io_at_connection_limit(h3_io_t* io);
 
+/** Return non-zero while the address-aware BIO has buffered received datagrams. */
+int h3_io_has_buffered_datagrams(h3_io_t* io);
+
+/**
+ * Retrieve the UDP peer address captured when OpenSSL created a pending QUIC
+ * connection. OpenSSL 3.5 does not otherwise expose an accepted connection's
+ * peer address through its public API.
+ * @param io        The owning listener instance.
+ * @param conn      The accepted QUIC connection.
+ * @param pool      Pool used for the APR address and numeric IP string.
+ * @param addr      Receives the client's socket address.
+ * @param client_ip Receives the client's numeric IP string.
+ * @return APR_SUCCESS when an address is available, or an APR error.
+ */
+apr_status_t h3_io_get_client_addr(h3_io_t* io, SSL* conn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip);
+
 /**
  * Service the newly established session connection. Drives HTTP/3 request processing.
  * @param io      The owning h3_io_t listener instance.
  * @param session The h3_session to service.
+ * @return Non-zero when stream input made progress and another pass should run without polling.
  */
-void service_session_pass(h3_io_t* io, h3_session* session);
+int service_session_pass(h3_io_t* io, h3_session* session);
 
 /**
  * Wait for network read/write events using poll().

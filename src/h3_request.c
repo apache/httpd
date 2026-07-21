@@ -77,6 +77,10 @@ conn_rec* h3_synth_conn(h3_session* session)
     apr_port_t vhost_port = (conf && conf->host_port) ? conf->host_port : (conf ? conf->h3_port : 0);
     apr_sockaddr_info_get(&c->client_addr, c->client_ip, APR_INET, 0, 0, cpool);
     apr_sockaddr_info_get(&c->local_addr, c->local_ip, APR_INET, vhost_port, 0, cpool);
+    if (child_h3_io && h3_io_get_client_addr(child_h3_io, session->ssl_conn, cpool, &c->client_addr, &c->client_ip) == APR_SUCCESS)
+    {
+        c->remote_host = NULL;
+    }
     c->bucket_alloc = apr_bucket_alloc_create(cpool);
     c->log = &s->log;
     c->slaves = apr_array_make(cpool, 4, sizeof(void*));
@@ -137,22 +141,64 @@ static size_t build_response_nva(nghttp3_nv* nva, size_t nva_cap, request_rec* r
     return nvlen;
 }
 
-static void capture_response_body(h3_stream* stream, h3_conn_ctx_t* h3ctx)
+static void wake_event_thread(void)
 {
-    if (h3ctx->dataheaplen == 0 || !h3ctx->dataheap)
+    if (child_h3_io && child_h3_io->wakeup_pipe[1])
     {
-        return;
-    }
-    uint8_t* p = malloc(h3ctx->dataheaplen);
-    if (p) {
-        memcpy(p, h3ctx->dataheap, h3ctx->dataheaplen);
-        stream->response_data = p;
-        stream->response_len = h3ctx->dataheaplen;
+        char wake = '1';
+        apr_size_t len = 1;
+        (void)apr_file_write(child_h3_io->wakeup_pipe[1], &wake, &len);
     }
 }
 
+static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t nvlen)
+{
+    h3_session* session = h3s->session;
+    apr_thread_mutex_lock(session->lock);
+    if (h3s->response_submitted)
+    {
+        apr_thread_mutex_unlock(session->lock);
+        return APR_SUCCESS;
+    }
+    if (h3s->response_cancelled || session->aborted || session->ngh3_dead || !session->ngh3)
+    {
+        apr_thread_mutex_unlock(session->lock);
+        return APR_ECONNABORTED;
+    }
+    nghttp3_data_reader dr = {.read_data = h3_session_read_data};
+    int rv = nghttp3_conn_submit_response(session->ngh3, h3s->stream_id, nva, nvlen, &dr);
+    if (rv == 0)
+    {
+        h3s->response_submitted = 1;
+    }
+    else
+    {
+        h3_stream_response_cancel_locked(h3s);
+    }
+    apr_thread_mutex_unlock(session->lock);
+    if (rv != 0)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", h3s->stream_id, rv);
+        return APR_EGENERAL;
+    }
+    wake_event_thread();
+    return APR_SUCCESS;
+}
 
-typedef struct h3_stream_task {
+apr_status_t h3_response_start(request_rec* r, h3_conn_ctx_t* h3ctx)
+{
+    if (!r || !h3ctx || !h3ctx->stream)
+    {
+        return APR_EINVAL;
+    }
+    h3_stream* h3s = h3ctx->stream;
+    nghttp3_nv nva[64] = {0};
+    size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
+    return submit_response_nva(h3s, nva, nvlen);
+}
+
+typedef struct h3_stream_task
+{
     h3_session* session;
     h3_stream* h3s;
     conn_rec* c;
@@ -234,6 +280,8 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     h3ctx->c3reqpool = c3reqpool;
     h3ctx->s = s;
     h3ctx->stream = h3s;
+    h3_server_conf* h3conf = ap_get_module_config(s->module_config, &http3_module);
+    h3ctx->streaming = !h3conf || h3conf->h3_max_response_body_size == H3_MAX_RESPONSE_BODY_SIZE_DEFAULT;
     ap_set_module_config(r->request_config, &http3_module, h3ctx);
 
     ap_add_output_filter_handle(h3_proto_out_filter_handle, h3ctx, r, r->connection);
@@ -258,64 +306,60 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "after ap_process_request");
 
-    apr_thread_mutex_lock(session->lock);
-
     int status;
-    nghttp3_nv nva[64] = {0};
-    size_t nvlen;
+    const uint8_t* buffered_body = NULL;
+    size_t buffered_body_len = 0;
+    apr_status_t response_rv;
     if (h3ctx->response_too_large)
     {
         /* The partial body and its Content-Length no longer agree; send a clean error. */
         static const char oversized_msg[] = "Response exceeded H3MaxResponseBodySize\n";
         status = HTTP_INTERNAL_SERVER_ERROR;
         char* status_str = apr_psprintf(h3s->pool, "%d", status);
+        nghttp3_nv nva[2] = {0};
         NV_SET(nva, 0, ":status", status_str);
         NV_SET(nva, 1, "content-type", "text/plain");
-        nvlen = 2;
-        uint8_t* body_copy = malloc(sizeof(oversized_msg) - 1);
-        if (body_copy)
-        {
-            memcpy(body_copy, oversized_msg, sizeof(oversized_msg) - 1);
-            h3s->response_data = body_copy;
-            h3s->response_len = sizeof(oversized_msg) - 1;
-        }
+        response_rv = submit_response_nva(h3s, nva, OSSL_NELEM(nva));
+        buffered_body = (const uint8_t*)oversized_msg;
+        buffered_body_len = sizeof(oversized_msg) - 1;
     }
     else
     {
-        capture_response_body(h3s, h3ctx);
         status = r->status;
         if (status == 0)
         {
             status = 200;
         }
-        nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
+        response_rv = h3_response_start(r, h3ctx);
+        if (!h3ctx->streaming && h3ctx->dataheap && h3ctx->dataheaplen > 0)
+        {
+            buffered_body = (const uint8_t*)h3ctx->dataheap;
+            buffered_body_len = h3ctx->dataheaplen;
+        }
     }
+
+    if (response_rv == APR_SUCCESS && buffered_body_len > 0)
+    {
+        response_rv = h3_stream_response_append(h3s, buffered_body, buffered_body_len);
+    }
+    h3_stream_response_complete(h3s);
 
     size_t body_len = h3s->response_len;
     int64_t sid = h3s->stream_id;
-    nghttp3_data_reader dr = {.read_data = h3_session_read_data};
-    int rv = nghttp3_conn_submit_response(session->ngh3, sid, nva, nvlen, body_len > 0 ? &dr : NULL);
-
-    if (child_h3_io && child_h3_io->wakeup_pipe[1])
+    if (response_rv != APR_SUCCESS && response_rv != APR_ECONNABORTED)
     {
-        char wake = '1';
-        apr_size_t len = 1;
-        apr_file_write(child_h3_io->wakeup_pipe[1], &wake, &len);
+        ap_log_error(APLOG_MARK, APLOG_ERR, response_rv, s, "failed to queue response for stream %" APR_INT64_T_FMT, sid);
     }
-
-    apr_thread_mutex_unlock(session->lock);
-
-    if (rv)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "nghttp3_conn_submit_response failed: %d", rv);
-    }
-    else
+    else if (response_rv == APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, sid, status, body_len);
     }
 
-    apr_atomic_dec32(&session->active_tasks);
     apr_pool_destroy(c->pool);
+    apr_thread_mutex_lock(session->lock);
+    h3s->worker_done = 1;
+    apr_thread_mutex_unlock(session->lock);
+    apr_atomic_dec32(&session->active_tasks);
     return NULL;
 }
 

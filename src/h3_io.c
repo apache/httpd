@@ -52,6 +52,242 @@
 
 h3_io_t* child_h3_io = NULL;
 
+/* OpenSSL 3.5 hides an accepted connection's peer address; recover it from the datagram BIO. */
+struct h3_peer_datagram
+{
+    unsigned char* data;
+    size_t data_len;
+    BIO_ADDR* peer;
+    BIO_ADDR* local;
+    h3_peer_datagram* next;
+};
+
+static void h3_peer_addr_queue_clear(h3_io_t* io)
+{
+    h3_peer_datagram* item = io->peer_rx_head;
+    while (item)
+    {
+        h3_peer_datagram* next = item->next;
+        OPENSSL_free(item->data);
+        BIO_ADDR_free(item->peer);
+        BIO_ADDR_free(item->local);
+        OPENSSL_free(item);
+        item = next;
+    }
+    io->peer_rx_head = NULL;
+    io->peer_rx_tail = NULL;
+}
+
+static int h3_peer_addr_queue_fill(h3_io_t* io, BIO_MSG* msg, size_t stride, size_t count)
+{
+    for (size_t i = 0; i < count; i++)
+    {
+        BIO_MSG* source = (BIO_MSG*)((unsigned char*)msg + i * stride);
+        h3_peer_datagram* item = OPENSSL_zalloc(sizeof(*item));
+        if (!item || !source->data || source->data_len == 0)
+        {
+            OPENSSL_free(item);
+            h3_peer_addr_queue_clear(io);
+            return 0;
+        }
+        item->data = OPENSSL_memdup(source->data, source->data_len);
+        item->data_len = source->data_len;
+        item->peer = source->peer ? BIO_ADDR_dup(source->peer) : NULL;
+        item->local = source->local ? BIO_ADDR_dup(source->local) : NULL;
+        if (!item->data || (source->peer && !item->peer) || (source->local && !item->local))
+        {
+            OPENSSL_free(item->data);
+            BIO_ADDR_free(item->peer);
+            BIO_ADDR_free(item->local);
+            OPENSSL_free(item);
+            h3_peer_addr_queue_clear(io);
+            return 0;
+        }
+        if (io->peer_rx_tail)
+        {
+            io->peer_rx_tail->next = item;
+        }
+        else
+        {
+            io->peer_rx_head = item;
+        }
+        io->peer_rx_tail = item;
+    }
+    return 1;
+}
+
+static int h3_peer_addr_queue_pop(h3_io_t* io, BIO_MSG* msg)
+{
+    h3_peer_datagram* item = io->peer_rx_head;
+    if (!item || !msg || !msg->data || msg->data_len < item->data_len)
+    {
+        return 0;
+    }
+    memcpy(msg->data, item->data, item->data_len);
+    msg->data_len = item->data_len;
+    if (msg->peer && item->peer)
+    {
+        BIO_ADDR_copy(msg->peer, item->peer);
+    }
+    if (msg->local && item->local)
+    {
+        BIO_ADDR_copy(msg->local, item->local);
+    }
+    io->peer_rx_head = item->next;
+    if (!io->peer_rx_head)
+    {
+        io->peer_rx_tail = NULL;
+    }
+    OPENSSL_free(item->data);
+    BIO_ADDR_free(item->peer);
+    BIO_ADDR_free(item->local);
+    OPENSSL_free(item);
+    return 1;
+}
+
+int h3_io_has_buffered_datagrams(h3_io_t* io)
+{
+    return io && io->peer_rx_head != NULL;
+}
+
+static long h3_peer_addr_bio_ctrl(BIO* bio, int cmd, long num, void* ptr)
+{
+    BIO* next = BIO_next(bio);
+    return next ? BIO_ctrl(next, cmd, num, ptr) : 0;
+}
+
+static int h3_peer_addr_bio_sendmmsg(BIO* bio, BIO_MSG* msg, size_t stride, size_t num_msg, uint64_t flags, size_t* msgs_processed)
+{
+    BIO* next = BIO_next(bio);
+    return next ? BIO_sendmmsg(next, msg, stride, num_msg, flags, msgs_processed) : 0;
+}
+
+static int h3_peer_addr_bio_recvmmsg(BIO* bio, BIO_MSG* msg, size_t stride, size_t num_msg, uint64_t flags, size_t* msgs_processed)
+{
+    h3_io_t* io = BIO_get_data(bio);
+    BIO* next = BIO_next(bio);
+    if (!io || !next || !msg || !msgs_processed || num_msg == 0)
+    {
+        return 0;
+    }
+
+    BIO_ADDR_clear(io->current_peer_addr);
+    if (io->peer_rx_head)
+    {
+        *msgs_processed = 0;
+        if (!h3_peer_addr_queue_pop(io, msg))
+        {
+            return 0;
+        }
+        *msgs_processed = 1;
+        if (msg->peer)
+        {
+            BIO_ADDR_copy(io->current_peer_addr, msg->peer);
+        }
+        return 1;
+    }
+
+    size_t received = 0;
+    int rv = BIO_recvmmsg(next, msg, stride, num_msg, flags, &received);
+    if (rv && received > 0)
+    {
+        if (!h3_peer_addr_queue_fill(io, msg, stride, received)
+            || !h3_peer_addr_queue_pop(io, msg))
+        {
+            *msgs_processed = 0;
+            return 0;
+        }
+        *msgs_processed = 1;
+        if (msg->peer)
+        {
+            BIO_ADDR_copy(io->current_peer_addr, msg->peer);
+        }
+    }
+    else
+    {
+        *msgs_processed = received;
+    }
+    return rv;
+}
+
+static int h3_peer_addr_bio_destroy(BIO* bio)
+{
+    h3_io_t* io = BIO_get_data(bio);
+    if (io)
+    {
+        h3_peer_addr_queue_clear(io);
+    }
+    return 1;
+}
+
+static void h3_peer_addr_ex_free(void* /*parent*/, void* ptr, CRYPTO_EX_DATA* /*ad*/, int /*idx*/, long /*argl*/, void* /*argp*/)
+{
+    BIO_ADDR_free(ptr);
+}
+
+static int h3_new_pending_conn_cb(SSL_CTX* /*ctx*/, SSL* conn, void* arg)
+{
+    h3_io_t* io = arg;
+    if (!io || io->peer_addr_ex_index < 0 || BIO_ADDR_family(io->current_peer_addr) == AF_UNSPEC)
+    {
+        return 1;
+    }
+
+    BIO_ADDR* peer = BIO_ADDR_dup(io->current_peer_addr);
+    if (!peer || !SSL_set_ex_data(conn, io->peer_addr_ex_index, peer))
+    {
+        BIO_ADDR_free(peer);
+        return 0;
+    }
+    return 1;
+}
+
+apr_status_t h3_io_get_client_addr(h3_io_t* io, SSL* conn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip)
+{
+    CHECK(io);
+    CHECK(conn);
+    CHECK(pool);
+    CHECK(addr);
+    CHECK(client_ip);
+    if (io->peer_addr_ex_index < 0)
+    {
+        return APR_EGENERAL;
+    }
+
+    const BIO_ADDR* peer = SSL_get_ex_data(conn, io->peer_addr_ex_index);
+    if (!peer || BIO_ADDR_family(peer) == AF_UNSPEC)
+    {
+        return APR_NOTFOUND;
+    }
+
+    char* host = BIO_ADDR_hostname_string(peer, 1);
+    char* service = BIO_ADDR_service_string(peer, 1);
+    if (!host || !service)
+    {
+        OPENSSL_free(host);
+        OPENSSL_free(service);
+        return APR_ENOMEM;
+    }
+
+    char* end = NULL;
+    unsigned long port = strtoul(service, &end, 10);
+    if (service[0] == '\0' || !end || end[0] != '\0' || port > 65535)
+    {
+        OPENSSL_free(host);
+        OPENSSL_free(service);
+        return APR_EINVAL;
+    }
+
+    apr_status_t rv = apr_sockaddr_info_get(addr, host, APR_UNSPEC, (apr_port_t)port, 0, pool);
+    if (rv == APR_SUCCESS)
+    {
+        rv = apr_sockaddr_ip_get(client_ip, *addr);
+    }
+    OPENSSL_free(host);
+    OPENSSL_free(service);
+    return rv;
+}
+
 int h3_io_at_connection_limit(h3_io_t* io)
 {
     h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
@@ -71,17 +307,39 @@ static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char
     {
         return APR_EGENERAL;
     }
+    io->current_peer_addr = BIO_ADDR_new();
+    io->peer_addr_ex_index = SSL_get_ex_new_index(0, NULL, NULL, NULL, h3_peer_addr_ex_free);
+    io->peer_addr_bio_method = BIO_meth_new(BIO_get_new_index() | BIO_TYPE_FILTER, "mod_http3 QUIC peer address filter");
+    if (!io->current_peer_addr || io->peer_addr_ex_index < 0 || !io->peer_addr_bio_method
+        || !BIO_meth_set_ctrl(io->peer_addr_bio_method, h3_peer_addr_bio_ctrl)
+        || !BIO_meth_set_sendmmsg(io->peer_addr_bio_method, h3_peer_addr_bio_sendmmsg)
+        || !BIO_meth_set_recvmmsg(io->peer_addr_bio_method, h3_peer_addr_bio_recvmmsg)
+        || !BIO_meth_set_destroy(io->peer_addr_bio_method, h3_peer_addr_bio_destroy))
+    {
+        return APR_EGENERAL;
+    }
     SSL_CTX_set_alpn_select_cb(io->ssl_ctx, h3_alpn_select_cb, io->server);
+    SSL_CTX_set_new_pending_conn_cb(io->ssl_ctx, h3_new_pending_conn_cb, io);
     if (getenv("SSLKEYLOGFILE"))
     {
         SSL_CTX_set_keylog_callback(io->ssl_ctx, h3_keylog_cb);
     }
     io->ssl_listener = SSL_new_listener(io->ssl_ctx, 0);
-    if (!io->ssl_listener || !SSL_set_fd(io->ssl_listener, io->udp_fd) || !SSL_listen(io->ssl_listener) || !SSL_set_blocking_mode(io->ssl_listener, 0))
+    BIO* dgram_bio = BIO_new_dgram(io->udp_fd, BIO_NOCLOSE);
+    BIO* peer_addr_bio = BIO_new(io->peer_addr_bio_method);
+    if (!io->ssl_listener || !dgram_bio || !peer_addr_bio)
+    {
+        BIO_free(dgram_bio);
+        BIO_free(peer_addr_bio);
+        return APR_EGENERAL;
+    }
+    BIO_set_data(peer_addr_bio, io);
+    BIO_push(peer_addr_bio, dgram_bio);
+    SSL_set_bio(io->ssl_listener, peer_addr_bio, peer_addr_bio);
+    if (!SSL_listen(io->ssl_listener) || !SSL_set_blocking_mode(io->ssl_listener, 0))
     {
         return APR_EGENERAL;
     }
-    BIO_set_nbio(SSL_get_rbio(io->ssl_listener), 1);
     return APR_SUCCESS;
 }
 
@@ -124,6 +382,10 @@ static void teardown(h3_io_t* io)
         SSL_CTX_free(io->ssl_ctx);
         io->ssl_ctx = NULL;
     }
+    BIO_ADDR_free(io->current_peer_addr);
+    io->current_peer_addr = NULL;
+    BIO_meth_free(io->peer_addr_bio_method);
+    io->peer_addr_bio_method = NULL;
     if (io->udp_fd >= 0)
     {
         h3_socket_close(io->udp_fd);
@@ -147,6 +409,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->pool = pchild;
     io->server = s;
     io->udp_fd = udp_fd;
+    io->peer_addr_ex_index = -1;
     io->active_sessions = apr_array_make(pchild, 8, sizeof(h3_session*));
     io->pending_handshakes = apr_array_make(pchild, 4, sizeof(h3_pending_handshake));
     if (apr_file_pipe_create_ex(&io->wakeup_pipe[0], &io->wakeup_pipe[1], APR_FULL_NONBLOCK, pchild) != APR_SUCCESS)
@@ -427,7 +690,7 @@ int prepare_accepted_connection(h3_io_t* io, SSL* conn)
     return 1;
 }
 
-void service_session_pass(h3_io_t* io, h3_session* session)
+int service_session_pass(h3_io_t* io, h3_session* session)
 {
     CHECK(io);
     CHECK(session);
@@ -436,7 +699,7 @@ void service_session_pass(h3_io_t* io, h3_session* session)
 
     if (session->aborted)
     {
-        return;
+        return 0;
     }
 
     if (!io->thread_running)
@@ -462,7 +725,7 @@ void service_session_pass(h3_io_t* io, h3_session* session)
             flush_nghttp3(session);
             apr_thread_mutex_unlock(session->lock);
             session->aborted = 1;
-            return;
+            return 0;
         }
     }
 
@@ -470,13 +733,13 @@ void service_session_pass(h3_io_t* io, h3_session* session)
     {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
         session->aborted = 1;
-        return;
+        return 0;
     }
 
     apr_pool_t* scratch = NULL;
     if (apr_pool_create(&scratch, session->pool) != APR_SUCCESS)
     {
-        return;
+        return 0;
     }
 
     for (SSL* s2 = NULL; (s2 = SSL_accept_stream(conn, SSL_ACCEPT_STREAM_NO_BLOCK)) != NULL;)
@@ -503,13 +766,12 @@ void service_session_pass(h3_io_t* io, h3_session* session)
     apr_array_header_t* completed = drain_ready_streams(session, scratch, &data_read);
     flush_nghttp3(session);
     apr_thread_mutex_unlock(session->lock);
-    (void)data_read;
 
     if (session->ngh3_dead)
     {
         session->aborted = 1;
         apr_pool_destroy(scratch);
-        return;
+        return 0;
     }
 
     for (int i = 0; i < completed->nelts; i++)
@@ -522,4 +784,5 @@ void service_session_pass(h3_io_t* io, h3_session* session)
     flush_nghttp3(session);
     apr_thread_mutex_unlock(session->lock);
     apr_pool_destroy(scratch);
+    return data_read;
 }

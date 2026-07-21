@@ -40,10 +40,22 @@ void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* thread, void* data)
         return NULL;
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread started");
+    int work_pending = 0;
     while (io->thread_running || io->active_sessions->nelts > 0)
     {
-        wait_for_event(io);
+        if (!work_pending)
+        {
+            wait_for_event(io);
+        }
+        work_pending = 0;
         SSL_handle_events(io->ssl_listener);
+        while (h3_io_has_buffered_datagrams(io))
+        {
+            if (SSL_handle_events(io->ssl_listener) != 1)
+            {
+                break;
+            }
+        }
 
         if (io->thread_running)
         {
@@ -73,7 +85,10 @@ void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* thread, void* data)
         for (int i = 0; i < io->active_sessions->nelts; )
         {
             h3_session* session = ((h3_session**)io->active_sessions->elts)[i];
-            service_session_pass(io, session);
+            if (service_session_pass(io, session))
+            {
+                work_pending = 1;
+            }
 
             if (session->aborted)
             {

@@ -23,6 +23,7 @@
 
 #include <apr_hash.h>
 #include <apr_pools.h>
+#include <apr_thread_cond.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
 
@@ -32,6 +33,7 @@
 
 typedef struct h3_session h3_session;
 typedef struct h3_stream h3_stream;
+typedef struct h3_response_chunk h3_response_chunk;
 
 struct h3_session
 {
@@ -58,6 +60,7 @@ struct h3_session
 
     unsigned char* stream_read_buf;
     apr_size_t stream_read_buf_size;
+    size_t stream_drain_cursor;
 
     int control_streams_created;
     apr_time_t goaway_deadline;
@@ -86,6 +89,7 @@ struct h3_stream
 
     int headers_complete;
     int dispatched;
+    int worker_done;
 
     int body_complete;
     int body_truncated;
@@ -102,9 +106,17 @@ struct h3_stream
     const char* path;
     apr_table_t* headers;
 
-    const uint8_t* response_data;
+    apr_thread_cond_t* response_cond;
+    h3_response_chunk* response_head;
+    h3_response_chunk* response_tail;
+    h3_response_chunk* response_submit_chunk;
+    size_t response_submit_offset;
+    size_t response_buffered;
     size_t response_len;
-    size_t response_offset;
+    size_t response_buffer_limit;
+    int response_submitted;
+    int response_complete;
+    int response_cancelled;
 };
 
 /**
@@ -142,10 +154,34 @@ void h3_session_destroy(h3_session* session);
 void h3_session_queue_free(h3_session* session, SSL* ssl);
 
 /**
- * nghttp3 data reader callback. Called by nghttp3 to pull the next chunk of
- * the response body. Backs onto h3_stream::response_data.
- * @return Number of bytes placed in @p vec, or an nghttp3 error code.
+ * nghttp3 data reader callback. Called by nghttp3 to pull the next chunks of
+ * the response body off the stream's bounded queue (h3_stream::response_head,
+ * walked via response_submit_chunk).
+ * @return Number of vectors filled, NGHTTP3_ERR_WOULDBLOCK when the queue is
+ *         empty but the response is not finished, or an nghttp3 error code.
  */
 nghttp3_ssize h3_session_read_data(nghttp3_conn* conn, int64_t stream_id, nghttp3_vec* vec, size_t veccnt, uint32_t* pflags, void* user_data, void* stream_user_data);
+
+/**
+ * Copy response bytes into the stream's bounded producer/consumer queue.
+ * Blocks the Apache request worker when the queue is full and wakes when the
+ * QUIC event thread accepts bytes or the stream is cancelled.
+ */
+apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, size_t len);
+
+/** Mark the response producer complete and resume a blocked nghttp3 reader. */
+void h3_stream_response_complete(h3_stream* stream);
+
+/**
+ * Account application response bytes acknowledged by nghttp3. The session
+ * mutex must already be held.
+ */
+void h3_stream_response_ack_locked(h3_stream* stream, uint64_t datalen);
+
+/** Cancel a response producer and wake it. The session mutex must be held. */
+void h3_stream_response_cancel_locked(h3_stream* stream);
+
+/** Free queued response chunks. The session mutex must be held. */
+void h3_stream_response_cleanup_locked(h3_stream* stream);
 
 #endif /* H3_SESSION_H */

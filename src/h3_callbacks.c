@@ -180,6 +180,16 @@ int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data,
     return 0;
 }
 
+int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* stream_user_data)
+{
+    /* OpenSSL QUIC exposes no ACK offsets; bytes accepted by SSL_write_ex count as acked. */
+    (void)conn;
+    (void)stream_id;
+    (void)user_data;
+    h3_stream_response_ack_locked((h3_stream*)stream_user_data, datalen);
+    return 0;
+}
+
 int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
 {
     /* Send STOP_SENDING by freeing SSL object. */
@@ -188,6 +198,7 @@ int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*ap
     h3_stream* stream = stream_user_data;
     if (stream)
     {
+        h3_stream_response_cancel_locked(stream);
         if (stream->ssl_stream)
         {
             h3_session_queue_free(session, stream->ssl_stream);
@@ -206,6 +217,7 @@ int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_
     h3_stream* stream = stream_user_data;
     if (stream)
     {
+        h3_stream_response_cancel_locked(stream);
         if (stream->ssl_stream)
         {
             SSL_STREAM_RESET_ARGS args = {app_error_code};
@@ -223,6 +235,7 @@ int on_stream_close(nghttp3_conn* /*conn*/, int64_t /* stream_id */, uint64_t /*
     h3_stream* stream = stream_user_data;
     if (stream)
     {
+        h3_stream_response_cancel_locked(stream);
         stream->done = 1;
         h3_session_queue_free(session, stream->ssl_stream);
         stream->ssl_stream = NULL;
