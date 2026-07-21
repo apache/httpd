@@ -20,6 +20,7 @@ class TCPFaker:
         self._host = host
         self._port = port
         self._done = False
+        self._request = None
 
     def start(self):
         def process():
@@ -51,6 +52,8 @@ Hello""".encode()
                 c, client_address = self._socket.accept()
                 try:
                     data = c.recv(4096)
+                    # capture request to backend
+                    self._request = data
                     c.sendall(self._make_response(data))
                 finally:
                     c.close()
@@ -66,7 +69,7 @@ class ProxyTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(ProxyTestSetup)))
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
-                          "lbmethod_byrequests", "remoteip"])
+                          "proxy_uwsgi", "lbmethod_byrequests", "remoteip"])
 
 
 class ProxyTestEnv(HttpdTestEnv):
