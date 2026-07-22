@@ -44,7 +44,11 @@
 
 static volatile apr_uint32_t h3_conn_id_seq = 0;
 
-/// modules/loggers/mod_logio.c:52
+/**
+ * Per-connection byte counters, laid out to match mod_logio's private
+ * config struct (modules/loggers/mod_logio.c:52) so that %I/%O log format
+ * directives resolve correctly against synthesized H3 connections.
+ */
 typedef struct
 {
     apr_off_t bytes_in;
