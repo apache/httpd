@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>ログファイル - Apache HTTP サーバ バージョン 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -40,19 +40,19 @@
     この文書はロギング機能の設定の仕方と、ログに何が書かれているかを
     理解するための方法を説明します。</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#security">
     セキュリティに関する警告</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errorlog">エラーログ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#accesslog">アクセスログ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rotation">ログの交替</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#piped">パイプ経由のログ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhosts">バーチャルホスト</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">他のログファイル</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="#comments_section">コメント</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<li><img alt="" src="./images/down.gif"> <a href="#errorlog">エラーログ</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#accesslog">アクセスログ</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rotation">ログの交替</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#piped">パイプ経由のログ</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhosts">バーチャルホスト</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#other">他のログファイル</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">
-    セキュリティに関する警告</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">
+    セキュリティに関する警告 <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
     <p>Apache がログファイルを書いているディレクトリに書き込める人は、
     ほぼ確実にサーバが起動された uid へのアクセスを手に入れることができます。
@@ -66,11 +66,11 @@
     エスケープされることなく書かれています。ですから、悪意のある
     クライアントがログファイルに制御文字を挿入することができます。
     生のログを扱うときは注意してください。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errorlog" id="errorlog">エラーログ</a> <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
+<h2 id="errorlog">エラーログ <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
     
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> ディレクティブにより
     名前と場所が決まるサーバのエラーログは、一番重要なログファイルです。
@@ -125,9 +125,9 @@
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="accesslog" id="accesslog">アクセスログ</a> <a title="Permanent link" href="#accesslog" class="permalink">&para;</a></h2>
+<h2 id="accesslog">アクセスログ <a title="Permanent link" href="#accesslog" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
@@ -155,18 +155,18 @@
 
     <p>アクセスログの書式は非常に柔軟な設定が可能です。
     書式は C の printf(1) フォーマット文字列に非常に似た
-    <code class="directive"><a href="./mod/mod_log_config.html#フォーマット文字列">フォーマット文字列</a></code>
+    <code class="directive"><a href="./mod/mod_log_config.html#%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E6%96%87%E5%AD%97%E5%88%97">フォーマット文字列</a></code>
     により指定されます。いくつか次の節で例を示します。
     フォーマット文字列に使用できる内容の一覧は <a href="mod/mod_log_config.html">mod_log_config の文書</a>
     を見てください。</p>
 
-    <h3><a name="common" id="common">Common Log Format</a></h3>
+    <h3 id="common">Common Log Format</h3>
       
 
       <p>アクセスログのよくある設定に以下のものがあります。</p>
 
       <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
+        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br>
          CustomLog logs/access_log common
       </code></p></div>
 
@@ -242,13 +242,13 @@
 	  サーバがリクエストを受け取った時刻です。書式は:
 
 	    <p class="indent">
-	      <code>[day/month/year:hour:minute:second zone]<br />
-	       day = 2*digit<br />
-	       month = 3*letter<br />
-	       year = 4*digit<br />
-	       hour = 2*digit<br />
-	       minute = 2*digit<br />
-	       second = 2*digit<br />
+	      <code>[day/month/year:hour:minute:second zone]<br>
+	       day = 2*digit<br>
+	       month = 3*letter<br>
+	       year = 4*digit<br>
+	       hour = 2*digit<br>
+	       minute = 2*digit<br>
+	       second = 2*digit<br>
 	       zone = (`+' | `-') 4*digit</code>
 	    </p>
 	  ログのフォーマット文字列に <code>%{format}t</code> を
@@ -291,7 +291,7 @@
       </dl>
     
 
-    <h3><a name="combined" id="combined">Combined Log Format</a></h3>
+    <h3 id="combined">Combined Log Format</h3>
       
 
       <p>もう一つのよく使われる書式は Combined Log Format と呼ばれています。
@@ -299,7 +299,7 @@
 
       <div class="example"><p><code>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
-        \"%{User-agent}i\"" combined<br />
+        \"%{User-agent}i\"" combined<br>
          CustomLog log/access_log combined
       </code></p></div>
 
@@ -335,7 +335,7 @@
       </dl>
     
 
-    <h3><a name="multiple" id="multiple">複数のアクセスログ</a></h3>
+    <h3 id="multiple">複数のアクセスログ</h3>
       
 
     <p>複数のアクセスログは単に設定ファイルに複数の <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
@@ -347,9 +347,9 @@
     <code>AgentLog</code> ディレクティブの効果をまねる方法を示しています。</p>
 
       <div class="example"><p><code>
-        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-        CustomLog logs/access_log common<br />
-        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br />
+        LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br>
+        CustomLog logs/access_log common<br>
+        CustomLog logs/referer_log "%{Referer}i -&gt; %U"<br>
         CustomLog logs/agent_log "%{User-agent}i"
       </code></p></div>
 
@@ -360,7 +360,7 @@
     直接ログの書式を指定することができます。</p>
     
 
-    <h3><a name="conditional" id="conditional">条件付きログ</a></h3>
+    <h3 id="conditional">条件付きログ</h3>
       
 
     <p>クライアントのリクエストの特徴に基づいてアクセスログにエントリの
@@ -372,11 +372,11 @@
     含めたり排除したりすることができます。いくつか例を挙げます:</p>
 
       <div class="example"><p><code>
-        # Mark requests from the loop-back interface<br />
-        SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog<br />
-        # Mark requests for the robots.txt file<br />
-        SetEnvIf Request_URI "^/robots\.txt$" dontlog<br />
-        # Log what remains<br />
+        # Mark requests from the loop-back interface<br>
+        SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog<br>
+        # Mark requests for the robots.txt file<br>
+        SetEnvIf Request_URI "^/robots\.txt$" dontlog<br>
+        # Log what remains<br>
         CustomLog logs/access_log common env=!dontlog
       </code></p></div>
 
@@ -384,8 +384,8 @@
     分けたい、という場合を考えてみてください。</p>
 
       <div class="example"><p><code>
-        SetEnvIf Accept-Language "en" english<br />
-        CustomLog logs/english_log common env=english<br />
+        SetEnvIf Accept-Language "en" english<br>
+        CustomLog logs/english_log common env=english<br>
         CustomLog logs/non_english_log common env=!english
       </code></p></div>
 
@@ -394,9 +394,9 @@
     サーバの活動の完全な記録である方がより役に立ちます。単純にログファイルを
     後処理して、考慮したくないログを削除する方が簡単であることがよくあります。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rotation" id="rotation">ログの交替</a> <a title="Permanent link" href="#rotation" class="permalink">&para;</a></h2>
+<h2 id="rotation">ログの交替 <a title="Permanent link" href="#rotation" class="permalink">&para;</a></h2>
     
 
     <p>普通の負荷のサーバでさえ、ログファイルに保存される情報の量は
@@ -418,17 +418,17 @@
     圧縮する普通のシナリオは:</p>
 
     <div class="example"><p><code>
-      mv access_log access_log.old<br />
-      mv error_log error_log.old<br />
-      apachectl graceful<br />
-      sleep 600<br />
+      mv access_log access_log.old<br>
+      mv error_log error_log.old<br>
+      apachectl graceful<br>
+      sleep 600<br>
       gzip access_log.old error_log.old
     </code></p></div>
 
     <p>ログの交替をするもう一つの方法は<a href="#piped">パイプ経由のログ</a>を使うもので、次の節で説明されています。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="piped" id="piped">パイプ経由のログ</a> <a title="Permanent link" href="#piped" class="permalink">&para;</a></h2>
+<h2 id="piped">パイプ経由のログ <a title="Permanent link" href="#piped" class="permalink">&para;</a></h2>
     
 
     <p>Apache httpd はエラーログとアクセスログをファイルに直接書く代わりに、
@@ -468,9 +468,9 @@
     <p>条件付きロギングと同様、パイプ経由のログは非常に強力な
     道具ですが、オフラインの後処理のような、より簡単な解決方法があるときは
     使わない方が良いでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhosts" id="virtualhosts">バーチャルホスト</a> <a title="Permanent link" href="#virtualhosts" class="permalink">&para;</a></h2>
+<h2 id="virtualhosts">バーチャルホスト <a title="Permanent link" href="#virtualhosts" class="permalink">&para;</a></h2>
     
 
     <p>多くの <a href="vhosts/">バーチャルホスト</a> のあるサーバを実行している
@@ -499,7 +499,7 @@
 
     <div class="example"><p><code>
       LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
-      comonvhost<br />
+      comonvhost<br>
       CustomLog logs/access_log comonvhost
     </code></p></div>
 
@@ -511,9 +511,9 @@
     <p>残念ながら、エラーログには同様の手法はありません。ですから、
     すべてのバーチャルホストを同じエラーログの中に混ぜるか、
     バーチャルホスト毎にエラーログを使うかを選ばなければなりません。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">他のログファイル</a> <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">他のログファイル <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
@@ -538,7 +538,7 @@
          デバッグやセキュリティ用のツールとして有効かもしれません。</p>
     
 
-    <h3><a name="pidfile" id="pidfile">PID ファイル</a></h3>
+    <h3 id="pidfile">PID ファイル</h3>
       
 
       <p>起動時に、Apache は親 httpd プロセスのプロセス ID を
@@ -551,7 +551,7 @@
       再起動</a> のページを見てください。</p>
     
 
-    <h3><a name="scriptlog" id="scriptlog">スクリプトログ</a></h3>
+    <h3 id="scriptlog">スクリプトログ</h3>
       
 
       <p>デバッグの補助のために、<code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code> ディレクティブは
@@ -560,7 +560,7 @@
       詳しい情報は <a href="mod/mod_cgi.html">mod_cgi の文書</a> にあります。</p>
     
 
-    <h3><a name="rewritelog" id="rewritelog">リライトログ</a></h3>
+    <h3 id="rewritelog">リライトログ</h3>
       
 
       <p><code class="directive"><a href="./mod/mod_rewrite.html#mod_rewrite">mod_rewrite</a></code> の強力で
@@ -574,32 +574,36 @@
   </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

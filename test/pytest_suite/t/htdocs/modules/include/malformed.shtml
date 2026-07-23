@@ -1,0 +1,6 @@
+<!--#if expr="$lang != "de" -->
+<!--#include virtual="echo.shtml" -->
+<!--#endif -->
+<!--#if expr="$lang = de" -->
+<!--#include virtual="echo.shtml" -->
+<!--#endif -->

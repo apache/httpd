@@ -31,14 +31,14 @@ pages SSI</description>
 <sourcefile>mod_env.c</sourcefile>
 <identifier>env_module</identifier>
 <summary>
-    <p>Ce module permet de contr&ocirc;ler les variables d'environnement
-    internes utilis&eacute;es par divers modules du serveur HTTP Apache. Ces
+    <p>Ce module permet de contrôler les variables d'environnement
+    internes utilisées par divers modules du serveur HTTP Apache. Ces
     variables sont aussi accessibles aux scripts CGI en tant que
-    variables d'environnement syst&egrave;me natives, et disponibles dans les
+    variables d'environnement système natives, et disponibles dans les
     pages SSI. Les variables d'environnement peuvent
-    &ecirc;tre transmises depuis le shell qui a lanc&eacute; le processus
-    <program>httpd</program>. Elles peuvent &eacute;galement &ecirc;tre d&eacute;finies ou
-    supprim&eacute;es au cours du processus de configuration.</p>
+    être transmises depuis le shell qui a lancé le processus
+    <program>httpd</program>. Elles peuvent également être définies ou
+    supprimées au cours du processus de configuration.</p>
 </summary>
 <seealso><a href="../env.html">Variables d'environnement</a></seealso>
 <seealso><directive module="mod_setenvif">SetEnvIf</directive></seealso>
@@ -54,12 +54,12 @@ shell</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Cette directive permet de sp&eacute;cifier quelles variables
-    d'environnement syst&egrave;me natives doivent &ecirc;tre disponibles en tant que
+    <p>Cette directive permet de spécifier quelles variables
+    d'environnement système natives doivent être disponibles en tant que
     variables d'environnement internes pour les modules du serveur HTTP
-    Apache, et propag&eacute;es vers les scripts CGI et les pages SSI. Leurs
-    valeurs sont issues de l'environnement natif de l'OS associ&eacute; au
-    shell qui a invoqu&eacute; le processus <program>httpd</program>.</p>
+    Apache, et propagées vers les scripts CGI et les pages SSI. Leurs
+    valeurs sont issues de l'environnement natif de l'OS associé au
+    shell qui a invoqué le processus <program>httpd</program>.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">
@@ -71,14 +71,14 @@ shell</description>
 
 <directivesynopsis>
 <name>SetEnv</name>
-<description>D&eacute;finit des variables d'environnement</description>
+<description>Définit des variables d'environnement</description>
 <syntax>SetEnv <var>var-env</var> [<var>valeur</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>D&eacute;finit une variable d'environnement interne, cette derni&egrave;re &eacute;tant
+    <p>Définit une variable d'environnement interne, cette dernière étant
     ensuite disponible pour les modules du serveur HTTP Apache et
     transmise aux scripts CGI et aux pages SSI.</p>
 
@@ -89,17 +89,17 @@ shell</description>
     </example>
 
     <p>Si l'argument <var>valeur</var> est absent, la variable est
-    d&eacute;finie &agrave; la valeur d'une cha&icirc;ne vide.</p>
+    définie à la valeur d'une chaîne vide.</p>
 
-    <note><p>Les variables d'environnement internes d&eacute;finies par cette
-    directive le sont <em>apr&egrave;s</em> l'ex&eacute;cution de la plupart des
-    directives du traitement initial des requ&ecirc;tes, comme les contr&ocirc;les
-    d'acc&egrave;s et la mise en correspondance des URIs avec les noms de
-    fichiers. Si la variable d'environnement est sens&eacute;e intervenir au
+    <note><p>Les variables d'environnement internes définies par cette
+    directive le sont <em>après</em> l'exécution de la plupart des
+    directives du traitement initial des requêtes, comme les contrôles
+    d'accès et la mise en correspondance des URIs avec les noms de
+    fichiers. Si la variable d'environnement est sensée intervenir au
     cours de cette phase initiale du traitement, par exemple pour la
     directive <directive module="mod_rewrite">RewriteRule</directive>,
-    vous devez plut&ocirc;t utiliser la directive <directive
-    module="mod_setenvif">SetEnvIf</directive> pour d&eacute;finir cette
+    vous devez plutôt utiliser la directive <directive
+    module="mod_setenvif">SetEnvIf</directive> pour définir cette
     variable.</p>
     </note>
 

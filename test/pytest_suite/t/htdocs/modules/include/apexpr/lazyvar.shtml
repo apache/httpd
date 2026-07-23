@@ -1,0 +1,5 @@
+<!--#if expr="v('DATE_LOCAL') =~ /[0-9]/" -->
+pass
+<!--#else-->
+fail
+<!--#endif-->

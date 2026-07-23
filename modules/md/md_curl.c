@@ -22,6 +22,9 @@
 #include <apr_strings.h>
 #include <apr_buckets.h>
 
+#include <httpd.h>
+
+#include "md.h"
 #include "md_http.h"
 #include "md_log.h"
 #include "md_util.h"
@@ -167,8 +170,8 @@ static int curlify_headers(void *baton, const char *key, const char *value)
     curlify_hdrs_ctx *ctx = baton;
     const char *s;
     
-    if (strchr(key, '\r') || strchr(key, '\n')
-        || strchr(value, '\r') || strchr(value, '\n')) {
+    if (ap_strchr_c(key, '\r') || ap_strchr_c(key, '\n')
+        || ap_strchr_c(value, '\r') || ap_strchr_c(value, '\n')) {
         ctx->rv = APR_EINVAL;
         return 0;
     }
@@ -245,6 +248,7 @@ static apr_status_t internals_setup(md_http_request_t *req)
     CURL *curl;
     apr_status_t rv = APR_SUCCESS;
     long ssl_options = 0;
+    long proxy_ssl_options = 0;
 
     curl = md_http_get_impl_data(req->http);
     if (!curl) {
@@ -254,34 +258,36 @@ static apr_status_t internals_setup(md_http_request_t *req)
             rv = APR_EGENERAL;
             goto leave;
         }
-        curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_cb);
-        curl_easy_setopt(curl, CURLOPT_HEADERDATA, NULL);
-        curl_easy_setopt(curl, CURLOPT_READFUNCTION, req_data_cb);
-        curl_easy_setopt(curl, CURLOPT_READDATA, NULL);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, resp_data_cb);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, NULL);
     }
     else {
         md_log_perror(MD_LOG_MARK, MD_LOG_TRACE3, 0, req->pool, "reusing curl instance from http");
+        curl_easy_reset(curl);
     }
+
+    curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, header_cb);
+    curl_easy_setopt(curl, CURLOPT_HEADERDATA, NULL);
+    curl_easy_setopt(curl, CURLOPT_READFUNCTION, req_data_cb);
+    curl_easy_setopt(curl, CURLOPT_READDATA, NULL);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, resp_data_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, NULL);
 
     internals = apr_pcalloc(req->pool, sizeof(*internals));
     internals->curl = curl;
         
     internals->response = apr_pcalloc(req->pool, sizeof(md_http_response_t));
     internals->response->req = req;
-    internals->response->status = 400;
+    internals->response->status = HTTP_BAD_REQUEST;
     internals->response->headers = apr_table_make(req->pool, 5);
     internals->response->body = apr_brigade_create(req->pool, req->bucket_alloc);
     
     curl_easy_setopt(curl, CURLOPT_URL, req->url);
-    if (!apr_strnatcasecmp("GET", req->method)) {
+    if (!apr_cstr_casecmp("GET", req->method)) {
         /* nop */
     }
-    else if (!apr_strnatcasecmp("HEAD", req->method)) {
+    else if (!apr_cstr_casecmp("HEAD", req->method)) {
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
     }
-    else if (!apr_strnatcasecmp("POST", req->method)) {
+    else if (!apr_cstr_casecmp("POST", req->method)) {
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
     }
     else {
@@ -310,6 +316,16 @@ static apr_status_t internals_setup(md_http_request_t *req)
         ssl_options |= CURLSSLOPT_NO_REVOKE;
 #endif
     }
+    if (req->proxy_ca_file) {
+        curl_easy_setopt(curl, CURLOPT_PROXY_CAINFO, req->proxy_ca_file);
+        /* for a custom CA, allow certificates checking to ignore the
+         * Schannel error CRYPT_E_NO_REVOCATION_CHECK (could be a missing OCSP
+         * responder URL in the certs???). See issue #361 */
+#ifdef CURLSSLOPT_NO_REVOKE
+        proxy_ssl_options |= CURLSSLOPT_NO_REVOKE;
+#endif
+    }
+
     if (req->unix_socket_path) {
         curl_easy_setopt(curl, CURLOPT_UNIX_SOCKET_PATH, req->unix_socket_path);
     }
@@ -350,6 +366,9 @@ static apr_status_t internals_setup(md_http_request_t *req)
 
     if (ssl_options)
         curl_easy_setopt(curl, CURLOPT_SSL_OPTIONS, ssl_options);
+
+    if (proxy_ssl_options)
+        curl_easy_setopt(curl, CURLOPT_PROXY_SSL_OPTIONS, proxy_ssl_options);
 
 leave:
     req->internals = (APR_SUCCESS == rv)? internals : NULL;

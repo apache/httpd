@@ -1090,6 +1090,7 @@ application/vnd.smart.teacher			teacher
 application/vnd.solent.sdkm+xml			sdkm sdkd
 application/vnd.spotfire.dxp			dxp
 application/vnd.spotfire.sfs			sfs
+application/vnd.sqlite3					sqlite sqlite3
 # application/vnd.sss-cod
 # application/vnd.sss-dtf
 # application/vnd.sss-ntf
@@ -1547,6 +1548,10 @@ image/cgm					cgm
 # image/fits
 image/g3fax					g3
 image/gif					gif
+image/heic					heic
+image/heic-sequence			heics
+image/heif					heif
+image/heif-sequence			heifs
 image/ief					ief
 # image/jls
 # image/jp2

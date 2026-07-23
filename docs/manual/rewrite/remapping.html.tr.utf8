@@ -1,0 +1,681 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_rewrite ile Yeniden Y&ouml;nlendirme ve Yeniden Eşleme - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite ile Yeniden Y&ouml;nlendirme ve Yeniden Eşleme</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/remapping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/remapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/remapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/remapping.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
+
+
+<p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+İstekleri yeniden y&ouml;nlendirmek ve yeniden eşlemek i&ccedil;in
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml; nasıl kullanabileceğinizi
+a&ccedil;ıklar. Her birinin nasıl &ccedil;alıştığının ayrıntılı a&ccedil;ıklamalarını
+i&ccedil;eren bir&ccedil;ok <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanım &ouml;rneği
+sunar.</p>
+
+<div class="warning">Bu &ouml;rneklerin bir&ccedil;oğunun sizin sunucu yapılandırmanızda
+değişiklik yapılmadan &ccedil;alışmayacağını unutmayın; bu nedenle &ouml;rnekleri
+yapılandırmanıza kopyalayıp yapıştırmak yerine anlamanız
+&ouml;nemlidir.</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#old-to-new">Eskiden Yeniye (dahili)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#old-to-new-extern">Eskiden Yeniye Yeniden Yazma (harici)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#movehomedirs">Başka Bir Sunucuya Taşınan Kaynak</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#static-to-dynamic">Statikten Devingene</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#backward-compatibility">Dosya Uzantısı Değişikliği i&ccedil;in Geriye D&ouml;n&uuml;k Uyumluluk</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#canonicalhost">Kurallı Konak Adları</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multipledirs">Birden Fazla Dizinde Sayfa Arama</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#archive-access-multiplexer">Coğrafi Olarak Dağıtılmış Sunuculara Y&ouml;nlendirme</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#canonicalurl">Kurallı URL'ler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moveddocroot">Taşınmış <code>DocumentRoot</code></a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#fallback-resource">Yedek Kaynak</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewrite-query">Sorgu Dizgesini Yeniden Yazma</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="old-to-new">Eskiden Yeniye (dahili) <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+      <p><code>foo.html</code> sayfasını yakın zamanda
+      <code>bar.html</code> olarak yeniden adlandırdığımızı ve şimdi
+      geriye d&ouml;n&uuml;k uyumluluk i&ccedil;in eski URL'yi sağlamak istediğimizi
+      varsayalım. Ancak eski URL kullanıcılarının sayfanın yeniden
+      adlandırıldığını fark etmemesini istiyoruz - yani adresin
+      tarayıcılarında değişmesini istemiyoruz.</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p>Eski URL'yi aşağıdaki kuralla dahili olarak yenisine yeniden
+      yazıyoruz:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]</pre>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="old-to-new-extern">Eskiden Yeniye Yeniden Yazma (harici) <a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+      <p>Yine <code>foo.html</code> sayfasını yakın zamanda
+      <code>bar.html</code> olarak yeniden adlandırdığımızı ve şimdi
+      geriye d&ouml;n&uuml;k uyumluluk i&ccedil;in eski URL'yi sağlamak istediğimizi
+      varsayalım. Ancak bu sefer eski URL kullanıcılarının yeni URL
+      hakkında bilgilendirilmesini istiyoruz, yani tarayıcılarının
+      Konum alanı da değişmeli.</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p>Tarayıcının ve dolayısıyla kullanıcının g&ouml;r&uuml;n&uuml;m&uuml;n&uuml;n
+      değişmesini sağlayan yeni URL'ye bir HTTP y&ouml;nlendirmesi
+      zorluyoruz:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]</pre>
+
+</dd>
+
+<dt>Tartışma</dt>
+
+    <dd>
+    <p>Bu &ouml;rnekte, <a href="#old-to-new-intern">dahili</a> &ouml;rneğin
+    aksine, basit&ccedil;e Redirect y&ouml;nergesini kullanabiliriz. &Ouml;nceki
+    &ouml;rnekte <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, y&ouml;nlendirmeyi istemciden
+    gizlemek i&ccedil;in kullanılmıştı:</p>
+
+    <pre class="prettyprint lang-config">Redirect "/foo.html" "/bar.html"</pre>
+
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="movehomedirs">Başka Bir Sunucuya Taşınan Kaynak <a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+      <p>Bir kaynak başka bir sunucuya taşındıysa, insanlar yer
+      imlerini g&uuml;ncellerken URL'lerin eski sunucuda bir s&uuml;re daha
+      &ccedil;alışmasını isteyebilirsiniz.</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p>Bu URL'leri yeni sunucuya y&ouml;nlendirmek i&ccedil;in
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanabilirsiniz, ancak Redirect
+      veya RedirectMatch y&ouml;nergesini kullanmayı da
+      d&uuml;ş&uuml;nebilirsiniz.</p>
+
+<pre class="prettyprint lang-config">#mod_rewrite ile
+RewriteEngine on
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]</pre>
+
+
+<pre class="prettyprint lang-config">#RedirectMatch ile
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"</pre>
+
+
+<pre class="prettyprint lang-config">#Redirect ile
+Redirect "/docs/" "http://new.example.com/docs/"</pre>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="static-to-dynamic">Statikten Devingene <a title="Permanent link" href="#static-to-dynamic" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+      <p>Statik bir sayfa olan <code>foo.html</code>'yi devingen bir
+      varyant olan <code>foo.cgi</code>'ye tarayıcı/kullanıcı fark
+      etmeden sorunsuz bir şekilde nasıl d&ouml;n&uuml;şt&uuml;rebiliriz?</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p>URL'yi CGI betiğine yeniden yazar ve işleyiciyi
+      <strong>cgi-script</strong> olarak zorlayarak bir CGI programı
+      olarak y&uuml;r&uuml;t&uuml;lmesini sağlarız. B&ouml;ylece
+      <code>/~quux/foo.html</code> isteği dahili olarak
+      <code>/~quux/foo.cgi</code>'nin &ccedil;ağrılmasına yol a&ccedil;ar.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine  on
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="backward-compatibility">Dosya Uzantısı Değişikliği i&ccedil;in Geriye D&ouml;n&uuml;k Uyumluluk <a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+      <p><code>document.YYYY</code>'den <code>document.XXXX</code>'e
+      ge&ccedil;iş yaptıktan sonra, &ouml;rneğin bir dizi <code>.html</code>
+      dosyasını <code>.php</code>'ye &ccedil;evirdikten sonra URL'leri nasıl
+      geriye d&ouml;n&uuml;k uyumlu (sanal olarak h&acirc;l&acirc; mevcut) yapabiliriz?</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p>URL, yeni uzantılı hedef dosya mevcutsa ve eski uzantılı
+      orijinal dosya mevcut değilse eski uzantıdan yeni uzantıya
+      yeniden yazılır. Aksi takdirde URL değiştirilmeden bırakılır.</p>
+
+<pre class="prettyprint lang-config">#   document.html'yi document.php'ye yeniden yazma
+#   i&ccedil;in geriye d&ouml;n&uuml;k uyumluluk kural k&uuml;mesi
+#   yalnızca document.php varsa
+&lt;Directory "/var/www/htdocs"&gt;
+    RewriteEngine on
+    RewriteBase   "/var/www/htdocs"
+
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
+&lt;/Directory&gt;</pre>
+
+    </dd>
+
+    <dt>Tartışma</dt>
+    <dd>
+    <p>Bu &ouml;rnek, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n genellikle
+    g&ouml;zden ka&ccedil;an bir &ouml;zelliğini kullanır: kural k&uuml;mesinin y&uuml;r&uuml;tme
+    sırasından yararlanır. &Ouml;zellikle, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    RewriteCond y&ouml;nergelerini değerlendirmeden &ouml;nce RewriteRule'un
+    sol tarafını değerlendirir. Sonu&ccedil; olarak, RewriteCond y&ouml;nergeleri
+    değerlendirildiğinde $1 zaten tanımlanmış olur. Bu, aynı temel
+    dosya adını kullanarak orijinal (<code>document.html</code>) ve
+    hedef (<code>document.php</code>) dosyaların varlığını
+    sınamamıza olanak tanır.</p>
+
+    <p>Bu kural k&uuml;mesi dizin başına bağlamda (bir &lt;Directory&gt;
+    bloğunda veya bir .htaccess dosyasında) kullanılmak &uuml;zere
+    tasarlanmıştır; b&ouml;ylece <code>-f</code> kontrolleri doğru dizin
+    yoluna bakar. &Ccedil;alıştığınız dizin tabanını belirtmek i&ccedil;in bir
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> y&ouml;nergesi
+    ayarlamanız gerekebilir.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="canonicalhost">Kurallı Konak Adları <a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
+
+
+
+      <dl>
+        <dt>A&ccedil;ıklama:</dt>
+
+        <dd>Bu kuralın amacı, aynı siteye erişmek i&ccedil;in kullanılabilecek
+        diğer konak adları yerine belirli bir konak adının
+        kullanılmasını zorlamaktır. &Ouml;rneğin,
+        <strong>example.com</strong> yerine
+        <strong>www.example.com</strong> kullanılmasını zorlamak
+        istiyorsanız aşağıdaki tarifin bir varyantını
+        kullanabilirsiniz.</dd>
+
+        <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+        <dd>
+
+<p>Bunu &ccedil;&ouml;zmenin en iyi yolu <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanmak
+değil, kurallı olmayan konak ad(lar)ı i&ccedil;in bir sanal konağa yerleştirilmiş
+<code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> y&ouml;nergesini
+kullanmaktır.</p>
+
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
+  ServerName undesired.example.com
+  ServerAlias example.com notthis.example.com
+
+  Redirect "/" "http://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName www.example.com
+&lt;/VirtualHost&gt;</pre>
+
+
+<p>Bunu alternatif olarak <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> y&ouml;nergesini kullanarak da
+ger&ccedil;ekleştirebilirsiniz: (<strong>2.4 ve sonrası</strong>)</p>
+
+<pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;</pre>
+
+
+<p>Veya &ouml;rneğin, sitenizin bir b&ouml;l&uuml;m&uuml;n&uuml; HTTPS'ye y&ouml;nlendirmek i&ccedil;in
+şunları yapabilirsiniz:</p>
+
+<pre class="prettyprint lang-config">&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
+    Redirect "/admin/" "https://www.example.com/admin/"
+&lt;/If&gt;</pre>
+
+
+<p>Herhangi bir nedenle h&acirc;l&acirc; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanmak
+istiyorsanız - &ouml;rneğin buna daha b&uuml;y&uuml;k bir RewriteRules k&uuml;mesiyle
+birlikte ihtiya&ccedil; duyuyorsanız - aşağıdaki tariflerden birini
+kullanabilirsiniz.</p>
+
+<p>80 dışında bir bağlantı noktasında &ccedil;alışan siteler i&ccedil;in:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]</pre>
+
+
+<p>80 bağlantı noktasında &ccedil;alışan bir site i&ccedil;in</p>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
+
+
+        <p>
+        Bunu t&uuml;m alan adları i&ccedil;in genel olarak yapmak istiyorsanız -
+        yani t&uuml;m olası <strong>example.com</strong> değerleri i&ccedil;in
+        <strong>example.com</strong>'u
+        <strong>www.example.com</strong>'a y&ouml;nlendirmek istiyorsanız -
+        aşağıdaki tarifi kullanabilirsiniz:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
+
+
+    <p>Bu kural k&uuml;meleri, ana sunucu yapılandırma dosyanızda veya
+    sunucunun <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+    dizinine yerleştirilen bir <code>.htaccess</code> dosyasında
+    &ccedil;alışacaktır.</p>
+        </dd>
+      </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="multipledirs">Birden Fazla Dizinde Sayfa Arama <a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+      <p>Belirli bir kaynak birka&ccedil; yerden birinde olabilir ve
+      istendiğinde bu yerlerde kaynağı aramak istiyoruz. Belki yakın
+      zamanda dizin yapımızı yeniden d&uuml;zenledik ve i&ccedil;eriği birka&ccedil;
+      konuma b&ouml;ld&uuml;k.</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p>Aşağıdaki kural k&uuml;mesi, kaynağı bulmak i&ccedil;in iki dizinde
+      arama yapar ve hi&ccedil;birinde bulamazsa istenen konumdan sunmayı
+      dener.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+
+#   &ouml;nce dir1/ i&ccedil;inde bulmayı dene
+#   ...ve bulunursa dur ve mutlu ol:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
+
+#   sonra dir2/ i&ccedil;inde bulmayı dene
+#   ...ve bulunursa dur ve mutlu ol:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
+
+#   yoksa diğer Alias veya ScriptAlias y&ouml;nergeleri vb. i&ccedil;in devam et.
+RewriteRule "^"     "-"                                          [PT]</pre>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="archive-access-multiplexer">Coğrafi Olarak Dağıtılmış Sunuculara Y&ouml;nlendirme <a title="Permanent link" href="#archive-access-multiplexer" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+    <p>Web sitemizin &ccedil;ok sayıda yansısı var ve insanları bulundukları
+    &uuml;lkedeki yansıya y&ouml;nlendirmek istiyoruz.</p>
+    </dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+    <p>İstemcinin konak adına bakarak hangi &uuml;lkeden geldiklerini
+    belirliyoruz. IP adreslerini &ccedil;&ouml;z&uuml;mleyemezsek &ouml;ntanımlı bir
+    sunucuya geri d&ouml;n&uuml;yoruz.</p>
+    <p>Kullanmak istediğimiz sunucuların listesini oluşturmak i&ccedil;in
+    bir <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    y&ouml;nergesi kullanacağız.</p>
+
+<pre class="prettyprint lang-config">HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]</pre>
+
+
+<div class="example"><p><code>
+##  map.mirrors -- &Ccedil;oğullama Eşlem Dosyası<br>
+<br>
+de        http://www.example.de/<br>
+uk        http://www.example.uk/<br>
+com       http://www.example.com/<br>
+##EOF##
+</code></p></div>
+    </dd>
+
+    <dt>Tartışma</dt>
+    <dd>
+    <div class="warning">Bu kural k&uuml;mesi, <code class="directive"><a href="../mod/core.html#hostnamelookups">HostNameLookups</a></code> y&ouml;nergesinin
+    <code>on</code> olarak ayarlanmasına dayanır; bu da &ouml;nemli bir
+    performans etkisi olabilir.</div>
+
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+    y&ouml;nergesi, istemcinin konak adının son b&ouml;l&uuml;m&uuml;n&uuml; - &uuml;lke kodunu -
+    yakalar ve ardından gelen RewriteRule bu değeri eşlem dosyasında
+    uygun yansı konağını aramak i&ccedil;in kullanır.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="canonicalurl">Kurallı URL'ler <a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
+
+
+
+<dl>
+ <dt>A&ccedil;ıklama:</dt>
+
+   <dd>
+     <p>Bazı web sunucularında bir kaynak i&ccedil;in birden fazla URL
+     bulunur. Genellikle kurallı URL'ler (ger&ccedil;ekten kullanılan ve
+     dağıtılan) ve kısayollar, dahili URL'ler vb. vardır. Kullanıcı
+     istekle hangi URL'yi sağlamış olursa olsun, sonunda tarayıcı
+     adres &ccedil;ubuğunda kurallı olanı g&ouml;rmelidir.</p>
+   </dd>
+
+   <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+     <dd>
+       <p>T&uuml;m kurallı olmayan URL'leri tarayıcının Konum g&ouml;r&uuml;n&uuml;m&uuml;nde
+       d&uuml;zeltmek ve sonraki t&uuml;m istekler i&ccedil;in harici bir HTTP
+       y&ouml;nlendirmesi yapıyoruz. Aşağıdaki &ouml;rnek kural k&uuml;mesinde
+       <code>/puppies</code> ve <code>/canines</code> yollarını
+       kurallı <code>/dogs</code> ile değiştiriyoruz.</p>
+
+<pre class="prettyprint lang-config">RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]</pre>
+
+        </dd>
+
+     <dt>Tartışma:</dt>
+     <dd>
+     Bu ger&ccedil;ekten Redirect veya RedirectMatch y&ouml;nergeleriyle
+     ger&ccedil;ekleştirilmelidir:
+
+     <pre class="prettyprint lang-config">RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"</pre>
+
+     </dd>
+      </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="moveddocroot">Taşınmış <code>DocumentRoot</code> <a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>A&ccedil;ıklama:</dt>
+
+    <dd>
+<p>Genellikle web sunucusunun <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> dizini doğrudan
+"<code>/</code>" URL'siyle ilişkilidir. Ancak &ccedil;oğu zaman bu veriler
+ger&ccedil;ekten en &uuml;st d&uuml;zey &ouml;nceliğe sahip değildir. &Ouml;rneğin, siteye ilk
+giren ziyaret&ccedil;ilerin belirli bir <code>/about/</code> alt dizinine
+y&ouml;nlendirilmesini isteyebilirsiniz. Bu, aşağıdaki kural k&uuml;mesi
+kullanılarak ger&ccedil;ekleştirilebilir:</p>
+</dd>
+
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
+
+    <dd>
+      <p><code>/</code> URL'sini <code>/about/</code> adresine
+      y&ouml;nlendiriyoruz:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]</pre>
+
+
+<p>Bunun <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>
+y&ouml;nergesi kullanılarak da ele alınabileceğini unutmayın:</p>
+
+<pre class="prettyprint lang-config">RedirectMatch "^/$" "http://example.com/about/"</pre>
+
+
+<p>Ayrıca &ouml;rneğin yalnızca k&ouml;k URL'yi yeniden yazdığını unutmayın.
+Yani <code>http://example.com/</code> isteğini yeniden yazar ancak
+<code>http://example.com/page.html</code> isteğini yeniden yazmaz.
+Belge k&ouml;k&uuml;n&uuml;z&uuml; ger&ccedil;ekten değiştirdiyseniz - yani t&uuml;m i&ccedil;eriğiniz
+aslında o alt dizindeyse - <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> y&ouml;nergesini değiştirmek veya
+t&uuml;m i&ccedil;eriği bir dizin yukarı taşımak, URL'leri yeniden yazmaktan
+&ccedil;ok daha tercih edilir.</p>
+</dd>
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="fallback-resource">Yedek Kaynak <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
+
+
+<dl>
+<dt>A&ccedil;ıklama:</dt>
+<dd>Belirli bir dizine gelen t&uuml;m istekleri, bir resim veya css
+dosyası gibi mevcut bir kaynağa gitmesi gerekenler dışında tek bir
+kaynağın (&ouml;rneğin index.php gibi belirli bir dosyanın) işlemesini
+istiyorsunuz.</dd>
+
+<dt>&Ccedil;&ouml;z&uuml;m:</dt>
+<dd>
+<p>2.2.16 s&uuml;r&uuml;m&uuml;nden itibaren bunun i&ccedil;in <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> y&ouml;nergesini
+kullanmalısınız:</p>
+
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource index.php
+&lt;/Directory&gt;</pre>
+
+
+<p>Ancak Apache'nin &ouml;nceki s&uuml;r&uuml;mlerinde veya ihtiya&ccedil;larınız bundan
+daha karmaşıksa, aynı şeyi ger&ccedil;ekleştirmek i&ccedil;in aşağıdaki yeniden
+yazma k&uuml;mesinin bir varyasyonunu kullanabilirsiniz:</p>
+
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
+
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^"                                    "index.php" [PT]
+&lt;/Directory&gt;</pre>
+
+
+<p>Diğer taraftan, istenen URI'yi index.php'ye sorgu dizgesi
+arg&uuml;manı olarak ge&ccedil;irmek isterseniz, o RewriteRule'u şununla
+değiştirebilirsiniz:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "(.*)" "index.php?$1" [PT,QSA]</pre>
+
+
+<p>Bu kural k&uuml;melerinin bir <code>.htaccess</code> dosyasında ve
+bir &lt;Directory&gt; bloğunda da kullanılabileceğini unutmayın.</p>
+
+</dd>
+
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewrite-query">Sorgu Dizgesini Yeniden Yazma <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
+
+
+<dl>
+<dt>A&ccedil;ıklama:</dt>
+<dd>Bir sorgu dizgesinden belirli bir değeri yakalamak ve onu
+değiştirmek veya URL'nin başka bir bileşenine dahil etmek
+istiyorsunuz.</dd>
+
+<dt>&Ccedil;&ouml;z&uuml;mler:</dt>
+<dd>
+<p>Bu b&ouml;l&uuml;mdeki &ccedil;&ouml;z&uuml;mlerin bir&ccedil;oğu aynı koşulu kullanır; bu koşul
+eşleşen değeri %2 geri başvurusunda bırakır. %1 sorgu dizgesinin
+başlangıcıdır (ilgili anahtara kadar) ve %3 geri kalanıdır. Bu
+koşul, esneklik ve değiştirmelerde &ccedil;ift '&amp;&amp;' oluşmasını
+&ouml;nlemek i&ccedil;in biraz karmaşıktır.</p>
+<ul>
+  <li>Bu &ccedil;&ouml;z&uuml;m eşleşen anahtarı ve değeri kaldırır:
+
+<pre class="prettyprint lang-config"># mykey=??? &ouml;ğesini kaldır
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1?%1%3"</pre>
+
+  </li>
+
+  <li>Bu &ccedil;&ouml;z&uuml;m, yakalanan değeri URL değiştirmesinde kullanır ve
+  sonuna '?' ekleyerek orijinal sorgu dizgesinin geri kalanını
+  atar:
+
+<pre class="prettyprint lang-config"># Sorgu dizgesinden PATH_INFO'ya kopyala
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]</pre>
+
+  </li>
+
+  <li>Bu &ccedil;&ouml;z&uuml;m, yakalanan değeri sonraki bir koşulda kontrol eder:
+
+<pre class="prettyprint lang-config"># Sorgu dizgesindeki mykey değerini yakala
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]</pre>
+
+  </li>
+
+  <li>Bu &ccedil;&ouml;z&uuml;m, &ouml;nceki &ccedil;&ouml;z&uuml;mlerin tersini g&ouml;sterir: yol bileşenlerini
+      (belki PATH_INFO) URL'den sorgu dizgesine kopyalar.
+<pre class="prettyprint lang-config"># İstenen URL /products/kitchen-sink olabilir ve betik
+# /path?products=kitchen-sink bekler.
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
+
+  </li>
+</ul>
+
+</dd>
+
+</dl>
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/remapping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/remapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/remapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/remapping.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

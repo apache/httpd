@@ -44,7 +44,7 @@ headers</description>
 
     <p>Order of processing is important and is affected both by the
     order in the configuration file and by placement in <a
-    href="../sections.html#mergin">configuration sections</a>. These
+    href="../sections.html#merging">configuration sections</a>. These
     two directives have a different effect if reversed:</p>
 
     <highlight language="config">
@@ -358,6 +358,10 @@ available in 2.4.10 and later</compatibility>
     the same name. When a new value is merged onto an existing
     header it is separated from the existing header with a comma.
     This is the HTTP standard way of giving a header multiple values.
+    Note that the <code>Set-Cookie</code> header is an exception:
+    <rfc>6265</rfc> requires multiple <code>Set-Cookie</code> headers
+    rather than combining values with commas. Use <code>add</code>
+    instead of <code>append</code> for <code>Set-Cookie</code>.
     <br/><br/><p>Choosing a <var>condition</var>: If the existing header to be appended to was added by this module, you must match the condition
     parameter that was originally used. Otherwise, you must determine by trial
     and error whether <code>always</code> should be specified because you can't

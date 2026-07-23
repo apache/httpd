@@ -44,7 +44,6 @@
   <modulefile>mod_data.xml.fr</modulefile>
   <modulefile>mod_dav.xml.fr</modulefile>
   <modulefile>mod_dav_fs.xml.fr</modulefile>
-  <modulefile>mod_dav_lock.xml.fr</modulefile>
   <modulefile>mod_dbd.xml.fr</modulefile>
   <modulefile>mod_deflate.xml.fr</modulefile>
   <modulefile>mod_dialup.xml.fr</modulefile>
@@ -89,6 +88,7 @@
   <modulefile>mod_proxy.xml.fr</modulefile>
   <modulefile>mod_proxy_ajp.xml.fr</modulefile>
   <modulefile>mod_proxy_balancer.xml.fr</modulefile>
+  <modulefile>mod_proxy_beacon.xml.fr</modulefile>
   <modulefile>mod_proxy_connect.xml.fr</modulefile>
   <modulefile>mod_proxy_express.xml.fr</modulefile>
   <modulefile>mod_proxy_fcgi.xml.fr</modulefile>
@@ -139,6 +139,7 @@
   <modulefile>mod_xml2enc.xml.fr</modulefile>
   <modulefile>mpm_common.xml.fr</modulefile>
   <modulefile>event.xml.fr</modulefile>
+  <modulefile>motorz.xml.fr</modulefile>
   <modulefile>mpm_netware.xml.fr</modulefile>
   <modulefile>mpmt_os2.xml.fr</modulefile>
   <modulefile>prefork.xml.fr</modulefile>

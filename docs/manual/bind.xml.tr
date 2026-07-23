@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1301743:1816110 (outdated) -->
+<!-- English Revision: 1816110:1933438 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -55,7 +55,7 @@
       bağlar ve gelecek istekleri bekler. Öntanımlı olarak makine üzerindeki
       tüm adresleri dinler. Bununla birlikte, belli portları veya sadece
       seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
-      belirtilmesi gerekebilir. Bu çoğunlukla, httpd’nin farklı IP
+      belirtilmesi gerekebilir. Bu çoğunlukla, httpd'nin farklı IP
       adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
       belirlendiği <a href="vhosts/">sanal konak</a> özelliği ile birlikte
       yürür.</p>
@@ -76,8 +76,10 @@
       bağlantıları kabul etmesini sağlamak için,</p>
 
     <example>
-      Listen 80<br />
-      Listen 8000
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
     </example>
 
     <p>yapılandırmasını kullanabilirsiniz. Sunucunun 80 portuna gelen
@@ -85,72 +87,117 @@
       arabirimden kabul etmesini sağlamak için ise,</p>
 
     <example>
-      Listen 192.0.2.1:80<br />
-      Listen 192.0.2.5:8000
+    <highlight language="config">
+Listen 192.0.2.1:80
+Listen 192.0.2.5:8000
+    </highlight>
     </example>
 
     <p>yapılandırmasını kullanabilirsiniz. IPv6 adresleri aşağıdaki örnekteki
       gibi köşeli ayraçlar içine alınarak belirtilmelidir:</p>
 
     <example>
+    <highlight language="config">
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
     </example>
 
-    <note type="warning">
-      <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
-      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
-      sonuçlanacaktır.</p>
+    <note type="warning"><p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
+    aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
+    sonuçlanacaktır.</p>
 
-      <example>
+    <example>
       (48)Address already in use: make_sock: could not bind to address [::]:80
-      </example>
-    </note>
+    </example>
 
-</section>
+    <p>Sorun giderme ipuçları için <a
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki
+    sayfasına bakınız</a>.</p>
 
-  <section id="ipv6">
+</note>
+
+  </section>
+
+  <section id="reload">
+    <title>Yeniden başlatmada dinleme yapılandırmasının değiştirilmesi</title>
+
+    <p>httpd yeniden başlatıldığında, <directive
+    module="mpm_common">Listen</directive> yönergelerindeki değişiklikler için
+    özel olarak dikkat edilmelidir. Yeniden başlatma sırasında httpd, portları
+    (özgün yapılandırmadaki gibi) bağlı tutar ve sunucuya yeni bağlantı
+    girişimleri için "Connection refused" hatalarının oluşmasını engeller.
+    Kullanılan <directive module="mpm_common">Listen</directive> yönergeleri
+    kümesinde eski yapılandırmayla çelişen değişiklikler yapılırsa,
+    yapılandırma başarısız olur ve sunucu sonlandırılır.</p>
+
+    <p>Örneğin, yapılandırmanın:</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>aşağıdaki gibi değiştirilmesi başarısız olabilir, çünkü tüm
+    adreslerde 80 portuna bağlanmak sadece 127.0.0.1 üzerinde 80 portuna
+    bağlanmakla çelişir.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>Bu tür yapılandırma değişikliklerinin etkili olması için sunucunun
+    durdurulması ve sonra başlatılması gerekir.</p>
+    
+  </section>
+
+    <section id="ipv6">
     <title>IPv6 Adreslerin Durumu</title>
 
-    <p>IPv6’yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
-      platformların çoğunda <glossary>APR</glossary>, httpd’nin IPv6
-      soketleri ayırmasını mümkün kılarak IPv6’yı desteklemekte ve IPv6
+    <p>IPv6'yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
+      platformların çoğunda <glossary>APR</glossary>, httpd'nin IPv6
+      soketleri ayırmasını mümkün kılarak IPv6'yı desteklemekte ve IPv6
       üzerinden gönderilmiş istekleri elde etmektedir.</p>
 
     <p>httpd yöneticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
       hem IPv4 hem de IPv6 bağlantılarını kabul edip etmeyeceğidir. IPv4
       bağlantılarını kabul eden IPv6 soketleri IPv4 eşlemli IPv6 adresleri
       kullanırlar. Bu çoğu sistemde öntanımlı olarak böyleyken, FreeBSD,
-      NetBSD ve OpenBSD’de sistem geneline uygulanan kurallar gereğince
+      NetBSD ve OpenBSD'de sistem geneline uygulanan kurallar gereğince
       öntanımlı olarak buna izin verilmez; bu sistemlerde özel bir
-      <program>configure</program> parametresi ile <code>httpd</code>’nin
+      <program>configure</program> parametresi ile <code>httpd</code>'nin
       davranışı değiştirilebilir.</p>
 
     <p>Diğer taraftan, Linux ve Tru64 gibi bazı platformlarda hem IPv4 hem de
       IPv6 adresleri kabul etmenin <strong>tek yolu</strong> eşlemli adresler
-      kullanmaktır. <code>httpd</code>’nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
+      kullanmaktır. <code>httpd</code>'nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
       IPv6 adreslerin kullanımını gerektiren en az sayıda soketle kabul etmesini
       istiyorsanız, <program>configure</program> betiğine
       <code>--enable-v4-mapped</code> seçeneğini belirtiniz.</p>
 
     <p><code>--enable-v4-mapped</code> seçeneği, FreeBSD, NetBSD ve OpenBSD
       hariç tüm platformlarda öntanımlıdır. Muhtemelen siz de
-      <code>httpd</code>’nin böyle derlenmesini isterdiniz.</p>
+      <code>httpd</code>'nin böyle derlenmesini isterdiniz.</p>
 
-    <p>Platformunuzun ve APR’nin neyi desteklediğine bakmaksızın
-      <code>httpd</code>’nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
+    <p>Platformunuzun ve APR'nin neyi desteklediğine bakmaksızın
+      <code>httpd</code>'nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
       tüm <directive module="mpm_common">Listen</directive> yönergelerinde
       örnekteki gibi IPv4 adresleri belirtiniz:</p>
 
     <example>
-      Listen 0.0.0.0:80<br />
-      Listen 192.0.2.1:80
+    <highlight language="config">
+Listen 0.0.0.0:80
+Listen 192.0.2.1:80
+    </highlight>
     </example>
 
     <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
-      <code>httpd</code>’nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
+      <code>httpd</code>'nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
       adreslerin iptalini)  istiyorsanız <program>configure</program>
       betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
-      seçenek FreeBSD, NetBSD ve OpenBSD’de öntanımlıdır.</p>
+      seçenek FreeBSD, NetBSD ve OpenBSD'de öntanımlıdır.</p>
   </section>
 
   <section id="protocol">
@@ -168,7 +215,9 @@
       çalıştırmak isterseniz:</p>
 
     <example>
+    <highlight language="config">
       Listen 192.170.2.1:8443 https
+    </highlight>
     </example>
   </section>
 
@@ -192,4 +241,3 @@
       sunucu tarafından dinlenmiyorsa ona erişemezsiniz.</p>
   </section>
 </manualpage>
-

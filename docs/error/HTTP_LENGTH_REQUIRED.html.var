@@ -20,7 +20,7 @@ Body:----------de--
 
     Die Anfrage kann nicht beantwortet werden.
     Bei Verwendung der <!--#echo var="REDIRECT_REQUEST_METHOD" -->-Methode
-    mu&szlig; ein korrekter <code>Content-Length</code>-Header
+    muß ein korrekter <code>Content-Length</code>-Header
     angegeben werden. 
 
 <!--#include virtual="include/bottom.html" -->
@@ -41,12 +41,12 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Error en la longitud del contenido!" -->
+<!--#set var="TITLE" value="¡Error en la longitud del contenido!" -->
 <!--#include virtual="include/top.html" -->
 
-    Una petici&oacute;n con el m&eacute;todo <!--#echo
+    Una petición con el método <!--#echo
     var="REDIRECT_REQUEST_METHOD" -->  requiere que el encabezado 
-    <code>Content-Length</code> sea v&aacute;lido.
+    <code>Content-Length</code> sea válido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
@@ -55,11 +55,11 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!"
+--><!--#set var="TITLE" value="Longueur du contenu illégal!"
 --><!--#include virtual="include/top.html" -->
 
-    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo
-    var="REDIRECT_REQUEST_METHOD" --> n&eacute;cessite un en-t&ecirc;te
+    Une requête utilisant la méthode <!--#echo
+    var="REDIRECT_REQUEST_METHOD" --> nécessite un en-tête
     <code>Content-Length</code> (indiquant la longueur) valable.
 
 <!--#include virtual="include/bottom.html" -->
@@ -68,12 +68,12 @@ Body:----------fr--
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="Content-Length m&iacute;cheart!"
+<!--#set var="TITLE" value="Content-Length mícheart!"
 --><!--#include virtual="include/top.html" -->
 
-    Is g&aacute; go mbh&eacute;adh ceannt&aacute;isc 
+    Is gá go mbhéadh ceanntáisc 
     <code>Content-Length</code>
-    bhail&iacute; do iarratais faoin modh 
+    bhailí do iarratais faoin modh 
     <!--#echo var="REDIRECT_REQUEST_METHOD" -->.
 
 <!--#include virtual="include/bottom.html" -->
@@ -165,12 +165,12 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Content-Length Inv&aacute;lido!"
+--><!--#set var="TITLE" value="Content-Length Inválido!"
 --><!--#include virtual="include/top.html" -->
 
-    Uma requisi&ccedil;&atilde;o 
-    do m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD"-->
-    requer um cabe&ccedil;alho <code>Content-Length</code> v&aacute;lido.
+    Uma requisição 
+    do método <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    requer um cabeçalho <code>Content-Length</code> válido.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -181,8 +181,8 @@ Body:----------pt--
 <!--#set var="TITLE" value="Content-Length incorrecto!"
 --><!--#include virtual="include/top.html" -->
 
-	Um pedido com o m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-	necessita de um cabe&ccedil;alho <code>Content-Length</code> v&aacute;lido.
+	Um pedido com o método <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+	necessita de um cabeçalho <code>Content-Length</code> válido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -233,8 +233,8 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Felaktig Content-Length!"
 --><!--#include virtual="include/top.html" -->
 
-    En f&ouml;rfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    metoden kr&auml;ver ett korrekt <code>Content-Length</code> huvud.
+    En förfrågan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    metoden kräver ett korrekt <code>Content-Length</code> huvud.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

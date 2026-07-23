@@ -82,7 +82,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <directive module="mod_filter"
       >AddOutputFilterByType</directive> directive. Here is an example of
-      enabling compression only for the html files of the Apache
+      enabling compression only for the html files of the Apache httpd
       documentation:</p>
 
       <highlight language="config">
@@ -118,14 +118,14 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 &lt;/Location&gt;
       </highlight>
 
-      <p>This Example will uncompress gzip'ed output from example.com, so other
+      <p>This example will uncompress gzip-compressed output from example.com, so other
       filters can do further processing with it.
       </p>
 
     </section>
     <section id="input"><title>Input Decompression</title>
       <p>The <module>mod_deflate</module> module also provides a filter for
-      decompressing a gzip compressed request body . In order to activate
+      decompressing a gzip compressed request body. In order to activate
       this feature you have to insert the <code>DEFLATE</code> filter into
       the input filter chain using <directive module="core"
       >SetInputFilter</directive> or <directive module="mod_mime"
@@ -142,7 +142,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       Few browsers have the ability to gzip request bodies. However,
       some special applications actually do support request
       compression, for instance some <a
-      href="http://www.webdav.org">WebDAV</a> clients.</p>
+      href="https://www.webdav.org">WebDAV</a> clients.</p>
 
       <note type="warning"><title>Note on Content-Length</title>
         <p>If you evaluate the request body yourself, <em>don't trust
@@ -159,14 +159,14 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
     <p>The <module>mod_deflate</module> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
     a cached response should be sent only to clients that send the
-    appropriate <code>Accept-Encoding</code> request header.  This
+    appropriate <code>Accept-Encoding</code> request header. This
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
-    to alert proxies of the additional restrictions.  For example,
+    to alert proxies of the additional restrictions. For example,
     in a typical configuration where the addition of the <code>DEFLATE</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
@@ -344,7 +344,7 @@ CustomLog "logs/deflate_log" deflate
         what level of compression should be used, the higher the value,
         the better the compression, but the more CPU time is required to
         achieve this.</p>
-    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+    <p>The value must be between 1 (less compression) and 9 (more compression).</p>
 </usage>
 </directivesynopsis>
 
@@ -362,7 +362,9 @@ CustomLog "logs/deflate_log" deflate
     <p>The <directive>DeflateInflateLimitRequestBody</directive> directive
         specifies the maximum size of an inflated request body. If it is unset,
         <directive module="core">LimitRequestBody</directive> is applied to the
-        inflated body.</p>
+        inflated body. A value of <code>0</code> means no limit is applied
+        to the inflated body size (but other limits such as
+        <directive module="core">LimitRequestBody</directive> may still apply).</p>
 </usage>
 </directivesynopsis>
 

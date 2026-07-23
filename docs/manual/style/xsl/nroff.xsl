@@ -139,6 +139,7 @@
 <xsl:apply-templates select="section[@id='synopsis']" />&lf;
 <xsl:apply-templates select="summary" />&lf;
 <xsl:apply-templates select="section[@id!='synopsis']" />&lf;
+
 </xsl:template>
 <!-- /manualpage -->
 
@@ -264,7 +265,7 @@
 <!-- <strong>                                                             -->
 <!-- show it somewhat special (bold)                                      -->
 <!-- ==================================================================== -->
-<xsl:template match="strong|code">
+<xsl:template match="strong|code|program">
 <xsl:text>\fB</xsl:text>
     <xsl:apply-templates />
 <xsl:text>\fR</xsl:text>
@@ -373,7 +374,7 @@ FATAL: only tables with two (2) columns are supported.
 <!-- ==================================================================== -->
 <!-- pass through content                                                 -->
 <!-- ==================================================================== -->
-<xsl:template match="a|module|table|program|glossary|highlight">
+<xsl:template match="a|module|table|glossary|highlight|rfc">
 <xsl:apply-templates />
 </xsl:template>
 
@@ -382,6 +383,8 @@ FATAL: only tables with two (2) columns are supported.
 <!-- remove some stuff from the output                                    -->
 <!-- ==================================================================== -->
 <xsl:template match="parentdocument|seealso|dd|td|example/br|dd/br" />
+
+
 
 
 <!-- ==================================================================== -->

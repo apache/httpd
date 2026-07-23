@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1741842  -->
+<!-- English Revision: 1933189 $ -->
+<!-- Updated by: Daniel Ferradal -->
 <!-- Spanish Translator: Luis Gil de Bernabé -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -101,16 +102,18 @@ ErrorDocument 401 /subscription/como_suscribirse.html
         entorno más habituales, lo siguiente:</p>
 
       <example>
-        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/jpeg, image/png<br />
-        REDIRECT_HTTP_USER_AGENT=Mozilla/5.0 Fedora/3.5.8-1.fc12 Firefox/3.5.8<br />
-        REDIRECT_PATH=.:/bin:/usr/local/bin:/sbin<br />
-        REDIRECT_QUERY_STRING=<br />
-        REDIRECT_REMOTE_ADDR=121.345.78.123<br />
-        REDIRECT_REMOTE_HOST=client.example.com<br />
-        REDIRECT_SERVER_NAME=www.example.edu<br />
-        REDIRECT_SERVER_PORT=80<br />
-        REDIRECT_SERVER_SOFTWARE=Apache/2.2.15<br />
-        REDIRECT_URL=/cgi-bin/buggy.pl
+<highlight language="config">
+REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/jpeg, image/png<br />
+REDIRECT_HTTP_USER_AGENT=Mozilla/5.0 Fedora/3.5.8-1.fc12 Firefox/3.5.8<br />
+REDIRECT_PATH=.:/bin:/usr/local/bin:/sbin<br />
+REDIRECT_QUERY_STRING=<br />
+REDIRECT_REMOTE_ADDR=121.345.78.123<br />
+REDIRECT_REMOTE_HOST=client.example.com<br />
+REDIRECT_SERVER_NAME=www.example.edu<br />
+REDIRECT_SERVER_PORT=80<br />
+REDIRECT_SERVER_SOFTWARE=Apache/2.2.15<br />
+REDIRECT_URL=/cgi-bin/buggy.pl
+</highlight>
       </example>
 
       <p> Las variables de entorno de tipo <code>REDIRECT_</code> se crean a partir

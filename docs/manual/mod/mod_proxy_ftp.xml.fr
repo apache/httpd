@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1838313 -->
+<!-- English Revision: 1933682 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -134,6 +134,15 @@
       <example>
         ftp://<var>nom-utilisateur</var>@<var>serveur</var>/mon-fichier
       </example>
+
+      <note><title>HttpProtocolOptions</title>
+        <p>Par défaut, la directive <directive
+	module="core">HttpProtocolOptions</directive> est définie à
+	<code>Strict</code>, ce qui a pour effet de rejeter les URLs contenant
+	des informations sur l’utilisateur (nom ou mot de passe), en accord avec
+	la RFC 7230. Pour utiliser des données d’authentification dans les URLs
+	FTP, vous devez spécifier <code>HttpProtocolOptions Unsafe</code>.</p>
+      </note>
 
       <p>Si le serveur FTP demande un mot de passe pour ce nom
       d'utilisateur (ce qu'il est censé faire), Apache va renvoyer au

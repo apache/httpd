@@ -1,116 +1,116 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_deflate - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_deflate</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_deflate.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_deflate.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Comprime le contenu avant de le servir au
 client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>deflate_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_deflate.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>deflate_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_deflate.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> implémente le filtre de
-    sortie <code>DEFLATE</code> qui permet de comprimer la sortie de
-    votre serveur avant de l'envoyer au client sur le réseau.</p>
+    <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> impl&eacute;mente le filtre de
+    sortie <code>DEFLATE</code> qui permet de compresser la sortie de
+    votre serveur avant de l'envoyer au client sur le r&eacute;seau.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#supportedencodings">Codages supportés</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Exemples de configurations</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation de la compression</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Prise en compte des serveurs mandataires</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#precompressed">Servir du contenu précompressé</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#supportedencodings">Codages support&eacute;s</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#recommended">Exemples de configurations</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enable">Activation de la compression</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxies">Prise en compte des serveurs mandataires</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#precompressed">Servir du contenu pr&eacute;compress&eacute;</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#deflatealteretag">DeflateAlterETag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflateinflateratioburst">DeflateInflateRatioBurst</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflateinflateratiolimit">DeflateInflateRatioLimit</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflatealteretag">DeflateAlterETag</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflatecompressionlevel">DeflateCompressionLevel</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflatefilternote">DeflateFilterNote</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflateinflateratioburst">DeflateInflateRatioBurst</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflateinflateratiolimit">DeflateInflateRatioLimit</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflatememlevel">DeflateMemLevel</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_deflate">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_deflate">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_deflate">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_deflate">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Les filtres</a></li>
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="supportedencodings" id="supportedencodings">Codages supportés</a> <a title="Lien permanent" href="#supportedencodings" class="permalink">&para;</a></h2>
-  <p>Le seul codage supporté est <code>gzip</code> afin d'assurer une complète
-  compatibilité avec les anciens navigateurs. Le codage <code>deflate</code>
-  n'est donc pas supporté ; voir à ce sujet la <a href="https://zlib.net/zlib_faq.html#faq39">documentation de zlib</a> pour une
-  explication détaillée.
+<h2 id="supportedencodings">Codages support&eacute;s <a title="Lien permanent" href="#supportedencodings" class="permalink">&para;</a></h2>
+  <p>Le seul codage support&eacute; est <code>gzip</code> afin d'assurer une compl&egrave;te
+  compatibilit&eacute; avec les anciens navigateurs. Le codage <code>deflate</code>
+  n'est donc pas support&eacute; ; voir &agrave; ce sujet la <a href="https://zlib.net/zlib_faq.html#faq39">documentation de zlib</a> pour une
+  explication d&eacute;taill&eacute;e.
   </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">Exemples de configurations</a> <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
+<h2 id="recommended">Exemples de configurations <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
-        <p>Certaines applications web sont vulnérables à une attaque pour
+        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque pour
 	vol d'informations lorsqu'une connexion TLS transporte des
-	données compressées par deflate. Pour plus de détails,
+	donn&eacute;es compress&eacute;es par deflate. Pour plus de d&eacute;tails,
 	documentez-vous sur la famille d'attaques "BREACH".</p>
     </div>
-    <p>Voici un exemple simple de configuration qui permet de comprimer
-    les types de contenu à base de texte.</p>
+    <p>Voici un exemple simple de configuration qui permet de compresser
+    les types de contenu &agrave; base de texte.</p>
 
-    <div class="example"><h3>Ne comprime que certains types de documents</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
+    <div class="example"><h3>Ne compresse que certains types de documents</h3><pre class="prettyprint lang-config">AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript</pre>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la compression</a> <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Activation de la compression <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
-        <p>Certaines applications web sont vulnérables à une attaque pour
+        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque pour
 	vol d'informations lorsqu'une connexion TLS transporte des
-	données compressées par deflate. Pour plus de détails,
+	donn&eacute;es compress&eacute;es par deflate. Pour plus de d&eacute;tails,
 	documentez-vous sur la famille d'attaques "BREACH".</p>
     </div>
 
-    <h3><a name="output" id="output">Compression de la sortie</a></h3>
-      <p>La compression est implémentée par le <a href="../filter.html">filtre</a> <code>DEFLATE</code>. La
+    <h3 id="output">Compression de la sortie</h3>
+      <p>La compression est impl&eacute;ment&eacute;e par le <a href="../filter.html">filtre</a> <code>DEFLATE</code>. La
       directive suivante active la compression des documents dans le
-      conteneur où elle est placée :</p>
+      conteneur o&ugrave; elle est plac&eacute;e :</p>
 
       <pre class="prettyprint lang-config">SetOutputFilter DEFLATE
 SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
 
-      <p>Si vous voulez limiter la compression à certains types MIME
+      <p>Si vous voulez limiter la compression &agrave; certains types MIME
       particuliers, vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. Voici un exemple
-      où la compression n'est activée que pour les fichiers html de la
-      documentation d'Apache :</p>
+      o&ugrave; la compression n'est activ&eacute;e que pour les fichiers html de la
+      documentation d'Apache httpd:</p>
 
       <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
     AddOutputFilterByType DEFLATE text/html
@@ -118,23 +118,23 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
 
       <div class="note"><h3>Note</h3>
-        Le filtre <code>DEFLATE</code> est toujours inséré après les
+        Le filtre <code>DEFLATE</code> est toujours ins&eacute;r&eacute; apr&egrave;s les
 	filtres RESOURCE comme PHP ou SSI. Il n'affecte jamais les
-	sous-requêtes internes.
+	sous-requ&ecirc;tes internes.
       </div>
       <div class="note"><h3>Note</h3>
-        La variable d'environnement <code>force-gzip</code>, définie à
+        La variable d'environnement <code>force-gzip</code>, d&eacute;finie &agrave;
 	l'aide de la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, permet d'ignorer la
-	configuration de votre navigateur quant aux codages acceptés, et
-	d'envoyer sans condition une sortie comprimée.
+	configuration de votre navigateur quant aux codages accept&eacute;s, et
+	d'envoyer sans condition une sortie compress&eacute;e.
       </div>
 
     
-    <h3><a name="inflate" id="inflate">Décompression de la sortie</a></h3>
+    <h3 id="inflate">D&eacute;compression de la sortie</h3>
       <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> fournit aussi un filtre
-      permettant de décomprimer un corps de réponse comprimé par gzip.
-      Pour activer cette fonctionnalité, vous devez insérer le filtre
-      <code>INFLATE</code> dans la chaîne de filtrage en sortie via la
+      permettant de d&eacute;compresser un corps de r&eacute;ponse compress&eacute; par gzip.
+      Pour activer cette fonctionnalit&eacute;, vous devez ins&eacute;rer le filtre
+      <code>INFLATE</code> dans la cha&icirc;ne de filtrage en sortie via la
       directive <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> ou
       <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, comme
       dans l'exemple suivant :</p>
@@ -145,17 +145,17 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 &lt;/Location&gt;</pre>
 
 
-      <p>Dans cet exemple, les sorties comprimées par gzip en
-      provenance de example.com seront décomprimées afin de pouvoir
-      être éventuellement traitées par d'autres filtres.
+      <p>Dans cet exemple, les sorties compress&eacute;es par gzip en
+      provenance de example.com seront d&eacute;compress&eacute;es afin de pouvoir
+      &ecirc;tre &eacute;ventuellement trait&eacute;es par d'autres filtres.
       </p>
 
     
-    <h3><a name="input" id="input">Décompression de l'entrée</a></h3>
-      <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> fournit également un filtre
-      permettant de décomprimer un corps de requête comprimé par gzip.
-      Pour activer cette fonctionnalité, vous devez insérer le filtre
-      <code>DEFLATE</code> dans la chaîne de filtrage en entrée via la
+    <h3 id="input">D&eacute;compression de l'entr&eacute;e</h3>
+      <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> fournit &eacute;galement un filtre
+      permettant de d&eacute;compresser un corps de requ&ecirc;te compress&eacute; par gzip.
+      Pour activer cette fonctionnalit&eacute;, vous devez ins&eacute;rer le filtre
+      <code>DEFLATE</code> dans la cha&icirc;ne de filtrage en entr&eacute;e via la
       directive <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> ou
       <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, comme
       dans l'exemple suivant :</p>
@@ -165,72 +165,72 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 &lt;/Location&gt;</pre>
 
 
-      <p>Désormais, si une requête contient un en-tête
+      <p>D&eacute;sormais, si une requ&ecirc;te contient un en-t&ecirc;te
       <code>Content-Encoding: gzip</code>, son corps sera
-      automatiquement décomprimé. Peu de navigateurs sont actuellement
-      en mesure de comprimer les corps de requêtes. Cependant,
-      certaines applications spécialisées supportent les requêtes
-      comprimées, comme par exemple certains clients <a href="http://www.webdav.org">WebDAV</a>.</p>
+      automatiquement d&eacute;compress&eacute;. Peu de navigateurs sont actuellement
+      en mesure de compresser les corps de requ&ecirc;tes. Cependant,
+      certaines applications sp&eacute;cialis&eacute;es supportent les requ&ecirc;tes
+      compress&eacute;es, comme par exemple certains clients <a href="https://www.webdav.org">WebDAV</a>.</p>
 
-      <div class="warning"><h3>Note à propos de l'en-tête
+      <div class="warning"><h3>Note &agrave; propos de l'en-t&ecirc;te
       <code>Content-Length</code></h3>
-        <p>Si vous évaluez vous-même la taille du corps de requête,
-	<em>ne faites pas confiance à l'en-tête
-	<code>Content-Length</code>!</em> L'en-tête
-	Content-Length indique la longueur des données en provenance du
-	client, et <em>non</em> la quantité d'octets que représente le
-	flux de données décompressé.</p>
+        <p>Si vous &eacute;valuez vous-m&ecirc;me la taille du corps de requ&ecirc;te,
+	<em>ne faites pas confiance &agrave; l'en-t&ecirc;te
+	<code>Content-Length</code>!</em> L'en-t&ecirc;te
+	Content-Length indique la longueur des donn&eacute;es en provenance du
+	client, et <em>non</em> la quantit&eacute; d'octets que repr&eacute;sente le
+	flux de donn&eacute;es d&eacute;compress&eacute;.</p>
       </div>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">Prise en compte des serveurs mandataires</a> <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
+<h2 id="proxies">Prise en compte des serveurs mandataires <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
 
-    <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> envoie un en-tête de
-    réponse HTTP <code>Vary: Accept-Encoding</code> pour avertir les
-    mandataires qu'une réponse enregistrée dans le cache ne doit être
-    envoyée qu'aux clients qui ont envoyé l'en-tête de requête
-    <code>Accept-Encoding</code> approprié. Ceci permet d'éviter l'envoi
-    d'un contenu comprimé à un client qui ne sera pas en mesure
-    de l'interpréter.</p>
+    <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> envoie un en-t&ecirc;te de
+    r&eacute;ponse HTTP <code>Vary: Accept-Encoding</code> pour avertir les
+    mandataires qu'une r&eacute;ponse enregistr&eacute;e dans le cache ne doit &ecirc;tre
+    envoy&eacute;e qu'aux clients qui ont envoy&eacute; l'en-t&ecirc;te de requ&ecirc;te
+    <code>Accept-Encoding</code> appropri&eacute;. Ceci permet d'&eacute;viter l'envoi
+    d'un contenu compress&eacute; &agrave; un client qui ne sera pas en mesure
+    de l'interpr&eacute;ter.</p>
 
-    <p>Si vous avez défini des exclusions spécifiques dépendant, par
-    exemple, de l'en-tête <code>User-Agent</code>, vous devez
-    ajouter manuellement des données à l'en-tête <code>Vary</code> afin
-    d'informer les mandataires des restrictions supplémentaires. Par
-    exemple, dans la configuration classique où l'addition du filtre
-    <code>DEFLATE</code> dépend du contenu de l'en-tête
-    <code>User-Agent</code>, vous devez spécifier :</p>
+    <p>Si vous avez d&eacute;fini des exclusions sp&eacute;cifiques d&eacute;pendant, par
+    exemple, de l'en-t&ecirc;te <code>User-Agent</code>, vous devez
+    ajouter manuellement des donn&eacute;es &agrave; l'en-t&ecirc;te <code>Vary</code> afin
+    d'informer les mandataires des restrictions suppl&eacute;mentaires. Par
+    exemple, dans la configuration classique o&ugrave; l'addition du filtre
+    <code>DEFLATE</code> d&eacute;pend du contenu de l'en-t&ecirc;te
+    <code>User-Agent</code>, vous devez sp&eacute;cifier :</p>
 
     <pre class="prettyprint lang-config">Header append Vary User-Agent</pre>
 
 
-    <p>Si votre décision de comprimer le contenu dépend d'autres
-    informations que celles contenues dans les en-têtes de la requête
-    (par exemple la version HTTP), vous devez attribuer à l'en-tête
-    <code>Vary</code> la valeur <code>*</code>, ce qui permet d'empêcher
+    <p>Si votre d&eacute;cision de compresser le contenu d&eacute;pend d'autres
+    informations que celles contenues dans les en-t&ecirc;tes de la requ&ecirc;te
+    (par exemple la version HTTP), vous devez attribuer &agrave; l'en-t&ecirc;te
+    <code>Vary</code> la valeur <code>*</code>, ce qui permet d'emp&ecirc;cher
     les mandataires compatibles de tout mettre en cache.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">Header set Vary *</pre>
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="precompressed" id="precompressed">Servir du contenu précompressé</a> <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
+<h2 id="precompressed">Servir du contenu pr&eacute;compress&eacute; <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
 
-    <p>Comme <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> recompresse le contenu demandé à
-    chaque requête, il est possible de gagner en performances en précompressant
-    ce contenu, et en forçant <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> à servir ce contenu
-    précompressé sans avoir à le recompresser à chaque requête.  Pour ce faire,
+    <p>Comme <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> recompresse le contenu demand&eacute; &agrave;
+    chaque requ&ecirc;te, il est possible de gagner en performances en pr&eacute;compressant
+    ce contenu, et en for&ccedil;ant <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> &agrave; servir ce contenu
+    pr&eacute;compress&eacute; sans avoir &agrave; le recompresser &agrave; chaque requ&ecirc;te.  Pour ce faire,
     utilisez une configuration du style :</p>
 
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
-    # Servir des fichiers JS et CSS compressés avec gzip, s'ils existent, et
+    # Servir des fichiers JS et CSS compress&eacute;s avec gzip, s'ils existent, et
     # si le client accepte gzip.
     RewriteCond "%{HTTP:Accept-encoding}" "gzip"
      RewriteCond "%{REQUEST_FILENAME}\.gz" -s
     RewriteRule "^(.*)\.(css|js)"              "$1\.$2\.gz" [QSA]
 
-    # Servir des types de contenus corrects, et empêcher mod_deflate
+    # Servir des types de contenus corrects, et emp&ecirc;cher mod_deflate
     # d'effectuer un double gzip.
     RewriteRule "\.css\.gz$" "-" [T=text/css,E=no-gzip:1]
     RewriteRule "\.js\.gz$"  "-" [T=text/javascript,E=no-gzip:1]
@@ -240,111 +240,111 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
       # Servir le type de codage correct.
       Header append Content-Encoding gzip
 
-      # Force les mandataires à mettre en cache séparément les fichiers
-      # css/js gzippés &amp; non gzippés.
+      # Force les mandataires &agrave; mettre en cache s&eacute;par&eacute;ment les fichiers
+      # css/js gzipp&eacute;s &amp; non gzipp&eacute;s.
       Header append Vary Accept-Encoding
     &lt;/FilesMatch&gt;
 &lt;/IfModule&gt;</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflatealteretag" id="deflatealteretag">Directive</a> <a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a title="Lien permanent" href="#deflatealteretag" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflatealteretag">Directive <span id="DeflateAlterETag">DeflateAlterETag</span> <a title="Lien permanent" href="#deflatealteretag" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-tête sortant ETag doit être modifié au cours
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-t&ecirc;te sortant ETag doit &ecirc;tre modifi&eacute; au cours
 de la compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DeflateAlterETag AddSuffix</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateAlterETag</code> permet de
-    spécifier comment l'en-tête ETag doit être modifié lorsqu'une
-    réponse est compressée.</p>
+    sp&eacute;cifier comment l'en-t&ecirc;te ETag doit &ecirc;tre modifi&eacute; lorsqu'une
+    r&eacute;ponse est compress&eacute;e.</p>
     <dl>
     <dt>AddSuffix</dt>
-    <dd><p>Ajoute la méthode de compression à la fin de l'en-tête, ce
-    qui a pour effet d'attribuer un en-tête ETag unique aux
-    représentations compressées et non compressées. C'est l'option par
-    défaut depuis la version 2.4.0, mais empêche de servir des
-    codes d'état "HTTP Not Modified" (304) en réponse aux requêtes pour un
-    contenu compressé.</p></dd>
+    <dd><p>Ajoute la m&eacute;thode de compression &agrave; la fin de l'en-t&ecirc;te, ce
+    qui a pour effet d'attribuer un en-t&ecirc;te ETag unique aux
+    repr&eacute;sentations compress&eacute;es et non compress&eacute;es. C'est l'option par
+    d&eacute;faut depuis la version 2.4.0, mais emp&ecirc;che de servir des
+    codes d'&eacute;tat "HTTP Not Modified" (304) en r&eacute;ponse aux requ&ecirc;tes pour un
+    contenu compress&eacute;.</p></dd>
     <dt>NoChange</dt>
-    <dd><p>Ne modifie pas l'en-tête ETag dans une réponse compressée.
-    C'était l'option par
-    défaut avant la version 2.4.0, mais cela ne respectait pas la
-    préconisation HTTP/1.1 selon laquelle chaque représentation de la
-    même ressource doit posséder un en-tête ETag unique.</p></dd>
+    <dd><p>Ne modifie pas l'en-t&ecirc;te ETag dans une r&eacute;ponse compress&eacute;e.
+    C'&eacute;tait l'option par
+    d&eacute;faut avant la version 2.4.0, mais cela ne respectait pas la
+    pr&eacute;conisation HTTP/1.1 selon laquelle chaque repr&eacute;sentation de la
+    m&ecirc;me ressource doit poss&eacute;der un en-t&ecirc;te ETag unique.</p></dd>
     <dt>Remove</dt>
-    <dd><p>Supprime l'en-tête ETag dans les réponses compressées, ce qui
-    a pour effet de rendre impossibles certaines requêtes
-    conditionnelles, mais permet d'éviter les inconvénients des options
-    précédentes.</p></dd>
+    <dd><p>Supprime l'en-t&ecirc;te ETag dans les r&eacute;ponses compress&eacute;es, ce qui
+    a pour effet de rendre impossibles certaines requ&ecirc;tes
+    conditionnelles, mais permet d'&eacute;viter les inconv&eacute;nients des options
+    pr&eacute;c&eacute;dentes.</p></dd>
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflatebuffersize" id="deflatebuffersize">Directive</a> <a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a title="Lien permanent" href="#deflatebuffersize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflatebuffersize">Directive <span id="DeflateBufferSize">DeflateBufferSize</span> <a title="Lien permanent" href="#deflatebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du fragment que zlib devra comprimer en une seule
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du fragment que zlib devra compresser en une seule
 fois</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateBufferSize <var>valeur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateBufferSize</code> permet de
-    spécifier la taille en octets du fragment que zlib devra comprimer
-    en une seule fois. Si la taille de la réponse compressée est supérieure à
-    celle spécifiée par cette directive, httpd passera à un mode d'encodage
-    fragmenté (l'en-tête HTTP <code>Transfer-Encoding</code> prend la valeur
-    <code>Chunked</code>), ceci ayant comme effet de bord de ne définir aucun
-    en-tête HTTP <code>Content-Length</code>. Il est important de connaître ce
-    comportement, particulièrement lorsque httpd travaille derrière des
-    mandataires inverses avec mise en cache, ou lorsque httpd est configuré pour
+    sp&eacute;cifier la taille en octets du fragment que zlib devra compresser
+    en une seule fois. Si la taille de la r&eacute;ponse compress&eacute;e est sup&eacute;rieure &agrave;
+    celle sp&eacute;cifi&eacute;e par cette directive, httpd passera &agrave; un mode d'encodage
+    fragment&eacute; (l'en-t&ecirc;te HTTP <code>Transfer-Encoding</code> prend la valeur
+    <code>Chunked</code>), ceci ayant comme effet de bord de ne d&eacute;finir aucun
+    en-t&ecirc;te HTTP <code>Content-Length</code>. Il est important de conna&icirc;tre ce
+    comportement, particuli&egrave;rement lorsque httpd travaille derri&egrave;re des
+    mandataires inverses avec mise en cache, ou lorsque httpd est configur&eacute; pour
     utiliser <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> et <code class="module"><a href="../mod/mod_cache_disk.html">mod_cache_disk</a></code> car
-    les réponses HTTP sans en-tête <code>Content-Length</code> peuvent ne pas
-    être mises en cache.</p>
+    les r&eacute;ponses HTTP sans en-t&ecirc;te <code>Content-Length</code> peuvent ne pas
+    &ecirc;tre mises en cache.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflatecompressionlevel" id="deflatecompressionlevel">Directive</a> <a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a title="Lien permanent" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflatecompressionlevel">Directive <span id="DeflateCompressionLevel">DeflateCompressionLevel</span> <a title="Lien permanent" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le niveau de compression que nous appliquons à la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le niveau de compression que nous appliquons &agrave; la
 sortie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateCompressionLevel <var>valeur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur par défaut de zlib</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>La valeur par d&eacute;faut de zlib</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateCompressionLevel</code>
-    permet de spécifier le niveau de compression à utiliser ; plus
+    permet de sp&eacute;cifier le niveau de compression &agrave; utiliser ; plus
     grande est la valeur, meilleure sera la compression, mais plus grand
-    sera aussi le temps CPU nécessaire pour effectuer le
+    sera aussi le temps CPU n&eacute;cessaire pour effectuer le
     traitement.</p>
-    <p>La valeur doit être comprise entre 1 (compression minimale) et 9
+    <p>La valeur doit &ecirc;tre comprise entre 1 (compression minimale) et 9
     (compression maximale).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflatefilternote" id="deflatefilternote">Directive</a> <a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a title="Lien permanent" href="#deflatefilternote" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflatefilternote">Directive <span id="DeflateFilterNote">DeflateFilterNote</span> <a title="Lien permanent" href="#deflatefilternote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression sous la forme d'une note
-à des fins de journalisation</td></tr>
+&agrave; des fins de journalisation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>nom de la note</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateFilterNote</code> permet de
-    spécifier qu'une note à propos du taux de compression doit être
-    attachée à la requête. Le nom de la note est passé sous la forme
-    d'un argument de la directive. Vous pouvez utiliser cette note à des
-    fins statistiques en enregistrant sa valeur dans votre <a href="../logs.html#accesslog">journal des accès</a>.</p>
+    sp&eacute;cifier qu'une note &agrave; propos du taux de compression doit &ecirc;tre
+    attach&eacute;e &agrave; la requ&ecirc;te. Le nom de la note est pass&eacute; sous la forme
+    d'un argument de la directive. Vous pouvez utiliser cette note &agrave; des
+    fins statistiques en enregistrant sa valeur dans votre <a href="../logs.html#accesslog">journal des acc&egrave;s</a>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">      DeflateFilterNote ratio
 
@@ -352,14 +352,14 @@ sortie</td></tr>
       CustomLog "logs/deflate_log" deflate</pre>
 </div>
 
-    <p>Pour extraire des informations plus précises de vos journaux,
-    vous pouvez utiliser l'argument <var>type</var> pour spécifier le
-    type de données de la note enregistrée dans le journal.
+    <p>Pour extraire des informations plus pr&eacute;cises de vos journaux,
+    vous pouvez utiliser l'argument <var>type</var> pour sp&eacute;cifier le
+    type de donn&eacute;es de la note enregistr&eacute;e dans le journal.
     <var>type</var> peut prendre une des valeurs suivantes :</p>
 
     <dl>
       <dt><code>Input</code></dt>
-      <dd>Enregistre dans la note la taille en octets du flux en entrée
+      <dd>Enregistre dans la note la taille en octets du flux en entr&eacute;e
       du filtre.</dd>
 
       <dt><code>Output</code></dt>
@@ -367,15 +367,15 @@ sortie</td></tr>
       du filtre.</dd>
 
       <dt><code>Ratio</code></dt>
-      <dd>Enregistre le taux de compression (<code>sortie/entrée *
-      100</code>) dans la note. Il s'agit de la valeur par défaut si
+      <dd>Enregistre le taux de compression (<code>sortie/entr&eacute;e *
+      100</code>) dans la note. Il s'agit de la valeur par d&eacute;faut si
       l'argument <var>type</var> est omis.</dd>
     </dl>
 
-    <p>Vous pouvez donc configurer votre journalisation de la manière
+    <p>Vous pouvez donc configurer votre journalisation de la mani&egrave;re
     suivante :</p>
 
-    <div class="example"><h3>Journalisation détaillée</h3><pre class="prettyprint lang-config">DeflateFilterNote Input instream
+    <div class="example"><h3>Journalisation d&eacute;taill&eacute;e</h3><pre class="prettyprint lang-config">DeflateFilterNote Input instream
 DeflateFilterNote Output outstream
 DeflateFilterNote Ratio ratio
 
@@ -388,126 +388,132 @@ CustomLog "logs/deflate_log" deflate</pre>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a> <a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a title="Lien permanent" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflateinflatelimitrequestbody">Directive <span id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</span> <a title="Lien permanent" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des corps de requête décompressés</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des corps de requ&ecirc;te d&eacute;compress&eacute;s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucune limite, mais LimitRequestBody s'applique après la
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>Aucune limite, mais LimitRequestBody s'applique apr&egrave;s la
 compression</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>La directive
-    <code class="directive">DeflateInflateLimitRequestBody</code> permet de
-    spécifier la taille maximale d'un corps de requête décompressé. Si
-    elle n'est pas définie, c'est la valeur de la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> qui s'applique au corps
-    de requête décompressé.</p>
+    <p>La directive <code class="directive">DeflateInflateLimitRequestBody</code> permet
+    de sp&eacute;cifier la taille maximale d'un corps de requ&ecirc;te d&eacute;compress&eacute;. Si elle
+    n'est pas d&eacute;finie, c'est la valeur de la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> qui s'applique au corps de
+    requ&ecirc;te d&eacute;compress&eacute;. Une valeur de <code>0</code> signifie qu&rsquo;aucune limite
+    n&rsquo;est impos&eacute;e &agrave; la taille du corps d&eacute;compress&eacute; (d&rsquo;autres limites telles que
+    celles de la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>
+    peuvent cependant s&rsquo;appliquer).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflateinflateratioburst" id="deflateinflateratioburst">Directive</a> <a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a title="Lien permanent" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflateinflateratioburst">Directive <span id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</span> <a title="Lien permanent" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de fois que le ratio de décompression d'un
-corps de requête peut être dépassé</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de fois que le ratio de d&eacute;compression d'un
+corps de requ&ecirc;te peut &ecirc;tre d&eacute;pass&eacute;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateInflateRatioBurst</code> permet de
-    spécifier le nombre maximal de fois que la valeur de la directive <code class="directive"><a href="#deflateinflateratiolimit">DeflateInflateRatioLimit</a></code> peut être dépassé
-    avant l'arrêt du traitement de la requête.</p>
+    sp&eacute;cifier le nombre maximal de fois que la valeur de la directive <code class="directive"><a href="#deflateinflateratiolimit">DeflateInflateRatioLimit</a></code> peut &ecirc;tre d&eacute;pass&eacute;
+    avant l'arr&ecirc;t du traitement de la requ&ecirc;te.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflateinflateratiolimit" id="deflateinflateratiolimit">Directive</a> <a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a title="Lien permanent" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflateinflateratiolimit">Directive <span id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</span> <a title="Lien permanent" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ratio de décompression maximum pour les corps de requêtes</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ratio de d&eacute;compression maximum pour les corps de requ&ecirc;tes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.10 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateInflateRatioLimit</code> permet de
-    définir le ratio maximum entre la taille d'un corps de requête compressé et
-    sa taille décompressée. Ce ratio est vérifié au fur et à mesure de l'arrivée
-    du corps de requête, et s'il est dépassé plus de <code class="directive"><a href="#deflateinflateratioburst">DeflateInflateRatioBurst</a></code> fois, le
-    traitement de la requête est interrompu.</p>
+    d&eacute;finir le ratio maximum entre la taille d'un corps de requ&ecirc;te compress&eacute; et
+    sa taille d&eacute;compress&eacute;e. Ce ratio est v&eacute;rifi&eacute; au fur et &agrave; mesure de l'arriv&eacute;e
+    du corps de requ&ecirc;te, et s'il est d&eacute;pass&eacute; plus de <code class="directive"><a href="#deflateinflateratioburst">DeflateInflateRatioBurst</a></code> fois, le
+    traitement de la requ&ecirc;te est interrompu.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflatememlevel" id="deflatememlevel">Directive</a> <a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a title="Lien permanent" href="#deflatememlevel" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflatememlevel">Directive <span id="DeflateMemLevel">DeflateMemLevel</span> <a title="Lien permanent" href="#deflatememlevel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité de mémoire utilisable par zlib pour la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantit&eacute; de m&eacute;moire utilisable par zlib pour la
 compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateMemLevel <var>valeur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateMemLevel</code> permet de
-    spécifier la quantité de mémoire utilisable par zlib pour la
+    sp&eacute;cifier la quantit&eacute; de m&eacute;moire utilisable par zlib pour la
     compression (une valeur comprise entre 1 et 9).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="deflatewindowsize" id="deflatewindowsize">Directive</a> <a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a title="Lien permanent" href="#deflatewindowsize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deflatewindowsize">Directive <span id="DeflateWindowSize">DeflateWindowSize</span> <a title="Lien permanent" href="#deflatewindowsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fenêtre de compression zlib</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fen&ecirc;tre de compression zlib</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateWindowSize <var>valeur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 </table>
     <p>La directive <code class="directive">DeflateWindowSize</code> permet de
-    spécifier la fenêtre de compression zlib (une valeur comprise entre
-    1 et 15). En général, plus grande sera la taille de la fenêtre, plus
+    sp&eacute;cifier la fen&ecirc;tre de compression zlib (une valeur comprise entre
+    1 et 15). En g&eacute;n&eacute;ral, plus grande sera la taille de la fen&ecirc;tre, plus
     grand sera le taux de compression auquel on pourra s'attendre.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_deflate.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_deflate.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_deflate.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_deflate.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

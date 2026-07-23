@@ -61,7 +61,6 @@ static md_mod_conf_t defmc = {
 #else
     MD_DEFAULT_BASE_DIR,
 #endif
-    NULL,                      /* proxy url for outgoing http */
     NULL,                      /* md_reg_t */
     NULL,                      /* md_ocsp_reg_t */
     80,                        /* local http: port */
@@ -77,15 +76,15 @@ static md_mod_conf_t defmc = {
     NULL,                      /* message cmd */
     NULL,                      /* env table */
     0,                         /* dry_run flag */
-    1,                         /* server_status_enabled */
+    0,                         /* server_status_enabled */
     1,                         /* certificate_status_enabled */
     &def_ocsp_keep_window,     /* default time to keep ocsp responses */
     &def_ocsp_renew_window,    /* default time to renew ocsp responses */
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
-    NULL,                      /* CA cert file to use */
+    APR_TIME_C(0),             /* initial cert check delay */
     apr_time_from_sec(MD_SECS_PER_DAY/2), /* default time between cert checks */
-    apr_time_from_sec(5),      /* minimum delay for retries */
+    apr_time_from_sec(30),     /* minimum delay for retries */
     13,                        /* retry_failover after 14 errors, with 5s delay ~ half a day */
     0,                         /* store locks, disabled by default */
     apr_time_from_sec(5),      /* max time to wait to obaint a store lock */
@@ -124,7 +123,11 @@ static md_srv_conf_t defconf = {
     0,                         /* ACME profile mandatory */
     0,                         /* stapling */
     1,                         /* staple others */
+    1,                         /* ACME ARI renewals */
     NULL,                      /* dns01_cmd */
+    NULL,                      /* proxy URL */
+    NULL,                      /* CA cert file to use */
+    NULL,                      /* CA cert file to use for proxy */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
     0,                         /* is_ssl, set during mod_ssl post_config */
@@ -181,7 +184,11 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->profile_mandatory = DEF_VAL;
     sc->stapling = DEF_VAL;
     sc->staple_others = DEF_VAL;
+    sc->ari_renewals = DEF_VAL;
     sc->dns01_cmd = NULL;
+    sc->proxy_url = NULL;
+    sc->ca_certs = NULL;
+    sc->proxy_ca_certs = NULL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -204,7 +211,11 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->profile_mandatory = from->profile_mandatory;
     to->stapling = from->stapling;
     to->staple_others = from->staple_others;
+    to->ari_renewals = from->ari_renewals;
     to->dns01_cmd = from->dns01_cmd;
+    to->proxy_url = from->proxy_url;
+    to->ca_certs = from->ca_certs;
+    to->proxy_ca_certs = from->proxy_ca_certs;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -229,8 +240,12 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ca_eab_hmac) md->ca_eab_hmac = from->ca_eab_hmac;
     if (from->profile) md->profile = from->profile;
     if (from->profile_mandatory != DEF_VAL) md->profile_mandatory = from->profile_mandatory;
+    if (from->ari_renewals != DEF_VAL) md->ari_renewals = from->ari_renewals;
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
     if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
+    if (from->proxy_url) md->proxy_url = from->proxy_url;
+    if (from->ca_certs) md->ca_certs = from->ca_certs;
+    if (from->proxy_ca_certs) md->proxy_ca_certs = from->proxy_ca_certs;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -278,7 +293,11 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->profile_mandatory = (add->profile_mandatory != DEF_VAL)? add->profile_mandatory : base->profile_mandatory;
     nsc->stapling = (add->stapling != DEF_VAL)? add->stapling : base->stapling;
     nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
+    nsc->ari_renewals = (add->ari_renewals != DEF_VAL)? add->ari_renewals : base->ari_renewals;
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
+    nsc->proxy_url = (add->proxy_url)? add->proxy_url : base->proxy_url;
+    nsc->ca_certs = (add->ca_certs)? add->ca_certs : base->ca_certs;
+    nsc->proxy_ca_certs = (add->proxy_ca_certs)? add->proxy_ca_certs : base->proxy_ca_certs;
     nsc->current = NULL;
     
     return nsc;
@@ -292,7 +311,7 @@ void *md_config_merge_svr(apr_pool_t *pool, void *basev, void *addv)
 static int inside_section(cmd_parms *cmd, const char *section) {
     ap_directive_t *d;
     for (d = cmd->directive->parent; d; d = d->parent) {
-       if (!ap_cstr_casecmp(d->directive, section)) {
+       if (!apr_cstr_casecmp(d->directive, section)) {
            return 1;
        }
     }
@@ -337,10 +356,10 @@ static const char *md_conf_check_location(cmd_parms *cmd, int flags)
 
 static const char *set_on_off(int *pvalue, const char *s, apr_pool_t *p)
 {
-    if (!apr_strnatcasecmp("off", s)) {
+    if (!apr_cstr_casecmp("off", s)) {
         *pvalue = 0;
     }
-    else if (!apr_strnatcasecmp("on", s)) {
+    else if (!apr_cstr_casecmp("on", s)) {
         *pvalue = 1;
     }
     else {
@@ -360,11 +379,11 @@ static void add_domain_name(apr_array_header_t *domains, const char *name, apr_p
 
 static const char *set_transitive(int *ptransitive, const char *value)
 {
-    if (!apr_strnatcasecmp("auto", value)) {
+    if (!apr_cstr_casecmp("auto", value)) {
         *ptransitive = 1;
         return NULL;
     }
-    else if (!apr_strnatcasecmp("manual", value)) {
+    else if (!apr_cstr_casecmp("manual", value)) {
         *ptransitive = 0;
         return NULL;
     }
@@ -569,13 +588,13 @@ static const char *md_config_set_renew_mode(cmd_parms *cmd, void *dc, const char
     md_renew_mode_t renew_mode;
 
     (void)dc;
-    if (!apr_strnatcasecmp("auto", value) || !apr_strnatcasecmp("automatic", value)) {
+    if (!apr_cstr_casecmp("auto", value) || !apr_cstr_casecmp("automatic", value)) {
         renew_mode = MD_RENEW_AUTO;
     }
-    else if (!apr_strnatcasecmp("always", value)) {
+    else if (!apr_cstr_casecmp("always", value)) {
         renew_mode = MD_RENEW_ALWAYS;
     }
-    else if (!apr_strnatcasecmp("manual", value) || !apr_strnatcasecmp("stick", value)) {
+    else if (!apr_cstr_casecmp("manual", value) || !apr_cstr_casecmp("stick", value)) {
         renew_mode = MD_RENEW_MANUAL;
     }
     else {
@@ -650,6 +669,18 @@ static const char *md_config_set_staple_others(cmd_parms *cmd, void *dc, const c
     return set_on_off(&config->staple_others, value, cmd->pool);
 }
 
+static const char *md_config_set_ari(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err;
+
+    (void)dc;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+    return set_on_off(&config->ari_renewals, value, cmd->pool);
+}
+
 static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const char *value)
 {
     md_srv_conf_t *config = md_config_get(cmd->server);
@@ -658,6 +689,24 @@ static const char *md_config_set_base_server(cmd_parms *cmd, void *dc, const cha
     (void)dc;
     if (err) return err;
     return set_on_off(&config->mc->manage_base_server, value, cmd->pool);
+}
+
+static const char *md_config_set_initial_delay(cmd_parms *cmd, void *dc, const char *value)
+{
+    md_srv_conf_t *config = md_config_get(cmd->server);
+    const char *err = md_conf_check_location(cmd, MD_LOC_NOT_MD);
+    apr_time_t delay;
+
+    (void)dc;
+    if (err) return err;
+    if (md_duration_parse(&delay, value, "s") != APR_SUCCESS) {
+        return "unrecognized duration format";
+    }
+    if (delay < 0) {
+        return "initial delay must not be negative";
+    }
+    config->mc->initial_delay = delay;
+    return NULL;
 }
 
 static const char *md_config_set_check_interval(cmd_parms *cmd, void *dc, const char *value)
@@ -688,6 +737,9 @@ static const char *md_config_set_min_delay(cmd_parms *cmd, void *dc, const char 
     if (err) return err;
     if (md_duration_parse(&delay, value, "s") != APR_SUCCESS) {
         return "unrecognized duration format";
+    }
+    if (delay <= 0) {
+        return "minimum delay must be greater than 0";
     }
     config->mc->min_delay = delay;
     return NULL;
@@ -720,10 +772,10 @@ static const char *md_config_set_store_locks(cmd_parms *cmd, void *dc, const cha
     if (err) {
         return err;
     }
-    else if (!apr_strnatcasecmp("off", s)) {
+    else if (!apr_cstr_casecmp("off", s)) {
         use_store_locks = 0;
     }
-    else if (!apr_strnatcasecmp("on", s)) {
+    else if (!apr_cstr_casecmp("on", s)) {
         use_store_locks = 1;
     }
     else {
@@ -748,10 +800,10 @@ static const char *md_config_set_match_mode(cmd_parms *cmd, void *dc, const char
     if (err) {
         return err;
     }
-    else if (!apr_strnatcasecmp("all", s)) {
+    else if (!apr_cstr_casecmp("all", s)) {
         config->mc->match_mode = MD_MATCH_ALL;
     }
-    else if (!apr_strnatcasecmp("servernames", s)) {
+    else if (!apr_cstr_casecmp("servernames", s)) {
         config->mc->match_mode = MD_MATCH_SERVERNAMES;
     }
     else {
@@ -769,13 +821,13 @@ static const char *md_config_set_require_https(cmd_parms *cmd, void *dc, const c
         return err;
     }
     (void)dc;
-    if (!apr_strnatcasecmp("off", value)) {
+    if (!apr_cstr_casecmp("off", value)) {
         config->require_https = MD_REQUIRE_OFF;
     }
-    else if (!apr_strnatcasecmp(MD_KEY_TEMPORARY, value)) {
+    else if (!apr_cstr_casecmp(MD_KEY_TEMPORARY, value)) {
         config->require_https = MD_REQUIRE_TEMPORARY;
     }
-    else if (!apr_strnatcasecmp(MD_KEY_PERMANENT, value)) {
+    else if (!apr_cstr_casecmp(MD_KEY_PERMANENT, value)) {
         config->require_https = MD_REQUIRE_PERMANENT;
     }
     else {
@@ -826,14 +878,20 @@ static const char *md_config_set_proxy(cmd_parms *cmd, void *arg, const char *va
     md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err;
 
-    if ((err = md_conf_check_location(cmd, MD_LOC_NOT_MD))) {
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
         return err;
     }
     md_util_abs_http_uri_check(cmd->pool, value, &err);
     if (err) {
         return err;
     }
-    sc->mc->proxy_url = value;
+
+    if (inside_md_section(cmd)) {
+        sc->proxy_url = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_PROXY_URL, value);
+    }
+
     (void)arg;
     return NULL;
 }
@@ -960,7 +1018,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
     config->pks = md_pkeys_spec_make(cmd->pool);
     for (i = 0; i < argc; ++i) {
         ptype = argv[i];
-        if (!apr_strnatcasecmp("Default", ptype)) {
+        if (!apr_cstr_casecmp("Default", ptype)) {
             if (argc > 1) {
                 return "'Default' allows no other parameter";
             }
@@ -985,7 +1043,7 @@ static const char *md_config_set_pkeys(cmd_parms *cmd, void *dc,
             }
             md_pkeys_spec_add_rsa(config->pks, (unsigned int)bits);
         }
-        else if (!apr_strnatcasecmp("RSA", ptype)) {
+        else if (!apr_cstr_casecmp("RSA", ptype)) {
             if (i+1 >= argc || !isdigit(argv[i+1][0])) {
                 bits = MD_PKEY_RSA_BITS_DEF;
             }
@@ -1201,12 +1259,41 @@ static const char *md_config_set_activation_delay(cmd_parms *cmd, void *mconfig,
     return NULL;
 }
 
-static const char *md_config_set_ca_certs(cmd_parms *cmd, void *dc, const char *path)
+static const char *md_config_set_ca_certs(cmd_parms *cmd, void *arg, const char *value)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
 
-    (void)dc;
-    sc->mc->ca_certs = path;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+
+    if (inside_md_section(cmd)) {
+        sc->ca_certs = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_CA_CERTS, value);
+    }
+
+    (void)arg;
+    return NULL;
+}
+
+static const char *md_config_set_proxy_ca_certs(cmd_parms *cmd, void *arg, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+
+    if (inside_md_section(cmd)) {
+        sc->proxy_ca_certs = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_PROXY_CA_CERTS, value);
+    }
+
+    (void)arg;
     return NULL;
 }
 
@@ -1221,7 +1308,7 @@ static const char *md_config_set_eab(cmd_parms *cmd, void *dc,
         return err;
     }
     if (!hmac) {
-        if (!apr_strnatcasecmp("None", keyid)) {
+        if (!apr_cstr_casecmp("None", keyid)) {
             keyid = "none";
         }
         else {
@@ -1348,6 +1435,8 @@ const command_rec md_cmds[] = {
                   "How long to delay activation of new certificates"),
     AP_INIT_TAKE1("MDCACertificateFile", md_config_set_ca_certs, NULL, RSRC_CONF,
                   "Set the CA file to use for connections"),
+    AP_INIT_TAKE1("MDHttpProxyCACertificateFile", md_config_set_proxy_ca_certs, NULL, RSRC_CONF,
+                  "Set the CA file to use for connections to the HTTP(S) proxy"),
     AP_INIT_TAKE12("MDExternalAccountBinding", md_config_set_eab, NULL, RSRC_CONF,
                   "Set the external account binding keyid and hmac values to use at CA"),
     AP_INIT_TAKE1("MDRetryDelay", md_config_set_min_delay, NULL, RSRC_CONF,
@@ -1358,12 +1447,16 @@ const command_rec md_cmds[] = {
                   "Configure locking of store for updates."),
     AP_INIT_TAKE1("MDMatchNames", md_config_set_match_mode, NULL, RSRC_CONF,
                   "Determines how DNS names are matched to vhosts."),
+    AP_INIT_TAKE1("MDInitialDelay", md_config_set_initial_delay, NULL, RSRC_CONF,
+                  "How long to delay the first certificate check."),
     AP_INIT_TAKE1("MDCheckInterval", md_config_set_check_interval, NULL, RSRC_CONF,
                   "Time between certificate checks."),
     AP_INIT_TAKE1("MDProfile", md_config_set_profile, NULL, RSRC_CONF,
                   "The name of an CA profile to order certificates for."),
     AP_INIT_TAKE1("MDProfileMandatory", md_config_set_profile_mandatory, NULL, RSRC_CONF,
                   "Determines if a configured CA profile is mandatory."),
+    AP_INIT_TAKE1("MDRenewViaARI", md_config_set_ari, NULL, RSRC_CONF,
+                  "Enable/Disable ACME ARI (RFC 9773) to trigger renewals."),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL)
 };
 
@@ -1428,8 +1521,6 @@ const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
             return sc->ca_proto? sc->ca_proto : defconf.ca_proto;
         case MD_CONFIG_BASE_DIR:
             return sc->mc->base_dir;
-        case MD_CONFIG_PROXY:
-            return sc->mc->proxy_url;
         case MD_CONFIG_CA_AGREEMENT:
             return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
         case MD_CONFIG_NOTIFY_CMD:
@@ -1458,6 +1549,8 @@ int md_config_geti(const md_srv_conf_t *sc, md_config_var_t var)
             return (sc->staple_others != DEF_VAL)? sc->staple_others : defconf.staple_others;
         case MD_CONFIG_CA_PROFILE_MANDATORY:
             return (sc->profile_mandatory != DEF_VAL)? sc->profile_mandatory : defconf.profile_mandatory;
+        case MD_CONFIG_ARI_RENEWALS:
+            return (sc->ari_renewals != DEF_VAL)? sc->ari_renewals : defconf.ari_renewals;
         default:
             return 0;
     }

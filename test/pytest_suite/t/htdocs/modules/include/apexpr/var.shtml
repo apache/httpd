@@ -1,0 +1,16 @@
+<!--#set var="x" value="foo bar"-->
+<!--#if expr="reqenv('x') =~ /^foo/ && reqenv('x') =~ /bar$/" -->
+pass
+<!--#else-->
+fail
+<!--#endif-->
+<!--#if expr="env('x') =~ /^foo/ && v('x') =~ /bar$/" -->
+pass
+<!--#else-->
+fail
+<!--#endif-->
+<!--#if expr="note('x') =~ /^foo/" -->
+fail
+<!--#else-->
+pass
+<!--#endif-->

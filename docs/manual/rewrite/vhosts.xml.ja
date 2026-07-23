@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933071:1934122 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="vhosts.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite を使った動的な大量バーチャルホスト</title>
+
+<summary>
+
+<p>このドキュメントは <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<module>mod_rewrite</module> を使用して動的に設定されるバーチャルホストを
+作成する方法を説明します。</p>
+
+<note type="warning"><module>mod_rewrite</module> は通常、バーチャルホストを
+設定する最良の方法ではありません。mod_rewrite に頼る前に、まず
+<a href="../vhosts/mass.html">代替手段</a>を検討してください。
+「<a href="avoid.html#vhosts">mod_rewrite を避ける方法</a>」ドキュメントも
+参照してください。</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+<seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>
+<seealso><a href="access.html">アクセス制御</a></seealso>
+<!--<seealso><a href="vhosts.html">バーチャルホスト</a></seealso>-->
+<seealso><a href="proxy.html">プロキシ</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap</a></seealso>
+<seealso><a href="advanced.html">高度なテクニック</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>
+
+<section id="per-hostname">
+
+  <title>任意のホスト名に対するバーチャルホスト</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+    <p>ドメイン内で解決されるすべてのホスト名に対して、新しい
+    VirtualHost セクションを作成することなく、自動的にバーチャルホストを
+    作成したいとします。</p>
+
+    <p>このレシピでは、各ユーザに対してホスト名
+    <code><strong>SITE</strong>.example.com</code> を使用し、
+    コンテンツを <code>/home/<strong>SITE</strong>/www</code> から
+    提供すると仮定しています。ただし、<code>www.example.com</code> は
+    このマッピングから除外したいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{HTTP_HOST} !^www\.
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1
+</highlight></dd>
+
+<dt>議論</dt>
+    <dd>
+
+    <note type="warning">DNS 解決に注意する必要があります - Apache は
+    名前解決を処理しません。各ホスト名の CNAME レコードか、DNS
+    ワイルドカードレコードを作成する必要があります。DNS レコードの
+    作成はこのドキュメントの範囲外です。</note>
+
+<p>内部 <code>tolower</code> RewriteMap ディレクティブは、使用される
+ホスト名がすべて小文字であることを保証し、作成すべきディレクトリ構造に
+曖昧さがないようにします。</p>
+
+<p><directive module="mod_rewrite">RewriteCond</directive> で使用される
+括弧はバックリファレンス <code>%1</code>、<code>%2</code> 等に
+キャプチャされ、<directive module="mod_rewrite">RewriteRule</directive>
+で使用される括弧はバックリファレンス <code>$1</code>、<code>$2</code>
+等にキャプチャされます。</p>
+
+<p>最初の <code>RewriteCond</code> は、ホスト名が <code>www.</code> で
+始まるかどうかを確認し、始まる場合は書き換えがスキップされます。</p>
+
+<p>
+このドキュメントで説明されている多くのテクニックと同様に、
+<module>mod_rewrite</module> はこのタスクを達成する最良の方法では
+ありません。代わりに <module>mod_vhost_alias</module> の使用を検討して
+ください。静的ファイルの提供以外のこと、例えば動的コンテンツや
+Alias の解決をはるかに優雅に処理できます。
+</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="simple.rewrite"><title><module>mod_rewrite</module>
+    を使った動的バーチャルホスト</title>
+
+    <p>この <code>httpd.conf</code> からの抜粋は、
+    <a href="#per-hostname">最初の例</a>と同じことを行います。
+    前半は上記の対応する部分と非常に似ていますが、後方互換性のため、
+    および <module>mod_rewrite</module> 部分が正しく動作するように
+    いくつかの変更が加えられています。後半は <module>mod_rewrite</module>
+    に実際の作業を設定します。</p>
+
+    <p><module>mod_rewrite</module> は他の URI 変換モジュール
+    (例: <module>mod_alias</module>) よりも前に実行されるため、
+    それらのモジュールで処理されるはずの URL を明示的に無視するように
+    <module>mod_rewrite</module> に指示する必要があります。また、これらの
+    ルールは <code>ScriptAlias</code> ディレクティブをバイパスするため、
+    <module>mod_rewrite</module> にそれらのマッピングを明示的に実行させる
+    必要があります。</p>
+
+<highlight language="config">
+# get the server name from the Host: header
+UseCanonicalName Off
+
+# splittable logs
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog "logs/access_log" vcommon
+
+&lt;Directory "/www/hosts"&gt;
+    # ExecCGI is needed here because we can't force
+    # CGI execution in the way that ScriptAlias does
+    Options FollowSymLinks ExecCGI
+&lt;/Directory&gt;
+
+RewriteEngine On
+
+# a ServerName derived from a Host: header may be any case at all
+RewriteMap  lowercase  "int:tolower"
+
+## deal with normal documents first:
+# allow Alias /icons/ to work - repeat for other aliases
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
+# allow CGIs to work
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
+# do the magic
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
+
+## and now deal with CGIs - we have to force a handler
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]
+</highlight>
+
+</section>
+
+<section id="xtra-conf"><title>個別のバーチャルホスト設定ファイルの使用</title>
+
+    <p>この構成では、<module>mod_rewrite</module> のより高度な機能を使用して、
+    個別の設定ファイルからバーチャルホストのドキュメントルートへの
+    変換を行います。これにより柔軟性が高まりますが、より複雑な設定が
+    必要になります。</p>
+
+    <p><code>vhost.map</code> ファイルは次のようになります:</p>
+
+<example>
+customer-1.example.com  /www/customers/1<br />
+customer-2.example.com  /www/customers/2<br />
+# ...<br />
+customer-N.example.com  /www/customers/N<br />
+</example>
+
+    <p><code>httpd.conf</code> には以下を含める必要があります:</p>
+
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap   lowercase  "int:tolower"
+
+# define the map file
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
+
+# deal with aliases as above
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+# this does the file-based remap
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
+
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
+</highlight>
+
+</section>
+
+</manualpage>

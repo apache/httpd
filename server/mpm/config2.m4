@@ -8,9 +8,9 @@ APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use by 
     default_mpm=$withval
     AC_MSG_RESULT($withval);
 ],[
-    dnl Order of preference for default MPM: 
+    dnl Order of preference for default MPM:
     dnl   The Windows and OS/2 MPMs are used on those platforms.
-    dnl   Everywhere else: event, worker, prefork
+    dnl   Everywhere else: event, motorz, worker, prefork
     if ap_mpm_is_supported "winnt"; then
         default_mpm=winnt
         AC_MSG_RESULT(winnt)
@@ -20,12 +20,15 @@ APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use by 
     elif ap_mpm_is_supported "event"; then
         default_mpm=event
         AC_MSG_RESULT(event)
+    elif ap_mpm_is_supported "motorz"; then
+        default_mpm=motorz
+        AC_MSG_RESULT(motorz - event is not supported)
     elif ap_mpm_is_supported "worker"; then
         default_mpm=worker
-        AC_MSG_RESULT(worker - event is not supported)
+        AC_MSG_RESULT(worker - event and motorz are not supported)
     else
         default_mpm=prefork
-        AC_MSG_RESULT(prefork - event and worker are not supported)
+        AC_MSG_RESULT(prefork - event, motorz and worker are not supported)
     fi
 ])
 

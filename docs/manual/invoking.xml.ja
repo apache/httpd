@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1597021 -->
+<!-- English Revision: 1597021:1933438 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -106,7 +106,7 @@
     </ul>
 
     <p>より多くの問題解決の方策の説明は、
-	Apache <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> をご覧下さい。</p>
+	Apache <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> をご覧下さい。</p>
 </section>
 
 <section id="boot"><title>ブート時の起動</title>

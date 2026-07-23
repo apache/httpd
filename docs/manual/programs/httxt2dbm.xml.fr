@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1867253 -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,7 +29,7 @@
 RewriteMap</title>
 
 <summary>
-    <p><code>httxt2dbm</code> permet, à partir d'une entrée au format
+    <p><program>httxt2dbm</program> permet, à partir d'une entrée au format
     texte, de générer des fichiers dbm à utiliser dans les directives
     <directive module="mod_rewrite">RewriteMap</directive> avec le type
     de table <code>dbm</code>.
@@ -84,8 +84,10 @@ RewriteMap</title>
 
 <section id="examples"><title>Exemples</title>
     <example>
-      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
-      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
+<highlight language="sh">
+httxt2dbm -i rewritemap.txt -o rewritemap.dbm
+httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm
+</highlight>
     </example>
 </section>
 

@@ -1816,8 +1816,10 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
     char *cmd;
     unsigned char *d;
     const unsigned char *s;
+    apr_size_t len = strlen(str);
 
-    cmd = apr_palloc(p, 2 * strlen(str) + 1);        /* Be safe */
+    ap_assert(len <= (APR_SIZE_MAX - 1) / 2);
+    cmd = apr_palloc(p, 2 * len + 1);
     d = (unsigned char *)cmd;
     s = (const unsigned char *)str;
     for (; *s; ++s) {
@@ -2073,7 +2075,9 @@ AP_DECLARE(char *) ap_escape_path_segment_buffer(char *copy, const char *segment
 
 AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 {
-    return ap_escape_path_segment_buffer(apr_palloc(p, 3 * strlen(segment) + 1), segment);
+    apr_size_t len = strlen(segment);
+    ap_assert(len <= (APR_SIZE_MAX - 1) / 3);
+    return ap_escape_path_segment_buffer(apr_palloc(p, 3 * len + 1), segment);
 }
 
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
@@ -2082,10 +2086,16 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
      * Allocate another +1 to allow the caller to add a trailing '/' (see
      * comment in 'ap_sub_req_lookup_dirent')
      */
-    char *copy = apr_palloc(p, 3 * strlen(path) + 3 + 1);
-    const unsigned char *s = (const unsigned char *)path;
-    unsigned char *d = (unsigned char *)copy;
+    apr_size_t len = strlen(path);
+    char *copy;
+    const unsigned char *s;
+    unsigned char *d;
     unsigned c;
+
+    ap_assert(len <= (APR_SIZE_MAX - 4) / 3);
+    copy = apr_palloc(p, 3 * len + 3 + 1);
+    s = (const unsigned char *)path;
+    d = (unsigned char *)copy;
 
     if (!partial) {
         const char *colon = ap_strchr_c(path, ':');
@@ -2133,7 +2143,9 @@ AP_DECLARE(char *) ap_escape_urlencoded_buffer(char *copy, const char *buffer)
 
 AP_DECLARE(char *) ap_escape_urlencoded(apr_pool_t *p, const char *buffer)
 {
-    return ap_escape_urlencoded_buffer(apr_palloc(p, 3 * strlen(buffer) + 1), buffer);
+    apr_size_t len = strlen(buffer);
+    ap_assert(len <= (APR_SIZE_MAX - 1) / 3);
+    return ap_escape_urlencoded_buffer(apr_palloc(p, 3 * len + 1), buffer);
 }
 
 /* ap_escape_uri is now a macro for os_escape_path */
@@ -3922,3 +3934,141 @@ AP_DECLARE(const char *)ap_dir_fnmatch(ap_dir_match_t *w, const char *path,
 
     return NULL;
 }
+
+
+#if APR_VERSION_AT_LEAST(1,8,0)
+AP_DECLARE(int) ap_memeq_timingsafe(const void *buf1, const void *buf2,
+                                     apr_size_t n)
+{
+    return apr_memeq_timingsafe(buf1, buf2, n);
+}
+
+AP_DECLARE(int) ap_streq_timingsafe(const char *sec1, const char *str2)
+{
+    return apr_streq_timingsafe(sec1, str2);
+}
+
+AP_DECLARE(int) ap_strneq_timingsafe(const char *sec1, const char *str2,
+                                      apr_size_t n)
+{
+    return apr_strneq_timingsafe(sec1, str2, n);
+}
+
+#else /* !APR_VERSION_AT_LEAST(1,8,0) */
+
+/* A volatile variable which is always zero but allows to block the compiler
+ * from optimizing or eliding code using it. Volatile forces the compiler to
+ * emit a memory load for which no value can be assumed, so for instance an
+ * add/sub/xor/or with "optblocker" is a noop that will hide the result to
+ * the optimizer.
+ */
+static volatile const apr_uint32_t optblocker;
+
+/* Return whether x is not zero, with no branching controlled by x.
+ *
+ * Taken from the cryptoint library (public domain) by D. J. Bernstein,
+ * which provides timing attacks safe integer operations/primitives.
+ * Code:
+ *   https://lib.mceliece.org/libmceliece-20250507/cryptoint/crypto_uint32.h
+ * Paper:
+ *   https://cr.yp.to/papers/cryptoint-20250424.pdf
+ */
+#if __has_attribute(always_inline)
+__attribute__((always_inline))
+#endif
+static APR_INLINE int test_nonzero_timingsafe(apr_uint32_t x)
+{
+    x |= -x; /* sets the most significant bit unless x == 0 */
+
+    /* shift bit 31 (MSB) to bit 0 */
+    x >>= 32-6;      /* keep 6 bits */
+    x += optblocker; /* lose the optimizer */
+    x >>= 5;         /* keep the (original) MSB only */
+
+    /* x is now 0 or 1 */
+    return x & INT_MAX;
+}
+
+AP_DECLARE(int) ap_memeq_timingsafe(const void *buf1, const void *buf2,
+                                     apr_size_t n)
+{
+    apr_uint32_t diff = 0;
+    volatile apr_size_t count = n; /* prevent loop unrolling */
+    apr_size_t i = 0;
+
+    for (; i < count; ++i) {
+        const unsigned char c1 = ((volatile const unsigned char *)buf1)[i];
+        const unsigned char c2 = ((volatile const unsigned char *)buf2)[i];
+
+        diff |= c1 ^ c2; /* sets diff to non-zero whenever c1 != c2 */
+    }
+
+    /* (diff == 0) <=> (diff != 0) ^ 1 */
+    return test_nonzero_timingsafe(diff) ^ 1;
+}
+
+AP_DECLARE(int) ap_streq_timingsafe(const char *sec1, const char *str2)
+{
+    apr_uint32_t diff = 0;
+    apr_size_t i1 = 0, i2 = 0;
+
+    for (;; ++i2) {
+        const unsigned char c1 = ((volatile const unsigned char *)sec1)[i1];
+        const unsigned char c2 = ((volatile const unsigned char *)str2)[i2];
+
+        diff |= c1 ^ c2; /* sets diff to non-zero whenever c1 != c2 */
+
+        /* Not a shortest/longest match because an attacker would usually know
+         * one of the strings and could then determine the length of the other.
+         * So assume only sec1 and its length are secret and stop the loop at
+         * the end of str2. If sec1 is shorter than str2 the loop will continue
+         * by comparing the rest of str2 with the trailing NUL byte of sec1.
+         * In any case since the diff above is computed up to and including a
+         * NUL byte, only the same content and length will raise match.
+         */
+        if (!c2) {
+            break;
+        }
+
+        /* Don't go above sec1's NUL byte */
+        i1 += test_nonzero_timingsafe(c1);
+    }
+
+    /* (diff == 0) <=> (diff != 0) ^ 1 */
+    return test_nonzero_timingsafe(diff) ^ 1;
+}
+
+AP_DECLARE(int) ap_strneq_timingsafe(const char *sec1, const char *str2,
+                                     apr_size_t n)
+{
+    apr_uint32_t diff = 0;
+    volatile apr_size_t count = n; /* prevent loop unrolling */
+    apr_size_t i1 = 0, i2 = 0;
+
+    for (; i2 < count; ++i2) {
+        const unsigned char c1 = ((volatile const unsigned char *)sec1)[i1];
+        const unsigned char c2 = ((volatile const unsigned char *)str2)[i2];
+
+        diff |= c1 ^ c2; /* sets diff to non-zero whenever c1 != c2 */
+
+        /* Not a shortest/longest match because an attacker would usually know
+         * one of the strings and could then determine the length of the other.
+         * So assume only sec1 and its length are secret and stop the loop at
+         * the end of str2. If sec1 is shorter than str2 the loop will continue
+         * by comparing the rest of str2 with the trailing NUL byte of sec1.
+         * In any case since the diff above is computed up to and including a
+         * NUL byte, only the same content and length will raise match.
+         */
+        if (!c2) {
+            break;
+        }
+
+        /* Don't go above sec1's NUL byte */
+        i1 += test_nonzero_timingsafe(c1);
+    }
+
+    /* (diff == 0) <=> (diff != 0) ^ 1 */
+    return test_nonzero_timingsafe(diff) ^ 1;
+}
+
+#endif /* !APR_VERSION_AT_LEAST(1,8,0) */

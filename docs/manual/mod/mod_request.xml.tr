@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 772682 -->
+<!-- English Revision: 772682:1933850 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -50,7 +50,7 @@ istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
       olarak, mod_include gibi süzgeçler, özgün istek (süzme işlemi
       gerçekleştikten sonra artık gerekmediğinden istek gövdesini iptal eden)
       bir <code>POST</code> isteği olsa bile, <code>GET</code> isteklerinin
-      yapılmasına sadece diğer URL’lerin alt istekler olarak içerilmesi
+      yapılmasına sadece diğer URL'lerin alt istekler olarak içerilmesi
       şartıyla  izin verir.</p>
 
     <p>Bu yönergede belirtilen değer sıfırdan büyük olduğunda, istek
@@ -66,11 +66,11 @@ istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
       sayfa yapısıyla birlikte sarmalanarak birleştirilmesini mümkün kılar.
       Bileşenler, CGI programları veya betik dilleri biçiminde olabileceği
       gibi, <module>mod_proxy</module> kullanarak başka bir sunucudaki URL
-      uzayına ters vekil URL’ler şeklinde bile olabilir.</p>
+      uzayına ters vekil URL'ler şeklinde bile olabilir.</p>
 
     <p><strong>Bilginize:</strong> İstekler tamamlanana kadar alınan istekler
       geçici RAM içinde biriktirilir. Sonuç olarak, bahsi geçen yükü karşılamak
-      için yeterince RAM’in mevcut olması gerekir. Bu yönergeyi kullanmakla,
+      için yeterince RAM'in mevcut olması gerekir. Bu yönergeyi kullanmakla,
       istek gövdesini saklamaya yetecek olası en düşük değerle bile URL
       uzayınız için gereken yeri kısıtlamış olursunuz.</p>
 

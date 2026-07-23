@@ -61,6 +61,8 @@ static void transit(h2_session *session, const char *action,
 static void on_stream_state_enter(void *ctx, h2_stream *stream);
 static void on_stream_state_event(void *ctx, h2_stream *stream, h2_stream_event_t ev);
 static void on_stream_event(void *ctx, h2_stream *stream, h2_stream_event_t ev);
+static apr_status_t h2_session_shutdown(h2_session *session, int error,
+                                        const char *msg, int force_close);
 
 static int h2_session_status_from_apr_status(apr_status_t rv)
 {
@@ -109,31 +111,15 @@ static void cleanup_unprocessed_streams(h2_session *session)
     h2_mplx_c1_streams_do(session->mplx, rst_unprocessed_stream, session);
 }
 
-/* APR callback invoked if allocation fails. */
-static int abort_on_oom(int retcode)
-{
-    ap_abort_on_oom();
-    return retcode; /* unreachable, hopefully. */
-}
-
 static h2_stream *h2_session_open_stream(h2_session *session, int stream_id,
                                          int initiated_on)
 {
     h2_stream * stream;
-    apr_allocator_t *allocator;
     apr_pool_t *stream_pool;
-    apr_status_t rv;
-    
-    rv = apr_allocator_create(&allocator);
-    if (rv != APR_SUCCESS)
-      return NULL;
 
-    apr_allocator_max_free_set(allocator, ap_max_mem_free);
-    apr_pool_create_ex(&stream_pool, session->pool, NULL, allocator);
-    apr_allocator_owner_set(allocator, stream_pool);
-    apr_pool_abort_set(abort_on_oom, stream_pool);
+    apr_pool_create(&stream_pool, session->pool);
     apr_pool_tag(stream_pool, "h2_stream");
-    
+
     stream = h2_stream_create(stream_id, stream_pool, session, 
                               session->monitor, initiated_on);
     if (stream) {
@@ -290,6 +276,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
                           "closing with err=%d %s"), 
                           (int)error_code, h2_protocol_err_description(error_code));
             h2_stream_rst(stream, error_code);
+            h2_mplx_c1_client_rst(session->mplx, stream_id, stream);
         }
     }
     return 0;
@@ -608,7 +595,11 @@ static int on_frame_send_cb(nghttp2_session *ngh2,
             /* PUSH_PROMISE we report on the promised stream */
             stream_id = frame->push_promise.promised_stream_id;
             break;
-        default:    
+        case NGHTTP2_RST_STREAM:
+            if(frame->rst_stream.error_code == NGHTTP2_FLOW_CONTROL_ERROR)
+              ++session->stream_errors;
+            break;
+        default:
             break;
     }
     
@@ -652,10 +643,11 @@ static int on_frame_not_send_cb(nghttp2_session *ngh2,
 
     stream = get_stream(session, stream_id);
     h2_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
-    ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, session->c1,
-                  H2_SSSN_LOG(APLOGNO(10509), session,
-                  "not sent FRAME[%s], error %d: %s"),
-                  buffer, ngh2_err, nghttp2_strerror(ngh2_err));
+    if (!stream || !stream->rst_error)
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
+                      H2_SSSN_LOG(APLOGNO(10509), session,
+                      "not sent FRAME[%s], error %d: %s"),
+                      buffer, ngh2_err, nghttp2_strerror(ngh2_err));
     if(stream) {
         h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
         return 0;
@@ -968,6 +960,7 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
     session->max_stream_count = h2_config_sgeti(s, H2_CONF_MAX_STREAMS);
     session->max_stream_mem = h2_config_sgeti(s, H2_CONF_STREAM_MAX_MEM);
     session->max_data_frame_len = h2_config_sgeti(s, H2_CONF_MAX_DATA_FRAME_LEN);
+    session->max_stream_errors = h2_config_sgeti(s, H2_CONF_MAX_STREAM_ERRORS);
 
     session->out_c1_blocked = h2_iq_create(session->pool, (int)session->max_stream_count);
     session->ready_to_process = h2_iq_create(session->pool, (int)session->max_stream_count);
@@ -1063,14 +1056,16 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
                                   "created, max_streams=%d, stream_mem=%d, "
                                   "workers_limit=%d, workers_max=%d, "
                                   "push_diary(type=%d,N=%d), "
-                                  "max_data_frame_len=%d"),
+                                  "max_data_frame_len=%d, "
+                                  "max_stream_errors=%d"),
                       (int)session->max_stream_count, 
                       (int)session->max_stream_mem,
                       session->mplx->processing_limit,
                       session->mplx->processing_max,
                       session->push_diary->dtype, 
                       (int)session->push_diary->N,
-                      (int)session->max_data_frame_len);
+                      (int)session->max_data_frame_len,
+                      session->max_stream_errors);
     }
     
     apr_pool_pre_cleanup_register(pool, c, session_pool_cleanup);
@@ -1421,7 +1416,7 @@ static void on_stream_output(void *ctx, h2_stream *stream)
 }
 
 
-static const char *StateNames[] = {
+static const char *const StateNames[] = {
     "INIT",      /* H2_SESSION_ST_INIT */
     "DONE",      /* H2_SESSION_ST_DONE */
     "IDLE",      /* H2_SESSION_ST_IDLE */
@@ -1541,7 +1536,42 @@ static void h2_session_ev_remote_goaway(h2_session *session, int arg, const char
         session->remote.accepting = 0;
         session->remote.shutdown = 1;
         cleanup_unprocessed_streams(session);
-        transit(session, "remote goaway", H2_SESSION_ST_DONE);
+        if (arg == 0 && session->open_streams > 0) {
+            /* Graceful client GOAWAY while we are still processing streams it
+             * sent us. Do NOT go to DONE here: that makes h2_c1_run() put the
+             * connection into CONN_STATE_LINGER and the MPM close it, which
+             * runs h2_mplx_c1_destroy() and h2_c2_abort()s any stream whose
+             * secondary connection (c2) has not yet flushed its response onto
+             * c1 -- silently dropping that response. The window between a c2
+             * finishing its output and signalling done is small, but an async
+             * MPM that hands c1 back to a fresh worker between events (e.g.
+             * mpm_motorz) drives the close into it far more often than
+             * mpm_event, whose scheduling happens to let c2 drain first.
+             *
+             * Instead keep the session running. The remaining streams complete
+             * normally, their output is written, and once open_streams reaches
+             * 0 we finish from the IDLE state below (or via NO_MORE_STREAMS),
+             * i.e. only after every c2 is done and flushed. This also honors
+             * RFC 9113: a peer's GOAWAY does not abort streams at or below its
+             * last-stream-id, it just stops new ones.
+             *
+             * Liveness: keeping the session running here does NOT risk pinning
+             * c1 open indefinitely on a slow or wedged c2. While draining we
+             * return to ST_BUSY/ST_WAIT and poll the mplx with session->s->timeout
+             * (see h2_session_process()), and each c2 runs its request under the
+             * same server Timeout. A c2 that stops making progress is aborted by
+             * its own timeout, which drops open_streams and lets us reach IDLE
+             * and finish. The new dependency this introduces -- relative to the
+             * old straight-to-DONE behaviour -- is exactly that c1 teardown now
+             * waits on c2 progress/timeout instead of racing ahead of it; that
+             * is the point of the fix, and it is bounded by Timeout. */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
+                          H2_SSSN_MSG(session,
+                          "remote goaway, draining open streams"));
+        }
+        else {
+            transit(session, "remote goaway", H2_SESSION_ST_DONE);
+        }
     }
 }
 
@@ -1606,6 +1636,14 @@ static void h2_session_ev_mpm_stopping(h2_session *session, int arg, const char 
             h2_workers_graceful_shutdown(session->workers);
 #endif
             break;
+    }
+}
+
+static void h2_session_ev_bad_client(h2_session *session, int arg, const char *msg)
+{
+    transit(session, msg, H2_SESSION_ST_DONE);
+    if (!session->local.shutdown) {
+        h2_session_shutdown(session, arg, msg, 1);
     }
 }
 
@@ -1806,6 +1844,9 @@ void h2_session_dispatch_event(h2_session *session, h2_session_event_t ev,
         case H2_SESSION_EV_NO_MORE_STREAMS:
             h2_session_ev_no_more_streams(session);
             break;
+        case H2_SESSION_EV_BAD_CLIENT:
+            h2_session_ev_bad_client(session, arg, msg);
+            break;
         default:
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
                           H2_SSSN_MSG(session, "unknown event %d"), ev);
@@ -1884,6 +1925,12 @@ apr_status_t h2_session_process(h2_session *session, int async,
             }
         }
 
+        if (session->max_stream_errors &&
+            session->stream_errors > session->max_stream_errors) {
+            h2_session_dispatch_event(session, H2_SESSION_EV_BAD_CLIENT,
+                                      NGHTTP2_PROTOCOL_ERROR, NULL);
+        }
+
         session->status[0] = '\0';
         
         if (h2_session_want_send(session)) {
@@ -1932,6 +1979,24 @@ apr_status_t h2_session_process(h2_session *session, int async,
 
         case H2_SESSION_ST_IDLE:
             ap_assert(session->open_streams == 0);
+            if (session->remote.shutdown) {
+                /* The client sent a GOAWAY and all streams it sent us have now
+                 * been processed and their output written (open_streams == 0).
+                 * It will not open new streams, so there is nothing to wait
+                 * for: send our GOAWAY and finish. Reaching DONE only now -- as
+                 * opposed to when the client's GOAWAY arrived -- guarantees the
+                 * connection is closed only after every c2 is done and flushed,
+                 * which is what keeps async handoff (e.g. mpm_motorz) from
+                 * dropping the last response under HTTP/2 connection churn.
+                 * (Checked before the want_read assert below: after receiving a
+                 * GOAWAY nghttp2 may no longer want to read.) */
+                if (!session->local.shutdown) {
+                    h2_session_shutdown(session, 0, "done", 0);
+                }
+                transit(session, "remote goaway, streams drained",
+                        H2_SESSION_ST_DONE);
+                break;
+            }
             ap_assert(nghttp2_session_want_read(session->ngh2));
             if (!h2_session_want_send(session)) {
                 /* Give any new incoming request a short grace period to

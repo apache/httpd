@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 1199481 -->
+<!-- English Revision: 1933189 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -103,8 +103,10 @@
 	en tant que module DSO <code>mod_foo.so</code> :</p>
 
 <example>
-$ ./configure --prefix=/chemin/vers/installation --enable-foo<br />
+<highlight language="sh">
+$ ./configure --prefix=/path/to/install --enable-foo
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -117,8 +119,10 @@ $ make install
       fichier <code>httpd.conf</code>.</p>
 
 <example>
-$ ./configure --enable-mods-shared=all<br />
+<highlight language="sh">
+$ ./configure --enable-mods-shared=all
 $ make install
+</highlight>
 </example>
 
         <p>L'argument <code>most</code> de l'option
@@ -138,8 +142,10 @@ $ make install
       <code>--enable-load-all-modules</code>.</p>
 
 <example>
-$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
+<highlight language="sh">
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -150,8 +156,10 @@ $ make install
 	d'Apache httpd à l'aide du programme <program>apxs</program> :
 
 <example>
-$ cd /chemin/vers/module_tiers<br />
+<highlight language="sh">
+$ cd /path/to/3rdparty
 $ apxs -cia mod_foo.c
+</highlight>
 </example>
       </li>
     </ol>
@@ -175,7 +183,7 @@ $ apxs -cia mod_foo.c
     <p>Ce chargement peut s'effectuer de deux manières : automatiquement par
     un programme système appelé <code>ld.so</code> quand un programme
     exécutable est démarré, ou manuellement à partir du programme en cours
-    d'exécution à l’aide de sa propre interface système vers le chargeur Unix à l'aide
+    d'exécution à l'aide de sa propre interface système vers le chargeur Unix à l'aide
     des appels système <code>dlopen()/dlsym()</code>.</p>
 
     <p>Dans la première méthode, les DSO sont en général appelés
@@ -242,8 +250,8 @@ $ apxs -cia mod_foo.c
     <p>Bien que ce mécanisme DSO paraisse évident, il comporte au moins une
     étape difficile : la résolution des symboles depuis le programme exécutable
     pour le DSO lorsqu'on utilise un DSO pour étendre les fonctionnalités d'un
-    programme (la seconde méthode). Pourquoi ? Parce que la « résolution
-    inverse » des symboles DSO à partir du jeu de symboles du programme
+    programme (la seconde méthode). Pourquoi ? Parce que la «&nbsp;résolution
+    inverse&nbsp;» des symboles DSO à partir du jeu de symboles du programme
     exécutable dépend de la conception de la bibliothèque (la bibliothèque n'a
     aucune information sur le programme qui l'utilise) et n'est ni standardisée
     ni disponible sur toutes les plateformes. En pratique, les symboles globaux
@@ -321,7 +329,7 @@ $ apxs -cia mod_foo.c
       position (PIC).
       Il y a deux solutions pour utiliser un autre type de code : soit le
       coeur d'Apache httpd contient déjà lui-même une référence au code, soit vous
-      chargez le code vous-même à l’aide de <code>dlopen()</code>.</li>
+      chargez le code vous-même à l'aide de <code>dlopen()</code>.</li>
     </ul>
 
 </section>

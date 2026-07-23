@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1180828:1915443 (outdated) -->
+<!-- English Revision: 1180828:1933502 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -176,7 +176,7 @@ duyarsız eşleşmelerine bağlı olarak belirler.</description>
         sayede önceki bir eşleşmenin sonucuna karşı yeni bir sınama yapma
         imkanı ortaya çıkar. Böyle bir sınama için sadece evvelce
         <code>SetEnvIf[NoCase]</code> yönergeleri ile yapılmış atamalardaki
-        ortam değişkenleri kullanılabilir.  ‘Evvelce’ derken, sunucu genelinde
+        ortam değişkenleri kullanılabilir.  'Evvelce' derken, sunucu genelinde
         veya bölüm içinde bu yönergeden önce yer alan
         <code>SetEnvIf[NoCase]</code> yönerge satırları kastedilmektedir.
         Ortam değişkenlerinin dikkate alınabilmesi için istek öznitelikleri

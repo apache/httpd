@@ -38,8 +38,8 @@ static const char *extract_responder_uri(X509 *cert, apr_pool_t *pool)
         /* Name found in extension, and is a URI: */
         if (OBJ_obj2nid(value->method) == NID_ad_OCSP
             && value->location->type == GEN_URI) {
-            result = apr_pstrdup(pool,
-                                 (char *)value->location->d.uniformResourceIdentifier->data);
+            const ASN1_STRING *uri = value->location->d.uniformResourceIdentifier;
+            result = modssl_ASN1_STRING_convert(pool, uri, 0);
         }
     }
 
@@ -80,7 +80,7 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
     }
 
     rv = apr_uri_parse(p, s, u);
-    if (rv || !u->hostname) {
+    if (rv || !u->hostname || !u->scheme) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(01919)
                       "failed to parse OCSP responder URI '%s'", s);
         return NULL;

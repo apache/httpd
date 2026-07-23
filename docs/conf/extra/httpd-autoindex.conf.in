@@ -44,7 +44,8 @@ AddIcon /icons/tar.gif .tar
 AddIcon /icons/world2.gif .wrl .wrl.gz .vrml .vrm .iv
 AddIcon /icons/compressed.gif .Z .z .tgz .gz .zip
 AddIcon /icons/a.gif .ps .ai .eps
-AddIcon /icons/layout.gif .html .shtml .htm .pdf
+AddIcon /icons/layout.gif .html .shtml .htm
+AddIcon /icons/pdf.gif .pdf
 AddIcon /icons/text.gif .txt
 AddIcon /icons/c.gif .c
 AddIcon /icons/p.gif .pl .py

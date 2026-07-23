@@ -139,7 +139,7 @@
     <title>Yazılım Geliştirenler İçin</title>
 
     <p>Eylemci özellikleri gerçeklenirken kullanılmak üzere <a
-      href="developer/API.html">Apache API</a>’ye bir ekleme yapılmıştır.
+      href="developer/API.html">Apache API</a>'ye bir ekleme yapılmıştır.
       Özellikle de, <code>request_rec</code> yapısına yeni bir kayıt
       eklenmiştir:</p>
 

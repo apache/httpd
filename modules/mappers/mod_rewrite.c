@@ -3700,12 +3700,15 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         newcond->regexp  = regexp;
     }
     else if (newcond->ptype == CONDPAT_AP_EXPR) {
+        int in_htaccess = cmd->pool == cmd->temp_pool;
         unsigned int flags = newcond->flags & CONDFLAG_NOVARY ?
                              AP_EXPR_FLAG_DONT_VARY : 0;
         newcond->expr = ap_expr_parse_cmd(cmd, a2, flags, &err, NULL);
         if (err)
             return apr_psprintf(cmd->pool, "RewriteCond: cannot compile "
-                                "expression \"%s\": %s", a2, err);
+                                "expression%s \"%s\" %s",
+                                in_htaccess ? " in htaccess context" : "",
+                                a2, err);
     }
 
     return NULL;
@@ -4210,7 +4213,7 @@ static cond_return_type apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ct
     case CONDPAT_LU_URL:
         if (*input && subreq_ok(r)) {
             rsub = ap_sub_req_lookup_uri(input, r, NULL);
-            if (rsub->status < 400) {
+            if (rsub->status < HTTP_BAD_REQUEST) {
                 rc = COND_RC_MATCH;
             }
             rewritelog(r, 5, NULL, "RewriteCond URI (-U check: "
@@ -4227,7 +4230,7 @@ static cond_return_type apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ct
                 return COND_RC_STATUS_SET;
             }
             rsub = ap_sub_req_lookup_file(input, r, NULL);
-            if (rsub->status < 300 &&
+            if (rsub->status < HTTP_MULTIPLE_CHOICES &&
                 /* double-check that file exists since default result is 200 */
                 apr_stat(&sb, rsub->filename, APR_FINFO_MIN,
                          r->pool) == APR_SUCCESS) {
@@ -4298,8 +4301,9 @@ test_str_l:
                 rc = COND_RC_NOMATCH;
             }
             else {
-                rc = COND_RC_MATCH;
+                rc = (rc > 0) ? COND_RC_MATCH : COND_RC_NOMATCH;
             }
+
             /* update briRC backref info */
             if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
                 ctx->briRC.source = source;
@@ -4627,7 +4631,7 @@ static rule_return_type apply_rewrite_rule(rewriterule_entry *p,
      * directly force an external HTTP redirect.
      */
     if (is_absolute_uri(r->filename, NULL)) {
-        rewritelog(r, 2, ctx->perdir, "implicitly forcing redirect (rc=%d "
+        rewritelog(r, 2, ctx->perdir, "implicitly forcing redirect (rc=%d) "
                    "with %s", p->forced_responsecode, r->filename);
 
         r->status = p->forced_responsecode;

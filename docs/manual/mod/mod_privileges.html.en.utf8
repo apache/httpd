@@ -1,46 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_privileges - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_privileges</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_privileges.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_privileges.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_privileges.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support for Solaris privileges and for running virtual hosts
 under different user IDs.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>privileges_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_privileges.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>privileges_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_privileges.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and up, on Solaris 10 and
 OpenSolaris platforms</td></tr></table>
 <h3>Summary</h3>
 
 <p>This module enables different Virtual Hosts to run with different
 Unix <var>User</var> and <var>Group</var> IDs, and with different
-<a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  In particular, it offers a solution to the
+<a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">Solaris Privileges</a>.  In particular, it offers a solution to the
 problem of privilege separation between different Virtual Hosts, first
 promised by the abandoned perchild MPM.  It also offers other security
 enhancements.</p>
@@ -65,24 +65,22 @@ separation is an issue.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">Security Considerations</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#dtraceprivileges">DTracePrivileges</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#privilegesmode">PrivilegesMode</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhostcgimode">VHostCGIMode</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhostcgiprivs">VHostCGIPrivs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhostgroup">VHostGroup</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhostprivs">VHostPrivs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhostsecure">VHostSecure</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhostuser">VHostUser</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dtraceprivileges">DTracePrivileges</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#privilegesmode">PrivilegesMode</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhostcgimode">VHostCGIMode</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhostcgiprivs">VHostCGIPrivs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhostgroup">VHostGroup</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhostprivs">VHostPrivs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhostsecure">VHostSecure</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhostuser">VHostUser</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_privileges">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_privileges">Report a bug</a></li></ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_privileges">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_privileges">Report a bug</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Security Considerations <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduces new security concerns
 in situations where <strong>untrusted code</strong> may be run
@@ -139,8 +137,8 @@ introduce privileges-aware code running <em>before the start of the
 request-processing cycle.</em></p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a> <a name="dtraceprivileges" id="dtraceprivileges">Directive</a> <a title="Permanent link" href="#dtraceprivileges" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dtraceprivileges"><span id="DTracePrivileges">DTracePrivileges</span> Directive <a title="Permanent link" href="#dtraceprivileges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the privileges required by dtrace are enabled.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DTracePrivileges On|Off</code></td></tr>
@@ -152,15 +150,15 @@ request-processing cycle.</em></p>
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
 </table>
     <p>This server-wide directive determines whether Apache will run with
-    the <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run
-    <a href="http://sosc-dr.sun.com/bigadmin/content/dtrace/">dtrace</a>.
+    the <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">privileges</a> required to run
+    <a href="https://docs.oracle.com/cd/E19253-01/819-5488/gbwaz/index.html">dtrace</a>.
     Note that <var>DTracePrivileges On</var> will not in itself
     activate DTrace, but <var>DTracePrivileges Off</var> will prevent
     it working.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a> <a name="privilegesmode" id="privilegesmode">Directive</a> <a title="Permanent link" href="#privilegesmode" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="privilegesmode"><span id="PrivilegesMode">PrivilegesMode</span> Directive <a title="Permanent link" href="#privilegesmode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
@@ -201,8 +199,8 @@ meaningless).</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a> <a name="vhostcgimode" id="vhostcgimode">Directive</a> <a title="Permanent link" href="#vhostcgimode" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="vhostcgimode"><span id="VHostCGIMode">VHostCGIMode</span> Directive <a title="Permanent link" href="#vhostcgimode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the virtualhost can run
 subprocesses, and the privileges available to subprocesses.</td></tr>
@@ -215,7 +213,7 @@ subprocesses, and the privileges available to subprocesses.</td></tr>
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
 </table>
     <p>Determines whether the virtual host is allowed to run fork and exec,
-    the <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> required to run subprocesses.  If this is set to
+    the <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">privileges</a> required to run subprocesses.  If this is set to
     <var>Off</var> the virtualhost is denied the privileges and will not
     be able to run traditional CGI programs or scripts under the traditional
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, nor similar external programs such as those
@@ -230,8 +228,8 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     for <code class="directive">VHostSecure</code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a> <a name="vhostcgiprivs" id="vhostcgiprivs">Directive</a> <a title="Permanent link" href="#vhostcgiprivs" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="vhostcgiprivs"><span id="VHostCGIPrivs">VHostCGIPrivs</span> Directive <a title="Permanent link" href="#vhostcgiprivs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
@@ -245,7 +243,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 and when <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> is compiled with the
 <var>BIG_SECURITY_HOLE</var> compile-time option.</td></tr>
 </table>
-    <p><code class="directive">VHostCGIPrivs</code> can be used to assign arbitrary <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> to subprocesses created by a virtual host, as discussed
+    <p><code class="directive">VHostCGIPrivs</code> can be used to assign arbitrary <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">privileges</a> to subprocesses created by a virtual host, as discussed
     under <code class="directive">VHostCGIMode</code>.  Each <var>privilege-name</var>
     is the name of a Solaris privilege, such as <var>file_setid</var>
     or <var>sys_nfs</var>.</p>
@@ -262,8 +260,8 @@ and when <code class="module"><a href="../mod/mod_privileges.html">mod_privilege
     use it unless you fully understand what you are doing!</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostGroup" id="VHostGroup">VHostGroup</a> <a name="vhostgroup" id="vhostgroup">Directive</a> <a title="Permanent link" href="#vhostgroup" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="vhostgroup"><span id="VHostGroup">VHostGroup</span> Directive <a title="Permanent link" href="#vhostgroup" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the Group ID under which a virtual host runs.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostGroup <var>unix-groupid</var></code></td></tr>
@@ -278,7 +276,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     <p>The <code class="directive">VHostGroup</code> directive sets the Unix group
     under which the server will process requests to a virtualhost.
     The group is set before the request is processed and reset afterwards
-    using <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  Since the setting applies to the
+    using <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">Solaris Privileges</a>.  Since the setting applies to the
     <em>process</em>, this is not compatible with threaded MPMs.</p>
     <p><var>Unix-group</var> is one of:</p>
     <dl>
@@ -301,8 +299,8 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a> <a name="vhostprivs" id="vhostprivs">Directive</a> <a title="Permanent link" href="#vhostprivs" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="vhostprivs"><span id="VHostPrivs">VHostPrivs</span> Directive <a title="Permanent link" href="#vhostprivs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assign arbitrary privileges to a virtual host.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
@@ -315,7 +313,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 and when <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> is compiled with the
 <var>BIG_SECURITY_HOLE</var> compile-time option.</td></tr>
 </table>
-    <p><code class="directive">VHostPrivs</code> can be used to assign arbitrary <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">privileges</a> to a virtual host.  Each <var>privilege-name</var>
+    <p><code class="directive">VHostPrivs</code> can be used to assign arbitrary <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">privileges</a> to a virtual host.  Each <var>privilege-name</var>
     is the name of a Solaris privilege, such as <var>file_setid</var>
     or <var>sys_nfs</var>.</p>
 
@@ -331,8 +329,8 @@ and when <code class="module"><a href="../mod/mod_privileges.html">mod_privilege
     use it unless you fully understand what you are doing!</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostSecure" id="VHostSecure">VHostSecure</a> <a name="vhostsecure" id="vhostsecure">Directive</a> <a title="Permanent link" href="#vhostsecure" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="vhostsecure"><span id="VHostSecure">VHostSecure</span> Directive <a title="Permanent link" href="#vhostsecure" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether the server runs with enhanced security
 for the virtualhost.</td></tr>
@@ -345,7 +343,7 @@ for the virtualhost.</td></tr>
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
 </table>
     <p>Determines whether the virtual host processes requests with
-    security enhanced by removal of <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Privileges</a> that are rarely needed in a webserver, but which are
+    security enhanced by removal of <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">Privileges</a> that are rarely needed in a webserver, but which are
     available by default to a normal Unix user and may therefore
     be required by modules and applications.  It is recommended that
     you retain the default (On) unless it prevents an application running.
@@ -357,8 +355,8 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     reviewed for security.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VHostUser" id="VHostUser">VHostUser</a> <a name="vhostuser" id="vhostuser">Directive</a> <a title="Permanent link" href="#vhostuser" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="vhostuser"><span id="VHostUser">VHostUser</span> Directive <a title="Permanent link" href="#vhostuser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the User ID under which a virtual host runs.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostUser <var>unix-userid</var></code></td></tr>
@@ -373,7 +371,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     <p>The <code class="directive">VHostUser</code> directive sets the Unix userid
     under which the server will process requests to a virtualhost.
     The userid is set before the request is processed and reset afterwards
-    using <a href="http://sosc-dr.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  Since the setting applies to the
+    using <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">Solaris Privileges</a>.  Since the setting applies to the
     <em>process</em>, this is not compatible with threaded MPMs.</p>
     <p><var>Unix-userid</var> is one of:</p>
     <dl>
@@ -399,29 +397,33 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_privileges.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_privileges.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_privileges.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_privileges.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Configuration Sections - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Configuration Sections</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Configuration Sections</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/sections.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
  <p>Directives in the <a href="configuring.html">configuration files</a> may apply to the
 entire server, or they may be restricted to apply only to particular
@@ -35,16 +35,16 @@ directories, files, hosts, or URLs.  This document describes how to
 use configuration section containers or <code>.htaccess</code> files
 to change the scope of other configuration directives.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">Types of Configuration Section Containers</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Filesystem, Webspace, and Boolean Expressions</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#proxy">Proxy</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">What Directives are Allowed?</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#merging">How the sections are merged</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#types">Types of Configuration Section Containers</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#file-and-web">Filesystem, Webspace, and Boolean Expressions</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhost">Virtual Hosts</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#proxy">Proxy</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#whatwhere">What Directives are Allowed?</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#merging">How the sections are merged</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="types" id="types">Types of Configuration Section Containers</a> <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
+<h2 id="types">Types of Configuration Section Containers <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_md.html#mdomainsetsection">&lt;MDomainSet&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -107,9 +107,9 @@ deal with different httpd versions and different configurations.</p>
 can apply negative conditions by preceding their test with "!".
 Also, these sections can be nested to achieve more complex
 restrictions.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">Filesystem, Webspace, and Boolean Expressions</a> <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
+<h2 id="file-and-web">Filesystem, Webspace, and Boolean Expressions <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
 
 <p>The most commonly used configuration section containers are the
 ones that change the configuration of particular places in the
@@ -128,7 +128,7 @@ default Apache httpd install on Unix.  The webspace need not map directly to
 the filesystem, since webpages may be generated dynamically
 from databases or other locations.</p>
 
-<h3><a name="filesystem" id="filesystem">Filesystem Containers</a></h3>
+<h3 id="filesystem">Filesystem Containers</h3>
 
 <p>The <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
 and <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
@@ -176,7 +176,7 @@ directory.</p>
 
 
 
-<h3><a name="webspace" id="webspace">Webspace Containers</a></h3>
+<h3 id="webspace">Webspace Containers</h3>
 
 <p>The <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 directive and its <a class="glossarylink" href="./glossary.html#regex" title="see glossary">regex</a> counterpart, on
@@ -197,17 +197,33 @@ as any other requests starting with the <code>/private</code> string.</p>
 <p>The <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 directive need not have anything to do with the filesystem.
 For example, the following example shows how to map a particular
-URL to an internal Apache HTTP Server handler provided by <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
-No file called <code>server-status</code> needs to exist in the
+URL to an internal handler provided by <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
+No file called <code>server-status</code> needs to exist on the
 filesystem.</p>
 
-<pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
+<pre class="prettyprint lang-config"># Map a URL to a built-in handler:
+&lt;Location "/server-status"&gt;
     SetHandler server-status
+&lt;/Location&gt;
+
+# Map a URL path to a reverse proxy backend:
+&lt;Location "/app"&gt;
+    ProxyPass "http://backend.example.com/"
+    ProxyPassReverse "http://backend.example.com/"
+&lt;/Location&gt;
+
+# Deny access to a URL path regardless of what serves it:
+&lt;Location "/private"&gt;
+    Require all denied
 &lt;/Location&gt;</pre>
 
 
+<p>Because <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
+operates on URLs rather than filesystem paths, it is the appropriate
+container for proxy configuration and module-provided endpoints.</p>
 
-<h3><a name="overlapping-webspace" id="overlapping-webspace">Overlapping Webspace</a></h3>
+
+<h3 id="overlapping-webspace">Overlapping Webspace</h3>
 <p>In order to have two overlapping URLs one has to consider the order in which
 certain sections or directives are evaluated. For
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> this would be:</p>
@@ -228,7 +244,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 
 
 
-<h3><a name="wildcards" id="wildcards">Wildcards and Regular Expressions</a></h3>
+<h3 id="wildcards">Wildcards and Regular Expressions</h3>
 
 <p>The <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, and
@@ -276,7 +292,7 @@ and modules like <code class="module"><a href="./mod/mod_rewrite.html">mod_rewri
 
 
 
-<h3><a name="expressions" id="expressions">Boolean expressions</a></h3>
+<h3 id="expressions">Boolean expressions</h3>
 <p>The <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
 directive change the configuration depending on a condition which can be
 expressed by a boolean expression. For example, the following configuration
@@ -289,7 +305,7 @@ denies access if the HTTP Referer header does not start with
 
 
 
-<h3><a name="whichwhen" id="whichwhen">What to use When</a></h3>
+<h3 id="whichwhen">What to use When</h3>
 
 <p>Choosing between filesystem containers and webspace containers is
 actually quite easy.  When applying directives to objects that reside
@@ -331,7 +347,7 @@ rule.  Putting configuration restrictions in a <code>&lt;Location
 to all requests regardless of the specific URL.</p>
 
 
-<h3><a name="nesting" id="nesting">Nesting of sections</a></h3>
+<h3 id="nesting">Nesting of sections</h3>
 
 <p>Some section types can be nested inside other section types. On the one
 hand, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> can be used
@@ -346,18 +362,18 @@ counterparts of the named section behave identically.</p>
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Virtual Hosts <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 container encloses directives that apply to specific hosts.
 This is useful when serving multiple hosts from the same machine
 with a different configuration for each.  For more information,
 see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Proxy</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Proxy <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 and <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
@@ -371,9 +387,9 @@ will allow only a subset of clients to access the
     Require host yournetwork.example.com
 &lt;/Proxy&gt;</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">What Directives are Allowed?</a> <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
+<h2 id="whatwhere">What Directives are Allowed? <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>To find out what directives are allowed in what types of
 configuration sections, check the <a href="mod/directive-dict.html#Context">Context</a> of the directive.
@@ -403,9 +419,9 @@ be used in <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;
 and <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
 sections.</li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">How the sections are merged</a> <a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
+<h2 id="merging">How the sections are merged <a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
 
 <p>The configuration sections are applied in a very particular order.
 Since this can have important effects on how configuration directives
@@ -445,19 +461,32 @@ are interpreted, it is important to understand how this works.</p>
         but in the order they appear in the configuration files.</li>
         <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
         (group 1 above) is processed in the order shortest directory
-        component to longest. For example,
+        component to longest (regardless of the order in which they
+        appear in the configuration file). For example,
         <code>&lt;Directory "/var/web/dir"&gt;</code> will be processed before
         <code>&lt;Directory "/var/web/dir/subdir"&gt;</code>.</li>
         <li>If multiple <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections apply
         to the same directory they are processed in the configuration file
-        order.</li>
+        order. The same applies when multiple
+        <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>,
+        <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>,
+        <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>,
+        <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, or
+        <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+        sections match the same resource.</li>
         <li>Configurations included via the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive will be treated as if
         they were inside the including file at the location of the
         <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive.</li>
         <li>Sections inside <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> sections
         are applied <em>after</em> the corresponding sections outside
         the virtual host definition. This allows virtual hosts to
-        override the main server configuration.</li>
+        override the main server configuration.  Note that unlike the
+        other section types, only one
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        is selected per request &mdash; directives from multiple matching
+        vhosts are never merged.  See
+        <a href="vhosts/details.html">virtual host matching</a>
+        for details on how a vhost is selected.</li>
         <li>When the request is served by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, the
         <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
         container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
@@ -470,6 +499,21 @@ are interpreted, it is important to understand how this works.</p>
         used in <code>.htaccess</code>, the enclosed directives in a parent 
         directory will be merged <em>after</em> non-enclosed directives in a 
         subdirectory.</li>
+        <li><div class="warning"><h3>Caution: &lt;Limit&gt; inside
+        &lt;Location&gt; can silently grant access</h3>
+        <p>Using <code class="directive"><a href="./mod/core.html#limit">&lt;Limit&gt;</a></code>
+        inside a <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
+        section to restrict authorization to specific HTTP methods can have
+        unexpected results.  For methods not listed in the
+        <code class="directive"><a href="./mod/core.html#limit">&lt;Limit&gt;</a></code>, the
+        enclosing <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
+        section is treated as having no authorization requirements &mdash; which
+        effectively grants access and overrides any
+        <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
+        restrictions that would otherwise apply.  Use
+        <code class="directive"><a href="./mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code>
+        instead, or apply authorization without method restrictions.</p>
+        </div></li>
     </ul>
 
     <div class="note"><h3>Technical Note</h3>
@@ -482,7 +526,7 @@ are interpreted, it is important to understand how this works.</p>
       completed.
     </div>
 
-<h3><a name="relationship-module-configuration" id="relationship-module-configuration">Relationship between modules and configuration sections</a></h3>
+<h3 id="relationship-module-configuration">Relationship between modules and configuration sections</h3>
     <p>One question that often arises after reading how configuration sections are
     merged is related to how and when directives of specific modules like <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     are processed. The answer is not trivial and needs a bit of background. 
@@ -523,7 +567,7 @@ are interpreted, it is important to understand how this works.</p>
     </p>
 
 
-<h3><a name="merge-examples" id="merge-examples">Some useful examples</a></h3>
+<h3 id="merge-examples">Some useful examples</h3>
 
 <p>Below is an artificial example to show the order of
 merging. Assuming they all apply to the request, the directives in
@@ -577,32 +621,36 @@ other words, order of merging is important, so be careful!</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/sections.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/sections.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/sections.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

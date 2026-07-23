@@ -1,0 +1,2 @@
+  *) mod_ssl: Prevent Y2038 bug in session handling on 32-bit platforms
+     with a 64-bit time_t.  [Daniel Ruf <daniel daniel-ruf.de>]

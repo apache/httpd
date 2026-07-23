@@ -1,153 +1,153 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Aperçu des nouvelles fonctionnalités de la version
+<title>Aper&ccedil;u des nouvelles fonctionnalit&eacute;s de la version
 2.2 du serveur HTTP Apache - Serveur HTTP Apache Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Aperçu des nouvelles fonctionnalités de la version
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Aper&ccedil;u des nouvelles fonctionnalit&eacute;s de la version
 2.2 du serveur HTTP Apache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/new_features_2_2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-  <p>Ce document décrit quelques uns des changements principaux entre
+  <p>Ce document d&eacute;crit quelques uns des changements principaux entre
      les versions 2.0 et 2.2 du serveur HTTP Apache. Pour les
-     nouvelles fonctionnalités ajoutées depuis la version 1.3, se
-     référer au document
+     nouvelles fonctionnalit&eacute;s ajout&eacute;es depuis la version 1.3, se
+     r&eacute;f&eacute;rer au document
      <a href="new_features_2_0.html">2.0 new features</a>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du système de base</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#module">Améliorations des modules</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programs">Améliorations des programmes</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">Changements pour le développeur de module</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#core">Am&eacute;liorations du syst&egrave;me de base</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#module">Am&eacute;liorations des modules</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programs">Am&eacute;liorations des programmes</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#developer">Changements pour le d&eacute;veloppeur de module</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="core" id="core">Améliorations du système de base</a> <a title="Lien permanent" href="#core" class="permalink">&para;</a></h2>
+<h2 id="core">Am&eacute;liorations du syst&egrave;me de base <a title="Lien permanent" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
 
       <dt>Authn/Authz</dt>
-      <dd>Les modules d'authentification et d'autorisation intégrés
-	ont été refondus. Le nouveau module
-	mod_authn_alias (supprimé dans la version 2.3/2.4) permet de
-	simplifier considérablement certaines configurations d'authentification.
+      <dd>Les modules d'authentification et d'autorisation int&eacute;gr&eacute;s
+	ont &eacute;t&eacute; refondus. Le nouveau module
+	mod_authn_alias (supprim&eacute; dans la version 2.3/2.4) permet de
+	simplifier consid&eacute;rablement certaines configurations d'authentification.
           Voir <a href="#module">modification des noms de modules</a>,
 	  et
-	  <a href="#developer">les changements pour le développeur</a>
-	  pour plus d'informations sur les conséquences de ces
-	  changements pour les utilisateurs et les développeurs de
+	  <a href="#developer">les changements pour le d&eacute;veloppeur</a>
+	  pour plus d'informations sur les cons&eacute;quences de ces
+	  changements pour les utilisateurs et les d&eacute;veloppeurs de
 	  modules.</dd>
 
       <dt>Mise en cache</dt>
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, et
-          mod_mem_cache (supprimés dans la version 2.3/2.4) ont subi de nombreuses
-	  modifications, et l'on considère qu'ils ont maintenant atteint
-	  un degré de qualité suffisant pour leur mise en production. Le programme
-	  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> a été ajouté afin de rendre
+          mod_mem_cache (supprim&eacute;s dans la version 2.3/2.4) ont subi de nombreuses
+	  modifications, et l'on consid&egrave;re qu'ils ont maintenant atteint
+	  un degr&eacute; de qualit&eacute; suffisant pour leur mise en production. Le programme
+	  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> a &eacute;t&eacute; ajout&eacute; afin de rendre
 	  plus propre la configuration du module
 	  <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>.</dd>
 
       <dt>Configuration</dt>
-      <dd>L'agencement de la configuration par défaut a été simplifié
-      	et modularisé. Les portions de configuration qui peuvent être
-	utilisées pour activer des fonctionnalités courantes sont
-	maintenant intégrées à Apache, et peuvent être facilement
-	ajoutées à la configuration principale du serveur.</dd>
+      <dd>L'agencement de la configuration par d&eacute;faut a &eacute;t&eacute; simplifi&eacute;
+      	et modularis&eacute;. Les portions de configuration qui peuvent &ecirc;tre
+	utilis&eacute;es pour activer des fonctionnalit&eacute;s courantes sont
+	maintenant int&eacute;gr&eacute;es &agrave; Apache, et peuvent &ecirc;tre facilement
+	ajout&eacute;es &agrave; la configuration principale du serveur.</dd>
 
-      <dt>Arrêt en douceur</dt>
+      <dt>Arr&ecirc;t en douceur</dt>
       <dd>Les modules MPM <code class="module"><a href="./mod/prefork.html">prefork</a></code>,
         <code class="module"><a href="./mod/worker.html">worker</a></code> et <code class="module"><a href="./mod/event.html">event</a></code> permettent
-	maintenant l'arrêt en douceur de <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+	maintenant l'arr&ecirc;t en douceur de <code class="program"><a href="./programs/httpd.html">httpd</a></code>
           au moyen du signal
           <a href="stopping.html#gracefulstop"><code>graceful-stop</code></a>.
-	  La directive <code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code> a été ajoutée dans le but
-	  de spécifier un délai optionnel, après lequel
-          <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'arrêtera quel que soit le statut
-          des requêtes en cours.</dd>
+	  La directive <code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code> a &eacute;t&eacute; ajout&eacute;e dans le but
+	  de sp&eacute;cifier un d&eacute;lai optionnel, apr&egrave;s lequel
+          <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'arr&ecirc;tera quel que soit le statut
+          des requ&ecirc;tes en cours.</dd>
 
       <dt>Mise en oeuvre du proxy</dt>
       <dd>Le nouveau module <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> fournit
-          des services de répartition de charge (load balancing) pour le
+          des services de r&eacute;partition de charge (load balancing) pour le
 	  module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.
           Le nouveau module <code class="module"><a href="./mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code> ajoute le
 	  support pour le
           <code>Protocole JServ de Apache version 1.3</code> qu'utilise
           <a href="http://tomcat.apache.org/">Apache Tomcat</a>.</dd>
 
-      <dt>Mise à jour de la bibliothèque des expressions rationnelles</dt>
+      <dt>Mise &agrave; jour de la biblioth&egrave;que des expressions rationnelles</dt>
       <dd>La version 5.0 de la
           <a href="http://www.pcre.org/">Perl Compatible Regular Expression
           Library</a> (PCRE) est maintenant disponible.
-	  <code class="program"><a href="./programs/httpd.html">httpd</a></code> peut être configuré pour utiliser une
+	  <code class="program"><a href="./programs/httpd.html">httpd</a></code> peut &ecirc;tre configur&eacute; pour utiliser une
 	  PCRE choisie en passant l'option <code>--with-pcre</code> au
 	  script configure.</dd>
 
       <dt>Filtrage intelligent</dt>
       <dd>Le module <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> permet la configuration
-          dynamique de la chaîne de filtrage en sortie. Il permet
-	  d'insérer des filtres conditionnels basés sur toute
-	  requête, en-tête de réponse ou variable
-	  d'environnement, et fait table rase des problèmes de dépendances
-	  et d'ordonnancement rencontrés avec l'architecture 2.0.</dd>
+          dynamique de la cha&icirc;ne de filtrage en sortie. Il permet
+	  d'ins&eacute;rer des filtres conditionnels bas&eacute;s sur toute
+	  requ&ecirc;te, en-t&ecirc;te de r&eacute;ponse ou variable
+	  d'environnement, et fait table rase des probl&egrave;mes de d&eacute;pendances
+	  et d'ordonnancement rencontr&eacute;s avec l'architecture 2.0.</dd>
 
       <dt>Support des gros fichiers</dt>
-      <dd><code class="program"><a href="./programs/httpd.html">httpd</a></code> supporte maintenant les fichiers d'une taille supérieure
-      à 2GB sur les systèmes 32 bits UNIX modernes.  Le support des
-      corps de requête d'une taille supérieure à 2GB a aussi été
-      ajouté.</dd>
+      <dd><code class="program"><a href="./programs/httpd.html">httpd</a></code> supporte maintenant les fichiers d'une taille sup&eacute;rieure
+      &agrave; 2GB sur les syst&egrave;mes 32 bits UNIX modernes.  Le support des
+      corps de requ&ecirc;te d'une taille sup&eacute;rieure &agrave; 2GB a aussi &eacute;t&eacute;
+      ajout&eacute;.</dd>
 
       <dt>Module MPM Event</dt>
-      <dd>Le module MPM <code class="module"><a href="./mod/event.html">event</a></code> utilise un thread séparé
-      	pour gérer les requêtes "Keep alive" et accepter des connexions.
-	Les requêtes "Keep alive" requéraient traditionnellement un
-	processus httpd dédié pour leur gestion. Ce processus dédié
-	ne pouvait plus être réutilisé jusqu'à ce que le délai "Keep Alive"
-          soit écoulé.</dd>
+      <dd>Le module MPM <code class="module"><a href="./mod/event.html">event</a></code> utilise un thread s&eacute;par&eacute;
+      	pour g&eacute;rer les requ&ecirc;tes "Keep alive" et accepter des connexions.
+	Les requ&ecirc;tes "Keep alive" requ&eacute;raient traditionnellement un
+	processus httpd d&eacute;di&eacute; pour leur gestion. Ce processus d&eacute;di&eacute;
+	ne pouvait plus &ecirc;tre r&eacute;utilis&eacute; jusqu'&agrave; ce que le d&eacute;lai "Keep Alive"
+          soit &eacute;coul&eacute;.</dd>
 
-      <dt>Support des bases de données SQL</dt>
-      <dd>Le module <code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, associé à l'environnement
+      <dt>Support des bases de donn&eacute;es SQL</dt>
+      <dd>Le module <code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, associ&eacute; &agrave; l'environnement
       	<code>apr_dbd</code>, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
-          dans les modules MPM threadés.</dd>
+          dans les modules MPM thread&eacute;s.</dd>
 
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="module" id="module">Améliorations des modules</a> <a title="Lien permanent" href="#module" class="permalink">&para;</a></h2>
+<h2 id="module">Am&eacute;liorations des modules <a title="Lien permanent" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Authn/Authz</dt>
-      <dd>Les modules du répertoire aaa ont été renommés et fournissent
-          un support amélioré pour la méthode d'authentification <strong>digest</strong>.  Par exemple, <code>mod_auth</code>
-          est maintenant scindé en deux modules : <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> et
+      <dd>Les modules du r&eacute;pertoire aaa ont &eacute;t&eacute; renomm&eacute;s et fournissent
+          un support am&eacute;lior&eacute; pour la m&eacute;thode d'authentification <strong>digest</strong>.  Par exemple, <code>mod_auth</code>
+          est maintenant scind&eacute; en deux modules : <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> et
           <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; <code>mod_auth_dbm</code> s'appelle maintenant
-          <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; <code>mod_access</code> a été renommé en
-          <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  Est également apparu le nouveau module
-          mod_authn_alias (supprimé dans la version 2.3/2.4) qui simplifie
+          <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; <code>mod_access</code> a &eacute;t&eacute; renomm&eacute; en
+          <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  Est &eacute;galement apparu le nouveau module
+          mod_authn_alias (supprim&eacute; dans la version 2.3/2.4) qui simplifie
           certaines configurations d'authentification.
       </dd>
 
@@ -155,179 +155,183 @@
       <dd>Ce module est un portage de la version 2.0 du module
           <code>mod_auth_ldap</code> vers la version 2.2 du framework
 	  <code>Authn/Authz</code>.
-	  Les nouvelles fonctionnalités comprennent l'utilisation des valeurs
-	  d'attributs LDAP et des filtres de recherche avancés dans la
+	  Les nouvelles fonctionnalit&eacute;s comprennent l'utilisation des valeurs
+	  d'attributs LDAP et des filtres de recherche avanc&eacute;s dans la
           directive <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_authz_owner.html">mod_authz_owner</a></code></dt>
-	<dd>Un nouveau module qui autorise l'accès à un fichier
-	en fonction de son propriétaire dans le système de
+	<dd>Un nouveau module qui autorise l'acc&egrave;s &agrave; un fichier
+	en fonction de son propri&eacute;taire dans le syst&egrave;me de
 	fichiers</dd>
 
 	<dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
 	<dd>Un nouveau module qui permet d'activer des blocs de
 	configuration en fonction de la version du serveur en cours
-	d'exécution.</dd>
+	d'ex&eacute;cution.</dd>
 
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
-      <dd>Un nouvel argument <code>?config</code> a été ajouté, qui permettra d'afficher
-          les directives de configuration telles qu'elles sont interprétées
-	  par Apache, y compris le nom de fichier et le numéro de ligne.
-	  Le module montre aussi l'ordre des points d'entrée de traitement d'une
-	  requête (request hooks) ainsi que des informations de construction
-	  supplémentaires, d'une manière similaire à <code>httpd -V</code>.</dd>
+      <dd>Un nouvel argument <code>?config</code> a &eacute;t&eacute; ajout&eacute;, qui permettra d'afficher
+          les directives de configuration telles qu'elles sont interpr&eacute;t&eacute;es
+	  par Apache, y compris le nom de fichier et le num&eacute;ro de ligne.
+	  Le module montre aussi l'ordre des points d'entr&eacute;e de traitement d'une
+	  requ&ecirc;te (request hooks) ainsi que des informations de construction
+	  suppl&eacute;mentaires, d'une mani&egrave;re similaire &agrave; <code>httpd -V</code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
       
-      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a> a été ajouté, ce qui permet de passer d'une
+      <dd>Le support de la <a href="https://www.rfc-editor.org/rfc/rfc2817">RFC 2817</a> a &eacute;t&eacute; ajout&eacute;, ce qui permet de passer d'une
 	connexion en clair au chiffrement TLS.</dd>
 
       <dt><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></dt>
-      <dd><code>mod_imap</code> a été renommé en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> afin
-      d'éviter une confusion pour les utilisateurs.</dd>
+      <dd><code>mod_imap</code> a &eacute;t&eacute; renomm&eacute; en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> afin
+      d'&eacute;viter une confusion pour les utilisateurs.</dd>
     </dl>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Améliorations des programmes</a> <a title="Lien permanent" href="#programs" class="permalink">&para;</a></h2>
+<h2 id="programs">Am&eacute;liorations des programmes <a title="Lien permanent" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="program"><a href="./programs/httpd.html">httpd</a></code></dt>
       <dd>Une nouvelle option de ligne de commande <code>-M</code>
-     a été ajoutée, qui fournit la liste de tous les modules chargés
-     en fonction de la configuration réelle. À la différence de l'option
-     <code>-l</code>, cette liste inclut les Objets Dynamiques Partagés
-     (DSOs) chargés par l'intermédiaire du module
+     a &eacute;t&eacute; ajout&eacute;e, qui fournit la liste de tous les modules charg&eacute;s
+     en fonction de la configuration r&eacute;elle. &Agrave; la diff&eacute;rence de l'option
+     <code>-l</code>, cette liste inclut les Objets Dynamiques Partag&eacute;s
+     (DSOs) charg&eacute;s par l'interm&eacute;diaire du module
      <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>.</dd>
       <dt><code class="program"><a href="./programs/httxt2dbm.html">httxt2dbm</a></code></dt>
-      <dd>Un nouveau programme servant à générer des fichiers dbm à partir
-      d'une source au format texte, à utiliser avec la directive
+      <dd>Un nouveau programme servant &agrave; g&eacute;n&eacute;rer des fichiers dbm &agrave; partir
+      d'une source au format texte, &agrave; utiliser avec la directive
       <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
           et le type de mise en correspondance <code>dbm</code>.</dd>
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Changements pour le développeur de module</a> <a title="Lien permanent" href="#developer" class="permalink">&para;</a></h2>
+<h2 id="developer">Changements pour le d&eacute;veloppeur de module <a title="Lien permanent" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><a class="glossarylink" href="./glossary.html#apr" title="voir glossaire">APR</a> 1.0 API</dt>
 
       <dd>Apache 2.2 utilise l'API APR 1.0.  Toutes les fonctions et
-      symboles obsolètes ont été supprimés du code de <code>APR</code> et
-          <code>APR-Util</code>. Pour plus de détails, consultez le
+      symboles obsol&egrave;tes ont &eacute;t&eacute; supprim&eacute;s du code de <code>APR</code> et
+          <code>APR-Util</code>. Pour plus de d&eacute;tails, consultez le
           <a href="http://apr.apache.org/">site web d'APR</a>.</dd>
 
       <dt>Authn/Authz</dt>
-      <dd>Les modules d'authentification et d'autorisation intégrés ont
-          été renommés de la manière suivante:
+      <dd>Les modules d'authentification et d'autorisation int&eacute;gr&eacute;s ont
+          &eacute;t&eacute; renomm&eacute;s de la mani&egrave;re suivante:
           <ul>
-          <li><code>mod_auth_*</code>  -&gt; Modules qui implémentent un mécanisme
+          <li><code>mod_auth_*</code>  -&gt; Modules qui impl&eacute;mentent un m&eacute;canisme
 	  	d'authentification HTTP</li>
           <li><code>mod_authn_*</code> -&gt; Modules qui fournissent un dispositif
-	  	d'authentification en arrière-plan</li>
-          <li><code>mod_authz_*</code> -&gt; Modules qui implémentent l'autorisation (ou l'accès)</li>
-          <li><code>mod_authnz_*</code> -&gt; Modules qui implémentent à la fois
+	  	d'authentification en arri&egrave;re-plan</li>
+          <li><code>mod_authz_*</code> -&gt; Modules qui impl&eacute;mentent l'autorisation (ou l'acc&egrave;s)</li>
+          <li><code>mod_authnz_*</code> -&gt; Modules qui impl&eacute;mentent &agrave; la fois
 	  l'authentification &amp; l'autorisation</li>
           </ul>
-	  L'organisation des méthodes d'authentification a également été revue, ce qui va simplifier
-	  grandement l'ajout de nouvelles méthodes d'authentification.</dd>
+	  L'organisation des m&eacute;thodes d'authentification a &eacute;galement &eacute;t&eacute; revue, ce qui va simplifier
+	  grandement l'ajout de nouvelles m&eacute;thodes d'authentification.</dd>
 
       <dt>Journalisation des erreurs de connexion</dt>
 
-      <dd>Une nouvelle fonction a été ajoutée, <code>ap_log_cerror</code>,
+      <dd>Une nouvelle fonction a &eacute;t&eacute; ajout&eacute;e, <code>ap_log_cerror</code>,
       afin de pouvoir enregistrer les erreurs qui surviennent au cours de
-      la connexion du client.  Une fois enregistré, le message inclut l'adresse IP du client.</dd>
+      la connexion du client.  Une fois enregistr&eacute;, le message inclut l'adresse IP du client.</dd>
 
-      <dt>Ajout d'une portion de code pour la vérification de la configuration</dt>
+      <dt>Ajout d'une portion de code pour la v&eacute;rification de la configuration</dt>
 
-      <dd>Un nouvel élément de traitement a été ajouté, <code>test_config</code>,
-      afin d'aider les modules qui ne veulent exécuter un code spécial
-      que si l'utilisateur passe le paramètre <code>-t</code> à
+      <dd>Un nouvel &eacute;l&eacute;ment de traitement a &eacute;t&eacute; ajout&eacute;, <code>test_config</code>,
+      afin d'aider les modules qui ne veulent ex&eacute;cuter un code sp&eacute;cial
+      que si l'utilisateur passe le param&egrave;tre <code>-t</code> &agrave;
       <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</dd>
 
-      <dt>Définition de la taille de la pile pour les modules MPM en processus légers</dt>
+      <dt>D&eacute;finition de la taille de la pile pour les modules MPM en processus l&eacute;gers</dt>
 
-      <dd>Une nouvelle directive a été ajoutée, <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
-     afin de définir la taille de la pile pour tous les modules MPM en processus légers (modules threadés).
-     Ceci s'avère nécessaire pour certains modules tiers sur des plateformes
-     dont la taille de la pile des threads par défaut est
+      <dd>Une nouvelle directive a &eacute;t&eacute; ajout&eacute;e, <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
+     afin de d&eacute;finir la taille de la pile pour tous les modules MPM en processus l&eacute;gers (modules thread&eacute;s).
+     Ceci s'av&egrave;re n&eacute;cessaire pour certains modules tiers sur des plateformes
+     dont la taille de la pile des threads par d&eacute;faut est
      trop petite.</dd>
 
       <dt>Gestion de protocole pour les filtres en sortie</dt>
 
-      <dd>Par le passé, chaque filtre devait s'assurer que les en-têtes de
-      réponse corrects étaient générés dans la mesure où il les affectait.
-      Les filtres peuvent maintenant déléguer la gestion courante du
+      <dd>Par le pass&eacute;, chaque filtre devait s'assurer que les en-t&ecirc;tes de
+      r&eacute;ponse corrects &eacute;taient g&eacute;n&eacute;r&eacute;s dans la mesure o&ugrave; il les affectait.
+      Les filtres peuvent maintenant d&eacute;l&eacute;guer la gestion courante du
       protocole au module
-          <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, à l'aide des appels
+          <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, &agrave; l'aide des appels
           <code>ap_register_output_filter_protocol</code> ou
           <code>ap_filter_protocol</code>.</dd>
 
-      <dt>Ajout d'un élément de traitement pour le processus père (monitor hook)</dt>
-      <dd>Ce nouvel élément de traitement permet aux modules de lancer
-      des jobs réguliers/planifiés au niveau du processus père
+      <dt>Ajout d'un &eacute;l&eacute;ment de traitement pour le processus p&egrave;re (monitor hook)</dt>
+      <dd>Ce nouvel &eacute;l&eacute;ment de traitement permet aux modules de lancer
+      des jobs r&eacute;guliers/planifi&eacute;s au niveau du processus p&egrave;re
       (root).</dd>
 
       <dt>Modifications de l'API de traitement des expressions rationnelles</dt>
 
-      <dd>Le fichier d'en-tête <code>pcreposix.h</code> n'est plus disponible ;
-      il a été remplacé par le nouveau fichier
-      d'en-tête <code>ap_regex.h</code>.  L'implémentation
-      POSIX.2 <code>regex.h</code> exposée dans l'ancien fichier d'en-tête
+      <dd>Le fichier d'en-t&ecirc;te <code>pcreposix.h</code> n'est plus disponible ;
+      il a &eacute;t&eacute; remplac&eacute; par le nouveau fichier
+      d'en-t&ecirc;te <code>ap_regex.h</code>.  L'impl&eacute;mentation
+      POSIX.2 <code>regex.h</code> expos&eacute;e dans l'ancien fichier d'en-t&ecirc;te
       est maintenant disponible dans l'espace de nommage <code>ap_</code>
-      depuis <code>ap_regex.h</code>.  Les appels à <code>regcomp</code>,
-      <code>regexec</code>, etc... peuvent être remplacés par des appels à
+      depuis <code>ap_regex.h</code>.  Les appels &agrave; <code>regcomp</code>,
+      <code>regexec</code>, etc... peuvent &ecirc;tre remplac&eacute;s par des appels &agrave;
       <code>ap_regcomp</code>, <code>ap_regexec</code>.</dd>
 
-      <dt>Cadre d'application DBD (API pour base de données SQL)</dt>
+      <dt>Cadre d'application DBD (API pour base de donn&eacute;es SQL)</dt>
 
-      <dd><p>Avec Apache 1.x et 2.0, les modules nécessitant un processus
-      SQL d'arrière-plan devaient s'en charger eux-mêmes.  En dehors du fait
-      de réinventer la roue, ceci peut s'avérer très inefficace, par
+      <dd><p>Avec Apache 1.x et 2.0, les modules n&eacute;cessitant un processus
+      SQL d'arri&egrave;re-plan devaient s'en charger eux-m&ecirc;mes.  En dehors du fait
+      de r&eacute;inventer la roue, ceci peut s'av&eacute;rer tr&egrave;s inefficace, par
       exemple lorsque plusieurs modules maintiennent chacun leurs
       propres connexions.</p>
-      <p>Apache 2.1 et supérieur fournissent l'API <code>ap_dbd</code> qui
-      permet la gestion des connexions à la base de données (y compris
-      les stratégies optimisées pour les modules MPM threadés
-      et non threadés), tandis que APR 1.2 et supérieur fournissent
+      <p>Apache 2.1 et sup&eacute;rieur fournissent l'API <code>ap_dbd</code> qui
+      permet la gestion des connexions &agrave; la base de donn&eacute;es (y compris
+      les strat&eacute;gies optimis&eacute;es pour les modules MPM thread&eacute;s
+      et non thread&eacute;s), tandis que APR 1.2 et sup&eacute;rieur fournissent
       l'API <code>apr_dbd</code> qui permet l'interaction avec la
-      base de données.</p>
-      <p>Les nouveaux modules DEVRAIENT désormais utiliser ces APIs pour
-      toutes les opérations liées aux bases de données SQL.
-      De même, les applications existantes DEVRAIENT être mises à jour
-      lorsque c'est possible, que ce soit de manière transparente ou sous forme
-      d'une option recommandée à leurs utilisateurs.</p></dd>
+      base de donn&eacute;es.</p>
+      <p>Les nouveaux modules DEVRAIENT d&eacute;sormais utiliser ces APIs pour
+      toutes les op&eacute;rations li&eacute;es aux bases de donn&eacute;es SQL.
+      De m&ecirc;me, les applications existantes DEVRAIENT &ecirc;tre mises &agrave; jour
+      lorsque c'est possible, que ce soit de mani&egrave;re transparente ou sous forme
+      d'une option recommand&eacute;e &agrave; leurs utilisateurs.</p></dd>
     </dl>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/new_features_2_2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/new_features_2_2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/new_features_2_2.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -40,7 +40,7 @@
     ne doivent pas être utilisées pour poser des questions à propos de
     la configuration ou du lancement d'Apache. Avant de soumettre un
     rapport de bogue ou une question, consultez ce document, la <a
-    href="http://wiki.apache.org/httpd/FAQ">FAQ</a> ou tout autre sujet de la
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> ou tout autre sujet de la
     documentation en rapport avec votre problème. Si vous n'avez
     toujours pas résolu votre problème, postez votre question dans le
     newsgroup <a
@@ -198,9 +198,10 @@
     "install" à la ligne de commande du makefile va provoquer la
     construction d'une distribution complète sous forme d'un paquetage
     dans le sous-répertoire <code>DIST</code>. Vous pouvez simplement
-    installer Apache en copiant la distribution créée précédemment à la
+    installer Apache en copiant la distribution créée précédemment par les
+    makefiles à la
     racine d'un volume Netware (voir <a href="#comp">Compilation
-    d'Apache pour NetWare</a> ci-dessous).</p>
+    d'Apache httpd pour NetWare</a> ci-dessous).</p>
 
   </section>
 

@@ -916,7 +916,7 @@ static int defer_lingering_close(event_conn_state_t *cs)
 }
 
 /* Close the connection and release its resources (ptrans), either because an
- * unrecoverable error occured (queues or pollset add/remove) or more usually
+ * unrecoverable error occurred (queues or pollset add/remove) or more usually
  * if lingering close timed out.
  * Pre-condition: nonblocking, can be called from anywhere provided cs is not
  *                in any timeout queue or in the pollset.

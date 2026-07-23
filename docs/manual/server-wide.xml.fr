@@ -24,11 +24,11 @@
 
 <manualpage metafile="server-wide.xml.meta">
 
-  <title>Configuration &agrave; l'&eacute;chelle du serveur</title>
+  <title>Configuration à l'échelle du serveur</title>
 
 <summary>
 <p>Ce document explique le fonctionnement de certaines directives du serveur
-de base qui sont utilis&eacute;es pour configurer les op&eacute;rations &eacute;l&eacute;mentaires du
+de base qui sont utilisées pour configurer les opérations élémentaires du
 serveur.</p>
 </summary>
 
@@ -47,21 +47,21 @@ serveur.</p>
     </related>
 
     <p>Les directives <directive module="core">ServerAdmin</directive> et
-    <directive module="core">ServerTokens</directive> contr&ocirc;lent la nature des
-    informations &agrave; propos du serveur qui seront affich&eacute;es dans les documents
-    g&eacute;n&eacute;r&eacute;s par le serveur comme les messages d'erreur. La directive
-    <directive module="core">ServerTokens</directive> d&eacute;finit la valeur du
-    champ d'en-t&ecirc;te de la r&eacute;ponse du serveur HTTP.</p>
+    <directive module="core">ServerTokens</directive> contrôlent la nature des
+    informations à propos du serveur qui seront affichées dans les documents
+    générés par le serveur comme les messages d'erreur. La directive
+    <directive module="core">ServerTokens</directive> définit la valeur du
+    champ d'en-tête de la réponse du serveur HTTP.</p>
 
     <p>Le serveur utilise les directives
     <directive module="core">ServerName</directive>,
     <directive module="core">UseCanonicalName</directive> et
     <directive module="core">UseCanonicalPhysicalPort</directive> pour
-    d&eacute;terminer la mani&egrave;re de construire des URLs vers ses propres ressources.
-    Par exemple, quand un client &eacute;met une requ&ecirc;te vers un r&eacute;pertoire, mais
-    n'ajoute pas le slash final au nom du r&eacute;pertoire, httpd doit rediriger le
+    déterminer la manière de construire des URLs vers ses propres ressources.
+    Par exemple, quand un client émet une requête vers un répertoire, mais
+    n'ajoute pas le slash final au nom du répertoire, httpd doit rediriger le
     client vers le nom complet incluant le slash final afin que le client
-    puisse r&eacute;soudre correctement les r&eacute;f&eacute;rences relatives pr&eacute;sentes dans
+    puisse résoudre correctement les références relatives présentes dans
     le document.</p>
   </section>
 
@@ -80,15 +80,15 @@ serveur.</p>
       </directivelist>
     </related>
 
-    <p>Ces directives contr&ocirc;lent la localisation des diff&eacute;rents fichiers
-    n&eacute;cessaires au bon fonctionnement de httpd. Quand le chemin utilis&eacute; ne
+    <p>Ces directives contrôlent la localisation des différents fichiers
+    nécessaires au bon fonctionnement de httpd. Quand le chemin utilisé ne
     commence pas par un slash (/), la localisation des fichiers est relative
-    &agrave; la valeur de la directive
+    à la valeur de la directive
     <directive module="core">ServerRoot</directive>. Soyez prudent avec la
-    localisation de fichiers dans des r&eacute;pertoires o&ugrave; les utilisateurs non root
-    ont les droits en &eacute;criture. Voir la documention sur les
-    <a href="misc/security_tips.html#serverroot">Conseils &agrave; propos
-    de la s&eacute;curit&eacute;</a> pour plus de d&eacute;tails.</p>
+    localisation de fichiers dans des répertoires où les utilisateurs non root
+    ont les droits en écriture. Voir la documention sur les
+    <a href="misc/security_tips.html#serverroot">Conseils à propos
+    de la sécurité</a> pour plus de détails.</p>
   </section>
 
   <section id="resource">
@@ -108,22 +108,22 @@ serveur.</p>
     </related>
 
     <p>Les directives <directive>LimitRequest</directive>* permettent de
-    limiter la quantit&eacute; de ressources consomm&eacute;es par httpd pour le traitement
-    des requ&ecirc;tes des clients. Cette limitation permet de minimiser les effets
-    de certains types d'attaques par d&eacute;ni de service.</p>
+    limiter la quantité de ressources consommées par httpd pour le traitement
+    des requêtes des clients. Cette limitation permet de minimiser les effets
+    de certains types d'attaques par déni de service.</p>
 
     <p>Les directives <directive>RLimit</directive>* permettent de limiter la
-    quantit&eacute; de ressources utilisable par les processus initi&eacute;s (forked) par
-    les processus enfants httpd. Elles permettent en particulier de contr&ocirc;ler
-    les ressources utilis&eacute;es par les scripts CGI et les commandes exec des
-    "Inclusions c&ocirc;t&eacute; serveur" (Server Side Includes ou SSI).</p>
+    quantité de ressources utilisable par les processus initiés (forked) par
+    les processus enfants httpd. Elles permettent en particulier de contrôler
+    les ressources utilisées par les scripts CGI et les commandes exec des
+    "Inclusions côté serveur" (Server Side Includes ou SSI).</p>
 
     <p>La directive <directive module="mpm_common">ThreadStackSize</directive>
-    permet sur certaines plates-formes de contr&ocirc;ler la taille de la pile.</p>
+    permet sur certaines plates-formes de contrôler la taille de la pile.</p>
   </section>
 
   <section id="implementation">
-    <title>Choix d'impl&eacute;mentation</title>
+    <title>Choix d'implémentation</title>
 
     <related>
       <directivelist>
@@ -132,9 +132,9 @@ serveur.</p>
     </related>
 
     <p>La directive <directive>Mutex</directive> permet de modifier
-    l'impl&eacute;mentation sous-jacente des mutex, afin de r&eacute;soudre les
-    probl&egrave;mes de fonctionnement ou de performance dus au choix par
-    d&eacute;faut d'<glossary>APR</glossary>.</p>
+    l'implémentation sous-jacente des mutex, afin de résoudre les
+    problèmes de fonctionnement ou de performance dus au choix par
+    défaut d'<glossary>APR</glossary>.</p>
   </section>
 
 </manualpage>

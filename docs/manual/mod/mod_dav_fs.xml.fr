@@ -57,8 +57,7 @@
 <description>Chemin de la base de données des verrous DAV</description>
 <syntax>DavLockDB <var>chemin fichier</var></syntax>
 <default>DavLockDB DEFAULT_REL_STATEDIR/davlockdb</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>La valeur par défaut a été ajoutée à partir de la version 2.5.1.
 du serveur HTTP Apache.</compatibility>
@@ -168,7 +167,7 @@ du serveur HTTP Apache.</compatibility>
 <usage>
     <p>La directive <directive>DavQuota</directive> permet de définir un quota
     en octets pour un répertoire donné selon les spécifications de la RFC 4331.
-    Elle possède deux valeurs particulières :</p>
+    Elle possède deux valeurs particulières&nbsp;:</p>
         <ul>
             <li><code>Off</code> Les quotas sont désactivés.</li>
 	    <li><code>None</code> Aucun quota n'est défini, mais les clients qui

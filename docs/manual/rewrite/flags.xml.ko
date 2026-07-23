@@ -1,0 +1,930 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1933062:1936255 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="flags.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>RewriteRule 플래그</title>
+
+<summary>
+<p>이 문서는 <directive module="mod_rewrite">RewriteRule</directive>
+지시어에 사용할 수 있는 플래그를 논의하며, 자세한 설명과
+예제를 제공합니다.</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">모듈 문서</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 소개</a></seealso>
+<seealso><a href="remapping.html">리다이렉션과 재매핑</a></seealso>
+<seealso><a href="access.html">접근 제어</a></seealso>
+<seealso><a href="vhosts.html">가상 호스트</a></seealso>
+<seealso><a href="proxy.html">프록시</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap 사용하기</a></seealso>
+<seealso><a href="advanced.html">고급 기술</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite를 사용하지 말아야 할 경우</a></seealso>
+
+<section id="introduction"><title>소개</title>
+<p><directive module="mod_rewrite">RewriteRule</directive>의
+동작은 하나 이상의 플래그로 수정할 수 있습니다. 플래그는
+규칙 끝에 대괄호 안에 포함되며, 여러 플래그는 쉼표로
+구분됩니다.</p>
+<highlight language="config">
+RewriteRule pattern target [Flag1,Flag2,Flag3]
+</highlight>
+
+<p>각 플래그는 (몇 가지 예외를 제외하고) <code>CO</code>와
+같은 짧은 형태와 <code>cookie</code>와 같은 긴 형태를
+가집니다. 짧은 형태를 사용하는 것이 가장 일반적이지만,
+각 플래그가 무엇을 하는지 기억하기 위해 긴 형태에
+익숙해지는 것이 좋습니다. 일부 플래그는 하나 이상의
+인수를 취합니다. 플래그는 대소문자를 구분하지 않습니다.</p>
+
+<p>요청과 관련된 메타데이터를 변경하는 플래그(T=, H=, E=)는
+디렉토리별 및 htaccess 컨텍스트에서 동일한 재작성 처리
+라운드 중에 ('-' 이외의) 치환이 수행될 때 효과가 없습니다.
+</p>
+
+<p>여기에서는 사용 가능한 각 플래그와 함께 사용 방법의
+예제가 제시됩니다.</p>
+</section>
+
+<section id="flag_b"><title>B (역참조 이스케이프)</title>
+<p>[B] 플래그는 <directive module="mod_rewrite">RewriteRule</directive>에
+변환을 적용하기 전에 영숫자가 아닌 문자를 이스케이프하도록
+지시합니다.</p>
+
+<p><module>mod_rewrite</module>는 URL을 매핑하기 전에
+이스케이프를 해제해야 하므로, 역참조는 적용될 때
+이스케이프가 해제됩니다. B 플래그를 사용하면 역참조의
+영숫자가 아닌 문자가 이스케이프됩니다.
+예를 들어, 다음 규칙을 고려하십시오:</p>
+
+<p>서버 변수의 유사한 이스케이프에 대해서는
+    "escape" <a href="#mapfunc">매핑 함수</a>를 참조하십시오</p>
+
+
+<highlight language="config">
+RewriteRule "^search/(.*)$" "/search.php?term=$1"
+</highlight>
+
+<p>검색어가 'x &amp; y/z'인 경우 브라우저는 이를
+'x%20%26%20y%2Fz'로 인코딩하여 'search/x%20%26%20y%2Fz'
+요청을 만듭니다. B 플래그 없이 이 재작성 규칙은
+'search.php?term=x &amp; y/z'로 매핑되며, 이는 유효한
+URL이 아니므로 <code>search.php?term=x%20&amp;y%2Fz=</code>로
+인코딩되어 의도한 것과 다릅니다.</p>
+
+<p>동일한 규칙에 B 플래그를 설정하면 매개변수가 출력 URL에
+전달되기 전에 다시 인코딩되어
+<code>/search.php?term=x%20%26%20y%2Fz</code>로 올바르게
+매핑됩니다.</p>
+
+<highlight language="config">
+RewriteRule "^search/(.*)$" "/search.php?term=$1" [B,PT]
+</highlight>
+
+<p>이 특정 예제가 작동하려면
+<directive module="core">AllowEncodedSlashes</directive>를
+<code>On</code>으로 설정해야 할 수도 있습니다. httpd는
+URL에서 인코딩된 슬래시를 허용하지 않고 하나를 보면
+404를 반환하기 때문입니다.</p>
+
+<p>이 이스케이프는 특히 프록시 상황에서 필요합니다.
+백엔드가 이스케이프되지 않은 URL을 제시받으면 중단될 수
+있기 때문입니다.</p>
+
+<p>이 플래그의 대안은 <directive module="mod_rewrite"
+>RewriteCond</directive>를 사용하여 %{THE_REQUEST}에 대해
+캡처하는 것이며, 이는 인코딩된 형태의 문자열을
+캡처합니다.</p>
+
+<p>2.4.26 이상에서는 역참조에서 이스케이프할 특정 문자를
+나열하여 제한할 수 있습니다: <code>[B=#?;]</code>.
+참고: 이스케이프할 문자 목록에 공백 문자를 사용할 수
+있지만 <directive module="mod_rewrite">RewriteRule</directive>의
+전체 세 번째 인수를 인용해야 하며 공백이 목록의 마지막
+문자가 되어서는 안 됩니다.</p>
+
+<highlight language="config">
+# 공백과 물음표를 이스케이프합니다. 공백이 포함된 경우
+# 최종 인수 주위의 따옴표가 필요합니다.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
+</highlight>
+
+<p>이 방식으로 이스케이프되는 문자를 제한하려면
+<a href="#flag_bne">#flag_bne</a>와
+<a href="#flag_bctls">#flag_bctls</a>를 참조하십시오</p>
+</section>
+
+<section id="flag_bnp"><title>BNP|backrefnoplus (공백을 +로 이스케이프하지 않음)</title>
+<p>[BNP] 플래그는 <directive module="mod_rewrite">RewriteRule</directive>에
+역참조에서 공백 문자를 '+' 대신 %20으로 이스케이프하도록
+지시합니다. 역참조가 쿼리 문자열이 아닌 경로 구성 요소에서
+사용될 때 유용합니다.</p>
+
+<highlight language="config">
+# 쿼리 문자열을 통한 양식 제출에 사용되는 + 대신
+# 경로에서 공백을 %20으로 이스케이프
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
+</highlight>
+
+
+<p>이 플래그는 버전 2.4.26 이상에서 사용할 수 있습니다.</p>
+</section>
+
+<section id="flag_bctls"><title>BCTLS</title>
+<p>[BCTLS] 플래그는 [B] 플래그와 유사하지만 제어 문자와
+공백 문자만 이스케이프합니다. 이것은 인코딩되지 않은 채
+쿼리 문자열로 복사될 때 거부되는 동일한 문자 세트입니다.
+</p>
+
+<highlight language="config">
+# 제어 문자와 공백을 이스케이프
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
+</highlight>
+
+<p>이 플래그는 버전 2.5.1 이상에서 사용할 수 있습니다.</p>
+
+</section>
+
+<section id="flag_bne"><title>BNE</title>
+<p>[BNE=...]의 문자 목록은 [B] 또는 [BCTLS] 플래그의
+문자에 대한 제외로 처리됩니다. 나열된 문자는 이스케이프되지
+않습니다.
+</p>
+
+<highlight language="config">
+# 기본 문자를 이스케이프하되 /는 남김
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
+</highlight>
+
+<p>이 플래그는 버전 2.5.1 이상에서 사용할 수 있습니다.</p>
+</section>
+
+<section id="flag_c"><title>C|chain</title>
+<p>[C] 또는 [chain] 플래그는 <directive
+module="mod_rewrite">RewriteRule</directive>이 다음 규칙에
+체인되어 있음을 나타냅니다. 즉, 규칙이 일치하면 평소와
+같이 처리되고 제어가 다음 규칙으로 이동합니다. 그러나
+일치하지 않으면 다음 규칙과 함께 체인된 다른 모든 규칙이
+건너뛰어집니다.</p>
+
+</section>
+
+<section id="flag_co"><title>CO|cookie</title>
+<p>[CO] 또는 [cookie] 플래그를 사용하면 특정
+<directive module="mod_rewrite">RewriteRule</directive>이
+일치할 때 쿠키를 설정할 수 있습니다. 인수는 세 개의
+필수 필드와 다섯 개의 선택적 필드로 구성됩니다.</p>
+
+<p>플래그의 전체 구문은 모든 속성을 포함하여
+다음과 같습니다:</p>
+
+<example>
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
+</example>
+
+<p>쿠키 필드에 리터럴 ':' 문자가 필요한 경우 대체 구문을
+사용할 수 있습니다. 대체 구문을 선택하려면 쿠키 "Name" 앞에
+';' 문자를 붙이고 필드 구분자를 ';'로 지정해야 합니다.</p>
+
+<example>
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
+</example>
+
+<p>쿠키를 설정하려면 이름, 값 및 도메인을 선언해야
+합니다.</p>
+
+<dl>
+<dt>Domain</dt>
+<dd>쿠키가 유효한 도메인입니다. <code>www.example.com</code>과
+같은 호스트명이거나 <code>.example.com</code>과 같은
+도메인일 수 있습니다. 점으로 구분된 최소 두 부분이어야
+합니다. 즉, 단순히 <code>.com</code>이나
+<code>.net</code>일 수 없습니다. 이러한 종류의 쿠키는
+쿠키 보안 모델에 의해 금지됩니다.</dd>
+</dl>
+
+<p>선택적으로 다음 값도 설정할 수 있습니다:</p>
+
+<dl>
+<dt>Lifetime</dt>
+<dd>쿠키가 지속되는 시간(분)입니다.</dd>
+<dd>값이 0이면 쿠키가 현재 브라우저 세션 동안만 지속됩니다.
+지정하지 않으면 이것이 기본값입니다.</dd>
+<dd>음수 값은 브라우저에서 쿠키를 삭제합니다.</dd>
+
+<dt>Path</dt>
+<dd>현재 웹사이트에서 쿠키가 유효한 경로입니다.
+예: <code>/customers/</code> 또는
+<code>/files/download/</code>.</dd>
+<dd>기본적으로 <code>/</code>로 설정됩니다 - 즉,
+전체 웹사이트입니다.</dd>
+
+<dt>Secure</dt>
+<dd><code>secure</code>, <code>true</code> 또는
+<code>1</code>로 설정하면 쿠키는 보안(https) 연결을
+통해서만 전달됩니다.</dd>
+
+<dt>httponly</dt>
+<dd><code>HttpOnly</code>, <code>true</code> 또는
+<code>1</code>로 설정하면 쿠키에
+<code>HttpOnly</code> 플래그가 설정되며, 이는 이 기능을
+지원하는 브라우저에서 쿠키가 JavaScript 코드로 접근할 수
+없음을 의미합니다.</dd>
+
+<dt>samesite</dt>
+<dd><code>false</code> 또는 <code>0</code> 이외의 값으로
+설정하면 <code>SameSite</code> 속성이 지정된 값으로
+설정됩니다. 일반적인 값은 <code>None</code>,
+<code>Lax</code> 및 <code>Strict</code>입니다.
+2.5.1 이상에서 사용할 수 있습니다.</dd>
+</dl>
+
+
+<p>다음 예제를 고려하십시오:</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]
+</highlight>
+
+<p>주어진 예제에서 규칙은 요청을 재작성하지 않습니다.
+"-" 재작성 대상은 <module>mod_rewrite</module>에게 요청을
+변경 없이 통과시키도록 지시합니다. 대신 'frontdoor'라는
+쿠키를 'yes' 값으로 설정합니다. 쿠키는
+<code>.example.com</code> 도메인의 모든 호스트에 유효합니다.
+1440분(24시간) 후에 만료되도록 설정되며 모든 URI에 대해
+반환됩니다.</p>
+
+</section>
+
+<section id="flag_dpi"><title>DPI|discardpath</title>
+<p>DPI 플래그는 재작성된 URI의 PATH_INFO 부분을
+버립니다.</p>
+<p>이 플래그는 버전 2.2.12 이상에서 사용할 수 있습니다.</p>
+<p>디렉토리별 컨텍스트에서 각
+<directive>RewriteRule</directive>이 비교하는 URI는 URI와
+PATH_INFO의 현재 값의 연결입니다.</p>
+
+<p>현재 URI는 클라이언트가 요청한 초기 URI이거나,
+이전 <module>mod_rewrite</module> 처리 라운드의 결과이거나,
+현재 <module>mod_rewrite</module> 처리 라운드에서 이전
+규칙의 결과일 수 있습니다.</p>
+
+<p>반면, 각 규칙 전에 URI에 추가되는 PATH_INFO는
+이 <module>mod_rewrite</module> 처리 라운드 전의 PATH_INFO
+값만 반영합니다. 결과적으로 URI의 큰 부분이 여러
+<directive>RewriteRule</directive> 지시어에서 치환으로
+일치되고 복사될 때, URI의 어느 부분이 현재 PATH_INFO에서
+왔는지 고려하지 않으면 최종 URI에 PATH_INFO의 여러 복사본이
+추가될 수 있습니다.</p>
+
+<p>이전 요청의 파일 시스템 매핑에서 생성된 PATH_INFO가
+관심 없는 치환에 이 플래그를 사용하십시오. 이 플래그는
+이 <module>mod_rewrite</module> 처리 라운드 전에 설정된
+PATH_INFO를 영구적으로 잊습니다. PATH_INFO는 현재
+<module>mod_rewrite</module> 처리 라운드가 완료될 때까지
+다시 계산되지 않습니다. 이 처리 라운드 중 후속 규칙은
+PATH_INFO가 추가되지 않은 치환의 직접적인 결과만 봅니다.</p>
+</section>
+
+<section id="flag_e"><title>E|env</title>
+<p>[E] 또는 [env] 플래그를 사용하면 환경 변수의 값을
+설정할 수 있습니다. 일부 환경 변수는 규칙이 실행된 후에
+설정될 수 있으므로, 설정한 것을 해제할 수 있다는 점에
+유의하십시오. 환경 변수의 작동 방식에 대한 자세한 내용은
+<a href="../env.html">환경 변수 문서</a>를 참조하십시오.</p>
+
+<p>이 플래그의 전체 구문은 다음과 같습니다:</p>
+
+<highlight language="config">
+[E=VAR:VAL]
+[E=!VAR]
+</highlight>
+
+<p><code>VAL</code>에는 확장되는 역참조(<code>$N</code>
+또는 <code>%N</code>)가 포함될 수 있습니다.</p>
+
+<p>짧은 형태를 사용하여</p>
+
+<example>
+[E=VAR]
+</example>
+
+<p><code>VAR</code>이라는 환경 변수를 빈 값으로 설정할 수
+있습니다.</p>
+
+<p>다음 형태</p>
+
+<example>
+[E=!VAR]
+</example>
+
+<p>를 사용하면 이전에 설정된 <code>VAR</code>이라는
+환경 변수를 해제할 수 있습니다.</p>
+
+<p>환경 변수는 CGI 프로그램, 다른 RewriteRule 지시어 또는
+CustomLog 지시어를 포함한 다양한 컨텍스트에서 사용할 수
+있습니다.</p>
+
+<p>다음 예제는 요청된 URI가 이미지 파일인 경우
+'image'라는 환경 변수를 '1' 값으로 설정합니다. 그런 다음
+해당 환경 변수를 사용하여 접근 로그에서 해당 요청을
+제외합니다.</p>
+
+<highlight language="config">
+RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
+CustomLog   "logs/access_log"    combined env=!image
+</highlight>
+
+<p>이 동일한 효과는 <directive
+module="mod_setenvif">SetEnvIf</directive>를 사용하여 얻을 수
+있습니다. 이 기술은 권장 사항이 아닌 예제로 제공됩니다.</p>
+</section>
+
+<section id="flag_end"><title>END</title>
+<p>[END] 플래그를 사용하면 ([L]과 같이) 현재 재작성 처리
+라운드를 종료할 뿐만 아니라 디렉토리별(htaccess)
+컨텍스트에서 후속 재작성 처리가 발생하는 것도
+방지합니다.</p>
+
+<p>이것은 외부 리다이렉트로 인한 새 요청에는 적용되지
+않습니다.</p>
+</section>
+
+<section id="flag_f"><title>F|forbidden</title>
+<p>[F] 플래그를 사용하면 서버가 클라이언트에 403 Forbidden
+상태 코드를 반환합니다. <directive
+module="mod_access_compat">Deny</directive> 지시어를
+사용하여 동일한 동작을 수행할 수 있지만, 이것은 Forbidden
+상태를 할당하는 데 더 많은 유연성을 제공합니다.</p>
+
+<p>다음 규칙은 서버에서 <code>.exe</code> 파일의
+다운로드를 금지합니다.</p>
+
+<highlight language="config">
+RewriteRule "\.exe"   "-" [F]
+</highlight>
+
+<p>이 예제는 재작성 대상에 "-" 구문을 사용하며, 요청된
+URI가 수정되지 않음을 의미합니다. 요청을 금지하려는 경우
+다른 URI로 재작성할 이유가 없습니다.</p>
+
+<p>[F]를 사용할 때 [L]이 암시됩니다 - 즉, 응답이 즉시
+반환되고 추가 규칙은 평가되지 않습니다.</p>
+
+</section>
+
+<section id="flag_g"><title>G|gone</title>
+<p>[G] 플래그는 서버가 응답과 함께 410 Gone 상태를
+반환하도록 강제합니다. 이것은 자원이 이전에 사용
+가능했지만 더 이상 사용할 수 없음을 나타냅니다.</p>
+
+<p>[F] 플래그와 마찬가지로 [G] 플래그를 사용할 때는
+일반적으로 재작성 대상에 "-" 구문을 사용합니다:</p>
+
+<highlight language="config">
+RewriteRule "oldproduct"   "-" [G,NC]
+</highlight>
+
+<p>[G]를 사용할 때 [L]이 암시됩니다 - 즉, 응답이 즉시
+반환되고 추가 규칙은 평가되지 않습니다.</p>
+
+</section>
+
+<section id="flag_h"><title>H|handler</title>
+<p>결과 요청이 지정된 핸들러로 처리되도록 강제합니다.
+예를 들어, 파일 확장자가 없는 모든 파일을 php 핸들러로
+파싱하도록 강제할 수 있습니다:</p>
+
+<highlight language="config">
+RewriteRule "!\."  "-" [H=application/x-httpd-php]
+</highlight>
+
+<p>
+위의 정규 표현식 - <code>!\.</code> - 은 리터럴 <code>.</code>
+문자를 포함하지 않는 모든 요청과 일치합니다.
+</p>
+
+<p>이것은 일부 조건에 따라 핸들러를 강제하는 데에도
+사용할 수 있습니다. 예를 들어, 서버별 컨텍스트에서 사용되는
+다음 스니펫은 <code>.phps</code> 확장자로 요청된 경우
+<code>.php</code> 파일을 <code>mod_php</code>에 의해
+<em>표시</em>되도록 합니다:</p>
+
+<highlight language="config">
+RewriteRule "^(/source/.+\.php)s$" "$1" [H=application/x-httpd-php-source]
+</highlight>
+
+<p>위의 정규 표현식 - <code>^(/source/.+\.php)s$</code> -
+은 <code>/source/</code>로 시작하고 1개 이상의 문자가 뒤따르고
+리터럴 <code>.phps</code>가 뒤따르는 모든 요청과 일치합니다.
+역참조 $1은 정규 표현식의 괄호 안의 캡처된 일치를
+참조합니다.</p>
+</section>
+
+<section id="flag_l"><title>L|last</title>
+<p>[L] 플래그는 <module>mod_rewrite</module>가 규칙 세트의
+처리를 중지하도록 합니다. 대부분의 컨텍스트에서 이것은
+규칙이 일치하면 더 이상 규칙이 처리되지 않음을 의미합니다.
+이것은 Perl의 <code>last</code> 명령이나 C의
+<code>break</code> 명령에 해당합니다. 이 플래그를 사용하여
+현재 규칙이 추가 규칙을 고려하지 않고 즉시 적용되어야
+함을 나타냅니다.</p>
+
+<p><code>.htaccess</code> 파일이나
+<directive type="section" module="core">Directory</directive>
+섹션에서 <directive module="mod_rewrite">RewriteRule</directive>을
+사용하는 경우 규칙이 처리되는 방식에 대한 이해가 중요합니다.
+이것의 간단한 형태는 규칙이 처리되면 재작성된 요청이
+URL 파싱 엔진에 다시 전달되어 처리된다는 것입니다.
+재작성된 요청이 처리될 때 <code>.htaccess</code> 파일이나
+<directive type="section" module="core">Directory</directive>
+섹션이 다시 만나질 수 있으며, 따라서 규칙 세트가 처음부터
+다시 실행될 수 있습니다. 가장 일반적으로 이것은 규칙 중
+하나가 내부 또는 외부 리다이렉트를 일으켜 요청 처리가
+다시 시작되는 경우에 발생합니다.</p>
+
+<p>따라서 이러한 컨텍스트 중 하나에서 <directive
+module="mod_rewrite">RewriteRule</directive> 지시어를
+사용하는 경우 규칙의 루핑을 피하기 위한 명시적 조치를
+취하고, 아래에 표시된 대로 일련의 규칙의 실행을 종료하기
+위해 [L] 플래그에만 의존하지 않는 것이 중요합니다.</p>
+
+<p>대안 플래그인 [END]는 현재 재작성 처리 라운드를
+종료할 뿐만 아니라 디렉토리별(htaccess) 컨텍스트에서
+후속 재작성 처리가 발생하는 것도 방지합니다. 이것은
+외부 리다이렉트로 인한 새 요청에는 적용되지 않습니다.</p>
+
+<p>여기 주어진 예제는 모든 요청을 <code>index.php</code>로
+재작성하며, 원래 요청을 <code>index.php</code>에 쿼리 문자열
+인수로 제공합니다. 그러나
+<directive module="mod_rewrite">RewriteCond</directive>는
+요청이 이미 <code>index.php</code>에 대한 것인 경우
+<directive module="mod_rewrite">RewriteRule</directive>이
+건너뛰어지도록 합니다.</p>
+
+<highlight language="config">
+RewriteBase "/"
+RewriteCond "%{REQUEST_URI}" !=/index.php
+RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]
+</highlight>
+</section>
+
+<section id="flag_n"><title>N|next</title>
+<p>
+[N] 플래그는 규칙 세트를 지금까지의 규칙 세트 결과를
+시작점으로 사용하여 처음부터 다시 시작하도록 합니다.
+루프를 초래할 수 있으므로 극도의 주의를 기울여
+사용하십시오.
+</p>
+<p>
+[Next] 플래그는 예를 들어, 요청에서 특정 문자열이나
+문자를 반복적으로 대체하려는 경우에 사용할 수 있습니다.
+여기 표시된 예제는 요청의 모든 곳에서 A를 B로 대체하며
+더 이상 대체할 A가 없을 때까지 계속합니다.
+</p>
+<highlight language="config">
+RewriteRule "(.*)A(.*)" "$1B$2" [N]
+</highlight>
+<p>이것을 <code>while</code> 루프로 생각할 수 있습니다:
+이 패턴이 여전히 일치하는 동안(즉, URI에 여전히
+<code>A</code>가 포함되어 있는 동안) 이 치환을
+수행합니다(즉, <code>A</code>를 <code>B</code>로
+대체합니다).</p>
+
+<p>2.5.0 이상에서 이 모듈은 의도하지 않은 루핑으로부터
+보호하기 위해 10,000번의 반복 후에 오류를 반환합니다.
+N 플래그에 추가하여 대안적인 최대 반복 횟수를 지정할 수
+있습니다.</p>
+<highlight language="config">
+# 루프의 각 패스에서 1개의 문자를 대체할 의향
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
+# ... 또는 10번 루프 후 포기
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]
+</highlight>
+
+</section>
+
+<section id="flag_nc"><title>NC|nocase</title>
+<p>[NC] 플래그를 사용하면
+<directive module="mod_rewrite">RewriteRule</directive>이
+대소문자를 구분하지 않는 방식으로 일치됩니다. 즉,
+일치하는 URI에서 문자가 대문자인지 소문자인지 상관하지
+않습니다.</p>
+
+<p>아래 예제에서 이미지 파일에 대한 모든 요청은 전용
+이미지 서버로 프록시됩니다. 일치는 대소문자를 구분하지
+않으므로, 예를 들어 <code>.jpg</code>와 <code>.JPG</code>
+파일 모두 허용됩니다.</p>
+
+<highlight language="config">
+RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]
+</highlight>
+</section>
+
+<section id="flag_ne"><title>NE|noescape</title>
+<p>기본적으로 <directive module="mod_rewrite">RewriteRule</directive>이
+외부 리다이렉트로 이어질 때, 출력에서 다음 안전 세트에 포함되지
+않는 모든 문자는 16진수 코드(퍼센트 인코딩)로 변환됩니다:</p>
+
+<ul>
+  <li>영숫자 문자: <code>A-Z</code>, <code>a-z</code>,
+  <code>0-9</code></li>
+  <li>특수 문자: <code>$-_.+!*'(),:;@&amp;=/~</code></li>
+</ul>
+
+<p>예를 들어, <code>#</code>은 <code>%23</code>으로,
+<code>?</code>는 <code>%3F</code>로 변환됩니다.
+<code>%</code> 문자도 (<code>%25</code>로) 이스케이프되므로
+치환에 이미 존재하는 퍼센트 인코딩이 이중 인코딩됩니다.</p>
+
+<p>[NE] 플래그를 사용하면 이 이스케이프를 방지하여
+<code>#</code>과 <code>?</code>와 같은 문자가 수정되지 않고
+리다이렉트 URL로 전달됩니다.</p>
+
+<highlight language="config">
+RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]
+</highlight>
+
+<p>
+위의 예제는 <code>/anchor/xyz</code>를
+<code>/bigpage.html#xyz</code>로 리다이렉트합니다.
+[NE]를 생략하면 #이 16진수 코드인 <code>%23</code>으로
+변환되어 404 Not Found 오류 조건이 발생합니다.
+</p>
+
+</section>
+
+<section id="flag_ns"><title>NS|nosubreq</title>
+<p>[NS] 플래그를 사용하면 서브요청에서 규칙이 사용되는 것을
+방지합니다. 예를 들어, SSI(Server Side Include)를 사용하여
+포함된 페이지는 서브요청이며, 해당 서브요청에서 재작성이
+발생하는 것을 피하고 싶을 수 있습니다. 또한
+<module>mod_dir</module>이 가능한 디렉토리 기본 파일(예:
+<code>index.html</code> 파일)에 대한 정보를 찾으려 할 때
+이것은 내부 서브요청이며, 종종 이러한 서브요청에서
+재작성을 피하고 싶을 것입니다. 서브요청에서는 전체
+규칙 세트가 적용되는 것이 항상 유용하지 않으며 오류를
+일으킬 수도 있습니다. 이 플래그를 사용하여 문제가 되는
+규칙을 제외하십시오.</p>
+
+<p>이 규칙을 사용할지 여부를 결정하려면: CGI 스크립트로
+URL에 접두사를 붙여 CGI 스크립트에 의해 처리되도록 강제하는
+경우, 서브요청에서 문제(또는 상당한 오버헤드)가 발생할
+가능성이 있습니다. 이러한 경우 이 플래그를
+사용하십시오.</p>
+
+<p>
+HTML 페이지의 일부로 로드되는 이미지, 자바스크립트 파일
+또는 CSS 파일은 서브요청이 아닙니다 - 브라우저는 이를
+별도의 HTTP 요청으로 요청합니다.
+</p>
+</section>
+
+<section id="flag_p"><title>P|proxy</title>
+<p>[P] 플래그를 사용하면 요청이
+<module>mod_proxy</module>에 의해 처리되고 프록시 요청을
+통해 처리됩니다. 예를 들어, 모든 이미지 요청이 백엔드
+이미지 서버에 의해 처리되도록 하려면 다음과 같이 할 수
+있습니다:</p>
+
+<highlight language="config">
+RewriteRule "/(.*)\.(jpg|gif|png)$" "http://images.example.com/$1.$2" [P]
+</highlight>
+
+<p>[P] 플래그를 사용하면 [L]이 암시됩니다 - 즉, 요청이
+즉시 프록시를 통해 전달되고 이후의 규칙은 고려되지
+않습니다.</p>
+
+<p>
+치환 문자열이 <module>mod_proxy</module>가 처리할 수 있는
+유효한 URI(일반적으로 <code>http://</code><em>hostname</em>으로
+시작)인지 확인해야 합니다. 그렇지 않으면 프록시 모듈에서
+오류가 발생합니다. 이 플래그를 사용하여 로컬 서버의 네임스페이스에
+원격 콘텐츠를 매핑하는
+<directive module="mod_proxy">ProxyPass</directive> 지시어의
+더 강력한 구현을 달성합니다.</p>
+
+<note type="warning">
+<title>보안 경고</title>
+<p>규칙의 대상 URL을 구성할 때, 서버가 프록시로 작동할
+URL 세트에 대한 클라이언트의 영향으로 인한 보안 영향을
+고려하여 주의하십시오. URL의 스키마 및 호스트명 부분이
+고정되어 있거나 클라이언트에게 부당한 영향을 주지
+않도록 하십시오.</p>
+</note>
+
+<note type="warning">
+<title>성능 경고</title>
+<p>이 플래그를 사용하면 <module>mod_proxy</module>의 사용이
+트리거되며, 이 경우 기본 워커가 사용되어 연결
+풀링/재사용을 처리하지 않으므로 영구 연결을 처리하지
+않습니다.</p>
+<p>영구 연결을 사용하려면 대상 URL의 스키마 및 호스트
+부분에 대한 <directive module="mod_proxy">Proxy</directive>
+블록을 최소한 설정하고 예를 들어 타임아웃을 설정하는
+<directive module="mod_proxy">ProxySet</directive> 지시어를
+포함해야 합니다.</p>
+<p><directive module="mod_proxy">ProxyPass</directive> 또는
+<directive module="mod_proxy">ProxyPassMatch</directive>로
+설정하면 영구 연결이 자동으로 사용됩니다.</p>
+</note>
+
+<p>참고: 이 플래그를 사용하려면
+<module>mod_proxy</module>가 활성화되어 있어야 합니다.</p>
+
+</section>
+
+<section id="flag_pt"><title>PT|passthrough</title>
+
+<p>
+RewriteRule의 대상(또는 치환 문자열)은 기본적으로 파일
+경로로 간주됩니다. [PT] 플래그를 사용하면 대신 URI로
+처리됩니다. 즉, [PT] 플래그를 사용하면
+<directive module="mod_rewrite">RewriteRule</directive>의
+결과가 URL 매핑을 통해 다시 전달되므로,
+<directive module="mod_alias">Alias</directive>,
+<directive module="mod_alias">Redirect</directive> 또는
+<directive module="mod_alias">ScriptAlias</directive>와 같은
+위치 기반 매핑이 효과를 발휘할 기회를 가집니다.
+</p>
+
+<p>
+예를 들어, /icons에 대한
+<directive module="mod_alias">Alias</directive>가 있고
+거기를 가리키는 <directive module="mod_rewrite">RewriteRule</directive>이
+있다면 <directive module="mod_alias">Alias</directive>가
+평가되도록 [PT] 플래그를 사용해야 합니다.
+</p>
+
+<highlight language="config">
+Alias "/icons" "/usr/local/apache/icons"
+RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]
+</highlight>
+
+<p>
+이 경우 [PT] 플래그를 생략하면 Alias가 무시되어
+'File not found' 오류가 반환됩니다.
+</p>
+
+<p><code>PT</code> 플래그는 <code>L</code> 플래그를
+암시합니다: 요청을 처리의 다음 단계로 전달하기 위해
+재작성이 중지됩니다.</p>
+
+<p><code>PT</code> 플래그는
+<directive type="section" module="core">Directory</directive>
+섹션이나 <code>.htaccess</code> 파일과 같은 디렉토리별
+컨텍스트에서 암시됩니다. 이를 우회하는 유일한 방법은
+<code>-</code>로 재작성하는 것입니다.</p>
+
+</section>
+
+<section id="flag_qsa"><title>QSA|qsappend</title>
+<p>
+대체 URI에 쿼리 문자열이 포함된 경우
+<directive module="mod_rewrite">RewriteRule</directive>의
+기본 동작은 기존 쿼리 문자열을 버리고 새로 생성된 것으로
+대체하는 것입니다. [QSA] 플래그를 사용하면 쿼리 문자열이
+결합됩니다.
+</p>
+
+<p>다음 규칙을 고려하십시오:</p>
+
+<highlight language="config">
+RewriteRule "/pages/(.+)" "/page.php?page=$1" [QSA]
+</highlight>
+
+<p>[QSA] 플래그를 사용하면 <code>/pages/123?one=two</code>에
+대한 요청이 <code>/page.php?page=123&amp;one=two</code>로
+매핑됩니다. [QSA] 플래그 없이 동일한 요청은
+<code>/page.php?page=123</code>으로 매핑됩니다 - 즉,
+기존 쿼리 문자열이 버려집니다.
+</p>
+</section>
+
+<section id="flag_qsd"><title>QSD|qsdiscard</title>
+<p>
+요청된 URI에 쿼리 문자열이 포함되어 있고 대상 URI에는
+없는 경우, <directive module="mod_rewrite">RewriteRule</directive>의
+기본 동작은 해당 쿼리 문자열을 대상 URI에 복사하는
+것입니다. [QSD] 플래그를 사용하면 쿼리 문자열이
+버려집니다.
+</p>
+
+<p>이 플래그는 버전 2.4.0 이상에서 사용할 수 있습니다.</p>
+
+<p>
+[QSD]와 [QSA]를 함께 사용하면 [QSD]가 우선합니다.
+</p>
+
+<p>
+대상 URI에 쿼리 문자열이 있는 경우 기본 동작이
+관찰됩니다 - 즉, 원래 쿼리 문자열이 버려지고
+<code>RewriteRule</code> 대상 URI의 쿼리 문자열로
+대체됩니다.
+</p>
+
+</section>
+
+<section id="flag_qsl"><title>QSL|qslast</title>
+<p>
+기본적으로 치환에서 첫 번째(가장 왼쪽) 물음표가 경로와
+쿼리 문자열을 구분합니다. [QSL] 플래그를 사용하면
+<directive module="mod_rewrite">RewriteRule</directive>이
+대신 마지막(가장 오른쪽) 물음표를 사용하여 두 구성 요소를
+분리합니다.</p>
+
+<p>
+이것은 파일명에 리터럴 물음표가 있는 파일에 매핑할 때
+유용합니다. 치환에 쿼리 문자열이 사용되지 않는 경우
+이 플래그와 함께 물음표를 추가할 수 있습니다.</p>
+
+<p>이 플래그는 버전 2.4.19 이상에서 사용할 수 있습니다.</p>
+
+</section>
+
+
+<section id="flag_r"><title>R|redirect</title>
+<p>
+[R] 플래그를 사용하면 브라우저에 HTTP 리다이렉트가
+발행됩니다. 완전한 URL(즉,
+<code>http://servername/</code> 포함)이 지정되면
+해당 위치로 리다이렉트가 발행됩니다. 그렇지 않으면
+현재 프로토콜, 서버명 및 포트 번호가 리다이렉트와
+함께 전송되는 URL을 생성하는 데 사용됩니다.
+</p>
+
+<p>
+유효한 <em>모든</em> HTTP 응답 상태 코드를
+[R=305] 구문으로 지정할 수 있으며, 지정하지 않으면
+302 상태 코드가 기본적으로 사용됩니다. 지정된 상태 코드가
+반드시 리다이렉트(3xx) 상태 코드일 필요는 없습니다.
+그러나 상태 코드가 리다이렉트 범위(300-399) 밖에 있으면
+치환 문자열이 완전히 삭제되고 <code>L</code>이 사용된
+것처럼 재작성이 중지됩니다.</p>
+
+<p>응답 상태 코드 외에도 기호 이름을 사용하여 리다이렉트
+상태를 지정할 수도 있습니다: <code>temp</code>(기본값),
+<code>permanent</code> 또는 <code>seeother</code>.</p>
+
+<p>
+거의 항상 [R]을 [L]과 함께 사용하고 싶을 것입니다(즉,
+[R,L]). [R] 플래그 단독으로는 URI 앞에
+<code>http://thishost[:thisport]</code>를 추가하지만
+이를 규칙 세트의 다음 규칙에 전달하여 종종
+'Invalid URI in request' 경고를 초래합니다.
+</p>
+
+<p>참고: httpd는 HTTP 사양에 포함된 상태 코드만
+지원합니다. 인식할 수 없는 상태 코드를 사용하면
+500 오류와 오류 로그 메시지가 발생합니다.</p>
+
+</section>
+
+<section id="flag_s"><title>S|skip</title>
+<p>[S] 플래그는 실행하고 싶지 않은 규칙을 건너뛰는 데
+사용됩니다. 건너뛰기 플래그의 구문은 [S=<em>N</em>]이며,
+<em>N</em>은 건너뛸 규칙의 수를 나타냅니다
+(<directive module="mod_rewrite">RewriteRule</directive>과
+선행 <directive module="mod_rewrite">RewriteCond</directive>
+지시어가 일치하는 경우). 이것은 재작성 규칙 세트의
+<code>goto</code> 문으로 생각할 수 있습니다. 다음 예제에서는
+요청된 URI가 실제 파일에 해당하지 않는 경우에만
+<directive module="mod_rewrite">RewriteRule</directive>을
+실행하고자 합니다.</p>
+
+<highlight language="config">
+# Is the request for a non-existent file?
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+# If so, skip these two RewriteRules
+RewriteRule ".?"                  "-" [S=2]
+
+RewriteRule "(.*\.gif)"           "images.php?$1"
+RewriteRule "(.*\.html)"          "docs.php?$1"
+</highlight>
+
+<p>이 기술은 <directive module="mod_rewrite">RewriteCond</directive>가
+바로 다음에 오는
+<directive module="mod_rewrite">RewriteRule</directive>에만
+적용되기 때문에 유용합니다. 따라서
+<code>RewriteCond</code>를 여러
+<code>RewriteRule</code>에 적용하려면 가능한 기술 중
+하나는 해당 조건을 부정하고 [Skip] 플래그를 가진
+<code>RewriteRule</code>을 추가하는 것입니다.
+이를 사용하여 유사 if-then-else 구조를 만들 수 있습니다:
+then 절의 마지막 규칙은 <code>skip=N</code>이 되며,
+N은 else 절의 규칙 수입니다:</p>
+<highlight language="config">
+# Does the file exist?
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+# Create an if-then-else construct by skipping 3 lines if we meant to go to the &quot;else&quot; stanza.
+RewriteRule ".?"                  "-" [S=3]
+
+# IF the file exists, then:
+    RewriteRule "(.*\.gif)"  "images.php?$1"
+    RewriteRule "(.*\.html)" "docs.php?$1"
+    # Skip past the &quot;else&quot; stanza.
+    RewriteRule ".?"         "-" [S=1]
+# ELSE...
+    RewriteRule "(.*)"       "404.php?file=$1"
+# END
+</highlight>
+
+<p><directive type="section">If</directive>,
+<directive type="section">ElseIf</directive> 및
+<directive type="section">Else</directive> 지시어를
+대신 사용하면 이러한 종류의 설정을 더 쉽게 달성할 수
+있습니다.</p>
+
+</section>
+
+<section id="flag_t"><title>T|type</title>
+<p>결과 응답이 전송될 MIME 유형을 설정합니다. 이것은
+<directive module="mod_mime">AddType</directive> 지시어와
+동일한 효과를 가집니다.</p>
+
+<p>예를 들어, 특정 방식으로 요청된 경우 Perl 소스 코드를
+일반 텍스트로 제공하기 위해 다음 기술을 사용할 수
+있습니다:</p>
+
+<highlight language="config">
+# .pl 파일을 일반 텍스트로 제공
+RewriteRule "\.pl$"  "-" [T=text/plain]
+</highlight>
+
+<p>또는 파일 확장자 없이 jpeg 이미지를 생성하는 카메라가
+있는 경우 파일 이름을 기준으로 올바른 MIME 유형으로
+해당 이미지가 제공되도록 강제할 수 있습니다:</p>
+
+<highlight language="config">
+# 이름에 'IMG'가 포함된 파일은 jpg 이미지입니다.
+RewriteRule "IMG"  "-" [T=image/jpg]
+</highlight>
+
+<p>이것은 간단한 예제이며 대신
+<directive type="section" module="core">FilesMatch</directive>를
+사용하여 더 잘 수행할 수 있다는 점에 유의하십시오.
+재작성에 의존하기 전에 항상 문제에 대한 대안 솔루션을
+고려하십시오. 재작성은 대안보다 항상 덜 효율적인
+솔루션이 됩니다.</p>
+
+<p>
+디렉토리별 컨텍스트에서 사용하는 경우 <em>전체
+<module>mod_rewrite</module> 처리 라운드에 대해</em>
+치환으로 <code>-</code>(대시)만 사용하십시오.
+그렇지 않으면 내부 재처리(후속
+<module>mod_rewrite</module> 처리 라운드 포함)로 인해
+이 플래그로 설정된 MIME 유형이 손실됩니다.
+<code>L</code> 플래그는 이 컨텍스트에서
+<module>mod_rewrite</module> 처리의 <em>현재</em> 라운드를
+종료하는 데 유용할 수 있습니다.</p>
+</section>
+
+<section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
+    <p>작성 중인 HTTP 요청에 인코딩된 물음표 '%3f'가 있고
+    재작성 결과의 치환에 '?'가 있는 경우 재작성이 계속되도록
+    허용하려면 이 플래그를 설정해야 합니다. 이는 인코딩된
+    물음표의 캡처 및 재치환을 이용하는 악의적인 URL로부터
+    보호합니다.</p>
+</section>
+<section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
+    <p>서버 범위의 치환이 변수나 역참조로 시작하고 파일 시스템
+    경로로 해석되는 경우 이 플래그를 설정해야 합니다.
+    이러한 치환은 문서 루트로 접두사가 붙지 않습니다.
+    이는 확장된 치환이 예상치 못한 파일 시스템 위치에
+    매핑되는 악의적인 URL로부터 보호합니다.</p>
+
+    <p><since>2.5.1</since></p>
+</section>
+<section id="flag_unc"><title>UNC</title>
+    <p>이 플래그를 설정하면 Windows UNC 경로에서 사용되는
+    여러 선행 슬래시의 병합을 방지합니다. 규칙의 치환이
+    여러 리터럴 슬래시로 시작하는 경우 이 플래그는
+    필요하지 않습니다.</p>
+
+    <p><since>2.5.1</since></p>
+</section>
+
+</manualpage>

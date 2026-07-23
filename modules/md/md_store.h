@@ -225,7 +225,9 @@ void md_store_unlock_global(md_store_t *store, apr_pool_t *p);
 /**************************************************************************************************/
 /* Storage handling utils */
 
-apr_status_t md_load(md_store_t *store, md_store_group_t group, 
+int md_exists(md_store_t *store, md_store_group_t group,
+              const char *name, apr_pool_t *p);
+apr_status_t md_load(md_store_t *store, md_store_group_t group,
                      const char *name, md_t **pmd, apr_pool_t *p);
 apr_status_t md_save(struct md_store_t *store, apr_pool_t *p, md_store_group_t group, 
                      md_t *md, int create);

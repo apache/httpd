@@ -127,9 +127,11 @@ module from each group.</p>
     an <directive module="core">AllowOverride</directive> directive like the
     following:</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 AllowOverride AuthConfig
-    </highlight>
+</highlight>
+</example>
 
     <p>Or, if you are just going to put the directives directly in
     your main server configuration file, you will of course need to
@@ -201,14 +203,16 @@ AllowOverride AuthConfig
     placed in <code>httpd.conf</code> inside a &lt;Directory
     "/usr/local/apache/htdocs/secret"&gt; section.</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 AuthType Basic
 AuthName "Restricted Files"
 # (Following line optional)
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen
-    </highlight>
+</highlight>
+</example>
 
     <p>Let's examine each of those directives individually. The <directive
     module="mod_authn_core">AuthType</directive> directive selects
@@ -304,7 +308,8 @@ person in</title>
     <p>Now, you need to modify your <code>.htaccess</code> file to
     look like the following:</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 AuthType Basic
 AuthName "By Invitation Only"
 # Optional line:
@@ -312,7 +317,8 @@ AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName
-    </highlight>
+</highlight>
+</example>
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
     and has an entry in the <code>password</code> file, will be let in, if
@@ -322,9 +328,11 @@ Require group GroupName
     specific. Rather than creating a group file, you can just use
     the following directive:</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Require valid-user
-    </highlight>
+</highlight>
+</example>
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
@@ -371,15 +379,17 @@ Require valid-user
 
     <p>To select a dbm file rather than a text file, for example:</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider dbm
-    AuthDBMUserFile "/www/passwords/passwd.dbm"
-    Require valid-user
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider dbm
+AuthDBMUserFile "/www/passwords/passwd.dbm"
+Require valid-user
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>Other options are available. Consult the
     <module>mod_authn_dbm</module> documentation for more details.</p>
@@ -394,16 +404,18 @@ Require valid-user
     scheme that meets your needs. In the following example, both the
     file and LDAP based authentication providers are being used.</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file ldap
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    Require valid-user
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file ldap
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+Require valid-user
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>In this example the file provider will attempt to authenticate
     the user first. If it is unable to authenticate the user, the LDAP
@@ -418,18 +430,20 @@ Require valid-user
     authorization methods can also be used. In this example both file group
     authorization as well as LDAP group authorization is being used.</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile "/usr/local/apache/passwd/groups"
-    Require group GroupName
-    Require ldap-group cn=mygroup,o=yourorg
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+AuthGroupFile "/usr/local/apache/passwd/groups"
+Require group GroupName
+Require ldap-group cn=mygroup,o=yourorg
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>To take authorization a little further, authorization container
     directives such as
@@ -475,7 +489,10 @@ Require valid-user
         access is granted.  See
         <a href="../mod/mod_authz_core.html#logic">Authorization Containers</a>
         for an example of how they may be used to express complex
-        authorization logic.</p>
+        authorization logic.  Each authorization provider returns one
+        of three possible results; see
+        <a href="../mod/mod_authz_core.html#authzresults">Authorization Result States</a>
+        for details on how containers interpret these results.</p>
 
         <p>By default all
         <directive module="mod_authz_core">Require</directive>
@@ -489,82 +506,20 @@ Require valid-user
 
     <section id="reqaccessctrl"><title>Using authorization providers for access control</title>
         <p>Authentication by username and password is only part of the
-        story. Frequently you want to let people in based on something
-        other than who they are. Something such as where they are
-        coming from.</p>
+        story. You can also allow or deny access based on other
+        criteria, such as the client's IP address or hostname, using
+        the authorization providers <code>all</code>, <code>env</code>,
+        <code>host</code>, and <code>ip</code> with the
+        <directive module="mod_authz_core">Require</directive>
+        directive.</p>
 
-        <p>The authorization providers <code>all</code>,
-        <code>env</code>, <code>host</code> and <code>ip</code> let you
-        allow or deny access based on other host based criteria such as
-        host name or ip address of the machine requesting a
-        document.</p>
-
-        <p>The usage of these providers is specified through the
-        <directive module="mod_authz_core">Require</directive> directive.
-        This directive registers the authorization providers
-        that will be called during the authorization stage of the request
-        processing. For example:</p>
-
-        <highlight language="config">
-Require ip <var>address</var>
-        </highlight>
-
-        <p>where <var>address</var> is an IP address (or a partial IP
-        address) or:</p>
-
-        <highlight language="config">
-Require host <var>domain_name</var>
-        </highlight>
-
-        <p>where <var>domain_name</var> is a fully qualified domain name
-        (or a partial domain name); you may provide multiple addresses or
-        domain names, if desired.</p>
-
-        <p>For example, if you have someone spamming your message
-        board, and you want to keep them out, you could do the
-        following:</p>
-
-        <highlight language="config">
-&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
-&lt;/RequireAll&gt;
-        </highlight>
-
-        <p>Visitors coming from that address will not be able to see
-        the content covered by this directive. If, instead, you have a
-        machine name, rather than an IP address, you can use that.</p>
-
-        <highlight language="config">
-&lt;RequireAll&gt;
-    Require all granted
-    Require not host host.example.com
-&lt;/RequireAll&gt;
-        </highlight>
-
-        <p>And, if you'd like to block access from an entire domain,
-        you can specify just part of an address or domain name:</p>
-
-        <highlight language="config">
-&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 192.168.205
-    Require not host phishers.example.com moreidiots.example
-    Require not host ke
-&lt;/RequireAll&gt;
-        </highlight>
-
-        <p>Using <directive module="mod_authz_core" type="section">RequireAll</directive>
-        with multiple <directive module="mod_authz_core"
-        type="section">Require</directive> directives, each negated with <code>not</code>,
-        will only allow access, if all of negated conditions are true. In other words,
-        access will be blocked, if any of the negated conditions fails.</p>
-
+        <p>For full details and examples, see the
+        <a href="access.html">Access Control</a> howto.</p>
     </section>
 
     <section id="filesystem"><title>Access Control backwards compatibility</title>
         <p>One of the side effects of adopting a provider based mechanism for
-        authentication is that the previous access control directives
+        authorization is that the previous access control directives
         <directive module="mod_access_compat">Order</directive>,
         <directive module="mod_access_compat">Allow</directive>,
         <directive module="mod_access_compat">Deny</directive> and
@@ -593,9 +548,8 @@ Require host <var>domain_name</var>
 <section id="socache"><title>Authentication Caching</title>
     <p>There may be times when authentication puts an unacceptable load
     on a provider or on your network.  This is most likely to affect users
-    of <module>mod_authn_dbd</module> (or third-party/custom providers).
-    To deal with this, HTTPD 2.3/2.4 introduces a new caching provider
-    <module>mod_authn_socache</module> to cache credentials and reduce
+    of <module>mod_authn_dbd</module> (or third-party/custom providers).  The
+    <module>mod_authn_socache</module> module caches credentials and reduces
     the load on the origin provider(s).</p>
     <p>This may offer a substantial performance boost to some users.</p>
 </section>

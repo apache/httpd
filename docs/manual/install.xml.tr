@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1296735:1874056 (outdated) -->
+<!-- English Revision: 1296735:1935202 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -41,14 +41,14 @@
       Kaynak Kodlu projenin yaptığı gibi <code>libtool</code> ve
       <code>autoconf</code> kullanır.</p>
 
-    <p>Eğer sadece sürüm yükseltiyorsanız (2.2.50’den 2.2.51’e yükseltmek
+    <p>Eğer sadece sürüm yükseltiyorsanız (2.2.50'den 2.2.51'e yükseltmek
       gibi) lütfen doğrudan <a href="#upgrading">Yükseltme</a> bölümüne
       atlayınız.</p>
 
 </summary>
 
 <seealso><a href="programs/configure.html">Kaynak ağacının yapılandırılması</a></seealso>
-<seealso><a href="invoking.html">Apache httpd’nin başlatılması</a></seealso>
+<seealso><a href="invoking.html">Apache httpd'nin başlatılması</a></seealso>
 <seealso><a href="stopping.html">Durdurma ve yeniden başlatma</a></seealso>
 
 <section id="overview"><title>Tez canlılar için genel bir bakış</title>
@@ -115,7 +115,7 @@
 
 <section id="requirements"><title>Gereksinimler</title>
 
-    <p>Apache httpd’yi derleyebilmek için şunlar mevcut olmalıdır:</p>
+    <p>Apache httpd'yi derleyebilmek için şunlar mevcut olmalıdır:</p>
 
     <dl>
       <dt>APR ve APR-Util</dt>
@@ -181,7 +181,7 @@
         seçeneğini kullanarak belirtmeniz önerilir. Eğer
         <program>configure</program> betiği sisteminizde Perl 5 yorumlayıcısı
         bulamazsa bu betikleri kullanamazsınız. Ancak, bu durum Apache
-        HTTPd’nin derlenip kurulmasına engel değildir.</dd>
+        HTTPd'nin derlenip kurulmasına engel değildir.</dd>
     </dl>
 </section>
 
@@ -241,13 +241,13 @@
       çeşitli değişkenler ve komut satırı seçenekleri kabul eder.</p>
 
     <p>En önemli seçenek, Apache HTTP Sunucusunun kurulacağı yerin
-      belirlenmesini, dolayısıyla Apache’nin bu konumda doğru olarak
-      çalışması için yapılandırılmasını sağlayan <code>--prefix</code>’tir.
+      belirlenmesini, dolayısıyla Apache'nin bu konumda doğru olarak
+      çalışması için yapılandırılmasını sağlayan <code>--prefix</code>'tir.
       Kurulacak dosyaların yerleri ile ilgili daha ayrıntılı denetim ek <a
       href="programs/configure.html#installationdirectories">yapılandırma
       seçenekleri</a> ile mümkün kılınmıştır.</p>
 
-    <p>Bu noktada ayrıca, Apache HTTPd’de hangi özelliklerin bulunmasını
+    <p>Bu noktada ayrıca, Apache HTTPd'de hangi özelliklerin bulunmasını
       istediğinizi <a href="mod/">modülleri</a> etkin kılarak veya iptal
       ederek belirtebilirsiniz. Apache, öntanımlı olarak içerilmiş pek çok
       modülle gelir. Bunlar çalışma anında devereye sokulup çıkarılabilen <a
@@ -271,9 +271,9 @@
       komut satırı seçenekleriyle bilgi aktarılarak yapılır. Daha fazla bilgi
       için <program>configure</program> kılavuz sayfasına bakınız.</p>
 
-    <p>Apache’yi derlerken ne gibi olasılıklara sahip olduğunuz hakkında bir
+    <p>Apache'yi derlerken ne gibi olasılıklara sahip olduğunuz hakkında bir
       izlenim edinmeniz için aşağıda tipik bir örneğe yer verilmiştir. Bu
-      örnekte, Apache’nin <code>/sw/pkg/apache</code> önekiyle başlayan
+      örnekte, Apache'nin <code>/sw/pkg/apache</code> önekiyle başlayan
       dizinlere kurulması, belli bir derleyici ve derleyici seçenekleriyle
       derlenmesi ve <module>mod_ldap</module> ve
       <module>mod_lua</module>modüllerinin de DSO mekanizması üzerinden
@@ -362,17 +362,17 @@
     <p>Sürüm yükseltme işleminin ilk adımı, sitenizi etkileyen değişiklikleri
       öğrenmek için dağıtım duyurusunu ve kaynak paketindeki
       <code>CHANGES</code> dosyasını okumaktır. Ana sürümlerden yükseltme
-      yapıyorsanız (2.0’ten 2.2’ye veya 2.2’daen 2.3’e gibi), derleme anı ve
+      yapıyorsanız (2.0'ten 2.2'ye veya 2.2'daen 2.3'e gibi), derleme anı ve
       çalışma anı yapılandırmalarındaki ana farklılıklar elle ayarlamalar
-      yapmanızı gerektirecektir. Ayrıca, tüm modüllerin de modül API’sindeki
+      yapmanızı gerektirecektir. Ayrıca, tüm modüllerin de modül API'sindeki
       değişikliklere uyum sağlaması için yükseltilmesi gerekecektir.</p>
 
-    <p>Aynı ana sürüm içinde yükseltme yapmak (2.2.55’ten 2.2.57’ye
+    <p>Aynı ana sürüm içinde yükseltme yapmak (2.2.55'ten 2.2.57'ye
       yükseltmek gibi) daha kolaydır. <code>make install</code> işlemi,
       mevcut yapılandırma ve günlük dosyalarınızın ve belgelerin üzerine
       yazmayacaktır. Ek olarak, geliştiriciler alt sürüm değişikliklerinde
       <program>configure</program> seçenekleri, çalışma anı yapılandırması
-      veya modül API’sinde uyumsuz değişiklikler yapmamaya özen
+      veya modül API'sinde uyumsuz değişiklikler yapmamaya özen
       göstereceklerdir. Çoğu durumda, aynı <program>configure</program> komut
       satırını, aynı yapılandırma dosyasını kullanabileceksiniz ve tüm
       modülleriniz de çalışmaya devam edebilecektir.</p>
@@ -424,7 +424,7 @@
       görünmüyor.</p>
 
     <p>Bu <a
-      href="http://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
+      href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">üçüncü parti
       dağıtımlarla ilgili bir açıklamaya</a> HTTP
       Sunucu wikisinde yer verilmiş olup bunların şu anki durumunu
       yansıtmaktadır. Ancak, yine de, dağıtımınızın belli platformlarla ilgili

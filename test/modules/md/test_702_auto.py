@@ -208,8 +208,8 @@ class TestAutov2:
         # check temporary cert from server
         cert2 = MDCertUtil(env.path_fallback_cert(domain))
         assert cert1.same_serial_as(cert2), \
-            "Unexpected temporary certificate on vhost %s. Expected cn: %s , "\
-            "but found cn: %s" % (name_a, cert2.get_cn(), cert1.get_cn())
+            f"Unexpected temporary certificate on vhost {name_a}." \
+            f" Expected cn: {cert2}, but found cn: {cert1}"
 
     # test case: drive MD with only invalid challenges, domains should stay 503'd
     def test_md_702_006(self, env):
@@ -297,9 +297,58 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
 
+    # Specify a valid http proxy for a single MDomain
+    def test_md_702_008b(self, env):
+        domain = self.test_domain
+        domains = [domain]
+        #
+        conf = MDConf(env, admin=f"admin@{domain}", proxy=True)
+        conf.add_drive_mode("always")
+        conf.start_md(domains)
+        conf.add(f"    MDHttpProxy http://localhost:{env.proxy_port}")
+        conf.end_md()
+        conf.install()
+        #
+        # - restart (-> drive), check that md is in store
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.await_completion([domain])
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        env.check_md_complete(domain)
+
+    # Specify a non-working http proxy for MDomain A and a valid http proxy for MDomain B
+    def test_md_702_008c(self, env):
+        domain_a = f"a{self.test_domain}"
+        domain_b = f"b{self.test_domain}"
+        conf = MDConf(env, admin=f"admin@{domain_a}", proxy=True)
+        conf.start_md([domain_a])
+        conf.add(f"    MDHttpProxy http://localhost:1")
+        conf.end_md()
+        conf.add_vhost(domains=[domain_a])
+        conf.start_md([domain_b])
+        conf.add(f"    MDHttpProxy http://localhost:{env.proxy_port}")
+        conf.end_md()
+        conf.add_vhost(domains=[domain_b])
+        conf.install()
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.await_completion([domain_b], restart=False)
+        md = env.await_error(domain_a)
+        assert md
+        assert md['renewal']['errors'] > 0
+        assert md['renewal']['last']['status-description'] == 'Connection refused'
+        assert 'account' not in md['ca']
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # Unsuccessful in contacting ACME server
+            ],
+            matches = [
+                r'.*Unsuccessful in contacting ACME server at .*'
+            ]
+        )
+
     # Force cert renewal due to critical remaining valid duration
     # Assert that new cert activation is delayed
-    def test_md_702_009(self, env):
+    def test_md_702_009(self, env, acme):
         domain = self.test_domain
         domains = [domain]
         #
@@ -329,6 +378,7 @@ class TestAutov2:
         assert env.await_completion([domain], must_renew=True)
         stat = env.get_certificate_status(domain)
         assert creds.certificate.serial_number != int(stat['rsa']['serial'], 16)
+        env.httpd_error_log.clear_log()
 
     # test case: drive with an unsupported challenge due to port availability 
     def test_md_702_010(self, env):

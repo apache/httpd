@@ -26,10 +26,10 @@
 <title>htdigest - manage user files for digest authentication</title>
 
 <summary>
-    <p><code>htdigest</code> is used to create and update the flat-files used
+    <p><program>htdigest</program> is used to create and update the flat-files used
     to store usernames, realm and password for digest authentication of HTTP
     users. Resources available from the Apache HTTP server can be restricted
-    to just the users listed in the files created by <code>htdigest</code>.</p>
+    to just the users listed in the files created by <program>htdigest</program>.</p>
 
     <p>This manual page only lists the command line arguments. For details of
     the directives necessary to configure digest authentication in
@@ -58,8 +58,7 @@
 
     <dt><code><var>realm</var></code></dt>
     <dd>The realm name to which the user name belongs. See
-    <a href="http://tools.ietf.org/html/rfc2617#section-3.2.1">
-    http://tools.ietf.org/html/rfc2617#section-3.2.1</a> for more details.
+    <rfc section="3.2.1">2617</rfc> for more details.
     </dd>
 
     <dt><code><var>username</var></code></dt>
@@ -72,6 +71,18 @@
 <section id="security"><title>Security Considerations</title>
     <p>This program is not safe as a setuid executable. Do <em>not</em> make it
     setuid.</p>
+</section>
+
+<section id="files"><title>Files</title>
+
+<p>The digest authentication file path is specified as an argument on the
+command line and may be located anywhere on the filesystem.</p>
+
+<dl>
+<dt><var>passwdfile</var></dt>
+<dd>The flat-file containing usernames, realms, and password hashes.</dd>
+</dl>
+
 </section>
 
 </manualpage>

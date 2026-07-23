@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1823832 -->
+<!-- English Revision: 1934245 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -34,15 +34,14 @@
 <summary>
     <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
     <module>mod_proxy</module>. Il fournit le support du protocole <a
-    href="http://www.fastcgi.com/">FastCGI</a>.</p>
+    href="https://fastcgi-archives.github.io/">FastCGI</a>.</p>
 
     <p>Ainsi, pour pouvoir traiter le protocole <code>FastCGI</code>,
     <module>mod_proxy</module> et <module>mod_proxy_fcgi</module>
     doivent être chargés dans le serveur.</p>
 
     <p>A la différence de <a
-    href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a
-    href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <module>mod_proxy_fcgi</module> n'est pas en mesure de démarrer le
     processus de l'application ; <program>fcgistarter</program> est
     fourni à cet effet sur certaines plateformes. Le framework
@@ -184,22 +183,21 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     </highlight>
     </example>
 
-    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que
-    requête de mandataire inverse en créant un court-circuiteur de
-    gestionnaire approprié. Dans l'exemple ci-dessous, toutes les
-    requêtes pour des scripts PHP seront transmises au serveur FastCGI
-    spécifié par mandat inverse. Cette fonctionnalité est disponible à
-    partir de la version 2.4.10 du serveur HTTP Apache. Pour des raisons
-    de performances, il est recommandé de définir un <a
-    href="mod_proxy.html#workers">worker (configuration d'un
-    mandataire)</a> représentant le même serveur fcgi:// d'arrière-plan.
-    Avec cette configuration, il est possible d'effectuer une
-    correspondance directe entre l'URI et le chemin du fichier sur le
-    serveur, et le chemin local du fichier sera alors transmis au serveur
-    d'arrière-plan. Lorsque FastCGI est configuré ainsi, le serveur est
-    en mesure de calculer le PATH_INFO le plus approprié.
-      </p>
-	<example><title>Mandataire via un gestionnaire</title>
+    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que requête
+    de mandataire inverse en créant un court-circuiteur de gestionnaire
+    approprié. Dans l'exemple ci-dessous, toutes les requêtes pour des scripts
+    PHP seront transmises au serveur FastCGI spécifié par mandat inverse. Cette
+    fonctionnalité est disponible à partir de la version 2.4.10 du serveur HTTP
+    Apache. Pour des raisons de performances, il est recommandé de définir un <a
+    href="mod_proxy.html#workers">worker (configuration d'un mandataire)</a>
+    représentant le même serveur fcgi:// d'arrière-plan.  Avec cette
+    configuration, il est possible d'effectuer une correspondance directe entre
+    l'URI et le chemin du fichier sur le serveur, et le chemin local du fichier
+    sera alors transmis au serveur d'arrière-plan. Lorsque FastCGI est configuré
+    ainsi, le serveur est en mesure de calculer le <glossary
+    ref="pathinfo">PATH_INFO</glossary> le plus approprié.
+    </p>
+  <example><title>Mandataire via un gestionnaire</title>
       <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
     # Note : la seule partie variable est /path/to/app.sock
@@ -380,9 +378,8 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TR
 
     <highlight language="config">ProxyFCGISetEnvIf true VARIABLE</highlight>
 
-  La spécification CGI/1.1 <a
-  href="https://tools.ietf.org/html/rfc3875#section-4.1">ne fait pas de
-  distinction</a> entre une variable contenant une chaîne vide et une variable qui
+  La spécification CGI/1.1 ne fait pas de
+  distinction (<rfc section="4.1">3875</rfc>) entre une variable contenant une chaîne vide et une variable qui
   n'existe pas. De nombreuses implémentations CGI et FastCGI font cependant
   cette distinction (ou permettent aux scripts de la faire). Le choix de celle
   que vous allez utiliser dépend de votre implémentation et de la raison qui

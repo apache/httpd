@@ -1,50 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>rotatelogs - Apache günlüklerini döndürmek için borulu günlük kayıt
-  programı - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>rotatelogs - Apache g&uuml;nl&uuml;klerini d&ouml;nd&uuml;rmek i&ccedil;in borulu g&uuml;nl&uuml;k kayıt
+  programı - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - Apache günlüklerini döndürmek için borulu günlük kayıt
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - Apache g&uuml;nl&uuml;klerini d&ouml;nd&uuml;rmek i&ccedil;in borulu g&uuml;nl&uuml;k kayıt
   programı</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/rotatelogs.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
-     <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu günlük
-     dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir
-     programdır. Günlük dosyasının azami boyutuna göre veya belli aralıklarla
-     günlük dosyalarını döndürür.</p>
+     <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu g&uuml;nl&uuml;k
+     dosyaları &ouml;zelliği ile birlikte kullanmak i&ccedil;in tasarlanmış basit bir
+     programdır. G&uuml;nl&uuml;k dosyasının azami boyutuna g&ouml;re veya belli aralıklarla
+     g&uuml;nl&uuml;k dosyalarını d&ouml;nd&uuml;r&uuml;r.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Örnekler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#portability">Taşınabilirlik</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Se&ccedil;enekler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">&Ouml;rnekler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#portability">Taşınabilirlik</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Kullanım <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
 
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
@@ -55,180 +55,180 @@
      [ -<strong>e</strong> ]
      [ -<strong>c</strong> ]
      <var>dosyaismi</var>
-     <var>süre</var>|<var>boyut</var>(B|K|M|G)
+     <var>s&uuml;re</var>|<var>boyut</var>(B|K|M|G)
      [ <var>saat_farkı</var> ]</code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Se&ccedil;enekler <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
 <dl>
     <dt><code><strong>-l</strong></code></dt>
     <dd>GMT yerine yerel zamanın kullanılmasını sağlar.</dd>
 
     <dt><code><strong>-L</strong></code> <var>bagismi</var></dt>
-    <dd>Belirtilen bağ dosyası ismine geçerli günlük dosyasından kalıcı bir bağ
+    <dd>Belirtilen bağ dosyası ismine ge&ccedil;erli g&uuml;nl&uuml;k dosyasından kalıcı bir bağ
     oluşturulur. <code>tail -F bagismi</code> gibi bir komut kullanılarak
-    günlüğün sürekli izlenmesi için kullanılabilir.</dd>
+    g&uuml;nl&uuml;ğ&uuml;n s&uuml;rekli izlenmesi i&ccedil;in kullanılabilir.</dd>
 
     <dt><code><strong>-p</strong></code> <var>program</var></dt>
 
     <dd>Belirtildiği takdirde, <code><strong>rotatelogs</strong></code> yeni
-    bir günlük dosyasının her açılışında belirtilen programı çalıştırır. Yeni
-    açılan dosyanın ismi programa ilk argüman olarak aktarılır. Bu işlem bir
-    döndürme sonrası yapılırsa eski günlük dosyası ikinci argüman olarak
-    aktarılır. <code><strong>rotatelogs</strong></code> işlemini sürdürmek için
+    bir g&uuml;nl&uuml;k dosyasının her a&ccedil;ılışında belirtilen programı &ccedil;alıştırır. Yeni
+    a&ccedil;ılan dosyanın ismi programa ilk arg&uuml;man olarak aktarılır. Bu işlem bir
+    d&ouml;nd&uuml;rme sonrası yapılırsa eski g&uuml;nl&uuml;k dosyası ikinci arg&uuml;man olarak
+    aktarılır. <code><strong>rotatelogs</strong></code> işlemini s&uuml;rd&uuml;rmek i&ccedil;in
     belirtilen programın sonlanmasını beklemez, dolayısıyla sonlanma soucunda
-    döndürülen hata kodunu günlüğe kaydetmez. Çalıştırılan program
+    d&ouml;nd&uuml;r&uuml;len hata kodunu g&uuml;nl&uuml;ğe kaydetmez. &Ccedil;alıştırılan program
     <code><strong>rotatelogs</strong></code> ile aynı stdin, stdout ve stderr'i
     kullanır ve ortamı da miras alır.</dd>
 
     <dt><code><strong>-f</strong></code></dt>
-    <dd>İlk günlük giridisinin okunmasını beklemeden
-    <code><strong>rotatelogs</strong></code> başlar başlamaz günlük
-    dosyasının açılmasını sağlar. Çok meşgul sitelerde, sunucu başlatılıp ilk
-    istek sunuluncaya kadar geçen zamanda günlük dosyasının yokluğu
-    özdevinimli işlemler yapan bazı günlükleme araçlarında sorunlara yol
-    açabilir. Bu seçenek bu gibi durumlarda yararlıdır.</dd>
+    <dd>İlk g&uuml;nl&uuml;k giridisinin okunmasını beklemeden
+    <code><strong>rotatelogs</strong></code> başlar başlamaz g&uuml;nl&uuml;k
+    dosyasının a&ccedil;ılmasını sağlar. &Ccedil;ok meşgul sitelerde, sunucu başlatılıp ilk
+    istek sunuluncaya kadar ge&ccedil;en zamanda g&uuml;nl&uuml;k dosyasının yokluğu
+    &ouml;zdevinimli işlemler yapan bazı g&uuml;nl&uuml;kleme ara&ccedil;larında sorunlara yol
+    a&ccedil;abilir. Bu se&ccedil;enek bu gibi durumlarda yararlıdır.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
-    <dd>Günlük dosyasının döndürülmek yerine tepeden kırpılmasına sebep olur.
-    Günlüğün <code><strong>tail</strong></code> gibi bir araç tarafından gerçek
+    <dd>G&uuml;nl&uuml;k dosyasının d&ouml;nd&uuml;r&uuml;lmek yerine tepeden kırpılmasına sebep olur.
+    G&uuml;nl&uuml;ğ&uuml;n <code><strong>tail</strong></code> gibi bir ara&ccedil; tarafından ger&ccedil;ek
     zamanda işlendiği ve veriyi saklamanın gerekmediği durumda kullanışlıdır.
-    Dosya ismine bir sonek eklenmez, ancak biçem dizgesi '%' karakteri
-    içeriyorsa buna uyulur.</dd>
+    Dosya ismine bir sonek eklenmez, ancak bi&ccedil;em dizgesi '%' karakteri
+    i&ccedil;eriyorsa buna uyulur.</dd>
 
     <dt><code><strong>-v</strong></code></dt>
-    <dd>Standart hataya verilen çıktı daha ayrıntılı olur. Çıktı,
-    yapılandırma çözümlemesinin sonuçlarını ve tüm dosya açma/kapama
-    işlemlerini içerir.</dd>
+    <dd>Standart hataya verilen &ccedil;ıktı daha ayrıntılı olur. &Ccedil;ıktı,
+    yapılandırma &ccedil;&ouml;z&uuml;mlemesinin sonu&ccedil;larını ve t&uuml;m dosya a&ccedil;ma/kapama
+    işlemlerini i&ccedil;erir.</dd>
 
     <dt><code><strong>-e</strong></code></dt>
-    <dd>Günlüğü standart çıktıya basar. Günlüğün zincirdeki ilgili araç
-    tarafından gerçek zamanda işlenmesi gerektiğinde kullanışlıdır.</dd>
+    <dd>G&uuml;nl&uuml;ğ&uuml; standart &ccedil;ıktıya basar. G&uuml;nl&uuml;ğ&uuml;n zincirdeki ilgili ara&ccedil;
+    tarafından ger&ccedil;ek zamanda işlenmesi gerektiğinde kullanışlıdır.</dd>
 
     <dt><code><strong>-c</strong></code></dt>
     <dd>Create log file for each interval, even if empty.</dd>
 
     <dt><code><var>dosyaismi</var></code></dt>
-    <dd><p>Günlük dosyasının ismi yoluyla birlikte belirtilir.
-      <var>dosyaismi</var> '%' karakterleri içeriyorsa bunlar
-      <code>strftime(3)</code> biçem belirteçleri olarak ele alınır. Aksi
-      takdirde, özdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı üretilir.
-      (<code><strong>-t</strong></code> seçeneği kullanılmadıkça) Uzantı saniye
-      cinsindendir  ve her iki durumda da bu değer, mevcut döngü
-      diliminin başlangıcına göre hesaplanır. Örneğin, döndürmenin 86400
-      saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> biçeminde
-      oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin
-      başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</p>
+    <dd><p>G&uuml;nl&uuml;k dosyasının ismi yoluyla birlikte belirtilir.
+      <var>dosyaismi</var> '%' karakterleri i&ccedil;eriyorsa bunlar
+      <code>strftime(3)</code> bi&ccedil;em belirte&ccedil;leri olarak ele alınır. Aksi
+      takdirde, &ouml;zdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı &uuml;retilir.
+      (<code><strong>-t</strong></code> se&ccedil;eneği kullanılmadık&ccedil;a) Uzantı saniye
+      cinsindendir  ve her iki durumda da bu değer, mevcut d&ouml;ng&uuml;
+      diliminin başlangıcına g&ouml;re hesaplanır. &Ouml;rneğin, d&ouml;nd&uuml;rmenin 86400
+      saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> bi&ccedil;eminde
+      oluşturulan saat, dakika ve saniye alanları, 24 saatlik s&uuml;renin
+      başlangıcını (geceyarısı) g&ouml;stermek &uuml;zere sıfırlarla doldurulur.</p>
 
-      <p><code>strftime(3)</code> dosyaismi biçemlemesi kullanılırken, günlük
-      dosyası biçeminin günlük dosyası döndürülürken her zaman farklı bir dosya
-      ismi üretecek yeterlilikte parçacıklı yapıya sahip olduğundan emin
-      olmalısınız. Aks takdirde döndürme işlemi yeni bir dosya başlatmak yerine
-      hep aynı dosyanın üzerine yazar. Örneğin, <var>logfile</var> için
+      <p><code>strftime(3)</code> dosyaismi bi&ccedil;emlemesi kullanılırken, g&uuml;nl&uuml;k
+      dosyası bi&ccedil;eminin g&uuml;nl&uuml;k dosyası d&ouml;nd&uuml;r&uuml;l&uuml;rken her zaman farklı bir dosya
+      ismi &uuml;retecek yeterlilikte par&ccedil;acıklı yapıya sahip olduğundan emin
+      olmalısınız. Aks takdirde d&ouml;nd&uuml;rme işlemi yeni bir dosya başlatmak yerine
+      hep aynı dosyanın &uuml;zerine yazar. &Ouml;rneğin, <var>logfile</var> i&ccedil;in
       <code>/var/logs/errorlog.%Y-%m-%d</code> belirtilmişse 5 mega baytta bir
-      yeni bir günlük dosyasına başlanacaktır. Fakat 5 megabayta gün içinde iki
-      kez ulaşılırsa aynı günlük dosyası üretilir ve günlük hep aynı dosyanın
-      üzerine yazılır.</p>
+      yeni bir g&uuml;nl&uuml;k dosyasına başlanacaktır. Fakat 5 megabayta g&uuml;n i&ccedil;inde iki
+      kez ulaşılırsa aynı g&uuml;nl&uuml;k dosyası &uuml;retilir ve g&uuml;nl&uuml;k hep aynı dosyanın
+      &uuml;zerine yazılır.</p>
     </dd>
 
-    <dt><code><var>süre</var></code></dt>
-    <dd>Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir.
-    Örneğin, bu süre 3600 saniye ise günlük dosyası her saat başında
-    yenilenir; 86400 saniye ise her geceyarısı yenilenir. (Bu süre zarfında
-    günlüğe kaydedilecek bir olay gerçekleşmemişse dosya oluşturulmaz.)</dd>
+    <dt><code><var>s&uuml;re</var></code></dt>
+    <dd>G&uuml;nl&uuml;k dosyasının yenisinin ka&ccedil; saniyede bir a&ccedil;ılacağı belirtilir.
+    &Ouml;rneğin, bu s&uuml;re 3600 saniye ise g&uuml;nl&uuml;k dosyası her saat başında
+    yenilenir; 86400 saniye ise her geceyarısı yenilenir. (Bu s&uuml;re zarfında
+    g&uuml;nl&uuml;ğe kaydedilecek bir olay ger&ccedil;ekleşmemişse dosya oluşturulmaz.)</dd>
 
     <dt><code><var>boyut</var>(B|K|M|G)</code></dt>
-    <dd>Boyuta göre döndürme için azami dosya boyutu. Belirtilenin bir süre
-    değil de bir boyut değeri olarak ele alınması için değerin sonuna şu
+    <dd>Boyuta g&ouml;re d&ouml;nd&uuml;rme i&ccedil;in azami dosya boyutu. Belirtilenin bir s&uuml;re
+    değil de bir boyut değeri olarak ele alınması i&ccedil;in değerin sonuna şu
     karakterlerden biri eklenmelidir: <code>B</code> (Bayt), <code>K</code>
     (kilobayt), <code>M</code> (megabayt), <code>G</code> (gigabayt).
 
-    <p>Süre ve boyut birlikte belirtilmişse boyut süreden sonra
-    belirtilmelidir. Dosya yenilemesi, bunlardan hangisi daha önce aşılırsa o
-    zaman gerçekleşir.</p></dd>
+    <p>S&uuml;re ve boyut birlikte belirtilmişse boyut s&uuml;reden sonra
+    belirtilmelidir. Dosya yenilemesi, bunlardan hangisi daha &ouml;nce aşılırsa o
+    zaman ger&ccedil;ekleşir.</p></dd>
 
     <dt><code><var>saat_farkı</var></code></dt>
-    <dd>Koordinatlı evrensel zamana göre "dakika" farkı. Belirtilmezse, sıfır
-    öntanımlıdır. Örneğin, -5 saatlik bir zaman diliminde bulunuyorsanız bu
-    değer <code>-300</code> olmalıdır. Çoğu durumda, bunun yerine
-    <code><strong>-l</strong></code> seçeneğini kullanmak gerekir.</dd>
+    <dd>Koordinatlı evrensel zamana g&ouml;re "dakika" farkı. Belirtilmezse, sıfır
+    &ouml;ntanımlıdır. &Ouml;rneğin, -5 saatlik bir zaman diliminde bulunuyorsanız bu
+    değer <code>-300</code> olmalıdır. &Ccedil;oğu durumda, bunun yerine
+    <code><strong>-l</strong></code> se&ccedil;eneğini kullanmak gerekir.</dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Örnekler</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">&Ouml;rnekler <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
 </code></p></div>
 
-     <p>nnnn, günlük kaydının başladığı sistem zamanı olmak üzere
-     /var/logs/logfile.nnnn dosyası oluşturulur. Bu zaman, daima döngü
-     süresinin katları olacağından bunu cron betiklerinizi eşzamanlamakta
-     kullanabilirsiniz. Her döngü süresinin sonunda (burada 24 saat sonra)
-     yeni bir günlük dosyası açılır.</p>
+     <p>nnnn, g&uuml;nl&uuml;k kaydının başladığı sistem zamanı olmak &uuml;zere
+     /var/logs/logfile.nnnn dosyası oluşturulur. Bu zaman, daima d&ouml;ng&uuml;
+     s&uuml;resinin katları olacağından bunu cron betiklerinizi eşzamanlamakta
+     kullanabilirsiniz. Her d&ouml;ng&uuml; s&uuml;resinin sonunda (burada 24 saat sonra)
+     yeni bir g&uuml;nl&uuml;k dosyası a&ccedil;ılır.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs -l /var/logs/logfile.%Y.%m.%d 86400" common
 </code></p></div>
 
-     <p>yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere
-     /var/logs/logfile.yyyy.mm.dd dosyası oluşturulur. Her gün yerel zamanla
-     geceyarısı yeni bir günlük dosyasına geçilecektir.</p>
+     <p>yyyy, yıl; mm, ay; dd, ayın g&uuml;n&uuml;n&uuml; belirtmek &uuml;zere
+     /var/logs/logfile.yyyy.mm.dd dosyası oluşturulur. Her g&uuml;n yerel zamanla
+     geceyarısı yeni bir g&uuml;nl&uuml;k dosyasına ge&ccedil;ilecektir.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
 </code></p></div>
 
-     <p>Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
+     <p>G&uuml;nl&uuml;k dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
      </p>
 
 <div class="example"><p><code>
      ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
 </code></p></div>
-     <p>Hata günlüğünün 5 megabaytta bir
-     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
+     <p>Hata g&uuml;nl&uuml;ğ&uuml;n&uuml;n 5 megabaytta bir
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> bi&ccedil;emli bir isimle
      oluşturulmasını sağlar.</p>
 
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
 </code></p></div>
 
-     <p>/var/logs/logfile dosyasını oluşturur, sunucu başlatılırken ve günde
-       bir kere dosyanın tepesi kırpılır. Bu senaryoda ayrı bir sürecin (tail
-       gibi) dosyayı gerçek zamanlı işleyeceği umulur.</p>
+     <p>/var/logs/logfile dosyasını oluşturur, sunucu başlatılırken ve g&uuml;nde
+       bir kere dosyanın tepesi kırpılır. Bu senaryoda ayrı bir s&uuml;recin (tail
+       gibi) dosyayı ger&ccedil;ek zamanlı işleyeceği umulur.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="portability" id="portability">Taşınabilirlik</a> <a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
+<h2 id="portability">Taşınabilirlik <a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
 
-    <p>Aşağıdaki günlük dosyası biçem belirteçlerinin tüm
-    <code>strftime(3)</code> gerçeklenimlerince desteklenmesi gerekir.
-    Kullandığınız kütüphaneye özgü belirteçler için sisteminizdeki
+    <p>Aşağıdaki g&uuml;nl&uuml;k dosyası bi&ccedil;em belirte&ccedil;lerinin t&uuml;m
+    <code>strftime(3)</code> ger&ccedil;eklenimlerince desteklenmesi gerekir.
+    Kullandığınız k&uuml;t&uuml;phaneye &ouml;zg&uuml; belirte&ccedil;ler i&ccedil;in sisteminizdeki
     <code>strftime(3)</code> kılavuz sayfasına bakınız.</p>
 
-<table class="bordered"><tr><td><code>%A</code></td><td>tam gün ismi (yerelleştirilmiş)</td></tr>
-<tr class="odd"><td><code>%a</code></td><td>3 harflik gün ismi
+<table class="bordered"><tr><td><code>%A</code></td><td>tam g&uuml;n ismi (yerelleştirilmiş)</td></tr>
+<tr class="odd"><td><code>%a</code></td><td>3 harflik g&uuml;n ismi
 (yerelleştirilmiş)</td></tr>
 <tr><td><code>%B</code></td><td>tam ay ismi (yerelleştirilmiş)</td></tr>
 <tr class="odd"><td><code>%b</code></td><td>3 harflik ay ismi (yerelleştirilmiş)</td></tr>
 <tr><td><code>%c</code></td><td>tarih ve saat (yerelleştirilmiş)</td></tr>
-<tr class="odd"><td><code>%d</code></td><td>2 haneli ay günü numarası</td></tr>
+<tr class="odd"><td><code>%d</code></td><td>2 haneli ay g&uuml;n&uuml; numarası</td></tr>
 <tr><td><code>%H</code></td><td>2 haneli saat (24 saatlik)</td></tr>
 <tr class="odd"><td><code>%I</code></td><td>2 haneli saat (12 saatlik)</td></tr>
-<tr><td><code>%j</code></td><td>3 hanelik yıl günü numarası</td></tr>
+<tr><td><code>%j</code></td><td>3 hanelik yıl g&uuml;n&uuml; numarası</td></tr>
 <tr class="odd"><td><code>%M</code></td><td>2 haneli dakika</td></tr>
 <tr><td><code>%m</code></td><td>2 haneli ay</td></tr>
-<tr class="odd"><td><code>%p</code></td><td>12 saatlik kip için öö/ös
+<tr class="odd"><td><code>%p</code></td><td>12 saatlik kip i&ccedil;in &ouml;&ouml;/&ouml;s
 (yerelleştirilmiş)</td></tr>
 <tr><td><code>%S</code></td><td>2 haneli saniye</td></tr>
 <tr class="odd"><td><code>%U</code></td><td>2 haneli yılın hafta numarası
-(Haftanın ilk gününün Pazar olduğu varsayımıyla)</td></tr>
+(Haftanın ilk g&uuml;n&uuml;n&uuml;n Pazar olduğu varsayımıyla)</td></tr>
 <tr><td><code>%W</code></td><td>2 haneli yılın hafta numarası
-(Haftanın ilk gününün Pazartesi olduğu varsayımıyla)</td></tr>
-<tr class="odd"><td><code>%w</code></td><td>1 hanelik haftanın gün numarası
-(Haftanın ilk gününün Pazar olduğu varsayımıyla)</td></tr>
+(Haftanın ilk g&uuml;n&uuml;n&uuml;n Pazartesi olduğu varsayımıyla)</td></tr>
+<tr class="odd"><td><code>%w</code></td><td>1 hanelik haftanın g&uuml;n numarası
+(Haftanın ilk g&uuml;n&uuml;n&uuml;n Pazar olduğu varsayımıyla)</td></tr>
 <tr><td><code>%X</code></td><td>saat (yerelleştirilmiş)</td></tr>
 <tr class="odd"><td><code>%x</code></td><td>tarih (yerelleştirilmiş)</td></tr>
 <tr><td><code>%Y</code></td><td>4 hanelik yıl</td></tr>
@@ -240,31 +240,35 @@
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/rotatelogs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../tr/programs/rotatelogs.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1916704 -->
+<!-- English Revision: 1934245 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -61,17 +61,15 @@
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
 <seealso><a href="../suexec.html">Exécuter des programmes CGI sous des
 utilisateurs différents</a></seealso>
-<seealso><a href="http://www.ietf.org/rfc/rfc3875">La spécification
-CGI</a></seealso>
+<seealso>La spécification CGI (<rfc>3875</rfc>)</seealso>
 
 <section id="env"><title>Les variables d'environnement CGI</title>
     <p>Le serveur va définir les variables d'environnement CGI comme
-    décrit dans la <a
-    href="http://www.ietf.org/rfc/rfc3875">Spécification CGI</a>, de la
+    décrit dans la spécification CGI (<rfc>3875</rfc>), de la
     manière suivante :</p>
 
     <dl>
-      <dt>PATH_INFO</dt>
+      <dt><glossary ref="pathinfo">PATH_INFO</glossary></dt>
 
       <dd>Cette variable ne sera pas disponible si la directive
       <directive module="core">AcceptPathInfo</directive> est

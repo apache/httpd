@@ -60,6 +60,9 @@ static SSLModConfigRec *ssl_config_global_create(apr_pool_t *pool, server_rec *s
      * initialize per-module configuration
      */
     mc->sesscache_mode         = SSL_SESS_CACHE_OFF;
+#ifdef HAVE_TLSEXT
+    mc->snivh_policy           = MODSSL_SNIVH_SECURE;
+#endif
 #ifdef MODSSL_USE_SSLRAND
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
@@ -222,6 +225,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #endif
     sc->clienthello_vars       = UNSET;
     sc->session_tickets        = UNSET;
+#ifdef HAVE_OPENSSL_ECH
+    sc->echkeydir              = NULL;
+#endif
 
     modssl_ctx_init_server(sc, p);
 
@@ -356,6 +362,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(compression);
 #endif
     cfgMergeBool(session_tickets);
+#ifdef HAVE_OPENSSL_ECH
+    cfgMergeString(echkeydir);
+#endif
 
     modssl_ctx_cfg_merge_server(p, base->server, add->server, mrg->server);
 
@@ -687,14 +696,17 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     }
 
     if (strcEQ(arg, "builtin")) {
+#if !MODSSL_HAVE_ENGINE_API
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server, APLOGNO(10542)
+                     "'SSLCryptoDevice builtin' is deprecated and has no effect");
+#else
         mc->szCryptoDevice = NULL;
     }
-#if MODSSL_HAVE_ENGINE_API
     else if ((e = ENGINE_by_id(arg))) {
         mc->szCryptoDevice = arg;
         ENGINE_free(e);
-    }
 #endif
+    }
     else {
         err = "SSLCryptoDevice: Invalid argument; must be one of: "
               "'builtin' (none)";
@@ -839,6 +851,25 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 
     return "Argument must be On or Off";
 }
+
+#ifdef HAVE_OPENSSL_ECH
+const char *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->echkeydir=arg;
+
+#if !defined(SSL_HAVE_PROTOCOL_TLSV1_3)
+    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10533)
+                 "ECHKeyDir configured but TLSv1.3 not supported - exiting.");
+    return "ECHKeyDir configured but TLSv1.3 not supported";
+#endif
+    ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, cmd->server,
+                 "%s: ECHKeyDir set to %s",
+                 cmd->cmd->name, sc->echkeydir);
+    return NULL;
+}
+#endif
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
 {
@@ -2010,6 +2041,44 @@ const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag
 #endif
 }
 
+const char *ssl_cmd_SSLVHostSNIPolicy(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+#ifdef HAVE_TLSEXT
+    SSLModConfigRec *mc = myModConfig(cmd->server);
+    const char *err;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+    if (!mc) {
+        return "SSLVHostSNIPolicy cannot be used inside SSLPolicyDefine";
+    }
+
+    if (strcEQ(arg, "secure")) {
+        mc->snivh_policy = MODSSL_SNIVH_SECURE;
+    }
+    else if (strcEQ(arg, "strict")) {
+        mc->snivh_policy = MODSSL_SNIVH_STRICT;
+    }
+    else if (strcEQ(arg, "insecure")) {
+        mc->snivh_policy = MODSSL_SNIVH_INSECURE;
+    }
+    else if (strcEQ(arg, "authonly")) {
+        mc->snivh_policy = MODSSL_SNIVH_AUTHONLY;
+    }
+    else {
+        return apr_psprintf(cmd->pool, "Invalid SSLVhostSNIPolicy "
+                            "argument '%s'", arg);
+    }
+
+    return NULL;
+#else
+    return "SSLVHostSNIPolicy cannot be used, OpenSSL is not built with "
+        "support for TLS extensions and SNI indication. Refer to the "
+        "documentation, and build a compatible version of OpenSSL."
+#endif
+}
+
 #ifdef HAVE_OCSP_STAPLING
 
 const char *ssl_cmd_SSLStaplingCache(cmd_parms *cmd,
@@ -2654,6 +2723,9 @@ static void ssl_srv_dump(SSLSrvConfigRec *sc, apr_pool_t *p,
     DMP_LONG(  "SSLSessionCacheTimeout", sc->session_cache_timeout);
     DMP_ON_OFF("SSLStrictSNIVHostCheck", sc->strict_sni_vhost_check);
     DMP_ON_OFF("SSLSessionTickets", sc->session_tickets);
+#ifdef HAVE_OPENSSL_ECH
+    DMP_STRING("SSLECHKeyDir", sc->echkeydir);
+#endif
 }
 
 static void ssl_policy_dump(SSLSrvConfigRec *policy, apr_pool_t *p, 

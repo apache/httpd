@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1780210 -->
+<!-- English Revision: 1934245 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,8 +27,8 @@
   <title>Glossaire</title>
 
   <summary>
-    <p>Ce glossaire définit la terminologie courante relative à Apache en
-    particulier, et aux serveurs web en général. Vous trouverez plus
+    <p>Ce glossaire définit la terminologie courante relative au serveur HTTP
+    Apache en particulier, et aux serveurs web en général. Vous trouverez plus
     d'informations sur chaque concept dans les liens fournis.</p>
   </summary>
 
@@ -56,7 +56,7 @@
     <dt><a name="tarball" id="tarball">Archive Tar (Tarball)</a></dt>
   <dd>Un paquetage de fichiers rassemblés dans une archive
   à l'aide de l'utilitaire <code>tar</code>.
-    Les distributions d'Apache sont stockées dans des Archives Tar compressées
+    Les distributions de httpd sont stockées dans des Archives Tar compressées
     ou en utilisant pkzip.
   </dd>
 
@@ -144,13 +144,26 @@
     fichiers de configuration</glossary> dans laquelle certains types de
     <glossary ref="directive">directives</glossary> sont autorisés.<br />
       Voir : <a href="mod/directive-dict.html#Context">Termes utilisés
-      pour décrire les directives d'Apache</a>
+      pour décrire les directives de httpd</a>
+    </dd>
+
+    <dt><a name="perdirectory" id="perdirectory">Contexte de répertoire</a></dt>
+    <dd>Une <glossary ref="directive">directive</glossary> est dans un contexte
+    de répertoire quand elle apparaît dans une section <directive type="section"
+    module="core">Directory</directive>, <directive type="section"
+    module="core">DirectoryMatch</directive>, <directive type="section"
+    module="core">Files</directive> ou <directive type="section"
+    module="core">FilesMatch</directive> dans les fichiers de configuration
+    principaux, ou dans un fichier <code>.htaccess</code>. Dans un contexte de
+    répertoire, les directives ne s’appliquent qu’au répertoire (ou à l’ensemble
+    de fichiers) auquel elles sont associées.<br /> Voir <a
+    href="sections.html">Sections de configuration</a>
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Contrôle d'accès
     (Access Control)</a></dt>
     <dd>La restriction d'accès à des zones du réseau. Habituellement
-    dans un contexte Apache,
+    dans un contexte httpd,
       la restriction d'accès à certaines <em>URLs</em>.<br />
       Voir :  <a
       href="howto/auth.html">Authentification, Autorisation et
@@ -169,7 +182,7 @@
   </dd>
 
   <dt><a name="subrequest" id="subrequest">Sous-requête</a></dt>
-    <dd>Apache possède une API des sous-requêtes pour les modules qui
+    <dd>httpd possède une API des sous-requêtes pour les modules qui
     permettent l'évaluation complète ou partielle par le serveur de
     chemins d'autres systèmes de fichiers ou d'URL. Par exemple, la
     directive <directive module="mod_dir">DirectoryIndex</directive>,
@@ -215,7 +228,7 @@
 
     <dt><a name="directive" id="directive">Directive</a></dt>
     <dd>Une commande de configuration qui contrôle un ou plusieurs aspects du
-    comportement d'Apache.  Les directives sont placées dans le <glossary
+    comportement de httpd.  Les directives sont placées dans le <glossary
       ref="configurationfile">Fichier de configuration</glossary><br />
     Voir : <a href="mod/directives.html">Index des directives</a>
     </dd>
@@ -238,7 +251,7 @@
     "tous les mots qui commencent par la lettre A" ou "tous les numéros de
     téléphone à 10 chiffres" ou encore "Toutes les phrases contenant 2 virgules,
     et aucun Q majuscule". Les expressions rationnelles sont très utiles dans
-    Apache car elles vous permettent d'appliquer certains attributs à des
+    httpd car elles vous permettent d'appliquer certains attributs à des
     ensembles de fichiers ou ressources avec une grande flexibilité
       - par exemple, tous les fichiers .gif et .jpg situés dans tout répertoire
       nommé "images", pourraient être enregistrés comme
@@ -252,7 +265,7 @@
       remplacement, il faut l'échapper avec un anti-slash. Pour des
       raisons historiques, la variable &amp; peut être utilisée en tant
       qu'alias de $0 dans certains cas, mais ceci n'est plus possible
-      depuis la version 2.3.6. Apache utilise les Expressions
+      depuis la version 2.3.6. httpd utilise les Expressions
       Rationnelles Compatibles avec Perl fournies par la librairie <a
       href="http://www.pcre.org/">PCRE</a>. Vous trouverez plus
       d'information à propos de la syntaxe des expressions rationnelles
@@ -265,7 +278,7 @@
     (Configuration File)</a></dt>
     <dd>Un fichier texte contenant des
     <glossary ref="directive">Directives</glossary>
-      qui contrôlent la configuration d'Apache.<br />
+      qui contrôlent la configuration de httpd.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
     </dd>
 
@@ -283,14 +296,14 @@
     </dd>
 
 <dt><a name="handler" id="handler">Gestionnaire (Handler)</a></dt>
-    <dd>Une représentation interne à Apache de l'action à entreprendre
+    <dd>Une représentation interne à httpd de l'action à entreprendre
     quand un fichier est appelé. En général, les fichiers ont des gestionnaires
     implicites, basés sur le type de fichier. Normalement, tous les
     fichiers sont directement servis par le serveur, mais certains
     types de fichiers sont "gérés" séparément.  Par exemple, le gestionnaire
       <code>cgi-script</code> désigne les fichiers qui doivent être traités
       comme <glossary ref="cgi">CGIs</glossary>.<br />
-      Voir : <a href="handler.html">Utilisation des gestionnaires d'Apache</a>
+      Voir : <a href="handler.html">Utilisation des gestionnaires de httpd</a>
     </dd>
 
     <dt><a name="hash" id="hash">Hachage (Hash)</a></dt>
@@ -302,13 +315,13 @@
 
     <dt><a name="virtualhosting" id="virtualhosting">Hébergement Virtuel
     (Virtual Hosting)</a></dt>
-  <dd>Servir des sites web multiples en utilisant une seule instance d'Apache.
+  <dd>Servir des sites web multiples en utilisant une seule instance de httpd.
   Les <em>Hôtes virtuels basés sur IP</em> différencient les sites web en se
   basant sur leur adresse IP, alors que les
   <em>Hôtes virtuels basés sur le nom</em> utilisent uniquement le nom d'hôte
   et peuvent en conséquence héberger de nombreux sites avec la même
   adresse IP.<br />
-    Voir la <a href="vhosts/">Documentation des Hôtes Virtuels d'Apache</a>
+    Voir la <a href="vhosts/">Documentation des Hôtes Virtuels de httpd</a>
   </dd>
 
 
@@ -324,7 +337,7 @@
 
 <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
     <dd>Le <glossary ref="configurationfile">fichier de configuration
-    </glossary> principal d'Apache.  Sa localisation par défaut est
+    </glossary> principal de httpd.  Sa localisation par défaut est
       <code>/usr/local/apache2/conf/httpd.conf</code>, mais ceci peut être
       changé en utilisant des options de compilation ou d'exécution.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
@@ -343,10 +356,9 @@
     (Uniform Resource Identifier)</a>
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>Une chaîne de caractères compacte servant à identifier une ressource
-  abstraite ou physique.  Elle est formellement définie par la <a
-      href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
-      utilisées sur le world-wide web sont souvent appelées <glossary
-      ref="url">URLs</glossary>.
+  abstraite ou physique.  Elle est formellement définie par la <rfc>2396</rfc>.
+  Les URIs utilisées sur le world-wide web sont souvent appelées <glossary
+  ref="url">URLs</glossary>.
   </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">
@@ -369,7 +381,7 @@
     Cette fonctionnalité a été ajoutée
     à SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
       Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
-      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+      et la <rfc>3546</rfc>
     </dd>
 
 
@@ -379,13 +391,11 @@ Interface commune avec les programmes externes
 (Common Gateway Interface)</a>
 	 <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>La définition standard d'une interface entre un serveur web et un
-    programme externe pour permettre à ce dernier de traiter des requêtes.
-     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
-     informationnelle</a> qui en couvre les spécificités.<br />
-      Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
+    programme externe pour permettre à ce dernier de traiter des requêtes.  Il
+    existe une RFC informationnelle (<rfc>3875</rfc>) qui en couvre les
+    spécificités.<br /> Voir : <a href="howto/cgi.html">Contenu dynamique avec
+    CGI</a>
     </dd>
-
-
 
 <dt><a name="uniformresourcelocator" id="uniformresourcelocator">
 Localisation de Ressource Uniformisée
@@ -432,14 +442,14 @@ Localisation de Ressource Uniformisée
 
     <dt><a name="module" id="module">Module</a></dt>
     <dd>Une partie indépendante d'un programme.  De nombreuses fonctionnalités
-    d'Apache sont fournies par des modules que vous pouvez choisir d'inclure
+    de httpd sont fournies par des modules que vous pouvez choisir d'inclure
     ou d'exclure.  Les modules qui sont compilés dans le binaire
     <program>httpd</program> sont appelés <dfn>modules statiques</dfn>, alors
     que les modules qui existent séparément et peuvent être chargés
     optionnellement à l'exécution sont appelés
       <dfn>modules dynamiques</dfn> ou <glossary ref="dso">DSOs</glossary>.
       Les modules qui sont inclus par défaut sont appelés
-      <dfn>modules de base</dfn>. De nombreux modules disponibles pour Apache
+      <dfn>modules de base</dfn>. De nombreux modules disponibles pour httpd
       ne se trouvent pas dans l'<glossary ref="tarball">archive</glossary>
       du Serveur HTTP Apache .  Il sont appelés
       <dfn>modules tiers</dfn>.<br />
@@ -471,13 +481,13 @@ Localisation de Ressource Uniformisée
     (Module Magic Number)</a>
       (<a name="mmn" id="mmn">MMN</a>)</dt>
     <dd>Le Nombre Magique des Modules est une constante définie dans le code
-    source d'Apache et associée à la compatibilité binaire des modules.
-    Sa valeur est modifiée quand des structures internes d'Apache, des appels
+    source de httpd et associée à la compatibilité binaire des modules.
+    Sa valeur est modifiée quand des structures internes de httpd, des appels
     de fonctions et d'autres parties significatives de l'API sont modifiées
     de telle façon que la compatibilité binaire ne peut plus être garantie.
     En cas de changement de MMN, tous les modules tiers doivent être au
     moins recompilés, et parfois même légèrement modifiés afin de pouvoir
-    fonctionner avec la nouvelle version d'Apache.
+    fonctionner avec la nouvelle version de httpd.
     </dd>
 
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">
@@ -502,8 +512,19 @@ Localisation de Ressource Uniformisée
       ref="module">module</glossary> sous forme d'Objets Dynamiques Partagés
       (Dynamic Shared Objects ou
       <glossary ref="dso">DSO</glossary>s) et facilite leur installation
-      dans le serveur Web Apache.<br />
+      dans le serveur Web httpd.<br />
       Voir : Page de manuel : <program>apxs</program>
+    </dd>
+
+    <dt><a name="pathinfo" id="pathinfo">PATH_INFO</a></dt>
+    <dd>Les informations de chemin en fin d’URL. Par exemple, si
+    <code>/app/index.php/extra/path</code> correspond au fichier
+    <code>/app/index.php</code>, PATH_INFO contient <code>/extra/path</code>.
+    Cette valeur est transmise aux scripts CGI, à PHP et à d’autres
+    gestionnaires en tant que contexte additionnel pour la requête. La directive
+    <directive module="core">AcceptPathInfo</directive> permet de spécifier si
+    les requêtes avec informations de chemin en fin sont acceptées ou rejetées.<br />
+      Voir la <rfc section="4.1.5">3875</rfc>
     </dd>
 
 <dt><a name="plaintext" id="plaintext">Plein Texte (Plaintext)</a></dt>
@@ -516,9 +537,8 @@ Localisation de Ressource Uniformisée
       (HyperText Transfer Protocol)</a>
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>Le protocole de transmission standard utilisé sur le World Wide Web.
-    Apache implémente la version 1.1 du protocole, référencée comme HTTP/1.1 et
-      définie par la
-      <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+    httpd implémente la version 1.1 du protocole, référencée comme HTTP/1.1 et
+    définie par la <rfc>2616</rfc>.
     </dd>
 
     <dt><a name="messagedigest" id="messagedigest">Résumé de message
@@ -588,11 +608,11 @@ Localisation de Ressource Uniformisée
         id="env-variable">(env-variable)</a></dt>
     <dd>Ce sont des variables nommées gérées par le shell du système
     d'exploitation, et servant au stockage d'informations et à la
-    communication entre les programmes. Apache possède aussi des variables
+    communication entre les programmes. httpd possède aussi des variables
     internes considérées comme variables d'environnement, mais stockées dans
-    des structures internes à Apache, et non dans l'environnement
+    des structures internes à httpd, et non dans l'environnement
     du shell.<br />
-      Voir : <a href="env.html">Les variables d'environnement dans Apache</a>
+      Voir : <a href="env.html">Les variables d'environnement dans httpd</a>
     </dd>
 
      <dt><a name="x.509" id="x.509">X.509</a></dt>

@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1906637 -->
+<!-- English Revision: 1935426 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -40,15 +40,14 @@ pieds.
 
 <seealso><a href="../mod/mod_rewrite.html">Documentation du
 module mod_rewrite</a></seealso>
-<!-- <seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso> -->
-<seealso><a href="remapping.html">Redirection and remise en
+<seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>
-<seealso><a href="access.html">Contrôle d'accès</a></seealso>
+<seealso><a href="htaccess.html">Réécritures par répertoire</a></seealso>
+<seealso><a href="flags.html">Drapeaux de RewriteRule</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
-<seealso><a href="proxy.html">Mise en cache</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avancées</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Détails techniques</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p>Le module Apache <module>mod_rewrite</module> est un module puissant
@@ -78,19 +77,36 @@ le débogage des problèmes avec la configuration de
 <module>mod_rewrite</module> est à ce prix car vous verrez alors
 exactement comment chaque règle est traitée.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_simplified_overview.png" alt="Organigramme
+simplifié du fonctionnement de mod_rewrite : arrivée de la requête, vérification
+RewriteEngine On, traitement des règles dans l’ordre, test de correspondance du
+motif et des RewriteCond, application des substitutions si ces deux tests sont
+positifs, arrêt du traitement des règles si un drapeau L ou END est défini,
+sinon traitement de la règle suivante" /><br />
+      <dfn>Figure :</dfn> Présentation simplifiée de la manière dont
+<module>mod_rewrite</module> traite une requête. Voir <a
+href="tech.html">Détails techniques</a> pour une description complète du
+traitement avec les phases, les drapeaux et le bouclage.
+</p>
+
 </section>
 
 <section id="regex"><title>Expressions rationnelles</title>
 
-<p>mod_rewrite utilise le vocabulaire des <a
-href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
+<p><module>mod_rewrite</module> utilise le vocabulaire des <a
+href="https://www.pcre.org/current/doc/html/pcre2syntax.html">Expressions
+rationnelles compatibles avec Perl</a> à l’aide de la bibliothèque PCRE2.
 Ce document n'a pas pour prétention d'être une référence détaillée des
-expressions rationnelles. A cet effet, nous recommandons les <a
-href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a
-href="http://perldoc.perl.org/perlre.html">page de manuel des
-expressions rationnelles Perl</a>, et l'ouvrage <a
-href="http://shop.oreilly.com/product/9780596528126.do">Mastering
-Regular Expressions, by Jeffrey Friedl</a>.</p>
+expressions rationnelles. A cet effet, nous recommandons la <a
+href="https://www.pcre.org/current/doc/html/pcre2syntax.html">documentation de
+PCRE2</a>, la <a
+href="https://perldoc.perl.org/perlre.html">page de manuel des
+expressions rationnelles de Perl</a>, et l'ouvrage <a
+href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, par Jeffrey Friedl</a> (la troisième édition date
+de 2006, mais la syntaxe des expressions rationnelles n'a pas vraiment
+changé, et cet ouvrage reste la référence en la matière).</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
 vocabulaire des expressions rationnelles pour vous mettre le pied à
@@ -129,6 +145,9 @@ précédent zéro ou plusieurs fois</td>
 <tr><td><code>?</code></td><td>Rend la correspondance optionnelle.</td><td>
 <code>colou?r</code> correspondra à <code>color</code> et <code>colour</code>.</td>
 </tr>
+<tr><td><code>\</code></td><td>Échappe le caractère
+suivant</td><td><code>\.</code> correspondra à <code>.</code> (point) et non pas à
+<em>tout caractère unique</em> comme expliqué ci-dessus</td></tr>
 <tr><td><code>^</code></td><td>Appelé ancrage, correspond au début de la
 chaîne</td>
 <td><code>^a</code> correspond à une chaîne qui commence par
@@ -155,10 +174,21 @@ correspond à tout caractère ne faisant pas partie de la classe</td>
 <code>c=t</code> mais pas à <code>c/t</code></td></tr>
 </table>
 
-<p>Avec <module>mod_rewrite</module>, le caractère <code>!</code> peut
+<p>Le caractère <code>!</code> (Not) peut
 préfixer une expression rationnelle afin d'en exprimer la négation.
 Autrement dit, une chaîne ne correspondra que si elle ne correspond pas
 à l'expression située après le <code>!</code>.</p>
+
+<p>Notez que lorsqu’on utilise <code>!</code> pour inverser un motif, les <a
+href="#InternalBackRefs">références arrières</a> (par exemple <code>$1</code>,
+<code>$2</code>) ne sont pas disponibles, car le motif ne correspond plus.</p>
+
+<p>La règle suivante, par exemple, redirige toute requête qui ne commence
+<em>pas</em> par <code>/admin</code></p>
+
+<highlight language="config">
+RewriteRule "!^/admin" "/xyz.html" [R,L]
+</highlight>
 
 </section>
 
@@ -166,7 +196,7 @@ Autrement dit, une chaîne ne correspondra que si elle ne correspond pas
 arrières dans les expressions rationnelles</title>
 
       <p>Vous devez vous souvenir d'une chose importante : chaque fois
-      que vous utilisez des parenthèses dans un <em>Modèle</em> ou dans
+      que vous utilisez des parenthèses dans un <em>Motif</em> ou dans
       un des <em>modèles de conditions</em>, des références arrières
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
@@ -192,15 +222,23 @@ arrières dans les expressions rationnelles</title>
       elles vous paraissent un peu exotiques au premier abord.</p>
 
 <p class="figure">
-      <img src="../images/rewrite_backreferences.png"
-      alt="Flux des comparaisons effectuées par les règles RewriteRule
-      et RewriteCond" /><br />
+      <img src="../images/rewrite_backreferences.png" alt="Diagramme montrant la
+manière dont les références arrières circulent entre les RewriteRule et les
+RewriteCond : $1-$9 capturent des groupes issus des motifs RewriteRule, %1-%9
+capturent des groupes issus des motifs des chaînes à tester (ou TestStrings) de
+RewriteCond, les deux étant disponibles dans les chaînes de substitution et dans
+les chaînes à tester de RewriteCond subséquentes" /><br />
       <dfn>Figure 1 :</dfn> Le cheminement d'une référence arrière à
       travers une règle.<br />
-      Dans cet exemple, une requête pour <code>/test/1234</code> serait
+      Dans cet exemple, une requête pour <code>/test/1234</code> vers l’hôte <code>admin.example.com</code> serait
       transformée en
-      <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
+      <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>,
+      sous réserve que <code>%{DOCUMENT_ROOT}/test</code> ne soit pas un fichier
+      existant.
 </p>
+      <p>Voir aussi <a href="tech.html#InternalRuleset">Détails techniques</a>
+      pour un diagramme montrant le cheminement des références arrières avec des
+      conditions multiples.</p>
 
 </section>
 </section>
@@ -210,28 +248,48 @@ arrières dans les expressions rationnelles</title>
 module="mod_rewrite">RewriteRule</directive> est constituée de trois
 arguments séparés par des espaces. Les arguments sont :</p>
 <ol>
-<li><var>Modèle</var>: le modèle des URLs auxquelles la règle doit
+<li><var>Motif</var>: le motif des URLs auxquelles la règle doit
 s'appliquer;</li>
 <li><var>Substitution</var>: vers quoi la requête correspondante doit être
 transformée;</li>
 <li><var>[drapeaux]</var>: options affectant la requête réécrite.</li>
 </ol>
 
-<p>Le <var>Modèle</var> est une <a href="#regex">expression
-rationnelle</a>. Au sein de la première règle de réécriture, ou jusqu'à
-ce qu'une substitution survienne, elle est comparée au chemin de
-l'URL de la requête entrante (la
-partie située après le nom d'hôte mais avant tout point d'interrogation
-qui indique le début d'une chaîne de paramètres de
-requête) ou, dans un contexte de répertoire, au chemin de la
-requête relativement au répertoire pour lequel la
-règle est définie. Lorsqu'une substitution a eu lieu, les
-règles suivantes effectuent leurs comparaisons par rapport à la valeur
-substituée.</p>
+<p>Le <var>Motif</var> est une <a href="#regex">expression
+rationnelle</a>. Dans un contexte de serveur virtuel ou de serveur global, il
+est comparé au <a href="../directive-dict.html#Syntax">chemin d’URL</a> %-décodé
+de la requête entrante &mdash; la partie après le nom d’hôte et le port, en
+excluant la chaîne de paramètres (par exemple <code>/app/index.html</code>).
+Dans un <glossary ref="perdirectory">contexte de répertoire</glossary>, le motif
+est comparé au chemin de la requête relatif au répertoire pour lequel la règle
+est définie (avec le préfixe de répertoire supprimé &mdash; voir <a
+href="htaccess.html#path-stripping">Réécritures par répertoire</a> pour les
+détails).
+</p>
+
+<p>Lorsqu’une substitution a été effectuée, toute règle qui suit est comparée à
+la valeur substituée.</p>
+
+<p>Le <var>Motif</var> n’est comparé qu’au chemin d’URL &mdash; à l’exclusion
+des nom d’hôte, port ou chaîne de paramètres. Pour une comparaison incluant ces
+derniers, utilisez une condition <directive
+module="mod_rewrite">RewriteCond</directive> avec les variables
+<code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code> ou
+<code>%{QUERY_STRING}</code>, respectivement.</p>
+
+<note><module>mod_rewrite</module> opère exclusivement sur le chemin d’URL et les
+en-têtes HTTP. Il ne peut pas inspecter le corps de la requête (par exemple, les
+données POST). Si vous devez prendre des décisions de routage en fonction du
+contenu du corps de la requête, traitez le problème à l’aide de la logique de
+votre application ou utilisez un module tel que <module>mod_request</module>
+associé à un filtre personnalisé.</note>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png"
-      alt="Syntaxe de la directive RewriteRule" /><br />
+      alt="Diagramme annoté pour la syntaxe de la directive RewriteRule montrant
+trois composants : le motif (une expression rationnelle mise en correspondance
+avec le chemin d’URL, la substitution (l’URL ou le chemin de remplacement) et
+des drapeaux facultatifs entourés de crochets" /><br />
       <dfn>Figure 2 :</dfn> Syntaxe de la directive RewriteRule.
 </p>
 
@@ -279,13 +337,13 @@ le cas avec <strong>2</strong> (par exemple, il n'y a pas de répertoire
 
 <p>La chaîne de <var>Substitution</var> peut aussi contenir des
 <em>références arrières</em> vers des parties du chemin d'URL entrant
-correspondant au <var>Modèle</var>. Considérons ce qui suit :</p>
+correspondant au <var>Motif</var>. Considérons ce qui suit :</p>
 <highlight language="config">
 RewriteRule "^/produits/(.*)/view$" "/var/web/produitsdb/$1"
 </highlight>
 <p>La variable <code>$1</code> sera remplacée par tout texte
 correspondant à l'expression située entre les parenthèses dans le
-<var>Modèle</var>. Par exemple, une requête pour
+<var>Motif</var>. Par exemple, une requête pour
 <code>http://example.com/produits/r14df/vue</code> correspondra au
 chemin <code>/var/web/produitsdb/r14df</code>.</p>
 
@@ -327,7 +385,10 @@ correspondance est évaluée.</p>
 
 <p class="figure">
       <img src="../images/syntax_rewritecond.png"
-      alt="Syntaxe de la directive RewriteCond" /><br />
+      alt="Diagramme annoté pour la syntaxe de la directive RewriteCond montrant
+deux composants : la chaîne à tester ou TestString (une variable ou du texte à
+tester) et le motif de condition ou CondPattern (expression rationnelle ou
+comparaison à évaluer) avec des drapeaux facultatifs entourés de crochets" /><br />
       <dfn>Figure 3 :</dfn> Syntaxe de la directive RewriteCond
 </p>
 
@@ -385,27 +446,99 @@ supplémentaire sur RewriteMap</a>.</p>
 
 <section id="htaccess"><title>Fichiers .htaccess</title>
 
-<p>La réécriture est en général définie au niveau de la configuration du
-serveur principal (en dehors de toute section <directive type="section"
-module="core">Directory</directive>) ou dans une section  <directive
-type="section" module="core">VirtualHost</directive>. Il s'agit là de la
-manière la plus simple de mettre en oeuvre la réécriture et nous la
-recommandons. Il est possible, cependant, de mettre en oeuvre la
-réécriture au sein d'une section <directive type="section"
-module="core">Directory</directive> ou d'un fichier <a
-href="../howto/htaccess.html"><code>.htaccess</code></a> ; ce type de
-configuration est cependant plus complexe. Cette technique est appelée
-réécriture par répertoire.</p>
+<p>Il est possible d’utiliser des règles de réécriture dans un <glossary
+ref="perdirectory">contexte de répertoire</glossary> (fichiers <a
+href="../howto/htaccess.html"><code>.htaccess</code></a> et sections <directive
+type="section" module="core">Directory</directive>), mais dans ce cas, les
+règles se comportent différemment — en particulier, le préfixe du répertoire est
+supprimé de l’URL avant la recherche de correspondance. Voir le document <a
+href="htaccess.html#path-stripping">Réécritures dans un contexte de
+répertoire</a> pour une explication détaillée. Notez que les sections <directive
+module="core" type="section">If</directive> et <directive module="core"
+type="section">Location</directive> adoptent aussi le comportement du contexte
+de répertoire &mdash; voir <a href="htaccess.html#context-restrictions">Quels
+contextes prennent en charge les règles de réécriture ?</a>.</p>
 
-<p>La principale différence avec les réécritures au niveau du serveur réside
-dans le fait que le préfixe du chemin du répertoire contenant le fichier
-<code>.htaccess</code> est supprimé avant la mise en correspondance dans
-la règle <directive module="mod_rewrite">RewriteRule</directive>. De
-plus, on doit utiliser la directive <directive
-module="mod_rewrite">RewriteBase</directive> pour s'assurer que la
-requête est correctement mise en correspondance.</p>
+</section>
+
+<section id="security"><title>Considérations en matière de sécurité</title>
+
+<p><module>mod_rewrite</module> est un outil de manipulation d’URL puissant,
+mais qui dit puissance dit risque d’erreurs liées à la sécurité. Cette section
+met en lumière les pièges en matière de sécurité courants à éviter lors de
+la rédaction de règles de réécritures.</p>
+
+<section id="security-redirect"><title>Redirections ouvertes</title>
+
+<p>Si une règle <directive module="mod_rewrite">RewriteRule</directive>
+construit un URL de redirection en utilisant une entrée utilisateur non validée,
+un attaquant pourra fabriquer un lien qui redirige les visiteurs vers un site
+malveillant semblant provenir de votre domaine. Cette vulnérabilité est connue
+sous le nom de <em>redirection ouverte</em>.</p>
+
+<p>Par exemple, cette règle est dangereuse :</p>
+
+<highlight language="config">
+# DANGEREUX - permet une redirection ouverte
+RewriteRule "^/redirect" "%{QUERY_STRING}" [R,L]
+</highlight>
+
+<p>Un attaquant pourrait en effet utiliser
+<code>https://yoursite.com/redirect?https://evil.com</code> pour rediriger les
+utilisateurs vers un site malveillant. Assurez vous de toujours valider ou
+contraindre les cibles de redirection. Si la destination doit être sur votre
+propre site, assurez vous que la substitution commence par <code>/</code> (un
+chemin relatif) plutôt que de permettre à l’utilisateur d’entrer un URL complet.</p>
+
+</section>
+
+<section id="security-ssrf"><title>Server-Side Request Forgery (SSRF)</title>
+
+<p>Lorsqu’on utilise la drapeau <a href="flags.html#flag_p">[P] (proxy)</a>,
+<module>mod_rewrite</module> fait que le serveur
+effectue une requête HTTP vers l’URL de substitution de la part du client. Si
+une partie de cet URL est dérivée de l’entrée du client — références arrières,
+chaînes de paramètres ou en-têtes — un attaquant pourrait faire que votre
+serveur effectue des requêtes vers des services internes arbitraires ou des
+hôtes externes.</p>
+
+<p>Par exemple :</p>
+
+<highlight language="config">
+# DANGEREUX - l’utilisateur contrôle la cible du mandataire
+RewriteCond "%{QUERY_STRING}" "target=(.+)"
+RewriteRule "^/fetch" "http://%1" [P]
+</highlight>
+
+<p>Un attaquant pourrait utiliser cette configuration pour tester des services
+réseau internes qui autrement ne seraient pas accessibles depuis l’Internet.
+Utilisez toujours un nom d’hôte fixe dans les cibles de mandataire et limitez
+les références arrières à la partie chemin seulement.</p>
+
+</section>
+
+<section id="security-path"><title>Traversée de chemin</title>
+
+<p>Des règles de réécriture qui associent directement des composants du chemin
+fournis par l’utilisateur au système de fichier ouvrent la voie à des attaques
+de traversée de chemin si l’entrée n’est pas correctement contrainte. Par
+exemple :</p>
+
+<highlight language="config">
+# DANGEREUX - permet une traversée de chemin
+RewriteRule "^/files/(.+)" "/var/data/$1" [L]
+</highlight>
+
+<p>Une requête pour <code>/files/../../etc/passwd</code> pourrait accéder à des
+fichiers en dehors du répertoire souhaité. Utilisez des motifs restreints dans
+votre règle <directive module="mod_rewrite">RewriteRule</directive> (par exemple
+<code>[a-zA-Z0-9_-]+</code> au lieu de <code>.+</code>), et utilisez les
+protections intégrées d’Apache httpd (restrictions <directive
+module="core">Options</directive> et <directive module="core"
+type="section">Directory</directive>) pour une défense en profondeur.</p>
+
+</section>
 
 </section>
 
 </manualpage>
-

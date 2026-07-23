@@ -166,11 +166,11 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     msglen  = ((head[2] & 0xff) << 8);
     msglen += (head[3] & 0xFF);
 
-    if (msglen > msg->max_size) {
+    if (msglen > (msg->max_size - AJP_HEADER_LEN)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01081)
                      "ajp_msg_check_header() incoming message is "
                      "too big %" APR_SIZE_T_FMT ", max is %" APR_SIZE_T_FMT,
-                     msglen, msg->max_size);
+                     msglen, msg->max_size - AJP_HEADER_LEN);
         return AJP_ETOBIG;
     }
 
@@ -395,7 +395,7 @@ apr_status_t ajp_msg_get_uint32(ajp_msg_t *msg, apr_uint32_t *rvalue)
 {
     apr_uint32_t value;
 
-    if ((msg->pos + 3) > msg->len) {
+    if ((msg->pos + 3) >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint32");
     }
 
@@ -420,7 +420,7 @@ apr_status_t ajp_msg_get_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
 {
     apr_uint16_t value;
 
-    if ((msg->pos + 1) > msg->len) {
+    if ((msg->pos + 1) >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint16");
     }
 
@@ -443,7 +443,7 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
 {
     apr_uint16_t value;
 
-    if ((msg->pos + 1) > msg->len) {
+    if ((msg->pos + 1) >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_peek_uint16");
     }
 
@@ -464,7 +464,7 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
  */
 apr_status_t ajp_msg_peek_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 {
-    if (msg->pos > msg->len) {
+    if (msg->pos >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_peek_uint8");
     }
 
@@ -482,7 +482,7 @@ apr_status_t ajp_msg_peek_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 apr_status_t ajp_msg_get_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 {
 
-    if (msg->pos > msg->len) {
+    if (msg->pos >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint8");
     }
 
@@ -507,7 +507,12 @@ apr_status_t ajp_msg_get_string(ajp_msg_t *msg, const char **rvalue)
     status = ajp_msg_get_uint16(msg, &size);
     start = msg->pos;
 
-    if ((status != APR_SUCCESS) || (size + start > msg->max_size)) {
+    if ((status != APR_SUCCESS) || (size + start >= msg->len)) {
+        return ajp_log_overflow(msg, "ajp_msg_get_string");
+    }
+
+    /* Verify that the expected null terminator is actually present */
+    if (msg->buf[start + size] != '\0') {
         return ajp_log_overflow(msg, "ajp_msg_get_string");
     }
 
@@ -582,11 +587,11 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, apr_size_t size, ajp_msg_t **rmsg)
  */
 apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
 {
-    if (smsg->len > smsg->max_size) {
+    if (smsg->len > dmsg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, APLOGNO(01082)
                      "ajp_msg_copy(): destination buffer too "
                      "small %" APR_SIZE_T_FMT ", max size is %" APR_SIZE_T_FMT,
-                     smsg->len, smsg->max_size);
+                     smsg->len, dmsg->max_size);
         return  AJP_ETOSMALL;
     }
 

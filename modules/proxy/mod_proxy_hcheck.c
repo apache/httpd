@@ -906,7 +906,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
                          hc->s->name, worker->s->name);
             status = !OK;
         }
-    } else if (r->status < 200 || r->status > 399) {
+    } else if (r->status < HTTP_OK || r->status >= HTTP_BAD_REQUEST) {
         ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
                      "Response status %i for %s (%s): failed", r->status,
                      hc->s->name, worker->s->name);
@@ -989,12 +989,32 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
     sctx_t *ctx = (sctx_t *)data;
     server_rec *s = ctx->s;
     proxy_server_conf *conf;
+    proxy_worker **workers;
+    proxy_worker *worker;
+    apr_time_t now;
+    int i, n;
+
+    conf = ap_get_module_config(s->module_config, &proxy_module);
 
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03258)
                          "%s watchdog started.",
                          HCHECK_WATHCHDOG_NAME);
+            /* If a child exits while running an hcheck the ->updated time will
+             * be zero, preventing further hcheck for the worker.
+             */
+            now = apr_time_now();
+            balancer = (proxy_balancer *)conf->balancers->elts;
+            for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+                workers = (proxy_worker **)balancer->workers->elts;
+                for (n = 0; n < balancer->workers->nelts; n++, workers++) {
+                    worker = *workers;
+                    if (worker->s->updated == 0) {
+                        worker->s->updated = now;
+                    }
+                }
+            }
 #if HC_USE_THREADS
             if (tpsize && hctp == NULL) {
                 rv =  apr_thread_pool_create(&hctp, tpsize,
@@ -1020,28 +1040,27 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 
         case AP_WATCHDOG_STATE_RUNNING:
             /* loop thru all workers */
-            if (s) {
-                int i;
-                conf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
+            {
                 balancer = (proxy_balancer *)conf->balancers->elts;
-                ctx->s = s;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-                    int n;
-                    apr_time_t now;
-                    proxy_worker **workers;
-                    proxy_worker *worker;
                     /* Have any new balancers or workers been added dynamically? */
                     ap_proxy_sync_balancer(balancer, s, conf);
-                    workers = (proxy_worker **)balancer->workers->elts;
+
                     now = apr_time_now();
-                    for (n = 0; n < balancer->workers->nelts; n++) {
+                    workers = (proxy_worker **)balancer->workers->elts;
+                    for (n = 0; n < balancer->workers->nelts; n++, workers++) {
                         worker = *workers;
                         if (!PROXY_WORKER_IS(worker, PROXY_WORKER_STOPPED) &&
                             (worker->s->method != NONE) &&
-                            (worker->s->updated != 0) &&
-                            (now > worker->s->updated + worker->s->interval)) {
+                            (now > worker->s->updated + worker->s->interval) &&
+                            (worker->s->updated != 0)) {
                             baton_t *baton;
                             apr_pool_t *ptemp;
+
+                            /* Zero to prevent concurrent checks for the same worker,
+                             * should a check take longer than the watchdog interval.
+                             */
+                            worker->s->updated = 0;
 
                             ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                                          "Checking %s worker: %s  [%d] (%pp)", balancer->s->name,
@@ -1060,7 +1079,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                 apr_pool_destroy(ptemp);
                                 return rv;
                             }
-                            worker->s->updated = 0;
+
 #if HC_USE_THREADS
                             if (hctp) {
                                 apr_thread_pool_push(hctp, hc_check, (void *)baton,
@@ -1074,7 +1093,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                 hc_check(NULL, baton);
                             }
                         }
-                        workers++;
                     }
                 }
             }

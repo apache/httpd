@@ -38,16 +38,15 @@
     wish to limit access by client host name, address or environment
     variable.</note>
 
-    <p><module>mod_cache</module> implements an <a
-    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> compliant
+    <p><module>mod_cache</module> implements an <rfc>2616</rfc> compliant
     <strong>HTTP content caching filter</strong>, with support for the caching
     of content negotiated responses containing the Vary header.</p>
 
     <p>RFC 2616 compliant caching provides a mechanism to verify whether
     stale or expired content is still fresh, and can represent a significant
     performance boost when the origin server supports <strong>conditional
-    requests</strong> by honouring the
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>
+    requests</strong> by honoring the
+    If-None-Match (<rfc section="14.26">2616</rfc>)
     HTTP request header. Content is only regenerated from scratch when the content
     has changed, and not when the cached entry expires.</p>
 
@@ -76,13 +75,13 @@
 
     <p>Under normal operation, <module>mod_cache</module> will respond to
     and can be controlled by the
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    Cache-Control (<rfc section="14.9">2616</rfc>)
     and
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    Pragma (<rfc section="14.32">2616</rfc>)
     headers sent from a client in a request, or from a
     server within a response. Under exceptional circumstances,
     <module>mod_cache</module> can be configured to override these headers
-    and force site specific behaviour, however such behaviour will be limited
+    and force site specific behavior, however such behavior will be limited
     to this cache only, and will not affect the operation of other caches
     that may exist between the client and server, and as a result is not
     recommended unless strictly necessary.</p>
@@ -92,12 +91,12 @@
     by <module>mod_cache</module> when the
     <directive module="mod_cache">CacheLock</directive> directive is suitably
     configured. Such responses will contain a
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    Warning (<rfc section="14.46">2616</rfc>)
     HTTP header with a 110 response code. RFC 2616 also allows a cache to return
     stale data when the attempt made to refresh the stale data returns an
-    error 500 or above, and this behaviour is supported by default by
+    error 500 or above, and this behavior is supported by default by
     <module>mod_cache</module>. Such responses will contain a
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    Warning (<rfc section="14.46">2616</rfc>)
     HTTP header with a 111 response code.</p>
 
     <p><module>mod_cache</module> requires the services of one or more
@@ -334,7 +333,7 @@ CustomLog "invalidated-requests.log" common env=cache-invalidate
   </highlight>
 
   <p>For module authors, a hook called <var>cache_status</var> is available,
-  allowing modules to respond to the caching outcomes above in customised
+  allowing modules to respond to the caching outcomes above in customized
   ways.</p>
 </section>
 
@@ -428,6 +427,14 @@ CacheEnable  disk  http://.example.org/
 </contextlist>
 
 <usage>
+    <note><p>This directive is only valid in
+    <directive module="core" type="section">Location</directive> and
+    <directive module="mod_proxy" type="section">Proxy</directive> sections
+    among the per-directory contexts. It is not supported in
+    <directive module="core" type="section">Directory</directive>,
+    <directive module="core" type="section">Files</directive>, or
+    <directive module="core" type="section">If</directive> sections.</p></note>
+
     <p>The <directive>CacheDisable</directive> directive instructs
     <module>mod_cache</module> to <em>not</em> cache urls at or below
     <var>url-string</var>.</p>
@@ -549,6 +556,13 @@ header.</description>
     the document then the value specified by the
     <directive module="mod_cache">CacheDefaultExpire</directive> directive will be used to
     generate an expiration date.</p>
+
+    <note>More precisely, a 200 OK response is only cached if it includes
+    at least one of the <code>Last-Modified</code>, <code>ETag</code>,
+    or <code>Expires</code> headers, or a <code>Cache-Control: max-age</code>
+    or <code>s-maxage</code> directive. This directive bypasses that
+    requirement entirely. When any of those headers are already present,
+    this directive has no effect.</note>
 
     <highlight language="config">
       CacheIgnoreNoLastMod On
@@ -682,7 +696,7 @@ LastModified date.</description>
     <p><directive>CacheIgnoreHeaders</directive> takes a space separated list
     of HTTP headers that should not be stored in the cache. If only hop-by-hop
     headers not should be stored in the cache (the RFC 2616 compliant
-    behaviour), <directive>CacheIgnoreHeaders</directive> can be set to
+    behavior), <directive>CacheIgnoreHeaders</directive> can be set to
     <code>None</code>.</p>
 
     <example><title>Example 1</title>
@@ -700,7 +714,7 @@ LastModified date.</description>
     <note type="warning"><title>Warning:</title>
       If headers like <code>Expires</code> which are needed for proper cache
       management are not stored due to a
-      <directive>CacheIgnoreHeaders</directive> setting, the behaviour of
+      <directive>CacheIgnoreHeaders</directive> setting, the behavior of
       mod_cache is undefined.
     </note>
 </usage>

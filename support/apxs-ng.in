@@ -1,0 +1,775 @@
+#!@pythonbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# apxs-ng -- APache eXtenSion tool (Python port of the historical Perl apxs)
+#
+# This is a behavior-compatible reimplementation of support/apxs.in in
+# Python 3.  It is intended to produce byte-identical output and side
+# effects to the Perl version for all documented options (-g, -q, -c,
+# -i, -e, -a, -A).
+
+import os
+import re
+import sys
+import subprocess
+
+#
+#  Configuration
+#
+
+#   These tokens are substituted by ./configure (see AC_CONFIG_FILES),
+#   exactly as in the Perl apxs.in.
+EXP_BINDIR        = "@exp_bindir@"
+EXP_INSTALLBUILD  = "@exp_installbuilddir@"
+MOD_SO_ENABLED    = "@MOD_SO_ENABLED@"
+
+PROG = "apxs"  # keep the historical name in all messages/errors
+
+
+def error(msg):
+    sys.stderr.write("%s:Error: %s.\n" % (PROG, msg))
+
+
+def notice(msg):
+    sys.stderr.write("%s\n" % msg)
+
+
+#   are we building in a cross compile environment? If so, destdir contains
+#   the base directory of the cross compiled environment, otherwise destdir
+#   is the empty string.
+def compute_destdir():
+    argv0 = sys.argv[0]
+    idx = argv0.rfind(EXP_BINDIR)
+    if idx >= 0:
+        return argv0[0:idx]
+    return ""
+
+
+config_vars = {}
+
+
+def get_config_vars(path, dest):
+    try:
+        fh = open(path, "r")
+    except IOError as e:
+        sys.stderr.write("cannot open %s: %s\n" % (path, e.strerror))
+        sys.exit(2)
+    with fh:
+        for line in fh:
+            line = line.rstrip("\n")
+            m = re.match(r"^\s*(.*?)\s*=\s*(.*)$", line)
+            if m:
+                dest[m.group(1)] = m.group(2)
+
+
+#   internal (CFG_*) variables -- uppercase aliases overridable via -S.
+#   Stored in a dict keyed by the uppercase var name (without the CFG_
+#   prefix), mirroring the Perl $CFG_<var> lexicals.
+internal_var_names = set("""TARGET CC CFLAGS CFLAGS_SHLIB LD_SHLIB
+    LDFLAGS_SHLIB LIBS_SHLIB PREFIX SBINDIR INCLUDEDIR LIBEXECDIR
+    SYSCONFDIR""".split())
+
+cfg = {}
+
+
+def _expand(value, seen=None):
+    """Reproduce the Perl `eval qq(...)` interpolation used by get_vars.
+
+    The raw make-style value first has all parentheses stripped
+    (s/[()]//g in the original), turning $(foo) into $foo, then $foo and
+    ${foo} references are interpolated against config_vars.  We resolve
+    recursively so chained values (prefix -> exec_prefix -> sbindir)
+    collapse to their final string, matching the dependency-ordered
+    lexical interpolation the Perl version relied on.
+    """
+    if seen is None:
+        seen = set()
+    # strip parens: $(includedir) -> $includedir  (matches s/[()]//g)
+    value = value.replace("(", "").replace(")", "")
+
+    def repl(m):
+        name = m.group(1) or m.group(2)
+        if name in seen:
+            return ""  # guard against pathological self-reference
+        if name in config_vars:
+            seen.add(name)
+            out = _expand(config_vars[name], seen)
+            seen.discard(name)
+            return out
+        return ""  # undefined lexical interpolates to empty, as in Perl qq
+
+    return re.sub(r"\$\{(\w+)\}|\$(\w+)", repl, value)
+
+
+def get_vars(*args):
+    result = ""
+    #   NOTE: `ok` is intentionally NOT reset per-argument.  The historical
+    #   Perl get_vars() declared `my $ok = 0;` once outside the loop, so once
+    #   any argument resolves (via config_vars or the internal CFG_* vars)
+    #   every *later* argument that would need the internal branch -- e.g.
+    #   TARGET, which has no lowercase key in config_vars -- is silently
+    #   skipped, and a later invalid name raises no error.  We preserve that
+    #   quirk verbatim for byte-identical -q output.
+    ok = False
+    for arg in args:
+        if arg in config_vars or arg.lower() in config_vars:
+            val = config_vars[arg] if arg in config_vars else config_vars[arg.lower()]
+            result += _expand(val)
+            result += ";;"
+            ok = True
+        if not ok:
+            if arg in internal_var_names or arg.lower() in internal_var_names:
+                key = arg if arg in internal_var_names else arg.lower()
+                key = key.upper()
+                val = cfg.get(key)
+                if val is not None:
+                    result += val
+                result += ";;"
+                ok = True
+            if not ok:
+                error("Invalid query string `%s'" % arg)
+                sys.exit(1)
+    if result.endswith(";;"):
+        result = result[:-2]
+    return result
+
+
+#
+#  argument parsing -- faithful port of the Perl Getopts() that supports
+#  ':' (single value) and '+' (appended list) option suffixes, clustering,
+#  and "-Xvalue" / "-X value" forms.
+#
+
+class Opts:
+    def __init__(self):
+        self.n = ""
+        self.g = False
+        self.c = False
+        self.o = ""
+        self.D = []
+        self.I = []
+        self.L = []
+        self.l = []
+        self.W = []
+        self.S = []
+        self.e = False
+        self.i = False
+        self.a = False
+        self.A = False
+        self.q = False
+        self.h = False
+        self.p = False
+        self.v = False
+
+
+def getopts(spec, argv):
+    """Returns (ok, opts, remaining_argv)."""
+    opts = Opts()
+    errs = 0
+    argv = list(argv)
+    list_opts = set("DILlWS")  # options with '+' suffix
+    value_opts = set("no")     # options with ':' suffix
+
+    while argv:
+        cur = argv[0]
+        m = re.match(r"^-(.)(.*)", cur)
+        if not m:
+            break
+        if cur == "--":
+            argv.pop(0)
+            break
+        first, rest = m.group(1), m.group(2)
+        if first in spec:
+            if first in value_opts:
+                argv.pop(0)
+                if rest == "":
+                    if not argv:
+                        error("Incomplete option: %s (needs an argument)" % first)
+                        errs += 1
+                        rest = ""
+                    else:
+                        rest = argv.pop(0)
+                setattr(opts, first, rest)
+            elif first in list_opts:
+                argv.pop(0)
+                if rest == "":
+                    if not argv:
+                        error("Incomplete option: %s (needs an argument)" % first)
+                        errs += 1
+                        rest = ""
+                    else:
+                        rest = argv.pop(0)
+                getattr(opts, first).append(rest)
+            else:
+                setattr(opts, first, True)
+                if rest == "":
+                    argv.pop(0)
+                else:
+                    argv[0] = "-" + rest
+        else:
+            error("Unknown option: %s" % first)
+            errs += 1
+            if rest != "":
+                argv[0] = "-" + rest
+            else:
+                argv.pop(0)
+    return (errs == 0, opts, argv)
+
+
+def usage():
+    sys.stderr.write("Usage: apxs -g [-S <var>=<val>] -n <modname>\n")
+    sys.stderr.write("       apxs -q [-v] [-S <var>=<val>] [<query> ...]\n")
+    sys.stderr.write("       apxs -c [-S <var>=<val>] [-o <dsofile>] [-D <name>[=<value>]]\n")
+    sys.stderr.write("               [-I <incdir>] [-L <libdir>] [-l <libname>] [-Wc,<flags>]\n")
+    sys.stderr.write("               [-Wl,<flags>] [-p] <files> ...\n")
+    sys.stderr.write("       apxs -i [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n")
+    sys.stderr.write("       apxs -e [-S <var>=<val>] [-a] [-A] [-n <modname>] <dsofile> ...\n")
+    sys.exit(1)
+
+
+#   helper: execute a list of system commands with return code checks
+def execute_cmds(cmds):
+    for cmd in cmds:
+        notice(cmd)
+        rc = subprocess.call(cmd, shell=True)
+        if rc:
+            #   Perl's `system` returns the raw wait status ($?), i.e. the
+            #   exit code shifted left by 8.  The historical apxs then prints
+            #   that value shifted left by 8 *again*, so a child exiting 1 is
+            #   reported as rc=65536.  Reconstruct $? from the exit code to
+            #   reproduce that number exactly.
+            status = (rc << 8) if rc > 0 else rc
+            error("Command failed with rc=%d\n" % (status << 8))
+            sys.exit(1)
+
+
+def backtick(cmd):
+    """Run a command via the shell and return its stdout (like Perl ``)."""
+    return subprocess.check_output(cmd, shell=True).decode("utf-8", "replace")
+
+
+def main():
+    destdir = compute_destdir()
+
+    installbuilddir = EXP_INSTALLBUILD
+    get_config_vars(destdir + installbuilddir + "/config_vars.mk", config_vars)
+
+    #   read the configuration variables once (module-level lexicals)
+    prefix         = get_vars("prefix")
+    CFG_PREFIX     = prefix
+    # exec_prefix, datadir, localstatedir are read for parity though the
+    # original only uses a subset directly.
+    get_vars("exec_prefix")
+    get_vars("datadir")
+    get_vars("localstatedir")
+    CFG_TARGET     = get_vars("progname")
+    CFG_SYSCONFDIR = get_vars("sysconfdir")
+    CFG_CFLAGS     = " ".join(get_vars(x) for x in
+        ("SHLTCFLAGS", "CFLAGS", "NOTEST_CPPFLAGS", "EXTRA_CPPFLAGS", "EXTRA_CFLAGS"))
+    CFG_LDFLAGS    = " ".join(get_vars(x) for x in
+        ("LDFLAGS", "NOTEST_LDFLAGS", "SH_LDFLAGS"))
+    includedir     = destdir + get_vars("includedir")
+    CFG_INCLUDEDIR = includedir
+    CFG_CC         = get_vars("CC")
+    libexecdir     = destdir + get_vars("libexecdir")
+    CFG_LIBEXECDIR = libexecdir
+    sbindir        = get_vars("sbindir")
+    CFG_SBINDIR    = sbindir
+
+    ltflags = os.environ.get("LTFLAGS") or "--silent"
+
+    #   seed the CFG_* (internal var) namespace used by get_vars and -S
+    cfg["PREFIX"]     = CFG_PREFIX
+    cfg["TARGET"]     = CFG_TARGET
+    cfg["SYSCONFDIR"] = CFG_SYSCONFDIR
+    cfg["CFLAGS"]     = CFG_CFLAGS
+    cfg["LDFLAGS"]    = CFG_LDFLAGS
+    cfg["INCLUDEDIR"] = CFG_INCLUDEDIR
+    cfg["CC"]         = CFG_CC
+    cfg["LIBEXECDIR"] = CFG_LIBEXECDIR
+    cfg["SBINDIR"]    = CFG_SBINDIR
+
+    #   option handling.  The spec just enumerates valid option letters;
+    #   which take a value (':') or append to a list ('+') is encoded by
+    #   the value_opts/list_opts sets inside getopts().
+    spec = set("qngcoIDLlWSeiaApv")
+    ok, opt, args = getopts(spec, sys.argv[1:])
+
+    if not ok:
+        usage()
+    if len(args) == 0 and not opt.g and not opt.q:
+        usage()
+    if not opt.q and not (opt.g and opt.n) and not opt.i and not opt.c and not opt.e:
+        usage()
+
+    name = "unknown"
+    if opt.n != "":
+        name = opt.n
+
+    #   -S var=val overrides
+    for s in opt.S:
+        m = re.match(r"^([^=]+)=(.*)$", s)
+        if m:
+            var = m.group(1)
+            val = m.group(2)
+            oldval = cfg.get(var)
+            if not (var and oldval):
+                error("no config variable %s" % var)
+                usage()
+            cfg[var] = val
+        else:
+            error("malformatted -S option")
+            usage()
+
+    #   refresh local copies that may have been overridden via -S
+    CFG_PREFIX     = cfg["PREFIX"]
+    CFG_TARGET     = cfg["TARGET"]
+    CFG_SYSCONFDIR = cfg["SYSCONFDIR"]
+    CFG_CFLAGS     = cfg["CFLAGS"]
+    CFG_LDFLAGS    = cfg["LDFLAGS"]
+    CFG_INCLUDEDIR = cfg["INCLUDEDIR"]
+    CFG_CC         = cfg["CC"]
+    CFG_LIBEXECDIR = cfg["LIBEXECDIR"]
+    CFG_SBINDIR    = cfg["SBINDIR"]
+
+    #
+    #  Initial shared object support check
+    #
+    if MOD_SO_ENABLED != "yes":
+        error("Sorry, no shared object support for Apache")
+        error("available under your platform. Make sure")
+        error("the Apache module mod_so is compiled into")
+        error("the server binary")
+        sys.exit(1)
+
+    #
+    #  -g : SAMPLE MODULE SOURCE GENERATION
+    #
+    if opt.g:
+        if os.path.isdir(name):
+            error("Directory `%s' already exists. Remove first" % name)
+            sys.exit(1)
+
+        data = DATA
+        data = data.replace("%NAME%", name)
+        data = data.replace("%TARGET%", CFG_TARGET)
+        data = data.replace("%PREFIX%", prefix)
+        data = data.replace("%INSTALLBUILDDIR%", installbuilddir)
+
+        m = re.match(r"(.+)-=#=-\n(.+)-=#=-\n(.+)", data, re.S)
+        mkf, mods, src = m.group(1), m.group(2), m.group(3)
+
+        notice("Creating [DIR]  %s" % name)
+        os.system("mkdir %s" % name)
+        notice("Creating [FILE] %s/Makefile" % name)
+        with open("%s/Makefile" % name, "w") as fp:
+            fp.write(mkf)
+        notice("Creating [FILE] %s/modules.mk" % name)
+        with open("%s/modules.mk" % name, "w") as fp:
+            fp.write(mods)
+        notice("Creating [FILE] %s/mod_%s.c" % (name, name))
+        with open("%s/mod_%s.c" % (name, name), "w") as fp:
+            fp.write(src)
+        notice("Creating [FILE] %s/.deps" % name)
+        os.system("touch %s/.deps" % name)
+        sys.exit(0)
+
+    #
+    #  -q : QUERY INFORMATION
+    #
+    if opt.q:
+        if len(args) >= 1:
+            result = get_vars(*args)
+            sys.stdout.write("%s\n" % result)
+        else:
+            #  -q without var name prints all variables and their values
+            if opt.v:
+                vars_sorted = sorted(config_vars.keys(), key=lambda s: s.upper())
+                width = 0
+                for k in vars_sorted:
+                    if len(k) > width:
+                        width = len(k)
+                for k in vars_sorted:
+                    sys.stdout.write("%-*s = %s\n" % (width, k, config_vars[k]))
+            else:
+                for k in config_vars:
+                    sys.stdout.write("%s=%s\n" % (k, config_vars[k]))
+
+    apr_config = destdir + get_vars("APR_CONFIG")
+    if not (os.path.isfile(apr_config) and os.access(apr_config, os.X_OK)):
+        error("%s not found!" % apr_config)
+        sys.exit(1)
+
+    apr_major_version = int(backtick("%s --version" % apr_config).split(".")[0])
+
+    apu_config = ""
+    if apr_major_version < 2:
+        apu_config = destdir + get_vars("APU_CONFIG")
+        if not (os.path.isfile(apu_config) and os.access(apu_config, os.X_OK)):
+            error("%s not found!" % apu_config)
+            sys.exit(1)
+
+    libtool = backtick("%s --apr-libtool" % apr_config).rstrip("\n")
+    apr_includedir = backtick("%s --includes" % apr_config).rstrip("\n")
+    apu_includedir = ""
+    if apr_major_version < 2:
+        apu_includedir = backtick("%s --includes" % apu_config).rstrip("\n")
+
+    #
+    #  -c : SHARED OBJECT COMPILATION
+    #
+    if opt.c:
+        srcs = []
+        objs = []
+        for f in args:
+            if f.endswith(".c"):
+                srcs.append(f)
+            else:
+                objs.append(f)
+
+        #   determine output file
+        if opt.o == "":
+            if srcs:
+                dso_file = re.sub(r"\.[^.]+$", ".la", srcs[0])
+            elif objs:
+                dso_file = re.sub(r"\.[^.]+$", ".la", objs[0])
+            else:
+                dso_file = "mod_unknown.la"
+        else:
+            dso_file = re.sub(r"\.[^.]+$", ".la", opt.o)
+
+        cmds = []
+        compile_opt = ""
+        for w in opt.W:
+            m = re.match(r"^\s*c,(.*)$", w)
+            if m:
+                compile_opt += m.group(1) + " "
+        for inc in opt.I:
+            compile_opt += "-I%s " % inc
+        for d in opt.D:
+            compile_opt += "-D%s " % d
+
+        cflags = CFG_CFLAGS
+        for s in srcs:
+            slo = re.sub(r"\.c$", ".slo", s)
+            lo = re.sub(r"\.c$", ".lo", s)
+            cmds.append("%s %s --mode=compile %s %s -I%s %s %s %s -c -o %s %s && touch %s" %
+                        (libtool, ltflags, CFG_CC, cflags, CFG_INCLUDEDIR,
+                         apr_includedir, apu_includedir, compile_opt, lo, s, slo))
+            objs.insert(0, lo)
+
+        #   create link command
+        lo_all = ""
+        for o in objs:
+            lo_all += " " + o
+
+        link_opt = ""
+        for w in opt.W:
+            m = re.match(r"^\s*l,(.*)$", w)
+            if m:
+                link_opt += m.group(1) + " "
+        for L in opt.L:
+            link_opt += " -L%s" % L
+        for l in opt.l:
+            link_opt += " -l%s" % l
+
+        ldflags = CFG_LDFLAGS
+        if opt.p:
+            apr_libs = backtick("%s --cflags --ldflags --link-libtool --libs" % apr_config).rstrip("\n")
+            apu_libs = ""
+            if apr_major_version < 2:
+                apu_libs = backtick("%s --ldflags --link-libtool --libs" % apu_config).rstrip("\n")
+            link_opt += " " + apu_libs + " " + apr_libs
+        else:
+            apr_ldflags = backtick("%s --ldflags" % apr_config).rstrip("\n")
+            link_opt += " -rpath %s -module -avoid-version %s" % (CFG_LIBEXECDIR, apr_ldflags)
+
+        cmds.append("%s %s --mode=link %s %s -o %s %s %s" %
+                    (libtool, ltflags, CFG_CC, ldflags, dso_file, link_opt, lo_all))
+
+        execute_cmds(cmds)
+
+        #   allow one-step compilation and installation
+        if opt.i or opt.e:
+            args = [dso_file]
+
+    #
+    #  -i / -e : SHARED OBJECT INSTALLATION
+    #
+    if opt.i or opt.e:
+        lmd = []
+        cmds = []
+        for f in args:
+            #  ack all potential gcc, hp/ux, win32+os2+aix and os/x extensions
+            if not re.search(r"(\.so$|\.la$|\.sl$|\.dll$|\.dylib$|)", f):
+                error("file %s is not a shared object" % f)
+                sys.exit(1)
+            t = re.sub(r"^.+/([^/]+)$", r"\1", f)
+            #  use .so unambigiously for installed shared library modules
+            t = re.sub(r"\.[^./\\]+$", ".so", t)
+            if opt.i:
+                cmds.append(destdir + "%s/instdso.sh SH_LIBTOOL='%s' %s %s" %
+                            (installbuilddir, libtool, f, CFG_LIBEXECDIR))
+                cmds.append("chmod 755 %s/%s" % (CFG_LIBEXECDIR, t))
+
+            #   determine module symbolname and filename
+            filename = ""
+            if name == "unknown":
+                name = ""
+                base = re.sub(r"\.[^.]+$", "", f)
+                if os.path.isfile("%s.c" % base):
+                    with open("%s.c" % base, "r") as cfp:
+                        content = cfp.read()
+                    m = re.search(r".*AP_DECLARE_MODULE\s*\(\s*([a-zA-Z0-9_]+)\s*\)\s*=.*", content, re.S)
+                    if not m:
+                        m = re.search(r".*module\s+(?:AP_MODULE_DECLARE_DATA\s+)?([a-zA-Z0-9_]+)_module\s*=\s*.*", content, re.S)
+                    if m:
+                        name = m.group(1)
+                        filename = "%s.c" % base
+                        filename = re.sub(r"^[^/]+/", "", filename)
+                if name == "":
+                    m = re.match(r".*mod_([a-zA-Z0-9_]+)(\..+|$)", base)
+                    if m:
+                        name = m.group(1)
+                        filename = base
+                        filename = re.sub(r"^[^/]+/", "", filename)
+                if name == "":
+                    error("Sorry, cannot determine bootstrap symbol name")
+                    error("Please specify one with option `-n'")
+                    sys.exit(1)
+            if filename == "":
+                filename = "mod_%s.c" % name
+            dir_ = CFG_LIBEXECDIR
+            dir_ = re.sub(r"^%s/?" % re.escape(CFG_PREFIX), "", dir_)
+            dir_ = re.sub(r"(.)$", r"\1/", dir_)
+            t = re.sub(r"\.la$", ".so", t)
+            lmd.append("LoadModule %-18s %s" % ("%s_module" % name, "%s%s" % (dir_, t)))
+
+        execute_cmds(cmds)
+
+        #   activate module via LoadModule/AddModule directive
+        if opt.a or opt.A:
+            conf = "%s/%s.conf" % (CFG_SYSCONFDIR, CFG_TARGET)
+            if not os.path.isfile(conf):
+                error("Config file %s not found" % conf)
+                sys.exit(1)
+
+            with open(conf, "r") as fp:
+                content = fp.read()
+
+            if not re.search(r"\n#?\s*LoadModule\s+", content):
+                error("Activation failed for custom %s file." % conf)
+                error("At least one `LoadModule' directive already has to exist")
+                sys.exit(1)
+
+            c = "#" if opt.A else ""
+            for entry in lmd:
+                what = "preparing" if opt.A else "activating"
+                lmd_re = re.sub(r"\s+", r"\\s+", entry)
+
+                if not re.search(r"\n#?\s*" + lmd_re, content):
+                    # find everything up to and including the LAST LoadModule
+                    # (greedy), to count open/closed <containers> before it.
+                    bm = re.search(r"^(.*\n)#?\s*LoadModule\s+[^\n]+\n", content, re.S)
+                    before = bm.group(1) if bm else ""
+
+                    cntopen = len(re.findall(r"^\s*<[^/].*$", before, re.M))
+                    cntclose = len(re.findall(r"^\s*</.*$", before, re.M))
+
+                    if cntopen == cntclose:
+                        # fine. Last LoadModule is contextless.
+                        content = re.sub(r"^(.*\n#?\s*LoadModule\s+[^\n]+\n)",
+                                         lambda m: m.group(1) + c + entry + "\n",
+                                         content, count=1, flags=re.S)
+                    elif cntopen < cntclose:
+                        error("Configuration file is not valid. There are sections"
+                              " closed before opened")
+                        sys.exit(1)
+                    else:
+                        # put our cmd after the section containing the last
+                        # LoadModule.
+                        pat = (r"\A("
+                               r"(?:(?:"
+                               r"^\s*"
+                               r"(?:[^<]|<[^/])"
+                               r".*(?:$)\n"
+                               r")*"
+                               r"^\s*</.*(?:$)\n?"
+                               r"){%d})" % cntopen)
+                        new_content, found = re.subn(
+                            pat,
+                            lambda m: m.group(1) + c + entry + "\n",
+                            content, count=1, flags=re.M)
+                        if not found:
+                            error("Configuration file is not valid. There are "
+                                  "sections opened and not closed")
+                            sys.exit(1)
+                        content = new_content
+                else:
+                    # replace already existing LoadModule line
+                    content = re.sub(r"^(.*\n)#?\s*" + lmd_re + r"[^\n]*\n",
+                                     lambda m: m.group(1) + c + entry + "\n",
+                                     content, count=1, flags=re.S)
+                m = re.match(r"LoadModule\s+(.+?)_module.*", entry)
+                modname = m.group(1) if m else ""
+                notice("[%s module `%s' in %s]" % (what, modname, conf))
+
+            if lmd:
+                try:
+                    nfp = open("%s.new" % conf, "w")
+                except IOError:
+                    notice("unable to open configuration file")
+                else:
+                    with nfp:
+                        nfp.write(content)
+                    os.system("cp %s %s.bak && cp %s.new %s && rm %s.new" %
+                              (conf, conf, conf, conf, conf))
+
+
+#
+#  DATA -- templates for `apxs -g' (Makefile, modules.mk, mod_NAME.c),
+#  split on the -=#=- markers, identical to the Perl __DATA__ section.
+#
+DATA = r"""##
+##  Makefile -- Build procedure for sample %NAME% Apache module
+##  Autogenerated via ``apxs -n %NAME% -g''.
+##
+
+builddir=.
+top_srcdir=%PREFIX%
+top_builddir=%PREFIX%
+include %INSTALLBUILDDIR%/special.mk
+
+#   the used tools
+APACHECTL=apachectl
+
+#   additional defines, includes and libraries
+#DEFS=-Dmy_define=my_value
+#INCLUDES=-Imy/include/dir
+#LIBS=-Lmy/lib/dir -lmylib
+
+#   the default target
+all: local-shared-build
+
+#   install the shared object file into Apache
+install: install-modules-yes
+
+#   cleanup
+clean:
+	-rm -f mod_%NAME%.o mod_%NAME%.lo mod_%NAME%.slo mod_%NAME%.la
+
+#   simple test
+test: reload
+	lynx -mime_header http://localhost/%NAME%
+
+#   install and activate shared object by reloading Apache to
+#   force a reload of the shared object file
+reload: install restart
+
+#   the general Apache start/restart/stop
+#   procedures
+start:
+	$(APACHECTL) start
+restart:
+	$(APACHECTL) restart
+stop:
+	$(APACHECTL) stop
+
+-=#=-
+mod_%NAME%.la: mod_%NAME%.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version  mod_%NAME%.lo
+DISTCLEAN_TARGETS = modules.mk
+shared =  mod_%NAME%.la
+-=#=-
+/*
+**  mod_%NAME%.c -- Apache sample %NAME% module
+**  [Autogenerated via ``apxs -n %NAME% -g'']
+**
+**  To play with this sample module first compile it into a
+**  DSO file and install it into Apache's modules directory
+**  by running:
+**
+**    $ apxs -c -i mod_%NAME%.c
+**
+**  Then activate it in Apache's %TARGET%.conf file for instance
+**  for the URL /%NAME% in as follows:
+**
+**    #   %TARGET%.conf
+**    LoadModule %NAME%_module modules/mod_%NAME%.so
+**    <Location /%NAME%>
+**    SetHandler %NAME%
+**    </Location>
+**
+**  Then after restarting Apache via
+**
+**    $ apachectl restart
+**
+**  you immediately can request the URL /%NAME% and watch for the
+**  output of this module. This can be achieved for instance via:
+**
+**    $ lynx -mime_header http://localhost/%NAME%
+**
+**  The output should be similar to the following one:
+**
+**    HTTP/1.1 200 OK
+**    Date: Tue, 31 Mar 1998 14:42:22 GMT
+**    Server: Apache/1.3.4 (Unix)
+**    Connection: close
+**    Content-Type: text/html
+**
+**    The sample page from mod_%NAME%.c
+*/
+
+#include "httpd.h"
+#include "http_config.h"
+#include "http_protocol.h"
+#include "ap_config.h"
+
+/* The sample content handler */
+static int %NAME%_handler(request_rec *r)
+{
+    if (strcmp(r->handler, "%NAME%")) {
+        return DECLINED;
+    }
+    r->content_type = "text/html";
+
+    if (!r->header_only)
+        ap_rputs("The sample page from mod_%NAME%.c\n", r);
+    return OK;
+}
+
+static void %NAME%_register_hooks(apr_pool_t *p)
+{
+    ap_hook_handler(%NAME%_handler, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+/* Dispatch list for API hooks */
+module AP_MODULE_DECLARE_DATA %NAME%_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL,                  /* create per-dir    config structures */
+    NULL,                  /* merge  per-dir    config structures */
+    NULL,                  /* create per-server config structures */
+    NULL,                  /* merge  per-server config structures */
+    NULL,                  /* table of config file commands       */
+    %NAME%_register_hooks  /* register hooks                      */
+};
+
+"""
+
+
+if __name__ == "__main__":
+    main()

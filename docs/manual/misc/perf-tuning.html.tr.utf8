@@ -1,254 +1,254 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache’de Başarımın Arttırılması - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>Apache'de Başarımın Arttırılması - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Apache’de Başarımın Arttırılması</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">&Ccedil;eşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Apache'de Başarımın Arttırılması</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/perf-tuning.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/perf-tuning.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/perf-tuning.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
 
     <p>Apache 2.x, esneklik, taşınabilirlik ve başarım arasında bir denge
-      sağlamak üzere tasarlanmış genel amaçlı bir HTTP sunucusudur. Başka
-      sunucularla kıyaslama denemelerinde öne geçmek üzere tasarlanmamış
-      olsa da Apache 2.x gerçek yaşamda karşılaşılan pek çok durumda oldukça
-      yüksek bir başarıma ulaşacak yetenektedir.</p>
+      sağlamak &uuml;zere tasarlanmış genel ama&ccedil;lı bir HTTP sunucusudur. Başka
+      sunucularla kıyaslama denemelerinde &ouml;ne ge&ccedil;mek &uuml;zere tasarlanmamış
+      olsa da Apache 2.x ger&ccedil;ek yaşamda karşılaşılan pek &ccedil;ok durumda olduk&ccedil;a
+      y&uuml;ksek bir başarıma ulaşacak yetenektedir.</p>
 
-    <p>Apache 1.3 ile karşılaştırıldığında 2.x sürümleri toplam veri hızını
-      ve ölçeklenebilirliği arttırmak için pek çok en iyileme seçeneği
-      içerir. Bu iyileştirmelerin pek çoğu zaten öntanımlı olarak etkin
-      olmakla birlikte derleme ve kullanım sırasında başarımı önemli ölçüde
-      etkileyebilen yapılandırma seçenekleri de mevcuttur. Bu belgede, bir
-      Apache 2.x kurulumunda sunucu yöneticisinin sunucunun başarımını
+    <p>Apache 1.3 ile karşılaştırıldığında 2.x s&uuml;r&uuml;mleri toplam veri hızını
+      ve &ouml;l&ccedil;eklenebilirliği arttırmak i&ccedil;in pek &ccedil;ok en iyileme se&ccedil;eneği
+      i&ccedil;erir. Bu iyileştirmelerin pek &ccedil;oğu zaten &ouml;ntanımlı olarak etkin
+      olmakla birlikte derleme ve kullanım sırasında başarımı &ouml;nemli &ouml;l&ccedil;&uuml;de
+      etkileyebilen yapılandırma se&ccedil;enekleri de mevcuttur. Bu belgede, bir
+      Apache 2.x kurulumunda sunucu y&ouml;neticisinin sunucunun başarımını
       arttırmak amacıyla yapılandırma sırasında neler yapabileceğinden
-      bahsedilmiştir. Bu yapılandırma seçeneklerinden bazıları, httpd’nin
+      bahsedilmiştir. Bu yapılandırma se&ccedil;eneklerinden bazıları, httpd'nin
       donanımın ve işletim sisteminin olanaklarından daha iyi
-      yararlanabilmesini sağlarken bir kısmı da  daha hızlı bir sunum için
-      yöneticinin işlevsellikten ödün verebilmesini olanaklı kılar.</p>
+      yararlanabilmesini sağlarken bir kısmı da  daha hızlı bir sunum i&ccedil;in
+      y&ouml;neticinin işlevsellikten &ouml;d&uuml;n verebilmesini olanaklı kılar.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">Donanım ve İşletim Sistemi ile İlgili Konular</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#runtime">Çalışma Anı Yapılandırması ile İlgili Konular</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#compiletime">Derleme Sırasında Yapılandırma ile İlgili Konular</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#trace">Ek: Bir çağrı izlemesinin ayrıntılı çözümlemesi</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="#comments_section">Yorum</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#hardware">Donanım ve İşletim Sistemi ile İlgili Konular</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#runtime">&Ccedil;alışma Anı Yapılandırması ile İlgili Konular</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#compiletime">Derleme Sırasında Yapılandırma ile İlgili Konular</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#trace">Ek: Bir &ccedil;ağrı izlemesinin ayrıntılı &ccedil;&ouml;z&uuml;mlemesi</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hardware" id="hardware">Donanım ve İşletim Sistemi ile İlgili Konular</a> <a title="Permanent link" href="#hardware" class="permalink">&para;</a></h2>
+<h2 id="hardware">Donanım ve İşletim Sistemi ile İlgili Konular <a title="Permanent link" href="#hardware" class="permalink">&para;</a></h2>
 
     
 
-    <p>HTTP sunucusunun başarımını etkileyen en önemli donanım bellektir
-      (RAM). Bir HTTP sunucusu asla takaslama yapmamalıdır. Çünkü takaslama,
+    <p>HTTP sunucusunun başarımını etkileyen en &ouml;nemli donanım bellektir
+      (RAM). Bir HTTP sunucusu asla takaslama yapmamalıdır. &Ccedil;&uuml;nk&uuml; takaslama,
       kullanıcının "yeterince hız" umduğu noktada sunumun gecikmesine sebep
-      olur. Böyle bir durumda kullanıcılar yüklemeyi durdurup tekrar
-      başlatma eğilimindedirler; sonuçta yük daha da artar. <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesinin değerini
-      değiştirerek takaslamaya sebep olabilecek kadar çok çocuk süreç
-      oluşturulmasını engelleyebilirsiniz ve böyle bir durumda bunu mutlaka
-      yapmalısınız. Bunun için yapacağınız işlem basittir: <code>top</code>
-      benzeri bir araç üzerinden çalışan süreçlerinizin bir listesini alıp
-      Apache süreçlerinizin ortalama büyüklüğünü saptayıp, mevcut bellekten
-      bir kısmını diğer süreçler için ayırdıktan sonra kalan miktarı bu
-      değere bölerseniz yönergeye atayacağınız değeri bulmuş olursunuz.</p>
+      olur. B&ouml;yle bir durumda kullanıcılar y&uuml;klemeyi durdurup tekrar
+      başlatma eğilimindedirler; sonu&ccedil;ta y&uuml;k daha da artar. <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> y&ouml;nergesinin değerini
+      değiştirerek takaslamaya sebep olabilecek kadar &ccedil;ok &ccedil;ocuk s&uuml;re&ccedil;
+      oluşturulmasını engelleyebilirsiniz ve b&ouml;yle bir durumda bunu mutlaka
+      yapmalısınız. Bunun i&ccedil;in yapacağınız işlem basittir: <code>top</code>
+      benzeri bir ara&ccedil; &uuml;zerinden &ccedil;alışan s&uuml;re&ccedil;lerinizin bir listesini alıp
+      Apache s&uuml;re&ccedil;lerinizin ortalama b&uuml;y&uuml;kl&uuml;ğ&uuml;n&uuml; saptayıp, mevcut bellekten
+      bir kısmını diğer s&uuml;re&ccedil;ler i&ccedil;in ayırdıktan sonra kalan miktarı bu
+      değere b&ouml;lerseniz y&ouml;nergeye atayacağınız değeri bulmuş olursunuz.</p>
 
-    <p>Donanımın diğer unsurları için kararı siz verin: Daha hızlı işlemci,
+    <p>Donanımın diğer unsurları i&ccedil;in kararı siz verin: Daha hızlı işlemci,
       daha hızlı ağ kartı, daha hızlı disk; daha hızlının ne kadar hızlı
-      olacağını deneyimlerinize bağlı olarak tamamen sizin ihtiyaçlarınız
+      olacağını deneyimlerinize bağlı olarak tamamen sizin ihtiya&ccedil;larınız
       belirler.</p>
 
-    <p>İşletim sistemi seçimi büyük oranda yerel ilgi konusudur. Fakat yine
-      de, genelde yararlılığı kanıtlanmış bazı kurallar bu seçimde size
+    <p>İşletim sistemi se&ccedil;imi b&uuml;y&uuml;k oranda yerel ilgi konusudur. Fakat yine
+      de, genelde yararlılığı kanıtlanmış bazı kurallar bu se&ccedil;imde size
       yardımcı olabilir:</p>
 
     <ul>
       <li>
-        <p>Seçtiğiniz işletim sisteminin (çekirdeğin) en son kararlı
-          sürümünü çalıştırın. Bir çok işletim sistemi, son yıllarda TCP
-          yığıtları ve evre kütüphaneleri ile ilgili belirgin iyileştirmeler
+        <p>Se&ccedil;tiğiniz işletim sisteminin (&ccedil;ekirdeğin) en son kararlı
+          s&uuml;r&uuml;m&uuml;n&uuml; &ccedil;alıştırın. Bir &ccedil;ok işletim sistemi, son yıllarda TCP
+          yığıtları ve evre k&uuml;t&uuml;phaneleri ile ilgili belirgin iyileştirmeler
           yapmışlar ve yapmaktadırlar.</p>
       </li>
 
       <li>
-        <p>İşletim sisteminiz <code>sendfile</code>(2) sistem çağrısını
-          destekliyorsa bunun etkinleştirilebildiği sürümün kurulu olması
-          önemlidir. (Örneğin, Linux için bu, Linux 2.4 ve sonraki sürümler
-          anlamına gelirken, Solaris için Solaris 8’den önceki sürümlerin
+        <p>İşletim sisteminiz <code>sendfile</code>(2) sistem &ccedil;ağrısını
+          destekliyorsa bunun etkinleştirilebildiği s&uuml;r&uuml;m&uuml;n kurulu olması
+          &ouml;nemlidir. (&Ouml;rneğin, Linux i&ccedil;in bu, Linux 2.4 ve sonraki s&uuml;r&uuml;mler
+          anlamına gelirken, Solaris i&ccedil;in Solaris 8'den &ouml;nceki s&uuml;r&uuml;mlerin
           yamanması gerektirdiği anlamına gelmektedir.)
           <code>sendfile</code> işlevinin desteklendiği sistemlerde Apache 2
-          duruk içeriği daha hızlı teslim etmek ve işlemci kullanımını
-          düşürmek amacıyla bu işlevselliği kullanacaktır.</p>
+          duruk i&ccedil;eriği daha hızlı teslim etmek ve işlemci kullanımını
+          d&uuml;ş&uuml;rmek amacıyla bu işlevselliği kullanacaktır.</p>
       </li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="runtime" id="runtime">Çalışma Anı Yapılandırması ile İlgili Konular</a> <a title="Permanent link" href="#runtime" class="permalink">&para;</a></h2>
+<h2 id="runtime">&Ccedil;alışma Anı Yapılandırması ile İlgili Konular <a title="Permanent link" href="#runtime" class="permalink">&para;</a></h2>
 
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
 
-    <h3><a name="dns" id="dns"><code>HostnameLookups</code> ve DNS ile ilgili diğer konular</a></h3>
+    <h3 id="dns"><code>HostnameLookups</code> ve DNS ile ilgili diğer konular</h3>
 
       
 
-      <p>Apache 1.3 öncesinde, <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> yönergesinin öntanımlı değeri
-        <code>On</code> idi. İstek yerine getirilmeden önce bir DNS sorgusu
+      <p>Apache 1.3 &ouml;ncesinde, <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> y&ouml;nergesinin &ouml;ntanımlı değeri
+        <code>On</code> idi. İstek yerine getirilmeden &ouml;nce bir DNS sorgusu
         yapılmasını gerektirmesi sebebiyle bu ayarlama her istekte bir
-        miktar gecikmeye sebep olurdu. Apache 1.3’ten itibaren yönergenin
-        öntanımlı değeri <code>Off</code> yapılmıştır. Eğer günlük
+        miktar gecikmeye sebep olurdu. Apache 1.3'ten itibaren y&ouml;nergenin
+        &ouml;ntanımlı değeri <code>Off</code> yapılmıştır. Eğer g&uuml;nl&uuml;k
         dosyalarınızda konak isimlerinin bulunmasını isterseniz, Apache ile
         birlikte gelen <code class="program"><a href="../programs/logresolve.html">logresolve</a></code> programını
-        kullanabileceğiniz gibi günlük raporlarını çözümleyen Apache ile
+        kullanabileceğiniz gibi g&uuml;nl&uuml;k raporlarını &ccedil;&ouml;z&uuml;mleyen Apache ile
         gelmeyen programlardan herhangi birini de kullanabilirsiniz.</p>
 
-      <p>Günlük dosyaları üzerindeki bu işlemi sunucu makinesi dışında
-        günlük dosyasının bir kopyası üzerinde yapmanızı öneririz. Aksi
-        takdirde sunucunuzun başarımı önemli ölçüde etkilenebilir.</p>
+      <p>G&uuml;nl&uuml;k dosyaları &uuml;zerindeki bu işlemi sunucu makinesi dışında
+        g&uuml;nl&uuml;k dosyasının bir kopyası &uuml;zerinde yapmanızı &ouml;neririz. Aksi
+        takdirde sunucunuzun başarımı &ouml;nemli &ouml;l&ccedil;&uuml;de etkilenebilir.</p>
 
       <p><code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code> veya
         <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>
-        yönergelerinde IP adresi yerine bir konak veya alan ismi
-        belirtirseniz, iki DNS sorguluk bir bedel ödersiniz (biri normal,
+        y&ouml;nergelerinde IP adresi yerine bir konak veya alan ismi
+        belirtirseniz, iki DNS sorguluk bir bedel &ouml;dersiniz (biri normal,
         diğeri IP taklidine karşı ters DNS sorgusu). Başarımı en iyilemek
-        için bu yönergelerde mümkün olduğunca isim yerine IP adreslerini
+        i&ccedil;in bu y&ouml;nergelerde m&uuml;mk&uuml;n olduğunca isim yerine IP adreslerini
         kullanınız.</p>
 
       <p><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>
-        yönergelerinin <code>&lt;Location /server-status&gt;</code> gibi
-        bölüm yönergelerinin içinde de yer alabileceğini unutmayın. Bu gibi
+        y&ouml;nergelerinin <code>&lt;Location /server-status&gt;</code> gibi
+        b&ouml;l&uuml;m y&ouml;nergelerinin i&ccedil;inde de yer alabileceğini unutmayın. Bu gibi
         durumlarda DNS sorguları sadece istek kuralla eşleştiği takdirde
-        yapılacaktır. Aşağıdaki örnekte <code>.html</code> ve
-        <code>.cgi</code> dosyalarına yapılan istekler hariç DNS sorguları
+        yapılacaktır. Aşağıdaki &ouml;rnekte <code>.html</code> ve
+        <code>.cgi</code> dosyalarına yapılan istekler hari&ccedil; DNS sorguları
         iptal edilmektedir:</p>
 
       <div class="example"><p><code>
-        HostnameLookups off<br />
-        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
+        HostnameLookups off<br>
+        &lt;Files ~ "\.(html|cgi)$"&gt;<br>
         <span class="indent">
-          HostnameLookups on<br />
+          HostnameLookups on<br>
         </span>
         &lt;/Files&gt;
       </code></p></div>
 
-      <p>Yine de bazı CGI’lerin DNS isimlerine ihtiyacı olursa bu CGI’lerin
-        bu ihtiyaçlarına yönelik olarak <code>gethostbyname</code> çağrıları
-        yapabileceğini gözardı etmeyiniz.</p>
+      <p>Yine de bazı CGI'lerin DNS isimlerine ihtiyacı olursa bu CGI'lerin
+        bu ihtiya&ccedil;larına y&ouml;nelik olarak <code>gethostbyname</code> &ccedil;ağrıları
+        yapabileceğini g&ouml;zardı etmeyiniz.</p>
 
     
 
-    <h3><a name="symlinks" id="symlinks"><code>FollowSymLinks</code> ve
-        <code>SymLinksIfOwnerMatch</code></a></h3>
+    <h3 id="symlinks"><code>FollowSymLinks</code> ve
+        <code>SymLinksIfOwnerMatch</code></h3>
 
       
 
-      <p>URL uzayınızda geçerli olmak üzere bir <code>Options
+      <p>URL uzayınızda ge&ccedil;erli olmak &uuml;zere bir <code>Options
         FollowSymLinks</code> yoksa veya <code>Options
-        SymLinksIfOwnerMatch</code> yönergeleri varsa, Apache her sembolik
-        bağın üzerinde bazı sınamalar yapmak için ek bir sistem çağrısından
-        başka istenen her dosya için de ayrı bir çağrı yapacaktır.</p>
+        SymLinksIfOwnerMatch</code> y&ouml;nergeleri varsa, Apache her sembolik
+        bağın &uuml;zerinde bazı sınamalar yapmak i&ccedil;in ek bir sistem &ccedil;ağrısından
+        başka istenen her dosya i&ccedil;in de ayrı bir &ccedil;ağrı yapacaktır.</p>
 
-      <div class="example"><h3>Örnek:</h3><p><code>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
+      <div class="example"><h3>&Ouml;rnek:</h3><p><code>
+        DocumentRoot /siteler/htdocs<br>
+        &lt;Directory /&gt;<br>
         <span class="indent">
-          Options SymLinksIfOwnerMatch<br />
+          Options SymLinksIfOwnerMatch<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>Bu durumda <code>/index.html</code> için bir istek yapıldığında
-        Apache, <code>/siteler</code>, <code>/siteler/htdocs</code> ve<br />
-        <code>/siteler/htdocs/index.html</code> üzerinde
-        <code>lstat</code>(2) çağrıları yapacaktır. <code>lstat</code>
-        sonuçları önbelleğe kaydedilmediğinden bu işlem her istekte
-        yinelenecektir. Amacınız gerçekten sembolik bağları güvenlik
-        açısından sınamaksa bunu şöyle yapabilirsiniz:</p>
+      <p>Bu durumda <code>/index.html</code> i&ccedil;in bir istek yapıldığında
+        Apache, <code>/siteler</code>, <code>/siteler/htdocs</code> ve<br>
+        <code>/siteler/htdocs/index.html</code> &uuml;zerinde
+        <code>lstat</code>(2) &ccedil;ağrıları yapacaktır. <code>lstat</code>
+        sonu&ccedil;ları &ouml;nbelleğe kaydedilmediğinden bu işlem her istekte
+        yinelenecektir. Amacınız ger&ccedil;ekten sembolik bağları g&uuml;venlik
+        a&ccedil;ısından sınamaksa bunu ş&ouml;yle yapabilirsiniz:</p>
 
       <div class="example"><p><code>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
+        DocumentRoot /siteler/htdocs<br>
+        &lt;Directory /&gt;<br>
         <span class="indent">
-          Options FollowSymLinks<br />
+          Options FollowSymLinks<br>
         </span>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /sitem/htdocs&gt;<br />
+        &lt;/Directory&gt;<br>
+        <br>
+        &lt;Directory /sitem/htdocs&gt;<br>
         <span class="indent">
-          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
+          Options -FollowSymLinks +SymLinksIfOwnerMatch<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>Böylece <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altındaki
-        dosyalar için fazladan bir çağrı yapılmasını engellemiş olursunuz.
-        Eğer bazı bölümlerde <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> gibi yönergeler üzerinden belge kök
+      <p>B&ouml;ylece <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altındaki
+        dosyalar i&ccedil;in fazladan bir &ccedil;ağrı yapılmasını engellemiş olursunuz.
+        Eğer bazı b&ouml;l&uuml;mlerde <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> gibi y&ouml;nergeler &uuml;zerinden belge k&ouml;k
         dizininizin dışında kalan dosya yollarına sahipseniz benzer
-        işlemleri onlar için de yapmalısınız. Sembolik bağ koruması yapmamak
+        işlemleri onlar i&ccedil;in de yapmalısınız. Sembolik bağ koruması yapmamak
         suretiyle başarımı arttırmak isterseniz, <code>FollowSymLinks</code>
-        seçeneğini her yerde etkin kılın ve
-        <code>SymLinksIfOwnerMatch</code> seçeneğini asla
+        se&ccedil;eneğini her yerde etkin kılın ve
+        <code>SymLinksIfOwnerMatch</code> se&ccedil;eneğini asla
         etkinleştirmeyin.</p>
 
     
 
-    <h3><a name="htaccess" id="htaccess"><code>AllowOverride</code></a></h3>
+    <h3 id="htaccess"><code>AllowOverride</code></h3>
 
       
 
-      <p>Genellikle <code>.htaccess</code> dosyaları üzerinden yapıldığı
-        gibi URL uzayınızda geçersizleştirmelere izin veriyorsanız, Apache
-        her dosya bileşeni için bu <code>.htaccess</code> dosyalarını açmaya
-        çalışacaktır.</p>
+      <p>Genellikle <code>.htaccess</code> dosyaları &uuml;zerinden yapıldığı
+        gibi URL uzayınızda ge&ccedil;ersizleştirmelere izin veriyorsanız, Apache
+        her dosya bileşeni i&ccedil;in bu <code>.htaccess</code> dosyalarını a&ccedil;maya
+        &ccedil;alışacaktır.</p>
 
-      <div class="example"><h3>Örnek:</h3><p><code>
-        DocumentRoot /siteler/htdocs<br />
-        &lt;Directory /&gt;<br />
+      <div class="example"><h3>&Ouml;rnek:</h3><p><code>
+        DocumentRoot /siteler/htdocs<br>
+        &lt;Directory /&gt;<br>
         <span class="indent">
-          AllowOverride all<br />
+          AllowOverride all<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
 
-      <p>Bu durumda <code>/index.html</code> sayfasına yapılan bir istek için
+      <p>Bu durumda <code>/index.html</code> sayfasına yapılan bir istek i&ccedil;in
         Apache, <code>/.htaccess</code>, <code>/siteler/.htaccess</code> ve
-        <code>/siteler/htdocs/.htaccess</code> dosyalarını açmaya
-        çalışacaktır. Çözüm <code>Options FollowSymLinks</code> durumunun
-        benzeridir; başarımı arttırmak için dosya sisteminizin her yerinde
+        <code>/siteler/htdocs/.htaccess</code> dosyalarını a&ccedil;maya
+        &ccedil;alışacaktır. &Ccedil;&ouml;z&uuml;m <code>Options FollowSymLinks</code> durumunun
+        benzeridir; başarımı arttırmak i&ccedil;in dosya sisteminizin her yerinde
         <code>AllowOverride None</code> olsun.</p>
 
     
 
-    <h3><a name="negotiation" id="negotiation">Dil Uzlaşımı</a></h3>
+    <h3 id="negotiation">Dil Uzlaşımı</h3>
 
       
 
-      <p>Başarımı son kırıntısına kadar arttırmak istiyorsanız, mümkünse
-        içerik dili uzlaşımı da yapmayın. Dil uzlaşımından yararlanmak
-        isterken büyük başarım kayıplarına uğrayabilirsiniz. Böyle bir
+      <p>Başarımı son kırıntısına kadar arttırmak istiyorsanız, m&uuml;mk&uuml;nse
+        i&ccedil;erik dili uzlaşımı da yapmayın. Dil uzlaşımından yararlanmak
+        isterken b&uuml;y&uuml;k başarım kayıplarına uğrayabilirsiniz. B&ouml;yle bir
         durumda sunucunun başarımını arttırmanın tek bir yolu vardır. </p>
 
       <div class="example"><p><code>
@@ -256,26 +256,26 @@
       </code></p></div>
 
       <p>Yukarıdaki gibi bir dosya ismi kalıbı kullanmak yerine, aşağıdaki
-        gibi seçenekleri tam bir liste halinde belirtin:</p>
+        gibi se&ccedil;enekleri tam bir liste halinde belirtin:</p>
 
       <div class="example"><p><code>
         DirectoryIndex index.cgi index.pl index.shtml index.html
       </code></p></div>
 
-      <p>Buradaki sıralama öncelik sırasını belirler; yani,
-        öncelikli olmasını istediğiniz seçeneği listenin başına
+      <p>Buradaki sıralama &ouml;ncelik sırasını belirler; yani,
+        &ouml;ncelikli olmasını istediğiniz se&ccedil;eneği listenin başına
         yazmalısınız.</p>
 
-      <p>İstenen dosya için <code>MultiViews</code> kullanarak dizini
+      <p>İstenen dosya i&ccedil;in <code>MultiViews</code> kullanarak dizini
         taratmak yerine, gerekli bilgiyi tek bir dosyadan okutmak suretiyle
-        başarımı arttırabilirsiniz. Bu amaçla türeşlem
+        başarımı arttırabilirsiniz. Bu ama&ccedil;la t&uuml;reşlem
         (<code>type-map</code>) dosyaları kullanmanız yeterli olacaktır.</p>
 
-      <p>Sitenizde içerik dili uzlaşımına gerek varsa, bunu <code>Options
-        MultiViews</code> yönergesi üzerinden değil, türeşlem dosyaları
-        kullanarak yapmayı deneyin. İçerik dili uzlaşımı ve türeşlem
+      <p>Sitenizde i&ccedil;erik dili uzlaşımına gerek varsa, bunu <code>Options
+        MultiViews</code> y&ouml;nergesi &uuml;zerinden değil, t&uuml;reşlem dosyaları
+        kullanarak yapmayı deneyin. İ&ccedil;erik dili uzlaşımı ve t&uuml;reşlem
         dosyalarının oluşturulması hakkında daha ayrıntılı bilgi edinmek
-        için <a href="../content-negotiation.html">İçerik Uzlaşımı</a>
+        i&ccedil;in <a href="../content-negotiation.html">İ&ccedil;erik Uzlaşımı</a>
         belgesine bakınız.</p>
 
     
@@ -284,9 +284,9 @@
 
       
 
-      <p>Apache’nin SSI sayfalarında olduğu gibi teslim edilecek dosyanın
-        içeriğine bakma gereği duyduğu durumlarda, eğer işletim sistemi
-        <code>mmap</code>(2) ve benzerlerini destekliyorsa çekirdek normal
+      <p>Apache'nin SSI sayfalarında olduğu gibi teslim edilecek dosyanın
+        i&ccedil;eriğine bakma gereği duyduğu durumlarda, eğer işletim sistemi
+        <code>mmap</code>(2) ve benzerlerini destekliyorsa &ccedil;ekirdek normal
         olarak dosyayı belleğe kopyalayacaktır.</p>
 
       <p>Bazı platformlarda bu belleğe eşleme işlemi başarımı arttırsa da
@@ -297,25 +297,25 @@
         <li>
           <p>Bazı işletim sistemlerinde işlemci sayısı artışına bağlı
             olarak, <code>mmap</code> işlevi <code>read</code>(2) kadar iyi
-            ölçeklenmemiştir. Örneğin, çok işlemcili Solaris sunucularda
-            <code>mmap</code> iptal edildiği takdirde içeriği sunucu
-            tarafından işlenen dosyalar üzerinde bazen daha hızlı işlem
+            &ouml;l&ccedil;eklenmemiştir. &Ouml;rneğin, &ccedil;ok işlemcili Solaris sunucularda
+            <code>mmap</code> iptal edildiği takdirde i&ccedil;eriği sunucu
+            tarafından işlenen dosyalar &uuml;zerinde bazen daha hızlı işlem
             yapılabilmektedir.</p>
         </li>
 
         <li>
-          <p>Belleğe kopyalanacak dosya NFS üzerinden bağlanan bir dosya
+          <p>Belleğe kopyalanacak dosya NFS &uuml;zerinden bağlanan bir dosya
             sistemindeyse ve dosya başka bir NFS istemcisi makine tarafından
             silinmiş veya dosyanın boyutu değiştirilmişse sunucunuz dosyaya
-            tekrar erişmeye çalıştığında bir hata alabilecektir.</p>
+            tekrar erişmeye &ccedil;alıştığında bir hata alabilecektir.</p>
         </li>
       </ul>
 
-      <p>Böyle durumların olasılık dahilinde olduğu kurulumlarda içeriği
-        sunucu tarafından işlenecek dosyaların belleğe kopyalanmaması için
+      <p>B&ouml;yle durumların olasılık dahilinde olduğu kurulumlarda i&ccedil;eriği
+        sunucu tarafından işlenecek dosyaların belleğe kopyalanmaması i&ccedil;in
         yapılandırmanıza <code>EnableMMAP off</code> satırını ekleyiniz.
-        (Dikkat: Bu yönerge dizin seviyesinde geçersizleştirilebilen
-        yönergelerdendir.)</p>
+        (Dikkat: Bu y&ouml;nerge dizin seviyesinde ge&ccedil;ersizleştirilebilen
+        y&ouml;nergelerdendir.)</p>
 
     
 
@@ -323,166 +323,166 @@
 
       
 
-      <p>Apache’nin duruk dosyalarda olduğu gibi teslim edilecek dosyanın
-        içeriğine bakmadığı durumlarda, eğer işletim sistemi
-        <code>sendfile</code>(2) desteğine sahipse çekirdek normal olarak bu
+      <p>Apache'nin duruk dosyalarda olduğu gibi teslim edilecek dosyanın
+        i&ccedil;eriğine bakmadığı durumlarda, eğer işletim sistemi
+        <code>sendfile</code>(2) desteğine sahipse &ccedil;ekirdek normal olarak bu
         desteği kullanacaktır.</p>
 
       <p>Bazı platformlarda <code>sendfile</code> kullanımı, okuma ve yazma
         işlemlerinin ayrı ayrı yapılmamasını sağlasa da
         <code>sendfile</code> kullanımının httpd kararlılığını bozduğu bazı
-        durumlar sözkonusudur:</p>
+        durumlar s&ouml;zkonusudur:</p>
 
       <ul>
         <li>
           <p>Bazı platformlar derleme sisteminin saptayamadığı bozuk bir
-            <code>sendfile</code> desteğine sahip olabilir. Özellikle
+            <code>sendfile</code> desteğine sahip olabilir. &Ouml;zellikle
             derleme işleminin başka bir platformda yapılıp
             <code>sendfile</code> desteği bozuk bir makineye kurulum
             yapıldığı durumlarda bu desteğin bozuk olduğu
             saptanamayacaktır.</p>
         </li>
         <li>
-          <p>Çekirdek, NFS üzerinden erişilen ağ dosyalarını kendi önbelleği
-            üzerinden gerektiği gibi sunamayabilir.</p>
+          <p>&Ccedil;ekirdek, NFS &uuml;zerinden erişilen ağ dosyalarını kendi &ouml;nbelleği
+            &uuml;zerinden gerektiği gibi sunamayabilir.</p>
         </li>
       </ul>
 
-      <p>Böyle durumların olasılık dahilinde olduğu kurulumlarda içeriğin
-        <code>sendfile</code> desteğiyle teslim edilmemesi için
+      <p>B&ouml;yle durumların olasılık dahilinde olduğu kurulumlarda i&ccedil;eriğin
+        <code>sendfile</code> desteğiyle teslim edilmemesi i&ccedil;in
         yapılandırmanıza <code>EnableSendfile off</code> satırını ekleyiniz.
-        (Dikkat: Bu yönerge dizin seviyesinde geçersizleştirilebilen
-        yönergelerdendir.)</p>
+        (Dikkat: Bu y&ouml;nerge dizin seviyesinde ge&ccedil;ersizleştirilebilen
+        y&ouml;nergelerdendir.)</p>
 
     
 
-    <h3><a name="process" id="process">Süreç Oluşturma</a></h3>
+    <h3 id="process">S&uuml;re&ccedil; Oluşturma</h3>
 
       
 
-      <p>Apache 1.3 öncesinde <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> ayarları, başka sunucularla kıyaslama
-        denemelerinde olağanüstü kötü sonuçlar alınmasına sebep olmaktaydı.
-        Özellikle uygulanan yükü karşılamaya yetecek sayıda çocuk süreç
-        oluşturulması aşamasında Apache’nin elde ettiği ivme bunlardan
-        biriydi. Başlangıçta <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> yönergesiyle belli sayıda süreç
-        oluşturulduktan sonra her saniyede bir tane olmak üzere <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code> sayıda çocuk süreç
-        oluşturulmaktaydı. Örneğin, aynı anda 100 isteğe yanıt vermek için
+      <p>Apache 1.3 &ouml;ncesinde <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> ayarları, başka sunucularla kıyaslama
+        denemelerinde olağan&uuml;st&uuml; k&ouml;t&uuml; sonu&ccedil;lar alınmasına sebep olmaktaydı.
+        &Ouml;zellikle uygulanan y&uuml;k&uuml; karşılamaya yetecek sayıda &ccedil;ocuk s&uuml;re&ccedil;
+        oluşturulması aşamasında Apache'nin elde ettiği ivme bunlardan
+        biriydi. Başlangı&ccedil;ta <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> y&ouml;nergesiyle belli sayıda s&uuml;re&ccedil;
+        oluşturulduktan sonra her saniyede bir tane olmak &uuml;zere <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code> sayıda &ccedil;ocuk s&uuml;re&ccedil;
+        oluşturulmaktaydı. &Ouml;rneğin, aynı anda 100 isteğe yanıt vermek i&ccedil;in
         <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>
-        yönergesinin öntanımlı değeri olarak başta <code>5</code> süreç
-        oluşturulduğundan kalan süreçler için 95 saniye geçmesi gerekirdi.
-        Sık sık yeniden başlatılmadıklarından dolayı gerçek hayatta
+        y&ouml;nergesinin &ouml;ntanımlı değeri olarak başta <code>5</code> s&uuml;re&ccedil;
+        oluşturulduğundan kalan s&uuml;re&ccedil;ler i&ccedil;in 95 saniye ge&ccedil;mesi gerekirdi.
+        Sık sık yeniden başlatılmadıklarından dolayı ger&ccedil;ek hayatta
         sunucuların başına gelen de buydu. Başka sunucularla kıyaslama
-        denemelerinde ise işlem sadece on dakika sürmekte ve içler acısı
-        sonuçlar alınmaktaydı.</p>
+        denemelerinde ise işlem sadece on dakika s&uuml;rmekte ve i&ccedil;ler acısı
+        sonu&ccedil;lar alınmaktaydı.</p>
 
-      <p>Saniyede bir kuralı, sunucunun yeni çocukları oluşturması sırasında
-        sistemin aşırı meşgul duruma düşmemesi için alınmış bir önlemdi.
-        Makine çocuk süreç oluşturmakla meşgul edildiği sürece isteklere
-        yanıt veremeyecektir. Böylesi bir durum Apache’nin başarımını
-        kötüleştirmekten başka işe yaramayacaktır. Apache 1.3’te saniyede
-        bir kuralı biraz esnetildi. Yeni gerçeklenimde artık bir süreç
-        oluşturduktan bir saniye sonra iki süreç, bir saniye sonra dört
-        süreç oluşturulmakta ve işlem, saniyede 32 çocuk süreç oluşturulur
-        duruma gelene kadar böyle ivmelenmektedir. Çocuk süreç oluşturma
+      <p>Saniyede bir kuralı, sunucunun yeni &ccedil;ocukları oluşturması sırasında
+        sistemin aşırı meşgul duruma d&uuml;şmemesi i&ccedil;in alınmış bir &ouml;nlemdi.
+        Makine &ccedil;ocuk s&uuml;re&ccedil; oluşturmakla meşgul edildiği s&uuml;rece isteklere
+        yanıt veremeyecektir. B&ouml;ylesi bir durum Apache'nin başarımını
+        k&ouml;t&uuml;leştirmekten başka işe yaramayacaktır. Apache 1.3'te saniyede
+        bir kuralı biraz esnetildi. Yeni ger&ccedil;eklenimde artık bir s&uuml;re&ccedil;
+        oluşturduktan bir saniye sonra iki s&uuml;re&ccedil;, bir saniye sonra d&ouml;rt
+        s&uuml;re&ccedil; oluşturulmakta ve işlem, saniyede 32 &ccedil;ocuk s&uuml;re&ccedil; oluşturulur
+        duruma gelene kadar b&ouml;yle ivmelenmektedir. &Ccedil;ocuk s&uuml;re&ccedil; oluşturma
         işlemi <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>
         değerine ulaşılınca durmaktadır.</p>
 
       <p>Bu, <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>,
         <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code> ve
         <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> ayarlarıyla
-        oynamayı neredeyse gereksiz kılacak kadar iyi sonuçlar verecek gibi
-        görünmektedir. Saniyede 4 çocuktan fazlası oluşturulmaya
-        başlandığında hata günlüğüne bazı iletiler düşmeye başlar. Bu
-        iletilerin sayısı çok artarsa bu ayarlarla oynama vakti gelmiş
-        demektir. Bunun için <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> çıktısını bir
+        oynamayı neredeyse gereksiz kılacak kadar iyi sonu&ccedil;lar verecek gibi
+        g&ouml;r&uuml;nmektedir. Saniyede 4 &ccedil;ocuktan fazlası oluşturulmaya
+        başlandığında hata g&uuml;nl&uuml;ğ&uuml;ne bazı iletiler d&uuml;şmeye başlar. Bu
+        iletilerin sayısı &ccedil;ok artarsa bu ayarlarla oynama vakti gelmiş
+        demektir. Bunun i&ccedil;in <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> &ccedil;ıktısını bir
         kılavuz olarak kullanabilirsiniz.</p>
 
-      <p>Süreç oluşturmayla ilgili olarak süreç ölümü <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> değeri ile
-        sağlanır. Bu değer öntanımlı olarak <code>0</code> olup, çocuk süreç
+      <p>S&uuml;re&ccedil; oluşturmayla ilgili olarak s&uuml;re&ccedil; &ouml;l&uuml;m&uuml; <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code> değeri ile
+        sağlanır. Bu değer &ouml;ntanımlı olarak <code>0</code> olup, &ccedil;ocuk s&uuml;re&ccedil;
         başına istek sayısının sınırsız olduğu anlamına gelir. Eğer
-        yapılandırmanızda bu değeri <code>30</code> gibi çok düşük bir
+        yapılandırmanızda bu değeri <code>30</code> gibi &ccedil;ok d&uuml;ş&uuml;k bir
         değere ayarlarsanız bunu hemen kaldırmak zorunda kalabilirsiniz.
-        Sunucunuzu SunOS veya Solaris’in eski bir sürümü üzerinde
-        çalıştırıyorsanız bellek kaçaklarına sebep olmamak için bu değeri
+        Sunucunuzu SunOS veya Solaris'in eski bir s&uuml;r&uuml;m&uuml; &uuml;zerinde
+        &ccedil;alıştırıyorsanız bellek ka&ccedil;aklarına sebep olmamak i&ccedil;in bu değeri
         <code>10000</code> ile sınırlayınız.</p>
 
-      <p>Kalıcı bağlantı özelliğini kullanıyorsanız, çocuk süreçler zaten
-        açık bağlantılardan istek beklemekte olacaklardır. <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> yönergesinin öntanımlı
-        değeri <code>5</code> saniye olup bu etkiyi en aza indirmeye yönelik
-        süredir. Burada ağ band genişliği ile sunucu kaynaklarının kullanımı
-        arasında bir seçim yapmak söz konusudur. Hiçbir şey umurunuzda
+      <p>Kalıcı bağlantı &ouml;zelliğini kullanıyorsanız, &ccedil;ocuk s&uuml;re&ccedil;ler zaten
+        a&ccedil;ık bağlantılardan istek beklemekte olacaklardır. <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> y&ouml;nergesinin &ouml;ntanımlı
+        değeri <code>5</code> saniye olup bu etkiyi en aza indirmeye y&ouml;nelik
+        s&uuml;redir. Burada ağ band genişliği ile sunucu kaynaklarının kullanımı
+        arasında bir se&ccedil;im yapmak s&ouml;z konusudur. Hi&ccedil;bir şey umurunuzda
         değilse <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
-        çoğu ayrıcalığın yitirilmesi pahasına</a> bu değeri rahatça
-        <code>60</code> saniyenin üzerine çıkarabilirsiniz.</p>
+        &ccedil;oğu ayrıcalığın yitirilmesi pahasına</a> bu değeri rahat&ccedil;a
+        <code>60</code> saniyenin &uuml;zerine &ccedil;ıkarabilirsiniz.</p>
 
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compiletime" id="compiletime">Derleme Sırasında Yapılandırma ile İlgili Konular</a> <a title="Permanent link" href="#compiletime" class="permalink">&para;</a></h2>
+<h2 id="compiletime">Derleme Sırasında Yapılandırma ile İlgili Konular <a title="Permanent link" href="#compiletime" class="permalink">&para;</a></h2>
     
 
-    <h3>MPM Seçimi</h3>
+    <h3>MPM Se&ccedil;imi</h3>
       
 
-      <p>Apache 2.x, <a href="../mpm.html">Çok Süreçlilik Modülleri</a>
-        (MPM) adı verilen eklemlenebilir çok görevlilik modellerini
-        destekler. Apache’yi derlerken bu MPM’lerden birini seçmeniz
-        gerekir. MPM’lerden bazıları platformlara özeldir:
+      <p>Apache 2.x, <a href="../mpm.html">&Ccedil;ok S&uuml;re&ccedil;lilik Mod&uuml;lleri</a>
+        (MPM) adı verilen eklemlenebilir &ccedil;ok g&ouml;revlilik modellerini
+        destekler. Apache'yi derlerken bu MPM'lerden birini se&ccedil;meniz
+        gerekir. MPM'lerden bazıları platformlara &ouml;zeldir:
         <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> ve
         <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Unix
-        benzeri sistemler için ise seçebileceğiniz modül sayısı birden
-        fazladır. MPM seçiminin httpd’nin hızında ve ölçeklenebilirliğinde
+        benzeri sistemler i&ccedil;in ise se&ccedil;ebileceğiniz mod&uuml;l sayısı birden
+        fazladır. MPM se&ccedil;iminin httpd'nin hızında ve &ouml;l&ccedil;eklenebilirliğinde
         bazı etkileri olabilir:</p>
 
       <ul>
 
-        <li><code class="module"><a href="../mod/worker.html">worker</a></code> modülü her biri çok evreli çok sayıda
-          çocuk süreç kullanımını destekler. Her evre aynı anda tek bir
+        <li><code class="module"><a href="../mod/worker.html">worker</a></code> mod&uuml;l&uuml; her biri &ccedil;ok evreli &ccedil;ok sayıda
+          &ccedil;ocuk s&uuml;re&ccedil; kullanımını destekler. Her evre aynı anda tek bir
           bağlantıya hizmet sunar. Aynı hizmeti daha az bellek harcayarak
-          vermesi nedeniyle yüksek trafiğe sahip sunucularda
-          <code class="module"><a href="../mod/prefork.html">prefork</a></code> modülüne göre daha iyi bir seçimdir.</li>
+          vermesi nedeniyle y&uuml;ksek trafiğe sahip sunucularda
+          <code class="module"><a href="../mod/prefork.html">prefork</a></code> mod&uuml;l&uuml;ne g&ouml;re daha iyi bir se&ccedil;imdir.</li>
 
-        <li><code class="module"><a href="../mod/prefork.html">prefork</a></code> modülü her biri tek bir evreye sahip
-          çok sayıda çocuk süreç kullanımını destekler. Her süreç aynı anda
-          tek bir bağlantıya hizmet sunar. Çoğu sistemde daha hızlı olması
-          nedeniyle <code class="module"><a href="../mod/worker.html">worker</a></code> modülüne göre daha iyi bir seçim
-          olarak görünürse de bunu daha fazla bellek kullanarak sağlar.
-          <code class="module"><a href="../mod/prefork.html">prefork</a></code> modülünün evresiz tasarımının
-          <code class="module"><a href="../mod/worker.html">worker</a></code> modülüne göre bazı yararlı tarafları
-          vardır: Çok evreli sistemlerde güvenilir olmayan üçüncü parti
-          modülleri kullanabilir ve evrelerde hata ayıklamanın yetersiz
+        <li><code class="module"><a href="../mod/prefork.html">prefork</a></code> mod&uuml;l&uuml; her biri tek bir evreye sahip
+          &ccedil;ok sayıda &ccedil;ocuk s&uuml;re&ccedil; kullanımını destekler. Her s&uuml;re&ccedil; aynı anda
+          tek bir bağlantıya hizmet sunar. &Ccedil;oğu sistemde daha hızlı olması
+          nedeniyle <code class="module"><a href="../mod/worker.html">worker</a></code> mod&uuml;l&uuml;ne g&ouml;re daha iyi bir se&ccedil;im
+          olarak g&ouml;r&uuml;n&uuml;rse de bunu daha fazla bellek kullanarak sağlar.
+          <code class="module"><a href="../mod/prefork.html">prefork</a></code> mod&uuml;l&uuml;n&uuml;n evresiz tasarımının
+          <code class="module"><a href="../mod/worker.html">worker</a></code> mod&uuml;l&uuml;ne g&ouml;re bazı yararlı tarafları
+          vardır: &Ccedil;ok evreli sistemlerde g&uuml;venilir olmayan &uuml;&ccedil;&uuml;nc&uuml; parti
+          mod&uuml;lleri kullanabilir ve evrelerde hata ayıklamanın yetersiz
           kaldığı platformlarda hatalarını ayıklamak daha kolaydır.</li>
 
       </ul>
 
-      <p>Bu modüller ve diğerleri hakkında daha ayrıntılı bilgi edinmek için
-        <a href="../mpm.html">Çok Süreçlilik Modülleri</a> belgesine
+      <p>Bu mod&uuml;ller ve diğerleri hakkında daha ayrıntılı bilgi edinmek i&ccedil;in
+        <a href="../mpm.html">&Ccedil;ok S&uuml;re&ccedil;lilik Mod&uuml;lleri</a> belgesine
         bakınız.</p>
 
     
 
-    <h3><a name="modules" id="modules">Modüller</a></h3>
+    <h3 id="modules">Mod&uuml;ller</h3>
 
         
 
-        <p>Bellek kullanımı başarım konusunda önemli olduğundan gerçekte
-        kullanmadığınız modülleri elemeye çalışmalısınız. Modülleri birer <a href="../dso.html">DSO</a> olarak derlediyseniz <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesinin bulunduğu satırı
-        açıklama haline getirmeniz modülden kurtulmanız için yeterli
-        olacaktır. Modülleri bu şekilde kaldırarak onların yokluğunda
-        sitenizin hala işlevlerini yerine getirdiğini görme şansına da
+        <p>Bellek kullanımı başarım konusunda &ouml;nemli olduğundan ger&ccedil;ekte
+        kullanmadığınız mod&uuml;lleri elemeye &ccedil;alışmalısınız. Mod&uuml;lleri birer <a href="../dso.html">DSO</a> olarak derlediyseniz <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> y&ouml;nergesinin bulunduğu satırı
+        a&ccedil;ıklama haline getirmeniz mod&uuml;lden kurtulmanız i&ccedil;in yeterli
+        olacaktır. Mod&uuml;lleri bu şekilde kaldırarak onların yokluğunda
+        sitenizin hala işlevlerini yerine getirdiğini g&ouml;rme şansına da
         kavuşmuş olursunuz.</p>
 
-        <p>Ancak, eğer modülleri Apache çalıştırılabilirinin içine
-        gömmüşseniz istenmeyen modülleri kaldırmak için Apache'yi yeniden
+        <p>Ancak, eğer mod&uuml;lleri Apache &ccedil;alıştırılabilirinin i&ccedil;ine
+        g&ouml;mm&uuml;şseniz istenmeyen mod&uuml;lleri kaldırmak i&ccedil;in Apache'yi yeniden
         derlemeniz gerekir.</p>
 
-        <p>Bu noktada bir soru akla gelebilir: Hangi modüller gerekli,
-        hangileri değil? Bu sorunun yanıtı şüphesiz siteden siteye değişir.
-        Ancak, olmazsa olmaz moüller olarak <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>,
+        <p>Bu noktada bir soru akla gelebilir: Hangi mod&uuml;ller gerekli,
+        hangileri değil? Bu sorunun yanıtı ş&uuml;phesiz siteden siteye değişir.
+        Ancak, olmazsa olmaz mo&uuml;ller olarak <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>,
         <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> ve <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>
-        modüllerini sayabiliriz. Bunlardan <code>mod_log_config</code>
-        olmadan da bir sitenin çalışabileceğinden hareketle bu modülün
-        varlığı isteğe bağlı olsa da bu modülü kaldırmanızı önermiyoruz.</p>
+        mod&uuml;llerini sayabiliriz. Bunlardan <code>mod_log_config</code>
+        olmadan da bir sitenin &ccedil;alışabileceğinden hareketle bu mod&uuml;l&uuml;n
+        varlığı isteğe bağlı olsa da bu mod&uuml;l&uuml; kaldırmanızı &ouml;nermiyoruz.</p>
 
     
 
@@ -490,53 +490,53 @@
 
       
 
-      <p>Worker MPM'nin en son geliştirme sürümleri ve
-      <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> gibi bazı modüller APR'nin atomik API'sini
-      kullanırlar. Bu API, düşük ayarlı evre eşzamanlamasında atomik
+      <p>Worker MPM'nin en son geliştirme s&uuml;r&uuml;mleri ve
+      <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> gibi bazı mod&uuml;ller APR'nin atomik API'sini
+      kullanırlar. Bu API, d&uuml;ş&uuml;k ayarlı evre eşzamanlamasında atomik
       işlemler yapar.</p>
 
-      <p>Öntanımlı olarak, APR bu işlemleri hedef işletim sistemi/işlemci
+      <p>&Ouml;ntanımlı olarak, APR bu işlemleri hedef işletim sistemi/işlemci
       platformunda kullanılabilecek en verimli mekanizmayı kullanarak
-      gerçekleştirir. Günümüz işlemcilerinin çoğu, örneğin, bir atomik
-      karşılaştırma ve takas (CAS) işlemini donanımda gerçekleştirmektedir.
-      Bazı platformlarda APR'nin atomik işlemler için öntanımlı olarak daha
-      yavaş olan mutekslere dayalı gerçeklenimi kullanmasının sebebi eski
-      işlemcilerde bu tür makine kodlarının yokluğudur. Apache'yi bu tür
-      platformalarda günümüz işlemcileriyde çalıştırmayı düşünüyorsanız
-      Apache'yi derlemek için yapılandırırken en hızlı atomik işlemin
-      seçilebilmesi için <code>--enable-nonportable-atomics</code>
-      seçeneğini kullanın:</p>
+      ger&ccedil;ekleştirir. G&uuml;n&uuml;m&uuml;z işlemcilerinin &ccedil;oğu, &ouml;rneğin, bir atomik
+      karşılaştırma ve takas (CAS) işlemini donanımda ger&ccedil;ekleştirmektedir.
+      Bazı platformlarda APR'nin atomik işlemler i&ccedil;in &ouml;ntanımlı olarak daha
+      yavaş olan mutekslere dayalı ger&ccedil;eklenimi kullanmasının sebebi eski
+      işlemcilerde bu t&uuml;r makine kodlarının yokluğudur. Apache'yi bu t&uuml;r
+      platformalarda g&uuml;n&uuml;m&uuml;z işlemcileriyde &ccedil;alıştırmayı d&uuml;ş&uuml;n&uuml;yorsanız
+      Apache'yi derlemek i&ccedil;in yapılandırırken en hızlı atomik işlemin
+      se&ccedil;ilebilmesi i&ccedil;in <code>--enable-nonportable-atomics</code>
+      se&ccedil;eneğini kullanın:</p>
 
       <div class="example"><p><code>
-        ./buildconf<br />
+        ./buildconf<br>
         ./configure --with-mpm=worker --enable-nonportable-atomics=yes
       </code></p></div>
 
-      <p><code>--enable-nonportable-atomics</code> seçeneği şu platformlar
-      için uygundur:</p>
+      <p><code>--enable-nonportable-atomics</code> se&ccedil;eneği şu platformlar
+      i&ccedil;in uygundur:</p>
 
       <ul>
 
-        <li>SPARC üzerinde Solaris<br />
-            APR öntanımlı olarak, SPARC/Solaris üzerinde mutekslere dayalı
+        <li>SPARC &uuml;zerinde Solaris<br>
+            APR &ouml;ntanımlı olarak, SPARC/Solaris &uuml;zerinde mutekslere dayalı
             atomik işlemleri kullanır. Ancak,
             <code>--enable-nonportable-atomics</code> yapılandırmasını
-            kullanırsanız, donanım üzerinde hızlı karşılaştırma ve takas
-            için uygun SPARC v8plus kodunu kullanacak şekilde kod üretilir.
-            Apache'yi bu seçenekle yapılandırırsanız atomik işlemler daha
-            verimli olacak fakat derlenen Apache çalıştırılabiliri sadece
-            UltraSPARC kırmığı üzerinde çalışacaktır.
+            kullanırsanız, donanım &uuml;zerinde hızlı karşılaştırma ve takas
+            i&ccedil;in uygun SPARC v8plus kodunu kullanacak şekilde kod &uuml;retilir.
+            Apache'yi bu se&ccedil;enekle yapılandırırsanız atomik işlemler daha
+            verimli olacak fakat derlenen Apache &ccedil;alıştırılabiliri sadece
+            UltraSPARC kırmığı &uuml;zerinde &ccedil;alışacaktır.
         </li>
 
-        <li>x86 üzerinde Linux<br />
-            APR öntanımlı olarak, Linux üzerinde mutekslere dayalı atomik
+        <li>x86 &uuml;zerinde Linux<br>
+            APR &ouml;ntanımlı olarak, Linux &uuml;zerinde mutekslere dayalı atomik
             işlemleri kullanır. Ancak,
             <code>--enable-nonportable-atomics</code> yapılandırmasını
-            kullanırsanız, donanım üzerinde hızlı karşılaştırma ve takas
-            için uygun 486 kodunu kullanacak şekilde kod üretilir. Apache'yi
-            bu seçenekle yapılandırırsanız atomik işlemler daha verimli
-            olacak fakat derlenen Apache çalıştırılabiliri (386 üzerinde
-            değil) sadece 486 ve sonrası kırmıklarda çalışacaktır.
+            kullanırsanız, donanım &uuml;zerinde hızlı karşılaştırma ve takas
+            i&ccedil;in uygun 486 kodunu kullanacak şekilde kod &uuml;retilir. Apache'yi
+            bu se&ccedil;enekle yapılandırırsanız atomik işlemler daha verimli
+            olacak fakat derlenen Apache &ccedil;alıştırılabiliri (386 &uuml;zerinde
+            değil) sadece 486 ve sonrası kırmıklarda &ccedil;alışacaktır.
         </li>
 
       </ul>
@@ -548,170 +548,170 @@
 
       
 
-      <p><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> modülünü derlemiş ve Apache'yi
-      yapılandırır ve çalıştırırken <code>ExtendedStatus On</code> satırını
-      da kullanmışsanız Apache her istek üzerinde
+      <p><code class="module"><a href="../mod/mod_status.html">mod_status</a></code> mod&uuml;l&uuml;n&uuml; derlemiş ve Apache'yi
+      yapılandırır ve &ccedil;alıştırırken <code>ExtendedStatus On</code> satırını
+      da kullanmışsanız Apache her istek &uuml;zerinde
       <code>gettimeofday(2)</code> (veya işletim sistemine bağlı olarak
-      <code>time(2)</code>) çağrısından başka (1.3 öncesinde) fazladan
-      defalarca  <code>time(2)</code> çağrıları yapacaktır. Bu çağrılarla
-      durum raporununun zamanlama bilgilerini içermesi sağlanır. Başarımı
-      arttırmak için <code>ExtendedStatus off</code> yapın (zaten öntanımlı
-      böyledir).</p>
+      <code>time(2)</code>) &ccedil;ağrısından başka (1.3 &ouml;ncesinde) fazladan
+      defalarca  <code>time(2)</code> &ccedil;ağrıları yapacaktır. Bu &ccedil;ağrılarla
+      durum raporununun zamanlama bilgilerini i&ccedil;ermesi sağlanır. Başarımı
+      arttırmak i&ccedil;in <code>ExtendedStatus off</code> yapın (zaten &ouml;ntanımlı
+      b&ouml;yledir).</p>
 
     
 
-    <h3><code>accept</code> dizgilemesi ve çok soketli işlem</h3>
+    <h3><code>accept</code> dizgilemesi ve &ccedil;ok soketli işlem</h3>
 
       
 
     <div class="warning"><h3>Uyarı:</h3>
-      <p>Bu bölüm, Apache HTTP sunucusunun 2.x sürümlerinde yapılan
-      değişikliklere göre tamamen güncellenmemiştir. Bazı bilgiler hala
-      geçerliyse de lütfen dikkatli kullanınız.</p>
+      <p>Bu b&ouml;l&uuml;m, Apache HTTP sunucusunun 2.x s&uuml;r&uuml;mlerinde yapılan
+      değişikliklere g&ouml;re tamamen g&uuml;ncellenmemiştir. Bazı bilgiler hala
+      ge&ccedil;erliyse de l&uuml;tfen dikkatli kullanınız.</p>
     </div>
 
-      <p>Burada Unix soket arayüzü gerçeklenirken ihmal edilen bir durumdan
-      bahsedeceğiz. HTTP sunucunuzun çok sayıda adresten çok sayıda portu
-      dinlemek için çok sayıda <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> yönergesi kullanmakta olduğunu varsayalım. Her
-      soketi çalıştığını görmek için denerken Apache bağlantı için
-      <code>select(2)</code> kullanacaktır. <code>select(2)</code> çağrısı
-      bu soketin üzerinde <em>sıfır</em> veya <em>en azından bir</em>
-      bağlantının beklemekte olduğu anlamına gelir. Apache'nin modeli çok
-      sayıda çocuk süreç içerir ve boşta olanların tümünde aynı anda yeni
-      bağlantılar denenebilir. Gerçekte çalışan kod bu olmasa da meramımızı
-      anlatmak için kodun şöyle bir şey olduğunu varsayabiliriz:</p>
+      <p>Burada Unix soket aray&uuml;z&uuml; ger&ccedil;eklenirken ihmal edilen bir durumdan
+      bahsedeceğiz. HTTP sunucunuzun &ccedil;ok sayıda adresten &ccedil;ok sayıda portu
+      dinlemek i&ccedil;in &ccedil;ok sayıda <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi kullanmakta olduğunu varsayalım. Her
+      soketi &ccedil;alıştığını g&ouml;rmek i&ccedil;in denerken Apache bağlantı i&ccedil;in
+      <code>select(2)</code> kullanacaktır. <code>select(2)</code> &ccedil;ağrısı
+      bu soketin &uuml;zerinde <em>sıfır</em> veya <em>en azından bir</em>
+      bağlantının beklemekte olduğu anlamına gelir. Apache'nin modeli &ccedil;ok
+      sayıda &ccedil;ocuk s&uuml;re&ccedil; i&ccedil;erir ve boşta olanların t&uuml;m&uuml;nde aynı anda yeni
+      bağlantılar denenebilir. Ger&ccedil;ekte &ccedil;alışan kod bu olmasa da meramımızı
+      anlatmak i&ccedil;in kodun ş&ouml;yle bir şey olduğunu varsayabiliriz:</p>
 
       <div class="example"><p><code>
-        for (;;) {<br />
+        for (;;) {<br>
         <span class="indent">
-          for (;;) {<br />
+          for (;;) {<br>
           <span class="indent">
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            fd_set accept_fds;<br>
+            <br>
+            FD_ZERO (&amp;accept_fds);<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              FD_SET (i, &amp;accept_fds);<br />
+              FD_SET (i, &amp;accept_fds);<br>
             </span>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            }<br>
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br>
+            if (rc &lt; 1) continue;<br>
+            new_connection = -1;<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              if (FD_ISSET (i, &amp;accept_fds)) {<br>
               <span class="indent">
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
+                new_connection = accept (i, NULL, NULL);<br>
+                if (new_connection != -1) break;<br>
               </span>
-              }<br />
+              }<br>
             </span>
-            }<br />
-            if (new_connection != -1) break;<br />
+            }<br>
+            if (new_connection != -1) break;<br>
           </span>
-          }<br />
-          process the new_connection;<br />
+          }<br>
+          process the new_connection;<br>
         </span>
         }
       </code></p></div>
 
-      <p>Bu özet gerçeklenim bir takım açlık sorunlarına sebep olur. Bu
-      döngünün çalışması sırasında aynı anda çok sayıda çocuk süreç yeniden
-      çağrılır ve istekler arasında kalan çoğu çocuk da <code>select</code>
-      ile engellenir. Engellenen tüm bu çocuklar soketlerden herhangi biri
-      üzerinde tek bir istek göründüğünde <code>select</code> tarafından
-      uyandırılıp işleme sokulmak üzere döndürülürler (uyandırılan çocuk
-      sayısı işletim sistemine ve zamanlama ayarlarına göre değişiklik
-      gösterir). Bunların hepsi döngüye katılıp bağlantı kabul etmeye
-      (<code>accept</code>) çalışırlar. Fakat içlerinden yalnız biri
+      <p>Bu &ouml;zet ger&ccedil;eklenim bir takım a&ccedil;lık sorunlarına sebep olur. Bu
+      d&ouml;ng&uuml;n&uuml;n &ccedil;alışması sırasında aynı anda &ccedil;ok sayıda &ccedil;ocuk s&uuml;re&ccedil; yeniden
+      &ccedil;ağrılır ve istekler arasında kalan &ccedil;oğu &ccedil;ocuk da <code>select</code>
+      ile engellenir. Engellenen t&uuml;m bu &ccedil;ocuklar soketlerden herhangi biri
+      &uuml;zerinde tek bir istek g&ouml;r&uuml;nd&uuml;ğ&uuml;nde <code>select</code> tarafından
+      uyandırılıp işleme sokulmak &uuml;zere d&ouml;nd&uuml;r&uuml;l&uuml;rler (uyandırılan &ccedil;ocuk
+      sayısı işletim sistemine ve zamanlama ayarlarına g&ouml;re değişiklik
+      g&ouml;sterir). Bunların hepsi d&ouml;ng&uuml;ye katılıp bağlantı kabul etmeye
+      (<code>accept</code>) &ccedil;alışırlar. Fakat i&ccedil;lerinden yalnız biri
       (sadece bir bağlantı isteğinin mevcut olduğu varsayımıyla) bunu
       başarabilir. Kalanının bağlantı kabul etmesi (<code>accept</code>)
-      engellenir. Bu durum, bu çocukları istekleri başka başka soketlerden
+      engellenir. Bu durum, bu &ccedil;ocukları istekleri başka başka soketlerden
       değil mecburen tek bir soketten kabul etmeye kilitler ve bu soket
-      üzerinde yeni bir istek belirip uyandırılana kadar bu durumda
-      kalırlar. Bu açlık sorunu ilk olarak <a href="http://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla
-      belgelenmiştir. Bu sorunun en az iki çözümü vardır.</p>
+      &uuml;zerinde yeni bir istek belirip uyandırılana kadar bu durumda
+      kalırlar. Bu a&ccedil;lık sorunu ilk olarak <a href="http://bugs.apache.org/index/full/467">PR#467</a> sayılı raporla
+      belgelenmiştir. Bu sorunun en az iki &ccedil;&ouml;z&uuml;m&uuml; vardır.</p>
 
-      <p>Çözümün biri engellenmeyen soket kullanımıdır. Bu durumda
-      <code>accept</code> çocukları engellemeyecek ve yapılan bir
-      bağlantının ardından diğer çocuklar durumları değişmeksizin bağlantı
+      <p>&Ccedil;&ouml;z&uuml;m&uuml;n biri engellenmeyen soket kullanımıdır. Bu durumda
+      <code>accept</code> &ccedil;ocukları engellemeyecek ve yapılan bir
+      bağlantının ardından diğer &ccedil;ocuklar durumları değişmeksizin bağlantı
       beklemeye devam edeceklerdir. Fakat bu durum işlemci zamanının boşa
-      harcanmasına sebep olur.  Seçilmiş (<code>select</code>) boşta on
-      çocuğun olduğunu ve bir bağlantı geldiğini varsayalım. Kalan dokuz
-      çocuk işine devam edip bağlantı kabul etmeyi (<code>accept</code>)
-      deneyecek, başarızsız olacak, dönecek başa, tekrar seçilecek
-      (<code>select</code>) ve böyle hiçbir iş yapmadan dönüp duracaktır. Bu
+      harcanmasına sebep olur.  Se&ccedil;ilmiş (<code>select</code>) boşta on
+      &ccedil;ocuğun olduğunu ve bir bağlantı geldiğini varsayalım. Kalan dokuz
+      &ccedil;ocuk işine devam edip bağlantı kabul etmeyi (<code>accept</code>)
+      deneyecek, başarızsız olacak, d&ouml;necek başa, tekrar se&ccedil;ilecek
+      (<code>select</code>) ve b&ouml;yle hi&ccedil;bir iş yapmadan d&ouml;n&uuml;p duracaktır. Bu
       arada hizmet sunmakta olanlar da işlerini bitirdikten sonra bu
-      döngüdeki yerlerini alacaklardır. Aynı kutunun içinde boşta bir sürü
-      işlemciniz (çok işlemcili sistemler) yoksa bu çözüm pek verimli
+      d&ouml;ng&uuml;deki yerlerini alacaklardır. Aynı kutunun i&ccedil;inde boşta bir s&uuml;r&uuml;
+      işlemciniz (&ccedil;ok işlemcili sistemler) yoksa bu &ccedil;&ouml;z&uuml;m pek verimli
       olmayacaktır.</p>
 
-      <p>Diğer çözüm ise Apache tarafından kullanılan çözüm olup, girdiyi
-      bir iç döngüde sıraya sokmaktır. Döngü aşağıda örneklenmiştir (farklar
+      <p>Diğer &ccedil;&ouml;z&uuml;m ise Apache tarafından kullanılan &ccedil;&ouml;z&uuml;m olup, girdiyi
+      bir i&ccedil; d&ouml;ng&uuml;de sıraya sokmaktır. D&ouml;ng&uuml; aşağıda &ouml;rneklenmiştir (farklar
       vurgulanmıştır):</p>
 
       <div class="example"><p><code>
-        for (;;) {<br />
+        for (;;) {<br>
         <span class="indent">
-          <strong>accept_mutex_on ();</strong><br />
-          for (;;) {<br />
+          <strong>accept_mutex_on ();</strong><br>
+          for (;;) {<br>
           <span class="indent">
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            fd_set accept_fds;<br>
+            <br>
+            FD_ZERO (&amp;accept_fds);<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              FD_SET (i, &amp;accept_fds);<br />
+              FD_SET (i, &amp;accept_fds);<br>
             </span>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            }<br>
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br>
+            if (rc &lt; 1) continue;<br>
+            new_connection = -1;<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              if (FD_ISSET (i, &amp;accept_fds)) {<br>
               <span class="indent">
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
+                new_connection = accept (i, NULL, NULL);<br>
+                if (new_connection != -1) break;<br>
               </span>
-              }<br />
+              }<br>
             </span>
-            }<br />
-            if (new_connection != -1) break;<br />
+            }<br>
+            if (new_connection != -1) break;<br>
           </span>
-          }<br />
-          <strong>accept_mutex_off ();</strong><br />
-          process the new_connection;<br />
+          }<br>
+          <strong>accept_mutex_off ();</strong><br>
+          process the new_connection;<br>
         </span>
         }
       </code></p></div>
 
       <p><code>accept_mutex_on</code> ve <code>accept_mutex_off</code> <a id="serialize" name="serialize">işlevleri</a> bir karşılıklı red
-      semoforu oluştururlar. Mutekse aynı anda sadece bir çocuk sahip
-      olabilir. Bu muteksleri gerçeklemek için çeşitli seçenekler vardır.
-      Seçim, <code>src/conf.h</code> (1.3 öncesi) veya
+      semoforu oluştururlar. Mutekse aynı anda sadece bir &ccedil;ocuk sahip
+      olabilir. Bu muteksleri ger&ccedil;eklemek i&ccedil;in &ccedil;eşitli se&ccedil;enekler vardır.
+      Se&ccedil;im, <code>src/conf.h</code> (1.3 &ouml;ncesi) veya
       <code>src/include/ap_config.h</code> (1.3 ve sonrası) dosyasında
-      tanımlanmıştır. Bazı mimariler bir kilitleme seçeneğine sahip
-      değildir. Böyle mimarilerde çok sayıda <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> yönergesi kullanmak güvenilir
+      tanımlanmıştır. Bazı mimariler bir kilitleme se&ccedil;eneğine sahip
+      değildir. B&ouml;yle mimarilerde &ccedil;ok sayıda <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi kullanmak g&uuml;venilir
       olmayacaktır.</p>
 
-      <p><code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> yönergesi,
-      <code>mpm-accept</code> muteks gerçeklenimini çalışma anında değiştirmek
-      için kullanılabilir. Farklı muteks gerçeklenimleri ile ilgili hususlar
-      bu yönergede belgelenmiştir.</p>
+      <p><code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> y&ouml;nergesi,
+      <code>mpm-accept</code> muteks ger&ccedil;eklenimini &ccedil;alışma anında değiştirmek
+      i&ccedil;in kullanılabilir. Farklı muteks ger&ccedil;eklenimleri ile ilgili hususlar
+      bu y&ouml;nergede belgelenmiştir.</p>
 
-      <p>Başka bir çözüm daha vardır ancak döngü kısmen dizgilenmeyeceğinden
-      (yani belli sayıda sürece izin verilemeyeceğinden) asla
-      gerçeklenmemiştir. Bu sadece, aynı anda çok sayıda çocuk sürecin
-      çalışabileceği ve dolayısıyla band genişliğinin tüm yönleriyle
-      kullanılabileceği çok işlemcili sistemlerde ilginç olabilirdi. Bu
-      gelecekte incelenmeye değer bir konu olmakla beraber çok sayıda HTTP
-      sunucusunun aynı anda aynı amaca hizmet edecek şekilde çalışması
-      standart olarak pek mümkün görülmediğinden bu olasılık çok
-      düşüktür.</p>
+      <p>Başka bir &ccedil;&ouml;z&uuml;m daha vardır ancak d&ouml;ng&uuml; kısmen dizgilenmeyeceğinden
+      (yani belli sayıda s&uuml;rece izin verilemeyeceğinden) asla
+      ger&ccedil;eklenmemiştir. Bu sadece, aynı anda &ccedil;ok sayıda &ccedil;ocuk s&uuml;recin
+      &ccedil;alışabileceği ve dolayısıyla band genişliğinin t&uuml;m y&ouml;nleriyle
+      kullanılabileceği &ccedil;ok işlemcili sistemlerde ilgin&ccedil; olabilirdi. Bu
+      gelecekte incelenmeye değer bir konu olmakla beraber &ccedil;ok sayıda HTTP
+      sunucusunun aynı anda aynı amaca hizmet edecek şekilde &ccedil;alışması
+      standart olarak pek m&uuml;mk&uuml;n g&ouml;r&uuml;lmediğinden bu olasılık &ccedil;ok
+      d&uuml;ş&uuml;kt&uuml;r.</p>
 
-      <p>En yüksek başarımı elde etmek için ideal olanı sunucuları
-      çalıştırırken çok sayıda <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> yönergesi kullanmamaktır. Fakat siz yine de
+      <p>En y&uuml;ksek başarımı elde etmek i&ccedil;in ideal olanı sunucuları
+      &ccedil;alıştırırken &ccedil;ok sayıda <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi kullanmamaktır. Fakat siz yine de
       okumaya devam edin.</p>
 
     
@@ -720,33 +720,33 @@
 
       
 
-      <p>Çok soketli sunucular için yukarıda açıklananlar iyi güzel de tek
-      soketli sunucularda durum ne? Kuramsal olarak, bunların hiçbiriyle bir
-      sorunları olmaması gerekir. Çünkü yeni bir bağlantı gelene kadar tüm
-      çocuklar <code>accept(2)</code> ile engellenirler dolayısıyla hiçbir
-      açlık sorununun ortaya çıkmaması gerekir. Uygulamada ise son
-      kullanıcıdan gizli olarak, yukarıda engellenmeyen çocuklar çözümünde
-      bahsedilenle hemen hemen aynı "boşa dönüp durma" davranışı mevcuttur.
-      Çoğu TCP yığıtı bu yolu gerçeklemiştir. Çekirdek, yeni bir bağlantı
-      ortaya çıktığında <code>accept</code> ile engellenen tüm süreçleri
-      uyandırır. Bu süreçlerden bağlantıyı alan kullanıcı bölgesine geçerken
-      çekirdek içinde döngüde olan diğerleri de yeni bağlantı keşfedilene
-      kadar uykularına geri dönerler. Bu çekirdek içi döngü, kullanıcı
-      bölgesindeki kodlara görünür değildir ama bu olmadıkları anlamına
-      gelmez. Bu durum, çok soketli engellenmeyen çocuklar çözümündeki boşa
-      döngünün sebep olduğu gereksiz işlemci yükü sorununu içinde
+      <p>&Ccedil;ok soketli sunucular i&ccedil;in yukarıda a&ccedil;ıklananlar iyi g&uuml;zel de tek
+      soketli sunucularda durum ne? Kuramsal olarak, bunların hi&ccedil;biriyle bir
+      sorunları olmaması gerekir. &Ccedil;&uuml;nk&uuml; yeni bir bağlantı gelene kadar t&uuml;m
+      &ccedil;ocuklar <code>accept(2)</code> ile engellenirler dolayısıyla hi&ccedil;bir
+      a&ccedil;lık sorununun ortaya &ccedil;ıkmaması gerekir. Uygulamada ise son
+      kullanıcıdan gizli olarak, yukarıda engellenmeyen &ccedil;ocuklar &ccedil;&ouml;z&uuml;m&uuml;nde
+      bahsedilenle hemen hemen aynı "boşa d&ouml;n&uuml;p durma" davranışı mevcuttur.
+      &Ccedil;oğu TCP yığıtı bu yolu ger&ccedil;eklemiştir. &Ccedil;ekirdek, yeni bir bağlantı
+      ortaya &ccedil;ıktığında <code>accept</code> ile engellenen t&uuml;m s&uuml;re&ccedil;leri
+      uyandırır. Bu s&uuml;re&ccedil;lerden bağlantıyı alan kullanıcı b&ouml;lgesine ge&ccedil;erken
+      &ccedil;ekirdek i&ccedil;inde d&ouml;ng&uuml;de olan diğerleri de yeni bağlantı keşfedilene
+      kadar uykularına geri d&ouml;nerler. Bu &ccedil;ekirdek i&ccedil;i d&ouml;ng&uuml;, kullanıcı
+      b&ouml;lgesindeki kodlara g&ouml;r&uuml;n&uuml;r değildir ama bu olmadıkları anlamına
+      gelmez. Bu durum, &ccedil;ok soketli engellenmeyen &ccedil;ocuklar &ccedil;&ouml;z&uuml;m&uuml;ndeki boşa
+      d&ouml;ng&uuml;n&uuml;n sebep olduğu gereksiz işlemci y&uuml;k&uuml; sorununu i&ccedil;inde
       barındırır.</p>
 
       <p>Bununla birlikte, tek soketli durumda bile bundan daha verimli bir
-      davranış sergileyen bir çok mimari bulduk. Bu aslında hemen hemen her
-      durumda öntanımlı olarak böyledir. Linux altında yapılan üstünkörü
-      denemelerde (128MB bellekli çift Pentium pro 166 işlemcili makinede
-      Linux 2.0.30) tek sokette dizgilemenin dizgilenmemiş duruma göre
-      saniyede %3 daha az istekle sonuçlandığı gösterilmiştir. Fakat
+      davranış sergileyen bir &ccedil;ok mimari bulduk. Bu aslında hemen hemen her
+      durumda &ouml;ntanımlı olarak b&ouml;yledir. Linux altında yapılan &uuml;st&uuml;nk&ouml;r&uuml;
+      denemelerde (128MB bellekli &ccedil;ift Pentium pro 166 işlemcili makinede
+      Linux 2.0.30) tek sokette dizgilemenin dizgilenmemiş duruma g&ouml;re
+      saniyede %3 daha az istekle sonu&ccedil;landığı g&ouml;sterilmiştir. Fakat
       dizgilenmemiş tek soket durumunda her istekte 100ms'lik ek bir gecikme
-      olduğu görülmüştür. Bu gecikmenin sebebi muhtemelen uzun mesafeli
-      hatlar olup sadece yerel ağlarda söz konusudur. Tek soketli
-      dizgilemeyi geçersiz kılmak için
+      olduğu g&ouml;r&uuml;lm&uuml;şt&uuml;r. Bu gecikmenin sebebi muhtemelen uzun mesafeli
+      hatlar olup sadece yerel ağlarda s&ouml;z konusudur. Tek soketli
+      dizgilemeyi ge&ccedil;ersiz kılmak i&ccedil;in
       <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code> tanımlarsanız tek
       soketli sunucularda artık dizgileme yapılmayacaktır.</p>
 
@@ -756,78 +756,78 @@
 
       
 
-      <p><a href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">draft-ietf-http-connection-00.txt</a> taslağının 8. bölümünde
-      bahsedildiği gibi, bir HTTP sunucusunun protokolü <strong>güvenilir
-      şekilde</strong> gerçeklemesi için her iki yöndeki iletişimi
-      birbirinden bağımsız olarak (iki yönlü bir TCP bağlantısının her
+      <p><a href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">draft-ietf-http-connection-00.txt</a> taslağının 8. b&ouml;l&uuml;m&uuml;nde
+      bahsedildiği gibi, bir HTTP sunucusunun protokol&uuml; <strong>g&uuml;venilir
+      şekilde</strong> ger&ccedil;eklemesi i&ccedil;in her iki y&ouml;ndeki iletişimi
+      birbirinden bağımsız olarak (iki y&ouml;nl&uuml; bir TCP bağlantısının her
       yarısını diğerinden bağımsız olarak) kapatması gerekir.</p>
 
-      <p>Bu özellik Apache'ye eklendiğinde Unix'in çeşitli sürümlerinde
-      uzgörüsüzlükten dolayı bir takım geçici telaş sorunlarına sebep oldu.
+      <p>Bu &ouml;zellik Apache'ye eklendiğinde Unix'in &ccedil;eşitli s&uuml;r&uuml;mlerinde
+      uzg&ouml;r&uuml;s&uuml;zl&uuml;kten dolayı bir takım ge&ccedil;ici telaş sorunlarına sebep oldu.
       TCP belirtimi <code>FIN_WAIT_2</code> durumunda bir zaman aşımından
       bahsetmez ama yasaklamaz da. Zaman aşımı olmayan sistemlerde, Apache
-      1.2 çoğu soketin sonsuza kadar <code>FIN_WAIT_2</code> durumunda
-      takılıp kalmasına sebep olur. Çoğu durumda, satıcıdan sağlanan en son
-      TCP/IP yamalarını uygulanarak bu önlenebilir. Satıcının hiçbir yeni
-      yama dağıtmadığı durumlarda (örneğin, SunOS4 -- bir kaynak lisansı ile
-      insanlar bunu kendileri yamayabilirse de) bu özelliği devre dışı
+      1.2 &ccedil;oğu soketin sonsuza kadar <code>FIN_WAIT_2</code> durumunda
+      takılıp kalmasına sebep olur. &Ccedil;oğu durumda, satıcıdan sağlanan en son
+      TCP/IP yamalarını uygulanarak bu &ouml;nlenebilir. Satıcının hi&ccedil;bir yeni
+      yama dağıtmadığı durumlarda (&ouml;rneğin, SunOS4 -- bir kaynak lisansı ile
+      insanlar bunu kendileri yamayabilirse de) bu &ouml;zelliği devre dışı
       bırakmaya karar verdik.</p>
 
-      <p>Bunun üstesinden gelmenin iki yolu vardır. Bunlardan biri
-      <code>SO_LINGER</code> soket seçeneğidir. Bu işin kaderi buymuş gibi
-      görünürse de çoğu TCP/IP yığıtında bu gerektiği gibi
-      gerçeklenmemiştir. Bu yığıtlar üzerinde, bu yöntemin, doğru bir
-      gerçeklenimle bile (örneğin, Linux 2.0.31) sonraki çözümden daha
-      pahalı olduğu ortaya çıkmıştır.</p>
+      <p>Bunun &uuml;stesinden gelmenin iki yolu vardır. Bunlardan biri
+      <code>SO_LINGER</code> soket se&ccedil;eneğidir. Bu işin kaderi buymuş gibi
+      g&ouml;r&uuml;n&uuml;rse de &ccedil;oğu TCP/IP yığıtında bu gerektiği gibi
+      ger&ccedil;eklenmemiştir. Bu yığıtlar &uuml;zerinde, bu y&ouml;ntemin, doğru bir
+      ger&ccedil;eklenimle bile (&ouml;rneğin, Linux 2.0.31) sonraki &ccedil;&ouml;z&uuml;mden daha
+      pahalı olduğu ortaya &ccedil;ıkmıştır.</p>
 
-      <p>Çoğunlukla, Apache bunu (<code>http_main.c</code> içindeki)
-      <code>lingering_close</code> adında bir işlevle gerçekler. Bu işlev
-      kabaca şöyle görünür:</p>
+      <p>&Ccedil;oğunlukla, Apache bunu (<code>http_main.c</code> i&ccedil;indeki)
+      <code>lingering_close</code> adında bir işlevle ger&ccedil;ekler. Bu işlev
+      kabaca ş&ouml;yle g&ouml;r&uuml;n&uuml;r:</p>
 
       <div class="example"><p><code>
-        void lingering_close (int s)<br />
-        {<br />
+        void lingering_close (int s)<br>
+        {<br>
         <span class="indent">
-          char junk_buffer[2048];<br />
-          <br />
-          /* gönderen tarafı kapat */<br />
-          shutdown (s, 1);<br />
-          <br />
-          signal (SIGALRM, lingering_death);<br />
-          alarm (30);<br />
-          <br />
-          for (;;) {<br />
+          char junk_buffer[2048];<br>
+          <br>
+          /* g&ouml;nderen tarafı kapat */<br>
+          shutdown (s, 1);<br>
+          <br>
+          signal (SIGALRM, lingering_death);<br>
+          alarm (30);<br>
+          <br>
+          for (;;) {<br>
           <span class="indent">
-            /* s'i okumak için, 2 saniyelik zaman aşımı ile seç */<br />
-            select (s for reading, 2 second timeout);<br />
-            /* Hata oluşmuşsa döngüden çık */<br />
-            if (error) break;<br />
-            /* s okumak için hazırsa */<br />
-            if (s is ready for reading) {<br />
+            /* s'i okumak i&ccedil;in, 2 saniyelik zaman aşımı ile se&ccedil; */<br>
+            select (s for reading, 2 second timeout);<br>
+            /* Hata oluşmuşsa d&ouml;ng&uuml;den &ccedil;ık */<br>
+            if (error) break;<br>
+            /* s okumak i&ccedil;in hazırsa */<br>
+            if (s is ready for reading) {<br>
             <span class="indent">
-              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br>
               <span class="indent">
-                break;<br />
+                break;<br>
               </span>
-              }<br />
-              /* geri kalan herşey burada */<br />
+              }<br>
+              /* geri kalan herşey burada */<br>
             </span>
-            }<br />
+            }<br>
           </span>
-          }<br />
-          <br />
-          close (s);<br />
+          }<br>
+          <br>
+          close (s);<br>
         </span>
         }
       </code></p></div>
 
-      <p>Bağlantı sonunda bu doğal olarak biraz daha masrafa yol açar, fakat
-      güvenilir bir gerçeklenim için bu gereklidir. HTTP/1.1'in daha yaygın
-      kullanılmaya başlanması ve tüm bağlantıların kalıcı hale gelmesiyle bu
-      gerçeklenim daha fazla istek üzerinden kendi masrafını
-      karşılayacaktır. Ateşle oynamak ve bu özelliği devre dışı bırakmak
+      <p>Bağlantı sonunda bu doğal olarak biraz daha masrafa yol a&ccedil;ar, fakat
+      g&uuml;venilir bir ger&ccedil;eklenim i&ccedil;in bu gereklidir. HTTP/1.1'in daha yaygın
+      kullanılmaya başlanması ve t&uuml;m bağlantıların kalıcı hale gelmesiyle bu
+      ger&ccedil;eklenim daha fazla istek &uuml;zerinden kendi masrafını
+      karşılayacaktır. Ateşle oynamak ve bu &ouml;zelliği devre dışı bırakmak
       isterseniz <code>NO_LINGCLOSE</code>'u tanımlayabilirsiniz, fakat bu
-      asla önerilmez. Özellikle, HTTP/1.1'den itibaren boruhatlı kalıcı
+      asla &ouml;nerilmez. &Ouml;zellikle, HTTP/1.1'den itibaren boruhatlı kalıcı
       bağlantıların <code>lingering_close</code> kullanmaya başlaması mutlak
       bir gerekliliktir (ve <a href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       boruhatlı bağlantıların daha hızlı</a> olması nedeniyle bu
@@ -835,31 +835,31 @@
 
     
 
-    <h3>Çetele Dosyası</h3>
+    <h3>&Ccedil;etele Dosyası</h3>
 
       
 
-      <p>Apache'nin ana ve alt süreçleri birbirleriyle çetele denen birşey
-      üzerinden haberleşirler. Bunun en mükemmel şekilde paylaşımlı bellekte
-      gerçeklenmesi gerekir. Eriştiğimiz veya portlarını ayrıntılı olarak
-      belirttiğimiz işletim sistemleri için bu, genellikle paylaşımlı bellek
-      kullanılarak gerçeklenir. Geri kalanlar, öntanımlı olarak bunu bir
-      disk dosyası kullanarak gerçekler. Bir disk dosyaı yavaş olmanın yanı
-      sıra güvenilir de değildir (ve daha az özelliğe sahiptir). Mimarinizin
+      <p>Apache'nin ana ve alt s&uuml;re&ccedil;leri birbirleriyle &ccedil;etele denen birşey
+      &uuml;zerinden haberleşirler. Bunun en m&uuml;kemmel şekilde paylaşımlı bellekte
+      ger&ccedil;eklenmesi gerekir. Eriştiğimiz veya portlarını ayrıntılı olarak
+      belirttiğimiz işletim sistemleri i&ccedil;in bu, genellikle paylaşımlı bellek
+      kullanılarak ger&ccedil;eklenir. Geri kalanlar, &ouml;ntanımlı olarak bunu bir
+      disk dosyası kullanarak ger&ccedil;ekler. Bir disk dosyaı yavaş olmanın yanı
+      sıra g&uuml;venilir de değildir (ve daha az &ouml;zelliğe sahiptir). Mimarinizin
       <code>src/main/conf.h</code> dosyasını inceleyin ve
       <code>USE_MMAP_SCOREBOARD</code> veya
       <code>USE_SHMGET_SCOREBOARD</code>'a bakın. Bu ikisinden birinin (ve
       yanı sıra sırasıyla <code>HAVE_MMAP</code> veya
       <code>HAVE_SHMGET</code>'in) tanımlanmış olması, sağlanan paylaşımlı
-      bellek kodunu etkinleştirir. Eğer sisteminiz diğer türdeki paylaşımlı
-      belleğe sahipse, <code>src/main/http_main.c</code> dosyasını açıp,
+      bellek kodunu etkinleştirir. Eğer sisteminiz diğer t&uuml;rdeki paylaşımlı
+      belleğe sahipse, <code>src/main/http_main.c</code> dosyasını a&ccedil;ıp,
       Apache'de bu belleği kullanması gereken kanca işlevleri ekleyin (Bize
-      de bir yama yollayın, lütfen).</p>
+      de bir yama yollayın, l&uuml;tfen).</p>
 
       <div class="note">Tarihsel bilgi: Apache'nin Linux uyarlaması, Apache'nin 1.2
-      sürümüne kadar paylaşımlı belleği kullanmaya başlamamıştı. Bu kusur,
-      Apache'nin Linux üzerindeki erken dönem sürümlerinin davranışlarının
-      zayıf ve güvenilmez olmasına yol açmıştı.</div>
+      s&uuml;r&uuml;m&uuml;ne kadar paylaşımlı belleği kullanmaya başlamamıştı. Bu kusur,
+      Apache'nin Linux &uuml;zerindeki erken d&ouml;nem s&uuml;r&uuml;mlerinin davranışlarının
+      zayıf ve g&uuml;venilmez olmasına yol a&ccedil;mıştı.</div>
 
     
 
@@ -867,99 +867,99 @@
 
       
 
-      <p>Devingen olarak yüklenen modülleri kullanmamak niyetindeyseniz
+      <p>Devingen olarak y&uuml;klenen mod&uuml;lleri kullanmamak niyetindeyseniz
       (burayı okuyan ve sunucunuzun başarımını son kırıntısına kadar
-      arttırmakla ilgilenen biriyseniz bunu düşünmezsiniz), sunucunuzu
-      derlerken seçenekler arasına <code>-DDYNAMIC_MODULE_LIMIT=0</code>
-      seçeneğini de ekleyin. Bu suretle, sadece, devingen olarak yüklenen
-      modüller için ayrılacak belleği kazanmış olacaksınız.</p>
+      arttırmakla ilgilenen biriyseniz bunu d&uuml;ş&uuml;nmezsiniz), sunucunuzu
+      derlerken se&ccedil;enekler arasına <code>-DDYNAMIC_MODULE_LIMIT=0</code>
+      se&ccedil;eneğini de ekleyin. Bu suretle, sadece, devingen olarak y&uuml;klenen
+      mod&uuml;ller i&ccedil;in ayrılacak belleği kazanmış olacaksınız.</p>
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="trace" id="trace">Ek: Bir çağrı izlemesinin ayrıntılı çözümlemesi</a> <a title="Permanent link" href="#trace" class="permalink">&para;</a></h2>
+<h2 id="trace">Ek: Bir &ccedil;ağrı izlemesinin ayrıntılı &ccedil;&ouml;z&uuml;mlemesi <a title="Permanent link" href="#trace" class="permalink">&para;</a></h2>
 
     
 
-    <p>Burada, Solaris 8 üzerinde worker MPM'li Apache 2.0.38'in bir sistem
-    çağrısı izlenmektedir. Bu izleme şu komutla elde edilmiştir:</p>
+    <p>Burada, Solaris 8 &uuml;zerinde worker MPM'li Apache 2.0.38'in bir sistem
+    &ccedil;ağrısı izlenmektedir. Bu izleme şu komutla elde edilmiştir:</p>
 
     <div class="example"><p><code>
-      truss -l -p <var>httpd_çocuk_pidi</var>.
+      truss -l -p <var>httpd_&ccedil;ocuk_pidi</var>.
     </code></p></div>
 
-    <p><code>-l</code> seçeneği, truss'a hafif bir sürecin yaptığı her
-    sistem çağrısını (hafif süreç -- HS -- Solaris'in bir çekirdek seviyesi
-    evreleme biçimi) günlüğe yazmasını söyler.</p>
+    <p><code>-l</code> se&ccedil;eneği, truss'a hafif bir s&uuml;recin yaptığı her
+    sistem &ccedil;ağrısını (hafif s&uuml;re&ccedil; -- HS -- Solaris'in bir &ccedil;ekirdek seviyesi
+    evreleme bi&ccedil;imi) g&uuml;nl&uuml;ğe yazmasını s&ouml;yler.</p>
 
-    <p>Diğer sistemlerin sistem çağrılarını izleyen farklı araçları vardır
+    <p>Diğer sistemlerin sistem &ccedil;ağrılarını izleyen farklı ara&ccedil;ları vardır
     (<code>strace</code>, <code>ktrace</code>, <code>par</code> gibi).
-    Bunlar da benzer çıktılar üretirler.</p>
+    Bunlar da benzer &ccedil;ıktılar &uuml;retirler.</p>
 
     <p>Bu izleme sırasında, bir istemci httpd'den 10 KB'lık duruk bir dosya
-    talebinde bulunmuştur. Duruk olmayan veya içerik uzlaşımlı isteklerin
-    izleme kayıtları vahşice (bazı durumlarda epey çirkince) farklı
-    görünür.</p>
+    talebinde bulunmuştur. Duruk olmayan veya i&ccedil;erik uzlaşımlı isteklerin
+    izleme kayıtları vahşice (bazı durumlarda epey &ccedil;irkince) farklı
+    g&ouml;r&uuml;n&uuml;r.</p>
 
     <div class="example"><p><code>
-      /67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (uykuda...)<br />
+      /67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (uykuda...)<br>
       /67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9
     </code></p></div>
 
-    <p>Bu izlemede, dinleyen evre HS #67 içinde çalışmaktadır.</p>
+    <p>Bu izlemede, dinleyen evre HS #67 i&ccedil;inde &ccedil;alışmaktadır.</p>
 
     <div class="note"><code>accept(2)</code> dizgelemesinin olmayışına dikkat edin.
-    Özellikle bu platformda worker MPM, çok sayıda portu dinlemedikçe,
-    öntanımlı olarak dizgeleştirilmemiş bir accept çağrısı kullanır.</div>
+    &Ouml;zellikle bu platformda worker MPM, &ccedil;ok sayıda portu dinlemedik&ccedil;e,
+    &ouml;ntanımlı olarak dizgeleştirilmemiş bir accept &ccedil;ağrısı kullanır.</div>
 
     <div class="example"><p><code>
-      /65:    lwp_park(0x00000000, 0)                         = 0<br />
+      /65:    lwp_park(0x00000000, 0)                         = 0<br>
       /67:    lwp_unpark(65, 1)                               = 0
     </code></p></div>
 
     <p>Bağlantının kabul edilmesiyle, dinleyici evre isteği yerine getirmek
-    üzere bir worker evresini uyandırır. Bu izlemede, isteği yerine getiren
+    &uuml;zere bir worker evresini uyandırır. Bu izlemede, isteği yerine getiren
     worker evresi  HS #65'e aittir.</p>
 
     <div class="example"><p><code>
       /65:    getsockname(9, 0x00200BA4, 0x00200BC4, 1)       = 0
     </code></p></div>
 
-    <p>Sanal konakların gerçeklenimi sırasında, Apache'nin, bağlantıları
-    kabul etmek için kullanılan yerel soket adreslerini bilmesi gerekir.
-    Çoğu durumda bu çağrıyı bertaraf etmek mümkündür (hiç sanal konağın
+    <p>Sanal konakların ger&ccedil;eklenimi sırasında, Apache'nin, bağlantıları
+    kabul etmek i&ccedil;in kullanılan yerel soket adreslerini bilmesi gerekir.
+    &Ccedil;oğu durumda bu &ccedil;ağrıyı bertaraf etmek m&uuml;mk&uuml;nd&uuml;r (hi&ccedil; sanal konağın
     olmadığı veya <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
-    yönergelerinin mutlak adreslerle kullanıldığı durumlarda). Fakat bu en
-    iyilemeleri yapmak için henüz bir çaba harcanmamıştır.</p>
+    y&ouml;nergelerinin mutlak adreslerle kullanıldığı durumlarda). Fakat bu en
+    iyilemeleri yapmak i&ccedil;in hen&uuml;z bir &ccedil;aba harcanmamıştır.</p>
 
     <div class="example"><p><code>
-      /65:    brk(0x002170E8)                                 = 0<br />
+      /65:    brk(0x002170E8)                                 = 0<br>
       /65:    brk(0x002190E8)                                 = 0
     </code></p></div>
 
-    <p><code>brk(2)</code> çağrıları devingen bellekten bellek ayırır. httpd
-    çoğu isteği yerine getirirken özel bellek ayırıcılar
+    <p><code>brk(2)</code> &ccedil;ağrıları devingen bellekten bellek ayırır. httpd
+    &ccedil;oğu isteği yerine getirirken &ouml;zel bellek ayırıcılar
     (<code>apr_pool</code> ve <code>apr_bucket_alloc</code>) kullandığından
-    bunlar bir sistem çağrısı izlemesinde nadiren görünür. Bu izlemede,
-    httpd henüz yeni başlatıldığından, özel bellek ayırıcıları oluşturmak
-    için ham bellek bloklarını ayırmak amacıyla <code>malloc(3)</code>
-    çağrıları yapması gerekir.</p>
+    bunlar bir sistem &ccedil;ağrısı izlemesinde nadiren g&ouml;r&uuml;n&uuml;r. Bu izlemede,
+    httpd hen&uuml;z yeni başlatıldığından, &ouml;zel bellek ayırıcıları oluşturmak
+    i&ccedil;in ham bellek bloklarını ayırmak amacıyla <code>malloc(3)</code>
+    &ccedil;ağrıları yapması gerekir.</p>
 
     <div class="example"><p><code>
-/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2<br />
-/65:    fstat64(9, 0xFAF7B818)                          = 0<br />
-/65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B910, 2190656) = 0<br />
-/65:    fstat64(9, 0xFAF7B818)                          = 0<br />
-/65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B914, 2190656) = 0<br />
-/65:    setsockopt(9, 65535, 8192, 0xFAF7B918, 4, 2190656) = 0<br />
+/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2<br>
+/65:    fstat64(9, 0xFAF7B818)                          = 0<br>
+/65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B910, 2190656) = 0<br>
+/65:    fstat64(9, 0xFAF7B818)                          = 0<br>
+/65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B914, 2190656) = 0<br>
+/65:    setsockopt(9, 65535, 8192, 0xFAF7B918, 4, 2190656) = 0<br>
 /65:    fcntl(9, F_SETFL, 0x00000082)                   = 0
     </code></p></div>
 
     <p>Ardından, worker evresi istemciye (dosya tanıtıcısı 9) engellenmeyen
-    kipte bir bağlantı açar. <code>setsockopt(2)</code>
-    ve <code>getsockopt(2)</code> çağrıları, Solaris libc'sinin soketler
-    üzerindeki <code>fcntl(2)</code> çağrısı yanında birer yan etkiden
+    kipte bir bağlantı a&ccedil;ar. <code>setsockopt(2)</code>
+    ve <code>getsockopt(2)</code> &ccedil;ağrıları, Solaris libc'sinin soketler
+    &uuml;zerindeki <code>fcntl(2)</code> &ccedil;ağrısı yanında birer yan etkiden
     ibarettirler.</p>
 
     <div class="example"><p><code>
@@ -969,15 +969,15 @@
     <p>Worker evresi istemciden isteği okur.</p>
 
     <div class="example"><p><code>
-/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0<br />
+/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0<br>
 /65:    open("/var/httpd/apache/httpd-8999/htdocs/10k.html", O_RDONLY) = 10
     </code></p></div>
 
     <p>Bu httpd  <code>Options FollowSymLinks</code> ve <code>AllowOverride
     None</code> ile yapılandırılmıştır. Bu bakımdan, ne istenen dosya ile
-    sonuçlanan yol üzerindeki her dizinde <code>lstat(2)</code> çağrısına ne
+    sonu&ccedil;lanan yol &uuml;zerindeki her dizinde <code>lstat(2)</code> &ccedil;ağrısına ne
     de <code>.htaccess</code> dosyalarına bakılmasına gerek vardır.
-    <code>stat(2)</code> çağrısı basitçe dosya için şunları doğrulamak
+    <code>stat(2)</code> &ccedil;ağrısı basit&ccedil;e dosya i&ccedil;in şunları doğrulamak
     amacıyla yapılır: 1) dosya mevcuttur ve 2) bir dizin değil normal bir
     dosyadır.</p>
 
@@ -985,36 +985,36 @@
       /65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269
     </code></p></div>
 
-    <p>Bu örnekte, httpd, istenen dosyayı ve HTTP yanıt başlığını tek bir
-    <code>sendfilev(2)</code> sistem çağrısı ile  göndermektedir. Dosya
-    gönderim işleminin anlamı sistemden sisteme değişiklik gösterir. Bazı
-    sistemlerde, <code>sendfile(2)</code> çağrısından önce başlıkları
-    göndermek için  <code>write(2)</code> veya <code>writev(2)</code>
-    çağrısı yapmak gerekir.</p>
+    <p>Bu &ouml;rnekte, httpd, istenen dosyayı ve HTTP yanıt başlığını tek bir
+    <code>sendfilev(2)</code> sistem &ccedil;ağrısı ile  g&ouml;ndermektedir. Dosya
+    g&ouml;nderim işleminin anlamı sistemden sisteme değişiklik g&ouml;sterir. Bazı
+    sistemlerde, <code>sendfile(2)</code> &ccedil;ağrısından &ouml;nce başlıkları
+    g&ouml;ndermek i&ccedil;in  <code>write(2)</code> veya <code>writev(2)</code>
+    &ccedil;ağrısı yapmak gerekir.</p>
 
     <div class="example"><p><code>
       /65:    write(4, " 1 2 7 . 0 . 0 . 1   -  ".., 78)      = 78
     </code></p></div>
 
-    <p>Bu <code>write(2)</code> çağrısı isteği erişim günlüğüne kaydeder. Bu
-    izlemede eksik olan tek şey, <code>time(2)</code> çağrısıdır. Apache
-    1.3'ün aksine, Apache 2.x zamana bakmak için
-    <code>gettimeofday(3)</code> çağırısını kullanır. Linux ve Solaris gibi
+    <p>Bu <code>write(2)</code> &ccedil;ağrısı isteği erişim g&uuml;nl&uuml;ğ&uuml;ne kaydeder. Bu
+    izlemede eksik olan tek şey, <code>time(2)</code> &ccedil;ağrısıdır. Apache
+    1.3'&uuml;n aksine, Apache 2.x zamana bakmak i&ccedil;in
+    <code>gettimeofday(3)</code> &ccedil;ağırısını kullanır. Linux ve Solaris gibi
     bazı işletim sistemleri, <code>gettimeofday</code> işlevinin, sıradan
-    bir sistem çağrısından daha fazla götürüsü olmayan en iyilenmiş bir
-    gerçeklenimine sahiptir.</p>
+    bir sistem &ccedil;ağrısından daha fazla g&ouml;t&uuml;r&uuml;s&uuml; olmayan en iyilenmiş bir
+    ger&ccedil;eklenimine sahiptir.</p>
 
     <div class="example"><p><code>
-      /65:    shutdown(9, 1, 1)                               = 0<br />
-      /65:    poll(0xFAF7B980, 1, 2000)                       = 1<br />
-      /65:    read(9, 0xFAF7BC20, 512)                        = 0<br />
+      /65:    shutdown(9, 1, 1)                               = 0<br>
+      /65:    poll(0xFAF7B980, 1, 2000)                       = 1<br>
+      /65:    read(9, 0xFAF7BC20, 512)                        = 0<br>
       /65:    close(9)                                        = 0
     </code></p></div>
 
     <p>Burada worker evresi bağlantıyı zamana yaymaktadır.</p>
 
     <div class="example"><p><code>
-      /65:    close(10)                                       = 0<br />
+      /65:    close(10)                                       = 0<br>
       /65:    lwp_park(0x00000000, 0)         (uykuda...)
     </code></p></div>
 
@@ -1027,40 +1027,44 @@
     </code></p></div>
 
     <p>Bu arada, dinleyici evre bağlantıyı bir worker evresine atar atamaz
-    başka bir bağlantıyı beklemeye başlar (Mevcut tüm evreler meşgulse
+    başka bir bağlantıyı beklemeye başlar (Mevcut t&uuml;m evreler meşgulse
     dinleyici evreyi baskılayan worker MPM'nin akış denetim şemasına konu
-    olur). Bu izlemede görünmüyor olsa da sonraki <code>accept(2)</code>
-    çağrısı, yeni bağlantı kabul eden worker evresine paralel olarak
-    yapılabilir (aşırı yük durumlarında normal olarak, bu yapılır).</p>
+    olur). Bu izlemede g&ouml;r&uuml;nm&uuml;yor olsa da sonraki <code>accept(2)</code>
+    &ccedil;ağrısı, yeni bağlantı kabul eden worker evresine paralel olarak
+    yapılabilir (aşırı y&uuml;k durumlarında normal olarak, bu yapılır).</p>
 
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/perf-tuning.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/perf-tuning.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-tuning.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../tr/misc/perf-tuning.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

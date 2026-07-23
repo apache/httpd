@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1934878 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,25 +34,18 @@ href="../mod/mod_rewrite.html">Documentation de référence</a> de
 <module>mod_rewrite</module>. Il montre comment utiliser
 <module>mod_rewrite</module> pour rediriger et remettre en
 correspondance une requête. Il contient de
-nombreux exemples d'utilisation courante de mod_rewrite avec une
+nombreux exemples d'utilisation courante de <module>mod_rewrite</module> avec une
 description détaillée de leur fonctionnement.</p>
-
-<note type="warning">Vous devez vous attacher à comprendre le
-fonctionnement des exemples, car la plupart d'entre eux ne
-fonctionneront pas sur votre système si vous vous contentez de les
-copier/coller dans vos fichiers de configuration.</note>
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
 <seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
-<!--<seealso><a href="remapping.html">Redirection et remise en
-correspondance</a></seealso>-->
-<seealso><a href="access.html">Contrôler l'accès</a></seealso>
+<seealso><a href="htaccess.html">Réécritures par répertoire</a></seealso>
+<seealso><a href="flags.html">Drapeaux des règles RewriteRule</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
-<seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avancées</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Détails techniques</a></seealso>
 
 <section id="old-to-new">
 
@@ -81,7 +74,235 @@ RewriteEngine  on
 RewriteRule    "^<strong>/foo</strong>\.html$" "<strong>/bar</strong>.html" [PT]
 </highlight>
     </dd>
+</dl>
+
+</section>
+
+<section id="https-redirect">
+
+  <title>Forcer HTTPS</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Rediriger toutes les requêtes HTTP vers HTTPS. C’est un des
+      emplois les plus courants de <module>mod_rewrite</module>, mais dans la
+      plupart des cas, on y parvient d’une meilleur façon sans lui.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+
+      <p>L’approche préférée utilise une directive <directive
+      module="mod_alias">Redirect</directive> dans un serveur virtuel HTTP
+      dédié :</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect permanent "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... emplacement de la configuration SSL
+&lt;/VirtualHost&gt;
+</highlight>
+
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>Si vous n’avez pas accès à la configuration du serveur et devez
+      utiliser un fichier <code>.htaccess</code>, <module>mod_rewrite</module>
+      sera l’outil approprié :</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+
+      <p>La variable <code>%{HTTPS}</code> est définie à <code>on</code> si
+      la connexion utilise SSL/TLS, et est vide ou à <code>off</code> dans le
+      cas contraire. Utiliser <code>R=301</code> produit une redirection
+      permanente qui signale aux moteurs de recherche qu’ils doivent mettre
+      leur index à jour.</p>
+
+      <p>Voir aussi le document <a href="avoid.html#redirect">Quand ne pas
+      utiliser mod_rewrite</a> pour plus de discussions à propos de l’approche
+      <code>Redirect</code>.</p>
+
+      <note><title>Derrière un répartiteur de charge ou un terminateur SSL</title>
+      <p>La variable <code>%{HTTPS}</code> n’est pas une variable
+      d’environnement à usage général — elle interroge directement
+      <module>mod_ssl</module>. Si la terminaison SSL/TLS est effectuée au
+      niveau d'un répartiteur de charge ou d'un mandataire inverse en amont,
+      <module>mod_ssl</module> ne gère pas la connexion et <code>%{HTTPS}</code>
+      indiquera toujours <code>off</code>, même si le client originel s’est
+      connecté en HTTPS.</p>
+
+      <p>Dans cette situation, il faut plutôt consulter l’en-tête défini par le
+      mandataire en amont. La plupart des répartiteurs de charge définissent
+      <code>X-Forwarded-Proto</code> :</p>
+      </note>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{HTTP:X-Forwarded-Proto}" =http [NC]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+
+      <note type="warning">
+      <p>Ne faites confiance à <code>X-Forwarded-Proto</code> que si vous
+      contrôlez le mandataire en amont et qu'il écrase l'en-tête à chaque
+      requête. Un attaquant pourrait corrompre cet en-tête en se connectant
+      directement à votre serveur. Assurez-vous de restreindre l’accès de façon
+      que seul votre répartiteur de charge puisse atteindre le serveur dorsal,
+      ou utilisez <module>mod_remoteip</module> pour valider la source.</p>
+      </note>
+
+    </dd>
   </dl>
+
+</section>
+
+<section id="acme-exemption">
+
+  <title>Exempter les requêtes de défi ACME de la redirection HTTPS</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Vous avez forcé tout le trafic à s’effectuer en HTTPS (comme ci-avant),
+      mais votre client ACME (Let's Encrypt, Certbot, etc.) nécessite un accès
+      en HTTP à <code>/.well-known/acme-challenge/</code> pour achever la
+      validation du domaine.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Placer une exception <em>avant</em> la règle de redirection HTTPS :</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteRule "^/\.well-known/acme-challenge/" - [L]
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>La substitution matérialisée par un tiret (<code>-</code>) signifie
+      « ne pas réécrire ». En combinaison avec le drapeau <code>[L]</code>, elle
+      arrête le traitement des règles pour toute requête correspondant au chemin
+      du défi ACME, permettant à cette dernière d’être servie en HTTP. Le
+      traitement de toutes les autres requêtes continue avec la règle suivante
+      et les redirige vers HTTPS de la manière habituelle.</p>
+
+      <p>Si vous adoptez l’approche par la directive <directive
+      module="mod_alias">Redirect</directive> dans un serveur virtuel dédié au
+      port 80, utilisez les directives <directive
+      module="mod_alias">Alias</directive> et <directive
+      module="mod_alias">RedirectMatch</directive> à la place :</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+
+    # Permettre les défis ACME sur HTTP
+    Alias "/.well-known/acme-challenge/" "/var/www/acme/.well-known/acme-challenge/"
+    &lt;Directory "/var/www/acme/.well-known/acme-challenge"&gt;
+        Require all granted
+    &lt;/Directory&gt;
+
+    # Tout le reste est redirigé vers HTTPS
+    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)(.*)$" "https://www.example.com/$1"
+&lt;/VirtualHost&gt;
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="trailing-slash">
+
+  <title>Normalisation de la barre oblique de fin</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Vous souhaitez que les URLs pour des répertoires se terminent toujours
+      par une barre oblique ou, au contraire, que ce ne soit jamais le cas.
+      Il s’agit d’un prérequis courant pour SEO et pour la gestion cohérente des
+      URLs par les applications web.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Pour ajouter une barre oblique de fin aux URLs qui correspondent à des
+      répertoires :</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}" -d
+RewriteCond "%{REQUEST_URI}" "!/$"
+RewriteRule "^(.*)$" "$1/" [R=301,L]
+</highlight>
+
+      <p>Pour supprimer la barre oblique de fin (sauf pour les véritables
+      répertoires) :</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteCond "%{REQUEST_URI}" "(.+)/$"
+RewriteRule "^" "%1" [R=301,L]
+</highlight>
+
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>Le module <module>mod_dir</module> de httpd gère déjà les redirections
+      de barre oblique de fin pour les véritables répertoires lorsque la
+      directive <directive module="mod_dir">DirectorySlash</directive> est
+      activée (elle l’est par défaut). Vous n’avez besoin que d’une règle de
+      <module>mod_rewrite</module> si vous souhaitez imposer un comportement
+      pour les barres obliques de fin pour les URLs qui ne correspondent pas à
+      de véritables répertoires sur disque, ou si vous voulez supprimer des
+      barres obliques de fin.</p>
+    </dd>
+</dl>
+
+</section>
+
+<section id="front-controller">
+
+  <title>Contrôleur frontal / Routage d’pplication</title>
+
+  <p>La plupart des cadriciels web modernes routent toutes les requêtes vers un
+  seul point d’entrée : le contrôleur frontal (« front controller »). La
+  directive <directive module="mod_dir">FallbackResource</directive> gère cela
+  plus simplement et efficacement que <module>mod_rewrite</module>. Voir le
+  document <a href="avoid.html#fallback-resource">Quand ne pas utiliser
+  mod_rewrite</a> pour l’approche recommandée.</p>
+
+  <p>Si vous avez réellement besoin de <module>mod_rewrite</module> pour cela
+  (par exemple, pour ajouter des conditions plus complexes que « fichier non
+  existant »), consultez le document <a
+  href="htaccess.html#rewritebase">Réécritures par répertoire</a> pour un
+  exemple annoté qui illustre aussi l’utilisation de la directive <directive
+  module="mod_rewrite">RewriteBase</directive>.</p>
 
 </section>
 
@@ -115,11 +336,11 @@ RewriteRule    "^<strong>foo</strong>\.html$"  "<strong>bar</strong>.html"  [<st
 </highlight>
 </dd>
 
-<dt>Discussion</dt>
+<dt>Explication</dt>
 
     <dd>
     <p>Dans l'exemple <a
-    href="#old-to-new-intern">interne</a>, on a utilisé mod_rewrite afin
+    href="#old-to-new-intern">interne</a>, on a utilisé <module>mod_rewrite</module> afin
     de dissimuler la redirection au client. Dans cet exemple, en
     revanche, on aurait pu se contenter d'une directive Redirect :</p>
 
@@ -164,41 +385,14 @@ RedirectMatch "^/docs/(.*)" "http://nouveau.example.com/docs/$1"
 Redirect "/docs/" "http://nouveau.example.com/docs/"
 </highlight>
     </dd>
-  </dl>
-
-</section>
-
-
-
-<section id="static-to-dynamic">
-
-      <title>De statique à dynamique</title>
-
-      <dl>
-        <dt>Description :</dt>
-
+    <dt>Explication :</dt>
         <dd>
-          <p>Comment transformer une page statique <code>foo.html</code>
-	  en sa variante dynamique <code>foo.cgi</code> de manière
-	  transparente, c'est à dire sans en avertir le
-	  navigateur/utilisateur.</p>
-        </dd>
 
-        <dt>Solution :</dt>
-
-        <dd>
-          <p>On réécrit simplement l'URL en script CGI et force le
-	  gestionnaire de contenu à <strong>cgi-script</strong> de façon
-	  à ce que le script s'exécute en tant que programme CGI.
-	  Ainsi, une requête vers <code>/~quux/foo.html</code> conduit
-	  en interne à l'invocation de
-	  <code>/~quux/foo.cgi</code>.</p>
-
-<highlight language="config">
-RewriteEngine  on
-RewriteBase    "/~quux/"
-RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
-</highlight>
+      <p>Pour une simple redirection vers un autre serveur, il est préférable
+      d’utiliser les directives <directive
+      module="mod_alias">Redirect</directive> ou <directive
+      module="mod_alias">RedirectMatch</directive>, car elles sont plus simples
+      et plus efficaces.</p>
         </dd>
       </dl>
 
@@ -224,10 +418,10 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
         <dt>Solution :</dt>
 
         <dd>
-          <p>On réécrit simplement le nom du fichier en son nom
-	  de base et vérifie s'il existe aussi avec la nouvelle
-	  extension. Si c'est le cas, on utilise ce nom, sinon on
-	  réécrit l'URL sous sa forme originale.</p>
+	  <p>L’URL n’est réécrite en remplaçant l’ancienne extension par la
+	  nouvelle que si le fichier cible avec la nouvelle extension existe et
+	  si le fichier originel avec l’ancienne extension n’existe pas. Sinon,
+	  l’URL reste inchangée.</p>
 
 
 <highlight language="config">
@@ -245,11 +439,11 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 </highlight>
     </dd>
 
-    <dt>Discussion</dt>
+    <dt>Explication</dt>
     <dd>
     <p>Cet exemple utilise une fonctionnalité souvent méconnue de
-    mod_rewrite, en tirant avantage de l'ordre d'exécution du jeu de
-    règles. En particulier, mod_rewrite évalue la partie gauche des
+    <module>mod_rewrite</module>, en tirant avantage de l'ordre d'exécution du jeu de
+    règles. En particulier, <module>mod_rewrite</module> évalue la partie gauche des
     règles de réécriture avant d'évaluer les directives RewriteCond. En
     conséquence, $1 est déjà défini au moment où les directives
     RewriteCond sont évaluées. Ceci nous permet de tester l'existence du
@@ -286,7 +480,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 
         <dd>
 
-<p>Pour y parvenir, il vaut mieux se passer de mod_rewrite, et utiliser
+<p>Pour y parvenir, il vaut mieux se passer de <module>mod_rewrite</module>, et utiliser
 plutôt la directive <directive module="mod_alias">Redirect</directive> dans
 une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
 
@@ -322,7 +516,7 @@ type="section">If</directive> (versions 2.4 et ultérieures) :</p>
 </highlight>
 
 <p>Si, pour une raison particulière, vous voulez tout de même utiliser
-<code>mod_rewrite</code> - dans le cas, par exemple, où vous avez besoin
+<module>mod_rewrite</module> - dans le cas, par exemple, où vous avez besoin
 d'un jeu plus important de règles de réécritures - vous pouvez utiliser
 la recette suivante :</p>
 
@@ -348,6 +542,16 @@ RewriteRule "^/?(.*)"         "http://www.example.com/$1" [L,R,NE]
 	possibles de <strong>example.com</strong>, vous pouvez utiliser
 	le jeu de règles suivants :</p>
 
+<p>Pour faire l’inverse — supprimer le préfixe <code>www.</code> — inversez la
+condition :</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "^www\.(.+)$"              [NC]
+RewriteRule "^(.*)"        "http://%1/$1"             [L,R,NE]
+</highlight>
+
+<p>Pour ajouter de manière générique <code>www.</code> à tout nom d’hôte :</p>
+
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
@@ -359,9 +563,26 @@ RewriteRule "^/?(.*)" "http://www.%{HTTP_HOST}/$1" [L,R,NE]
 	<code>.htaccess</code> placé dans le répertoire défini par la
 	directive <directive
 	module="core">DocumentRoot</directive> du serveur.</p>
-        </dd>
-      </dl>
 
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>Si vous avez accès à la configuration globale du serveur, une directive
+      <directive module="mod_alias">Redirect</directive> dans un <directive
+      module="core" type="section">serveur virtuel</directive> dédié constitue
+      l’approche la plus propre. Mettre sous forme canonique le nom d’hôte
+      permet de s’assurer que les moteurs de recherche traiterons votre site
+      comme une seule entité, et évite les problèmes de portée de cookie qui
+      surviennent lorsqu’un même site est accessible sous plusieurs noms.</p>
+      <p>N’utilisez la directive <directive module="core"
+      type="section">If</directive> et <module>mod_rewrite</module> comme
+      compromis que si vous êtes contraint d’utiliser un fichier
+      <code>.htaccess</code>.</p>
+    </dd>
+
+</dl>
     </section>
 
 <section id="multipledirs">
@@ -405,64 +626,14 @@ RewriteRule  "^(.+)"  "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 RewriteRule   "^"  "-"  [PT]
 </highlight>
         </dd>
-      </dl>
 
-    </section>
-
-<section id="archive-access-multiplexer">
-
-  <title>Redirection vers des serveurs géographiquement distribués</title>
-
-  <dl>
-    <dt>Description :</dt>
+    <dt>Explication :</dt>
 
     <dd>
-    <p>Notre site web possède de nombreux miroirs, et nous voulons
-    rediriger les utilisateurs vers celui qui se situe dans le pays où
-    ils se trouvent. </p>
-    </dd>
-
-    <dt>Solution :</dt>
-
-    <dd>
-    <p>En consultant le nom d'hôte du client demandeur, on détermine le
-    pays dans lequel il se trouve. S'il est impossible d'effectuer une
-    recherche sur leur adresse IP, on se rabat sur un serveur par
-    défaut.</p>
-    <p>Nous allons utiliser une directive <directive
-    module="mod_rewrite">RewriteMap</directive> afin de construire une
-    liste des serveurs que nous voulons utiliser.</p>
-
-<highlight language="config">
-HostnameLookups on
-RewriteEngine on
-RewriteMap    multiplex         "txt:/path/to/map.mirrors"
-RewriteCond  "%{REMOTE_HOST}"     "([a-z]+)$ [NC]"
-RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
-</highlight>
-
-<example>
-##  liste_miroirs -- Table de correspondance pays - serveurs<br />
-<br />
-de        http://www.exemple.de/<br />
-uk        http://www.exemple.uk/<br />
-com       http://www.example.com/<br />
-##EOF##
-</example>
-    </dd>
-
-    <dt>Discussion</dt>
-    <dd>
-    <note type="warning">Ce jeu de règles nécessite la définition à
-    <code>on</code> de la directive <directive
-    module="core">HostNameLookups</directive>, ce qui peut induire une
-    baisse de performance significative.</note>
-
-    <p>La directive <directive
-    module="mod_rewrite">RewriteCond</directive> extrait la dernière
-    partie du nom d'hôte du client demandeur - le code du pays - et la
-    règle de réécriture qui suit utilise cette valeur pour rechercher le
-    serveur miroir approprié dans le fichier de correspondances.</p>
+      <p>Ce qui précède s’avère utile pendant les migrations lorsque le contenu
+      est déplacé d’un répertoire vers un autre. Pour une configuration
+      permanente, utilisez plutôt la directive <directive
+      module="mod_alias">Alias</directive> ou des liens symboliques.</p>
     </dd>
   </dl>
 
@@ -555,56 +726,7 @@ de réécrire les URLs.</p>
 
 </section>
 
-<section id="fallback-resource">
-<title>Ressource par défaut</title>
 
-<dl>
-<dt>Description :</dt>
-<dd>Vous voulez qu'une seule ressource (disons un certain fichier tel
-que index.php) soit servie pour toutes les requêtes à destination d'un
-certain répertoire, sauf pour celles qui concernent une ressource
-existant effectivement comme une image, ou un fichier css.</dd>
-
-<dt>Solution :</dt>
-<dd>
-<p>Depuis la version 2.2.16, vous pouvez y parvenir via la directive
-<directive module="mod_dir">FallbackResource</directive> :</p>
-
-<highlight language="config">
-&lt;Directory "/var/www/my_blog"&gt;
-  FallbackResource index.php
-&lt;/Directory&gt;
-</highlight>
-
-<p>Cependant, si vos besoins étaient plus complexes, vous pouviez, dans
-les versions plus anciennes d'Apache, utiliser un jeu de règles du style
-:</p>
-
-<highlight language="config">
-&lt;Directory "/var/www/my_blog"&gt;
-  RewriteBase "/my_blog"
-
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
-  RewriteRule "^" "index.php" [PT]
-&lt;/Directory&gt;
-</highlight>
-
-<p>D'autre part, si vous voulez transmettre l'URI de la requête en tant
-que chaîne de paramètres à index.php, vous pouvez remplacer cette règle
-de réécriture par :</p>
-
-<highlight language="config">RewriteRule "(.*)" "index.php?$1" [PT,QSA]</highlight>
-
-<p>Notez que l'on peut utiliser ces jeux de règles aussi bien dans un
-fichier <code>.htaccess</code> que dans une section
-&lt;Directory&gt;.</p>
-
-</dd>
-
-</dl>
-
-</section>
 
 <section id="rewrite-query">
 <title>Rewrite query string</title>
@@ -653,20 +775,208 @@ RewriteRule "(.*)" - [F]
 </highlight>
   </li>
 
-  <li>Cette solution produit l'effet inverse des précédentes ; elle
-  copie des composantes du chemin (peut-être PATH_INFO) depuis l'URL
-  vers sa chaîne de paramètres :
-<highlight language="config">
-# The desired URL might be /products/kitchen-sink, and the script expects 
+  <li>Cette solution produit l'effet inverse des précédentes ; elle copie des
+  composantes du chemin (peut-être <glossary
+  ref="pathinfo">PATH_INFO</glossary>) depuis l'URL vers sa chaîne de paramètres
+  : <highlight language="config">
+# The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.
-RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
-</highlight>
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT] </highlight> 
   </li>
 </ul>
 
 </dd>
 
+<dt>Explication :</dt>
+
+<dd>
+<p>Voir aussi les drapeaux <a href="flags.html#flag_qsa">[QSA]</a> et <a
+href="flags.html#flag_qsd">[QSD]</a> qui permettent de contrôler si la chaîne de
+paramètres originelle est ajoutée à la fin de la substitution ou supprimée de
+cette dernière.</p>
+</dd>
+
+
 </dl>
+</section>
+
+<section id="structuredhomedirs">
+
+  <title>Répertoires utilisateur structurés</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Certains sites avec plusieurs milliers d’utilisateurs possèdent une
+      organisation structurée des répertoires utilisateur, c’est-à-dire que
+      chaque répertoire utilisateur est dans un sous-répertoire qui commence
+      (par exemple) par le premier caractère du nom de l’utilisateur. Ainsi,
+      <code>/~larry/anypath</code> correspond à
+      <code>/home/<strong>l</strong>/larry/public_html/anypath</code> et
+      <code>/~waldo/anypath</code> à
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Nous utilisons le jeu de règles suivant pour développer les URLs avec
+      tilde selon l’organisation ci-dessus.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>Cette technique est principalement utile pour les environnements
+      d’hébergement de grande capacité avec plusieurs milliers d’utilisateurs.
+      Pour la plupart des sites, <module>mod_userdir</module> gère les URLs
+      utilisateur avec tilde sans avoir besoin de <module>mod_rewrite</module>.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>Redirection vers une ancre</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+    <p>Par défaut, la redirection vers une ancre HTML ne fonctionne pas, car
+    <module>mod_rewrite</module> échappe le caractère <code>#</code> en le
+    remplaçant par <code>%23</code>, ce qui casse la redirection.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Utiliser le drapeau <code>[NE]</code> dans la règle
+      <code>RewriteRule</code>. NE signifie « No Escape ».
+      </p>
+    </dd>
+
+    <dt>Explication :</dt>
+    <dd>Bien entendu, cette technique fonctionne aussi pour d’autres caractères
+    spéciaux que <module>mod_rewrite</module> encode par défaut pour les URLs.</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>Réécriture dépendant du temps</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous voulons utiliser <module>mod_rewrite</module> pour servir des
+      contenus différents en fonction de l’heure du jour.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Il esixte de nombreuses variables nommées <code>TIME_xxx</code> à
+      utiliser dans les conditions de réécriture. En combinaison avec les motifs
+      de comparaison lexicographique spéciaux <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> et <code>=STRING</code>, nous pouvons configurer
+      des redirections dépendant du temps :</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>Cette configuration sert le contenu de <code>foo.day.html</code> sous
+      l’URL <code>foo.html</code> de <code>07:01</code> à <code>18:59</code> et
+      le contenu de <code>foo.night.html</code> pendant le temps restant.</p>
+
+      <note type="warning"><module>mod_cache</module>, les mandataires
+      intermédiaires et les navigateurs peuvent chacun mettre en cache les
+      réponses et provoquer de ce fait l’affichage d’une page en dehors de la
+      fenêtre de temps configurée. <module>mod_expires</module> permet de
+      contrôler cet effet. Il est bien entendu préférable de simplement servir
+      le contenu de manière dynamique et de le personnaliser en fonction de
+      l’heure du jour.</note>
+
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>Servir du contenu dynamique par l’intermédiaire de votre application
+      constitue pratiquement toujours une meilleure approche. La mise en cache
+      par les navigateurs, les mandataires et <module>mod_cache</module> rend la
+      réécriture en fonction du temps non fiable en pratique.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>Régénération du contenu à la volée</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous voulons générer dynamiquement du contenu, mais le stocker ensuite
+      statiquement. La règle suivante va vérifier si le fichier
+      statique existe, et le générer dans le cas contraire. Les fichiers
+      statiques peuvent être supprimés périodiquement, si souhaité (par exemple
+      via cron) et seront régénérés à la demande.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      Pour ce faire, on utilise le jeu de règles suivant :
+
+<highlight language="config">
+# Cet exemple n’est valable que dans un contexte de répertoire
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+    <p>L’opérateur <code>-U</code>  détermine si la chaîne de test (dans ce cas
+    <code>REQUEST_URI</code>) est un URL valable. Il effectue cette opération
+    via une sous-requête. Si cette sous-requête échoue — autrement dit, si la
+    ressource demandée n’existe pas — cette règle invoque le programme CGI
+    <code>/regenerate_page.cgi</code> qui va générer la ressource demandée et la
+    sauvegarder dans le répertoire des documents de sorte qu’une copie statique
+    puissent en être servie la prochaine fois qu’elle sera demandée.</p>
+
+    <p>Ainsi, les documents qui ne sont pas souvent mis à jour peuvent être
+    servis sous forme statique. Si ces documents doivent être rafraîchis, ils
+    peuvent être supprimés du répertoire des documents ; ils seront alors
+    régénérés la prochaine fois qu’ils seront demandés.</p>
+    </dd>
+
+    <dt>Explication :</dt>
+
+    <dd>
+      <p>Les approches modernes telles que <module>mod_cache</module>, les
+      couches de mise en cache CDN ou la mise en cache au niveau de
+      l’application fournissent des solutions plus robustes et configurables
+      pour servir du contenu statique pré-généré. Le test de la sous-requête de
+      l’opérateur <code>-U</code> utilisé ici induit un coût en performance à
+      chaque requête.</p>
+    </dd>
+  </dl>
+
 </section>
 
 </manualpage>

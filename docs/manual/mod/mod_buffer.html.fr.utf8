@@ -1,64 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_buffer - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_buffer</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_buffer.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requêtes</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requ&ecirc;tes</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>buffer_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_buffer.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.3 et supérieures
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>buffer_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_buffer.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible depuis les versions 2.3 et sup&eacute;rieures
 d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module fournit la possibilité de mettre en tampon les piles
-    des filtres en entrée et sortie.</p>
+    <p>Ce module fournit la possibilit&eacute; de mettre en tampon les piles
+    des filtres en entr&eacute;e et sortie.</p>
 
-    <p>Dans certaines situations, les générateurs de contenu créent des
-    contenus composés de petits tronçons. Afin de permettre la
-    réutilisation de la mémoire, les éléments de mémoire attribués aux
-    tronçons ont toujours une taille de 8k, quelle que soit la taille du
-    tronçon lui-même. Lorsqu'une requête génère de nombreux petits
-    tronçons, une grande quantité de mémoire peut être mobilisée par le
-    traitement de la requête, et une grande quantité de données
-    transmises sans nécessité. Pour y remédier, l'utilisation d'un
-    tampon rassemble la réponse en un nombre de tronçons le plus petit
+    <p>Dans certaines situations, les g&eacute;n&eacute;rateurs de contenu cr&eacute;ent des
+    contenus compos&eacute;s de petits tron&ccedil;ons. Afin de permettre la
+    r&eacute;utilisation de la m&eacute;moire, les &eacute;l&eacute;ments de m&eacute;moire attribu&eacute;s aux
+    tron&ccedil;ons ont toujours une taille de 8k, quelle que soit la taille du
+    tron&ccedil;on lui-m&ecirc;me. Lorsqu'une requ&ecirc;te g&eacute;n&egrave;re de nombreux petits
+    tron&ccedil;ons, une grande quantit&eacute; de m&eacute;moire peut &ecirc;tre mobilis&eacute;e par le
+    traitement de la requ&ecirc;te, et une grande quantit&eacute; de donn&eacute;es
+    transmises sans n&eacute;cessit&eacute;. Pour y rem&eacute;dier, l'utilisation d'un
+    tampon rassemble la r&eacute;ponse en un nombre de tron&ccedil;ons le plus petit
     possible.</p>
 
-    <p>Lorsque httpd est utilisé comme frontal d'un générateur de
+    <p>Lorsque httpd est utilis&eacute; comme frontal d'un g&eacute;n&eacute;rateur de
     contenu consommant beaucoup de ressources, la mise en tampon de la
-    réponse peut permettre à ce dernier d'effectuer le traitement et de
-    libérer les ressources plus ou moins rapidement, en fonction de la
-    manière dont il a été conçu.</p>
+    r&eacute;ponse peut permettre &agrave; ce dernier d'effectuer le traitement et de
+    lib&eacute;rer les ressources plus ou moins rapidement, en fonction de la
+    mani&egrave;re dont il a &eacute;t&eacute; con&ccedil;u.</p>
 
-    <p>Le filtre de mise en tampon peut être ajouté aux piles des
-    filtres en entrée ou en sortie, selon les besoins, à l'aide des
+    <p>Le filtre de mise en tampon peut &ecirc;tre ajout&eacute; aux piles des
+    filtres en entr&eacute;e ou en sortie, selon les besoins, &agrave; l'aide des
     directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
@@ -66,66 +66,70 @@ d'Apache</td></tr></table>
 </div>
 
     <div class="warning">Les filtres de mise en tampon lisent la
-    requête/réponse en RAM, puis la reconditionnent sous la forme d'un
-    nombre d'éléments mémoire le plus petit possible, au prix d'une
-    consommation de temps CPU. Lorsque la requête/réponse est déjà
-    conditionnée de manière satisfaisante, sa mise en tampon pourrait
-    s'avérer encore plus lente qu'en l'absence d'utilisation de tampon.
-    C'est pourquoi ces filtres doivent être utilisés avec précautions,
-    et seulement si nécessaire.</div>
+    requ&ecirc;te/r&eacute;ponse en RAM, puis la reconditionnent sous la forme d'un
+    nombre d'&eacute;l&eacute;ments m&eacute;moire le plus petit possible, au prix d'une
+    consommation de temps CPU. Lorsque la requ&ecirc;te/r&eacute;ponse est d&eacute;j&agrave;
+    conditionn&eacute;e de mani&egrave;re satisfaisante, sa mise en tampon pourrait
+    s'av&eacute;rer encore plus lente qu'en l'absence d'utilisation de tampon.
+    C'est pourquoi ces filtres doivent &ecirc;tre utilis&eacute;s avec pr&eacute;cautions,
+    et seulement si n&eacute;cessaire.</div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#buffersize">BufferSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#buffersize">BufferSize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_buffer">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_buffer">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_buffer">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_buffer">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Les filtres</a></li>
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="buffersize" id="buffersize">Directive</a> <a name="BufferSize" id="BufferSize">BufferSize</a> <a title="Lien permanent" href="#buffersize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="buffersize">Directive <span id="BufferSize">BufferSize</span> <a title="Lien permanent" href="#buffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale en octets du filtre par tampon</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BufferSize entier</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BufferSize 131072</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>BufferSize 131072</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_buffer</td></tr>
 </table>
-    <p>La directive <code class="directive">BufferSize</code> permet de spécifier la
-    quantité de données en octets qui sera mise en tampon avant d'être
-    lue depuis ou écrite vers chaque requête. La valeur par défaut est
+    <p>La directive <code class="directive">BufferSize</code> permet de sp&eacute;cifier la
+    quantit&eacute; de donn&eacute;es en octets qui sera mise en tampon avant d'&ecirc;tre
+    lue depuis ou &eacute;crite vers chaque requ&ecirc;te. La valeur par d&eacute;faut est
     128 ko.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_buffer.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_buffer.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

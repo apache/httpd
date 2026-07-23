@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1876835 -->
+<!-- English Revision: 1933778 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,7 +60,7 @@ le Serveur HTTP Apache.</p>
     principaux ne sont prises en compte par httpd que lorsque le serveur
     est démarré ou redémarré.</p>
 
-    <p>Le serveur lit aussi un fichier contenant les types de document mime ;
+    <p>Le serveur lit aussi un fichier contenant les types de document mime&nbsp;;
     ce fichier est défini par la directive <directive
     module="mod_mime">TypesConfig</directive>,
     et se nomme <code>mime.types</code> par défaut.</p>
@@ -69,26 +69,71 @@ le Serveur HTTP Apache.</p>
   <section id="syntax">
     <title>Syntaxe des fichiers de configuration</title>
 
-    <p>Les fichiers de configuration de httpd contiennent une directive
-    par ligne.
-    On peut utiliser l'anti-slash "\" comme dernier caractère d'une ligne
-    pour indiquer que la directive continue à la ligne suivante.
-    Il ne doit y avoir aucun caractère ni espace entre l'anti-slash et
-    la fin de la ligne.</p>
+    <p>Les fichiers de configuration de httpd contiennent une directive par
+    ligne.  On peut utiliser l'anti-slash "\" comme dernier caractère d'une
+    ligne pour indiquer que la directive continue à la ligne suivante ; pour que
+    cette continuation soit prise en compte, il ne doit y avoir aucun caractère
+    ni blanc entre l'anti-slash et la fin de la ligne.</p>
 
-    <p>Les arguments des directives sont séparés les uns des autres par
-    des espaces. Si un argument contient des espaces, il doit être
-    entouré de guillemets.</p>
+    <p>Les lignes qui commencent par un croisillon «&nbsp;#&nbsp;» sont interprétées comme
+    des commentaires et sont ignorées. Les commentaires <strong>ne doivent
+    pas</strong> se trouver sur la même ligne qu'une directive de configuration,
+    y compris au début de la continuation d'une ligne comme décrit dans le
+    paragraphe précédent. Les commentaires peuvent aussi continuer sur la ligne
+    suivante, ce qui signifie que la prochaine ligne physique est aussi
+    interprétée comme un commentaire car la ligne logique commence par un
+    croisillon.
+    </p>
+
+    <p>Les blancs apparaissant avant une directive sont ignorés ; vous pouvez
+    donc indenter ces dernières pour améliorer la lisibilité. Les lignes vides
+    sont aussi ignorées. les arguments de directive sont séparés par des blancs.
+    Si un argument contient des espaces, il doit être entouré de guillemets.</p>
+
+    <section id="quotes"><title>Citation et échappement</title>
+
+    <p>Un argument qui contient des espaces doit être entouré de guillemets
+    doubles (<code>"</code>) ou de guillemets simples (<code>'</code>). Les
+    guillemets eux-mêmes ne font pas partie de l’argument.</p>
+
+    <p>À l’intérieur d’une chaîne entre guillemets, seules deux séquences
+    d’échappement sont reconnues : <code>\\</code> produit une controblique
+    littérale et <code>\"</code> (ou <code>\'</code> si la chaîne est entourée
+    de guillemets simples) produit un guillemet littéral sans terminer la
+    chaîne. Toutes les autres séquences avec controblique sont conservées telles
+    quelles — par exemple, <code>\n</code> sera considéré comme une chaîne
+    littéral de deux caractères <code>\n</code>, pas comme une nouvelle
+    ligne.</p>
+
+    <p>En dehors des guillemets, les controbliques n’ont aucune signification
+    spéciale et sont traitées comme des caractères littéraux. La seule exception
+    est la controblique de continuation de ligne en fin de ligne, comme décrit
+    ci-avant.</p>
+
+    <p>Notez que des chaînes entre guillemets adjacentes sans espace entre elles
+    ne sont <strong>pas</strong> concaténées — elles sont traitées comme des
+    arguments séparés. Par exemple :</p>
+
+    <example>
+    # Il ne s’agit pas d’un seul argument, mais de DEUX :<br />
+    Header set X-Foo "arg1""arg2"
+    </example>
+
+    <p>Certaines directives acceptent des arguments qui contiennent des
+    sous-expressions ayant leur propre syntaxe, telles que les drapeaux de la
+    directive <directive module="mod_rewrite">RewriteRule</directive> ou les
+    expression <a href="expr.html">ap_expr</a>. Dans ces cas, l’interpréteur de
+    fichier de configuration enlève tout d’abord les guillemets englobants et
+    traite les séquences avec controblique comme décrit ci-avant, puis
+    l’interpréteur propre à la directive traite le résultat. En cas de doute,
+    utiliser des guillemets simples autour d’un argument qui contient des
+    controbliques peut éviter un double traitement inattendu des séquenses
+    d’échappement.</p>
+
+    </section>    
 
     <p>Les directives dans les fichiers de configuration ne sont pas
-    sensibles à la casse, mais leurs arguments le sont souvent. Les lignes
-    qui débutent par le caractère "#" sont interprétées comme des
-    commentaires, et sont ignorées. Les commentaires ne doivent
-    <strong>pas</strong> apparaître sur la même ligne qu'une directive
-    de configuration. Les espaces précédant une directive
-    sont ignorés ; vous pouvez par conséquent indenter les directives
-    afin d'améliorer la lisibilité. Les lignes vides sont
-    aussi ignorées.</p>
+    sensibles à la casse, mais leurs arguments le sont souvent.</p>
 
     <p>Les valeurs des variables d'environnement ou des variables définies via
     la directive <directive module="core">Define</directive> peuvent être

@@ -34,7 +34,7 @@
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
         Its serves two main purposes: for one, supervise/renew TLS certificates via the 
-        ACME protocol (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). 
+        ACME protocol (<rfc>8555</rfc>). 
         Certificates will be renewed by the module ahead of their expiration to account 
         for disruption in internet services. There are ways to monitor the status of all 
         certificates managed this way and configurations that will run your own 
@@ -124,7 +124,7 @@ Protocols h2 http/1.1 acme-tls/1
         </highlight>
         <p>
             And the `tls-alpn-01` challenge type is available.
-	</p>
+        </p>
         </note>
 
         <note><title>Wildcard Certificates</title>
@@ -184,17 +184,18 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
                 If there is an error with an MD it will be shown here as well. This let's 
                 you assess problems without digging through your server logs.
             </p><p>
-                There is also a new 'md-status' handler available to give you the MD information 
-                from 'server-status' in JSON format. You configure it as
+                There is also a new '<code>md-status</code>' handler available to give you the MD information 
+                from '<code>server-status</code>' in JSON format. You configure it as
             </p>
             <highlight language="config">
 &lt;Location "/md-status">
   SetHandler md-status
+  Require host example.com
 &lt;/Location>
             </highlight>
             <p>
-                on your server. As with 'server-status' you will want to add 
-                authorization for this. 
+                on your server. As with '<code>server-status</code>' you <strong>must</strong> protect
+                the <code>md-status</code> output from public view using authorization restrictions (such as <module>mod_authz_host</module>). 
             </p><p>
                 If you just want to check the JSON status of a specific domain, simply append 
                 that to your status url:
@@ -249,7 +250,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 &lt;/MDomain>            
             </highlight>
             <p>
-                and use the 'server-status' and/or <directive module="mod_md">MDMessageCmd</directive> to see how it operates. You will
+                and use the '<code>server-status</code>' and/or <directive module="mod_md">MDMessageCmd</directive> to see how it operates. You will
                 see if Stapling information is there, how long it is valid, from where it came and
                 when it will be refreshed.
             </p><p>
@@ -282,44 +283,6 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
                 Due to backward compatibility, the existing implementation in mod_ssl could
                 not be changed drastically. For example, mod_ssl is unable to add a dependency 
                 to mod_watchdog without braking many existing installations (that do not load it).
-            </p>
-        </note>
-
-        <note><title>tailscale</title>
-            <p>
-                Since version 2.4.14 of the module, you can use it to get certificates
-                for your <a href="https://tailscale.com">tailscale</a> domains.
-            </p>
-            <highlight language="config">
-&lt;MDomain mydomain.some-thing.ts.net>
-  MDCertificateProtocol tailscale
-  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
-&lt;/MDomain>
-            </highlight>
-            <p>
-                Tailscale provides secure networking between your machines, where ever
-                they are, and can provide domain names in the *.ts.net space for them.
-                For those, it will then provide Let's Encrypt certificates as well, so
-                you can open these domains in your browser securely.
-            </p>
-            <p>
-                The directives listed above tell Apache to contact the local tailscale
-                demon for obtaining and renewing certificates. This will only work for
-                the domain name that tailscale assigns to your machine.
-            </p>
-            <p>
-                Otherwise, these certificates work exactly like the ones retrieved
-                via the ACME protocol from Lets Encrypt. You see them in status reporting
-                and MDMessageCmd directives are executed for them as well.
-            </p>
-            <p>
-                More details are <a href="https://github.com/icing/mod_md#tailscale">
-                available at the mod_md github documentation</a>.
-            </p>
-            <p>
-                Note that this feature only works on machines where the tailscale
-                demon provides a unix domain socket. This, so far, seems only the
-                case on *nix systems.
             </p>
         </note>
 
@@ -484,13 +447,13 @@ MDomain example2.org auto
             </p><p>
                 If you configure more than one URL, each one is tried in a round-robin
                 fashion after a number of failures. You can configure how quickly or
-                delayed that happens via the <directive>MDRetryDelay</directive> and
-                <directive>MDRetryFailover</directive> directives. The default setting
+                delayed that happens via the <directive module="mod_md">MDRetryDelay</directive> and
+                <directive module="mod_md">MDRetryFailover</directive> directives. The default setting
                 makes a failover after about half a day of trying.
             </p><p>
                 All other settings apply to each of these URLs. It is therefore
                 not possible to have two with different
-                <directive>MDExternalAccountBinding</directive>s, for example.
+                <directive module="mod_md">MDExternalAccountBinding</directive>s, for example.
             </p><p>
                 For testing, CAs commonly offer a second service URL.
                 The 'test' service does not give certificates valid in a browser,
@@ -575,9 +538,39 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Since version 2.4.69, a proxy can be configured separately for each MDomain.</compatibility>
         <usage>
-            <p>Use a http proxy to connect to the <directive module="mod_md">MDCertificateAuthority</directive>. Define this
-            if your webserver can only reach the internet with a forward proxy.
+            <p>
+                Use the given http forward proxy URL to connect to the <directive module="mod_md">MDCertificateAuthority</directive>.
+                Define this if your webserver can only reach the internet with a forward proxy.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDHttpProxyCACertificateFile</name>
+        <description>Sets the root (CA) certificates to use for TLS connections to the http-proxy.</description>
+        <syntax>MDHttpProxyCACertificateFile <var>path-to-pem-file</var></syntax>
+        <default>MDHttpProxyCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.69 and later</compatibility>
+        <usage>
+            <p>
+                This is used for connections to the HTTPS forward proxy (<directive module="mod_md">MDHttpProxy</directive>).
+                It is needed if the certificate of the HTTPS proxy cannot be verified using the general CA root store.
+                This is sometimes the case in test setups or enterprise environments.
+            </p>
+            <p>
+                The certificate of the ACME server is verified with the root certificates set by
+                <directive module="mod_md">MDCACertificateFile</directive>, so you might need to use both settings.
+            </p>
+            <p>
+                Use "none" as path to disable explicitly.
+            </p>
+            <p>
+                This can be configured separately for each <directive module="mod_md">MDomain</directive>.
             </p>
         </usage>
     </directivesynopsis>
@@ -762,7 +755,7 @@ MDPrivateKeys secp256r1 rsa3072
         </contextlist>
         <usage>
             <p>
-            If the validity of the certificate falls below duration, mod_md
+            If the validity of the certificate falls below duration, <module>mod_md</module>
             will get a new signed certificate.
             </p><p>
             Normally, certificates are valid for around 90 days and mod_md will renew 
@@ -1061,7 +1054,7 @@ MDRequireHttps permanent
         <usage>
             <p>
                 This command gets called when one of the following events happen for
-                a Managed Domain: "renewed", "installed", "expiring", "errored". The command may
+                a Managed Domain: "renewed", "installed", "expiring", "errored", "renewing", "challenge-setup:type:domain", "ocsp-renewed", "ocsp-errored". The command may
                 be invoked for more than these in the future and ignore events
                 it is not prepared to handle.
             </p><p>
@@ -1111,10 +1104,14 @@ MDMessageCmd /etc/apache/md-message
                 DNS name in a MDomain. Cluster setups may use this event to distribute
                 challenge files to all nodes in a cluster.
             </p><p>
-                ocsp-errored happens when <directive module="mod_md">MDStapling</directive>
+                'ocsp-errored' happens when <directive module="mod_md">MDStapling</directive>
                 is enabled for a domain, this indicates
                 that an error was encountered retrieving the OCSP response from the
                 Certificate Authority. mod_md will continue trying.
+            </p><p>
+                'ocsp-renewed' is triggered when a new OCSP response has been
+                successfully obtained for a domain's certificate. This event fires
+                at most once per day.
             </p>
         </usage>
     </directivesynopsis>
@@ -1137,27 +1134,30 @@ MDMessageCmd /etc/apache/md-message
                 window left. With the default, this mean 9 days for certificates from
                 Let's Encrypt.
             </p><p>
-                It also applies to Managed Domains with static certificate files (
-                see <directive module="mod_md">MDCertificateFile</directive>).
+                It also applies to Managed Domains with static certificate files (see
+                <directive module="mod_md">MDCertificateFile</directive>).
             </p>
         </usage>
     </directivesynopsis>
 
     <directivesynopsis>
         <name>MDServerStatus</name>
-        <description>Control if Managed Domain information is added to server-status.</description>
+        <description>Control if Managed Domain information is added to <code>server-status</code>.</description>
         <syntax>MDServerStatus on|off</syntax>
-        <default>MDServerStatus on</default>
+        <default>MDServerStatus off</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                Apaches 'server-status' handler allows you configure a resource to monitor
-                what is going on. This includes now a section listing all Managed Domains
-                with the DNS names, renewal status, lifetimes and main properties.
+                If enabled, adds a section to the
+                <module>mod_status</module> '<code>server-status</code>' handler
+                output which lists all Managed Domains with the DNS
+                names, renewal status, lifetimes and main properties.
             </p><p>
-                You can switch that off using this directive.
+                As with '<code>md-status</code>', the '<code>server-status</code>' output
+                <strong>must</strong> be protected from public view
+                using appropriate authorization restrictions.
             </p>
         </usage>
     </directivesynopsis>
@@ -1172,7 +1172,7 @@ MDMessageCmd /etc/apache/md-message
         </contextlist>
         <usage>
             <p>
-                This is part of the 'server-status' HTML user interface and has nothing to 
+                This is part of the '<code>server-status</code>' HTML user interface and has nothing to 
                 do with the core functioning itself. It defines the link offered on that 
                 page for easy checking of a certificate monitor. The SHA256 fingerprint 
                 of the certificate is appended to the configured url.
@@ -1393,7 +1393,7 @@ MDMessageCmd /etc/apache/md-message
         <name>MDRetryDelay</name>
         <description>Time length for first retry, doubled on every consecutive error.</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1407,6 +1407,10 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 It is kept separate for each certificate renewal. Meaning an error
                 on one MDomain does not delay the renewals of other domains.
+            </p>
+            <p>
+                In mod_md v2.6.1, the default delay has been increased from 5
+                seconds to 30.
             </p>
         </usage>
     </directivesynopsis>
@@ -1424,7 +1428,7 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 The number of consecutive errors on renewing a certificate before
                 another CA is selected. This only applies to configurations that
-                have more than one <directive>MDCertificateAuthority</directive>
+                have more than one <directive module="mod_md">MDCertificateAuthority</directive>
                 specified.
             </p>
         </usage>
@@ -1442,11 +1446,12 @@ MDMessageCmd /etc/apache/md-message
         <usage>
             <p>
                 Enable this to use a lock file on server startup when
-                <directive>MDStoreDir</directive> is synchronized with the server
+                <directive module="mod_md">MDStoreDir</directive> is synchronized with the server
                 configuration and renewed certificates are activated.
             </p><p>
                 Locking is intended for setups in a cluster that have a shared
-                file system for MDStoreDir. It will protect the activation of
+                file system for <directive module="mod_md">MDStoreDir</directive>.
+                It will protect the activation of
                 renewed certificates when cluster nodes are restarted/reloaded
                 at the same time. Under the condition that the shared file
                  system does support file locking.
@@ -1475,9 +1480,11 @@ MDMessageCmd /etc/apache/md-message
         <compatibility>Available in version 2.4.58 and later</compatibility>
         <usage>
             <p>
-                Set the way MDChallengeDns01 command is invoked, e.g the number and
-                types of arguments. See <directive module="mod_md">MDChallengeDns01</directive>
+                Set the way <directive module="mod_md">MDChallengeDns01</directive>
+                command is invoked, e.g the number and types of arguments.
+                See <directive module="mod_md">MDChallengeDns01</directive>
                 for the differences.
+            </p><p>
                 This setting is global and cannot be varied per domain.
             </p>
         </usage>
@@ -1494,8 +1501,10 @@ MDMessageCmd /etc/apache/md-message
         <compatibility>Available in version 2.4.58 and later</compatibility>
         <usage>
             <p>
-                The mode `all` is the behaviour as in all previous versions. Both ServerName
-                and ServerAlias are inspected to find the MDomain matching a VirtualHost.
+                The mode `all` is the behavior as in all previous versions. Both
+                <directive module="core">ServerName</directive>
+                and <directive module="core">ServerAlias</directive> are inspected
+                to find the <directive module="mod_md">MDomain</directive> matching a VirtualHost.
                 This automatically detects coverage, even when you only have added
                 one of the names to an MDomain.
             </p><p>
@@ -1549,18 +1558,18 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 This about a non-standard ACME extension by Let's Encrypt.
             </p><p>
-                Lets Encrypt announced they will add Certificate Profiles
-                support in their CA during 2025, beginning with their staging
-                servers. This, among some other details, let's you select the
-                lifetime of the certificates you get. The "default" profile
-                will keep the 90 days and a "tlsserver" profile will issue
-                certificates with only 6 days of validity.
+                Let's Encrypt supports Certificate Profiles in their CA. This,
+                among some other details, let's you select the lifetime of the
+                certificates you get. The "classic" profile is the default and
+                will keep the 90 days, the "tlsserver" profile is also 90 days
+                with a max of 25 Subject Alternative Names. The "shortlived"
+                profile will issue certificates with only 6 days of validity.
             </p><p>
-                If you do not change your mod_md configuration, you will
+                If you do not change your <module>mod_md</module> configuration, you will
                 continue to get the 90 days certificates. Should you believe
                 that a shorter lifetime is beneficial for you (and take the
                 risk that the renewal time is way shorter),
-                you can configure the profile to use via 'MDProfile tlsserver'.
+                you can configure the profile to use via 'MDProfile shortlived'.
            </p><p>
                 The profile names are defined by the CA. If a profile you
                 configure is not available, no profile will be used and
@@ -1581,6 +1590,7 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.64 and later</compatibility>
         <usage>
             <p>
                 Controls if a <directive module="mod_md">MDProfile</directive>
@@ -1591,6 +1601,67 @@ MDMessageCmd /etc/apache/md-message
                 When not mandatory and a profile is not offered by the CA,
                 renewals will be performed without specifying a profile and
                 the CA will issue a certificates according to its defaults.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>usage of the ACME ARI extension (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                En-/Disable certificate renewals triggered via the ACME ARI
+                extension (rfc9773). These renewals happen *in addition* to
+                the mechanism controlled by <directive module="mod_md">MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI allows an ACME CA to somewhat shape incoming renewal
+                traffic. More importantly though, it can inform clients of
+                urgent renewals, e.g. when a certificate or part of its chain
+                has been revoked.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDInitialDelay</name>
+        <description>How long to delay the first certificate check.</description>
+        <syntax>MDInitialDelay <var>duration</var></syntax>
+        <default>MDInitialDelay 0s</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.66 and later</compatibility>
+        <usage>
+            <p>
+                The amount of time to wait after the server start to check
+                renewals of certificates. By default this occurs right away.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCACertificateFile</name>
+        <description>File containing x509 trust anchors to verify ACME servers.</description>
+        <syntax>MDCACertificateFile <var>file</var></syntax>
+        <default>MDCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Since version 2.4.69, this can be configured separately for each MDomain.</compatibility>
+        <usage>
+            <p>
+                This is mainly used in test setups where the module needs to
+                connect to a test ACME server that has its own root certificate.
+                People who run an enterprise wide internal CA can use this when
+                they run their own ACME servers.
+            </p>
+            <p>
+                Use "none" as path to disable explicitly.
             </p>
         </usage>
     </directivesynopsis>

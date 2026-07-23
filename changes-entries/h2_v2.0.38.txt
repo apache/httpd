@@ -1,0 +1,3 @@
+  *) mod_http2: update to version 2.0.38
+     Source sync with mod_h2 github repository. No functional change.
+     [Stefan Eissing]

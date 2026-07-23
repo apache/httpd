@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 1933438:1935430 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="tech.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Technische Details zu Apache mod_rewrite</title>
+
+<summary>
+<p>Dieses Dokument behandelt einige der technischen Details von
+<module>mod_rewrite</module> und der URL-Zuordnung.</p>
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Moduldokumentation</a></seealso>
+<seealso><a href="intro.html">Einführung in mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Umleitung und Neuzuordnung</a></seealso>
+<seealso><a href="access.html">Zugriffskontrolle</a></seealso>
+<seealso><a href="vhosts.html">Virtuelle Hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">Verwendung von RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Fortgeschrittene Techniken</a></seealso>
+<seealso><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></seealso>
+
+<section id="InternalAPI"><title>API-Phasen</title>
+
+    <p>Der Apache HTTP Server bearbeitet Anfragen in mehreren Phasen.
+    In jeder dieser Phasen können ein oder mehrere Module aufgerufen
+    werden, um diesen Teil des Anfrage-Lebenszyklus zu behandeln. Zu
+    den Phasen gehören Dinge wie URL-zu-Dateiname-Übersetzung,
+    Authentifizierung, Autorisierung, Inhalt und Protokollierung. (Dies
+    ist keine vollständige Liste.)</p>
+
+    <p><module>mod_rewrite</module> wirkt in zwei dieser Phasen (oder "Hooks", wie
+    sie oft genannt werden), um zu beeinflussen, wie URLs umgeschrieben
+    werden können.</p>
+
+    <p>Erstens verwendet es den URL-zu-Dateiname-Übersetzungs-Hook, der
+    nach dem Lesen der HTTP-Anfrage stattfindet, aber bevor eine
+    Autorisierung beginnt. Zweitens verwendet es den Fixup-Hook, der
+    nach den Autorisierungsphasen und nach dem Lesen der
+    verzeichnisbezogenen Konfigurationsdateien
+    (<code>.htaccess</code>-Dateien) stattfindet, aber bevor der
+    Inhalts-Handler aufgerufen wird.</p>
+
+    <p>Nachdem eine Anfrage eingegangen ist und ein entsprechender Server
+    oder virtueller Host bestimmt wurde, beginnt die Umschreibungs-Engine
+    mit der Verarbeitung aller <module>mod_rewrite</module>-Direktiven in der
+    Server-Konfiguration. (d.h. in der Hauptserverkonfigurationsdatei und
+    in <directive module="core" type="section">Virtualhost</directive>-Abschnitten.)
+    Dies geschieht in der URL-zu-Dateiname-Phase.</p>
+
+    <p>Einige Schritte später, nachdem die endgültigen Datenverzeichnisse
+    gefunden wurden, werden die verzeichnisbezogenen
+    Konfigurationsdirektiven (<code>.htaccess</code>-Dateien und
+    <directive module="core" type="section">Directory</directive>-Blöcke)
+    angewendet. Dies geschieht in der Fixup-Phase.</p>
+
+    <p>In jedem dieser Fälle schreibt <module>mod_rewrite</module> die
+    <code>REQUEST_URI</code> entweder auf eine neue URL oder auf einen
+    Dateinamen um.</p>
+
+    <p>Im Verzeichniskontext (d.h. in <code>.htaccess</code>-Dateien und
+    <code>Directory</code>-Blöcken) werden diese Regeln angewendet,
+    nachdem eine URL bereits in einen Dateinamen übersetzt wurde. Aus
+    diesem Grund ist der URL-Pfad, gegen den <module>mod_rewrite</module>
+    zunächst die <directive module="mod_rewrite">RewriteRule</directive>-Direktiven
+    abgleicht, der vollständige Dateisystempfad zum übersetzten
+    Dateinamen, wobei der Pfad des aktuellen Verzeichnisses (einschließlich
+    eines abschließenden Schrägstrichs) vom Anfang entfernt wurde.</p>
+
+    <p>Zur Veranschaulichung: Wenn Regeln in /var/www/foo/.htaccess stehen
+    und eine Anfrage für /foo/bar/baz verarbeitet wird, würde ein Ausdruck
+    wie ^bar/baz$ übereinstimmen.</p>
+
+    <p>Wenn eine Ersetzung im Verzeichniskontext vorgenommen wird, wird
+    eine neue interne Unteranfrage mit der neuen URL ausgelöst, die die
+    Verarbeitung der Anfragephasen neu startet. Wenn die Ersetzung ein
+    relativer Pfad ist, bestimmt die
+    <directive module="mod_rewrite">RewriteBase</directive>-Direktive
+    das URL-Pfad-Präfix, das der Ersetzung vorangestellt wird. Im
+    Verzeichniskontext muss darauf geachtet werden, Regeln zu erstellen,
+    die letztendlich (in einer zukünftigen "Runde" der verzeichnisbezogenen
+    Umschreibungsverarbeitung) keine Ersetzung durchführen, um Schleifen
+    zu vermeiden. (Siehe <a
+    href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
+    für eine weitere Diskussion dieses Problems.)</p>
+
+    <p>Aufgrund dieser weiteren Manipulation der URL im Verzeichniskontext
+    müssen Sie Ihre Umschreibungsregeln in diesem Kontext anders
+    gestalten. Insbesondere denken Sie daran, dass der führende
+    Verzeichnispfad vom URL-Pfad abgeschnitten wird, den Ihre
+    Umschreibungsregeln sehen. Betrachten Sie die folgenden Beispiele
+    zur weiteren Verdeutlichung.</p>
+
+    <table border="1">
+
+        <tr>
+            <th>Ort der Regel</th>
+            <th>Regel</th>
+        </tr>
+
+        <tr>
+            <td>VirtualHost-Abschnitt</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>.htaccess-Datei im Document Root</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>.htaccess-Datei im images-Verzeichnis</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
+        </tr>
+
+    </table>
+
+    <p>Für noch mehr Einblick, wie <module>mod_rewrite</module> URLs in
+    verschiedenen Kontexten manipuliert, sollten Sie die
+    <a href="../mod/mod_rewrite.html#logging">Protokolleinträge</a>
+    konsultieren, die während der Umschreibung erstellt werden.</p>
+
+</section>
+
+<section id="InternalRuleset"><title>Regelsatz-Verarbeitung</title>
+
+      <p>Wenn <module>mod_rewrite</module> in diesen beiden API-Phasen
+      ausgelöst wird, liest es die konfigurierten Regelsätze aus seiner
+      Konfigurationsstruktur (die entweder beim Start für den
+      Server-Kontext oder während des Verzeichnisdurchlaufs des
+      Apache-Kerns für den Verzeichniskontext erstellt wurde). Dann wird
+      die URL-Umschreibungs-Engine mit dem enthaltenen Regelsatz gestartet
+      (eine oder mehrere Regeln zusammen mit ihren Bedingungen). Die
+      Funktionsweise der URL-Umschreibungs-Engine ist für beide
+      Konfigurationskontexte genau gleich. Nur die endgültige
+      Ergebnisverarbeitung ist unterschiedlich.</p>
+
+      <p>Die Reihenfolge der Regeln im Regelsatz ist wichtig, da die
+      Umschreibungs-Engine sie in einer speziellen (und nicht sehr
+      offensichtlichen) Reihenfolge verarbeitet. Die Regel lautet:
+      Die Umschreibungs-Engine durchläuft den Regelsatz Regel für Regel
+      (<directive module="mod_rewrite">RewriteRule</directive>-Direktiven)
+      und wenn eine bestimmte Regel übereinstimmt, durchläuft sie optional
+      die vorhandenen zugehörigen Bedingungen (<code>RewriteCond</code>-Direktiven).
+      Aus historischen Gründen werden die Bedingungen zuerst angegeben,
+      sodass der Kontrollfluss etwas umständlich ist. Siehe Abbildung 1
+      für weitere Details.</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png"
+          alt="Ablauf der RewriteRule- und RewriteCond-Zuordnung" /><br />
+      <dfn>Abbildung 1:</dfn>Der Kontrollfluss durch den Umschreibungsregelsatz
+</p>
+      <p>Zuerst wird die URL gegen das <em>Pattern</em> jeder Regel
+      abgeglichen. Wenn es fehlschlägt, stoppt <module>mod_rewrite</module>
+      sofort die Verarbeitung dieser Regel und fährt mit der nächsten Regel
+      fort. Wenn das <em>Pattern</em> übereinstimmt, sucht
+      <module>mod_rewrite</module> nach zugehörigen Regelbedingungen
+      (RewriteCond-Direktiven, die in der Konfiguration unmittelbar über
+      der RewriteRule stehen). Wenn keine vorhanden sind, ersetzt es die
+      URL durch einen neuen Wert, der aus dem String <em>Substitution</em>
+      konstruiert wird, und fährt mit seiner Regelschleife fort. Wenn
+      jedoch Bedingungen vorhanden sind, startet es eine innere Schleife
+      zur Verarbeitung dieser in der Reihenfolge, in der sie aufgeführt
+      sind. Für Bedingungen ist die Logik anders: Wir gleichen kein
+      Muster gegen die aktuelle URL ab. Stattdessen erstellen wir zuerst
+      einen String <em>TestString</em> durch Expansion von Variablen,
+      Rückreferenzen, Map-Nachschlagungen <em>usw.</em>, und dann
+      versuchen wir, <em>CondPattern</em> dagegen abzugleichen. Wenn das
+      Muster nicht übereinstimmt, schlägt die gesamte Menge von
+      Bedingungen und die zugehörige Regel fehl. Wenn das Muster
+      übereinstimmt, wird die nächste Bedingung verarbeitet, bis keine
+      weiteren Bedingungen verfügbar sind. Wenn alle Bedingungen
+      übereinstimmen, wird die Verarbeitung mit der Ersetzung der URL
+      durch <em>Substitution</em> fortgesetzt.</p>
+
+</section>
+
+</manualpage>

@@ -1,48 +1,48 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>아파치 투토리얼: CGI를 사용한 동적 페이지 생성 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>아파치 투토리얼: CGI를 사용한 동적 페이지 생성</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>아파치 투토리얼: CGI를 사용한 동적 페이지 생성</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">소개</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI를 허용하도록 아파치 설정하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writing">CGI 프로그램 작성하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">그러나 아직 동작하지 않아요!</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">뒤에서는 무슨 일이 벌어지는가?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#libraries">CGI 모듈/라이브러리</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">더 많은 정보...</a></li>
-</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#intro">소개</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#configuring">CGI를 허용하도록 아파치 설정하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#writing">CGI 프로그램 작성하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">그러나 아직 동작하지 않아요!</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#behindscenes">뒤에서는 무슨 일이 벌어지는가?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#libraries">CGI 모듈/라이브러리</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moreinfo">더 많은 정보...</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">소개</a> <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
+<h2 id="intro">소개 <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
@@ -53,15 +53,15 @@
     페이지를 만드는 가장 흔하고 간단한 방법이다. 이 문서는 아파치
     웹서버에 CGI를 구성하는 방법을 소개하고, CGI 프로그램을
     작성해본다.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">CGI를 허용하도록 아파치 설정하기</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
+<h2 id="configuring">CGI를 허용하도록 아파치 설정하기 <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그램이 올바로 동작하려면 CGI 실행이 가능하도록
     아파치를 설정해야 한다. 설정하는 방법은 여러가지다.</p>
 
-    <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
+    <h3 id="scriptalias">ScriptAlias</h3>
       
 
       <p><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
@@ -100,7 +100,7 @@
       오류문을 보낸다.</p>
     
 
-    <h3><a name="nonscriptalias" id="nonscriptalias">ScriptAlias 디렉토리 밖에 있는 CGI</a></h3>
+    <h3 id="nonscriptalias">ScriptAlias 디렉토리 밖에 있는 CGI</h3>
       
 
       <p>보통 보안상 이유때문에 CGI 프로그램은 <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>한 디렉토리에
@@ -120,16 +120,16 @@
       <code>ExecCGI</code>를 지정해야 한다.</p>
     
 
-    <h3><a name="options" id="options">Options를 사용하여 명시적으로 CGI 실행을 허용하기</a></h3>
+    <h3 id="options">Options를 사용하여 명시적으로 CGI 실행을 허용하기</h3>
       
 
       <p>서버의 주설정파일에 직접 <code class="directive"><a href="../mod/core.html#options">Options</a></code> 지시어를 사용하여 특정
       디렉토리에서 CGI 실행을 허용할 수 있다.</p>
 
       <div class="example"><p><code>
-        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br />
+        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br>
         <span class="indent">
-          Options +ExecCGI<br />
+          Options +ExecCGI<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
@@ -144,7 +144,7 @@
       </code></p></div>
     
 
-    <h3><a name="htaccess" id="htaccess">.htaccess 파일</a></h3>
+    <h3 id="htaccess">.htaccess 파일</h3>
       
 
       <p><a href="htaccess.html"><code>.htaccess</code> 투토리얼</a>은
@@ -152,17 +152,17 @@
       사용할 수 있는 방법을 알려준다.</p>
     
 
-    <h3><a name="userdir" id="userdir">사용자 디렉토리</a></h3>
+    <h3 id="userdir">사용자 디렉토리</h3>
       
 
       <p>아래 설정을 사용하면 사용자 디렉토리에서 <code>.cgi</code>로
       끝나는 파일을 CGI 프로그램으로 실행한다.</p>
 
       <div class="example"><p><code>
-      &lt;Directory /home/*/public_html&gt;<br />
+      &lt;Directory /home/*/public_html&gt;<br>
       <span class="indent">
-        Options +ExecCGI<br />
-        AddHandler cgi-script .cgi<br />
+        Options +ExecCGI<br>
+        AddHandler cgi-script .cgi<br>
       </span>
       &lt;/Directory&gt;
       </code></p></div>
@@ -171,19 +171,19 @@
       하위디렉토리에 있는 모든 파일을 CGI 프로그램으로 인식한다.</p>
 
       <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin&gt;<br />
+      &lt;Directory /home/*/public_html/cgi-bin&gt;<br>
       <span class="indent">
-        Options ExecCGI<br />
-        SetHandler cgi-script<br />
+        Options ExecCGI<br>
+        SetHandler cgi-script<br>
       </span>
       &lt;/Directory&gt;
       </code></p></div>
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">CGI 프로그램 작성하기</a> <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
+<h2 id="writing">CGI 프로그램 작성하기 <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
     
 
     <p>``일반적인'' 프로그래밍과 CGI 프로그래밍 사이에는 두가지
@@ -206,7 +206,7 @@
     <p>두가지를 제외하고는 CGI 프로그램 작성은 이미 만들어 보았을
     다른 프로그램들과 매우 비슷하다.</p>
 
-    <h3><a name="firstcgi" id="firstcgi">처음으로 만든 CGI 프로그램</a></h3>
+    <h3 id="firstcgi">처음으로 만든 CGI 프로그램</h3>
       
 
       <p>다음은 브라우저에 한 줄을 찍는 CGI 프로그램 예제다.
@@ -214,8 +214,8 @@
       <code>cgi-bin</code> 디렉토리에 복사한다.</p>
 
       <div class="example"><p><code>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
+        #!/usr/bin/perl<br>
+        print "Content-type: text/html\n\n";<br>
         print "Hello, World.";
       </code></p></div>
 
@@ -238,9 +238,9 @@
       한 줄이 보인다. 흥분되지는 않지만, 한번 동작하는 것을
       보았으니 이제 다른 것을 시도해 볼 수 있다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">그러나 아직 동작하지 않아요!</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">그러나 아직 동작하지 않아요! <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>웹에서 CGI 프로그램에 접근할때 브라우저에 나올 수 있는
@@ -271,7 +271,7 @@
       출력하지 못했는지 알아본다.</dd>
     </dl>
 
-    <h3><a name="permissions" id="permissions">파일권한</a></h3>
+    <h3 id="permissions">파일권한</h3>
       
 
       <p>서버는 당신과 동일한 계정으로 동작하지 않음을 명심하라.
@@ -290,7 +290,7 @@
 
     
 
-    <h3><a name="pathinformation" id="pathinformation">경로 정보와 환경</a></h3>
+    <h3 id="pathinformation">경로 정보와 환경</h3>
       
 
       <p>명령행에서 프로그램을 실행하면 자동으로 어떤 정보가
@@ -319,7 +319,7 @@
 
     
 
-    <h3><a name="syntaxerrors" id="syntaxerrors">프로그램 오류</a></h3>
+    <h3 id="syntaxerrors">프로그램 오류</h3>
       
 
       <p>CGI 프로그램이 실패하는 경우 대부분 프로그램 자체
@@ -329,7 +329,7 @@
       같이 실행한다.</p>
 
       <div class="example"><p><code>
-      cd /usr/local/apache2/cgi-bin<br />
+      cd /usr/local/apache2/cgi-bin<br>
       ./first.pl
       </code></p></div>
 
@@ -344,7 +344,7 @@
       위의 <a href="#writing">CGI 프로그램 작성하기</a>를 참고하라.</p>
     
 
-    <h3><a name="errorlogs" id="errorlogs">오류 로그</a></h3>
+    <h3 id="errorlogs">오류 로그</h3>
       
 
       <p>오류 로그는 당신 편이다. 무언가 잘못되면 오류 로그에
@@ -354,7 +354,7 @@
       대부분의 문제를 빨리 파악하여 해결할 수 있다.</p>
     
 
-    <h3><a name="suexec" id="suexec">Suexec</a></h3>
+    <h3 id="suexec">Suexec</h3>
       
 
       <p><a href="../suexec.html">suexec</a> 지원 프로그램을
@@ -377,9 +377,9 @@
       로그파일 위치를 알아내고 로그파일에서 당신이 어떤 규칙을
       어기고 있는지 찾는다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">뒤에서는 무슨 일이 벌어지는가?</a> <a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
+<h2 id="behindscenes">뒤에서는 무슨 일이 벌어지는가? <a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그래밍에 익숙해질수록 뒤에서 벌어지는 일을 이해하면
@@ -388,7 +388,7 @@
     프로그램을 작성할 수 있지만 이런 프로그램은 별로 쓸모가
     없기때문이다.</p>
 
-    <h3><a name="env" id="env">환경변수</a></h3>
+    <h3 id="env">환경변수</h3>
       
 
       <p>환경변수는 당신이 컴퓨터를 사용하는 동안 당신 주위를
@@ -415,17 +415,17 @@
       추가할 수 있다</a>.</p>
 
       <div class="example"><p><code>
-        #!/usr/bin/perl<br />
-        print "Content-type: text/html\n\n";<br />
-        foreach $key (keys %ENV) {<br />
+        #!/usr/bin/perl<br>
+        print "Content-type: text/html\n\n";<br>
+        foreach $key (keys %ENV) {<br>
         <span class="indent">
-          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
+          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br>
         </span>
         }
       </code></p></div>
     
 
-    <h3><a name="stdin" id="stdin">STDIN과 STDOUT</a></h3>
+    <h3 id="stdin">STDIN과 STDOUT</h3>
       
 
       <p>또, 서버와 클라이언트는 표준입력(<code>STDIN</code>)과
@@ -458,9 +458,9 @@
       한다.  다행히도 이런 자료 처리를 돕고 CGI 프로그램의 다른
       여러 면을 살피는 라이브러리와 모듈들이 있다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">CGI 모듈/라이브러리</a> <a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
+<h2 id="libraries">CGI 모듈/라이브러리 <a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그램을 작성할때 지루한 작업을 대신해주는 코드
@@ -475,9 +475,9 @@
     <p>C로 CGI 프로그램을 작성한다면 선택의 여지가 많다. 이중
     하나가 <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>에
     있는 <code>CGIC</code> 라이브러리다.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">더 많은 정보...</a> <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
+<h2 id="moreinfo">더 많은 정보... <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
     <p>웹에 매우 많은 CGI 정보가 있다. 뉴스그룹 <a href="news:comp.infosystems.www.authoring.cgi">comp.infosystems.www.authoring.cgi</a>에서 여러 사람들과
@@ -502,32 +502,36 @@
   </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/cgi.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

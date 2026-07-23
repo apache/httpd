@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1911948 -->
+<!-- English Revision: 1934161 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -77,7 +77,7 @@ système de fichiers</a></seealso>
 
     <p>Les alias et redirections apparaissant dans différents contextes
     sont traités comme les autres directives en respectant les <a
-    href="../sections.html#mergin">règles de fusion</a> standards. Par
+    href="../sections.html#merging">règles de fusion</a> standards. Par
     contre, ils sont traités selon une chronologie particulière
     lorsqu'ils apparaissent dans le même contexte (par exemple, dans la
     même section <directive type="section"

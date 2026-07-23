@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1828727 -->
+<!-- English Revision: 1932796 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -73,8 +73,9 @@ d'Apache</a></seealso>
 	pas être nul.</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>Octets envoyés, en-têtes inclus ; ne peut
-	pas être nul.</td></tr>
+        <td>Octets envoyés, en-têtes inclus. Peut être égal à zéro dans de rares
+	cas ; par exemple lorsqu'une requête est interrompue avant l'envoi de la
+	réponse.</td></tr>
 
     <tr><td><code>%S</code></td>
         <td>Nombre d'octets transmis en émission et réception y compris

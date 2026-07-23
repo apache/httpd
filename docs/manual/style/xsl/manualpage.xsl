@@ -22,14 +22,14 @@
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+                  xmlns="">
 
 <!-- ==================================================================== -->
 <!-- <manualpage>                                                         -->
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="manualpage">
-<html xml:lang="{$doclang}" lang="{$doclang}">
+<html lang="{$doclang}">
     <xsl:call-template name="head" />&lf;
 
     <body id="manual-page">
@@ -63,8 +63,7 @@
 
                      <!-- The seealso section shows links to related documents
                          explicitly set in .xml docs or simply the comments. -->
-                    <xsl:if test="seealso or not($is-chm or $is-zip or
-                                                $metafile/basename = 'index')">
+                    <xsl:if test="seealso">
                         <h3>
                             <xsl:value-of
                                 select="$message[@id='seealso']" />
@@ -75,11 +74,6 @@
                                 <xsl:apply-templates />
                             </li>
                         </xsl:for-each>
-                        <xsl:if test="not($is-chm or $is-zip or $metafile/basename = 'index')">
-                            <li><a href="#comments_section"><xsl:value-of
-                                        select="$message[@id='comments']" /></a>
-                            </li>
-                        </xsl:if>
                         </ul>
                     </xsl:if>
                 </div>&lf; <!-- /#quickview -->

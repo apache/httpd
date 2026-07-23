@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Microsoft Windows에서 아파치 사용법 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Microsoft Windows에서 아파치 사용법</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Microsoft Windows에서 아파치 사용법</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/platform/windows.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
@@ -53,17 +53,17 @@
     </ul>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">운영체제 요구조건</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#down">Windows용 아파치 다운로드</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inst">Windows용 아파치 설치하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cust">Windows용 아파치 설정하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#winsvc">아파치를 Service로 실행하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#wincons">아파치를 콘솔 프로그램으로 실행하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#test">정상적으로 설치되었는지 검사하기</a></li>
-</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#req">운영체제 요구조건</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#down">Windows용 아파치 다운로드</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#inst">Windows용 아파치 설치하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cust">Windows용 아파치 설정하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#winsvc">아파치를 Service로 실행하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#wincons">아파치를 콘솔 프로그램으로 실행하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#test">정상적으로 설치되었는지 검사하기</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="req" id="req">운영체제 요구조건</a> <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
+<h2 id="req">운영체제 요구조건 <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
     
 
     <p>아파치 2.0을 실행하기위한 기본 Windows 플래폼은 Windows
@@ -82,9 +82,9 @@
     <p>Windows NT 4.0을 사용한다면 서비스팩 4의 TCP/IP 문제와
     Winsock 문제가 다음 서비스팩에서 해결되었기때문에, 서비스팩
     6을 설치하길 적극 권한다.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="down" id="down">Windows용 아파치 다운로드</a> <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
+<h2 id="down">Windows용 아파치 다운로드 <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
     
 
     <p>아파치 웹서버 <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>에서
@@ -98,9 +98,9 @@
     있는 아파치를 저장한 Microsoft 설치파일이다. 따로 소스코드만
     묶어둔 <code>.zip</code> 파일이 있다. Microsoft Visual C++
     (Visual Studio)을 사용하여 직접 아파치를 컴파일할 수도 있다.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="inst" id="inst">Windows용 아파치 설치하기</a> <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
+<h2 id="inst">Windows용 아파치 설치하기 <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
     
 
     <p>설치하려면 Microsoft Installer 1.2 이상 버전이 필요하다.
@@ -179,9 +179,9 @@
     <code>htdocs</code> 하위디렉토리에 있는 문서를 서비스하도록
     설정되있다. 실제로 아파치를 사용하기 전에 설정해야 할 옵션이
     많다. 그러나 빨리 실행해볼 수 있도록 기본 설정파일로도 동작한다.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cust" id="cust">Windows용 아파치 설정하기</a> <a title="Permanent link" href="#cust" class="permalink">&para;</a></h2>
+<h2 id="cust">Windows용 아파치 설정하기 <a title="Permanent link" href="#cust" class="permalink">&para;</a></h2>
     
 
     <p>아파치는 <code>conf</code> 하위디렉토리에 있는 파일로
@@ -269,9 +269,9 @@
       시작시 발생한 오류를 기록하지 않는다.</strong></div></li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="winsvc" id="winsvc">아파치를 Service로 실행하기</a> <a title="Permanent link" href="#winsvc" class="permalink">&para;</a></h2>
+<h2 id="winsvc">아파치를 Service로 실행하기 <a title="Permanent link" href="#winsvc" class="permalink">&para;</a></h2>
     
 
     <p>Windows NT에서는 아파치를 service로 실행할 수 있다. Windows
@@ -428,7 +428,7 @@
     나올 수 있다:</p>
 
     <div class="example"><p><code>
-      Could not start the Apache2 service on \\COMPUTER <br />
+      Could not start the Apache2 service on \\COMPUTER <br>
       Error 1067; The process terminated unexpectedly.
     </code></p></div>
 
@@ -480,9 +480,9 @@
     수 있다. 또, Apache Service Monitor를 사용하여 Windows 9x
     가상 service를 관리할 수 있다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="wincons" id="wincons">아파치를 콘솔 프로그램으로 실행하기</a> <a title="Permanent link" href="#wincons" class="permalink">&para;</a></h2>
+<h2 id="wincons">아파치를 콘솔 프로그램으로 실행하기 <a title="Permanent link" href="#wincons" class="permalink">&para;</a></h2>
     
 
     <p>일반적으로 아파치를 service로 실행하길 권한다. 그러나
@@ -541,8 +541,8 @@
     설치할때 기본값을 사용했다면 다음과 같다:</p>
 
     <div class="example"><p><code>
-      c: <br />
-      cd "\Program Files\Apache Group\Apache2\bin" <br />
+      c: <br>
+      cd "\Program Files\Apache Group\Apache2\bin" <br>
       apache
     </code></p></div>
 
@@ -550,7 +550,7 @@
     그리고 다음과 같이 입력한다:</p>
 
     <div class="example"><p><code>
-      cd ..\logs <br />
+      cd ..\logs <br>
       more &lt; error.log
     </code></p></div>
 
@@ -648,9 +648,9 @@
     <code>httpd.conf</code> 파일에 있는 <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> 지시어를 그 위치로
     수정하라.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">정상적으로 설치되었는지 검사하기</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">정상적으로 설치되었는지 검사하기 <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
     
 
     <p>(콘솔창이나 service를 통해) 아파치를 시작하면 (설정파일의
@@ -687,30 +687,34 @@
   </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/platform/windows.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/windows.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

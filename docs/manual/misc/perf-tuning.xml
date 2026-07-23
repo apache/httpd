@@ -708,7 +708,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       <title>Lingering Close</title>
 
       <p>As discussed in <a
-      href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+      href="https://datatracker.ietf.org/doc/html/draft-ietf-http-connection-00">
       draft-ietf-http-connection-00.txt</a> section 8, in order for
       an HTTP server to <strong>reliably</strong> implement the
       protocol, it needs to shut down each direction of the
@@ -774,7 +774,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       In particular, as HTTP/1.1 pipelined persistent connections
       come into use, <code>lingering_close</code> is an absolute
       necessity (and <a
-      href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       pipelined connections are faster</a>, so you want to support
       them).</p>
 

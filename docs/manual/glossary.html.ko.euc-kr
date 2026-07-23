@@ -1,35 +1,35 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>용어 - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p>
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>용어</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>용어</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -40,14 +40,14 @@
 순서입니다. 용어번역표는 <a href="http://www.whiterabbitpress.com/osp/apache/">여기</a>를
 참고하길 바랍니다.)</span></p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="definitions" id="definitions">정의</a> <a title="Permanent link" href="#definitions" class="permalink">&para;</a></h2>
+<h2 id="definitions">정의 <a title="Permanent link" href="#definitions" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a name="accesscontrol">접근제어 (Access Control)</a></dt>
 <dd>네트웍 영역에 대한 접근을 제한. 아파치에서는 보통 특정
-<em>URL</em>의 접근을 제한하기위해 사용한다.<br /> 참고: <a href="howto/auth.html">인증, 권한부여, 접근제어</a></dd>
+<em>URL</em>의 접근을 제한하기위해 사용한다.<br> 참고: <a href="howto/auth.html">인증, 권한부여, 접근제어</a></dd>
 
 <dt><a name="algorithm">알고리즘 (Algorithm)</a></dt>
 <dd>유한한 단계를 거쳐 문제를 푸는 명확한 공식 혹은 규칙들.
@@ -58,12 +58,12 @@
 <a name="apxs">(apxs)</a></dt> <dd><a href="#module">모듈
 (module)</a> 소스를 동적공유객체 (<a href="#dso">DSO</a>)로
 컴파일하고 아파치 웹서버에 설치하는 작업을 돕는 perl
-스크립트.<br /> 참고: <a href="programs/apxs.html">Manpage:
+스크립트.<br> 참고: <a href="programs/apxs.html">Manpage:
 apxs</a></dd>
 
 <dt><a name="authentication">인증 (Authentication)</a></dt>
 <dd>서버, 클라이언트, 사용자 등 네트웍 실체에 대한
-확인.<br /> 참고: <a href="howto/auth.html">인증, 권한부여,
+확인.<br> 참고: <a href="howto/auth.html">인증, 권한부여,
 접근제어</a></dd>
 
 <dt><a name="certificate">인증서 (Certificate)</a></dt>
@@ -71,7 +71,7 @@ apxs</a></dd>
     인증서에는 소유자 (subject라고 함), 서명 <a href="#certificationauthority">인증기관 (Certificate
     Authority)</a> (issuer라고 함), 소유자의 <a href="#publickey">공개키</a>, CA가 만든 서명 등에 대한
     X.509 정보가 있다. 네트웍 실체는 CA 인증서를 사용하여
-    서명을 검사한다.<br />
+    서명을 검사한다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="certificatsigningrequest">인증 서명 요청 (Certificate
@@ -79,22 +79,22 @@ Signing Request</a>, <a name="csr">CSR)</a></dt> <dd><a href="#certificationauth
 Authority)</a>에 제출하여 CA <em>인증서 (Certificate)</em>의
 <a href="#privatekey">개인키 (Private Key)</a>로 서명될 아직
 서명되지않은 <a href="#certificate">인증서</a>. CSR이 서명되면
-실제 인증서가 된다.<br />
+실제 인증서가 된다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="certificationauthority">인증기관 (Certification
 Authority</a>, <a name="ca">CA)</a></dt> <dd>안전한 방법으로
 네트웍 실체에 대한 인증을 서명하는 신뢰하는 제삼자. 다른 네트웍
 실체들은 서명으로 CA가 인증서 소유자를 인증했는지 확인할 수
-있다.<br />
+있다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="cipher">암호기 (Cipher)</a></dt> <dd>자료를
-암호화하는 알고리즘이나 시스템. 예를 들어, DES, IDEA, RC4 등이 있다.<br />
+암호화하는 알고리즘이나 시스템. 예를 들어, DES, IDEA, RC4 등이 있다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="ciphertext">암호문 (Ciphertext)</a></dt> <dd><a href="#plaintext">평문 (Plaintext)</a>을 <a href="#cipher">암호기
-(Cipher)</a>로 처리한 결과.<br /> 참고: <a href="ssl/">SSL/TLS
+(Cipher)</a>로 처리한 결과.<br> 참고: <a href="ssl/">SSL/TLS
 암호화</a></dd>
 
 <dt><a name="commongatewayinterface">공통 게이트웨이 인터페이스
@@ -102,7 +102,7 @@ Authority</a>, <a name="ca">CA)</a></dt> <dd>안전한 방법으로
 <dd>외부 프로그램이 요청을 서비스할 수 있도록 만든 웹서버와 외부
 프로그램 사이의 인터페이스 표준. 인터페이스는 원래 <a href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a>가
 정의했지만, <a href="http://cgi-spec.golux.com/">RFC
-프로젝트</a>이기도 하다.<br />
+프로젝트</a>이기도 하다.<br>
 참고: <a href="howto/cgi.html">CGI로 동적 페이지 생성</a></dd>
 
 
@@ -112,7 +112,7 @@ Directive)</a></dt>
 
 <dt><a name="configurationfile">설정파일 (Configuration File)</a></dt>
 <dd>아파치를 설정하는 <a href="#directive">지시어 (directive)</a>를
-적어둔 텍스트파일.<br />
+적어둔 텍스트파일.<br>
 참고: <a href="configuring.html">설정파일</a></dd>
 
 <dt><a name="connect">CONNECT</a></dt>
@@ -121,7 +121,7 @@ Directive)</a></dt>
 
 <dt><a name="context">사용장소 (Context)</a></dt> <dd><a href="#configurationfile">설정파일 (configuration file)</a>에서
 특정 <a href="#directive">지시어 (directive)</a>를 사용할 수
-있는 장소.<br /> 참고: <a href="mod/directive-dict.html#Context">아파치 지시어를 설명하는데
+있는 장소.<br> 참고: <a href="mod/directive-dict.html#Context">아파치 지시어를 설명하는데
 사용한 용어정의</a></dd>
 
 <dt><a name="digitalsignature">전자서명 (Digital Signature)</a></dt>
@@ -131,30 +131,30 @@ Directive)</a></dt>
     <em>개인키 (Private Key)</em>로 암호화하여 서명을 만든다.
     오직 CA의 공개키만이 서명을 풀 수 있기때문에, CA가 <em>인증서
     (Certificate)</em>를 가진 네트웍 실체를 인증했음을 증명할
-    수 있다.<br />
+    수 있다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="directive">지시어 (Directive)</a></dt> <dd>아파치의
 여러 기능을 조절하는 설정 명령어. 지시어는 <a href="#configurationfile">설정파일 (Configuration File)</a>에서
-사용한다.<br /> 참고: <a href="mod/directives.html">지시어 목록</a></dd>
+사용한다.<br> 참고: <a href="mod/directives.html">지시어 목록</a></dd>
 
 <dt><a name="dynamicsharedobject">동적공유객체 (Dynamic Shared
 Object)</a> <a name="dso">(DSO)</a></dt> <dd> 아파치 httpd
-실행파일과 별도로 컴파일하여 필요할때 읽어들일 수 있는 <a href="#module">모듈 (Module)</a>.<br />
+실행파일과 별도로 컴파일하여 필요할때 읽어들일 수 있는 <a href="#module">모듈 (Module)</a>.<br>
 참고: <a href="dso.html">동적공유객체 지원</a></dd>
 
 <dt><a name="environmentvariable">환경변수 (Environment Variable)</a>
 <a name="env-variable">(env-variable)</a></dt>
 <dd>정보를 저장하고 프로그램간에 통신을 위해 운영체제 쉘이 관리하는
 변수. 아파치에도 환경변수라는 내부 변수가 있지만, 쉘 환경이
-아니라 아파치 내부에 저장된다.<br />
+아니라 아파치 내부에 저장된다.<br>
 참고: <a href="env.html">아파치의 환경변수</a></dd>
 
 <dt><a name="export-crippled">수출용 (Export-Crippled)</a></dt>
 <dd>미국 수출관리규제(Export Administration Regulations, EAR)를
     준수하기위해 암호(와 보안)의 강도를 낮춤. 수출용 암호화
     소프트웨어는 키 크기가 작게 제한되어, <em>암호문
-    (Ciphertext)</em>을 무식한 방법(brute force)으로 풀 수 있다.<br />
+    (Ciphertext)</em>을 무식한 방법(brute force)으로 풀 수 있다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화 (SSL/TLS Encryption)</a></dd>
 
 <dt><a name="filter">필터 (Filter)</a></dt>
@@ -162,7 +162,7 @@ Object)</a> <a name="dso">(DSO)</a></dt> <dd> 아파치 httpd
 클라이언트가 서버로 보내는 자료를 처리하고, 출력필터는 서버가
 클라이언트에게 보낼 문서를 처리한다. 예를 들어,
 <code>INCLUDES</code> 출력필터는 문서의 <a href="#ssi">Server
-Side Includes</a>를 처리한다.<br />
+Side Includes</a>를 처리한다.<br>
 참고: <a href="filter.html">필터</a></dd>
 
 <dt><a name="fully-qualifieddomain-name">완전한 도메인명
@@ -177,7 +177,7 @@ Side Includes</a>를 처리한다.<br />
 일반적으로 파일은 파일 종류에 따라 암묵적인 핸들러를 가진다.
 보통 모든 파일은 서버가 간단히 서비스하지만, 어떤 파일 종류는
 따로 "처리된다(handled)". 예를 들어, <code>cgi-script</code>
-핸들러는 <a href="#cgi">CGI</a>로 처리할 파일을 지정한다.<br />
+핸들러는 <a href="#cgi">CGI</a>로 처리할 파일을 지정한다.<br>
 참고: <a href="handler.html">아파치에서 핸들러 사용</a></dd>
 
 <dt><a name="header">헤더 (Header)</a></dt>
@@ -189,14 +189,14 @@ Side Includes</a>를 처리한다.<br />
 설정 <a href="#directive">지시어 (directive)</a>를 자신이 위치한
 디렉토리와 모든 하위디렉토리에 적용한다. 이름과 달리 이
 파일에서는 단순한 접근제어 지시어외에 거의 모든 종류의 지시어를
-사용할 수 있다.<br />
+사용할 수 있다.<br>
 참고: <a href="configuring.html">설정파일</a></dd>
 
 <dt><a name="httpd.conf">httpd.conf</a></dt>
 <dd>아파치 주 <a href="#configurationfile">설정파일 (configuration
 file)</a>. 기본적인 위치는
 <code>/usr/local/apache2/conf/httpd.conf</code>이지만, 실행할때
-혹은 컴파일때 설정으로 변경할 수 있다.<br />
+혹은 컴파일때 설정으로 변경할 수 있다.<br>
 참고: <a href="configuring.html">설정파일</a></dd>
 
 <dt><a name="hypertexttransferprotocol">HyperText Transfer
@@ -208,7 +208,7 @@ Protocol</a> <a name="http">(HTTP)</a></dt>
 <dt><a name="https">HTTPS</a></dt>
 <dd>월드화이드웹의 표준 암호통신 방법, HyperText Transfer
     Protocol (Secure). 사실 밑단에 <a href="#ssl">SSL</a>을
-    사용한 HTTP이다.<br />
+    사용한 HTTP이다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="method">메써드 (Method)</a></dt> <dd>클라이언트가
@@ -218,7 +218,7 @@ Protocol</a> <a name="http">(HTTP)</a></dt>
 
 <dt><a name="messagedigest">메시지 요약 (Message Digest)</a></dt>
 <dd>메시지 내용이 전송중 변경되지 않았음을 증명하기위한
-    메시지의 해쉬.<br />
+    메시지의 해쉬.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="mime-type">MIME-type</a></dt> <dd>전송할 문서의
@@ -228,7 +228,7 @@ Protocol</a> <a name="http">(HTTP)</a></dt>
 <code>text/html</code>, <code>image/gif</code>,
 <code>application/octet-stream</code> 등이다. MIME-type은 HTTP의
 <code>Content-Type</code> <a href="#header">헤더 (header)</a>로
-전송한다.<br /> 참고: <a href="mod/mod_mime.html">mod_mime</a></dd>
+전송한다.<br> 참고: <a href="mod/mod_mime.html">mod_mime</a></dd>
 
 <dt><a name="module">모듈 (Module)</a></dt> <dd>프로그램의 독립된
 부분. 많은 아파치 기능은 당신이 포함여부를 선택할 수 있는 모듈에
@@ -238,7 +238,7 @@ Protocol</a> <a name="http">(HTTP)</a></dt>
 한다. 기본적으로 포함하는 모듈을 <em>base 모듈</em>이라고 한다.
 아파치 웹서버 <a href="#tarball">타볼 (tarball)</a>과 같이
 배포되지는 않지만 아파치에는 많은 모듈들이 있다. 이들을
-<em>제삼자가 만든(third-party) 모듈</em>이라고 한다.<br />
+<em>제삼자가 만든(third-party) 모듈</em>이라고 한다.<br>
 참고: <a href="mod/">모듈 목록</a></dd>
 
 <dt><a name="modulemagicnumber">모듈 마법수 (Module Magic Number)</a>
@@ -252,20 +252,20 @@ Protocol</a> <a name="http">(HTTP)</a></dt>
 </dd>
 
 <dt><a name="openssl">OpenSSL</a></dt>
-<dd>SSL/TLS를 위한 오픈소스 도구<br />
+<dd>SSL/TLS를 위한 오픈소스 도구<br>
     참고 <a href="http://www.openssl.org/">http://www.openssl.org/</a></dd>
 
 <dt><a name="passphrase">Pass Phrase</a></dt>
 <dd>개인키 파일을 보호하는 문구. 인증하지않은 사용자가 이 개인키
 파일을 사용하여 암호화하지 못하도록 한다. 보통 <a name="cipher">암호기
-(Ciphers)</a>가 사용하는 비밀스런 암호/해독 키이다.<br /> 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
+(Ciphers)</a>가 사용하는 비밀스런 암호/해독 키이다.<br> 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="plaintext">평문 (Plaintext)</a></dt>
 <dd>암호화하지 않은 글.</dd>
 
 <dt><a name="privatekey">개인키 (Private Key)</a></dt> <dd>받은
 자료를 해독하고 보내는 자료를 서명하기위한 <a href="#publickeycryptography">공개키 암호화 (Public Key
-Cryptography)</a> 시스템의 암호키.<br />
+Cryptography)</a> 시스템의 암호키.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="proxy">프록시 (Proxy)</a></dt> <dd>클라이언트와
@@ -273,19 +273,19 @@ Cryptography)</a> 시스템의 암호키.<br />
 받아 실제 서버로 보내고, 실제 서버에게서 받은 응답을 다시
 클라이언트에게 보낸다. 여러 클라이언트가 같은 내용을 요청하면
 프록시는 매번 서버에 요청하지않고 캐쉬에 저장된 내용을 사용하여
-응답시간을 줄일 수 있다.<br />
+응답시간을 줄일 수 있다.<br>
 참고: <a href="mod/mod_proxy.html">mod_proxy</a></dd>
 
 <dt><a name="publickey">공개키 (Public Key)</a></dt> <dd><a href="#publickeycryptography">공개키 암호화 (Public Key
 Cryptography)</a> 시스템에서 키의 소유자에게 보내는 문구를 암호화하거나
-소유자가 만든 서명을 풀기위한 공개된 키.<br />
+소유자가 만든 서명을 풀기위한 공개된 키.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="publickeycryptography">공개키 암호화 (Public Key
 Cryptography)</a></dt>
 <dd>암호와 해독에 서로 다른 키를 사용하는 비대칭(asymmetric)
 암호화 시스템의 연구 및 활용. 암호와 해독에 사용하는 두개의 키는
-키쌍(key pair)을 이룬다. 비대칭 암호화라고도 부른다.<br />
+키쌍(key pair)을 이룬다. 비대칭 암호화라고도 부른다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="regularexpresion">정규표현식 (Regular Expression)</a> <a name="regex">(Regex)</a></dt> <dd>글의 패턴을 기술하는 방식.
@@ -304,11 +304,11 @@ Cryptography)</a></dt>
 <dt><a name="securesocketslayer">Secure Sockets Layer</a> <a name="ssl">(SSL)</a></dt> <dd>Netscape Communications사가 TCP/IP
 네트웍의 일반적인 통신 인증과 암호화를 위해 만든 프로토콜.
 가장 일반적인 용도는 <em>HTTPS</em> (HyperText Transfer Protocol
-(HTTP) over SSL)이다.<br />
+(HTTP) over SSL)이다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="serversideincludes">Server Side Includes</a> <a name="ssi">(SSI)</a></dt> <dd>HTML 파일 안에 처리지시어를 포함하는
-기술.<br /> 참고: <a href="howto/ssi.html">Server Side Includes 소개</a></dd>
+기술.<br> 참고: <a href="howto/ssi.html">Server Side Includes 소개</a></dd>
 
 <dt><a name="session">세션 (Session)</a></dt>
 <dd>일반적으로 통신의 상황(context) 정보.</dd>
@@ -319,7 +319,7 @@ Cryptography)</a></dt>
 <dt><a name="symmetriccryptophraphy">대칭적 암호법 (Symmetric
 Cryptography)</a></dt>
 <dd>암호와 해독 작업에 같은 암호키를 사용하는 <em>암호기
-    (Ciphers)</em>의 연구 및 활용.<br />
+    (Ciphers)</em>의 연구 및 활용.<br>
 참고: <a href="ssl/">SSL/TLS Encryption</a></dd>
 
 <dt><a name="tarball">타볼 (Tarball)</a></dt>
@@ -330,7 +330,7 @@ tar 파일을 압축하거나 pkzip으로 압축하여 배포된다.</dd>
 <dd>인터넷기술 관련 국제표준화기구(Internet Engineering Task
 Force, IETF)가 TCP/IP 네트웍의 일반적인 통신 인증과 암호화를
 위해 만든 SSL의 후속 프로토콜. TLS 버전 1은 SSL 버전 3과 거의
-유사하다.<br />
+유사하다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="uniformresourcelocator">Uniform Resource Locator</a>
@@ -352,45 +352,49 @@ Identifier</a>라고 하는 것의 일상적인 비공식 명칭이다. 보통 URL은
 <dd>아파치 하나로 여러 웹사이트를 서비스하기. <em>IP 가상호스트</em>는
 웹사이트마다 IP 주소가 다르다. <em>이름기반(name-based)
 가상호스트</em>는 호스트명만을 사용하므로 한 IP 주소에서 여러
-사이트를 서비스할 수 있다.<br />
+사이트를 서비스할 수 있다.<br>
 참고: <a href="vhosts/">아파치 가상호스트 문서</a></dd>
 
 <dt><a name="x.509">X.509</a></dt>
 <dd>국제전기통신연합(International Telecommunication Union,
-ITU-T)이 권장하는 인증서 양식. SSL/TLS 인증에서 사용한다.<br />
+ITU-T)이 권장하는 인증서 양식. SSL/TLS 인증에서 사용한다.<br>
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

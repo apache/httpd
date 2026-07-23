@@ -1,0 +1,189 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Filtros - Servidor HTTP Apache Vers&atilde;o 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
+</script>
+
+<link href="./images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="./">Vers&atilde;o 2.5</a></div><div id="page-content"><div id="preamble"><h1>Filtros</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./en/filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/filter.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/filter.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/filter.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/filter.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p>Este documento descreve o uso de filtros no Apache.</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#intro">Filtrando no Apache 2</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#smart">Filtragem Inteligente</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#service">Expondo Filtros como um Servi&ccedil;o HTTP</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#using">Usando Filtros</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="intro">Filtrando no Apache 2 <a title="Link permanente" href="#intro" class="permalink">&para;</a></h2>
+    
+    <table class="related"><tr><th>M&oacute;dulos Relacionados</th><th>Diretrizes Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li><li><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></li><li><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></li><li><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></li><li><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></li><li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code></li><li><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></li><li><code class="module"><a href="./mod/mod_sed.html">mod_sed</a></code></li><li><code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code></li><li><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></li><li><code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code></li><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_reflector.html#reflectorheader">ReflectorHeader</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+
+<p>A Cadeia de Filtros est&aacute; dispon&iacute;vel no Apache 2.0 e vers&otilde;es posteriores,
+e permite que as aplica&ccedil;&otilde;es processem dados de entrada e sa&iacute;da
+de maneira altamente flex&iacute;vel e configur&aacute;vel, independentemente
+de onde os dados v&ecirc;m. Podemos pr&eacute;-processar dados de entrada
+e p&oacute;s-processar dados de sa&iacute;da, conforme necess&aacute;rio. Isso &eacute; basicamente
+independente das fases tradicionais de processamento de requisi&ccedil;&otilde;es.</p>
+<p class="figure">
+<img src="images/filter_arch.pt-br.png" width="593" height="392" alt="Filtros podem ser encadeados, em um Eixo de Dados ortogonal ao Processamento de Requisi&ccedil;&atilde;o">
+</p>
+<p>Alguns exemplos de filtragem na distribui&ccedil;&atilde;o padr&atilde;o do Apache s&atilde;o:</p>
+<ul>
+<li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>, implementa inclus&otilde;es do lado do servidor.</li>
+<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>, implementa criptografia SSL (https).</li>
+<li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code>, implementa compress&atilde;o/descompress&atilde;o em tempo real.</li>
+<li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>, transcodifica entre diferentes conjuntos de caracteres.</li>
+<li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>, executa um programa externo como filtro.</li>
+</ul>
+<p>O Apache tamb&eacute;m usa v&aacute;rios filtros internamente para executar
+fun&ccedil;&otilde;es como fragmenta&ccedil;&atilde;o e manipula&ccedil;&atilde;o de intervalos de bytes.</p>
+
+<p>Uma gama mais ampla de aplica&ccedil;&otilde;es &eacute; implementada por m&oacute;dulos de
+filtro de terceiros. Alguns exemplos s&atilde;o:</p>
+
+<ul>
+<li>Processamento e reescrita de HTML e XML</li>
+<li>Transforma&ccedil;&otilde;es XSLT e XIncludes</li>
+<li>Suporte para namespace XML</li>
+<li>Processamento de envio de arquivos e decodifica&ccedil;&atilde;o de formul&aacute;rios HTML</li>
+<li>Processamento de imagem</li>
+<li>Prote&ccedil;&atilde;o de aplica&ccedil;&otilde;es vulner&aacute;veis, como scripts PHP</li>
+<li>Edi&ccedil;&atilde;o de busca e substitui&ccedil;&atilde;o de texto</li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="smart">Filtragem Inteligente <a title="Link permanente" href="#smart" class="permalink">&para;</a></h2>
+
+<p class="figure">
+<img src="images/mod_filter_new.pt-br.png" width="423" height="331" alt="A filtragem inteligente aplica diferentes fornecedores de filtros de acordo com o estado do processamento da solicita&ccedil;&atilde;o">
+</p>
+<p>O m&oacute;dulo <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, inclu&iacute;do no Apache 2.1 e vers&otilde;es posteriores,
+permite que a cadeia de filtros seja configurada dinamicamente no momento da execu&ccedil;&atilde;o.
+Assim, por exemplo, voc&ecirc; pode configurar um proxy para reescrever
+HTML com um filtro HTML e imagens JPEG com um filtro completamente
+separado, mesmo que o proxy n&atilde;o tenha nenhuma informa&ccedil;&atilde;o pr&eacute;via
+sobre o que o servidor de origem enviar&aacute;. Isso funciona usando um
+envolt&oacute;rio de filtros que direciona a requisi&ccedil;&atilde;o para diferentes provedores de acordo com
+o conte&uacute;do real no momento da execu&ccedil;&atilde;o. Qualquer filtro pode ser
+inserido diretamente na cadeia e executado incondicionalmente ou
+usado como um provedor e inserido dinamicamente. Por exemplo,</p>
+<ul>
+<li>um filtro de processamento HTML s&oacute; ser&aacute; executado se o conte&uacute;do for
+text/html ou application/xhtml+xml</li>
+<li>um filtro de compress&atilde;o s&oacute; ser&aacute; executado se a entrada for de um tipo
+compress&iacute;vel e n&atilde;o estiver j&aacute; comprimida.</li>
+<li>um filtro de convers&atilde;o de conjunto de caracteres ser&aacute; inserido se um documento
+de texto ainda n&atilde;o estiver no conjunto de caracteres desejado.</li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="service">Expondo Filtros como um Servi&ccedil;o HTTP <a title="Link permanente" href="#service" class="permalink">&para;</a></h2>
+
+
+<p>Os filtros podem ser usados ​​para processar conte&uacute;do originado do cliente, al&eacute;m
+de processar conte&uacute;do originado no servidor usando o m&oacute;dulo
+<code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code>.</p>
+
+<p>O m&oacute;dulo <code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code> aceita requisi&ccedil;&otilde;es POST de clientes e reflete
+o conte&uacute;do do corpo da requisi&ccedil;&atilde;o POST recebido de volta na resposta,
+passando pela pilha de filtros de sa&iacute;da no caminho de volta para o cliente.</p>
+
+<p>Essa t&eacute;cnica pode ser usada como uma alternativa a um servi&ccedil;o web executado dentro
+de uma pilha de servidor de aplicativos, onde um filtro de sa&iacute;da fornece a transforma&ccedil;&atilde;o
+necess&aacute;ria no corpo da requisi&ccedil;&atilde;o. Por exemplo, o m&oacute;dulo <code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code>
+pode ser usado para fornecer um servi&ccedil;o de compress&atilde;o geral, ou um filtro de
+transforma&ccedil;&atilde;o de imagem pode ser transformado em um servi&ccedil;o de transforma&ccedil;&atilde;o de imagem.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="using">Usando Filtros <a title="Link permanente" href="#using" class="permalink">&para;</a></h2>
+
+<p>Existem dois m&eacute;todos de uso de filtros: Simples e Din&acirc;mico.
+Em geral, deve ser usada apenas um ou outro; mistur&aacute;-los pode
+ter consequ&ecirc;ncias inesperadas (embora a filtragem de entrada simples
+possa ser misturada livremente com a filtragem de sa&iacute;da simples ou din&acirc;mica).</p>
+<p>O M&eacute;todo Simples &eacute; a &uacute;nica maneira de configurar filtros de entrada e &eacute;
+suficiente para filtros de sa&iacute;da onde &eacute; necess&aacute;ria uma cadeia de filtros est&aacute;tica.
+As diretivas relevantes s&atilde;o
+    <code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code>,
+    <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
+    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code> e
+    <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>.</p>
+
+<p>O M&eacute;todo Din&acirc;mico permite a configura&ccedil;&atilde;o est&aacute;tica e flex&iacute;vel/din&acirc;mica
+dos filtros de sa&iacute;da, conforme discutido na p&aacute;gina <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>.
+As diretivas relevantes s&atilde;o
+    <code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code>,
+    <code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code> e
+    <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
+
+<p>Uma diretiva adicional, <code class="directive"><a href="./mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> tamb&eacute;m &eacute; suportada,
+porem obsoleta. Um a configura&ccedil;&atilde;o din&acirc;mica em seu lugar.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./en/filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/filter.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/filter.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/filter.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/filter.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

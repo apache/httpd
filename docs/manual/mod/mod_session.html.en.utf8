@@ -1,38 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_session - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_session</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_session.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_session.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Session support</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>session_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_session.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>session_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_session.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -65,34 +65,34 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#whatisasession">What is a session?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#whocanuseasession">Who can use a session?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serversession">Keeping sessions on the server</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#browsersession">Keeping sessions on the browser</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basicexamples">Basic Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionprivacy">Session Privacy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cookieprivacy">Cookie Privacy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authentication">Session Support for Authentication</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#integration">Integrating Sessions with External Applications</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#whatisasession">What is a session?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#whocanuseasession">Who can use a session?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serversession">Keeping sessions on the server</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#browsersession">Keeping sessions on the browser</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basicexamples">Basic Examples</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessionprivacy">Session Privacy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cookieprivacy">Cookie Privacy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authentication">Session Support for Authentication</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#integration">Integrating Sessions with External Applications</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#session">Session</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionenv">SessionEnv</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionexclude">SessionExclude</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionheader">SessionHeader</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioninclude">SessionInclude</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessionmaxage">SessionMaxAge</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#session">Session</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessionenv">SessionEnv</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessionexclude">SessionExclude</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessionexpiryupdateinterval">SessionExpiryUpdateInterval</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessionheader">SessionHeader</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessioninclude">SessionInclude</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sessionmaxage">SessionMaxAge</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatisasession" id="whatisasession">What is a session?</a> <a title="Permanent link" href="#whatisasession" class="permalink">&para;</a></h2>
+<h2 id="whatisasession">What is a session? <a title="Permanent link" href="#whatisasession" class="permalink">&para;</a></h2>
       <p>At the core of the session interface is a table of key and value pairs
       that are made accessible across browser requests. These pairs can be set
       to any valid string, as needed by the application making use of the
@@ -106,9 +106,9 @@
       being written to the storage mechanism, as defined by the
       administrator.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whocanuseasession" id="whocanuseasession">Who can use a session?</a> <a title="Permanent link" href="#whocanuseasession" class="permalink">&para;</a></h2>
+<h2 id="whocanuseasession">Who can use a session? <a title="Permanent link" href="#whocanuseasession" class="permalink">&para;</a></h2>
       <p>The session interface is primarily developed for the use by other
       server modules, such as <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, however CGI
       based applications can optionally be granted access to the contents
@@ -116,9 +116,9 @@
       have the option to be modified and/or updated by inserting an HTTP
       response header containing the new session parameters.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serversession" id="serversession">Keeping sessions on the server</a> <a title="Permanent link" href="#serversession" class="permalink">&para;</a></h2>
+<h2 id="serversession">Keeping sessions on the server <a title="Permanent link" href="#serversession" class="permalink">&para;</a></h2>
       <p>Apache can be configured to keep track of per user sessions stored
       on a particular server or group of servers. This functionality is
       similar to the sessions available in typical application servers.</p>
@@ -136,9 +136,9 @@
       <p>The <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> module allows the storage of user
       sessions within a SQL database via <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="browsersession" id="browsersession">Keeping sessions on the browser</a> <a title="Permanent link" href="#browsersession" class="permalink">&para;</a></h2>
+<h2 id="browsersession">Keeping sessions on the browser <a title="Permanent link" href="#browsersession" class="permalink">&para;</a></h2>
       <p>In high traffic environments where keeping track of a session on a
       server is too resource intensive or inconvenient, the option exists to store
       the contents of the session within a cookie on the client browser instead.</p>
@@ -155,9 +155,9 @@
       <p>The <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code> allows the storage of user
       sessions on the browser within an HTTP cookie.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basicexamples" id="basicexamples">Basic Examples</a> <a title="Permanent link" href="#basicexamples" class="permalink">&para;</a></h2>
+<h2 id="basicexamples">Basic Examples <a title="Permanent link" href="#basicexamples" class="permalink">&para;</a></h2>
 
       <p>Creating a session is as simple as turning the session on, and deciding
       where the session will be stored. In this example, the session will be
@@ -202,14 +202,14 @@ SessionHeader X-Replace-Session</pre>
       <p>Once read, the CGI variable <code>HTTP_SESSION</code> should contain
       the value <code>key1=foo&amp;key3=bar</code>.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="sessionprivacy" id="sessionprivacy">Session Privacy</a> <a title="Permanent link" href="#sessionprivacy" class="permalink">&para;</a></h2>
+<h2 id="sessionprivacy">Session Privacy <a title="Permanent link" href="#sessionprivacy" class="permalink">&para;</a></h2>
 
       <p>Using the "show cookies" feature of your browser, you would have seen
       a clear text representation of the session. This could potentially be a
       problem should the end user need to be kept unaware of the contents of
-      the session, or where a third party could gain unauthorised access to the
+      the session, or where a third party could gain unauthorized access to the
       data within the session.</p>
 
       <p>The contents of the session can be optionally encrypted before being
@@ -230,9 +230,9 @@ SessionCookieName session path=/</pre>
       information is being shared between webservers in a server farm using
       the <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> module.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cookieprivacy" id="cookieprivacy">Cookie Privacy</a> <a title="Permanent link" href="#cookieprivacy" class="permalink">&para;</a></h2>
+<h2 id="cookieprivacy">Cookie Privacy <a title="Permanent link" href="#cookieprivacy" class="permalink">&para;</a></h2>
 
       <p>The HTTP cookie mechanism also offers privacy features, such as the
       ability to restrict cookie transport to SSL protected pages only, or
@@ -264,9 +264,9 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;</pre
       backend server.
       </p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authentication" id="authentication">Session Support for Authentication</a> <a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
+<h2 id="authentication">Session Support for Authentication <a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
 
       <p>As is possible within many application servers, authentication modules can use
       a session for storing the username and password after login. The
@@ -286,9 +286,9 @@ AuthName "realm"
       <p>See the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> module for documentation and complete
       examples.</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="integration" id="integration">Integrating Sessions with External Applications</a> <a title="Permanent link" href="#integration" class="permalink">&para;</a></h2>
+<h2 id="integration">Integrating Sessions with External Applications <a title="Permanent link" href="#integration" class="permalink">&para;</a></h2>
 
       <p>In order for sessions to be useful, it must be possible to share the contents
       of a session with external applications, and it must be possible for an
@@ -346,8 +346,8 @@ AuthName "realm"
       </dl>
 
     </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Session" id="Session">Session</a> <a name="session" id="session">Directive</a> <a title="Permanent link" href="#session" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="session"><span id="Session">Session</span> Directive <a title="Permanent link" href="#session" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a session for the current directory or location</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Session On|Off</code></td></tr>
@@ -362,8 +362,8 @@ AuthName "realm"
     session will be stored and how privacy is maintained.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a name="sessionenv" id="sessionenv">Directive</a> <a title="Permanent link" href="#sessionenv" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sessionenv"><span id="SessionEnv">SessionEnv</span> Directive <a title="Permanent link" href="#sessionenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
@@ -386,8 +386,8 @@ AuthName "realm"
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a name="sessionexclude" id="sessionexclude">Directive</a> <a title="Permanent link" href="#sessionexclude" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sessionexclude"><span id="SessionExclude">SessionExclude</span> Directive <a title="Permanent link" href="#sessionexclude" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is ignored</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionExclude <var>path</var></code></td></tr>
@@ -413,8 +413,8 @@ AuthName "realm"
     configured separately.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExpiryUpdateInterval" id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</a> <a name="sessionexpiryupdateinterval" id="sessionexpiryupdateinterval">Directive</a> <a title="Permanent link" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sessionexpiryupdateinterval"><span id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</span> Directive <a title="Permanent link" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define the number of seconds a session's expiry may change without
 the session being updated</td></tr>
@@ -448,8 +448,8 @@ the session being updated</td></tr>
     minimal effect on expiry resolution.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a name="sessionheader" id="sessionheader">Directive</a> <a title="Permanent link" href="#sessionheader" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sessionheader"><span id="SessionHeader">SessionHeader</span> Directive <a title="Permanent link" href="#sessionheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Import session updates from a given HTTP response header</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionHeader <var>header</var></code></td></tr>
@@ -474,8 +474,8 @@ the session being updated</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a name="sessioninclude" id="sessioninclude">Directive</a> <a title="Permanent link" href="#sessioninclude" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sessioninclude"><span id="SessionInclude">SessionInclude</span> Directive <a title="Permanent link" href="#sessioninclude" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define URL prefixes for which a session is valid</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionInclude <var>path</var></code></td></tr>
@@ -498,8 +498,8 @@ the session being updated</td></tr>
     configured separately.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a name="sessionmaxage" id="sessionmaxage">Directive</a> <a title="Permanent link" href="#sessionmaxage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sessionmaxage"><span id="SessionMaxAge">SessionMaxAge</span> Directive <a title="Permanent link" href="#sessionmaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a maximum age in seconds for a session</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionMaxAge <var>maxage</var></code></td></tr>
@@ -523,29 +523,33 @@ the session being updated</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_session.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_session.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_session.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

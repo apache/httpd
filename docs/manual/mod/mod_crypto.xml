@@ -203,7 +203,7 @@
 
 <directivesynopsis>
 <name>CryptoIV</name>
-<description>IV (Initialisation Vector) to be used by the crypto filter</description>
+<description>IV (Initialization Vector) to be used by the crypto filter</description>
 <syntax>CryptoIV value</syntax>
 <default>CryptoIV none</default>
 <contextlist><context>server config</context>
@@ -213,7 +213,7 @@
 </contextlist>
 
 <usage>
-    <p>The <directive>CryptoIV</directive> directive allows the IV (initialisation
+    <p>The <directive>CryptoIV</directive> directive allows the IV (initialization
     vector) to be specified for the particular URL space. The IV can be read from
     a file, or can be set based on the <a href="../expr.html">expression parser</a>,
     allowing for flexible scenarios for the setting of keys.</p>

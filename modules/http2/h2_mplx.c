@@ -126,12 +126,24 @@ int h2_mplx_c1_stream_is_running(h2_mplx *m, h2_stream *stream)
     return rv;
 }
 
+static int add_for_purge(h2_mplx *m, h2_stream *stream)
+{
+    int i;
+    for (i = 0; i < m->spurge->nelts; ++i) {
+        h2_stream *s = APR_ARRAY_IDX(m->spurge, i, h2_stream*);
+        if (s == stream)  /* already scheduled for purging */
+            return FALSE;
+    }
+    APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+    return TRUE;
+}
+
 static void c1c2_stream_joined(h2_mplx *m, h2_stream *stream)
 {
     ap_assert(!stream_is_running(stream));
     
     h2_ihash_remove(m->shold, stream->id);
-    APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+    add_for_purge(m, stream);
 }
 
 static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
@@ -164,7 +176,7 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                           H2_STRM_MSG(stream, "cleanup, c2 is done, move to spurge"));
             /* processing has finished */
-            APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+            add_for_purge(m, stream);
         }
         else {
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
@@ -178,9 +190,10 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
     }
     else {
         /* never started */
-        ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
-                      H2_STRM_MSG(stream, "cleanup, never started, move to spurge"));
-        APR_ARRAY_PUSH(m->spurge, h2_stream *) = stream;
+        int added = add_for_purge(m, stream);
+        if (added)
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
+                          H2_STRM_MSG(stream, "cleanup, never started, move to spurge"));
     }
 }
 
@@ -867,9 +880,6 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
     memset(&conn_ctx->pipe_in, 0, sizeof(conn_ctx->pipe_in));
     if (stream->input) {
         conn_ctx->beam_in = stream->input;
-        h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
-        h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
-        h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
 #if H2_USE_PIPES
         action = "create input write pipe";
         rv = apr_file_pipe_create_pools(&conn_ctx->pipe_in[H2_PIPE_OUT],
@@ -878,6 +888,9 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
                                         c2->pool, c2->pool);
         if (APR_SUCCESS != rv) goto cleanup;
 #endif
+        h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
+        h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
+        h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
         h2_beam_on_eagain(stream->input, c2_beam_input_read_eagain, c2);
         if (!h2_beam_empty(stream->input))
             c2_beam_input_write_notify(c2, stream->input);
@@ -1086,8 +1099,9 @@ static void s_mplx_be_happy(h2_mplx *m, conn_rec *c, h2_conn_ctx_t *conn_ctx)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
-                          H2_MPLX_MSG(m, "mood update, increasing worker limit to %d"),
-                          m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, increasing worker limit"
+                          "to %d, processing %d right now"),
+                          m->processing_limit, m->processing_count);
         }
     }
 }
@@ -1116,8 +1130,9 @@ static void m_be_annoyed(h2_mplx *m)
             m->last_mood_change = now;
             m->irritations_since = 0;
             ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, m->c1,
-                          H2_MPLX_MSG(m, "mood update, decreasing worker limit to %d"),
-                          m->processing_limit);
+                          H2_MPLX_MSG(m, "mood update, decreasing worker limit "
+                          "to %d, processing %d right now"),
+                          m->processing_limit, m->processing_count);
         }
     }
 }
@@ -1141,6 +1156,7 @@ static int reset_is_acceptable(h2_stream *stream)
      * The responses to such requests continue forever otherwise.
      *
      */
+    if (stream->rst_error) return 0; /* errored stream. bad. */
     if (!stream_is_running(stream)) return 1;
     if (!(stream->id & 0x01)) return 1; /* stream initiated by us. acceptable. */
     if (!stream->response) return 0; /* no response headers produced yet. bad. */

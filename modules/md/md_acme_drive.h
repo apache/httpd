@@ -16,6 +16,8 @@
 #ifndef md_acme_drive_h
 #define md_acme_drive_h
 
+#define MD_ACME_DEF_URL         "https://acme-v02.api.letsencrypt.org/directory"
+
 struct apr_array_header_t;
 struct md_acme_order_t;
 struct md_credentials_t;

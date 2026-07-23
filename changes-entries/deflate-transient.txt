@@ -1,0 +1,2 @@
+  *) mod_deflate: Reduce CPU/RAM consumption in output filters
+     by using transient buckets.  [Joe Orton]

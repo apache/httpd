@@ -15,6 +15,8 @@ class MDConf(HttpdConf):
             self.add_admin(admin)
         self.add([
             "MDRetryDelay 1s",  # speed up testing a little
+            "MDRenewViaARI off", # not on, logs unwanted errors when test
+                                 # acme server is not responding
         ])
         if local_ca:
             self.add([
@@ -44,7 +46,7 @@ class MDConf(HttpdConf):
                 "    ProxyRequests On",
                 "    ProxyVia On",
                 "    # be totally open",
-                "    AllowCONNECT 0-56535",
+                "    AllowCONNECT 0-65535",
                 "    <Proxy *>",
                 "       # No require or other restrictions, this is just a test server",
                 "    </Proxy>",

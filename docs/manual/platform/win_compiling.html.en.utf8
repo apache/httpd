@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Compiling Apache for Microsoft Windows - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>Compiling Apache httpd for Microsoft Windows - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Compiling Apache for Microsoft Windows</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Compiling Apache httpd for Microsoft Windows</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/win_compiling.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
@@ -39,15 +39,15 @@
     has considerable functional limitations.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#vstudio">Building httpd with the included Visual Studio project files</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cmake">Building httpd with cmake</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#vstudio">Building httpd with the included Visual Studio project files</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cmake">Building httpd with cmake</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vstudio" id="vstudio">Building httpd with the included Visual Studio project files</a> <a title="Permanent link" href="#vstudio" class="permalink">&para;</a></h2>
+<h2 id="vstudio">Building httpd with the included Visual Studio project files <a title="Permanent link" href="#vstudio" class="permalink">&para;</a></h2>
   
 
-  <h3><a name="requirements" id="requirements">Requirements</a></h3>
+  <h3 id="requirements">Requirements</h3>
 
     
 
@@ -117,7 +117,7 @@
         should adjust the default environment appropriately.</p>
 
         <div class="example"><p><code>
-          "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32"<br />
+          "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32"<br>
           "c:\Program Files\Platform SDK\setenv.bat"
         </code></p></div>
       </li>
@@ -172,7 +172,7 @@
         version 1.2.3.</p>
 
         <div class="example"><p><code>
-          nmake -f win32\Makefile.msc<br />
+          nmake -f win32\Makefile.msc<br>
           nmake -f win32\Makefile.msc test
         </code></p></div>
       </li>
@@ -203,8 +203,8 @@
 
         <div class="example"><p><code>
           perl Configure no-rc5 no-idea enable-mdc2 enable-zlib VC-WIN32
-               -Ipath/to/srclib/zlib -Lpath/to/srclib/zlib<br />
-          ms\do_masm.bat<br />
+               -Ipath/to/srclib/zlib -Lpath/to/srclib/zlib<br>
+          ms\do_masm.bat<br>
           nmake -f ms\ntdll.mak
         </code></p></div>
 
@@ -258,7 +258,7 @@
 
   
 
-  <h3><a name="unixsrcbuild" id="unixsrcbuild">Building from Unix sources</a></h3>
+  <h3 id="unixsrcbuild">Building from Unix sources</h3>
 
     
 
@@ -288,7 +288,7 @@
 
   
 
-  <h3><a name="commandbuild" id="commandbuild">Command-Line Build</a></h3>
+  <h3 id="commandbuild">Command-Line Build</h3>
 
     
 
@@ -297,7 +297,7 @@
     to build the <code>release</code> or <code>debug</code> flavor:</p>
 
     <div class="example"><p><code>
-      nmake /f Makefile.win _apacher<br /><br />
+      nmake /f Makefile.win _apacher<br><br>
       nmake /f Makefile.win _apached
     </code></p></div>
 
@@ -313,7 +313,7 @@
 
   
 
-  <h3><a name="workspacebuild" id="workspacebuild">Developer Studio Workspace IDE Build</a></h3>
+  <h3 id="workspacebuild">Developer Studio Workspace IDE Build</h3>
 
     
 
@@ -369,7 +369,7 @@
 
   
 
-  <h3><a name="exportingmakfiles" id="exportingmakfiles">Exporting command-line .mak files</a></h3>
+  <h3 id="exportingmakfiles">Exporting command-line .mak files</h3>
 
     
 
@@ -413,7 +413,7 @@
 
   
 
-  <h3><a name="installation" id="installation">Installation</a></h3>
+  <h3 id="installation">Installation</h3>
 
     
 
@@ -426,7 +426,7 @@
     <code>nmake</code> commands:</p>
 
     <div class="example"><p><code>
-      nmake /f Makefile.win installr INSTDIR=<em>dir</em><br />
+      nmake /f Makefile.win installr INSTDIR=<em>dir</em><br>
       nmake /f Makefile.win installd INSTDIR=<em>dir</em>
     </code></p></div>
 
@@ -437,7 +437,7 @@
 
   
 
-  <h3><a name="projectcomponents-warn" id="projectcomponents-warn">Warning about building Apache from the development tree</a></h3>
+  <h3 id="projectcomponents-warn">Warning about building Apache from the development tree</h3>
 
     
 
@@ -450,9 +450,9 @@
     Developer Studio environment.</div>
 
   
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cmake" id="cmake">Building httpd with cmake</a> <a title="Permanent link" href="#cmake" class="permalink">&para;</a></h2>
+<h2 id="cmake">Building httpd with cmake <a title="Permanent link" href="#cmake" class="permalink">&para;</a></h2>
   
 
   <p>The primary documentation for this build mechanism is in the
@@ -479,30 +479,34 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/platform/win_compiling.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/win_compiling.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/win_compiling.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

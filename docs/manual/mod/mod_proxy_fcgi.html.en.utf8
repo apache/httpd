@@ -1,51 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_proxy_fcgi - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy_fcgi</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_fcgi.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_fcgi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_fcgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>FastCGI support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_fcgi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_fcgi.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>proxy_fcgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_proxy_fcgi.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the
-    <a href="http://www.fastcgi.com/">FastCGI</a> protocol.</p>
+    <a href="https://fastcgi-archives.github.io/">FastCGI</a> protocol.</p>
 
     <p>Thus, in order to get the ability of handling the <code>FastCGI</code>
     protocol, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> have to be present in the server.</p>
 
-    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
-    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> has no provision for starting the
     application process; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> is provided
     (on some platforms) for that purpose. Alternatively, external launching
@@ -60,22 +59,22 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#env">Environment Variables</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#env">Environment Variables</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyfcgibackendtype">ProxyFCGIBackendType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyfcgisetenvif">ProxyFCGISetEnvIf</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyfcgibackendtype">ProxyFCGIBackendType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyfcgisetenvif">ProxyFCGISetEnvIf</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_fcgi">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_fcgi">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="module"><a href="../mod/mod_authnz_fcgi.html">mod_authnz_fcgi</a></code></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <p>Remember, in order to make the following examples work, you have to
     enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
@@ -95,7 +94,7 @@
     <div class="note"><h3>Enable connection reuse to a FCGI backend like PHP-FPM</h3>
     <p>Please keep in mind that PHP-FPM (at the time of writing, February 2018)
     uses a prefork model, namely each of its worker processes can handle one
-    connection at the time.<br /> 
+    connection at the time.<br> 
     By default mod_proxy (configured with <code>enablereuse=on</code>)
     allows a connection pool of
     <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> connections to the
@@ -169,7 +168,7 @@
        allows the normal mapping of URI to filename to occur in the server, and the
        local filesystem result is passed to the backend.  When FastCGI is
        configured this way, the server can calculate the most accurate
-       PATH_INFO.
+       <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a>.
       </p>
     <div class="example"><h3>Proxy via Handler</h3><pre class="prettyprint lang-config">&lt;FilesMatch "\.php$"&gt;
     # Note: The only part that varies is /path/to/app.sock
@@ -191,11 +190,11 @@
     SetHandler  "proxy:balancer://myappcluster/"
 &lt;/FilesMatch&gt;</pre>
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Environment Variables</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">Environment Variables <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
     <p>In addition to the configuration directives that control the
-    behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
+    behavior of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
     <dfn>environment variables</dfn> that control the FCGI protocol
     provider:</p>
     <dl>
@@ -229,8 +228,8 @@
         </dd>
     </dl>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFCGIBackendType" id="ProxyFCGIBackendType">ProxyFCGIBackendType</a> <a name="proxyfcgibackendtype" id="proxyfcgibackendtype">Directive</a> <a title="Permanent link" href="#proxyfcgibackendtype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyfcgibackendtype"><span id="ProxyFCGIBackendType">ProxyFCGIBackendType</span> Directive <a title="Permanent link" href="#proxyfcgibackendtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the type of backend FastCGI application</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyFCGIBackendType FPM|GENERIC</code></td></tr>
@@ -258,8 +257,8 @@ breaking the ability of PHP-FPM to detect and interoperate with Apache in some
 scenarios.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFCGISetEnvIf" id="ProxyFCGISetEnvIf">ProxyFCGISetEnvIf</a> <a name="proxyfcgisetenvif" id="proxyfcgisetenvif">Directive</a> <a title="Permanent link" href="#proxyfcgisetenvif" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyfcgisetenvif"><span id="ProxyFCGISetEnvIf">ProxyFCGISetEnvIf</span> Directive <a title="Permanent link" href="#proxyfcgisetenvif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow variables sent to FastCGI servers to be fixed up</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyFCGISetEnvIf <var>conditional-expression</var>
@@ -305,7 +304,7 @@ the condition expressions and value expressions.</p>
 <dd>Specifies the replacement value for the preceding environment variable.
    Backreferences, such as "$1", can be included from regular expression
    captures in <var>conditional-expression</var>. If omitted, the variable is
-   set (or overridden) to an empty string — but see the Note below.</dd>
+   set (or overridden) to an empty string &mdash; but see the Note below.</dd>
 </dl>
 
 <div class="example"><pre class="prettyprint lang-config"># A basic, unconditional override
@@ -333,8 +332,7 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TR
 
 
   The CGI/1.1 specification
-  <a href="https://tools.ietf.org/html/rfc3875#section-4.1">does not
-  distinguish</a> between a variable with an empty value and a variable that
+  does not distinguish (<a href="https://www.rfc-editor.org/rfc/rfc3875#section-4.1">RFC 3875</a>) between a variable with an empty value and a variable that
   does not exist. However, many CGI and FastCGI implementations distinguish (or
   allow scripts to distinguish) between the two. The choice of which to use is
   dependent upon your implementation and your reason for modifying the variable.
@@ -345,29 +343,33 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TR
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_fcgi.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_fcgi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_fcgi.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_proxy_fcgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

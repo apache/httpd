@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1221670:1887636 (outdated) -->
+<!-- English Revision: 1887636 $ -->
+<!-- Updated by Daniel Ferradal -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!-- Reviewed by Sergio Ramos-->
 <!--
@@ -95,10 +96,8 @@
 		    pueden seleccionar usando directivas de configuración al
 		    iniciar el servidor.</p>
 
-		    <p>Una mayor amplitud de aplicaciones son implementadas con módulos de 
-		    filtros de terceros que estan disponibles en <a
-		    href="http://modules.apache.org/">modules.apache.org</a> y en otros lados.
-		    algunos de ellos son:</p>
+		    <p>Una mayor amplitud de aplicaciones se implementan con módulos de 
+		    filtro de terceros. Algunos de ellos son:</p>
 
 		    <ul>
 			<li>Procesamiento y reescritura de HTML y XML.</li>

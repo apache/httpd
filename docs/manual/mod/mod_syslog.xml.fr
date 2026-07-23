@@ -32,23 +32,23 @@
 
 <summary>
 
-    <p>Ce module impl&eacute;mente le fournisseur de journalisation "syslog".
+    <p>Ce module implémente le fournisseur de journalisation "syslog".
     Il permet de journaliser les messages d'erreur via syslogd(8).</p>
 </summary>
 
 <section id="examples">
     <title>Exemples</title>
 
-    <p>Si le syst&egrave;me le supporte, l'utilisation du param&egrave;tre
+    <p>Si le système le supporte, l'utilisation du paramètre
     <code>syslog</code> avec la directive ErrorLog (voir la
-    documentation du module <module>core</module>) &agrave; la place d'un nom
+    documentation du module <module>core</module>) à la place d'un nom
     de fichier permet de journaliser les messages d'erreur via
-    syslogd(8). Par d&eacute;faut, c'est le port syslog <code>local7</code> qui
-    est utilis&eacute;, mais vous pouvez le modifier via la syntaxe
-    <code>syslog:<var>port</var></code> o&ugrave; <var>port</var> pourra
-    correspondre &agrave; un des noms habituellement d&eacute;finis dans la
-    documentation de syslog(1). La d&eacute;finition de ce port est r&eacute;ellement
-    globale, et m&ecirc;me si elle est modifi&eacute;e au niveau d'un serveur
+    syslogd(8). Par défaut, c'est le port syslog <code>local7</code> qui
+    est utilisé, mais vous pouvez le modifier via la syntaxe
+    <code>syslog:<var>port</var></code> où <var>port</var> pourra
+    correspondre à un des noms habituellement définis dans la
+    documentation de syslog(1). La définition de ce port est réellement
+    globale, et même si elle est modifiée au niveau d'un serveur
     virtuel, elle affecte l'ensemble du serveur.</p>
     
     <highlight language="config">ErrorLog syslog:user</highlight>

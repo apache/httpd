@@ -197,7 +197,7 @@
 <!-- Portuguese                                                           -->
 <!-- ==================================================================== -->
 <property value=".xml.pt-br" name="inputext.pt-br"/>
-<property value=".html.pt-br" name="outputext.pt-br"/>
+<property value=".html.pt-br.utf8" name="outputext.pt-br"/>
 
 <target description="- builds Portuguese HTML files" name="pt-br">
     <html.generic lang="pt-br"/>

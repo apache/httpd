@@ -32,7 +32,7 @@
 #include "h2_util.h"
 
 /* h2_log2(n) iff n is a power of 2 */
-unsigned char h2_log2(int n)
+unsigned char h2_log2(unsigned int n)
 {
     int lz = 0;
     if (!n) {
@@ -1650,7 +1650,7 @@ static int contains_name(const literal *lits, size_t llen, nghttp2_nv *nv)
     for (i = 0; i < llen; ++i) {
         lit = &lits[i];
         if (lit->len == nv->namelen
-            && !ap_cstr_casecmp(lit->name, (const char *)nv->name)) {
+            && !ap_cstr_casecmpn(lit->name, (const char *)nv->name, nv->namelen)) {
             return 1;
         }
     }
@@ -1677,7 +1677,7 @@ int h2_ignore_req_trailer(const char *name, size_t len)
     nghttp2_nv nv;
 
     nv.name = (uint8_t*)name;
-    nv.namelen = strlen(name);
+    nv.namelen = len;
     return (h2_req_ignore_header(&nv)
             || contains_name(H2_LIT_ARGS(IgnoredRequestTrailers), &nv));
 }
@@ -1687,7 +1687,7 @@ int h2_ignore_resp_trailer(const char *name, size_t len)
     nghttp2_nv nv;
 
     nv.name = (uint8_t*)name;
-    nv.namelen = strlen(name);
+    nv.namelen = len;
     return (contains_name(H2_LIT_ARGS(IgnoredResponseHeaders), &nv)
             || contains_name(H2_LIT_ARGS(IgnoredResponseTrailers), &nv));
 }
@@ -1705,9 +1705,11 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
         return APR_SUCCESS;
     }
     else if (nv->namelen == sizeof("cookie")-1
-             && !ap_cstr_casecmp("cookie", (const char *)nv->name)) {
+             && !ap_cstr_casecmpn("cookie", (const char *)nv->name, nv->namelen)) {
         existing = apr_table_get(headers, "cookie");
         if (existing) {
+            if (!nv->valuelen)
+                return APR_SUCCESS;
             /* Cookie header come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
@@ -1719,11 +1721,13 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
             apr_table_setn(headers, "Cookie",
                            apr_psprintf(pool, "%s; %.*s", existing,
                                         (int)nv->valuelen, nv->value));
+            /* Treat the merge as an "add" to not escape LimitRequestFields */
+            *pwas_added = 1;
             return APR_SUCCESS;
         }
     }
     else if (nv->namelen == sizeof("host")-1
-             && !ap_cstr_casecmp("host", (const char *)nv->name)) {
+             && !ap_cstr_casecmpn("host", (const char *)nv->name, nv->namelen)) {
         if (apr_table_get(headers, "Host")) {
             return APR_SUCCESS; /* ignore duplicate */
         }
@@ -1805,9 +1809,11 @@ int h2_util_frame_print(const nghttp2_frame *frame, char *buffer, size_t maxlen)
         }
         case NGHTTP2_RST_STREAM: {
             return apr_snprintf(buffer, maxlen,
-                                "RST_STREAM[length=%d, flags=%d, stream=%d]",
+                                "RST_STREAM[length=%d, flags=%d, stream=%d"
+                                ",error=%d]",
                                 (int)frame->hd.length,
-                                frame->hd.flags, frame->hd.stream_id);
+                                frame->hd.flags, frame->hd.stream_id,
+                                frame->rst_stream.error_code);
         }
         case NGHTTP2_SETTINGS: {
             if (frame->hd.flags & NGHTTP2_FLAG_ACK) {

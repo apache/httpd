@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>VirtualHost Examples - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>VirtualHost Examples</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>VirtualHost Examples</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/vhosts/examples.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -48,33 +48,33 @@
     distributions.</p>
     </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Running several name-based web
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#purename">Running several name-based web
     sites on a single IP address.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#twoips">Name-based hosts on more than one
+<li><img alt="" src="../images/down.gif"> <a href="#twoips">Name-based hosts on more than one
     IP address.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Serving the same content on
+<li><img alt="" src="../images/down.gif"> <a href="#intraextra">Serving the same content on
     different IP addresses (such as an internal and external
     address).</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#port">Running different sites on different
+<li><img alt="" src="../images/down.gif"> <a href="#port">Running different sites on different
     ports.</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP-based virtual hosting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Mixed port-based and ip-based virtual
+<li><img alt="" src="../images/down.gif"> <a href="#ip">IP-based virtual hosting</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ipport">Mixed port-based and ip-based virtual
   hosts</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mixed">Mixed name-based and IP-based
+<li><img alt="" src="../images/down.gif"> <a href="#mixed">Mixed name-based and IP-based
     vhosts</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Using <code>Virtual_host</code> and
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">Using <code>Virtual_host</code> and
     mod_proxy together</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#default">Using <code>_default_</code>
+<li><img alt="" src="../images/down.gif"> <a href="#default">Using <code>_default_</code>
     vhosts</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#migrate">Migrating a name-based vhost to an
+<li><img alt="" src="../images/down.gif"> <a href="#migrate">Migrating a name-based vhost to an
     IP-based vhost</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverpath">Using the <code>ServerPath</code>
+<li><img alt="" src="../images/down.gif"> <a href="#serverpath">Using the <code>ServerPath</code>
   directive</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">Running several name-based web
-    sites on a single IP address.</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
+<h2 id="purename">Running several name-based web
+    sites on a single IP address. <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
 
     <p>Your server has multiple hostnames that resolve to a single address,
     and you want to respond differently for <code>www.example.com</code>
@@ -137,10 +137,10 @@ Listen 80
            would work without changes whenever your IP address
            changes.</p>
     </div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">Name-based hosts on more than one
-    IP address.</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
+<h2 id="twoips">Name-based hosts on more than one
+    IP address. <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
 
     <div class="note">
       <h3>Note</h3>
@@ -178,11 +178,11 @@ DocumentRoot "/www/mainserver"
     unknown hostname, or no <code>Host:</code> header, will be served from
     <code>www.example.com</code>.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">Serving the same content on
+<h2 id="intraextra">Serving the same content on
     different IP addresses (such as an internal and external
-    address).</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
+    address). <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>The server machine has two IP addresses (<code>192.168.1.1</code>
     and <code>172.20.30.40</code>). The machine is sitting between an
@@ -216,10 +216,10 @@ DocumentRoot "/www/mainserver"
           respond the same on all addresses.</p>
     </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="port" id="port">Running different sites on different
-    ports.</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
+<h2 id="port">Running different sites on different
+    ports. <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
     <p>You have multiple domains going to the same IP and also want to
     serve multiple ports.  The example below illustrates that the name-matching
@@ -250,9 +250,9 @@ Listen 8080
 &lt;/VirtualHost&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP-based virtual hosting</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2 id="ip">IP-based virtual hosting <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>The server has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
@@ -277,10 +277,10 @@ Listen 8080
     <code>localhost</code>, for example) will go to the main server, if
     there is one.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">Mixed port-based and ip-based virtual
-  hosts</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2 id="ipport">Mixed port-based and ip-based virtual
+  hosts <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>The server machine has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
@@ -314,10 +314,10 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">Mixed name-based and IP-based
-    vhosts</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2 id="mixed">Mixed name-based and IP-based
+    vhosts <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>Any address mentioned in the argument to a virtualhost that never
     appears in another virtual host is a strictly IP-based virtual host.</p>
@@ -350,10 +350,10 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Using <code>Virtual_host</code> and
-    mod_proxy together</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Using <code>Virtual_host</code> and
+    mod_proxy together <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>The following example allows a front-end machine to proxy a
     virtual host through to a server running on another machine. In the
@@ -371,13 +371,13 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="default" id="default">Using <code>_default_</code>
-    vhosts</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
+<h2 id="default">Using <code>_default_</code>
+    vhosts <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
 
-    <h3><a name="defaultallports" id="defaultallports"><code>_default_</code> vhosts
-    for all ports</a></h3>
+    <h3 id="defaultallports"><code>_default_</code> vhosts
+    for all ports</h3>
 
     <p>Catching <em>every</em> request to any unspecified IP address and
     port, <em>i.e.</em>, an address/port combination that is not used for
@@ -402,8 +402,8 @@ Listen 172.20.30.50:8080
     request to a single information page (or script).</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports"><code>_default_</code> vhosts
-    for different ports</a></h3>
+    <h3 id="defaultdifferentports"><code>_default_</code> vhosts
+    for different ports</h3>
 
     <p>Same as setup 1, but the server listens on several ports and we want
     to use a second <code>_default_</code> vhost for port 80.</p>
@@ -425,8 +425,8 @@ Listen 172.20.30.50:8080
     request.</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport"><code>_default_</code> vhosts
-    for one port</a></h3>
+    <h3 id="defaultoneport"><code>_default_</code> vhosts
+    for one port</h3>
 
     <p>We want to have a default vhost for port 80, but no other default
     vhosts.</p>
@@ -446,10 +446,10 @@ Listen 172.20.30.50:8080
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">Migrating a name-based vhost to an
-    IP-based vhost</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
+<h2 id="migrate">Migrating a name-based vhost to an
+    IP-based vhost <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>The name-based vhost with the hostname
     <code>www.example.org</code> (from our <a href="#name">name-based</a> example, setup 2) should get its own IP
@@ -484,10 +484,10 @@ DocumentRoot "/www/example1"
     IP-based vhost) and through the old address (as a name-based
     vhost).</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath">Using the <code>ServerPath</code>
-  directive</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<h2 id="serverpath">Using the <code>ServerPath</code>
+  directive <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>We have a server with two name-based vhosts. In order to match the
     correct virtual host a client must send the correct <code>Host:</code>
@@ -528,7 +528,7 @@ DocumentRoot "/www/example1"
     <p>Due to the <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>
     directive a request to the URL
     <code>http://www.sub1.domain.tld/sub1/</code> is <em>always</em> served
-    from the sub1-vhost.<br /> A request to the URL
+    from the sub1-vhost.<br> A request to the URL
     <code>http://www.sub1.domain.tld/</code> is only
     served from the sub1-vhost if the client sent a correct
     <code>Host:</code> header. If no <code>Host:</code> header is sent the
@@ -546,32 +546,36 @@ DocumentRoot "/www/example1"
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/vhosts/examples.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/vhosts/examples.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -66,7 +66,7 @@ content-type</description>
     href="../handler.html">handler</a> or a <glossary
     ref="mime-type">MIME content type</glossary>. It sends the URL and
     file path of the requested document using the standard CGI
-    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    <glossary ref="pathinfo">PATH_INFO</glossary> and <code>PATH_TRANSLATED</code>
     environment variables. The handler used for the particular request
     is passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
@@ -79,7 +79,7 @@ Action image/gif /cgi-bin/images.cgi
 
     <p>In this example, requests for files with a MIME content
     type of <code>image/gif</code> will be handled by the
-    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+    specified CGI script <code>/cgi-bin/images.cgi</code>.</p>
 
     <example>
         <title>Example: File extension</title>
@@ -90,7 +90,7 @@ Action my-file-type /cgi-bin/program.cgi
     </highlight>
     </example>
     <p>In this example, requests for files with a file extension of
-    <code>.xyz</code> are handled by the specified cgi script
+    <code>.xyz</code> are handled by the specified CGI script
     <code>/cgi-bin/program.cgi</code>.</p>
 
     <p>The optional <code>virtual</code> modifier turns off the check

@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Novell NetWare에서 아파치 사용하기 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Novell NetWare에서 아파치 사용하기</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Novell NetWare에서 아파치 사용하기</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/platform/netware.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/netware.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/netware.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/netware.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
@@ -50,16 +50,16 @@
     컴파일하기</a> 절을 참고하라.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">요구조건</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#down">NetWare용 아파치 다운받기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inst">NetWare용 아파치 설치하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#run">NetWare용 아파치 실행하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#use">NetWare용 아파치 설정하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#comp">Netware용 아파치 컴파일하기</a></li>
-</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#req">요구조건</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#down">NetWare용 아파치 다운받기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#inst">NetWare용 아파치 설치하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#run">NetWare용 아파치 실행하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#use">NetWare용 아파치 설정하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#comp">Netware용 아파치 컴파일하기</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="req" id="req">요구조건</a> <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
+<h2 id="req">요구조건 <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
 
     
 
@@ -77,9 +77,9 @@
     NetWare용 아파치 2.0은 이 환경을 고려하지 않았고 테스트하지
     않았다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="down" id="down">NetWare용 아파치 다운받기</a> <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
+<h2 id="down">NetWare용 아파치 다운받기 <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
 
     
 
@@ -89,9 +89,9 @@
     있다. NetWare용 아파치 2.0의 최신 바이너리 배포본은 <a href="http://www.apache.org/dist/httpd/binaries/netware">여기</a>에서
     다운받을 수 있다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="inst" id="inst">NetWare용 아파치 설치하기</a> <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
+<h2 id="inst">NetWare용 아파치 설치하기 <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
 
     
 
@@ -182,9 +182,9 @@
     복사하면 아파치가 설치된다 (아래 <a href="#comp">NetWare용
     아파치 컴파일하기</a> 참고).</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="run" id="run">NetWare용 아파치 실행하기</a> <a title="Permanent link" href="#run" class="permalink">&para;</a></h2>
+<h2 id="run">NetWare용 아파치 실행하기 <a title="Permanent link" href="#run" class="permalink">&para;</a></h2>
 
     
 
@@ -303,9 +303,9 @@
     -p와 주소영역 이름을 추가한다. 더 많은 정보를 보려면 명령행에
     "apache2 Help"를 입력한다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="use" id="use">NetWare용 아파치 설정하기</a> <a title="Permanent link" href="#use" class="permalink">&para;</a></h2>
+<h2 id="use">NetWare용 아파치 설정하기 <a title="Permanent link" href="#use" class="permalink">&para;</a></h2>
 
     
 
@@ -381,7 +381,7 @@
       </li>
     </ul>
 
-    <h3><a name="use-add" id="use-add">이외의 NetWare 전용 지시어들:</a></h3>
+    <h3 id="use-add">이외의 NetWare 전용 지시어들:</h3>
 
       
 
@@ -406,9 +406,9 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="comp" id="comp">Netware용 아파치 컴파일하기</a> <a title="Permanent link" href="#comp" class="permalink">&para;</a></h2>
+<h2 id="comp">Netware용 아파치 컴파일하기 <a title="Permanent link" href="#comp" class="permalink">&para;</a></h2>
 
     
 
@@ -425,7 +425,7 @@
     실행할때 <code>install</code> 키워드를 사용하면 완전한 배포본을
     만든다.</p>
 
-    <h3><a name="comp-req" id="comp-req">요구사항:</a></h3>
+    <h3 id="comp-req">요구사항:</h3>
 
       
 
@@ -455,7 +455,7 @@
 
     
 
-    <h3><a name="comp-make" id="comp-make">NetWare makefile을 사용하여 아파치 컴파일하기:</a></h3>
+    <h3 id="comp-make">NetWare makefile을 사용하여 아파치 컴파일하기:</h3>
 
       
 
@@ -525,8 +525,8 @@
         <code>DFTABLES.nlm</code> 파일을 NetWare 서버의
         <code>SYS:</code> 볼륨으로 복사하고 다음과 같이 실행한다:
           <div class="example"><p><code>
-            SYS:\genchars &gt; sys:\test_char.h<br />
-            SYS:\dftables &gt; sys:\chartables.c<br />
+            SYS:\genchars &gt; sys:\test_char.h<br>
+            SYS:\dftables &gt; sys:\chartables.c<br>
           </code></p></div>
         </li>
 
@@ -545,7 +545,7 @@
 
     
 
-    <h3><a name="comp-add" id="comp-add">추가 make 옵션</a></h3>
+    <h3 id="comp-add">추가 make 옵션</h3>
 
       
 
@@ -580,30 +580,34 @@
   </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/platform/netware.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/netware.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/netware.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/netware.html" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/platform/netware.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

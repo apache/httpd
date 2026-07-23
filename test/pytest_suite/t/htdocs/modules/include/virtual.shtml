@@ -1,0 +1,7 @@
+<!--#include virtual="/modules/include/header.shtml?mod_include test" -->
+
+Hello World
+
+<p align=right>[<a href="../index.html">back</a>]</p>
+
+<!--#include virtual="/modules/include/footer.shtml" -->

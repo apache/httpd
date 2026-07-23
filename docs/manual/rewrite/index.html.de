@@ -1,0 +1,129 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="de"><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache mod_rewrite - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="../"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="../de/rewrite/" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">Diese &Uuml;bersetzung ist m&ouml;glicherweise
+            nicht mehr aktuell. Bitte pr&uuml;fen Sie die englische Version auf
+            die neuesten &Auml;nderungen.</div>
+
+
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> bietet eine M&ouml;glichkeit, eingehende
+    URL-Anfragen dynamisch zu modifizieren, basierend auf Regeln mit
+    <a href="intro.html#regex">regul&auml;ren Ausdr&uuml;cken</a>. Dies erm&ouml;glicht
+    es Ihnen, beliebige URLs auf Ihre interne URL-Struktur in jeder
+    gew&uuml;nschten Weise abzubilden.</p>
+
+      <p>Es unterst&uuml;tzt eine unbegrenzte Anzahl von Regeln und eine
+      unbegrenzte Anzahl angeh&auml;ngter Regelbedingungen f&uuml;r jede Regel,
+      um einen wirklich flexiblen und leistungsf&auml;higen Mechanismus zur
+      URL-Manipulation bereitzustellen. Die URL-Manipulationen k&ouml;nnen
+      von verschiedenen Tests abh&auml;ngen: Servervariablen, Umgebungsvariablen,
+      HTTP-Header, Zeitstempel, externe Datenbankabfragen und verschiedene
+      andere externe Programme oder Handler k&ouml;nnen verwendet werden, um
+      eine granulare URL-Zuordnung zu erreichen.</p>
+
+      <p>Umschreibungsregeln k&ouml;nnen auf vollst&auml;ndige URLs angewendet werden,
+      einschlie&szlig;lich des Pfadinfo- und Query-String-Teils, und k&ouml;nnen im
+      Server-Kontext (<code>httpd.conf</code>), im VirtualHost-Kontext
+      (<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Bl&ouml;cke)
+      oder im Verzeichniskontext (<code>.htaccess</code>-Dateien und
+      <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Bl&ouml;cke)
+      verwendet werden. Das umgeschriebene Ergebnis kann zu weiteren Regeln,
+      interner Unterverarbeitung, externer Anfrage-Umleitung oder
+      Proxy-Weiterleitung f&uuml;hren, abh&auml;ngig davon, welche
+      <a href="flags.html">Flags</a> Sie an die Regeln anh&auml;ngen.</p>
+
+      <p>Da <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> so leistungsf&auml;hig ist, kann es
+      tats&auml;chlich recht komplex sein. Dieses Dokument erg&auml;nzt die
+      <a href="../mod/mod_rewrite.html">Referenzdokumentation</a> und
+      versucht, einen Teil dieser Komplexit&auml;t zu mildern und hochgradig
+      kommentierte Beispiele f&uuml;r g&auml;ngige Szenarien bereitzustellen, die Sie
+      mit <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> bew&auml;ltigen k&ouml;nnen. Wir versuchen aber
+      auch zu zeigen, wann Sie <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> nicht verwenden
+      sollten, und stattdessen andere Standard-Apache-Funktionen nutzen
+      sollten, um diese unn&ouml;tige Komplexit&auml;t zu vermeiden.</p>
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite-Referenzdokumentation</a></li>
+<li><a href="intro.html">Einf&uuml;hrung in regul&auml;re Ausdr&uuml;cke und mod_rewrite</a></li>
+<li><a href="flags.html">RewriteRule-Flags</a></li>
+<li><a href="rewritemap.html">Verwendung von RewriteMap</a></li>
+<li><a href="avoid.html">Wann man mod_rewrite <strong>NICHT</strong> verwenden sollte</a></li>
+<li><a href="remapping.html">Verwendung von mod_rewrite zur Umleitung und Neuzuordnung von URLs</a></li>
+<li><a href="access.html">Verwendung von mod_rewrite zur Zugriffskontrolle</a></li>
+<li><a href="vhosts.html">Dynamische virtuelle Hosts mit mod_rewrite</a></li>
+<li><a href="proxy.html">Dynamisches Proxying mit mod_rewrite</a></li>
+<li><a href="advanced.html">Fortgeschrittene Techniken</a></li>
+<li><a href="tech.html">Technische Details</a></li>
+</ul>
+</div>
+<div id="quickview"><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite-Referenzdokumentation</a></li><li><a href="../urlmapping.html">URLs dem Dateisystem zuordnen</a></li><li><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite-Wiki</a></li><li><a href="../glossary.html">Glossar</a></li></ul></div>
+</div>
+<div class="bottomlang">
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="../de/rewrite/" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

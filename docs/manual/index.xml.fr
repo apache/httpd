@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1880986 -->
+<!-- English Revision: 1933438 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,7 +32,7 @@
     <page href="new_features_2_6.html">Nouvelles fonctionnalités d'Apache 2.5/2.6</page>
     <page href="new_features_2_4.html">Nouvelles fonctionnalités d'Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nouvelles fonctionnalités d'Apache 2.1/2.2</page>
-    <page href="new_features_2_0.html.fr">Nouvelles fonctionnalités d'Apache 2.0</page>
+    <page href="new_features_2_0.html">Nouvelles fonctionnalités d'Apache 2.0</page>
     <page href="upgrading.html">Mise à jour de la version 2.2 vers la version 2.4</page>
     <page href="license.html">Licence Apache</page>
 </category>
@@ -94,13 +94,13 @@
 </category>
 
 <category id="other"><title>Autres sujets</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">Foire Aux Questions</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Foire Aux Questions</page>
     <page href="sitemap.html">Plan du site</page>
     <page href="developer/">Documentation du développeur</page>
     <page href="http://httpd.apache.org/docs-project/">Aide pour la
     documentation</page>
     <page href="misc/">Autres notes</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

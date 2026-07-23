@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1755335 -->
+<!-- English Revision: 1934245 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2016071301 $ -->
-
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -88,19 +86,19 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
     contrôler le fournisseur de protocole SCGI :</p>
     <dl>
         <dt>proxy-scgi-pathinfo</dt>
-        <dd>Par défaut, <module>mod_proxy_scgi</module> ne créera ni
-	exportera jamais la variable d'environnement
-	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arrière-plan
-	de déterminer correctement <var>SCRIPT_NAME</var> et
-	<var>Script-URI</var>, et d'être en conformité avec la section
-	3.3 de la RFC 3875. Si au contraire vous souhaitez que
-	<module>mod_proxy_scgi</module> génère une estimation la plus
-	précise possible de <var>PATH_INFO</var>, définissez cette
-	variable d'environnement. La variable doit être définie avant
-	que la directive <directive module="mod_env">SetEnv</directive> ne soit
-	effective. Il est possible d'utiliser à la place la directive
-	<directive module="mod_setenvif">SetEnvIf</directive> : <code>SetEnvIf
-	Request_URI . proxy-scgi-pathinfo</code>
+	<dd>Par défaut, <module>mod_proxy_scgi</module> ne créera ni exportera
+	jamais la variable d'environnement <var><glossary
+	ref="pathinfo">PATH_INFO</glossary></var>. Cela permet au serveur SCGI
+	d'arrière-plan de déterminer correctement <var>SCRIPT_NAME</var> et
+	<var>Script-URI</var>, et d'être en conformité avec la section 3.3 de la
+	RFC 3875. Si au contraire vous souhaitez que
+	<module>mod_proxy_scgi</module> génère une estimation la plus précise
+	possible de <var>PATH_INFO</var>, définissez cette variable
+	d'environnement. La variable doit être définie avant que la directive
+	<directive module="mod_env">SetEnv</directive> ne soit effective. Il est
+	possible d'utiliser à la place la directive <directive
+	module="mod_setenvif">SetEnvIf</directive> : <code>SetEnvIf Request_URI
+	. proxy-scgi-pathinfo</code>
 	</dd>
     </dl>
 </section>

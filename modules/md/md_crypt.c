@@ -206,7 +206,7 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
 
 /* Get the apr time (micro seconds, since 1970) from an ASN1 time, as stored in X509
  * certificates. OpenSSL now has a utility function, but other *SSL derivatives have
- * not caughts up yet or chose to ignore. An alternative is implemented, we prefer 
+ * not caught up yet or chose to ignore. An alternative is implemented, we prefer
  * however the *SSL to maintain such things.
  */
 static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
@@ -219,6 +219,10 @@ static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
     apr_time_t ts;
     const char* str = (const char*) time->data;
     apr_size_t i = 0;
+
+    if ((time->length < 12) || (
+        (time->type == V_ASN1_GENERALIZEDTIME) && time->length < 16))
+      return 0;
 
     memset(&t, 0, sizeof(t));
 
@@ -338,7 +342,7 @@ int md_pkeys_spec_contains_ec(md_pkeys_spec_t *pks, const char *curve)
     for (i = 0; i < pks->specs->nelts; ++i) {
         spec = APR_ARRAY_IDX(pks->specs, i, md_pkey_spec_t*);
         if (MD_PKEY_TYPE_EC == spec->type 
-            && !apr_strnatcasecmp(curve, spec->params.ec.curve)) return 1;   
+            && !apr_cstr_casecmp(curve, spec->params.ec.curve)) return 1;   
     }
     return 0;
 }
@@ -351,6 +355,24 @@ void md_pkeys_spec_add_ec(md_pkeys_spec_t *pks, const char *curve)
     spec->type = MD_PKEY_TYPE_EC;
     spec->params.ec.curve = apr_pstrdup(pks->p, curve);
     md_pkeys_spec_add(pks, spec);
+}
+
+const char *md_pkey_spec_to_str(const md_pkey_spec_t *spec, apr_pool_t *p)
+{
+    switch (spec->type) {
+        case MD_PKEY_TYPE_DEFAULT:
+            return "default";
+        case MD_PKEY_TYPE_RSA:
+            if (spec->params.rsa.bits >= MD_PKEY_RSA_BITS_MIN)
+                return apr_psprintf(p, "rsa-%d", spec->params.rsa.bits);
+            return "rsa";
+        case MD_PKEY_TYPE_EC:
+            if (spec->params.ec.curve)
+                return apr_psprintf(p, "ec-%s", spec->params.ec.curve);
+            return "ec";
+        default:
+            return "unsupported";
+    }
 }
 
 md_json_t *md_pkey_spec_to_json(const md_pkey_spec_t *spec, apr_pool_t *p)
@@ -410,10 +432,10 @@ md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p)
     
     if (spec) {
         s = md_json_gets(json, MD_KEY_TYPE, NULL);
-        if (!s || !apr_strnatcasecmp("Default", s)) {
+        if (!s || !apr_cstr_casecmp("Default", s)) {
             spec->type = MD_PKEY_TYPE_DEFAULT;
         }
-        else if (!apr_strnatcasecmp("RSA", s)) {
+        else if (!apr_cstr_casecmp("RSA", s)) {
             spec->type = MD_PKEY_TYPE_RSA;
             l = md_json_getl(json, MD_KEY_BITS, NULL);
             if (l >= MD_PKEY_RSA_BITS_MIN) {
@@ -423,7 +445,7 @@ md_pkey_spec_t *md_pkey_spec_from_json(struct md_json_t *json, apr_pool_t *p)
                 spec->params.rsa.bits = MD_PKEY_RSA_BITS_DEF;
             }
         }
-        else if (!apr_strnatcasecmp("EC", s)) {
+        else if (!apr_cstr_casecmp("EC", s)) {
             spec->type = MD_PKEY_TYPE_EC;
             s = md_json_gets(json, MD_KEY_CURVE, NULL);
             if (s) {
@@ -460,7 +482,7 @@ md_pkeys_spec_t *md_pkeys_spec_from_json(struct md_json_t *json, apr_pool_t *p)
     return pks;
 }
 
-static int pkey_spec_eq(md_pkey_spec_t *s1, md_pkey_spec_t *s2)
+int md_pkey_spec_eq(const md_pkey_spec_t *s1, const md_pkey_spec_t *s2)
 {
     if (s1 == s2) {
         return 1;
@@ -496,8 +518,8 @@ int md_pkeys_spec_eq(md_pkeys_spec_t *pks1, md_pkeys_spec_t *pks2)
     }
     if (pks1 && pks2 && pks1->specs->nelts == pks2->specs->nelts) {
         for(i = 0; i < pks1->specs->nelts; ++i) {
-            if (!pkey_spec_eq(APR_ARRAY_IDX(pks1->specs, i, md_pkey_spec_t *),
-                              APR_ARRAY_IDX(pks2->specs, i, md_pkey_spec_t *))) {
+            if (!md_pkey_spec_eq(APR_ARRAY_IDX(pks1->specs, i, md_pkey_spec_t *),
+                                 APR_ARRAY_IDX(pks2->specs, i, md_pkey_spec_t *))) {
                 return 0;
             }
         }
@@ -843,26 +865,26 @@ static apr_status_t gen_ec(md_pkey_t **ppkey, apr_pool_t *p, const char *curve)
     curve_nid = EC_curve_nist2nid(curve);
     /* In case this fails, try some names from other standards, like SECG */
 #ifdef NID_secp384r1
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("secp384r1", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("secp384r1", curve)) {
         curve_nid = NID_secp384r1;
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime256v1
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("secp256r1", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("secp256r1", curve)) {
         curve_nid = NID_X9_62_prime256v1;
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #ifdef NID_X9_62_prime192v1
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("secp192r1", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("secp192r1", curve)) {
         curve_nid = NID_X9_62_prime192v1;
         curve = EC_curve_nid2nist(curve_nid);
     }
 #endif
 #if defined(NID_X25519) && (!defined(LIBRESSL_VERSION_NUMBER) || \
                             LIBRESSL_VERSION_NUMBER >= 0x3070000fL)
-    if (NID_undef == curve_nid && !apr_strnatcasecmp("X25519", curve)) {
+    if (NID_undef == curve_nid && !apr_cstr_casecmp("X25519", curve)) {
         curve_nid = NID_X25519;
         curve = EC_curve_nid2nist(curve_nid);
     }
@@ -1222,7 +1244,7 @@ const char *md_cert_get_serial_number(const md_cert_t *cert, apr_pool_t *p)
         serial = BN_bn2hex(bn);
         s = apr_pstrdup(p, serial);
         OPENSSL_free((void*)serial);
-        OPENSSL_free((void*)bn);
+        BN_free(bn);
     }
     return s;
 }
@@ -1302,7 +1324,7 @@ int md_cert_covers_md(md_cert_t *cert, const md_t *md)
 const char *md_cert_get_issuer_name(const md_cert_t *cert, apr_pool_t *p)
 {
     X509_NAME *xname = X509_get_issuer_name(cert->x509);
-    if(xname) {
+    if (xname) {
       char *name, *s = X509_NAME_oneline(xname, NULL, 0);
       name = apr_pstrdup(p, s);
       OPENSSL_free(s);
@@ -2193,3 +2215,65 @@ apr_status_t md_check_cert_and_pkey(struct apr_array_header_t *certs, md_pkey_t 
 
     return APR_SUCCESS;
 }
+
+apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
+                                     const md_cert_t *cert, apr_pool_t *p)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    md_data_t akid_buf, ser_buf;
+    AUTHORITY_KEYID *s_aki;
+    const ASN1_INTEGER *aki;
+    const ASN1_INTEGER *serial;
+    BIGNUM *bn;
+    int i = -1, sder_len;
+    unsigned char *ucp, *sbuf;
+
+    *pari_cert_id = NULL;
+    s_aki = X509_get_ext_d2i(cert->x509, NID_authority_key_identifier, &i, NULL);
+    if (s_aki == NULL) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "cert has no authority key id extension");
+        return APR_ENOENT;
+    }
+    aki = s_aki->keyid;
+    if (aki == NULL) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "cert has no authority key id in extension");
+        return APR_ENOENT;
+    }
+    akid_buf.len = (apr_size_t)ASN1_STRING_length(aki);
+    akid_buf.data = (const char *)ASN1_STRING_get0_data(aki);
+    akid_buf.free_data = NULL;
+
+    serial = X509_get0_serialNumber(cert->x509);
+    if (!serial) {
+        md_log_perror(MD_LOG_MARK, MD_LOG_ERR, 0, p,
+                      "cert has no serial number");
+        return APR_ENOENT;
+    }
+    memset(&ser_buf, 0, sizeof(ser_buf));
+    bn = ASN1_INTEGER_to_BN(serial, NULL);
+    if (!bn) {
+        return APR_EINVAL;
+    }
+    sbuf = apr_pcalloc(p, BN_num_bytes(bn));
+    sder_len = BN_bn2bin(bn, sbuf);
+    BN_free(bn);
+    if (sder_len < 1)
+        return APR_EINVAL;
+    ser_buf.len = (apr_size_t)sder_len;
+    ser_buf.data = (const char *)sbuf;
+    (void)ucp;
+
+    *pari_cert_id = apr_psprintf(p, "%s.%s",
+                                 md_util_base64url_encode(&akid_buf, p),
+                                 md_util_base64url_encode(&ser_buf, p));
+    return APR_SUCCESS;
+#else
+    *pari_cert_id = NULL;
+    (void)cert;
+    (void)p;
+    return APR_ENOTIMPL;
+#endif
+}
+

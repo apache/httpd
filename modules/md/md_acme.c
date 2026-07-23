@@ -23,6 +23,8 @@
 #include <apr_hash.h>
 #include <apr_uri.h>
 
+#include <httpd.h>
+
 #include "md.h"
 #include "md_crypt.h"
 #include "md_json.h"
@@ -32,7 +34,6 @@
 #include "md_store.h"
 #include "md_result.h"
 #include "md_util.h"
-#include "md_version.h"
 
 #include "md_acme.h"
 #include "md_acme_acct.h"
@@ -49,6 +50,7 @@ struct acme_problem_status_t {
 };
 
 static acme_problem_status_t Problems[] = {
+    { "acme:error:agreementRequired",            APR_EGENERAL, 1 },
     { "acme:error:badCSR",                       APR_EINVAL,   1 },
     { "acme:error:badNonce",                     APR_EAGAIN,   0 },
     { "acme:error:badSignatureAlgorithm",        APR_EINVAL,   1 },
@@ -61,7 +63,7 @@ static acme_problem_status_t Problems[] = {
     { "acme:error:serverInternal",               APR_EGENERAL, 0 },
     { "acme:error:unauthorized",                 APR_EACCES,   0 },
     { "acme:error:unsupportedIdentifier",        APR_BADARG,   1 },
-    { "acme:error:userActionRequired",           APR_EAGAIN,   0 },
+    { "acme:error:userActionRequired",           APR_EGENERAL, 1 },
     { "acme:error:badRevocationReason",          APR_EINVAL,   1 },
     { "acme:error:caa",                          APR_EGENERAL, 0 },
     { "acme:error:dns",                          APR_EGENERAL, 0 },
@@ -73,15 +75,15 @@ static acme_problem_status_t Problems[] = {
 static apr_status_t problem_status_get(const char *type) {
     size_t i;
 
-    if (strstr(type, "urn:ietf:params:") == type) {
+    if (ap_strstr_c(type, "urn:ietf:params:") == type) {
         type += strlen("urn:ietf:params:");
     }
-    else if (strstr(type, "urn:") == type) {
+    else if (ap_strstr_c(type, "urn:") == type) {
         type += strlen("urn:");
     }
      
     for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
-        if (!apr_strnatcasecmp(type, Problems[i].type)) {
+        if (!apr_cstr_casecmp(type, Problems[i].type)) {
             return Problems[i].rv;
         }
     }
@@ -92,15 +94,15 @@ int md_acme_problem_is_input_related(const char *problem) {
     size_t i;
 
     if (!problem) return 0;
-    if (strstr(problem, "urn:ietf:params:") == problem) {
+    if (ap_strstr_c(problem, "urn:ietf:params:") == problem) {
         problem += strlen("urn:ietf:params:");
     }
-    else if (strstr(problem, "urn:") == problem) {
+    else if (ap_strstr_c(problem, "urn:") == problem) {
         problem += strlen("urn:");
     }
 
     for(i = 0; i < (sizeof(Problems)/sizeof(Problems[0])); ++i) {
-        if (!apr_strnatcasecmp(problem, Problems[i].type)) {
+        if (!apr_cstr_casecmp(problem, Problems[i].type)) {
             return Problems[i].input_related;
         }
     }
@@ -182,32 +184,34 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
             
             req->resp_json = problem;
             ptype = md_json_gets(problem, MD_KEY_TYPE, NULL); 
-            pdetail = md_json_gets(problem, MD_KEY_DETAIL, NULL);
-            req->rv = problem_status_get(ptype);
-            md_result_problem_set(req->result, req->rv, ptype, pdetail,
-                                  md_json_getj(problem, MD_KEY_SUBPROBLEMS, NULL));
-            
-            
-            
-            if (APR_STATUS_IS_EAGAIN(req->rv)) {
-                md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, req->rv, req->p,
-                              "acme reports %s: %s", ptype, pdetail);
+
+            if (ptype) {
+                req->rv = problem_status_get(ptype);
+                pdetail = md_json_gets(problem, MD_KEY_DETAIL, NULL);
+
+                md_result_problem_set(req->result, req->rv, ptype, pdetail,
+                                      md_json_getj(problem, MD_KEY_SUBPROBLEMS, NULL));
+
+                if (APR_STATUS_IS_EAGAIN(req->rv)) {
+                    md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, req->rv, req->p,
+                                  "acme reports %s: %s", ptype, pdetail);
+                }
+                else {
+                    md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, req->rv, req->p,
+                                  "acme problem %s: %s", ptype, pdetail);
+                }
+                return req->rv;
             }
-            else {
-                md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, req->rv, req->p,
-                              "acme problem %s: %s", ptype, pdetail);
-            }
-            return req->rv;
         }
     }
     
     switch (res->status) {
-        case 400:
+        case HTTP_BAD_REQUEST:
             return APR_EINVAL;
-        case 401: /* sectigo returns this instead of 403 */
-        case 403:
+        case HTTP_UNAUTHORIZED: /* sectigo returns this instead of 403 */
+        case HTTP_FORBIDDEN:
             return APR_EACCES;
-        case 404:
+        case HTTP_NOT_FOUND:
             return APR_ENOENT;
         default:
             md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, req->p,
@@ -279,7 +283,7 @@ static apr_status_t on_response(const md_http_response_t *res, void *data)
     req_update_nonce(req->acme, res->headers);
     
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, req->p, "response: %d", res->status);
-    if (res->status >= 200 && res->status < 300) {
+    if (ap_is_HTTP_SUCCESS(res->status)) {
         int processed = 0;
         
         if (req->on_json) {
@@ -332,7 +336,7 @@ static apr_status_t acmev2_GET_as_POST_init(md_acme_req_t *req, void *baton)
     return md_acme_req_body_init(req, NULL);
 }
 
-static apr_status_t md_acme_req_send(md_acme_req_t *req)
+static apr_status_t md_acme_req_send(md_acme_req_t *req, int get_as_post)
 {
     apr_status_t rv;
     md_acme_t *acme = req->acme;
@@ -352,7 +356,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
         if (APR_SUCCESS != rv) goto leave;
     }
     
-    if (!strcmp("GET", req->method) && !req->on_init && !req->req_json) {
+    if (get_as_post && !strcmp("GET", req->method) && !req->on_init && !req->req_json) {
         /* See <https://ietf-wg-acme.github.io/acme/draft-ietf-acme-acme.html#rfc.section.6.3>
          * and <https://mailarchive.ietf.org/arch/msg/acme/sotffSQ0OWV-qQJodLwWYWcEVKI>
          * and <https://community.letsencrypt.org/t/acme-v2-scheduled-deprecation-of-unauthenticated-resource-gets/74380>
@@ -420,7 +424,7 @@ static apr_status_t md_acme_req_send(md_acme_req_t *req)
     
     if (APR_EAGAIN == rv && req->max_retries > 0) {
         --req->max_retries;
-        rv = md_acme_req_send(req);
+        rv = md_acme_req_send(req, 1);
     }
     req = NULL;
 
@@ -449,14 +453,15 @@ apr_status_t md_acme_POST(md_acme_t *acme, const char *url,
     req->on_err = on_err;
     req->baton = baton;
     
-    return md_acme_req_send(req);
+    return md_acme_req_send(req, 1);
 }
 
 apr_status_t md_acme_GET(md_acme_t *acme, const char *url,
                          md_acme_req_init_cb *on_init,
                          md_acme_req_json_cb *on_json,
                          md_acme_req_res_cb *on_res,
-                          md_acme_req_err_cb *on_err,
+                         md_acme_req_err_cb *on_err,
+                         int get_as_post,
                          void *baton)
 {
     md_acme_req_t *req;
@@ -472,7 +477,7 @@ apr_status_t md_acme_GET(md_acme_t *acme, const char *url,
     req->on_err = on_err;
     req->baton = baton;
     
-    return md_acme_req_send(req);
+    return md_acme_req_send(req, get_as_post);
 }
 
 void md_acme_report_result(md_acme_t *acme, apr_status_t rv, struct md_result_t *result)
@@ -507,7 +512,7 @@ static apr_status_t on_got_json(md_acme_t *acme, apr_pool_t *p, const apr_table_
 }
 
 apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme, 
-                              const char *url, apr_pool_t *p)
+                              const char *url, int get_as_post, apr_pool_t *p)
 {
     apr_status_t rv;
     json_ctx ctx;
@@ -515,7 +520,7 @@ apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme,
     ctx.pool = p;
     ctx.json = NULL;
     
-    rv = md_acme_GET(acme, url, NULL, on_got_json, NULL, NULL, &ctx);
+    rv = md_acme_GET(acme, url, NULL, on_got_json, NULL, NULL, get_as_post, &ctx);
     *pjson = (APR_SUCCESS == rv)? ctx.json : NULL;
     return rv;
 }
@@ -618,7 +623,8 @@ apr_status_t md_acme_POST_new_account(md_acme_t *acme,
 /* ACME setup */
 
 apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
-                            const char *proxy_url, const char *ca_file)
+                            const char *proxy_url, const char *ca_file,
+                            const char *proxy_ca_file)
 {
     md_acme_t *acme;
     const char *err = NULL;
@@ -640,10 +646,11 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     acme->url = url;
     acme->p = p;
     acme->user_agent = apr_psprintf(p, "%s mod_md/%s", 
-                                    base_product, MOD_MD_VERSION);
-    acme->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
-    acme->max_retries = 99;
+                                    base_product, AP_SERVER_BASEREVISION);
+    acme->proxy_url = apr_pstrdup(p, proxy_url);
+    acme->max_retries = 9;
     acme->ca_file = ca_file;
+    acme->proxy_ca_file = proxy_ca_file;
 
     if (APR_SUCCESS != (rv = apr_uri_parse(p, url, &uri_parsed))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "parsing ACME uri: %s", url);
@@ -683,7 +690,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
     const char *s;
     
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->pool, "directory lookup response: %d", res->status);
-    if (res->status == 503) {
+    if (res->status == HTTP_SERVICE_UNAVAILABLE) {
         md_result_printf(result, APR_EAGAIN,
             "The ACME server at <%s> reports that Service is Unavailable (503). This "
             "may happen during maintenance for short periods of time.", acme->url); 
@@ -691,7 +698,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         rv = result->status;
         goto leave;
     }
-    else if (res->status < 200 || res->status >= 300) {
+    else if (res->status < HTTP_OK || res->status >= HTTP_MULTIPLE_CHOICES) {
         md_result_printf(result, APR_EAGAIN,
             "The ACME server at <%s> responded with HTTP status %d. This "
             "is unusual. Please verify that the URL is correct and that you can indeed "
@@ -720,6 +727,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         acme->api.v2.revoke_cert = md_json_dups(acme->p, json, "revokeCert", NULL);
         acme->api.v2.key_change = md_json_dups(acme->p, json, "keyChange", NULL);
         acme->api.v2.new_nonce = md_json_dups(acme->p, json, "newNonce", NULL);
+        acme->api.v2.renewal_info = md_json_dups(acme->p, json, "renewalInfo", NULL);
         /* RFC 8555 only requires "directory" and "newNonce" resources.
          * mod_md uses "newAccount" and "newOrder" so check for them.
          * But mod_md does not use the "revokeCert" or "keyChange"
@@ -795,6 +803,7 @@ apr_status_t md_acme_setup(md_acme_t *acme, md_result_t *result)
     md_http_set_connect_timeout_default(acme->http, apr_time_from_sec(30));
     md_http_set_stalling_default(acme->http, 10, apr_time_from_sec(30));
     md_http_set_ca_file(acme->http, acme->ca_file);
+    md_http_set_proxy_ca_file(acme->http, acme->proxy_ca_file);
     
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, acme->p, "get directory from %s", acme->url);
     

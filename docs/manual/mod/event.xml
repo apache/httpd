@@ -39,8 +39,16 @@ of consuming threads only for connections with active processing</description>
       <code>--with-mpm=event</code> to the <program>configure</program>
       script's arguments when building the <program>httpd</program>.</p>
 
+
+    <p>When built as a DSO module, it can be loaded with:</p>
+
+    <highlight language="config">
+LoadModule mpm_event_module modules/mod_mpm_event.so
+    </highlight>
+
 </summary>
 
+<seealso><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></seealso>
 <seealso><a href="worker.html">The worker MPM</a></seealso>
 
 <section id="event-worker-relationship"><title>Relationship with the Worker MPM</title>

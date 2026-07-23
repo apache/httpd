@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- $LastChangedRevision: 1752104 $ -->
-<!-- English Revision : 1752104 -->
+<!-- English Revision: 1933830 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- $LastChangedRevision: 2017021901 $ -->
 
@@ -26,25 +26,25 @@
 <modulesynopsis metafile="mod_crypto.xml.meta">
 
 <name>mod_crypto</name>
-<description>Support du chiffrement/d&eacute;chiffrement sym&eacute;trique</description>
+<description>Support du chiffrement/déchiffrement symétrique</description>
 <status>Extension</status>
 <sourcefile>mod_crypto.c</sourcefile>
 <identifier>crypto_module</identifier>
-<compatibility>Disponible &agrave; partir de la version 2.5 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
 
 <summary>
-    <p>Ce module permet de <strong>chiffrer et d&eacute;chiffrer</strong> les donn&eacute;es au
-    niveau des piles de filtrage en entr&eacute;e et en sortie.</p>
+    <p>Ce module permet de <strong>chiffrer et déchiffrer</strong> les données au
+    niveau des piles de filtrage en entrée et en sortie.</p>
 
-    <p>En particulier, il permet d'effectuer un <strong>chiffrement HLS &agrave; la
-    vol&eacute;e</strong> comme d&eacute;crit dans le document <a
+    <p>En particulier, il permet d'effectuer un <strong>chiffrement HLS à la
+    volée</strong> comme décrit dans le document <a
     href="http://www.ietf.org/id/draft-pantos-http-live-streaming-19.txt">draft-pantos-http-live-streaming-19</a>.</p>
 
-    <p>Mais il peut aussi assurer la livraison s&eacute;curis&eacute;e de donn&eacute;es via un CDN
-    non s&eacute;curis&eacute; aux clients qui le supportent.</p>
+    <p>Mais il peut aussi assurer la livraison sécurisée de données via un CDN
+    non sécurisé aux clients qui le supportent.</p>
 
-    <p>Selon les besoins, on peut ajouter le filtre crypto &agrave; la pile de filtrage
-    en entr&eacute;e ou en sortie via les directives <directive
+    <p>Selon les besoins, on peut ajouter le filtre crypto à la pile de filtrage
+    en entrée ou en sortie via les directives <directive
     module="core">SetInputFilter</directive>, <directive
     module="core">SetOutputFilter</directive>, <directive
     module="mod_mime">AddOutputFilter</directive> ou <directive
@@ -54,66 +54,66 @@
 <seealso><a href="../filter.html">Filtres</a></seealso>
 
 <section id="format">
-    <title>Format du flux de donn&eacute;es</title>
+    <title>Format du flux de données</title>
 
-    <p>Le flux de donn&eacute;es chiffr&eacute;es comporte un bloc IV optionnel suivi des
-    donn&eacute;es chiffr&eacute;es avec l'algorithme de chiffrement choisi. Le bloc final est
-    &eacute;ventuellement compl&eacute;t&eacute; par bourrage avant d'&ecirc;tre &eacute;crit. La taille des blocs
-    est d&eacute;termin&eacute;e par l'algorithme de chiffrement choisi.</p>
+    <p>Le flux de données chiffrées comporte un bloc IV optionnel suivi des
+    données chiffrées avec l'algorithme de chiffrement choisi. Le bloc final est
+    éventuellement complété par bourrage avant d'être écrit. La taille des blocs
+    est déterminée par l'algorithme de chiffrement choisi.</p>
 
-    <p>Lorsque le bloc IV est sp&eacute;cifi&eacute; via la directive <directive
-    module="mod_crypto">CryptoIV</directive>, il est utilis&eacute;, mais n'est pas
-    inject&eacute; dans le flux d'entr&eacute;e/sortie.</p>
+    <p>Lorsque le bloc IV est spécifié via la directive <directive
+    module="mod_crypto">CryptoIV</directive>, il est utilisé, mais n'est pas
+    injecté dans le flux d'entrée/sortie.</p>
 
 </section>
 
 <section id="config">
-    <title>Cl&eacute;s et blocs IV</title>
+    <title>Clés et blocs IV</title>
 
     <p>Les directives <directive module="mod_crypto">CryptoKey</directive> et
     <directive module="mod_crypto">CryptoIV</directive> acceptent comme
-    arguments des valeurs binaires qui peuvent &ecirc;tre sp&eacute;cifi&eacute;es comme indiqu&eacute;
-    ci-apr&egrave;s. Les bits les plus significatifs de ces valeurs sont utilis&eacute;s, et
-    si les valeurs sont trop petites, elles sont compl&eacute;t&eacute;es par bourrage avec
-    des bits &agrave; 0 par la gauche.
+    arguments des valeurs binaires qui peuvent être spécifiées comme indiqué
+    ci-après. Les bits les plus significatifs de ces valeurs sont utilisés, et
+    si les valeurs sont trop petites, elles sont complétées par bourrage avec
+    des bits à 0 par la gauche.
     </p>
 
     <dl>
-    <dt>file:</dt><dd>La valeur est lue directement depuis le fichier sp&eacute;cifi&eacute;.</dd>
-    <dt>hex:</dt><dd>Interpr&egrave;te l'expression en tant que valeur hexad&eacute;cimale qui
-    peut contenir des caract&egrave;res ':' comme s&eacute;parateurs.</dd>
-    <dt>decimal:</dt><dd>Interpr&egrave;te l'expression en tant que valeur d&eacute;cimale.</dd>
-    <dt>base64:</dt><dd>Interpr&egrave;te l'expression en tant que valeur cod&eacute;e en
+    <dt>file:</dt><dd>La valeur est lue directement depuis le fichier spécifié.</dd>
+    <dt>hex:</dt><dd>Interprète l'expression en tant que valeur hexadécimale qui
+    peut contenir des caractères ':' comme séparateurs.</dd>
+    <dt>decimal:</dt><dd>Interprète l'expression en tant que valeur décimale.</dd>
+    <dt>base64:</dt><dd>Interprète l'expression en tant que valeur codée en
     base64.</dd>
-    <dt>none</dt><dd>Aucune valeur n'est sp&eacute;cifi&eacute;e.</dd>
+    <dt>none</dt><dd>Aucune valeur n'est spécifiée.</dd>
     </dl>
 
-    <p>Si le IV n'est pas sp&eacute;cifi&eacute;, un IV al&eacute;atoire sera g&eacute;n&eacute;r&eacute; au cours du
-    chiffrement et &eacute;crit comme premier bloc. Lors du d&eacute;chiffrement, le premier
-    bloc sera interpr&eacute;t&eacute; en tant que IV.
+    <p>Si le IV n'est pas spécifié, un IV aléatoire sera généré au cours du
+    chiffrement et écrit comme premier bloc. Lors du déchiffrement, le premier
+    bloc sera interprété en tant que IV.
     </p>
 
     <p>A l'exception du format file:, les directives <directive
     module="mod_crypto">CryptoKey</directive> et <directive
     module="mod_crypto">CryptoIV</directive> supportent la <a
     href="../expr.html">syntaxe des expressions</a> qui fournit plus de
-    flexibilit&eacute; pour d&eacute;finir les valeurs. Les cl&eacute;s et IVs peuvent ainsi &ecirc;tre
-    initialis&eacute;es al&eacute;atoirement via des valeurs disponibles au niveau du serveur
+    flexibilité pour définir les valeurs. Les clés et IVs peuvent ainsi être
+    initialisées aléatoirement via des valeurs disponibles au niveau du serveur
     web comme REMOTE_USER ou l'URL.
     </p>
 
 </section>
 
 <section id="handler">
-    <title>Gestionnaire de cl&eacute; de chiffrement</title>
+    <title>Gestionnaire de clé de chiffrement</title>
 
-    <p>Le gestionnaire <strong>crypto-key</strong> permet de fournir la cl&eacute; aux
-    clients autoris&eacute;s qui le supportent sans avoir &agrave; stocker cette derni&egrave;re dans
-    l'arborescence du serveur web. La m&ecirc;me <a href="../expr.html">syntaxe
-    d'expression</a> peut ainsi &ecirc;tre utilis&eacute;e afin d'obtenir la cl&eacute; pour les
-    clients et pour le contenu chiffr&eacute;.</p>
+    <p>Le gestionnaire <strong>crypto-key</strong> permet de fournir la clé aux
+    clients autorisés qui le supportent sans avoir à stocker cette dernière dans
+    l'arborescence du serveur web. La même <a href="../expr.html">syntaxe
+    d'expression</a> peut ainsi être utilisée afin d'obtenir la clé pour les
+    clients et pour le contenu chiffré.</p>
 
-    <example><title>Gestionnaire de cl&eacute; de chiffrement avec un fichier</title>
+    <example><title>Gestionnaire de clé de chiffrement avec un fichier</title>
       &lt;Location /key&gt;<br />
       <indent>
         SetHandler crypto-key<br />
@@ -130,31 +130,31 @@
 <section id="hls">
     <title>HTTP Live Streaming (HLS)</title>
 
-    <p>Le protocole HLS supporte les flux chiffr&eacute;s qui utilisent l'algorithme de
-    chiffrement AES-128 et une cl&eacute; correspondante. On autorise l'acc&egrave;s au flux
-    en partageant la cl&eacute; avec le client HLS en g&eacute;n&eacute;ral via une connexion
-    s&eacute;curis&eacute;e.</p>
+    <p>Le protocole HLS supporte les flux chiffrés qui utilisent l'algorithme de
+    chiffrement AES-128 et une clé correspondante. On autorise l'accès au flux
+    en partageant la clé avec le client HLS en général via une connexion
+    sécurisée.</p>
 
-    <p>Le IV utilis&eacute; pour le chiffrement de chaque segment de media est sp&eacute;cifi&eacute;
-    dans HLS de deux mani&egrave;res :</p>
+    <p>Le IV utilisé pour le chiffrement de chaque segment de media est spécifié
+    dans HLS de deux manières :</p>
 
     <ul>
         <li>
-            Sp&eacute;cifi&eacute; explicitement via un attribut IV dans le tag EXT-X-KEY sous
-	    la forme d'une valeur <strong>hexad&eacute;cimale</strong>.
+            Spécifié explicitement via un attribut IV dans le tag EXT-X-KEY sous
+	    la forme d'une valeur <strong>hexadécimale</strong>.
         </li>
         <li>
-            Sp&eacute;cifi&eacute; implicitement en interpr&eacute;tant la valeur
-	    <strong>d&eacute;cimale</strong> du tag EXT-X-MEDIA-SEQUENCE.
+            Spécifié implicitement en interprétant la valeur
+	    <strong>décimale</strong> du tag EXT-X-MEDIA-SEQUENCE.
         </li>
     </ul>
 
-    <p>La valeur de la s&eacute;quence de media est en g&eacute;n&eacute;rale incorpor&eacute;e dans les
-    noms de segment de m&eacute;dia et peut &ecirc;tre recherch&eacute;e en utilisant des
-    expressions rationnelles nomm&eacute;es comme dans l'exemple ci-dessous.
+    <p>La valeur de la séquence de media est en générale incorporée dans les
+    noms de segment de média et peut être recherchée en utilisant des
+    expressions rationnelles nommées comme dans l'exemple ci-dessous.
     </p>
 
-    <example><title>Exemple HLS - IV de la s&eacute;quence de m&eacute;dia</title>
+    <example><title>Exemple HLS - IV de la séquence de média</title>
       &lt;LocationMatch (?&lt;SEQUENCE&gt;[\d]+)[^\d^/]+$&gt;<br />
       <indent>
         SetOutputFilter ENCRYPT<br />
@@ -169,7 +169,7 @@
 
 <directivesynopsis>
 <name>CryptoDriver</name>
-<description>Nom du pilote crypto &agrave; utiliser</description>
+<description>Nom du pilote crypto à utiliser</description>
 <syntax>CryptoDriver name</syntax>
 <default>CryptoDriver openssl</default>
 <contextlist><context>server config</context>
@@ -177,9 +177,9 @@
 
 <usage>
     <p>La directive <directive module="mod_crypto">CryptoDriver</directive>
-    permet de sp&eacute;cifier le nom du pilote crypto &agrave; utiliser. Un pilote recommand&eacute;
-    par d&eacute;faut est en g&eacute;n&eacute;ral d&eacute;fini pour chaque plateforme. Les pilotes
-    support&eacute;s sont <strong>openssl</strong>, <strong>commoncrypto</strong> et
+    permet de spécifier le nom du pilote crypto à utiliser. Un pilote recommandé
+    par défaut est en général défini pour chaque plateforme. Les pilotes
+    supportés sont <strong>openssl</strong>, <strong>commoncrypto</strong> et
     <strong>nss</strong>.</p>
 </usage>
 </directivesynopsis>
@@ -196,12 +196,12 @@
 </contextlist>
 
 <usage>
-    <p>La directive <directive>CryptoCipher</directive> permet de sp&eacute;cifier
-    l'algorithme de chiffrement &agrave; utiliser au cours des phases de chiffrement et
-    de d&eacute;chiffrement. L'algorithme de chiffrement par d&eacute;faut est
+    <p>La directive <directive>CryptoCipher</directive> permet de spécifier
+    l'algorithme de chiffrement à utiliser au cours des phases de chiffrement et
+    de déchiffrement. L'algorithme de chiffrement par défaut est
     <code>aes256</code>.</p>
 
-    <p>C'est le pilote crypto utilis&eacute; qui d&eacute;termine l'&eacute;tendue du choix des algorithmes de
+    <p>C'est le pilote crypto utilisé qui détermine l'étendue du choix des algorithmes de
     chiffrement parmi les valeurs possibles suivantes :</p>
 
     <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
@@ -222,28 +222,28 @@ filtre crypto doit utiliser</description>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>CryptoIV</directive> permet de sp&eacute;cifier le IV
-    (Initialisation Vector) pour l'espace d'URL consid&eacute;r&eacute;. Le IV peut &ecirc;tre lu &agrave;
-    partir d'un fichier ou d&eacute;fini via l'<a href="../expr.html">interpr&eacute;teur
-    d'expressions</a>, ce qui conf&egrave;re plus de souplesse aux sc&eacute;narios de
-    d&eacute;finition des cl&eacute;s.</p>
+    <p>La directive <directive>CryptoIV</directive> permet de spécifier le IV
+    (Initialisation Vector) pour l'espace d'URL considéré. Le IV peut être lu à
+    partir d'un fichier ou défini via l'<a href="../expr.html">interpréteur
+    d'expressions</a>, ce qui confère plus de souplesse aux scénarios de
+    définition des clés.</p>
 
-    <p>Les valeurs possibles peuvent &ecirc;tre lues depuis un fichier ou exprim&eacute;es
-    sous une forme hexad&eacute;cimale, d&eacute;cimale ou en base64 en fonction des pr&eacute;fixes
+    <p>Les valeurs possibles peuvent être lues depuis un fichier ou exprimées
+    sous une forme hexadécimale, décimale ou en base64 en fonction des préfixes
     suivants :</p>
 
     <ul><li>file:</li><li>hex:</li><li>decimal:</li><li>base64:</li></ul>
 
-    <p>La valeur 'none' d&eacute;sactive la d&eacute;finition du IV. Dans ce cas, un IV
-    al&eacute;atoire sera g&eacute;n&eacute;r&eacute; durant le chiffrement et ins&eacute;r&eacute; en tant que premier
-    bloc ; au cours du d&eacute;chiffrement, le premier bloc sera interpr&eacute;t&eacute; comme bloc
+    <p>La valeur 'none' désactive la définition du IV. Dans ce cas, un IV
+    aléatoire sera généré durant le chiffrement et inséré en tant que premier
+    bloc ; au cours du déchiffrement, le premier bloc sera interprété comme bloc
     IV.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CryptoKey</name>
-<description>Cl&eacute; que le filtre crypto doit utiliser</description>
+<description>Clé que le filtre crypto doit utiliser</description>
 <syntax>CryptoKey value</syntax>
 <default>CryptoKey none</default>
 <contextlist><context>server config</context>
@@ -253,26 +253,26 @@ filtre crypto doit utiliser</description>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>CryptoKey</directive> permet de sp&eacute;cifier la cl&eacute;
-    de chiffrement/d&eacute;chiffrement pour l'espace d'URL consid&eacute;r&eacute;. La cl&eacute; peut &ecirc;tre
-    lue depuis un fichier ou d&eacute;fini via l'<a href="../expr.html">interpr&eacute;teur
-    d'expressions</a>, ce qui conf&egrave;re plus de souplesse aux sc&eacute;narios de
-    d&eacute;finition des cl&eacute;s.</p>
+    <p>La directive <directive>CryptoKey</directive> permet de spécifier la clé
+    de chiffrement/déchiffrement pour l'espace d'URL considéré. La clé peut être
+    lue depuis un fichier ou défini via l'<a href="../expr.html">interpréteur
+    d'expressions</a>, ce qui confère plus de souplesse aux scénarios de
+    définition des clés.</p>
 
-    <p>Les valeurs possibles peuvent &ecirc;tre lues depuis un fichier ou exprim&eacute;es
-    sous une forme hexad&eacute;cimale, d&eacute;cimale ou en base64 en fonction des pr&eacute;fixes
+    <p>Les valeurs possibles peuvent être lues depuis un fichier ou exprimées
+    sous une forme hexadécimale, décimale ou en base64 en fonction des préfixes
     suivants :</p>
 
     <ul><li>file:</li><li>hex:</li><li>decimal:</li><li>base64:</li></ul>
 
-    <p>La valeur 'none' d&eacute;sactive la cl&eacute;. Toute requ&ecirc;te pour obtenir sans cl&eacute; un fichier
-    via les filtres ENCRYPT ou DECRYPT se soldera alors par un &eacute;chec. </p>
+    <p>La valeur 'none' désactive la clé. Toute requête pour obtenir sans clé un fichier
+    via les filtres ENCRYPT ou DECRYPT se soldera alors par un échec. </p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CryptoSize</name>
-<description>Taille maximale en octets du tampon utilis&eacute; par le filtre crypto</description>
+<description>Taille maximale en octets du tampon utilisé par le filtre crypto</description>
 <syntax>CryptoSize integer</syntax>
 <default>CryptoSize 131072</default>
 <contextlist><context>server config</context>
@@ -283,8 +283,8 @@ filtre crypto doit utiliser</description>
 
 <usage>
     <p>La directive <directive module="mod_crypto">CryptoSize</directive> permet
-    de sp&eacute;cifier la quantit&eacute; de donn&eacute;es en octets qui sera mise en tampon pour
-    chaque requ&ecirc;te avant d'&ecirc;tre chiffr&eacute;e ou d&eacute;chiffr&eacute;e. La valeur par d&eacute;faut est
+    de spécifier la quantité de données en octets qui sera mise en tampon pour
+    chaque requête avant d'être chiffrée ou déchiffrée. La valeur par défaut est
     128 Ko.</p>
 </usage>
 </directivesynopsis>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1223048:1561569 (outdated) -->
+<!-- English Revision: 1223048:1933502 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -26,12 +26,12 @@
 
 <manualpage metafile="new_features_2_2.xml.meta">
 
-<title>Apache HTTP Sunucusu 2.2’de Yeni olan Özellikler</title>
+<title>Apache HTTP Sunucusu 2.2'de Yeni olan Özellikler</title>
 
 <summary>
   <p>Bu belgede Apache HTTP Sunucusunun 2.0 ve 2.2 sürümleri arasındaki
     başlıca farklara değinilmiştir. 1.3 sürümüne göre yeni özellikler için <a
-    href="new_features_2_0.html">Apache 2.0’da Yeni olan Özellikler</a>
+    href="new_features_2_0.html">Apache 2.0'da Yeni olan Özellikler</a>
     belgesine bakınız.</p>
 </summary>
 
@@ -66,7 +66,7 @@
 
       <dt>Nazikçe Durdurma</dt>
       <dd><module>prefork</module>, <module>worker</module> ve
-        <module>event</module>  MPM’leri artık <program>httpd</program>’yi <a
+        <module>event</module>  MPM'leri artık <program>httpd</program>'yi <a
         href="stopping.html#gracefulstop"><code>graceful-stop</code></a>
         sinyali sayesinde nazikçe durdurabilmektedir.
         <program>httpd</program> programının sonlandırılmasındaki gecikmelere
@@ -101,21 +101,21 @@
 
       <dt>Büyük Dosya (>2GB) Desteği</dt>
       <dd><program>httpd</program> artık günümüzün 32 bitlik Unix
-        sistemlerinde bulunan 2 GB’lık büyük dosyaları destekleyecek tarzda
-        derlenebilmektedir. 2 GB’lık istek gövdelerine destek de ayrıca
+        sistemlerinde bulunan 2 GB'lık büyük dosyaları destekleyecek tarzda
+        derlenebilmektedir. 2 GB'lık istek gövdelerine destek de ayrıca
         eklenmiştir.</dd>
 
       <dt>Event MPM</dt>
       <dd><module>event</module> MPM modülü sürekli bağlantı isteklerinin
         işlenmesi ve bağlantıların kabul edilmesi için ayrı bir evre
         kullanır. Sürekli bağlantı (keepalive) isteklerinin işlenmesi
-        geleneksel olarak httpd’nin buna bir <module>worker</module>
+        geleneksel olarak httpd'nin buna bir <module>worker</module>
         adamasını gerektirirdi. Bu adanmış <module>worker</module> bağlantı
         zaman aşımına uğrayıncaya değin tekrar kullanılamazdı.</dd>
 
       <dt>SQL Veritabanı Desteği</dt>
       <dd><module>mod_dbd</module> modülü <code>apr_dbd</code> arayüzü ile
-        birlikte, ihtiyacı olan modüllere SQL desteği sağlar. Evreli MPM’ler
+        birlikte, ihtiyacı olan modüllere SQL desteği sağlar. Evreli MPM'ler
         için bağlantı havuzlamasını destekler.</dd>
     </dl>
   </section>
@@ -155,7 +155,7 @@
       <dt><module>mod_info</module></dt>
       <dd>Apache tarafından çözümlenen haliyle yapılandırma yönergelerinin
         gösterilmesini sağlayan yeni <code>?config</code> parametresini
-        ekler. Modül ayrıca, <code>httpd -V</code>’nin yaptığı gibi ek olarak
+        ekler. Modül ayrıca, <code>httpd -V</code>'nin yaptığı gibi ek olarak
         derleme bilgisini ve tüm istek kancalarının sırasını da gösterir.</dd>
 
       <dt><module>mod_ssl</module></dt>
@@ -177,7 +177,7 @@
       <dd>Mevcut yapılandırmaya göre yüklenen modülleri listelemek için
         <code>-M</code> diye yeni bir komut satırı seçeneği eklendi.
         <code>-l</code> seçeneğinin aksine, bu seçenekle elde edilen liste
-        <module>mod_so</module> üzerinden yüklenen DSO’ları içerir.</dd>
+        <module>mod_so</module> üzerinden yüklenen DSO'ları içerir.</dd>
 
       <dt><program>httxt2dbm</program></dt>
       <dd><directive module="mod_rewrite">RewriteMap</directive> yönergesinde
@@ -191,9 +191,9 @@
     <dl>
       <dt><glossary>APR</glossary> 1.0 Programlama Arayüzü</dt>
 
-      <dd>Apache 2.2’de APR 1.0 API kullanılmıştır.  Kullanımı önerilmeyen
+      <dd>Apache 2.2'de APR 1.0 API kullanılmıştır.  Kullanımı önerilmeyen
         tüm işlevler ve simgeler <code>APR</code> ve
-        <code>APR-Util</code>’den kaldırılmıştır. Ayrıntılar için <a
+        <code>APR-Util</code>'den kaldırılmıştır. Ayrıntılar için <a
         href="http://apr.apache.org/">APR Sitesine bakınız</a>.</dd>
 
       <dt>Authn/Authz</dt>
@@ -221,14 +221,14 @@
 
       <dt>Deneme Yapılandırma Kancası Eklendi</dt>
 
-      <dd>Kullanıcı, <program>httpd</program>’yi sadece <code>-t</code>
+      <dd>Kullanıcı, <program>httpd</program>'yi sadece <code>-t</code>
         seçeneği ile kullandığı takdirde özel kod icra edilmesini isteyen
         modüllere yardımcı olmak üzere <code>test_config</code> diye yeni bir
         kanca işlev eklendi.</dd>
 
-      <dt>Evreli MPM’lerin Yığıt Boyutunun Ayarlanması</dt>
+      <dt>Evreli MPM'lerin Yığıt Boyutunun Ayarlanması</dt>
 
-      <dd>Tüm evreli MPM’lerin yığıt boyutunu ayarlamak üzere <directive
+      <dd>Tüm evreli MPM'lerin yığıt boyutunu ayarlamak üzere <directive
         module="mpm_common">ThreadStackSize</directive> isminde yeni bir
         yönerge eklendi. Öntanımlı yığıt boyutunun küçük olduğu platformlarda
         bazı üçüncü parti modüller tarafından buna ihtiyaç duyulmaktadır.</dd>
@@ -257,13 +257,13 @@
 
       <dt>DBD Arayüzü (SQL Veritabanı API)</dt>
 
-      <dd><p>Apache 1.x ve 2.0’da, modüller, SQL veritabanlarını kendileri
+      <dd><p>Apache 1.x ve 2.0'da, modüller, SQL veritabanlarını kendileri
         yönetebilmek için sorumluluğu alacak bir SQL artalanına ihtiyaç
         duymaktadır. Her biri kendi bağlantısına sahip bir sürü modül
         olduğunda bu yöntem çok verimsiz olabilmektedir.</p>
 
       <p>Apache 2.1 ve sonrasında veritabanı bağlantılarını (evreli olsun
-        olmasın MPM’lerin eniyilenmiş stratejileri dahil) yönetmek için
+        olmasın MPM'lerin eniyilenmiş stratejileri dahil) yönetmek için
         <code>ap_dbd</code> arayüzü kullanılmıştır. APR 1.2 ve sonrasında ise
         veritabanı ile etkileşim <code>apr_dbd</code> arayüzüyle
         sağlanmıştır.</p>

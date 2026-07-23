@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1918407 -->
+<!-- English Revision: 1933536 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,18 +47,20 @@ répartiteur de charge via les en-têtes de la requête.
     <directive module="mod_remoteip">RemoteIPHeader</directive>.</p>
 
     <p>En outre, ce module implémente la partie serveur du <a
-    href="http://blog.haproxy.com/haproxy/proxy-protocol/">protocole PROXY</a>
-    de HAProxy lorsqu'on utilise la directive <directive
+    href="https://www.haproxy.org/download/3.1/doc/proxy-protocol.txt">protocole
+    PROXY</a> de HAProxy lorsqu'on utilise la directive <directive
     module="mod_remoteip">RemoteIPProxyProtocol</directive>.</p>
 
     <p>Une fois sa valeur modifiée comme indiqué, cette adresse IP client est
-    utilisée pour la fonctionnalité <directive
-    module="mod_authz_host" name="Require">Require ip</directive> de
-    <module>mod_authz_host</module> ; elle est aussi affichée par
-    <module>mod_status</module>, et enregistrée via les chaînes de formatage
-    <code>%a</code> des modules <module>mod_log_config</module> et <module>core</module>.
-    L'adresse IP client sous-jacente de la connexion est enregistrée via la chaîne de
-    formatage <code>%{c}a</code>.
+    utilisée pour la fonctionnalité <directive module="mod_authz_host"
+    name="Require">Require ip</directive> de <module>mod_authz_host</module> ;
+    elle est aussi affichée par <module>mod_status</module>, et enregistrée via
+    les chaînes de formatage <code>%a</code> des modules
+    <module>mod_log_config</module> et <module>core</module>.  L'adresse IP
+    client sous-jacente de la connexion est enregistrée via la chaîne de
+    formatage <code>%{c}a</code> et via la variable
+    <code>CONN_REMOTE_ADDR</code> dans les <a
+    href="../expr.html">expressions</a>.
     </p>
 
     <note type="warning">Il est essentiel de n'activer cette
@@ -71,7 +73,7 @@ répartiteur de charge via les en-têtes de la requête.
 <seealso><module>mod_authz_host</module></seealso>
 <seealso><module>mod_status</module></seealso>
 <seealso><module>mod_log_config</module></seealso>
-<seealso><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
+<seealso><a href="https://www.haproxy.org/download/3.1/doc/proxy-protocol.txt">Proxy Protocol Spec</a></seealso>
 
 <section id="processing"><title>Traitement des adresses distantes</title>
 

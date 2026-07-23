@@ -14,11 +14,11 @@ Content-language: de
 Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
---><!--#set var="TITLE" value="Nicht unterst&uuml;tztes Format!"
+--><!--#set var="TITLE" value="Nicht unterstütztes Format!"
 --><!--#include virtual="include/top.html" -->
 
-    Das bei der Anfrage &uuml;bermittelte Format (Media Type)
-    wird vom Server nicht unterst&uuml;tzt.
+    Das bei der Anfrage übermittelte Format (Media Type)
+    wird vom Server nicht unterstützt.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -37,7 +37,7 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;El tipo de medio no est&aacute; soportado!" -->
+<!--#set var="TITLE" value="¡El tipo de medio no está soportado!" -->
 <!--#include virtual="include/top.html" -->
 
    El servidor no soporta el tipo
@@ -50,11 +50,11 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="Type de m&eacute;dia invalide!"
+--><!--#set var="TITLE" value="Type de média invalide!"
 --><!--#include virtual="include/top.html" -->
 
-    Le serveur ne supporte pas le type de m&eacute;dia utilis&eacute;
-    dans votre requ&ecirc;te. 
+    Le serveur ne supporte pas le type de média utilisé
+    dans votre requête. 
 
 <!--#include virtual="include/bottom.html"-->
 ----------fr--
@@ -62,11 +62,11 @@ Body:----------fr--
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="Cine&aacute;il me&aacute;n gan tacha&iacute;ocht!"
+<!--#set var="TITLE" value="Cineáil meán gan tachaíocht!"
 --><!--#include virtual="include/top.html" -->
 
-    N&iacute; tacha&iacute;onn an fhreastala&iacute; an cine&aacute;il
-    me&aacute;n a sheoladh san iarratais.
+    Ní tachaíonn an fhreastalaí an cineáil
+    meán a sheoladh san iarratais.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ga--
@@ -78,7 +78,7 @@ Body:----------it--
 --><!--#set var="TITLE" value="Tipo di dato non supportato!"
 --><!--#include virtual="include/top.html" -->
 
-    Il server non &egrave; in grado di gestire il 
+    Il server non è in grado di gestire il 
     tipo del formato dei dati trasmesso nella richiesta.
    
 <!--#include virtual="include/bottom.html" -->
@@ -148,11 +148,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Tipo de media n&atilde;o suportado!"
+--><!--#set var="TITLE" value="Tipo de media não suportado!"
 --><!--#include virtual="include/top.html" -->
 
-   O servidor n&atilde;o suporta o tipo de m&iacute;dia
-   transmitida nesta requisi&ccedil;&atilde;o.
+   O servidor não suporta o tipo de mídia
+   transmitida nesta requisição.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -160,10 +160,10 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Media n&atilde;o suportado!"
+<!--#set var="TITLE" value="Media não suportado!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor n&atilde;o suporta o <i>media type</i> transmitido no pedido.
+	O servidor não suporta o <i>media type</i> transmitido no pedido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -207,10 +207,10 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Mediatypen st&ouml;ds ej!"
+--><!--#set var="TITLE" value="Mediatypen stöds ej!"
 --><!--#include virtual="include/top.html" -->
 
-    Servern st&ouml;djer inte den mediatyp som skickats i f&ouml;rfr&aring;gan.
+    Servern stödjer inte den mediatyp som skickats i förfrågan.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

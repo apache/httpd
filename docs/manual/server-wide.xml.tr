@@ -58,10 +58,10 @@
     <p><directive module="core">ServerName</directive>,
       <directive module="core">UseCanonicalName</directive> ve
       <directive module="core">UseCanonicalPhysicalPort</directive>
-      yönergeleri, sunucu tarafından, özüne yönelik URL’leri nasıl
+      yönergeleri, sunucu tarafından, özüne yönelik URL'leri nasıl
       oluşturacağını saptamak için kullanılır. Örneğin bir istemci bir dizin
-      isteğinde bulunurken URL’nin sonuna bölü çizgisi eklemese bile
-      Apache httpd’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
+      isteğinde bulunurken URL'nin sonuna bölü çizgisi eklemese bile
+      Apache httpd'nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
       yönlendirmesi gerekir; böylece istemci belge içindeki göreli
       bağlantıları doğru şekilde çözümleyebilir.</p>
   </section>
@@ -81,7 +81,7 @@
       </directivelist>
     </related>
 
-    <p>Bu yönergeler Apache httpd’nin doğru işlem yapması için gereksinim
+    <p>Bu yönergeler Apache httpd'nin doğru işlem yapması için gereksinim
       duyduğu çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
       başlamayan dosya yolları kullanıldığında bu dosyaların yerlerinin
       <directive module="core">ServerRoot</directive> yönergesinde belirtilen
@@ -108,12 +108,12 @@
       </directivelist>
     </related>
 
-    <p><code>LimitRequest*</code> yönergeleri, Apache httpd’nin istemcilerden
+    <p><code>LimitRequest*</code> yönergeleri, Apache httpd'nin istemcilerden
       gelen istekleri okumak için kullanacağı özkaynakların miktarları ile
       ilgili sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
       suretiyle bazı hizmet reddi saldırılarının etkileri azaltılabilir.</p>
 
-    <p><code>RLimit*</code> yönergeleri ise Apache httpd’nin çocuk süreçleri
+    <p><code>RLimit*</code> yönergeleri ise Apache httpd'nin çocuk süreçleri
       tarafından çatallanabilen özkaynakların miktarlarını sınırlamakta
       kullanılırlar. Özellikle de CGI betikleri ve SSI çalıştırma komutları
       tarafından kullanılan özkaynakları denetlemekte kullanılırlar.</p>

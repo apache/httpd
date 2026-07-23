@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1914491 -->
+<!-- English Revision: 1935202 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -26,7 +26,7 @@
   <parentdocument href="./">Notes spécifiques à certaines
   plates-formes</parentdocument>
 
-  <title>Compiler Apache pour Microsoft Windows</title>
+  <title>Compiler Apache httpd pour Microsoft Windows</title>
 
   <summary>
 

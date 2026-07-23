@@ -80,7 +80,7 @@ static void etag_end(char *next, const char *vlv, apr_size_t vlv_len)
 {
     if (vlv) {
         *next++ = ';';
-        apr_cpystrn(next, vlv, vlv_len);
+        apr_cpystrn(next, vlv, vlv_len + 1);
     }
     else {
         *next++ = '"';

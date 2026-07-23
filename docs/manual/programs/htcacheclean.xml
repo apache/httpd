@@ -26,7 +26,7 @@
 <title>htcacheclean - Clean up the disk cache</title>
 
 <summary>
-    <p><code>htcacheclean</code> is used to keep the size of
+    <p><program>htcacheclean</program> is used to keep the size of
     <module>mod_cache_disk</module>'s storage within a given size limit, or
     limit on inodes in use. This tool can run either manually or in daemon mode.
     When running in daemon mode, it sleeps in the background and checks the cache
@@ -103,8 +103,8 @@
     the <code>-t</code> option.</dd>
 
     <dt><code>-n</code></dt>
-    <dd>Be nice. This causes slower processing in favour of other
-    processes. <code>htcacheclean</code> will sleep from time to time
+    <dd>Be nice. This causes slower processing in favor of other
+    processes. <program>htcacheclean</program> will sleep from time to time
     so that (a) the disk IO will be delayed and (b) the kernel can schedule
     other processes in the meantime.</dd>
 
@@ -160,7 +160,7 @@
 </section>
 
 <section id="delete"><title>Deleting a specific URL</title>
-    <p>If <code>htcacheclean</code> is passed one or more URLs, each URL will
+    <p>If <program>htcacheclean</program> is passed one or more URLs, each URL will
     be deleted from the cache. If multiple variants of an URL exists, all
     variants would be deleted.</p>
 
@@ -177,7 +177,7 @@
 
 <section id="list"><title>Listing URLs in the Cache</title>
     <p>By passing the <code>-a</code> or <code>-A</code> options to
-    <code>htcacheclean</code>, the URLs within the cache will be listed
+    <program>htcacheclean</program>, the URLs within the cache will be listed
     as they are found, one URL per line. The <code>-A</code> option
     dumps the full cache entry after the URL, with fields in the
     following order:</p>
@@ -202,11 +202,24 @@
 </section>
 
 <section id="exit"><title>Exit Status</title>
-    <p><code>htcacheclean</code> returns a zero status ("true") if all
+    <p><program>htcacheclean</program> returns a zero status ("true") if all
     operations were successful, <code>1</code> otherwise. If an URL is
     specified, and the URL was cached and successfully removed,
     <code>0</code> is returned, <code>2</code> otherwise. If an error
     occurred during URL removal, <code>1</code> is returned.</p>
+</section>
+
+<section id="files"><title>Files</title>
+
+<p>The cache root directory is specified as an argument on the command line
+and should match the <code>CacheRoot</code> directive in the server
+configuration.</p>
+
+<dl>
+<dt><var>path</var></dt>
+<dd>The root directory of the disk cache to be cleaned.</dd>
+</dl>
+
 </section>
 
 </manualpage>

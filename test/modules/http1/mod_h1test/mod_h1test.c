@@ -60,7 +60,7 @@ static int h1test_echo_handler(request_rec *r)
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "echo_handler: processing request");
-    r->status = 200;
+    r->status = HTTP_OK;
     r->clength = -1;
     r->chunked = 1;
     ct = apr_table_get(r->headers_in, "content-type");

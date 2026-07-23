@@ -1,0 +1,299 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Pr&eacute;sentation des nouvelles fonctionnalit&eacute;s de la version 2.6 du serveur
+HTTP Apache - Serveur HTTP Apache Version 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
+</script>
+
+<link href="./images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Pr&eacute;sentation des nouvelles fonctionnalit&eacute;s de la version 2.6 du serveur
+HTTP Apache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./en/new_features_2_6.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/new_features_2_6.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div>
+
+  <p>Ce document d&eacute;crit quelques changements majeurs entre les version 2.4 et
+  2.6 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s apparues dans
+  la version 2.4, voir le document <a href="new_features_2_4.html">nouvelles
+  fonctionnalit&eacute;s de la version 2.4</a>.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#core">&Eacute;volutions du cœur du serveur</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#newmods">Nouveaux modules</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#module">&Eacute;volutions des module</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programs">&Eacute;volutions des programmes</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#developer">Modifications pour le d&eacute;veloppeur de modules</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="core">&Eacute;volutions du cœur du serveur <a title="Lien permanent" href="#core" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt>Directive ContentDigest et en-t&ecirc;te Content-MD5</dt>
+      <dd>La directive <code>ContentDigest</code> et la prise en charge de
+      l&rsquo;en-t&ecirc;te <code>Content-MD5</code> ont &eacute;t&eacute; supprim&eacute;es du serveur, en
+      accord avec la suppression de cet en-t&ecirc;te de la <a href="https://www.rfc-editor.org/rfc/rfc7231#appendix-B">RFC 7231</a> (Hypertext Transfer Protocol (HTTP/1.1):
+      Semantics and Content).</dd>
+
+      <dt>Options de la directive <code>Listen</code></dt>
+      <dd>La directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> prend
+      maintenant en charge un argument facultatif <code>options=...</code>,
+      permettant de sp&eacute;cifier des options de socket par &eacute;couteur, en particulier
+      <code>multipathtcp</code> pour activer TCP multi-chemin s&rsquo;il est pris en
+      charge par la plateforme.</dd>
+
+      <dt>Filtrage et compl&egrave;tement de saisie asynchrones</dt>
+      <dd>La nouvelle directive <code class="directive"><a href="./mod/core.html#asyncfilter">AsyncFilter</a></code>
+      permet de d&eacute;clarer les types de filtre qui prennent en charge la gestion
+      asynchrone, et la prise en charge du compl&egrave;tement de saisie asynchrone a
+      &eacute;t&eacute; &eacute;tendue &agrave; l'ensemble du noyau. Cela &eacute;taie la description de la gestion
+      asynchrone des serveurs mandataires et des WebSockets ci-apr&egrave;s.</dd>
+
+      <dt>Contr&ocirc;les de la stricte conformit&eacute; &agrave; HTTP/1.1</dt>
+      <dd>De nouvelles directives du noyau permettent un contr&ocirc;le plus fin de la
+      conformit&eacute; &agrave; HTTP/1.1&nbsp;: <code class="directive"><a href="./mod/core.html#httpexpectstrict">HttpExpectStrict</a></code> contr&ocirc;le si un code
+      <code>417</code> est renvoy&eacute; lorsqu&rsquo;un client omet une pr&eacute;vision
+      <code>100-Continue</code>, et <code class="directive"><a href="./mod/core.html#httpcontentlengthheadzero">HttpContentLengthHeadZero</a></code> contr&ocirc;le la gestion de
+      <code>Content-Length</code> pour les requ&ecirc;tes <code>HEAD</code>.</dd>
+
+      <dt>Outrepassement du niveau de journalisation en fontion du contexte</dt>
+      <dd>La nouvelle directive <code class="directive"><a href="./mod/core.html#logleveloverride">LogLevelOverride</a></code> permet d&rsquo;outrepasser le niveau
+      de journalisation pour des adresses IP clientes individuelles, facilitant
+      ainsi le d&eacute;bogage cibl&eacute; sur un serveur en fonctionnement.</dd>
+ 
+      <dt>Activation du socket <code>systemd</code></dt>
+      <dd><code class="program"><a href="./programs/httpd.html">httpd</a></code> peut maintenant &ecirc;tre configur&eacute; pour d&eacute;marrer
+      via l&rsquo;<a href="https://www.freedesktop.org/software/systemd/man/systemd.socket.html">l&rsquo;activation
+      du socket</a> <code>systemd</code>.</dd>
+
+
+
+      <dt>Nouvelle directive <code>DefaultStateDir</code></dt>
+      <dd>La nouvelle directive <code class="directive"><a href="./mod/core.html#defaultstatedir">DefaultStateDir</a></code> permet de sp&eacute;cifier un
+      r&eacute;pertoire pour stocker les &eacute;tats persistants.</dd>
+
+      <dt>Prise en charge de la Zone/port&eacute;e dans les adresses IPv6</dt>
+      <dd>Si le serveur a &eacute;t&eacute; compil&eacute; avec APR version 1.7.0 ou sup&eacute;rieure, des
+      zones (port&eacute;es) peuvent &ecirc;tre sp&eacute;cifi&eacute;es dans une adresse IPv6 link-local
+      utilis&eacute;e avec la directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ou <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>.</dd>
+      
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="newmods">Nouveaux modules <a title="Lien permanent" href="#newmods" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_auth_bearer.html">mod_auth_bearer</a></code>, <code class="module"><a href="./mod/mod_autht_core.html">mod_autht_core</a></code>,
+          <code class="module"><a href="./mod/mod_autht_jwt.html">mod_autht_jwt</a></code></dt>
+      <dd>Un nouveau cadriciel de fournisseur de jeton d&rsquo;authentification
+      (<em>autht</em>) a &eacute;t&eacute; ajout&eacute; en plus des piles de fournisseurs
+      authn/authz existantes. <code class="module"><a href="./mod/mod_auth_bearer.html">mod_auth_bearer</a></code> impl&eacute;mente
+      l&rsquo;authentification &agrave; jeton <code>Bearer</code> de la <a href="https://www.rfc-editor.org/rfc/rfc6750">RFC 6750</a> en
+      tant que frontal (semblable &agrave; <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code>),
+      <code class="module"><a href="./mod/mod_autht_core.html">mod_autht_core</a></code> h&eacute;berge l&rsquo;enregistrement du fournisseur
+      autht et <code class="module"><a href="./mod/mod_autht_jwt.html">mod_autht_jwt</a></code> fournit la signature et la
+      v&eacute;rification par jeton Web JSON.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_crypto.html">mod_crypto</a></code></dt>
+      <dd>Ce nouveau module peut chiffrer et d&eacute;chiffrer des corps de requ&ecirc;te et
+      de r&eacute;ponse &agrave; l&rsquo;aide de filtres en entr&eacute;e et en sortie en utilisant les
+      pilotes crypto APR.</dd>
+      <dt><code class="module"><a href="./mod/mod_journald.html">mod_journald</a></code>, <code class="module"><a href="./mod/mod_syslog.html">mod_syslog</a></code></dt>
+      <dd>Ces nouveaux modules permettent la prise en charge de la
+      journalisation vers syslog ou <code>journald</code>.</dd>
+
+      <dt>mod_log_json</dt>
+      <dd>Ce nouveau module permet une journalisation des acc&egrave;s structur&eacute;e au
+      format JSON.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_beacon.html">mod_proxy_beacon</a></code></dt>
+      <dd>Ce nouveau module permet aux serveurs dorsaux des serveurs mandataires
+      inverses de s&rsquo;annoncer eux-m&ecirc;mes &agrave; l&rsquo;aide de datagrammes UDP afin qu&rsquo;ils
+      soient automatiquement ajout&eacute;s au r&eacute;partiteur de charge de leur mandataire
+      frontal.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_allowhandlers.html">mod_allowhandlers</a></code></dt>
+      <dd>Ce nouveau module restreint la liste des gestionnaires qui peuvent
+      s&rsquo;ex&eacute;cuter dans un certain contexte, fournissant ainsi une couche
+      suppl&eacute;mentaire de contr&ocirc;le d&rsquo;acc&egrave;s.</dd>
+
+</dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="module">&Eacute;volutions des module <a title="Lien permanent" href="#module" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
+      <dd>Les &eacute;volutions de mod_ssl suivantes sont incluses&nbsp;:
+      <ul>
+        <li>La directive <code class="directive"><a href="./mod/mod_ssl.html#sslrandomseed">SSLRandomSeed</a></code>
+	est maintenant obsol&egrave;te et ignor&eacute;e si le serveur a &eacute;t&eacute; compil&eacute; avec
+	OpenSSL version 1.1.1 ou sup&eacute;rieure.</li>
+        <li>La variable d&rsquo;environnement <code>SSLKEYLOGFILE</code> peut
+	maintenant &ecirc;tre d&eacute;finie pour enregistrer des informations de cl&eacute; priv&eacute;e
+	pour d&eacute;chiffrer hors-ligne des vidages du protocole SSL/TLS en utilisant
+	des outils tiers.</li>
+	<li>La nouvelle directive <code class="directive"><a href="./mod/mod_ssl.html#sslpolicy">SSLPolicy</a></code> permet de d&eacute;finir une fois pour
+	toutes un ensemble de d&eacute;finitions SSL nomm&eacute; et de l&rsquo;appliquer &agrave;
+	plusieurs serveurs virtuels.</li>
+      </ul></dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="./mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code></dt>
+      <dd>Le mandataire peut maintenant s&rsquo;ex&eacute;cuter de mani&egrave;re asynchrone sous le
+      MPM event, lib&eacute;rant de ce fait les threads de travail lors de l&rsquo;attente de
+      serveurs dorsaux lents. Cela inclut la gestion asynchrone des protocoles
+      <code>Upgrade</code>d et des WebSockets, personnalis&eacute;s &agrave; l&rsquo;aide des
+      nouvelles
+      directives <code class="directive"><a href="./mod/mod_proxy.html#proxyasyncdelay">ProxyAsyncDelay</a></code>,
+      <code class="directive"><a href="./mod/mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout</a></code>,
+      <code>ProxyWebsocketAsyncDelay</code> et
+      <code>ProxyWebsocketIdleTimeout</code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code></dt>
+      <dd>HTTP/2 prend maintenant en charge du &laquo;&nbsp;bootstrap&nbsp;&raquo; des WebSockets comme
+      d&eacute;crit dans la <a href="https://www.rfc-editor.org/rfc/rfc8441">RFC 8441</a> (activ&eacute; &agrave; l&rsquo;aide de la nouvelle directive
+      <code>H2WebSockets</code>), de la nouvelle directive
+      <code>H2EarlyHint</code> permettant d&rsquo;ajouter des en-t&ecirc;tes &agrave;
+      une r&eacute;ponse <code>103 Early Hints</code> et d&rsquo;un comptage pr&eacute;cis des
+      octets envoy&eacute;s pour le format de journalisation <code>%O</code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code></dt>
+      <dd>WebDAV prend maintenant en charge les quota de r&eacute;pertoire (directive
+      <code class="directive"><a href="./mod/mod_dav_fs.html#davquota">DAVquota</a></code>), les extensions du
+      protocole WebDAV de Microsoft (directive <code class="directive"><a href="./mod/mod_dav.html#davmsext">DAVMSext</a></code>), les directives
+      <code>DAVHonorMtimeHeader</code> et <code>DAVLockDBType</code>, et une
+      conformit&eacute; accrue de l&rsquo;ETag fort.</dd>
+
+      <dt>Autres am&eacute;liorations de modules</dt>
+      <dd><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> ajoute la directive <code class="directive"><a href="./mod/mod_autoindex.html#indexforbiddenreturn404">IndexForbiddenReturn404</a></code>,
+      <code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code> ajoute  <code>MimeOptions</code> et
+      <code class="module"><a href="./mod/mod_session_cookie.html">mod_session_cookie</a></code> ajoute
+      <code>SessionCookieMaxAge</code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_cgid.html">mod_cgid</a></code></dt>
+      <dd>Si le serveur a &eacute;t&eacute; configur&eacute; avec
+      <code>--enable-cgid-fdpassing</code>, le d&eacute;mon CGI configure la gestion de
+      stderr de la m&ecirc;me fa&ccedil;on que mod_cgi.</dd>
+
+      
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="programs">&Eacute;volutions des programmes <a title="Lien permanent" href="#programs" class="permalink">&para;</a></h2>
+    
+    <dl>
+        <dt><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code></dt>
+        <dd>L&rsquo;utilitaire <code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> peut maintenant g&eacute;n&eacute;rer des
+	hachages <code>crypt()</code> SHA-256 ou SHA-512 s&rsquo;ils sont pris en
+	charge par la biblioth&egrave;que C.</dd>
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="developer">Modifications pour le d&eacute;veloppeur de modules <a title="Lien permanent" href="#developer" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt>S&eacute;paration entre le noyau et le module <code>http</code></dt>
+
+      <dd>Une grande quantit&eacute; de code a &eacute;t&eacute; d&eacute;plac&eacute;e du module <code>http</code>
+      vers le noyau du serveur &mdash; en particulier le gestionnaire par
+      d&eacute;faut, les filtres en entr&eacute;e et en sortie par d&eacute;faut et les directives de
+      configuration du noyau &mdash; de fa&ccedil;on que le serveur puisse fonctionner
+      que le module <code>http</code> soit charg&eacute; ou non. Le d&eacute;placement de
+      <code>ap_set_etag()</code> depuis le module <code>http</code> vers le
+      noyau &eacute;tait une partie de ce travail.</dd>
+
+      <dt>Nouveaux types de bloc de m&eacute;tadonn&eacute;es et division du filtre HTTP</dt>
+
+      <dd>Les nouveaux types de bloc de m&eacute;tadonn&eacute;es <code>REQUEST</code>,
+      <code>RESPONSE</code> et <code>HEADERS</code> ont &eacute;t&eacute; ajout&eacute;s &agrave; l&rsquo;API,
+      ainsi qu&rsquo;une nouvelle m&eacute;thode pour d&eacute;finir les en-t&ecirc;tes de r&eacute;ponse
+      standards <code>Date</code> et <code>Server</code> et des aides au
+      formatage de parties de HTTP/1.x (en-t&ecirc;tes, segments de fin) &agrave; r&eacute;utiliser
+      en dehors du noyau, par exemple dans <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>. Le filtre
+      <code>HTTP_IN</code> a &eacute;t&eacute; divis&eacute; en un filtre HTTP g&eacute;n&eacute;rique et un filtre
+      sp&eacute;cifique &agrave; HTTP/1.x <code>HTTP1_BODY_IN</code>, et un nouveau drapeau
+      <code>body_indeterminate</code> sur <code>request_rec</code> indique qu&rsquo;un
+      corps de requ&ecirc;te peut &ecirc;tre pr&eacute;sent et doit &ecirc;tre lu ou supprim&eacute;.</dd>
+
+      <dt>Prise en charge d&rsquo;un ETag fort et notes binaires de requ&ecirc;te</dt>
+
+      <dd>Un concept de &laquo;&nbsp;notes binaires&nbsp;&raquo; (binary notes) a &eacute;t&eacute; ajout&eacute; &agrave;
+      <code>request_rec</code>, permettant la d&eacute;finition des indicateurs de bits
+      compact&eacute;s sur une requ&ecirc;te. La premi&egrave;re de ces notes,
+      <code>AP_REQUEST_STRONG_ETAG</code>, fait que les modules forcent la
+      compatibilit&eacute; d&rsquo;un ETag fort avec les exigences des RFC telles que celles
+      mandat&eacute;es par diverses extensions de WebDav. Les nouvelles fonctions
+      <code>ap_make_etag_ex()</code> et <code>ap_set_etag_fd()</code> permettent
+      un contr&ocirc;le total de la g&eacute;n&eacute;ration des ETag.</dd>
+
+      <dt>Nouveau type <code>ap_method_mask_t</code></dt>
+
+      <dd>Le type <code>ap_method_mask_t</code> a &eacute;t&eacute; ajout&eacute; et est maintenant
+      utilis&eacute; pour le champ method_mask dans ap_method_list_t, AP_METHOD_BIT, le
+      champ allowed de request_rec, le champ limited de cmd_parms.</dd>
+
+      <dt>Modification du fichier <code>mod_ssl.h</code> de l&rsquo;API de mod_ssl</dt>
+
+      <dd>L&rsquo;API de la fonction optionnelle <code>ssl_var_lookup</code> prend
+      maintenant un argument <code>const char *</code><em>name</em> et renvoie
+      une cha&icirc;ne <code>const char *</code>. L&rsquo;argument pool doit maintenant &ecirc;tre
+      non NULL.</dd>
+
+      <dt>APIs supprim&eacute;es</dt>
+
+      <dd>Suite &agrave; la suppression de l&rsquo;en-t&ecirc;te <code>Content-MD5</code>, les
+      fonctions <code>ap_md5digest()</code> et <code>ap_md5contextTo64()</code>
+      ont &eacute;t&eacute; supprim&eacute;es.</dd>
+
+    </dl>
+    <p>La documentation du d&eacute;veloppeur contient une <a href="developer/new_api_2_6.html">liste d&eacute;taill&eacute;e des changements de l&rsquo;API</a>.
+    </p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./en/new_features_2_6.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/new_features_2_6.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

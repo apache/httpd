@@ -1,41 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_log_config - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_log_config</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_log_config.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Logging of the requests made to the server</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>log_config_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_log_config.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>log_config_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_log_config.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides for flexible logging of client
@@ -54,23 +54,23 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">Custom Log Formats</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#formats">Custom Log Formats</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">Security Considerations</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#globallog">GlobalLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#bufferedlogs">BufferedLogs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#customlog">CustomLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#globallog">GlobalLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logformat">LogFormat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#transferlog">TransferLog</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Apache Log Files</a></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Custom Log Formats</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
+<h2 id="formats">Custom Log Formats <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
     <p>The format argument to the <code class="directive"><a href="#logformat">LogFormat</a></code> and <code class="directive"><a href="#customlog">CustomLog</a></code> directives is a string. This string is
     used to log each request to the log file. It can contain literal
@@ -177,7 +177,9 @@
         <td>The query string (prepended with a <code>?</code> if a query
         string exists, otherwise an empty string).</td></tr>
 <tr><td><code>%r</code></td>
-        <td>First line of request.</td></tr>
+        <td>First line of request. Does not adhere to 
+        <code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code>. (i.e. no merging
+        even if ON)</td></tr>
 <tr class="odd"><td><code>%R</code></td>
         <td>The handler generating the response (if any).</td></tr>
 <tr><td><code>%s</code></td>
@@ -236,7 +238,9 @@
         <td>Remote user if the request was authenticated. May be bogus if return status
         (<code>%s</code>) is 401 (unauthorized).</td></tr>
 <tr><td><code>%U</code></td>
-        <td>The URL path requested, not including any query string.</td></tr>
+        <td>The URL path requested, not including any query string. 
+        Adheres to <code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code>.
+        (i.e. slashes are merged if <code>ON</code>)</td></tr>
 <tr class="odd"><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
         of the server serving the request.</td></tr>
@@ -277,7 +281,7 @@
         in the response sent from the server.  </td></tr>
 </table>
 
-    <h3><a name="modifiers" id="modifiers">Modifiers</a></h3>
+    <h3 id="modifiers">Modifiers</h3>
 
       <p>Particular items can be restricted to print only for
       responses with specific HTTP status codes by placing a
@@ -312,11 +316,11 @@
 
     
 
-    <h3><a name="format-notes" id="format-notes">Format Notes</a></h3>
+    <h3 id="format-notes">Format Notes</h3>
 
       <p>For security reasons, starting with version 2.0.46,
-      non-printable and other special characters in <code>%r</code>,
-      <code>%i</code> and <code>%o</code> are escaped using
+      non-printable and other special characters in format strings
+      that may contain arbitrary string data are escaped using
       <code>\x<var>hh</var></code> sequences, where <var>hh</var>
       stands for the hexadecimal representation of the raw
       byte. Exceptions from this rule are <code>"</code> and
@@ -326,7 +330,46 @@
       prior to 2.0.46, no escaping was performed on these strings so
       you had to be quite careful when dealing with raw log files.</p>
 
-      <p>Since httpd 2.0, unlike 1.3, the <code>%b</code> and
+      <table>
+      
+      <tr><th>Format</th><th>Description</th><th>Escaped</th></tr>
+      <tr><td><code>%c</code></td><td>SSL variable (shortcut)</td><td>Yes</td></tr>
+      <tr><td><code>%C</code></td><td>Cookie value</td><td>Yes</td></tr>
+      <tr><td><code>%e</code></td><td>Environment variable</td><td>Yes</td></tr>
+      <tr><td><code>%f</code></td><td>Request filename</td><td>Yes</td></tr>
+      <tr><td><code>%h</code></td><td>Remote hostname</td><td>Yes</td></tr>
+      <tr><td><code>%H</code></td><td>Request protocol</td><td>Yes</td></tr>
+      <tr><td><code>%i</code></td><td>Request header</td><td>Yes</td></tr>
+      <tr><td><code>%l</code></td><td>Remote logname</td><td>Yes</td></tr>
+      <tr><td><code>%m</code></td><td>Request method</td><td>Yes</td></tr>
+      <tr><td><code>%n</code></td><td>Note</td><td>Yes</td></tr>
+      <tr><td><code>%o</code></td><td>Response header</td><td>Yes</td></tr>
+      <tr><td><code>%q</code></td><td>Query string</td><td>Yes</td></tr>
+      <tr><td><code>%r</code></td><td>Request line</td><td>Yes</td></tr>
+      <tr><td><code>%R</code></td><td>Handler</td><td>Yes</td></tr>
+      <tr><td><code>%u</code></td><td>Remote user</td><td>Yes</td></tr>
+      <tr><td><code>%U</code></td><td>Request URI</td><td>Yes</td></tr>
+      <tr><td><code>%v</code></td><td>Server hostname</td><td>Yes</td></tr>
+      <tr><td><code>%V</code></td><td>Canonical server name</td><td>Yes</td></tr>
+      <tr><td><code>%x</code></td><td>SSL variable</td><td>Yes</td></tr>
+      <tr><td><code>%^ti</code></td><td>Request trailer</td><td>Yes</td></tr>
+      <tr><td><code>%^to</code></td><td>Response trailer</td><td>Yes</td></tr>
+      <tr><td><code>%a</code></td><td>Remote IP address</td><td>No (IP address)</td></tr>
+      <tr><td><code>%A</code></td><td>Local IP address</td><td>No (IP address)</td></tr>
+      <tr><td><code>%b</code>, <code>%B</code></td><td>Bytes sent</td><td>No (numeric)</td></tr>
+      <tr><td><code>%D</code></td><td>Request duration (microseconds)</td><td>No (numeric)</td></tr>
+      <tr><td><code>%F</code></td><td>Request flushed</td><td>No (single character)</td></tr>
+      <tr><td><code>%k</code></td><td>Requests on connection</td><td>No (numeric)</td></tr>
+      <tr><td><code>%L</code></td><td>Log ID</td><td>No (internally generated)</td></tr>
+      <tr><td><code>%p</code></td><td>Server port</td><td>No (numeric)</td></tr>
+      <tr><td><code>%P</code></td><td>PID/TID</td><td>No (numeric)</td></tr>
+      <tr><td><code>%s</code></td><td>Status code</td><td>No (numeric)</td></tr>
+      <tr><td><code>%t</code></td><td>Request time</td><td>No (formatted time)</td></tr>
+      <tr><td><code>%T</code></td><td>Request duration (seconds)</td><td>No (numeric)</td></tr>
+      <tr><td><code>%X</code></td><td>Connection status</td><td>No (single character)</td></tr>
+      </table>
+
+      <p>The <code>%b</code> and
       <code>%B</code> format strings do not represent the number of
       bytes sent to the client, but simply the size in bytes of the
       HTTP response (which will differ, for instance, if the
@@ -351,7 +394,7 @@
 
     
 
-    <h3><a name="examples" id="examples">Examples</a></h3>
+    <h3 id="examples">Examples</h3>
 
       <p>Some commonly used log format strings are:</p>
 
@@ -383,16 +426,16 @@
       </dl>
 
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Security Considerations <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>See the <a href="../misc/security_tips.html#serverroot">security tips</a>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Directive</a> <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="bufferedlogs"><span id="BufferedLogs">BufferedLogs</span> Directive <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Buffer log entries in memory before writing to disk</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
@@ -413,8 +456,8 @@
     cause loss of logging data.</div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Directive</a> <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="customlog"><span id="CustomLog">CustomLog</span> Directive <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -516,8 +559,8 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Directive</a> <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="globallog"><span id="GlobalLog">GlobalLog</span> Directive <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -545,8 +588,8 @@ expr=<var>expression</var>]</code></td></tr>
     </ul>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Directive</a> <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="logformat"><span id="LogFormat">LogFormat</span> Directive <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Describes a format for use in a log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
@@ -590,8 +633,8 @@ expr=<var>expression</var>]</code></td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Directive</a> <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="transferlog"><span id="TransferLog">TransferLog</span> Directive <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify location of a log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
@@ -616,32 +659,36 @@ TransferLog "logs/access_log"</pre>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_log_config.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

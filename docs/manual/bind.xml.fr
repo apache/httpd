@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1816110 -->
+<!-- English Revision: 1933438 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -52,11 +52,11 @@
     <p>Au démarrage de httpd, un port et une adresse lui sont associés sur
     l'hôte local et le serveur se met en attente de l'arrivée d'une requête.
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
-    Cependant, on peut lui préciser des ports et des adresses spécifiques à
-    écouter, ou une combinaison des deux. Tout ceci est souvent associé avec la
-    fonctionnalité des <a href="vhosts/">serveurs virtuels</a> qui détermine la
-    manière dont <code>httpd</code> répond aux différents ports, noms d'hôtes et
-    adresses IP.</p>
+    Cependant, il est possible de lui préciser des ports et des adresses
+    spécifiques à écouter, ou une combinaison des deux. Tout ceci est souvent
+    associé avec la fonctionnalité des <a href="vhosts/">serveurs virtuels</a>
+    qui détermine la manière dont <code>httpd</code> répond aux différents
+    ports, noms d'hôtes et adresses IP.</p>
 
     <p>La directive <directive module="mpm_common">Listen</directive> permet
     d'indiquer au serveur qu'il ne doit accepter des requêtes que sur le(s)
@@ -110,7 +110,7 @@ Listen 192.0.2.5:8000
     </example>
 
     <p>Voir <a
-    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">cette
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">cette
     discussion dans le wiki</a> pour plus de détails à propos de la résolution
     de ce problème.</p>
 
@@ -181,7 +181,7 @@ Listen 192.0.2.5:8000
     configure</program>.</p>
 
     <p>L'option <code>--enable-v4-mapped</code> est utilisée par défaut sur
-    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD ;
+    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD&nbsp;;
     votre httpd a donc probablement été construit avec cette option.</p>
 
     <p>Si vous souhaitez que httpd ne gère que des connexions IPv4, sans se

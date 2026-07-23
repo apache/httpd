@@ -136,8 +136,16 @@ static int ap_set_byterange(request_rec *r, apr_off_t clength,
     }
     *indexes = apr_array_make(r->pool, ranges, sizeof(indexes_t));
     while ((cur = ap_getword(r->pool, &range, ','))) {
-        char *dash;
+        char *dash, *end_cur;
         apr_off_t number, start, end;
+
+         /* Remove leading and trailing white spaces */
+        while (apr_isspace(*cur))
+            ++cur;
+        /* blast trailing whitespace */
+        end_cur = &cur[strlen(cur)];
+        while (--end_cur >= cur && apr_isspace(*end_cur))
+            *end_cur = '\0';
 
         if (!*cur)
             break;

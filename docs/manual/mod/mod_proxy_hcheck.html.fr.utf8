@@ -1,153 +1,153 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_proxy_hcheck - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_proxy_hcheck</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_hcheck.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_hcheck.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_hcheck.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Check up dynamique des membres du groupe de répartition de charge
-(équipiers) pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Check up dynamique des membres du groupe de r&eacute;partition de charge
+(&eacute;quipiers) pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_hcheck_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_hcheck.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.21 du serveur HTTP Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>proxy_hcheck_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_proxy_hcheck.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.21 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet d'effectuer un check up dynamique des membres du groupe
-    de répartition de charge (équipiers). Ce check up peut être activé pour un
-    ou plusieurs équipiers et il est indépendant des requêtes de mandataire
+    de r&eacute;partition de charge (&eacute;quipiers). Ce check up peut &ecirc;tre activ&eacute; pour un
+    ou plusieurs &eacute;quipiers et il est ind&eacute;pendant des requ&ecirc;tes de mandataire
     inverse proprement dites.</p>
 
-    <p>Pour fonctionner, ce module <em>nécessite</em> le chargement préalable de
+    <p>Pour fonctionner, ce module <em>n&eacute;cessite</em> le chargement pr&eacute;alable de
     <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>.</p>
 
-<div class="note"><h3>Paramètres</h3>
-  <p>Le mécanisme de check up est activé via l'utilisation de paramètres
-  supplémentaires de la directive <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> configurés de manière standard
+<div class="note"><h3>Param&egrave;tres</h3>
+  <p>Le m&eacute;canisme de check up est activ&eacute; via l'utilisation de param&egrave;tres
+  suppl&eacute;mentaires de la directive <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> configur&eacute;s de mani&egrave;re standard
   via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
 
-  <p>Ce module définit un nouveau drapeau d'état <a href="mod_proxy.html#status_table">status</a> pour BalancerMember :
-  "<code>C</code>". Lorsque l'équipier est mis hors service suite à un
-  disfonctionnement déterminé par le module de check up, ce drapeau est activé
-  et peut être lu (et modifié) via le <code>balancer-manager</code>.</p>
+  <p>Ce module d&eacute;finit un nouveau drapeau d'&eacute;tat <a href="mod_proxy.html#status_table">status</a> pour BalancerMember :
+  "<code>C</code>". Lorsque l'&eacute;quipier est mis hors service suite &agrave; un
+  disfonctionnement d&eacute;termin&eacute; par le module de check up, ce drapeau est activ&eacute;
+  et peut &ecirc;tre lu (et modifi&eacute;) via le <code>balancer-manager</code>.</p>
 
     <table>
-    <tr><th>Paramètre</th>
-        <th>Défaut</th>
+    <tr><th>Param&egrave;tre</th>
+        <th>D&eacute;faut</th>
         <th>Description</th></tr>
     <tr><td>hcmethod</td>
         <td>None</td>
-        <td>Aucun check up dynamique n'est effectué. Les choix possibles sont :
+        <td>Aucun check up dynamique n'est effectu&eacute;. Les choix possibles sont :
         	<table>
         		<tr><th>Method</th><th>Description</th><th>Note</th></tr>
-        		<tr><td>None</td><td>Aucun check up dynamique effectué</td><td /></tr>
-        		<tr><td>TCP</td><td>Vérifie qu'un socket vers le serveur
-			d'arrière-plan peut être créé ; par exemple "es-tu en
-			état de fonctionner"</td><td /></tr>
+        		<tr><td>None</td><td>Aucun check up dynamique effectu&eacute;</td><td></td></tr>
+        		<tr><td>TCP</td><td>V&eacute;rifie qu'un socket vers le serveur
+			d'arri&egrave;re-plan peut &ecirc;tre cr&eacute;&eacute; ; par exemple "es-tu en
+			&eacute;tat de fonctionner"</td><td></td></tr>
         		
-			<tr><td>OPTIONS</td><td>Envoie une requête <code>HTTP
-			OPTIONS</code> au serveur d'arrière-plan via
+			<tr><td>OPTIONS</td><td>Envoie une requ&ecirc;te <code>HTTP
+			OPTIONS</code> au serveur d'arri&egrave;re-plan via
 			<code>HTTP/1.0</code></td><td>*</td></tr>
-			<tr><td>HEAD</td><td>Envoie une requête <code>HTTP
-			HEAD</code> au serveur d'arrière-plan via
+			<tr><td>HEAD</td><td>Envoie une requ&ecirc;te <code>HTTP
+			HEAD</code> au serveur d'arri&egrave;re-plan via
 			<code>HTTP/1.0</code></td><td>*</td></tr>
-			<tr><td>GET</td><td>Envoie une requête <code>HTTP
-			GET</code> au serveur d'arrière-plan via
+			<tr><td>GET</td><td>Envoie une requ&ecirc;te <code>HTTP
+			GET</code> au serveur d'arri&egrave;re-plan via
 			<code>HTTP/1.0</code></td><td>*</td></tr>
-			<tr><td>OPTIONS11</td><td>Envoie une requête <code>HTTP
-			OPTIONS</code> au serveur d'arrière-plan via
+			<tr><td>OPTIONS11</td><td>Envoie une requ&ecirc;te <code>HTTP
+			OPTIONS</code> au serveur d'arri&egrave;re-plan via
 			<code>HTTP/1.1</code></td><td>*</td></tr>
-			<tr><td>HEAD11</td><td>Envoie une requête <code>HTTP
-			HEAD</code> au serveur d'arrière-plan via
+			<tr><td>HEAD11</td><td>Envoie une requ&ecirc;te <code>HTTP
+			HEAD</code> au serveur d'arri&egrave;re-plan via
 			<code>HTTP/1.1</code></td><td>*</td></tr>
-			<tr><td>GET11</td><td>Envoie une requête <code>HTTP
-			GET</code> au serveur d'arrière-plan via
+			<tr><td>GET11</td><td>Envoie une requ&ecirc;te <code>HTTP
+			GET</code> au serveur d'arri&egrave;re-plan via
 			<code>HTTP/1.1</code></td><td>*</td></tr>
 
-				<tr><td colspan="3" /></tr>
+				<tr><td colspan="3"></td></tr>
 				<tr><td colspan="3">*: si hcexpr n'est pas
-				utilisé, un retour HTTP 2xx ou 3xx sera
-				interprété comme un passage avec succès du check
+				utilis&eacute;, un retour HTTP 2xx ou 3xx sera
+				interpr&eacute;t&eacute; comme un passage avec succ&egrave;s du check
 				up.</td></tr>
         	</table>
         </td></tr>
     <tr><td>hcpasses</td>
         <td>1</td>
-        <td>Nombre de check up à passer avec succès avant de remettre en service
-	l'équipier</td></tr>
+        <td>Nombre de check up &agrave; passer avec succ&egrave;s avant de remettre en service
+	l'&eacute;quipier</td></tr>
     <tr><td>hcfails</td>
         <td>1</td>
-        <td>Nombre de check up échoués avant mettre hors service l'équipier</td></tr>
+        <td>Nombre de check up &eacute;chou&eacute;s avant mettre hors service l'&eacute;quipier</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
-        <td>Intervalle entre deux check up en secondes (par défaut effectué
+        <td>Intervalle entre deux check up en secondes (par d&eacute;faut effectu&eacute;
 	toutes les 30 secondes). Utilise la syntaxe <a href="directive-dict.html#Syntax">time-interval</a>.</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
-        <td>URI supplémentaire à ajouter à l'URL de l'équipier pour le check up.</td></tr>
+        <td>URI suppl&eacute;mentaire &agrave; ajouter &agrave; l'URL de l'&eacute;quipier pour le check up.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
-        <td>Nom du modèle créé via <code class="directive"><a href="#proxyhctemplate">ProxyHCTemplate</a></code> à
-	utiliser pour définir les paramètres de check up de cet équipier</td></tr>
+        <td>Nom du mod&egrave;le cr&eacute;&eacute; via <code class="directive"><a href="#proxyhctemplate">ProxyHCTemplate</a></code> &agrave;
+	utiliser pour d&eacute;finir les param&egrave;tres de check up de cet &eacute;quipier</td></tr>
     <tr><td>hcexpr</td>
         <td>&nbsp;</td>
-        <td>Nom de l'expression créée via <code class="directive"><a href="#proxyhcexpr">ProxyHCExpr</a></code>
-	utilisée pour analyser les en-têtes de la réponse du check up.<br />
-            <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
-	    interprété comme un check up réussi.</em></td></tr>
+        <td>Nom de l'expression cr&eacute;&eacute;e via <code class="directive"><a href="#proxyhcexpr">ProxyHCExpr</a></code>
+	utilis&eacute;e pour analyser les en-t&ecirc;tes de la r&eacute;ponse du check up.<br>
+            <em>Si ce param&egrave;tre est absent, un &eacute;tat HTTP de 2xx &agrave; 3xx est
+	    interpr&eacute;t&eacute; comme un check up r&eacute;ussi.</em></td></tr>
     </table>
 </div>
 
-<div class="note"><h3>Compatibilité :</h3>
+<div class="note"><h3>Compatibilit&eacute; :</h3>
     <p><code>OPTIONS11</code>, <code>HEAD11</code> et <code>GET11</code> sont
-    disponibles à partir de la version 2.4.55 du serveur HTTP Apache.</p>
+    disponibles &agrave; partir de la version 2.4.55 du serveur HTTP Apache.</p>
 </div>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples d'utilisation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Exemples d'utilisation</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhcexpr">ProxyHCExpr</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhctemplate">ProxyHCTemplate</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhctpsize">ProxyHCTPsize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhcexpr">ProxyHCExpr</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhctemplate">ProxyHCTemplate</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhctpsize">ProxyHCTPsize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_hcheck">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_hcheck">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_hcheck">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_hcheck">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples d'utilisation</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples d'utilisation <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
 	
-    <p>L'exemple suivant montre comment configurer le check up pour différents
-    serveurs d'arrière-plan :</p>
+    <p>L'exemple suivant montre comment configurer le check up pour diff&eacute;rents
+    serveurs d'arri&egrave;re-plan :</p>
 
 	
 	<pre class="prettyprint lang-config">ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
@@ -165,44 +165,44 @@ ProxyPass "/" "balancer://foo"
 ProxyPassReverse "/" "balancer://foo"</pre>
 
 
-<p>Dans ce scénario, on teste l'équipier <code>http://www.example.com/</code> en lui
-envoyant une requête <code>GET /status.php</code> et en regardant si la réponse
-contient la chaîne <em>Under maintenance</em>. Si c'est le cas, le check up est
-considéré comme ayant échoué et l'équipier est mis hors service. Ce check up
-dynamique est effectué toutes les 30 secondes, ce qui correspond à la valeur par
-défaut.</p>
+<p>Dans ce sc&eacute;nario, on teste l'&eacute;quipier <code>http://www.example.com/</code> en lui
+envoyant une requ&ecirc;te <code>GET /status.php</code> et en regardant si la r&eacute;ponse
+contient la cha&icirc;ne <em>Under maintenance</em>. Si c'est le cas, le check up est
+consid&eacute;r&eacute; comme ayant &eacute;chou&eacute; et l'&eacute;quipier est mis hors service. Ce check up
+dynamique est effectu&eacute; toutes les 30 secondes, ce qui correspond &agrave; la valeur par
+d&eacute;faut.</p>
 
-<p>On teste l'équipier <code>http://www2.example.com/</code> en lui envoyant
-simplement une requête <code>HEAD</code> toutes les 10 secondes et en vérifiant
-que la réponse HTTP est bien un code d'état de 2xx, 3xx ou 4xx. On teste
-l'équipier <code>http://www3.example.com/</code>  en vérifiant simplement toutes
-les 5 secondes que le socket vers ce serveur est bien opérationnel. Si ce
-serveur est marqué "hors service", il lui faudra 2 check up réussis pour être
-réactivé et participer à nouveau à la répartition de charge. Si à ce moment-là
-il échoue à 3 check up successifs, il sera à nouveau mis hors service. Enfin,
-l'équipier <code>http://www4.example.com/</code> ne fait l'objet d'aucun check
+<p>On teste l'&eacute;quipier <code>http://www2.example.com/</code> en lui envoyant
+simplement une requ&ecirc;te <code>HEAD</code> toutes les 10 secondes et en v&eacute;rifiant
+que la r&eacute;ponse HTTP est bien un code d'&eacute;tat de 2xx, 3xx ou 4xx. On teste
+l'&eacute;quipier <code>http://www3.example.com/</code>  en v&eacute;rifiant simplement toutes
+les 5 secondes que le socket vers ce serveur est bien op&eacute;rationnel. Si ce
+serveur est marqu&eacute; "hors service", il lui faudra 2 check up r&eacute;ussis pour &ecirc;tre
+r&eacute;activ&eacute; et participer &agrave; nouveau &agrave; la r&eacute;partition de charge. Si &agrave; ce moment-l&agrave;
+il &eacute;choue &agrave; 3 check up successifs, il sera &agrave; nouveau mis hors service. Enfin,
+l'&eacute;quipier <code>http://www4.example.com/</code> ne fait l'objet d'aucun check
 up.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyhcexpr" id="proxyhcexpr">Directive</a> <a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhcexpr">Directive <span id="ProxyHCExpr">ProxyHCExpr</span> <a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Crée et nomme une expression conditionnelle à utiliser pour
-déterminer la santé d'un serveur d'arrière-plan en fonction de sa valeur</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cr&eacute;e et nomme une expression conditionnelle &agrave; utiliser pour
+d&eacute;terminer la sant&eacute; d'un serveur d'arri&egrave;re-plan en fonction de sa valeur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
 </table>
-    <p>La directive <code class="directive">ProxyHCExpr</code> permet de créer et nommer
-    une expression conditionnelle dont la valeur calculée en fonction des
-    en-têtes de la réponse du serveur d'arrière-plan permettra d'évaluer la
-    santé de ce dernier. Cette expression nommée peut alors être assignée aux
-    serveurs d'arrière-plan via le paramètre <code>hcexpr</code>.</p>
+    <p>La directive <code class="directive">ProxyHCExpr</code> permet de cr&eacute;er et nommer
+    une expression conditionnelle dont la valeur calcul&eacute;e en fonction des
+    en-t&ecirc;tes de la r&eacute;ponse du serveur d'arri&egrave;re-plan permettra d'&eacute;valuer la
+    sant&eacute; de ce dernier. Cette expression nomm&eacute;e peut alors &ecirc;tre assign&eacute;e aux
+    serveurs d'arri&egrave;re-plan via le param&egrave;tre <code>hcexpr</code>.</p>
 
-    <div class="example"><h3>ProxyHCExpr: interprète les réponses 2xx/3xx/4xx comme des
-    check up réussis</h3><pre class="prettyprint lang-config">ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
+    <div class="example"><h3>ProxyHCExpr: interpr&egrave;te les r&eacute;ponses 2xx/3xx/4xx comme des
+    check up r&eacute;ussis</h3><pre class="prettyprint lang-config">ProxyHCExpr ok234 {%{REQUEST_STATUS} =~ /^[234]/}
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
@@ -212,19 +212,19 @@ ProxyPass "/apps"     "balancer://foo"
 
     <div class="note">
     L'<a href="../expr.html">expression</a> peut utiliser des accolades ("{}")
-    comme délimiteurs en plus des guillemets normaux.
+    comme d&eacute;limiteurs en plus des guillemets normaux.
     </div>
 
-    <p>Si l'on utilise une méthode de check up (par exemple <code>GET</code>)
-    qui génère un corps de réponse, ce corps peut lui-même être ausculté via
-    <code>ap_expr</code> en utilisant la fonction associée aux expressions
-    <code>hc()</code> spécifique à ce module.</p>
+    <p>Si l'on utilise une m&eacute;thode de check up (par exemple <code>GET</code>)
+    qui g&eacute;n&egrave;re un corps de r&eacute;ponse, ce corps peut lui-m&ecirc;me &ecirc;tre auscult&eacute; via
+    <code>ap_expr</code> en utilisant la fonction associ&eacute;e aux expressions
+    <code>hc()</code> sp&eacute;cifique &agrave; ce module.</p>
 
-    <p>Dans l'exemple suivant, on envoie une requête <code>GET</code> au serveur
-    d'arrière-plan, et si le corps de la réponse contient la chaîne <em>Under
-    maintenance</em>, ce serveur d'arrière-plan est mis hors service.</p>
+    <p>Dans l'exemple suivant, on envoie une requ&ecirc;te <code>GET</code> au serveur
+    d'arri&egrave;re-plan, et si le corps de la r&eacute;ponse contient la cha&icirc;ne <em>Under
+    maintenance</em>, ce serveur d'arri&egrave;re-plan est mis hors service.</p>
 
-    <div class="example"><h3>ProxyHCExpr: auscultation du corps de la réponse</h3><pre class="prettyprint lang-config">ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
+    <div class="example"><h3>ProxyHCExpr: auscultation du corps de la r&eacute;ponse</h3><pre class="prettyprint lang-config">ProxyHCExpr in_maint {hc('body') !~ /Under maintenance/}
 ProxyPass "/apps"     "balancer://foo"
 
 &lt;Proxy balancer://foo&gt;
@@ -232,24 +232,24 @@ ProxyPass "/apps"     "balancer://foo"
 &lt;/Proxy&gt;</pre>
 </div>
 
-    <p><em>NOTE:</em> Comme le corps de la réponse peut être assez grand, il est
-    recommandé de privilégier un check up basé sur les codes d'état.</p>
+    <p><em>NOTE:</em> Comme le corps de la r&eacute;ponse peut &ecirc;tre assez grand, il est
+    recommand&eacute; de privil&eacute;gier un check up bas&eacute; sur les codes d'&eacute;tat.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyhctemplate" id="proxyhctemplate">Directive</a> <a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a title="Lien permanent" href="#proxyhctemplate" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhctemplate">Directive <span id="ProxyHCTemplate">ProxyHCTemplate</span> <a title="Lien permanent" href="#proxyhctemplate" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Crée et nomme un modèle permettant de définir différents
-paramètres de check up</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cr&eacute;e et nomme un mod&egrave;le permettant de d&eacute;finir diff&eacute;rents
+param&egrave;tres de check up</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
 </table>
-    <p>La directive <code class="directive">ProxyHCTemplate</code> permet de créer et
-    nommer un modèle de paramètres de check up qui peut alors être assigné aux
-    équipiers via le paramètre <code>hctemplate</code>.</p>
+    <p>La directive <code class="directive">ProxyHCTemplate</code> permet de cr&eacute;er et
+    nommer un mod&egrave;le de param&egrave;tres de check up qui peut alors &ecirc;tre assign&eacute; aux
+    &eacute;quipiers via le param&egrave;tre <code>hctemplate</code>.</p>
 
     <div class="example"><h3>ProxyHCTemplate</h3><pre class="prettyprint lang-config">ProxyHCTemplate tcp5 hcmethod=tcp hcinterval=5
 ProxyPass "/apps"     "balancer://foo"
@@ -261,25 +261,25 @@ ProxyPass "/apps"     "balancer://foo"
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxyhctpsize" id="proxyhctpsize">Directive</a> <a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a title="Lien permanent" href="#proxyhctpsize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhctpsize">Directive <span id="ProxyHCTPsize">ProxyHCTPsize</span> <a title="Lien permanent" href="#proxyhctpsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la taille totale, pour l'ensemble du
-serveur, du jeu de threads utilisé pour le check up des
-équipiers</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la taille totale, pour l'ensemble du
+serveur, du jeu de threads utilis&eacute; pour le check up des
+&eacute;quipiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHCTPsize 16</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ProxyHCTPsize 16</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_hcheck</td></tr>
 </table>
-    <p>Si Apache httpd et APR ont été compilés avec le support des threads, le
-    module de check up peut confier ce travail à un jeu de threads associé au
-    processus Watchdog, ce qui permet l'exécution des check up en parallèle. La
-    directive <code class="directive">ProxyHCTPsize</code> permet de déterminer la
+    <p>Si Apache httpd et APR ont &eacute;t&eacute; compil&eacute;s avec le support des threads, le
+    module de check up peut confier ce travail &agrave; un jeu de threads associ&eacute; au
+    processus Watchdog, ce qui permet l'ex&eacute;cution des check up en parall&egrave;le. La
+    directive <code class="directive">ProxyHCTPsize</code> permet de d&eacute;terminer la
     taille de ce jeu de threads. Une valeur de <code>0</code> signifie qu'aucun
-    jeu de threads ne sera utilisé, et le check up des différents équipiers sera
-    alors effectué séquentiellement.</p>
+    jeu de threads ne sera utilis&eacute;, et le check up des diff&eacute;rents &eacute;quipiers sera
+    alors effectu&eacute; s&eacute;quentiellement.</p>
 
     <div class="example"><h3>ProxyHCTPsize</h3><pre class="prettyprint lang-config">ProxyHCTPsize 32</pre>
 </div>
@@ -289,29 +289,33 @@ serveur, du jeu de threads utilisé pour le check up des
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_hcheck.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_hcheck.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_hcheck.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_proxy_hcheck.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

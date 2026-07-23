@@ -1,223 +1,319 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Détails techniques sur le module Apache mod_rewrite - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>D&eacute;tails techniques sur le module Apache mod_rewrite - Serveur HTTP Apache Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Détails techniques sur le module Apache mod_rewrite</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>D&eacute;tails techniques sur le module Apache mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-<p>Ce document passe en revue certains détails techniques à propos du
-module mod_rewrite et de la mise en correspondance des URLs</p>
+<p>Ce document passe en revue certains d&eacute;tails techniques &agrave; propos du
+module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de la mise en correspondance des URLs</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">Phases de l'API</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Traitement du jeu de règles</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#InternalAPI">Phases de l'API</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#order">Module Processing Order</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#encoding">Encodage et d&eacute;codage des URLs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#InternalRuleset">Traitement du jeu de r&egrave;gles</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="flags.html">Drapeaux de r&eacute;&eacute;criture</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="htaccess.html">R&eacute;&eacute;critures en fonction du r&eacute;pertoire</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalAPI" id="InternalAPI">Phases de l'API</a> <a title="Lien permanent" href="#InternalAPI" class="permalink">&para;</a></h2>
+<h2 id="InternalAPI">Phases de l'API <a title="Lien permanent" href="#InternalAPI" class="permalink">&para;</a></h2>
 
-      <p>Le traitement des requêtes par le serveur HTTP Apache se
-      déroule en plusieurs phases. Au cours de chaque phase, un ou
-      plusieurs modules peuvent être appelés pour traiter la partie
-      concernée du cycle de vie de la requête. Les différentes phases
+      <p>Le traitement des requ&ecirc;tes par le serveur HTTP Apache se
+      d&eacute;roule en plusieurs phases. Au cours de chaque phase, un ou
+      plusieurs modules peuvent &ecirc;tre appel&eacute;s pour traiter la partie
+      concern&eacute;e du cycle de vie de la requ&ecirc;te. Les diff&eacute;rentes phases
       peuvent consister en traduction d'URL en nom de fichier,
       authentification, autorisation, gestion de contenu ou journalisation (la
       liste n'est pas exhaustive).</p>
 
-    <p>mod_rewrite agit dans deux de ces phases (ou accroches - hooks -
-    comme on les nomme souvent) pour la réécriture des URLs.</p>
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> agit dans deux de ces phases (ou accroches - hooks -
+    comme on les nomme souvent) pour la r&eacute;&eacute;criture des URLs.</p>
 
     <p>Tout d'abord, il utilise le hook traduction URL vers nom de
-    fichier qui intervient après la lecture de la requête HTTP, mais
+    fichier qui intervient apr&egrave;s la lecture de la requ&ecirc;te HTTP, mais
     avant le processus d'autorisation. Ensuite, il utilise le hook
-    Fixup, qui intervient après les phases d'autorisation, après la
-    lecture des fichiers de configuration de niveau répertoire (fichiers
+    Fixup, qui intervient apr&egrave;s les phases d'autorisation, apr&egrave;s la
+    lecture des fichiers de configuration de niveau r&eacute;pertoire (fichiers
     <code>.htaccess</code>), mais avant l'appel du gestionnaire de
     contenu.</p>
 
-    <p>Lorsqu'une requête arrive et une fois le serveur
-    correspondant ou le serveur virtuel déterminé, le moteur de
-    réécriture commence à traiter toute directive apparaissant dans la
+    <p>Lorsqu'une requ&ecirc;te arrive et une fois le serveur
+    correspondant ou le serveur virtuel d&eacute;termin&eacute;, le moteur de
+    r&eacute;&eacute;criture commence &agrave; traiter toute directive <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> apparaissant dans la
     configuration de niveau serveur (autrement dit dans le
     fichier de configuration principal du serveur et les sections
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;Virtualhost&gt;</a></code>).
-    Tout ce processus s'exécute au cours de la phase de traduction URL
+    Tout ce processus s'ex&eacute;cute au cours de la phase de traduction URL
     vers nom de fichier.</p>
 
-    <p>Quelques étapes plus loin, une fois les répertoires de données
-    finaux trouvés, les directives de configuration de niveau répertoire
-    (fichiers <code>.htaccess</code> et sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>) sont appliquées. Ce processus
-    s'exécute au cours de la phase Fixup.</p>
+    <p>Quelques &eacute;tapes plus loin, une fois les r&eacute;pertoires de donn&eacute;es
+    finaux trouv&eacute;s, les directives de configuration de niveau r&eacute;pertoire
+    (fichiers <code>.htaccess</code> et sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>) sont appliqu&eacute;es. Ce processus
+    s'ex&eacute;cute au cours de la phase Fixup.</p>
 
-    <p>Dans tous ces cas, mod_rewrite réécrit le
-    <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
+    <p>Dans tous ces cas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> r&eacute;&eacute;crit le
+    <code>REQUEST_URI</code> soit vers un nouvel URL, soit vers un
     nom de fichier.</p>
 
-    <p>Dans un contexte de niveau répertoire (autrement dit dans les
-    fichiers <code>.htaccess</code> et les sections
-    <code>Directory</code>), les règles de réécriture s'appliquent après
-    la traduction de l'URL en nom de fichier. C'est pourquoi le chemin
-    URL auquel mod_rewrite compare initialement les directives
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est le
-    chemin complet vers le nom de fichier traduit amputé de la partie
-    répertoires (y compris le dernier slash).</p>
+    <p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>,
+    les r&egrave;gles sont appliqu&eacute;es durant la phase "Fixup" apr&egrave;s que l&rsquo;URL a &eacute;t&eacute;
+    traduit en nom de fichier. Cela modifie ce &agrave; quoi correspond le motif et la
+    mani&egrave;re dont les substitutions sont g&eacute;r&eacute;es. Voir le document <a href="htaccess.html#path-stripping">R&eacute;&eacute;critures en fonction du
+    r&eacute;pertoire</a> pour des d&eacute;tails pratiques &agrave; propos de la suppression du
+    chemin, de RewriteBase et de la mani&egrave;re d&rsquo;&eacute;viter un bouclage.</p>
 
-    <p>Un exemple : si les règles se trouvent dans
-    /var/www/foo/.htaccess et si une requête pour /foo/bar/baz est
-    traité, une expression comme ^bar/baz$ correspondra.</p>
-
-    <p>Si une substitution intervient dans un contexte de répertoire,
-    une nouvelle sous-requête interne est générée avec la nouvelle URL,
-    ce qui relance le traitement des phases de la requête. Si la
-    substitution est un chemin relatif, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> détermine le chemin URL
-    devant préfixer cette substitution. Dans un contexte de répertoire,
-    il faut s'assurer de créer des règles qui
-    n'effectueront pas de substitution au
-    cours d'une passe ultérieure du processus de réécriture au niveau
-    répertoire afin d'éviter les bouclages . Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
-    processus de réécriture</a> pour une discussion plus détaillée à
-    propos de ce problème.</p>
-
-    <p>En conséquence de cette manipulation de l'URL , vous devrez
-    pensez à confectionner différemment vos règles de réécriture dans un
-    contexte de niveau répertoire. En particulier, rappelez-vous que le
-    chemin de répertoire sera absent de l'URL que vos règles de
-    réécriture verront. Voici quelques exemples qui permettront de
-    clarifier les choses :</p>
-
-    <table class="bordered">
-
-        <tr>
-            <th>Position de la règle</th>
-            <th>Règle</th>
-        </tr>
-
-        <tr>
-            <td>Section VirtualHost</td>
-            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
-        </tr>
-
-        <tr>
-            <td>Fichier .htaccess à la racine des documents</td>
-            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
-        </tr>
-
-        <tr>
-            <td>Fichier .htaccess dans le répertoire images</td>
-            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
-        </tr>
-
-    </table>
-
-    <p>Pour une étude plus approfondie de la manière dont mod_rewrite
-    manipule les URLs dans les différents contextes, vous pouvez
-    consulter les <a href="../mod/mod_rewrite.html#logging">entrées du
-    journal</a> générées au cours du processus de réécriture.</p>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalRuleset" id="InternalRuleset">Traitement du jeu de règles</a> <a title="Lien permanent" href="#InternalRuleset" class="permalink">&para;</a></h2>
+<h2 id="order">Module Processing Order <a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
 
-      <p>Maintenant, quand mod_rewrite se lance dans ces deux phases de
-      l'API, il lit le jeu de règles configurées depuis la structure
-      contenant sa configuration (qui a été elle-même créée soit au
-      démarrage d'Apache pour le contexte du serveur, soit lors du
-      parcours des répertoires par le noyau d'Apache pour le contexte de
-      répertoire). Puis le moteur de réécriture est démarré avec le jeu
-      de règles contenu (une ou plusieurs règles associées à leurs
-      conditions). En lui-même, le mode opératoire du moteur de
-      réécriture d'URLs est exactement le même dans les deux contextes
-      de configuration. Seul le traitement du résultat final diffère.</p>
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> agissent tous
+    les deux au cours de la phase de traduction de l&rsquo;URL en nom de fichier, mais
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> op&egrave;re en premier, quel que soit l&rsquo;ordre
+    d&rsquo;apparition des directives dans le fichier de configuration. Ce
+    comportement est d&eacute;termin&eacute; par la priorit&eacute; des points d&rsquo;accroche
+    qu&rsquo;enregistre chaque module, pas par l&rsquo;ordre du code source.</p>
 
-      <p>L'ordre dans lequel les règles sont définies est important car
-      le moteur de réécriture les traite selon une chronologie
-      particulière (et pas très évidente). Le principe est le suivant :
-      le moteur de réécriture traite les règles (les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) les unes
-      à la suite des autres, et lorsqu'une règle s'applique, il parcourt
-      les éventuelles conditions (directives
-      <code>RewriteCond</code>directives) associées.
-      Pour des raisons historiques, les
-      conditions précèdent les règles, si bien que le déroulement du
-      contrôle est un peu compliqué. Voir la figure 1 pour plus de
-      détails.</p>
+    <p>La cons&eacute;quence pratique&nbsp;: lorsque des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> (ou <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>) sont pr&eacute;sentent simultan&eacute;ment
+    dans le m&ecirc;me contexte de serveur virtuel ou global au serveur, les r&egrave;gles de
+    r&eacute;&eacute;criture sont &eacute;valu&eacute;es en premier. Si une r&egrave;gle <code>RewriteRule</code>
+    correspond et r&eacute;&eacute;crit le chemin d&rsquo;URL (ou renvoie une redirection),
+    <code>Redirect</code> ne verra jamais la requ&ecirc;te.</p>
+
 <p class="figure">
-      <img src="../images/rewrite_process_uri.png" alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
-      <dfn>Figure 1:</dfn>Déroulement du contrôle à travers le jeu de
-      règles de réécriture
+      <img src="../images/rewrite_module_order.png" alt="Comparaison c&ocirc;te-&agrave;-c&ocirc;te des ordres d&rsquo;op&eacute;ration des modules&nbsp;: dans    un contexte global au serveur, mod_rewrite op&egrave;re en premier lors de la    phase de traduction du chemin d&rsquo;URL en nom de fichier, mod_alias    op&egrave;rant en second&nbsp;; dans un contexte de r&eacute;pertoire, mod_alias op&egrave;re en    premier lors de la phase de traduction du chemin d&rsquo;URL en nom de    fichier, mod_rewrite op&eacute;rant plus tard lors de la phase de    correction"><br>
+      <dfn>Figure&nbsp;:</dfn> Inversion de l&rsquo;ordre d&rsquo;op&eacute;ration des modules entre les
+      contextes global au serveur et de r&eacute;pertoire
 </p>
-      <p>L'URL est tout d'abord comparée au
-      <em>Modèle</em> de chaque règle. Lorsqu'une règle ne s'applique
-      pas, mod_rewrite stoppe immédiatement le traitement de cette règle
-      et passe à la règle suivante. Si l'URL correspond au
-      <em>Modèle</em>, mod_rewrite recherche la présence de conditions
+
+    <pre class="prettyprint lang-config"># Dans cette configuration, le Redirect n&rsquo;est jamais atteint pour /old,
+# car la r&egrave;gle RewriteRule s&rsquo;applique en premier &mdash;&nbsp;m&ecirc;me si
+# Redirect appara&icirc;t plus t&ocirc;t dans le fichier.
+Redirect "/old" "http://example.com/new"
+RewriteRule "^/old" "/other" [L]</pre>
+
+
+    <div class="note"><h3>Le contexte de r&eacute;pertoire inverse l&rsquo;ordre</h3>
+    <p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>,
+    la situation est diff&eacute;rente. Les directives de <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
+    comme <code>Redirect</code> s&rsquo;appliquent encore dans la phase de traduction
+    de l&rsquo;URL en nom de fichier, mais les directives de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> s&rsquo;appliquent plus tard, lors de la phase de
+    correction. Cela signifie que dans un contexte de r&eacute;pertoire,
+    <code>Redirect</code> est &eacute;valu&eacute;e <em>avant</em> l&rsquo;application des
+    r&egrave;gles <code>RewriteRule</code>.</p>
+    </div>
+
+    <p>Du fait de l&rsquo;incoh&eacute;rence entre les contextes, m&eacute;langer des directives de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> dans la m&ecirc;me
+    port&eacute;e est une source courante de confusion. Un conseil simple&nbsp;: choisissez
+    un module pour une t&acirc;che donn&eacute;e. Si vous avez besoin de conditions de
+    r&eacute;&eacute;critures ou de comparaison de motif, utilisez exclusivement
+    <code>RewriteRule</code>. Si une simple redirection de pr&eacute;fixe suffit,
+    utilisez la directive <code>Redirect</code> et n&rsquo;ajoutez pas de r&egrave;gles de
+    r&eacute;&eacute;critures qui pourraient interagir avec elle.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="encoding">Encodage et d&eacute;codage des URLs <a title="Lien permanent" href="#encoding" class="permalink">&para;</a></h2>
+
+    <p>Apache httpd supprime l&rsquo;&eacute;chappement des caract&egrave;res encod&eacute;s pour l&rsquo;URL
+    dans le chemin d&rsquo;URL de la requ&ecirc;te avant que toute comparaison de motif de
+    directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ne soit
+    effectu&eacute;e. Une requ&ecirc;te pour <code>/my%20page/cats%3Fdogs</code> est d&eacute;cod&eacute;e
+    en <code>/my page/cats?dogs</code>, et c&rsquo;est &agrave; cette cha&icirc;ne d&eacute;cod&eacute;e qu&rsquo;est
+    compar&eacute; le motif de la directive <code>RewriteRule</code>.</p>
+
+    <p>Cela signifie que vous ne pouvez pas &eacute;crire un motif correspondant &agrave; la
+    forme litt&eacute;rale de l&rsquo;URL encod&eacute;. Si vous devez distinguer
+    <code>/horses%2Fponies</code> de <code>/horses/ponies</code>, utilisez la
+    variable <code>%{THE_REQUEST}</code> dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> &mdash;&nbsp;cette variable conserve la
+    requ&ecirc;te originelle telle qu&rsquo;elle a &eacute;t&eacute; envoy&eacute;e par le client, avant tout
+    d&eacute;codage&nbsp;:</p>
+
+<pre class="prettyprint lang-config"># Ne correspond qu&rsquo;au caract&egrave;re encod&eacute; litt&eacute;ral %2F, 
+# pas au s&eacute;parateur de chemin r&eacute;el
+RewriteCond "%{THE_REQUEST}" "/horses%2F"
+RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
+
+
+    <p>Apr&egrave;s la substitution, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> r&eacute;encode le chemin
+    d&rsquo;URL r&eacute;sultant en sortie. Plusieurs drapeaux permettent de contr&ocirc;ler ce
+    comportement&nbsp;:</p>
+
+    <ul>
+      <li><a href="flags.html#flag_b">[B]</a>&nbsp;: r&eacute;tablit l&rsquo;&eacute;chappement des
+      r&eacute;f&eacute;rences arri&egrave;res de fa&ccedil;on que les caract&egrave;res sp&eacute;ciaux captur&eacute;s dans le
+      chemin d&rsquo;URL d&eacute;cod&eacute; ne soient pas interpr&eacute;t&eacute;s comme des d&eacute;limiteurs dans
+      la substitution.</li>
+
+      <li><a href="flags.html#flag_bnp">[BNP]</a>&nbsp;: si [B] est actif, ce drapeau
+      encode les espaces en <code>%20</code> au lieu de <code>+</code> (convient
+      pour les &eacute;l&eacute;ments du chemin, pas pour la cha&icirc;ne de param&egrave;tres).</li>
+
+      <li><a href="flags.html#flag_ne">[NE]</a>&nbsp;: ce drapeau supprime
+      l&rsquo;&eacute;chappement par d&eacute;faut des caract&egrave;res sp&eacute;ciaux dans le r&eacute;sultat de la
+      substitution, permettant la transmission sans modification des litt&eacute;raux
+      <code>#</code>, <code>?</code> et d&rsquo;autres caract&egrave;res lors des
+      redirections externes.</li>
+    </ul>
+
+    <h3 id="allowencodedslashes">Directive AllowEncodedSlashes</h3>
+    
+
+    <p>Par d&eacute;faut, httpd renvoie un code 404 pour tout URL contenant une barre
+    oblique encod&eacute;e (<code>%2F</code>). La directive  <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> permet de modifier ce
+    comportement&nbsp;:</p>
+
+    <ul>
+      <li><code>Off</code> (valeur par d&eacute;faut)&nbsp;: rejette <code>%2F</code> avec
+      un code 404.</li>
+      <li><code>On</code>&nbsp;: autorise <code>%2F</code> et le d&eacute;code en
+      <code>/</code> avant de le transmettre aux gestionnaires.</li>
+      <li><code>NoDecode</code>&nbsp;: autorise <code>%2F</code>, mais le conserve
+      sous sa forme encod&eacute;e de fa&ccedil;on que l&rsquo;application dorsale le distingue d&rsquo;un
+      s&eacute;parateur de chemin r&eacute;el.</li>
+    </ul>
+
+    <p>Lorsqu&rsquo;on utilise le drapeau <a href="flags.html#flag_b">[B]</a> avec des
+    URLs qui peuvent contenir des barres obliques encod&eacute;es, il est en g&eacute;n&eacute;ral
+    n&eacute;cessaire d&rsquo;utiliser <code>AllowEncodedSlashes NoDecode</code> pour &eacute;viter
+    que httpd ne rejette le r&eacute;sultat r&eacute;encod&eacute;.</p>
+
+    
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="InternalRuleset">Traitement du jeu de r&egrave;gles <a title="Lien permanent" href="#InternalRuleset" class="permalink">&para;</a></h2>
+
+      <p>Maintenant, quand <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> se lance dans ces deux
+      phases de l'API, il lit le jeu de r&egrave;gles configur&eacute; depuis la structure
+      contenant sa configuration (qui a &eacute;t&eacute; elle-m&ecirc;me cr&eacute;&eacute;e soit au d&eacute;marrage
+      d'Apache httpd pour le contexte du serveur, soit lors du parcours des
+      r&eacute;pertoires par le noyau d'Apache httpd pour le contexte de r&eacute;pertoire).
+      Puis le moteur de r&eacute;&eacute;criture est d&eacute;marr&eacute; avec le jeu de r&egrave;gles contenu
+      (une ou plusieurs r&egrave;gles associ&eacute;es &agrave; leurs conditions). En lui-m&ecirc;me, le
+      mode op&eacute;ratoire du moteur de r&eacute;&eacute;criture d'URLs est exactement le m&ecirc;me dans
+      les deux contextes de configuration. Seul le traitement du r&eacute;sultat final
+      diff&egrave;re.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig1.png" alt="Survol du processus de r&eacute;&eacute;criture par requ&ecirc;te lors des phases par    serveur et par r&eacute;pertoire"><br>
+      <dfn>Figure 1&nbsp;:</dfn>Le processus de r&eacute;&eacute;criture par requ&ecirc;te montrant les
+      deux phases du traitement des r&egrave;gles (par serveur et par r&eacute;pertoire)
+</p>
+
+      <p>L'ordre dans lequel les r&egrave;gles sont d&eacute;finies est important car le
+      moteur de r&eacute;&eacute;criture les traite selon une chronologie particuli&egrave;re (et pas
+      tr&egrave;s &eacute;vidente). Le principe est le suivant : le moteur de r&eacute;&eacute;criture
+      traite les r&egrave;gles (les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) les unes &agrave; la suite des
+      autres, et lorsqu'une r&egrave;gle s'applique, il parcourt les &eacute;ventuelles
+      conditions (directives <code>RewriteCond</code>directives) associ&eacute;es.
+      Pour des raisons historiques, les conditions pr&eacute;c&egrave;dent les r&egrave;gles, si bien
+      que le d&eacute;roulement du contr&ocirc;le est un peu compliqu&eacute;. Voir la figure 2 pour
+      plus de d&eacute;tails.</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png" alt="Organigramme montrant le flux de contr&ocirc;le par r&egrave;gle&nbsp;: pour chaque    r&egrave;gle, comparaison du motif avec l&rsquo;URL, &eacute;valuation des conditions    RewriteCond, application de la substitution si les deux op&eacute;rations    pr&eacute;c&eacute;dentes ont r&eacute;ussi, puis consultation des drapeaux pour d&eacute;terminer    si l&rsquo;on doit arr&ecirc;ter le traitement ou continuer avec la r&egrave;gle    suivante"><br>
+      <dfn>Figure 2&nbsp;:</dfn>Le flux de contr&ocirc;le en parcourant le jeu de r&egrave;gles de
+      r&eacute;&eacute;criture
+</p>
+      <p>L'URL est tout d'abord compar&eacute; au
+      <em>Mod&egrave;le</em> de chaque r&egrave;gle. Lorsqu'une r&egrave;gle ne s'applique
+      pas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> stoppe imm&eacute;diatement le traitement de cette r&egrave;gle
+      et passe &agrave; la r&egrave;gle suivante. Si l'URL correspond au
+      <em>Mod&egrave;le</em>, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> recherche la pr&eacute;sence de conditions
       correspondantes (les directives Rewritecond apparaissant dans la
       configuration juste
-      avant les règles de réécriture). S'il n'y en a pas, mod_rewrite remplace
-      l'URL par une chaîne élaborée à partir de la chaîne de
-      <em>Substitution</em>, puis passe à la règle suivante. Si des
-      conditions sont présentes, mod_rewrite lance un bouclage
+      avant les r&egrave;gles de r&eacute;&eacute;criture). S'il n'y en a pas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> remplace
+      l'URL par une cha&icirc;ne &eacute;labor&eacute;e &agrave; partir de la cha&icirc;ne de
+      <em>Substitution</em>, puis passe &agrave; la r&egrave;gle suivante. Si des
+      conditions sont pr&eacute;sentes, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> lance un bouclage
       secondaire afin de les traiter selon l'ordre dans lequel elles
-      sont définies. La logique de traitement des conditions est
-      différente : on ne compare pas l'URL à un modèle. Une chaîne de
-      test <em>TestString</em> est tout d'abord élaborée en développant
-      des variables, des références arrières, des recherches dans des
-      tables de correspondances, etc..., puis cette chaîne de test est
-      comparée au modèle de condition <em>CondPattern</em>. Si le modèle
+      sont d&eacute;finies. La logique de traitement des conditions est
+      diff&eacute;rente : on ne compare pas l'URL &agrave; un mod&egrave;le. Une cha&icirc;ne de
+      test <em>TestString</em> est tout d'abord &eacute;labor&eacute;e en d&eacute;veloppant
+      des variables, des r&eacute;f&eacute;rences arri&egrave;res, des recherches dans des
+      tables de correspondances, etc..., puis cette cha&icirc;ne de test est
+      compar&eacute;e au mod&egrave;le de condition <em>CondPattern</em>. Si le mod&egrave;le
       ne correspond pas, les autres conditions du jeu ne sont pas
-      examinées et la règle correspondante ne s'applique pas. Si le
-      modèle correspond, la condition suivante est examinée et ainsi de
-      suite jusqu'à la dernière condition. Si toutes les conditions sont
-      satisfaites, le traitement de la règle en cours se poursuit avec
-      le remplacement de l'URL par la chaîne de <em>Substitution</em>.</p>
+      examin&eacute;es et la r&egrave;gle correspondante ne s'applique pas. Si le
+      mod&egrave;le correspond, la condition suivante est examin&eacute;e et ainsi de
+      suite jusqu'&agrave; la derni&egrave;re condition. Si toutes les conditions sont
+      satisfaites, le traitement de la r&egrave;gle en cours se poursuit avec
+      le remplacement de l'URL par la cha&icirc;ne de <em>Substitution</em>.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.png" alt="Flux des r&eacute;f&eacute;rences arri&egrave;res entre les directives RewriteRule et    RewriteCond"><br>
+      <dfn>Figure 3&nbsp;:</dfn>Le flux des r&eacute;f&eacute;rences arri&egrave;res dans une r&egrave;gle
+      Tout d&rsquo;abord, le motif de la r&egrave;gle RewriteRule est compar&eacute;&nbsp;; ses captures
+      ($1...$9) sont disponibles dans toutes les cha&icirc;nes de test des conditions
+      RewriteCond. Les derni&egrave;res captures du motif de la condition qui
+      correspondent (%1...%9) sont disponibles dans la substitution.
+</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/tech.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p><span>Langues Disponibles: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

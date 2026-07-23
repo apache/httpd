@@ -1,6 +1,22 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_proxy_beacon: Back-end reverse proxy servers can announce
+     themselves and be auto-added to their front-end proxy balancer.
+     [Jim Jagielski]
+
+  *) support: Add in Python versions of various Perl-based support
+     scripts - apxs-ng, dbmmanage-ng, log_server_status-ng,
+     logresolve.py, phf_abuse_log-ng.cgi and split-logfile-ng.
+     [Jim Jagielski]
+
+  *) mpm_motorz, mod_http2: Rework the MotorZ MPM with
+     multi-poller scale-out (new PollersPerChild directive) and async
+     keep-alive/HTTP/2 handoff, plus concurrency hardening and bug
+     fixes. Includes a required mod_http2 fix so a client's graceful
+     GOAWAY does not drop an in-flight response under async MPMs, and
+     a self-contained motorz test suite.  [Jim Jagielski]
+
   *) mod_http2: improved early cleanup of streams.
      [Stefan Eissing]
 
@@ -2005,10 +2021,6 @@ Changes with Apache 2.5.0-alpha
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since
      r1608202. [Eric Covener]
 
-  *) apreq: Content-Length header should be always interpreted as a decimal.
-     Leading 0 could be erroneously considered as an octal value. PR 56598.
-     [Chris Card <ctcard hotmail com>]
-
   *) mod_proxy: Now allow for 191 character worker names, with non-fatal
      errors if name is truncated. PR53218. [Jim Jagielski]
 
@@ -2228,8 +2240,6 @@ Changes with Apache 2.5.0-alpha
      requests be reconstructed and replayed. [Graham Leggett]
 
   *) mod_noloris
-
-  *) APREQ
 
   *) Simple MPM
 

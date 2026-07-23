@@ -1,37 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Sitemap - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div>
 <div id="page-content"><div id="preamble"><h1>Sitemap</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -40,21 +40,21 @@
 Documentation</a>.</p>
 </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="./images/down.gif" /> <a href="#release">Release Notes</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#using">Using the Apache HTTP Server</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache Virtual Host documentation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">URL Rewriting Guide</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ssl">Apache SSL/TLS Encryption</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#howto">Guides, Tutorials, and HowTos</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#platform">Platform-specific Notes</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP Server and Supporting Programs</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#misc">Apache Miscellaneous Documentation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache modules</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">Developer Documentation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#index">Glossary and Index</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#release">Release Notes</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#using">Using the Apache HTTP Server</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#vhosts">Apache Virtual Host documentation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rewrite">URL Rewriting Guide</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#ssl">Apache SSL/TLS Encryption</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#howto">Guides, Tutorials, and HowTos</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#platform">Platform-specific Notes</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programs">Apache HTTP Server and Supporting Programs</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#misc">Apache Miscellaneous Documentation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#modules">Apache modules</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#developer">Developer Documentation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#index">Glossary and Index</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="release" id="release">Release Notes</a></h2>
 <ul><li><a href="upgrading.html">Upgrading to 2.4 from 2.2</a></li>
 <li><a href="new_features_2_4.html">New features with Apache 2.3/2.4</a></li>
@@ -62,7 +62,7 @@ Documentation</a>.</p>
 <li><a href="new_features_2_0.html">New features with Apache 2.0</a></li>
 <li><a href="license.html">Apache License</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="using" id="using">Using the Apache HTTP Server</a></h2>
 <ul><li><a href="install.html">Compiling and Installing Apache</a></li>
 <li><a href="invoking.html">Starting Apache</a></li>
@@ -86,9 +86,9 @@ Documentation</a>.</p>
 <li><a href="socache.html">Shared Object Cache Support</a></li>
 <li><a href="suexec.html">suEXEC Support</a></li>
 <li><a href="dns-caveats.html">Issues Regarding DNS and Apache</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked Questions</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Frequently Asked Questions</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache Virtual Host documentation</a></h2>
 <ul><li class="separate"><a href="vhosts/">Overview</a></li>
 <li><a href="vhosts/name-based.html">Name-based Virtual Hosts</a></li>
@@ -98,7 +98,7 @@ Documentation</a>.</p>
 <li><a href="vhosts/details.html">An In-Depth Discussion of Virtual Host Matching</a></li>
 <li><a href="vhosts/fd-limits.html">File descriptor limitations</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="rewrite" id="rewrite">URL Rewriting Guide</a></h2>
 <ul><li class="separate"><a href="rewrite/">Overview</a></li>
 <li><a href="mod/mod_rewrite.html">mod_rewrite reference
@@ -116,7 +116,7 @@ remapping of URLs</a></li>
 <li><a href="rewrite/flags.html">RewriteRule Flags</a></li>
 <li><a href="rewrite/tech.html">Technical details</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Encryption</a></h2>
 <ul><li class="separate"><a href="ssl/">Overview</a></li>
 <li><a href="ssl/ssl_intro.html">SSL/TLS Encryption: An Introduction</a></li>
@@ -124,7 +124,7 @@ remapping of URLs</a></li>
 <li><a href="ssl/ssl_howto.html">SSL/TLS Encryption: How-To</a></li>
 <li><a href="ssl/ssl_faq.html">SSL/TLS Encryption: FAQ</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="howto" id="howto">Guides, Tutorials, and HowTos</a></h2>
 <ul><li class="separate"><a href="howto/">Overview</a></li>
 <li><a href="howto/auth.html">Authentication and Authorization</a></li>
@@ -136,7 +136,7 @@ remapping of URLs</a></li>
 <li><a href="howto/reverse_proxy.html">Reverse proxy setup guide</a></li>
 <li><a href="howto/http2.html">HTTP/2 guide</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="platform" id="platform">Platform-specific Notes</a></h2>
 <ul><li class="separate"><a href="platform/">Overview</a></li>
 <li><a href="platform/windows.html">Using Apache with Microsoft
@@ -148,7 +148,7 @@ Microsoft Windows</a></li>
 <li><a href="platform/perf-hp.html">Running a High-Performance Web
 Server on HPUX</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="programs" id="programs">Apache HTTP Server and Supporting Programs</a></h2>
 <ul><li class="separate"><a href="programs/">Overview</a></li>
 <li><a href="programs/httpd.html">Manual Page: httpd</a></li>
@@ -172,7 +172,7 @@ log_server_status</a></li>
 <li><a href="programs/suexec.html">Manual Page: suexec</a></li>
 <li><a href="programs/other.html">Other Programs</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache Miscellaneous Documentation</a></h2>
 <ul><li class="separate"><a href="misc/">Overview</a></li>
 <li><a href="misc/perf-tuning.html">Performance Notes - Apache Tuning</a></li>
@@ -181,13 +181,14 @@ log_server_status</a></li>
 <li><a href="misc/relevant_standards.html">Relevant Standards</a></li>
 <li><a href="misc/password_encryptions.html">Password Encryption Formats</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache modules</a></h2>
 <ul><li><a href="mod/module-dict.html">Definitions of terms used to describe Apache modules</a></li>
 <li><a href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</a></li>
 </ul><ul><li><a href="mod/core.html">Apache Core Features</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM Common Directives</a></li>
 <li><a href="mod/event.html">Apache MPM event</a></li>
+<li><a href="mod/motorz.html">Apache MPM motorz</a></li>
 <li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
 <li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
 <li><a href="mod/prefork.html">Apache MPM prefork</a></li>
@@ -234,7 +235,6 @@ log_server_status</a></li>
 <li><a href="mod/mod_data.html">Apache Module mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache Module mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache Module mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Apache Module mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Apache Module mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Apache Module mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Apache Module mod_dialup</a></li>
@@ -279,6 +279,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_proxy.html">Apache Module mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache Module mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache Module mod_proxy_balancer</a></li>
+<li><a href="mod/mod_proxy_beacon.html">Apache Module mod_proxy_beacon</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache Module mod_proxy_connect</a></li>
 <li><a href="mod/mod_proxy_express.html">Apache Module mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache Module mod_proxy_fcgi</a></li>
@@ -328,7 +329,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_watchdog.html">Apache Module mod_watchdog</a></li>
 <li><a href="mod/mod_xml2enc.html">Apache Module mod_xml2enc</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="developer" id="developer">Developer Documentation</a></h2>
 <ul><li class="separate"><a href="developer/">Overview</a></li>
 <li><a href="developer/API.html">Apache API notes</a></li>
@@ -342,7 +343,7 @@ log_server_status</a></li>
 <li><a href="developer/output-filters.html">Guidelines for output filters in 2.x</a></li>
 <li><a href="developer/thread_safety.html">Thread Safety Issues in 2.x</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="index" id="index">Glossary and Index</a></h2>
 <ul><li><a href="glossary.html">Glossary</a></li>
 <li><a href="mod/">Module index</a></li>
@@ -354,34 +355,38 @@ log_server_status</a></li>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

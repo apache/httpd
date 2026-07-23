@@ -487,11 +487,12 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  * When adding a new code here add it to status_lines as well.
  * A future version should dynamically generate the apr_table_t at startup.
  */
-#define RESPONSE_CODES 103
+#define RESPONSE_CODES 104
 
 #define HTTP_CONTINUE                        100
 #define HTTP_SWITCHING_PROTOCOLS             101
 #define HTTP_PROCESSING                      102
+#define HTTP_EARLY_HINTS                     103
 #define HTTP_OK                              200
 #define HTTP_CREATED                         201
 #define HTTP_ACCEPTED                        202
@@ -1160,7 +1161,7 @@ struct request_rec {
      * to conclude that no body is there.
      */
     unsigned int body_indeterminate :1;
-    /** Whether a final (status >= 200) RESPONSE BUCKET has been passed down
+    /** Whether a final (status >= HTTP_OK) RESPONSE BUCKET has been passed down
      * the output filters already. Relevant for ap_die().
      *  TODO: compact elsewhere
      */
@@ -2259,6 +2260,54 @@ AP_DECLARE(int) ap_ind(const char *str, char c);        /* Sigh... */
  * @return The index of the first occurrence of c in str
  */
 AP_DECLARE(int) ap_rind(const char *str, char c);
+
+/**
+ * Check whether two buffers of equal size have the same content, using a
+ * constant time algorithm (branch-less with regard to the content of the
+ * buffers and an execution time solely dependent on the number of bytes
+ * compared, not the bytes themselves).
+ *
+ * @param buf1 first buffer to compare
+ * @param buf2 second buffer to compare
+ * @param n number of bytes to compare
+ * @return 1 if equal, 0 otherwise
+ */
+AP_DECLARE(int) ap_memeq_timingsafe(const void *buf1, const void *buf2,
+                                    apr_size_t n);
+
+/**
+ * Check whether two NUL-terminated strings have the same content, using a
+ * constant time algorithm (branch-less with regard to the content of the
+ * secret string and an execution time solely dependent on the length of
+ * the non-secret string). The secret string of the two should be set in
+ * the first parameter \c sec1 to avoid leaking its length.
+ *
+ * @param sec1 first string to compare (the secret one)
+ * @param str2 second string to compare
+ * @return 1 if equal, 0 otherwise
+ * @remark The function will compare as much characters as there are in
+ *         \c str2, so the length of \c str2 might leak through side channel,
+ *         while the length of \c sec1 does not.
+ */
+AP_DECLARE(int) ap_streq_timingsafe(const char *sec1, const char *str2);
+
+/**
+ * Check whether two NUL-terminated strings have the same content, up to \c n
+ * characters, using a constant time algorithm (branch-less with regard to the
+ * content of the secret string and an execution time solely dependent on the
+ * length of the non-secret string or \c n). The secret string of the two
+ * should be set in the first parameter \c sec1 to avoid leaking its length.
+ *
+ * @param sec1 secret string to compare
+ * @param str2 string to compare with
+ * @param n max number of characters to compare
+ * @return 1 if equal, 0 otherwise
+ * @remark The function will compare as much characters as there are in
+ *         \c str2 if it's less than \c n, so the length of \c str2 might
+ *         leak through side channel, while the length of \c sec1 does not.
+ */
+AP_DECLARE(int) ap_strneq_timingsafe(const char *sec1, const char *str2,
+                                     apr_size_t n);
 
 /**
  * Given a string, replace any bare &quot; with \\&quot; .

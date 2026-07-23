@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1926075 -->
+<!-- English Revision: 1935440 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,8 +37,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats TLS via le protocole ACME (<a
-	href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
+	certificats TLS via le protocole ACME (<rfc>8555</rfc>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
 	monitorer l'état de tous les certificats gérés par mod_md et de configurer
@@ -221,19 +220,24 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 		aussi ici, ce qui vous permettra de visualiser les éventuels
 		problèmes sans devoir vous plonger dans les journaux du serveur.
             </p><p>
-                Il existe aussi un nouveau gestionnaire, "md-status", qui peut
+                Il existe aussi un nouveau gestionnaire,
+		« <code>md-status</code> », qui peut
 		vous fournir les informations à propos des domaines gérés à
-		partir de "server-status" et au format JSON. Vous pouvez le
+		partir de « <code>server-status</code> » et au format JSON. Vous pouvez le
 		configurer comme suit sur votre serveur :
             </p>
             <highlight language="config">
 &lt;Location "/md-status">
   SetHandler md-status
+  Require host example.com
 &lt;/Location>
             </highlight>
             <p>
-                Comme pour "server-status", vous devez
-		ajouter les autorisations nécessaires. 
+                Comme pour « <code>server-status</code> », vous
+		<strong>devez</strong> protéger la sortie de
+		<code>md-status</code> de la vue du public en instaurant des
+		restrictions d’autorisation (telles que
+		<module>mod_authz_host</module>).		 
             </p><p>
                 Si vous ne souhaitez recevoir l'état JSON que pour un domaine
 		spécifique, ajoutez le simplement à votre URL d'état :
@@ -291,7 +295,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 &lt;/MDomain>            
             </highlight>
             <p>
-		et utilisez 'server-status' et/ou <directive
+		et utilisez « <code>server-status</code> » et/ou <directive
 		module="mod_md">MDMessageCmd</directive> pour voir comment tout
 		cela fonctionne. Vous pourrez alors vérifier si l'information
 		d'agrafage est présente, sa durée de validité, son origine et à
@@ -338,52 +342,6 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 		mod_ssl est incapable d'ajouter une dépendance à mod_watchdog
 		sans rendre inutilisables de nombreuses configurations
 		existantes qui ne chargent pas ce module.
-            </p>
-        </note>
-
-        <note><title>tailscale</title>
-            <p>
-                Depuis la version 2.4.14 du module, vous pouvez l'utiliser pour
-		obtenir des certificats pour vos domaines <a
-		href="https://tailscale.com">tailscale</a>.
-            </p>
-            <highlight language="config">
-&lt;MDomain mydomain.some-thing.ts.net>
-  MDCertificateProtocol tailscale
-  MDCertificateAuthority file://localhost/var/run/tailscale/tailscaled.sock",
-&lt;/MDomain>
-            </highlight>
-            <p>
-                Tailscale permet des communications sécurisées entre vos
-		machines, où qu'elles se trouvent, et peut leur fournir des noms de
-		domaine dans l'espace *.ts.net. Pour ceux-ci, il fournira
-		aussi ensuite des certificats Let's Encrypt de façon à ce que
-		vous puissiez ouvrir ces domaines dans votre navigateur en toute
-		sécurité.
-            </p>
-            <p>
-                Apache va contacter le démon tailscale local à l'aide des
-		directives listées ci-dessous pour obtenir et renouveler les
-		certificats. Ceci ne fonctionnera cependant que pour les noms de
-		domaine que tailscale aura assigné à votre machine.
-            </p>
-            <p>
-                Dans le cas contraire, ces certificats fonctionneront exactement
-		de la même façon que ceux qui auront été obtenus à l'aide du
-		protocole ACME de Lets Encrypt. Vous les verrez dans le rapport
-		d'état et les directives MDMessageCmd seront aussi exécutées
-		pour eux.
-            </p>
-            <p>
-		Vous trouverez plus de détails dans la <a
-		href="https://github.com/icing/mod_md#tailscale">documentation
-		github de mod_md</a>.
-            </p>
-            <p>
-                Notez que cette fonctionnalité n'est disponible que sur les
-		machines où le démon tailscale fournit un socket de domaine unix.
-		Jusqu'à présent, ceci ne semble être le cas que sur les systèmes
-		de style Unix.
             </p>
         </note>
 
@@ -571,13 +529,13 @@ MDomain example2.org auto
                 Si vous spécifiez plusieurs URLs, chacune d'entre elles est
 		testée en mode tourniquet ("round-robin") après un certain
 		nombre d'échecs. Vous pouvez définir la rapidité de ce processus
-		à l'aide des directives <directive>MDRetryDelay</directive> et
-		<directive>MDRetryFailover</directive>. Par défaut, une demie
+		à l'aide des directives <directive module="mod_md">MDRetryDelay</directive> et
+		<directive module="mod_md">MDRetryFailover</directive>. Par défaut, une demie
 		journée d'essais infructueux est considérée comme un échec.
-            </p><p>
+        </p><p>
                 Tous les autres réglages s'appliquent à chacune de ces URLs. Il
 		est ainsi par exemple impossible d'en avoir deux avec des
-		directives <directive>MDExternalAccountBinding</directive>
+		directives <directive module="mod_md">MDExternalAccountBinding</directive>
 		différentes.
 	    </p><p>
                 A des fins de test, les CAs fournissent en général une seconde
@@ -668,15 +626,53 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>À partir de la version 2.4.69, un mandataire peut être
+	configuré séparément pour chaque MDomain.</compatibility>
         <usage>
-	    <p>Cette directive permet de spécifier un serveur http mandataire
+	    <p>Utiliser l’URL du serveur http mandataire direct donné
 	    pour se connecter à l'autorité de certification spécifiée via
 	    <directive module="mod_md">MDCertificateAuthority</directive>. Vous
 	    devez la définir si votre serveur web ne peut atteindre internet que
-	    via un serveur mandataire.
+	    via un mandataire direct.
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDHttpProxyCACertificateFile</name>
+        <description>Définition des certificats racine (CA) à utiliser pour les
+	connexions TLS avec le mandataire http.</description>
+        <syntax>MDHttpProxyCACertificateFile <var>path-to-pem-file</var></syntax>
+        <default>MDHttpProxyCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.69 du serveur HTTP
+	Apache</compatibility>
+         <usage>
+            <p>
+                Cette directive est utilisée pour les connexions avec le
+		mandataire HTTPS direct (directive <directive
+		module="mod_md">MDHttpProxy</directive>). Elle est requise si le
+		certificat du mandataire HTTPS ne peut pas être vérifié en
+		utilisant le magasin général de la racine du CA. Cela se produit
+		parfois dans les environnements de test ou au sein d’une
+		entreprise.
+            </p>
+            <p>
+                Le certificat du serveur ACME est vérifié avec les certificats
+		racine définis via la directive <directive
+		module="mod_md">MDCACertificateFile</directive> ; vous serez
+		donc amené à utiliser les deux définitions.
+            </p>
+            <p>
+                Utilisez « none » comme chemin pour désactiver cette
+		fonctionnalité explicitement.
+            </p>
+	    <p> Cette directive peut être configurée séparément pour chaque
+	    <directive module="mod_md">MDomain</directive>.  </p>
+         </usage>
+     </directivesynopsis>
 
     <directivesynopsis>
         <name>MDMember</name>
@@ -894,7 +890,7 @@ MDPrivateKeys secp256r1 rsa3072
         </contextlist>
         <usage>
             <p>
-            Lorsqu'un certificat arrive à expiration, mod_md va
+            Lorsqu'un certificat arrive à expiration, <module>mod_md</module> va
 	    tenter d'en obtenir un nouveau signé.
             </p><p>
             Normalement, les certificats ont une validité de 90 jours, et
@@ -1253,8 +1249,9 @@ MDRequireHttps permanent
         <usage>
             <p>
 		Cette directive permet de définir la commande à appeler
-		lorsqu'un des évènements "renewed", "installed", "expiring" ou
-		"errored" se produit pour un domaine géré. La commande sera
+		lorsqu'un des évènements "renewed", "installed", "expiring",
+		"errored", "renewing", "challenge-setup:type:domain",
+		"ocsp-renewed" ou "ocsp-errored" se produit pour un domaine géré. La commande sera
 		probablement invoquée pour d'autres évènements dans le futur et
 		ignorera les évènements pour lesquels elle n'aura pas été
 		préparée.
@@ -1317,13 +1314,18 @@ MDMessageCmd /etc/apache/md-message
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-		Un évènement de type ocsp-errored est déclenché lorsque le
+		Un évènement de type "ocsp-errored" est déclenché lorsque le
 		<directive module="mod_md">MDStapling</directive> est activé
 		pour un domaine, et indique qu'une erreur s'est produite en
 		essayant d'obtenir la réponse OCSP  de l'autorité de
 		certification. mod_md essaiera à nouveau d'obtenir cette
 		réponse.		
-            </p>
+            </p><p>
+                Un évènement de type "ocsp-renewed" est déclenché lorsqu'une
+		nouvelle réponse OCSP a été obtenu avec succès pour un
+		certificat de domaine. Cet évènement de produit au plus une fois
+		par jour.
+	    </p>
         </usage>
     </directivesynopsis>
 
@@ -1359,22 +1361,23 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDServerStatus</name>
         <description>Définit si les informations à propos des domaines gérés
-	sont ajoutés ou non à server-status.</description>
+	sont ajoutés ou non à <code>server-status</code>.</description>
         <syntax>MDServerStatus on|off</syntax>
-        <default>MDServerStatus on</default>
+        <default>MDServerStatus off</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
-            <p>
-                Le gestionnaire d'Apache "server-status" vous permet de
-		configurer une ressource pour monitorer le fonctionnement du
-		serveur. Cette ressource inclut maintenant une section indiquant
-		tous les domaines gérés avec leur nom DNS, l'état de
-		renouvellement du certificat, la durée de vie de ce dernier,
-		ainsi que d'autres propriétés fondamentales.
-            </p><p>
-                Cette directive permet d'activer/désactiver cette ressource.
+	    <p>Si cette directive est activée, une section est ajoutée au
+	    gestionnaire « <code>server-status</code> » de
+	    <module>mod_status</module>, qui liste tous les domaines gérés avec
+	    leur nom DNS, l'état de renouvellement du certificat, la durée de
+	    vie de ce dernier, ainsi que d'autres propriétés fondamentales.
+	    </p><p>
+               Comme avec « <code>md-status</code> », la sortie de
+	       « <code>server-status</code> » <strong>doit</strong> être
+	       protégée de la vue du public en instaurant des restrictions
+	       d’autorisation appropriées.
             </p>
         </usage>
     </directivesynopsis>
@@ -1389,7 +1392,8 @@ MDMessageCmd /etc/apache/md-message
         </contextlist>
         <usage>
             <p>
-                Cette directive impacte l'interface utilisateur HTML 'server-status' et
+                Cette directive impacte l'interface utilisateur HTML
+		« <code>server-status</code> » et
 		n'a rien à voir avec le fonctionnement de mod_md proprement dit.
 		Elle permet de définir le lien qui s'affiche sur cette interface
 		pour accéder facilement à un moniteur de certificat. L'empreinte
@@ -1549,7 +1553,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>Définit le motif de nom et d’URL pour un site de
+        <description>Définit le motif de nom et d'URL pour un site de
 	vérification de certificat</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
@@ -1565,7 +1569,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDActivationDelay</name>
-        <description>Délai d’activation des nouveaux certificays</description>
+        <description>Délai d'activation des nouveaux certificays</description>
         <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1627,7 +1631,7 @@ MDMessageCmd /etc/apache/md-message
 		Certains CAs ACME ont besoin de ces valeurs, mais ce n'est pas
 		le cas pour Let's Encrypt. Vérifiez avec votre CA ACME si vous
 		avez besoin de ces valeurs et la manière de les obtenir. Ces
-		dernières se composent de deux chaînes : un identifiant de clé
+		dernières se composent de deux chaînes&nbsp;: un identifiant de clé
 		et une valeur 'hmac' codée en base64.
             </p>
             <p>
@@ -1641,7 +1645,7 @@ MDMessageCmd /etc/apache/md-message
                 Les valeurs peuvent aussi être extraites d'un fichier JSON pour
 		conserver l'ouverture des permissions au niveau de la
 		configuration du serveur et restreindre celles de ce fichier. Le
-		fichier JSON sera du style :
+		fichier JSON sera du style&nbsp;:
             </p>
             <example><title>Exemple de fichier EAB JSON</title>
                 <highlight language="config">
@@ -1661,7 +1665,7 @@ MDMessageCmd /etc/apache/md-message
         <description>Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</description>
         <syntax>MDRetryDelay <var>duration</var></syntax>
-        <default>MDRetryDelay 5s</default>
+        <default>MDRetryDelay 30s</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -1678,6 +1682,10 @@ MDMessageCmd /etc/apache/md-message
 		certificat. Autrement dit, une erreur sur un MDomain ne retarde
 		pas les renouvellements des autres domaines.
             </p>
+	    <p>
+		 Avec la version 2.6.1 de mod_md, le temps d'attente a été
+		 augmenté de&nbsp;5 à 30&nbsp;secondes.
+            </p>
         </usage>
     </directivesynopsis>
 
@@ -1693,10 +1701,10 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-                Le nombre d'erreurs consécutives lors du renouvellement d'un
+		Le nombre d'erreurs consécutives lors du renouvellement d'un
 		certificat avant la sélection d'une autre CA. Ne s'applique
-		qu'aux configurations pour lesquelles plusieurs
-		<directive>MDCertificateAuthority</directive> ont été
+		qu'aux configurations pour lesquelles plusieurs <directive
+		module="mod_md">MDCertificateAuthority</directive> ont été
 		spécifiées.
             </p>
         </usage>
@@ -1714,13 +1722,14 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-                Définissez cette directive pour utiliser un fichier verrou au
-		démarrage du serveur lorsque <directive>MDStoreDir</directive>
-		est synchronisé avec la configuration du serveur et si les
-		certificats renouvelés sont activés.
+		Définissez cette directive pour utiliser un fichier verrou au
+		démarrage du serveur lorsque <directive
+		module="mod_md">MDStoreDir</directive> est synchronisé avec la
+		configuration du serveur et si les certificats renouvelés sont
+		activés.
             </p><p>
                 Le verrouillage a été implémenté pour les configurations de
-		cluster où MDStoreDir appartient à un système de fichiers
+		cluster où <directive module="mod_md">MDStoreDir</directive> appartient à un système de fichiers
 		partagé. L'activation des certificats renouvelés sera alors
 		protégée lorsque plusieurs noeuds du cluster sont redémarrés ou
 		reconfigurés simultanément ; ceci à condition bien entendu que
@@ -1757,7 +1766,7 @@ MDMessageCmd /etc/apache/md-message
         <usage>
             <p>
                 Cette directive permet de définir de quelle manière est invoquée
-		la commande MDChallengeDns01, à savoir le nombre et le type de
+		la commande <directive module="mod_md">MDChallengeDns01</directive>, à savoir le nombre et le type de
 		ses arguments. Voir <directive
 		module="mod_md">MDChallengeDns01</directive> pour les
 		différences.
@@ -1779,11 +1788,13 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-                Le mode `all` correspond au comportement de toutes les versions
-		précédentes. ServerName et ServerAlias sont inspectés pour
-		trouver le MDomain qui correspond à un serveur virtuel. Les
-		recouvrements sont automatiquement détectés, même si vous n'avez
-		ajouté qu'un des noms à un MDomain.
+		Le mode `all` correspond au comportement de toutes les versions
+		précédentes. <directive module="core">ServerName</directive> et
+		<directive module="core">ServerAlias</directive> sont inspectés
+		pour trouver le <directive module="mod_md">MDomain</directive>
+		qui correspond à un serveur virtuel. Les recouvrements sont
+		automatiquement détectés, même si vous n'avez ajouté qu'un des
+		noms à un MDomain.
             </p><p>
                 Cet automatisme présente cependant des inconvénients avec les
 		configurations plus complexes. Si vous définissez cette
@@ -1813,18 +1824,18 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
 	    <p>
-	    Cette option permet de définir l’intervalle entre deux
+	    Cette option permet de définir l'intervalle entre deux
 	    vérifications de certificat. Par défaut, la validité et le besoin de
 	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
-	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    n'est cependant pas appliqué avec précision. En effet, le module lui
 	    applique une plage de variation aléatoire de +/- 50%. Avec
-	    l’intervalle par défaut de 12 heures, cela signifie que l’intervalle
-	    réel entre deux vérifications varie entre 6 et 18 heures, la
-	    variation s’appliquant à nouveau à chaque vérification. Cela permet
-	    d’atténuer les pics de trafic sur les serveurs ACME.
+	    l'intervalle par défaut de 12&nbsp;heures, cela signifie que l'intervalle
+	    réel entre deux vérifications varie entre 6&nbsp;et 18&nbsp;heures, la
+	    variation s'appliquant à nouveau à chaque vérification. Cela permet
+	    d'atténuer les pics de trafic sur les serveurs ACME.
             </p><p>
-	    La valeur minimale pouvant être définie pour l’intervalle est de
-	    1 seconde. Il est cependant déconseillé de définir un intervalle
+	    La valeur minimale pouvant être définie pour l'intervalle est de
+	    1&nbsp;seconde. Il est cependant déconseillé de définir un intervalle
 	    aussi court sur un serveur en production.
             </p>
         </usage>
@@ -1841,24 +1852,24 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-                Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
+                Il s'agit d'une extension non standard d'ACME par Let's Encrypt.
             </p><p>
-		Lets Encrypt a annoncé qu’ils allaient ajouter la prise en
-		charge des profiles de certificat à leurs CA courant 2025, en
-		commençant par leurs serveurs de test. Cette fonctionnalité,
-		entre autres détails, vous permettra de définir la durée de
-		validité des certificats que vous recevez. À ce titre, le
-		profile « default » conservera la valeur de 90 jours, alors que
-		le profile « tlsserver » délivrera des certificats dont la durée
-		de validité sera de 6 jours seulement.
+		Let’s Encrypt prend en charge les profiles de certificat dans
+		leurs CA. Cette fonctionnalité, entre autres détails, vous
+		permet de définir la durée de validité des certificats que vous
+		recevez. Le profile par défaut «&nbsp;classic&nbsp;» conserve la valeur de
+		90&nbsp;jours, le profile «&nbsp;tlsserver&nbsp;» conserve aussi la valeur de
+		90&nbsp;jours avec au maximum 25 noms alternatifs pour Subject. Le
+		profile «&nbsp;shortlived » délivre des certificats dont la durée de
+		validité est de 6&nbsp;jours seulement.
             </p><p>
-                Si vous ne modifiez pas la configuration de votre module mod_md,
-		vous continuerez à recevoir des certificats d’une durée de
-		validité de 90 jours. Si vous pensez qu’une durée de validité
+                Si vous ne modifiez pas la configuration de votre module <module>mod_md</module>,
+		vous continuerez à recevoir des certificats d'une durée de
+		validité de 90&nbsp;jours. Si vous pensez qu'une durée de validité
 		plus courte convient mieux à votre situation (et acceptez le
 		risque que le temps de renouvellement soit beaucoup plus court),
-		vous pouvez définir le profile à utiliser à l’aide de
-		« MDProfile tlsserver ».
+		vous pouvez définir le profile à utiliser à l'aide de
+		«&nbsp;MDProfile shortlived ».
            </p><p>
                 Les noms de profile sont définis par le CA. Si vous tentez de
 		définie un profile non valable, aucun profile ne sera utilisé,
@@ -1879,20 +1890,93 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>Disponible à partir de la version 2.4.64 du serveur HTTP
+	Apache</compatibility>
         <usage>
             <p>
                 Cette directive permet de contrôler si un <directive
 		module="mod_md">MDProfile</directive> que vous définissez est
-		obligatoire ou non. S’il est obligatoire et si le CA ne propose
+		obligatoire ou non. S'il est obligatoire et si le CA ne propose
 		pas de profile configuré, le renouvellement du certificat
 		échouera.
            </p><p>
-                S’il n’est pas obligatoire et si le CA ne propose
+                S'il n'est pas obligatoire et si le CA ne propose
 		pas de profile, les renouvellements seront effectués sans
 		profile particulier et le CA délivrera les certificats avec les
 		valeurs par défaut.
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDRenewViaARI</name>
+        <description>Utilisation de l'extension ACME ARI (rfc9773).</description>
+        <syntax>MDRenewViaARI on|off</syntax>
+        <default>MDRenewViaARI on</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                Cette directive permet d'activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l'aide de
+		l'extension ACME ARI (rfc9773). Ces renouvellements s'ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l'aide de la
+		directive <directive module="mod_md">MDRenewWindow</directive>.
+           </p><p>
+                ACME ARI permet en quelque sorte à une CA ACME de façonner le
+		trafic entrant des renouvellements. Plus important cependant,
+		cette extension peut informer les clients de l'urgence d'un
+		renouvellement, par exemple lorsqu'un certificat ou une partie
+		de sa chaîne de certification a été révoqué(e).
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDInitialDelay</name>
+        <description>Le délai avant la première vérification de certificat.</description>
+        <syntax>MDInitialDelay <var>duration</var></syntax>
+        <default>MDInitialDelay 0s</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.66 du serveur HTTP
+	Apache</compatibility>
+        <usage>
+            <p>
+                Le temps d'attente, après le démarrage du serveur, avant de
+		vérifier si des certificats doivent être renouvelés. Par défaut,
+		cette vérification est immédiate.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCACertificateFile</name>
+        <description>Fichier contenant des certificats de confiance x509 pour
+	vérifier les serveurs ACME.</description>
+        <syntax>MDCACertificateFile <var>file</var></syntax>
+        <default>MDCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+	<compatibility>Depuis la version 2.4.69, cette directive peut être
+	définie séparément pour chaque MDomain.</compatibility>
+        <usage>
+            <p>
+                Cette directive est principalement utilisée dans les
+		configurations de test où le module doit se connecter à un
+		serveur ACME de test qui possède son propre certificat racine.
+		Les administrateurs qui possèdent une autorité de certification
+		interne propre à une entreprise peuvent utiliser cette directive
+		lorsqu'ils utilisent leurs propres serveurs ACME.
+            </p>
+            <p>
+                Définissez cette directive à «&nbsp;none&nbsp;» pour la désactiver
+		explicitement.
+            </p>
+        </usage>
+    </directivesynopsis>    
 
 </modulesynopsis>

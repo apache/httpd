@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 290" width="520" height="290">
+  <defs>
+    <marker id="arrowhead-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#dc2626"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 11px; fill: #333; }
+      .title { font-size: 12px; font-weight: bold; }
+      .directive { font-size: 11px; font-weight: bold; fill: #333; }
+      .part { font-size: 10px; }
+      .backref { font-size: 11px; font-weight: bold; }
+      .backref-rule { fill: #2563eb; }
+      .backref-cond { fill: #dc2626; }
+      .note { font-size: 9px; fill: #666; font-style: italic; }
+      .order { font-size: 9px; fill: #888; }
+      .ellipsis { font-size: 14px; fill: #666; }
+      rect.cond-box { fill: #fef3c7; stroke: #d97706; stroke-width: 1.5; rx: 4; ry: 4; }
+      rect.rule-box { fill: #dbeafe; stroke: #2563eb; stroke-width: 1.5; rx: 4; ry: 4; }
+      rect.cond-last { fill: #fde68a; stroke: #b45309; stroke-width: 2; rx: 4; ry: 4; }
+    </style>
+  </defs>
+
+  <text x="260" y="16" text-anchor="middle" class="title">Figure 2: Backreference Flow in mod_rewrite</text>
+
+  <!-- Processing order annotation -->
+  <text x="468" y="70" class="order">② evaluated</text>
+  <text x="468" y="81" class="order">second</text>
+  <text x="468" y="170" class="order">① matched</text>
+  <text x="468" y="181" class="order">first</text>
+
+  <!-- RewriteCond 1 -->
+  <text x="15" y="48" class="directive">RewriteCond 1</text>
+  <rect class="cond-box" x="125" y="34" width="115" height="24"/>
+  <text x="182" y="50" text-anchor="middle" class="part">TestString</text>
+  <rect class="cond-box" x="255" y="34" width="115" height="24"/>
+  <text x="312" y="50" text-anchor="middle" class="part">CondPattern</text>
+
+  <!-- RewriteCond 2 -->
+  <text x="15" y="78" class="directive">RewriteCond 2</text>
+  <rect class="cond-box" x="125" y="64" width="115" height="24"/>
+  <text x="182" y="80" text-anchor="middle" class="part">TestString</text>
+  <rect class="cond-box" x="255" y="64" width="115" height="24"/>
+  <text x="312" y="80" text-anchor="middle" class="part">CondPattern</text>
+
+  <!-- Ellipsis -->
+  <text x="60" y="103" text-anchor="middle" class="ellipsis">⋮</text>
+  <text x="182" y="103" text-anchor="middle" class="ellipsis">⋮</text>
+  <text x="312" y="103" text-anchor="middle" class="ellipsis">⋮</text>
+
+  <!-- RewriteCond n (last matched) -->
+  <text x="15" y="127" class="directive">RewriteCond n</text>
+  <rect class="cond-last" x="125" y="113" width="115" height="24"/>
+  <text x="182" y="129" text-anchor="middle" class="part">TestString</text>
+  <rect class="cond-last" x="255" y="113" width="115" height="24"/>
+  <text x="312" y="129" text-anchor="middle" class="part">CondPattern</text>
+
+  <!-- RewriteRule -->
+  <text x="15" y="172" class="directive">RewriteRule</text>
+  <rect class="rule-box" x="125" y="158" width="115" height="24"/>
+  <text x="182" y="174" text-anchor="middle" class="part">Pattern</text>
+  <rect class="rule-box" x="255" y="158" width="160" height="24"/>
+  <text x="335" y="174" text-anchor="middle" class="part">Substitution</text>
+
+  <!-- === BACKREFERENCE ARROWS === -->
+
+  <!-- $N (blue): Rule Pattern → RewriteCond 1 TestString -->
+  <path d="M 155,158 C 120,148 100,80 100,56 C 100,48 110,46 125,46"
+        style="stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrowhead-blue);"/>
+
+  <!-- $N (blue): Rule Pattern → RewriteCond 2 TestString -->
+  <path d="M 145,158 C 108,148 88,100 88,76 C 88,70 100,68 125,68"
+        style="stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrowhead-blue);"/>
+
+  <!-- $N (blue): Rule Pattern → RewriteCond n TestString -->
+  <path d="M 140,158 C 100,150 80,140 80,125 C 80,118 100,117 125,117"
+        style="stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrowhead-blue);"/>
+
+  <!-- $N (blue): Rule Pattern → Rule Substitution -->
+  <path d="M 182,182 C 182,210 335,210 335,182"
+        style="stroke: #2563eb; stroke-width: 2.2; fill: none; marker-end: url(#arrowhead-blue);"/>
+
+  <!-- $N label — positioned to the left of the arrows, clear of text -->
+  <text x="55" y="155" class="backref backref-rule">$1...$9</text>
+
+  <!-- %N (red): Last CondPattern → Rule Substitution -->
+  <path d="M 370,125 C 420,125 430,150 415,158 C 405,163 395,166 415,170"
+        style="stroke: #dc2626; stroke-width: 2.2; fill: none; marker-end: url(#arrowhead-red);"/>
+  <text x="425" y="145" class="backref backref-cond">%1...%9</text>
+
+  <!-- $N label on bottom arrow -->
+  <text x="260" y="218" text-anchor="middle" class="backref backref-rule">$1...$9</text>
+
+  <!-- Legend -->
+  <line x1="15" y1="250" x2="55" y2="250" style="stroke: #2563eb; stroke-width: 3; fill: none; marker-end: none;"/>
+  <text x="60" y="254" class="backref backref-rule">$N — from RewriteRule Pattern (matched first) → all TestStrings + Substitution</text>
+  <line x1="15" y1="270" x2="55" y2="270" style="stroke: #dc2626; stroke-width: 3; fill: none; marker-end: none;"/>
+  <text x="60" y="274" class="backref backref-cond">%N — from last matched CondPattern → Substitution</text>
+</svg>

@@ -1,0 +1,5 @@
+<!--#set var="foo" value="1234567890" -->
+<!--#echo var="1"-->
+<!--#if expr="$foo = /(.)/"--><!--#endif-->
+<!--#echo var="1"-->
+<!--#echo var="2"-->

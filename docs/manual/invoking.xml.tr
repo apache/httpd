@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1044380:1597021 (outdated) -->
+<!-- English Revision: 1044380:1933438 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -26,18 +26,18 @@
 
 <manualpage metafile="invoking.xml.meta">
 
-  <title>Apache HTTPd’nin başlatılması</title>
+  <title>Apache HTTPd'nin başlatılması</title>
 
 <summary>
     <p>Apache normal olarak, Windows NT, 2000 ve XP'de bir hizmet olarak,
-      Windows 9x ve ME’de ise bir konsol uygulaması olarak çalışır. Ayrıntılı
-      bilgi için <a href="platform/windows.html#winsvc">Apache HTTPd’nin bir
+      Windows 9x ve ME'de ise bir konsol uygulaması olarak çalışır. Ayrıntılı
+      bilgi için <a href="platform/windows.html#winsvc">Apache HTTPd'nin bir
       hizmet olarak çalıştırılması</a> ve <a
-      href="platform/windows.html#wincons">Apache HTTPd’nin bir konsol
+      href="platform/windows.html#wincons">Apache HTTPd'nin bir konsol
       uygulaması olarak çalıştırılması</a> bölümlerine bakınız.</p>
 
-    <p>Unix’te ise artalanda isteklere yanıt vermek için sürekli çalışan bir
-      artalan sürecidir. Bu belgede <program>httpd</program>’nin nasıl
+    <p>Unix'te ise artalanda isteklere yanıt vermek için sürekli çalışan bir
+      artalan sürecidir. Bu belgede <program>httpd</program>'nin nasıl
       çalıştırılacağı açıklanmaktadır.</p>
 </summary>
 
@@ -49,7 +49,7 @@
 
     <p>Yapılandırma dosyasında <directive
       module="mpm_common">Listen</directive> yönergesi ile öntanımlı olan port
-      80 (veya 1024’ten küçük herhangi bir port) belirtilmişse Apache HTTP
+      80 (veya 1024'ten küçük herhangi bir port) belirtilmişse Apache HTTP
       Sunucusunu başlatmak için root yetkileri gerekecektir. Sunucu başlatılıp
       günlük dosyalarını açmak gibi bazı ön hazırlık etkinliklerinde
       bulunduktan sonra istemcilerden gelen istekleri dinlemek ve yanıt vermek
@@ -59,13 +59,13 @@
       aidiyetinde çalışır. Bu işlem seçilen <a href="mpm.html">Çok Süreçlilik
       Modülü</a> tarafından denetlenir.</p>
 
-    <p><program>httpd</program>’yi çalıştırmak için önerilen yöntem
+    <p><program>httpd</program>'yi çalıştırmak için önerilen yöntem
       <program>apachectl</program> betiğini kullanmaktır. Bu betik,
-      <program>httpd</program>’nin bazı işletim sistemlerinde işlevini
+      <program>httpd</program>'nin bazı işletim sistemlerinde işlevini
       gerektiği gibi yerine getirebilmesi için gereken belli ortam
-      değişkenlerini ayarlar ve <program>httpd</program>’yi çalıştırır.
+      değişkenlerini ayarlar ve <program>httpd</program>'yi çalıştırır.
       <program>apachectl</program>, komut satırı argümanlarını
-      <program>httpd</program>’ye aktarabildiğinden gerekli
+      <program>httpd</program>'ye aktarabildiğinden gerekli
       <program>httpd</program> seçenekleri <program>apachectl</program>
       betiğine komut satırı seçenekleri olarak belirtilebilir. Ayrıca,
       <program>apachectl</program> betiğinin içeriğini doğrudan düzenlemek
@@ -76,7 +76,7 @@
 
     <p><code>httpd</code> çalıştırıldığında yaptığı ilk şey <a
       href="configuring.html">yapılandırma dosyası</a>
-      <code>httpd.conf</code>’u bulup okumaktır. Bu dosyanın yeri derleme
+      <code>httpd.conf</code>'u bulup okumaktır. Bu dosyanın yeri derleme
       sırasında belirtilmekteyse de <code>-f</code> komut satırı seçeneği
       kullanılarak çalıştırma sırasında belirtmek de mümkündür:</p>
 
@@ -109,7 +109,7 @@
     </ul>
 
     <p>Bu ve diğer sorun çözme talimatları için Apache <a
-      href="http://wiki.apache.org/httpd/FAQ">SSS</a>’sini inceleyiniz.</p>
+      href="http://wiki.apache.org/httpd/FAQ">SSS</a>'sini inceleyiniz.</p>
 </section>
 
 <section id="boot"><title>Sistem Açılışında Başlatma</title>
@@ -125,7 +125,7 @@
     <p><program>apachectl</program> betiği, bir standart SysV init betiği gibi
       davranacak şekilde tasarlanmıştır. <code>start</code>,
       <code>restart</code> ve <code>stop</code> argümanlarını kabul edebilir
-      ve bunları <program>httpd</program>’ye uygun sinyallere dönüştürebilir.
+      ve bunları <program>httpd</program>'ye uygun sinyallere dönüştürebilir.
       Bu bakımdan, çoğunlukla uygun init dizinlerinden birine
       <program>apachectl</program> betiği için basitçe bir bağ
       yerleştirebilirsiniz. Fakat bunu yapmadan önce betiğin sisteminizin

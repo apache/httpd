@@ -1,396 +1,398 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Fichiers journaux - Serveur HTTP Apache Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Fichiers journaux</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Fichiers journaux</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Pour véritablement gérer un serveur web,
-    il est nécessaire de disposer d'un
-    retour d'informations à propos de l'activité et des performances du
-    serveur, ainsi que de tout problème qui pourrait survenir. Le serveur HTTP
-    Apache propose des fonctionnalités de journalisation souples et très
-    complètes. Ce document décrit comment configurer ces fonctionnalités de
-    journalisation et interpréter le contenu des journaux.</p>
+    <p>Pour v&eacute;ritablement g&eacute;rer un serveur web,
+    il est n&eacute;cessaire de disposer d'un
+    retour d'informations &agrave; propos de l'activit&eacute; et des performances du
+    serveur, ainsi que de tout probl&egrave;me qui pourrait survenir. Le serveur HTTP
+    Apache propose des fonctionnalit&eacute;s de journalisation souples et tr&egrave;s
+    compl&egrave;tes. Ce document d&eacute;crit comment configurer ces fonctionnalit&eacute;s de
+    journalisation et interpr&eacute;ter le contenu des journaux.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Vue d'ensemble</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#security">Avertissement à propos de la sécurité</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Journal des erreurs</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#permodule">Journalisation par module</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Journal des accès</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rotation">Rotation des journaux</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#piped">Journaux redirigés</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hôtes virtuels</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">Autres fichiers journaux</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#overview">Vue d'ensemble</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#security">Avertissement &agrave; propos de la s&eacute;curit&eacute;</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#errorlog">Journal des erreurs</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#permodule">Journalisation par module</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#accesslog">Journal des acc&egrave;s</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rotation">Rotation des journaux</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#piped">Journaux redirig&eacute;s</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhost">H&ocirc;tes virtuels</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#other">Autres fichiers journaux</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Vue d'ensemble</a> <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Vue d'ensemble <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
     
 
-  <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td /></tr></table>
+  <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td></td></tr></table>
 
   <p>
-  Le serveur HTTP Apache fournit toute une variété de mécanismes
-  différents pour la journalisation de tout ce qui peut se passer au
-  sein de votre serveur, depuis la requête initiale, en passant par le
-  processus de mise en correspondance des URLs, et jusqu'à la fermeture
+  Le serveur HTTP Apache fournit toute une vari&eacute;t&eacute; de m&eacute;canismes
+  diff&eacute;rents pour la journalisation de tout ce qui peut se passer au
+  sein de votre serveur, depuis la requ&ecirc;te initiale, en passant par le
+  processus de mise en correspondance des URLs, et jusqu'&agrave; la fermeture
   de la connexion, y compris toute erreur pouvant survenir au cours du
   traitement. De plus, certains modules tiers fournissent des
-  fonctionnalités de journalisation ou insèrent des entrées dans les
+  fonctionnalit&eacute;s de journalisation ou ins&egrave;rent des entr&eacute;es dans les
   fichiers journaux existants, et les applications comme les programmes
   CGI, les scripts PHP ou autres gestionnaires peuvent envoyer des
   messages vers le journal des erreurs du serveur.
   </p>
 
   <p>
-  Ce document décrit le fonctionnement des modules de journalisation
+  Ce document d&eacute;crit le fonctionnement des modules de journalisation
   fournis en standard avec le serveur httpd.
   </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Avertissement à propos de la sécurité</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Avertissement &agrave; propos de la s&eacute;curit&eacute; <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     
 
-    <p>Tout utilisateur qui a les droits en écriture sur le répertoire dans
-    lequel Apache httpd écrit ses journaux pourra quasi
-    certainement avoir accès à l'uid sous lequel le serveur est démarré, en
+    <p>Tout utilisateur qui a les droits en &eacute;criture sur le r&eacute;pertoire dans
+    lequel Apache httpd &eacute;crit ses journaux pourra quasi
+    certainement avoir acc&egrave;s &agrave; l'uid sous lequel le serveur est d&eacute;marr&eacute;, en
     l'occurrence habituellement root. N'accordez <em>PAS</em> aux utilisateurs
-    l'accès en écriture au répertoire dans lequel les journaux sont stockés
-    sans savoir exactement quelles en seraient les conséquences ; voir le
-    document <a href="misc/security_tips.html">conseils sur la sécurité</a>
-    pour plus de détails.</p>
+    l'acc&egrave;s en &eacute;criture au r&eacute;pertoire dans lequel les journaux sont stock&eacute;s
+ sans savoir exactement quelles en seraient les cons&eacute;quences ; voir le
+    document <a href="misc/security_tips.html">conseils sur la s&eacute;curit&eacute;</a>
+    pour plus de d&eacute;tails.</p>
 
     <p>En outre, les journaux peuvent contenir des informations fournies
-    directement par un client, sans caractères d'échappement. Des clients mal
-    intentionnés peuvent donc insérer des caractères de contrôle dans les
-    journaux, et il convient par conséquent d'être très prudent lors de la
+    directement par un client, sans caract&egrave;res d'&eacute;chappement. Des clients mal
+    intentionn&eacute;s peuvent donc ins&eacute;rer des caract&egrave;res de contr&ocirc;le dans les
+    journaux, et il convient par cons&eacute;quent d'&ecirc;tre tr&egrave;s prudent lors de la
     manipulation des journaux bruts.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errorlog" id="errorlog">Journal des erreurs</a> <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
+<h2 id="errorlog">Journal des erreurs <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>Le journal des erreurs du serveur, dont le nom et la localisation sont
-    définis par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>,
+    d&eacute;finis par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>,
     est le journal le plus important. C'est dans celui-ci
-    que le démon Apache httpd va envoyer les informations de diagnostic et
+    que le d&eacute;mon Apache httpd va envoyer les informations de diagnostic et
     enregistrer toutes les erreurs qui surviennent lors du traitement des
-    requêtes. Lorsqu'un problème survient au démarrage du serveur ou pendant
-    son fonctionnement, la première chose à faire est de regarder dans ce
-    journal, car il vous renseignera souvent sur le problème rencontré et
-    la manière d'y remédier.</p>
+    requ&ecirc;tes. Lorsqu'un probl&egrave;me survient au d&eacute;marrage du serveur ou pendant
+    son fonctionnement, la premi&egrave;re chose &agrave; faire est de regarder dans ce
+    journal, car il vous renseignera souvent sur le probl&egrave;me rencontr&eacute; et
+    la mani&egrave;re d'y rem&eacute;dier.</p>
 
-    <p>Le journal des erreurs est habituellement enregistré dans un fichier
-    (en général <code>error_log</code> sur les systèmes de type Unix et
-    <code>error.log</code> sur Windows et OS/2). Sur les systèmes de type Unix,
+    <p>Le journal des erreurs est habituellement enregistr&eacute; dans un fichier
+    (en g&eacute;n&eacute;ral <code>error_log</code> sur les syst&egrave;mes de type Unix et
+    <code>error.log</code> sur Windows et OS/2). Sur les syst&egrave;mes de type Unix,
     le serveur peut aussi enregistrer ses erreurs dans
     <code>syslog</code> ou les
-    <a href="#piped">rediriger vers un programme</a> par l'intermédiaire d'un
+    <a href="#piped">rediriger vers un programme</a> par l'interm&eacute;diaire d'un
     tube de communication (pipe).</p>
 
-    <p>Le format par défaut du journal des erreurs est descriptif et de forme
-    relativement libre. Certaines informations apparaissent cependant dans la
-    plupart des entrées du journal. Voici un message typique
-    à titre d'exemple : </p>
+    <p>Le format du journal des erreurs est d&eacute;fini &agrave; l'aide de la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code> avec laquelle vous pouvez
+    choisir les valeurs &agrave; journaliser. Un format par d&eacute;faut sera utilis&eacute; si vous
+    n'en sp&eacute;cifiez pas un. Un message de journalisation typique se pr&eacute;sente
+    comme suit&nbsp;:</p>
 
     <div class="example"><p><code>
-      [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
-      client denied by server configuration:
-      /export/home/live/ap/htdocs/test
+      [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
+      [client 72.15.99.187] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </code></p></div>
 
-    <p>Le premier champ de l'entrée du journal est la date et l'heure du
-    message. Le second champ indique la sévérité de l'erreur rapportée. La
-    directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet de
-    restreindre le type des erreurs qui doivent être enregistrées
-    dans le journal des erreurs en définissant leur niveau de sévérité. Le
-    troisième champ contient l'adresse IP du client qui a généré l'erreur.
-    Vient ensuite le message proprement dit, qui indique dans ce cas que le
-    serveur a été configuré pour interdire l'accès au client. Le serveur
-    indique le chemin système du document requis (et non
-    son chemin web).</p>
+    <p>Le premier champ de l'entr&eacute;e du journal est la date et l'heure du
+    message. Le second champ indique le module qui produit le message (core,
+    dans ce cas) et le niveau de s&eacute;v&eacute;rit&eacute; de ce message. Suivent l'ID du processus
+    et &eacute;ventuellement l'ID du thread du processus qui a &eacute;t&eacute; soumis &agrave; cette
+    condition. Le
+    troisi&egrave;me champ contient l'adresse IP du client qui a effectu&eacute; la requ&ecirc;te.
+    Vient ensuite le message d'erreur d&eacute;taill&eacute;.</p>
 
-    <p>Une grande variété de messages différents peuvent apparaître dans le
-    journal des erreurs. La plupart d'entre eux sont similaires à l'exemple
+    <div class="note"><p>Notez que certains messages qui &eacute;taient auparavant journalis&eacute;s au
+    niveau <code>error</code> ont &eacute;t&eacute; r&eacute;trograd&eacute;s au niveau <code>info</code>
+    dans httpd 2.4. Par exemple, les messages "File does not exist" pour les
+    r&eacute;ponses 404 sont journalis&eacute;s au niveau <code>info</code> et n'appara&icirc;tront
+    pas dans le journal des erreurs avec la valeur par d&eacute;faut <code>warn</code>
+    de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>. Pour
+    restaurer le comportement pr&eacute;c&eacute;dent, sp&eacute;cifiez <code>LogLevel warn
+    core:info</code>.</p></div>
+
+    <p>Une grande vari&eacute;t&eacute; de messages diff&eacute;rents peuvent appara&icirc;tre dans le
+    journal des erreurs. La plupart d'entre eux sont similaires &agrave; l'exemple
     ci-dessus. Le journal des erreurs peut aussi contenir des informations de
-    débogage en provenance de scripts CGI. Toute information qu'un script CGI
-    écrit sur la sortie d'erreurs standard <code>stderr</code> sera recopiée
+    d&eacute;bogage en provenance de scripts CGI. Toute information qu'un script CGI
+    &eacute;crit sur la sortie d'erreurs standard <code>stderr</code> sera recopi&eacute;e
     telle quelle dans le journal des erreurs.</p>
 
-    <p>La directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>
-    vous permet de personnaliser le format du journal des erreurs, et de
-    définir les informations à journaliser. Si
-    <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est présent, vous pouvez utiliser le
-    drapeau <code>%L</code> à la fois dans le journal des erreurs et
-    dans le
-    journal des accès, ce qui aura pour effet de générer un identifiant
-    d'entrée qui vous permettra de corréler les entrées du journal des
-    erreurs avec celles du journal des accès.</p>
+     <p>Mettre un symbole <code>%L</code> dans le journal des erreurs et le
+     journal des acc&egrave;s produit un ID d'entr&eacute;e de journalisation gr&acirc;ce auquel
+     vous pourrez corr&eacute;ler l'entr&eacute;e du journal des erreurs avec celle du journal
+     des acc&egrave;s. Si <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est charg&eacute;, son ID de requ&ecirc;te
+     unique sera utilis&eacute; comme ID d'entr&eacute;e de journalisation.</p>
 
     <p>Pendant la phase de test, il est souvent utile de visualiser en continu
-    le journal des erreurs afin de détecter tout problème éventuel. Sur les
-    systèmes de type Unix, ceci s'effectue à l'aide de la commande :</p>
+    le journal des erreurs afin de d&eacute;tecter tout probl&egrave;me &eacute;ventuel. Sur les
+    syst&egrave;mes de type Unix, ceci s'effectue &agrave; l'aide de la commande :</p>
 
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="permodule" id="permodule">Journalisation par module</a> <a title="Lien permanent" href="#permodule" class="permalink">&para;</a></h2>
+<h2 id="permodule">Journalisation par module <a title="Lien permanent" href="#permodule" class="permalink">&para;</a></h2>
     
 
     <p>La directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet
-    de spécifier un niveau de sévérité de journalisation pour chaque
-    module. Vous pouvez ainsi résoudre un problème propre à un module particulier
+    de sp&eacute;cifier un niveau de s&eacute;v&eacute;rit&eacute; de journalisation pour chaque
+    module. Vous pouvez ainsi r&eacute;soudre un probl&egrave;me propre &agrave; un module particulier
     en augmentant son volume de journalisation sans augmenter ce volume
-    pour les autres modules. Ceci est particulièrement utile lorsque
-    vous voulez obtenir des détails sur le fonctionnement de modules
+    pour les autres modules. Ceci est particuli&egrave;rement utile lorsque
+    vous voulez obtenir des d&eacute;tails sur le fonctionnement de modules
     comme <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> ou <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <p>Pour ce faire, vous devez spécifier le nom du module dans votre
+    <p>Pour ce faire, vous devez sp&eacute;cifier le nom du module dans votre
     directive <code class="directive">LogLevel</code> :</p>
 
-    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
+<div class="example"><pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
+</div>
 
-
-    <p>Dans cet exemple, le niveau de journalisation général est défini
-    à info, et à <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    <p>Dans cet exemple, le niveau de journalisation g&eacute;n&eacute;ral est d&eacute;fini
+    &agrave; info, et &agrave; <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
     <div class="note">Cette directive remplace les directives de journalisation par
-    module des versions précédentes du serveur, comme
+    module des versions pr&eacute;c&eacute;dentes du serveur, comme
     <code>RewriteLog</code>.</div>
- </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+ </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="accesslog" id="accesslog">Journal des accès</a> <a title="Lien permanent" href="#accesslog" class="permalink">&para;</a></h2>
+<h2 id="accesslog">Journal des acc&egrave;s <a title="Lien permanent" href="#accesslog" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
 
-    <p>Le journal des accès au serveur
-    enregistre toutes les requêtes que traite
-    ce dernier. La localisation et le contenu du journal des accès sont définis
+    <p>Le journal des acc&egrave;s au serveur
+    enregistre toutes les requ&ecirc;tes que traite
+    ce dernier. La localisation et le contenu du journal des acc&egrave;s sont d&eacute;finis
     par la directive <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>.
     La directive <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code>
-    permet de simplifier la sélection du contenu du journal. Cette section
-    décrit comment configurer le serveur pour l'enregistrement des informations
-    dans le journal des accès.</p>
+    permet de simplifier la s&eacute;lection du contenu du journal. Cette section
+    d&eacute;crit comment configurer le serveur pour l'enregistrement des informations
+    dans le journal des acc&egrave;s.</p>
 
-    <p>Le stockage d'informations dans le journal des accès
-    n'est que le point de départ de la gestion de la journalisation. L'étape
-    suivante consiste à analyser ces informations de façon à pouvoir en
-    extraire des statistiques utiles. L'analyse de journaux en général est en
-    dehors du sujet de ce document et ne fait pas vraiment partie intégrante
-    du travail du serveur web lui-même.
+    <p>Le stockage d'informations dans le journal des acc&egrave;s
+    n'est que le point de d&eacute;part de la gestion de la journalisation. L'&eacute;tape
+    suivante consiste &agrave; analyser ces informations de fa&ccedil;on &agrave; pouvoir en
+    extraire des statistiques utiles. L'analyse de journaux en g&eacute;n&eacute;ral est en
+    dehors du sujet de ce document et ne fait pas vraiment partie int&eacute;grante
+    du travail du serveur web lui-m&ecirc;me.
     </p>
 
-    <p>Différentes versions du démon Apache httpd utilisaient d'autres modules
-    et directives pour contrôler la journalisation des accès, à l'instar de
+    <p>Diff&eacute;rentes versions du d&eacute;mon Apache httpd utilisaient d'autres modules
+    et directives pour contr&ocirc;ler la journalisation des acc&egrave;s, &agrave; l'instar de
     mod_log_referer, mod_log_agent, et de la directive
     <code>TransferLog</code>. La directive
     <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> rassemble
-    désormais les fonctionnalités de toutes les anciennes directives.</p>
+    d&eacute;sormais les fonctionnalit&eacute;s de toutes les anciennes directives.</p>
 
-    <p>Le format du journal des accès est hautement configurable. Il est
-    défini à l'aide d'une chaîne de format qui ressemble sensiblement à la
-    chaîne de format de style langage C de printf(1). Vous trouverez quelques
+    <p>Le format du journal des acc&egrave;s est hautement configurable. Il est
+    d&eacute;fini &agrave; l'aide d'une cha&icirc;ne de format qui ressemble sensiblement &agrave; la
+    cha&icirc;ne de format de style langage C de printf(1). Vous trouverez quelques
     exemples dans les sections suivantes. Pour une liste exhaustive de ce que
-    peut contenir une chaîne de format, vous pouvez vous référer au chapitre
-    <a href="mod/mod_log_config.html#formats">chaînes de format</a> de la
+    peut contenir une cha&icirc;ne de format, vous pouvez vous r&eacute;f&eacute;rer au chapitre
+    <a href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a> de la
     documentation du module <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</p>
 
-    <h3><a name="common" id="common">Format habituel du journal</a></h3>
+    <h3 id="common">Format habituel du journal</h3>
       
 
-      <p>Voici une configuration typique pour le journal des accès :</p>
+      <p>Voici une configuration typique pour le journal des acc&egrave;s :</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common</pre>
+</div>
 
-
-      <p>Ici est définie l'<em>identité</em> <code>common</code> qui est
-      ensuite associée à une chaîne de format de journalisation particulière.
-      La chaîne de format est constituée de directives débutant par le
-      caractère %, chacune d'entre elles indiquant au serveur d'enregistrer
-      un élément particulier d'information. Des caractères littéraux peuvent
-      aussi être insérés dans la chaîne de format ; il seront copiés tels
-      quels dans le flux de sortie destiné à la journalisation.
-      Les guillemets (<code>"</code>) doivent être échappées en les faisant
-      précéder d'un anti-slash (<code>\</code>) afin qu'elles ne soient pas
-      interprétées comme la fin de la chaîne de format. La chaîne de format
-      peut aussi contenir les caractères de contrôle spéciaux
-      "<code>\n</code>" et "<code>\t</code>" pour insérer respectivement
-      un passage à la ligne et une tabulation.</p>
+      <p>Ici est d&eacute;finie l'<em>identit&eacute;</em> <code>common</code> qui est
+      ensuite associ&eacute;e &agrave; une cha&icirc;ne de format de journalisation particuli&egrave;re.
+      La cha&icirc;ne de format est constitu&eacute;e de directives d&eacute;butant par le
+      caract&egrave;re %, chacune d'entre elles indiquant au serveur d'enregistrer
+      un &eacute;l&eacute;ment particulier d'information. Des caract&egrave;res litt&eacute;raux peuvent
+      aussi &ecirc;tre ins&eacute;r&eacute;s dans la cha&icirc;ne de format ; il seront copi&eacute;s tels
+      quels dans le flux de sortie destin&eacute; &agrave; la journalisation.
+      Les guillemets (<code>"</code>) doivent &ecirc;tre &eacute;chapp&eacute;es en les faisant
+      pr&eacute;c&eacute;der d'un anti-slash (<code>\</code>) afin qu'elles ne soient pas
+      interpr&eacute;t&eacute;es comme la fin de la cha&icirc;ne de format. La cha&icirc;ne de format
+      peut aussi contenir les caract&egrave;res de contr&ocirc;le sp&eacute;ciaux
+      "<code>\n</code>" et "<code>\t</code>" pour ins&eacute;rer respectivement
+      un passage &agrave; la ligne et une tabulation.</p>
 
       <p>La directive <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
-      définit un nouveau fichier journal en l'associant à l'identité
-      précédemment définie. Le chemin du nom de fichier associé au journal
-      des accès est relatif au chemin défini par la directive
+      d&eacute;finit un nouveau fichier journal en l'associant &agrave; l'identit&eacute;
+      pr&eacute;c&eacute;demment d&eacute;finie. Le chemin du nom de fichier associ&eacute; au journal
+      des acc&egrave;s est relatif au chemin d&eacute;fini par la directive
       <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code>, sauf s'il
-      débute par un slash.</p>
+      d&eacute;bute par un slash.</p>
 
-      <p>La configuration ci-dessus va enregistrer les entrées de
+      <p>La configuration ci-dessus va enregistrer les entr&eacute;es de
       journalisation selon un format connu sous le nom de
       Common Log Format (CLF) pour "Format de journalisation standard".
-      Ce format standard peut être produit par de nombreux serveurs web
-      différents et lu par de nombreux programmes d'analyse de journaux.
-      Les entrées de fichier journal générées selon le format CLF
-      ressemblent à ceci :</p>
+      Ce format standard peut &ecirc;tre produit par de nombreux serveurs web
+      diff&eacute;rents et lu par de nombreux programmes d'analyse de journaux.
+      Les entr&eacute;es de fichier journal g&eacute;n&eacute;r&eacute;es selon le format CLF
+      ressemblent &agrave; ceci :</p>
 
       <div class="example"><p><code>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
       </code></p></div>
 
-      <p>Chaque partie de cette entrée de journal est décrite
+      <p>Chaque partie de cette entr&eacute;e de journal est d&eacute;crite
       dans ce qui suit.</p>
 
       <dl>
         <dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
 
-        <dd>Il s'agit de l'adresse IP du client (l'hôte distant) qui a envoyé
-	la requête au serveur. Si la directive
-	<code class="directive"><a href="./mod/core.html#hostnamelookups">HostnameLookups</a></code> est positionnée à
-	<code>On</code>, le serveur va essayer de déterminer le nom de l'hôte
-	et de l'enregistrer à la place de l'adresse IP. Cette configuration
-	n'est cependant pas recommandée car elle peut ralentir le serveur de
-	manière significative. Il est par conséquent préférable d'utiliser un
+        <dd>Il s'agit de l'adresse IP du client (l'h&ocirc;te distant) qui a envoy&eacute;
+	la requ&ecirc;te au serveur. Si la directive
+	<code class="directive"><a href="./mod/core.html#hostnamelookups">HostnameLookups</a></code> est positionn&eacute;e &agrave;
+	<code>On</code>, le serveur va essayer de d&eacute;terminer le nom de l'h&ocirc;te
+	et de l'enregistrer &agrave; la place de l'adresse IP. Cette configuration
+	n'est cependant pas recommand&eacute;e car elle peut ralentir le serveur de
+	mani&egrave;re significative. Il est par cons&eacute;quent pr&eacute;f&eacute;rable d'utiliser un
 	processeur d'analyse de journaux a posteriori
 	tel que <code class="program"><a href="./programs/logresolve.html">logresolve</a></code>
-	pour déterminer les noms d'hôte. L'adresse IP indiquée ici n'est pas
-	nécessairement l'adresse IP de la machine devant laquelle se trouve
+	pour d&eacute;terminer les noms d'h&ocirc;te. L'adresse IP indiqu&eacute;e ici n'est pas
+	n&eacute;cessairement l'adresse IP de la machine devant laquelle se trouve
 	l'utilisateur. Si un serveur mandataire s'intercale entre le serveur
-	et l'utilisateur, l'adresse indiquée sera celle du mandataire et non
-	celle de la machine à l'origine de la requête.</dd>
+	et l'utilisateur, l'adresse indiqu&eacute;e sera celle du mandataire et non
+	celle de la machine &agrave; l'origine de la requ&ecirc;te.</dd>
 
         <dt><code>-</code> (<code>%l</code>)</dt>
 
         <dd>Le "trait d'union" indique que la portion d'information
-	correspondante n'est pas disponible. Dans le cas présent, l'information
-	non disponible est l'identité (RFC 1413) du client telle que déterminée
+	correspondante n'est pas disponible. Dans le cas pr&eacute;sent, l'information
+	non disponible est l'identit&eacute; (RFC 1413) du client telle que d&eacute;termin&eacute;e
 	par <code>identd</code> sur la machine cliente. Cette information est
-	très peu fiable et ne devrait jamais être utilisée, sauf dans le cas
-	de réseaux internes étroitement contrôlés. Le démon httpd ne cherchera
-	d'ailleurs à obtenir cette information que si la directive
-	<code class="directive"><a href="./mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est positionnée
-	à <code>On</code>.</dd>
+	tr&egrave;s peu fiable et ne devrait jamais &ecirc;tre utilis&eacute;e, sauf dans le cas
+	de r&eacute;seaux internes &eacute;troitement contr&ocirc;l&eacute;s. Le d&eacute;mon httpd ne cherchera
+	d'ailleurs &agrave; obtenir cette information que si la directive
+	<code class="directive"><a href="./mod/mod_ident.html#identitycheck">IdentityCheck</a></code> est positionn&eacute;e
+	&agrave; <code>On</code>.</dd>
 
         <dt><code>frank</code> (<code>%u</code>)</dt>
 
         <dd>Il s'agit de l'identifiant utilisateur de la personne qui a
-	demandé le document, issu d'une authentification HTTP.
-	Ce même identifiant est en général fourni aux scripts CGI par
-	l'intermédiaire de la valeur de la variable d'environnement
-	<code>REMOTE_USER</code>. Si le statut de la requête (voir plus loin)
+	demand&eacute; le document, issu d'une authentification HTTP.
+	Ce m&ecirc;me identifiant est en g&eacute;n&eacute;ral fourni aux scripts CGI par
+	l'interm&eacute;diaire de la valeur de la variable d'environnement
+	<code>REMOTE_USER</code>. Si le statut de la requ&ecirc;te (voir plus loin)
 	est 401, cette identifiant n'est pas fiable car l'utilisateur n'est
-	pas encore authentifié. Si le document n'est pas protégé par
-	mot de passe, cette partie d'information sera représentée par
-	"<code>-</code>", comme la partie précédente.</dd>
+	pas encore authentifi&eacute;. Si le document n'est pas prot&eacute;g&eacute; par
+	mot de passe, cette partie d'information sera repr&eacute;sent&eacute;e par
+	"<code>-</code>", comme la partie pr&eacute;c&eacute;dente.</dd>
 
         <dt><code>[10/Oct/2000:13:55:36 -0700]</code>
         (<code>%t</code>)</dt>
 
         <dd>
-          L'heure à laquelle la requête a été reçue.
+          L'heure &agrave; laquelle la requ&ecirc;te a &eacute;t&eacute; re&ccedil;ue.
           Le format est le suivant :
 
           <p class="indent">
-            <code>[jour/mois/année:heure:minutes:secondes zone]<br />
-             jour = 2*chiffre<br />
-             mois = 3*lettre<br />
-             année = 4*chiffre<br />
-             heure = 2*chiffre<br />
-             minutes = 2*chiffre<br />
-             secondes = 2*chiffre<br />
+            <code>[jour/mois/ann&eacute;e:heure:minutes:secondes zone]<br>
+             jour = 2*chiffre<br>
+             mois = 3*lettre<br>
+             ann&eacute;e = 4*chiffre<br>
+             heure = 2*chiffre<br>
+             minutes = 2*chiffre<br>
+             secondes = 2*chiffre<br>
              zone = (`+' | `-') 4*chiffre</code>
           </p>Il est possible de modifier le format d'affichage de l'heure
-	  en spécifiant <code>%{format}t</code> dans la chaîne de format du
-	  journal, où <code>format</code> est une chaîne de format
+	  en sp&eacute;cifiant <code>%{format}t</code> dans la cha&icirc;ne de format du
+	  journal, o&ugrave; <code>format</code> est une cha&icirc;ne de format
 	  de la forme de celle de la fonction <code>strftime(3)</code>
-	  de la bibliothèque C standard, ou choisie parmi les
-	  formats spéciaux supportés. Pour plus de détails,
-	  reportez-vous aux. <a href="mod/mod_log_config.html#formats">chaînes de format</a>
+	  de la biblioth&egrave;que C standard, ou choisie parmi les
+	  formats sp&eacute;ciaux support&eacute;s. Pour plus de d&eacute;tails,
+	  reportez-vous aux. <a href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a>
 	  de <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.
         </dd>
 
         <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
         (<code>\"%r\"</code>)</dt>
 
-        <dd>La ligne de la requête du client est placée entre guillemets.
+        <dd>La ligne de la requ&ecirc;te du client est plac&eacute;e entre guillemets.
 	Elle contient de nombreuses informations utiles. Tout d'abord, la
-	méthode utilisée par le client est <code>GET</code>. Ensuite, le
-	client a demandé la ressource <code>/apache_pb.gif</code>, et enfin,
-	le client a utilisé le protocole <code>HTTP/1.0</code>. Il est aussi
-	possible d'enregistrer séparément une ou plusieurs parties de la
-	requête. Par exemple, la chaîne de format "<code>%m %U %q %H</code>"
-	va enregistrer la méthode, le chemin, la chaîne de la requête et le
-	protocole, ce qui donnera le même résultat que
+	m&eacute;thode utilis&eacute;e par le client est <code>GET</code>. Ensuite, le
+	client a demand&eacute; la ressource <code>/apache_pb.gif</code>, et enfin,
+	le client a utilis&eacute; le protocole <code>HTTP/1.0</code>. Il est aussi
+	possible d'enregistrer s&eacute;par&eacute;ment une ou plusieurs parties de la
+	requ&ecirc;te. Par exemple, la cha&icirc;ne de format "<code>%m %U %q %H</code>"
+	va enregistrer la m&eacute;thode, le chemin, la cha&icirc;ne de la requ&ecirc;te et le
+	protocole, ce qui donnera le m&ecirc;me r&eacute;sultat que
 	"<code>%r</code>".</dd>
 
         <dt><code>200</code> (<code>%&gt;s</code>)</dt>
 
         <dd>C'est le code de statut que le serveur retourne au client. Cette
-	information est très importante car elle indique si la requête a fait
-	l'objet d'une réponse positive (codes commençant par 2), une
-	redirection (codes commençant par 3), une erreur due au client (codes
-	commençant par 4), ou une erreur due au serveur (codes commençant
-	par 5). Vous trouverez la liste complète des codes de statut possibles
-	dans la <a href="http://www.w3.org/Protocols/rfc2616/  rfc2616.txt">specification HTTP</a> (RFC2616 section 10).</dd>
+	information est tr&egrave;s importante car elle indique si la requ&ecirc;te a fait
+	l'objet d'une r&eacute;ponse positive (codes commen&ccedil;ant par 2), une
+	redirection (codes commen&ccedil;ant par 3), une erreur due au client (codes
+	commen&ccedil;ant par 4), ou une erreur due au serveur (codes commen&ccedil;ant
+	par 5). Vous trouverez la liste compl&egrave;te des codes de statut possibles
+	dans la sp&eacute;cification
+	HTTP (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>) (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
-        <dd>La dernière partie indique la taille de l'objet retourné au client,
-	en-têtes non compris. Si aucun contenu n'a été retourné au client, cette
+        <dd>La derni&egrave;re partie indique la taille de l'objet retourn&eacute; au client,
+	en-t&ecirc;tes non compris. Si aucun contenu n'a &eacute;t&eacute; retourn&eacute; au client, cette
 	partie contiendra "<code>-</code>". Pour indiquer l'absence de contenu
 	par "<code>0</code>", utilisez <code>%B</code> au lieu de
 	<code>%b</code>.</dd>
       </dl>
     
 
-    <h3><a name="combined" id="combined">Combined Log Format (Format de journalisation combiné)</a></h3>
+    <h3 id="combined">Combined Log Format (Format de journalisation combin&eacute;)</h3>
       
 
-      <p>Une autre chaîne de format couramment utilisée est le
-      "Combined Log Format" (Format de journalisation combiné). Il s'utilise
+      <p>Une autre cha&icirc;ne de format couramment utilis&eacute;e est le
+      "Combined Log Format" (Format de journalisation combin&eacute;). Il s'utilise
       comme suit :</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
 CustomLog "log/access_log" combined</pre>
-
+</div>
 
       <p>Ce format est identique au Common Log Format, avec deux champs
-      supplémentaires. Chacun de ces deux champs utilise la directive
-      commençant par le caractère "%" <code>%{<em>header</em>}i</code>,
-      où <em>header</em> peut être n'importe quel en-tête de requête HTTP.
-      Avec ce format, le journal des accès se présentera comme suit :</p>
+      suppl&eacute;mentaires. Chacun de ces deux champs utilise la directive
+      commen&ccedil;ant par le caract&egrave;re "%" <code>%{<em>header</em>}i</code>,
+      o&ugrave; <em>header</em> peut &ecirc;tre n'importe quel en-t&ecirc;te de requ&ecirc;te HTTP.
+      Avec ce format, le journal des acc&egrave;s se pr&eacute;sentera comme suit :</p>
 
       <div class="example"><p><code>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
@@ -399,373 +401,376 @@ CustomLog "log/access_log" combined</pre>
         (Win98; I ;Nav)"
       </code></p></div>
 
-      <p>Les champs supplémentaires sont :</p>
+      <p>Les champs suppl&eacute;mentaires sont :</p>
 
       <dl>
         <dt><code>"http://www.example.com/start.html"</code>
         (<code>\"%{Referer}i\"</code>)</dt>
 
-        <dd>L'en-tête "Referer" (sic) de la requête HTTP. Il indique le site
-	depuis lequel le client prétend avoir lancé sa requête. (Ce doit être
+        <dd>L'en-t&ecirc;te "Referer" (sic) de la requ&ecirc;te HTTP. Il indique le site
+	depuis lequel le client pr&eacute;tend avoir lanc&eacute; sa requ&ecirc;te. (Ce doit &ecirc;tre
 	la page qui contient un lien vers <code>/apache_pb.gif</code> ou
 	inclut ce dernier fichier).</dd>
 
         <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
         (<code>\"%{User-agent}i\"</code>)</dt>
 
-        <dd>L'en-tête User-Agent de la requête HTTP. C'est une information
-	d'identification que le navigateur du client envoie à propos
-	de lui-même.</dd>
+        <dd>L'en-t&ecirc;te User-Agent de la requ&ecirc;te HTTP. C'est une information
+	d'identification que le navigateur du client envoie &agrave; propos
+	de lui-m&ecirc;me.</dd>
       </dl>
     
 
-    <h3><a name="multiple" id="multiple">Journaux d'accès multiples</a></h3>
+    <h3 id="multiple">Journaux d'acc&egrave;s multiples</h3>
       
 
-      <p>Plusieurs journaux d'accès peuvent être créés en spécifiant tout
+      <p>Plusieurs journaux d'acc&egrave;s peuvent &ecirc;tre cr&eacute;&eacute;s en sp&eacute;cifiant tout
       simplement plusieurs directives
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> dans le
       fichier de configuration. Par exemple, les directives suivantes vont
-      créer trois journaux d'accès. Le premier contiendra les informations
-      de base CLF, le second les informations du Referer, et le troisième
-      les informations sur le navigateur. Les deux dernières directives
+      cr&eacute;er trois journaux d'acc&egrave;s. Le premier contiendra les informations
+      de base CLF, le second les informations du Referer, et le troisi&egrave;me
+      les informations sur le navigateur. Les deux derni&egrave;res directives
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> montrent
       comment simuler les effets des directives <code>ReferLog</code> et
       <code>AgentLog</code>.</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
 CustomLog "logs/agent_log" "%{User-agent}i"</pre>
-
+</div>
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
-      une chaîne de format à un alias au moyen de la directive
+      une cha&icirc;ne de format &agrave; un alias au moyen de la directive
       <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code>. Elle peut
-      être définie directement dans la ligne de la directive
+      &ecirc;tre d&eacute;finie directement dans la ligne de la directive
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>.</p>
     
 
-    <h3><a name="conditional" id="conditional">Journalisation conditionnelle</a></h3>
+    <h3 id="conditional">Journalisation conditionnelle</h3>
       
 
-      <p>Il est parfois souhaitable d'exclure certaines entrées des journaux
-      d'accès en fonction des caractéristiques de la requête du client. On
-      peut aisément accomplir ceci à l'aide des
+      <p>Il est parfois souhaitable d'exclure certaines entr&eacute;es des journaux
+      d'acc&egrave;s en fonction des caract&eacute;ristiques de la requ&ecirc;te du client. On
+      peut ais&eacute;ment accomplir ceci &agrave; l'aide des
       <a href="env.html">variables d'environnement</a>. Tout d'abord, une
-      variable d'environnement doit être définie pour indiquer que la
-      requête remplit certaines conditions. Pour ceci, on utilise en général
+      variable d'environnement doit &ecirc;tre d&eacute;finie pour indiquer que la
+      requ&ecirc;te remplit certaines conditions. Pour ceci, on utilise en g&eacute;n&eacute;ral
       la directive <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>,
       puis la clause <code>env=</code> de la directive
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> pour inclure
-      ou exclure les requêtes pour lesquelles
-      la variable d'environnement est définie.
+      ou exclure les requ&ecirc;tes pour lesquelles
+      la variable d'environnement est d&eacute;finie.
       Quelques exemples :</p>
 
-      <pre class="prettyprint lang-config"># Marque les requêtes en provenance de l'interface loop-back
+<div class="example"><pre class="prettyprint lang-config"># Marque les requ&ecirc;tes en provenance de l'interface loop-back
 SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
-# Marque les requêtes pour le fichier robots.txt
+# Marque les requ&ecirc;tes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
-# Journalise toutes les autres requêtes
+# Journalise toutes les autres requ&ecirc;tes
 CustomLog "logs/access_log" common env=!dontlog</pre>
+</div>
 
-
-      <p>Autre exemple, imaginons l'enregistrement des requêtes en provenance
+      <p>Autre exemple, imaginons l'enregistrement des requ&ecirc;tes en provenance
       d'utilisateurs de langue anglaise dans un journal, et celles des autres
       utilisateurs dans un autre journal.</p>
 
-      <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english
-        CustomLog "logs/english_log" common env=english
-        CustomLog "logs/non_english_log" common env=!english</pre>
+<div class="example"><pre class="prettyprint lang-config">SetEnvIf Accept-Language "en" english
+CustomLog "logs/english_log" common env=english
+CustomLog "logs/non_english_log" common env=!english</pre>
+</div>
 
+	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
+	int&eacute;ressant de conna&icirc;tre l'efficacit&eacute; du cache. Pour y parvenir,
+	on pourrait utiliser cette m&eacute;thode simple :</p>
 
-	<p>Dans le contexte d'une mise en cache, il peut être
-	intéressant de connaître l'efficacité du cache. Pour y parvenir,
-	on pourrait utiliser cette méthode simple :</p>
-
-      <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
+<div class="example"><pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
 CustomLog "logs/access_log" common-cache</pre>
+</div>
 
-
-      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'exécuter avant
-      <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>, et si son action est couronnée de
-      succès, il délivrera le contenu sans faire appel à ce dernier. Si
-      l'URL se trouve dans le cache, la valeur journalisée sera alors
+      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'ex&eacute;cuter avant
+      <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>, et si son action est couronn&eacute;e de
+      succ&egrave;s, il d&eacute;livrera le contenu sans faire appel &agrave; ce dernier. Si
+      l'URL se trouve dans le cache, la valeur journalis&eacute;e sera alors
       <code>-</code>, tandis que dans le cas contraire elle sera
       <code>1</code>.</p>
 
       <p>En plus de la syntaxe <code>env=</code>, la directive <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> supporte les
-      valeurs de journalisation conditionnelles basées sur le code de la
-      réponse HTTP :</p>
+      valeurs de journalisation conditionnelles bas&eacute;es sur le code de la
+      r&eacute;ponse HTTP :</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
 LogFormat "%!200,304,302{Referer}i" refererlog</pre>
-
+</div>
 
       <p>Dans le premier exemple, le <code>User-agent</code> sera
-      enregistré si le code d'état HTTP est 400 ou 501. Dans le cas
-      contraire, c'est un caractère "-" qui sera enregistré à la place.
-      Dans le second exemple, le <code>Referer</code> sera enregistré si
-      le code d'état HTTP n'est <strong>pas</strong> 200, 304, ou 302
-      (remarquez le caractère "!" avant les codes d'état).</p>
+      enregistr&eacute; si le code d'&eacute;tat HTTP est 400 ou 501. Dans le cas
+      contraire, c'est un caract&egrave;re "-" qui sera enregistr&eacute; &agrave; la place.
+      Dans le second exemple, le <code>Referer</code> sera enregistr&eacute; si
+      le code d'&eacute;tat HTTP n'est <strong>pas</strong> 200, 304, ou 302
+      (remarquez le caract&egrave;re "!" avant les codes d'&eacute;tat).</p>
 
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
-      est souple et très puissante, cette méthode de contrôle du contenu des
+      est souple et tr&egrave;s puissante, cette m&eacute;thode de contr&ocirc;le du contenu des
       journaux n'est pas la seule. Les fichiers journaux sont plus utiles
-      quand ils contiennent un enregistrement complet de l'activité du serveur,
-      et il est souvent plus aisé de simplement traiter à posteriori les fichiers
-      journaux pour supprimer les requêtes que vous ne voulez pas y voir
-      apparaître.</p>
+      quand ils contiennent un enregistrement complet de l'activit&eacute; du serveur,
+      et il est souvent plus ais&eacute; de simplement traiter &agrave; posteriori les fichiers
+      journaux pour supprimer les requ&ecirc;tes que vous ne voulez pas y voir
+      appara&icirc;tre.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rotation" id="rotation">Rotation des journaux</a> <a title="Lien permanent" href="#rotation" class="permalink">&para;</a></h2>
+<h2 id="rotation">Rotation des journaux <a title="Lien permanent" href="#rotation" class="permalink">&para;</a></h2>
     
 
-    <p>Même dans le cas d'un serveur modérément sollicité, la quantité
-    d'informations stockées dans les fichiers journaux est très importante.
-    Le fichier journal des accès grossit en général d'1 Mo ou plus toutes
-    les 10000 requêtes. Il est par conséquent nécessaire d'effectuer
-    périodiquement la rotation des journaux en déplaçant ou supprimant les
-    fichiers correspondants. On ne peut pas le faire pendant que le serveur
-    est en cours d'exécution, car Apache httpd va continuer à écrire dans l'ancien
-    fichier journal aussi longtemps qu'il le maintiendra ouvert.
-    C'est pourquoi le serveur doit être
-    <a href="stopping.html">redémarré</a> après le déplacement ou la
-    suppression des fichiers journaux de façon à ce qu'il en ouvre
-    de nouveaux.</p>
+    <p>M&ecirc;me sur un serveur mod&eacute;r&eacute;ment sollicit&eacute;, les fichiers journaux
+    grossissent rapidement &mdash;&nbsp;le journal des acc&egrave;s cro&icirc;t &agrave; peu pr&egrave;s de 1 Mo ou
+    plus toutes les 10000 requ&ecirc;tes. Sans rotation, les journaux consomment de
+    plus en plus d&rsquo;espace disque et deviennent difficiles &agrave; analyser. Il est
+    donc recommand&eacute; de configurer une rotation automatique des journaux d&egrave;s le
+    d&eacute;part.</p>
 
-    <p>Avec un redémarrage <em>graceful</em>, on peut faire en sorte que le
-    serveur ouvre de nouveaux fichiers journaux sans perdre de connexions
-    existantes ou en cours avec les clients. Cependant, pour que ceci soit
-    possible, le serveur doit continuer à écrire dans les anciens fichiers
-    journaux pendant qu'il termine le traitement des requêtes en cours.
-    Il est donc nécessaire d'attendre un certain temps après le rédémarrage
-    avant d'effectuer tout traitement sur les fichiers journaux. Voici un
-    scénario typique dans lequel on effectue une simple rotation des
-    journaux en compressant les anciens fichiers correspondants afin
-    de gagner de l'espace disque :</p>
+    <h3 id="rotation-rotatelogs">Utilisation de rotatelogs (recommand&eacute;)</h3>
+      
 
-    <div class="example"><p><code>
-      mv access_log access_log.old<br />
-      mv error_log error_log.old<br />
-      apachectl graceful<br />
-      sleep 600<br />
-      gzip access_log.old error_log.old
-    </code></p></div>
+      <p>L&rsquo;approche la plus simple consiste &agrave; utiliser le programme
+      <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> int&eacute;gr&eacute; &agrave; httpd en utilisant la <a href="#piped">redirection des journaux</a>. Ce programme permet une
+      rotation des journaux sans avoir &agrave; red&eacute;marrer le serveur et sans outil
+      externe. Pour une rotation des journaux toutes les 24&nbsp;heures&nbsp;:</p>
 
-    <p>La section suivante présente une autre méthode de rotation des journaux
-    qui consiste à utiliser les
-    <a href="#piped">journaux redirigés</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined
+ErrorLog  "|/usr/local/apache/bin/rotatelogs /var/log/httpd/error_log 86400"</pre>
+</div>
+
+      <p>Pour une rotation lorsque la taille du journal atteint une certaine
+      valeur (par exemple 100 Mo)&nbsp;:</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 100M" combined</pre>
+</div>
+
+      <p>Vous pouvez aussi utiliser un motif de nom de fichier avec horodatage
+      sous forme d&rsquo;une cha&icirc;ne au format <code>strftime</code>&nbsp;:</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log.%Y-%m-%d 86400" combined</pre>
+</div>
+
+    <p>Voir <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> pour une description compl&egrave;te de ses
+    options, en particulier les temps de d&eacute;calage, les limitations de nombre de
+    fichiers et la compression.</p>
+    
+
+    <h3 id="rotation-logrotate">Utilisation de logrotate ou de la gestion des journaux par le
+      syst&egrave;me</h3>
+      
+
+      <p>La plupart des distributions de Linux fournissent le programme
+      <code>logrotate</code> qui effectue une rotation, une compression et une
+      expiration des fichiers journaux selon une planification. Si votre
+      distribution comporte d&eacute;j&agrave; une configuration de logrotate pour httpd
+      (examinez <code>/etc/logrotate.d/</code>), elle g&egrave;re peut-&ecirc;tre d&eacute;j&agrave; la
+      rotation pour vous.</p>
+
+      <p>Lorsqu&rsquo;on utilise un outil de rotation externe comme
+      <code>logrotate</code>, il faut faire en sorte que httpd r&eacute;ouvre ses
+      fichiers journaux quand les anciens ont &eacute;t&eacute; mis de c&ocirc;t&eacute;. Pour ce faire,
+      l&rsquo;approche standard est un red&eacute;marrage <em>graceful</em>&nbsp;:</p>
+
+<div class="example"><pre class="prettyprint lang-sh">/usr/sbin/apachectl graceful</pre>
+</div>
+
+      <p>Votre script <code>postrotate</code> dans la configuration de logrotate
+      doit contenir cette derni&egrave;re commande (ou la commande &eacute;quivalente
+      <code>systemctl reload</code>). Comme httpd continue d&rsquo;&eacute;crire dans
+      l&rsquo;ancien fichier jusqu&rsquo;&agrave; ce qu&rsquo;il re&ccedil;oive le signal, tout post-traitement
+      des fichiers ayant subi une rotation doit pr&eacute;voir un bref d&eacute;lai.</p>
+
+       
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="piped" id="piped">Journaux redirigés</a> <a title="Lien permanent" href="#piped" class="permalink">&para;</a></h2>
+<h2 id="piped">Journaux redirig&eacute;s <a title="Lien permanent" href="#piped" class="permalink">&para;</a></h2>
     
 
-    <p>Nous avons vu que le démon httpd écrivait les informations de
-    journalisation des erreurs et des accès dans un fichier journal ;
-    il peut aussi
-    rediriger ces informations vers un autre processus par l'intermédiaire d'un
-    tube de communication (pipe). Cette fonctionnalité améliore
-    considérablement la souplesse de la journalisation, sans ajouter de code
-    au serveur principal. Pour rediriger les informations de journalisation
-    vers un tube de communication, remplacez simplement le nom de fichier
-    journal par
-    le caractère pipe "<code>|</code>", suivi du nom de l'exécutable qui va
-    recueillir les entrées de journal sur son entrée
-    standard. Le serveur va
-    lancer le processus de redirection des journaux au moment du démarrage du
-    serveur, et le relancera s'il cesse de fonctionner
-    pendant l'exécution du serveur.
-    (Nous dénommons cette technique "journalisation
-    redirigée fiable" grâce à cette dernière fonctionnalité.)</p>
+    <p>httpd peut &eacute;crire dans les fichiers journaux des erreurs et des acc&egrave;s &agrave;
+    travers un tube (pipe) vers un autre processus, plut&ocirc;t que d&rsquo;&eacute;crire
+    directement dans un fichier. Pour mettre en œuvre cette redirection,
+    remplacez le nom du fichier par le caract&egrave;re pipe "<code>|</code>", suivi de
+    la commande qui recevra les entr&eacute;es du journal sur son entr&eacute;e standard&nbsp;:</p>
 
-    <p>Les processus de journalisation redirigée sont lancés par le processus
-    httpd parent, et héritent de l'UID de ce dernier. Cela signifie que les
-    programmes de journalisation dirigée s'exécutent généralement en tant que
-    root. Il est donc très important que ces programmes soient simples et
-    sécurisés.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined</pre>
+</div>
 
-    <p>Un des grands avantages de la journalisation redirigée est la possibilité
-    d'effectuer la rotation des journaux sans avoir à redémarrer le serveur. Pour
-    accomplir cette tâche, le serveur HTTP Apache fournit un programme simple
-    appelé <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Par exemple, pour une rotation des
-    journaux toutes les 24 heures, ajoutez ces lignes :</p>
+    <p>httpd d&eacute;marre le processus de redirection des journaux au d&eacute;marrage du
+    serveur et le red&eacute;marre automatiquement s&rsquo;il se plante (ce comportement est
+    parfois nomm&eacute; &laquo;&nbsp;journalisation redirig&eacute;e fiable&nbsp;&raquo;). L&rsquo;ensemble de la
+    commande &agrave; partir du caract&egrave;re pipe doit &ecirc;tre entour&eacute;e de guillemets &mdash;&nbsp;cette
+    syntaxe fonctionne pour les deux directives <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> et <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>.</p>
 
-    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
+    <p>Les processus de redirection des journaux sont lanc&eacute;s par le processus
+    httpd parent et h&eacute;ritent de son identifiant utilisateur. Cela signifie en
+    g&eacute;n&eacute;ral qu&rsquo;ils s&rsquo;ex&eacute;cutent en tant que root&nbsp;; faites donc en sorte que les
+    programmes de redirection des journaux restent simples et s&eacute;curis&eacute;s.</p>
 
+    <p>Par d&eacute;faut, le processus de redirection des journaux est lanc&eacute;
+    directement, sans passer par un shell. Vous pouvez utiliser
+    "<code>|$</code>" &agrave; la place de "<code>|</code>" pour effectuer ce lancement
+    via un shell (en g&eacute;n&eacute;ral <code>/bin/sh -c</code>)&nbsp;:</p>
 
-    <p>Notez que l'ensemble de la commande qui sera appelée par le tube de
-    communication a été placée entre guillemets. Bien que cet exemple
-    concerne le journal des accès, la même technique peut être utilisée
-    pour le journal des erreurs.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined</pre>
+</div>
 
-    <p>Comme la journalisation conditionnelle, la journalisation redirigée est
-    un outil très puissant, mais si elle existe, il est préférable d'utiliser
-    une solution plus simple comme le traitement à posteriori hors ligne.</p>
+    <p>La variante avec shell est parfois requise si votre commande redirig&eacute;e
+    utilise des fonctionnalit&eacute;s du shell comme les caract&egrave;res g&eacute;n&eacute;riques ou le
+    d&eacute;veloppement de variable. Dans la plupart des cas, il est pr&eacute;f&eacute;rable
+    d&rsquo;utiliser l&rsquo;invocation directe (sans passer par un shell).</p>
 
-
-  <p>Par défaut, le processus de redirection du journal est lancé sans
-  invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"
-  au lieu de "<code>|</code>" (en général avec <code>/bin/sh -c</code>)
-  :</p>
-
-    <pre class="prettyprint lang-config"># Invocation de "rotatelogs" en utilisant un shell
-CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common</pre>
-
-
-
-    <p>Il s'agissait du comportement par défaut sous Apache 2.2. Selon
-    les spécificités du shell, ceci peut générer un processus shell
-    supplémentaire pour toute la durée du programme de redirection du
-    journal, et induire des problèmes de gestion de signaux au cours du
-    redémarrage. La notation "<code>||</code>" est aussi supportée pour
-    des raisons de compatibilité avec Apache 2.2 et est équivalente à
-    "<code>|</code>".</p>
-
-    <div class="note"><h3>Note à propos de la plateforme Windows</h3>
-    <p>Notez que sous Windows, la mémoire allouée au bureau (desktop
+    <div class="note"><h3>Note &agrave; propos de la plateforme Windows</h3>
+    <p>Notez que sous Windows, la m&eacute;moire allou&eacute;e au bureau (desktop
     heap) peut devenir insuffisante si vous utilisez de nombreux
-    processus vers lesquels sont redirigés des journaux via un pipe, et
-    ceci particulièrement si httpd s'exécute en tant que service. La
-    quantité de mémoire du bureau allouée à chaque service est spécifiée
-    dans le troisième argument du paramètre <code>SharedSection</code>
-    de la clé de registre
+    processus vers lesquels sont redirig&eacute;s des journaux via un pipe, et
+    ceci particuli&egrave;rement si httpd s'ex&eacute;cute en tant que service. La
+    quantit&eacute; de m&eacute;moire du bureau allou&eacute;e &agrave; chaque service est sp&eacute;cifi&eacute;e
+    dans le troisi&egrave;me argument du param&egrave;tre <code>SharedSection</code>
+    de la cl&eacute; de registre
     HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SessionManager\SubSystems\Windows.
     <strong>Modifiez cette valeur avec prudence</strong> ; les
-    précautions d'usage s'imposent lorsqu'on modifie la base de registre,
-    mais vous pouvez aussi saturer la mémoire du bureau si vous
-    spécifiez une valeur trop élevée.</p>
+    pr&eacute;cautions d'usage s'imposent lorsqu'on modifie la base de registre,
+    mais vous pouvez aussi saturer la m&eacute;moire du bureau si vous
+    sp&eacute;cifiez une valeur trop &eacute;lev&eacute;e.</p>
     </div>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Hôtes virtuels</a> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">H&ocirc;tes virtuels <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
-    <p>Lorsqu'un serveur possède plusieurs <a href="vhosts/">hôtes virtuels</a>, il existe de nombreuses solutions pour gérer
+    <p>Lorsqu'un serveur poss&egrave;de plusieurs <a href="vhosts/">h&ocirc;tes virtuels</a>, il existe de nombreuses solutions pour g&eacute;rer
     les fichiers journaux. Par exemple, on peut utiliser les journaux comme
-    s'il s'agissait d'un serveur avec un seul hôte. Il suffit pour cela de
+    s'il s'agissait d'un serveur avec un seul h&ocirc;te. Il suffit pour cela de
     placer les directives de journalisation en dehors des sections
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> au niveau
     du serveur principal, ce qui a pour effet de journaliser toutes les
-    requêtes dans le même journal des accès et des erreurs. Cette technique
-    est cependant inappropriée pour recueillir des statistiques sur chaque
-    hôte virtuel individuellement.</p>
+    requ&ecirc;tes dans le m&ecirc;me journal des acc&egrave;s et des erreurs. Cette technique
+    est cependant inappropri&eacute;e pour recueillir des statistiques sur chaque
+    h&ocirc;te virtuel individuellement.</p>
 
     <p>Si des directives <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> ou
-    <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> sont placées dans une section
+    <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> sont plac&eacute;es dans une section
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, toutes les
-    requêtes ou erreurs pour cet hôte virtuel ne seront enregistrées que dans
-    le fichier spécifié. Tout hôte virtuel qui ne possède pas de directives de
-    journalisation verra ses requêtes enregistrées dans le journal du serveur
-    principal. Cette technique est appropriée pour un petit nombre d'hôtes
-    virtuels, mais si ce nombre est important, elle peut devenir compliquée à
-    gérer. En outre, des problèmes de <a href="vhosts/fd-limits.html">nombre de descripteurs
-    de fichiers insuffisant</a> peuvent rapidement apparaître.</p>
+    requ&ecirc;tes ou erreurs pour cet h&ocirc;te virtuel ne seront enregistr&eacute;es que dans
+    le fichier sp&eacute;cifi&eacute;. Tout h&ocirc;te virtuel qui ne poss&egrave;de pas de directives de
+    journalisation verra ses requ&ecirc;tes enregistr&eacute;es dans le journal du serveur
+    principal. Cette technique est appropri&eacute;e pour un petit nombre d'h&ocirc;tes
+    virtuels, mais si ce nombre est important, elle peut devenir compliqu&eacute;e &agrave;
+    g&eacute;rer. En outre, des probl&egrave;mes de <a href="vhosts/fd-limits.html">nombre de descripteurs
+    de fichiers insuffisant</a> peuvent rapidement appara&icirc;tre.</p>
 
-    <p>Il existe un très bon compromis pour le journal des accès. En intégrant
-    les informations à propos de l'hôte virtuel à la chaîne de format du
-    journal, il est possible de journaliser tous les hôtes dans le même
-    journal, puis de séparer ultérieurement le journal en plusieurs journaux
-    individuels. Considérons par exemple les directives suivantes :</p>
+    <p>Il existe un tr&egrave;s bon compromis pour le journal des acc&egrave;s. En int&eacute;grant
+    les informations &agrave; propos de l'h&ocirc;te virtuel &agrave; la cha&icirc;ne de format du
+    journal, il est possible de journaliser tous les h&ocirc;tes dans le m&ecirc;me
+    journal, puis de s&eacute;parer ult&eacute;rieurement le journal en plusieurs journaux
+    individuels. Consid&eacute;rons par exemple les directives suivantes :</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog "logs/access_log" comonvhost</pre>
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+CustomLog "logs/access_log" commonvhost</pre>
+</div>
 
-
-    <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui
-    traite la requête. Un programme tel que <a href="programs/split-logfile.html">split-logfile</a> peut ensuite être utilisé
-    pour générer "à froid" autant de journaux que d'hôtes virtuels.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui
+    traite la requ&ecirc;te. Un programme tel que <a href="programs/split-logfile.html">split-logfile</a> peut ensuite &ecirc;tre utilis&eacute;
+    pour g&eacute;n&eacute;rer "&agrave; froid" autant de journaux que d'h&ocirc;tes virtuels.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">Autres fichiers journaux</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">Autres fichiers journaux <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
 
-    <h3>Enregistrement du nombre réel d'octets envoyés et reçus</h3>
+    <h3>Enregistrement du nombre r&eacute;el d'octets envoy&eacute;s et re&ccedil;us</h3>
       
 
       <p>Le module <code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code> fournit deux champs
-      <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> supplémentaires
-      (%I et %O) qui permettent d'enregistrer le nombre réel d'octets reçus et
-      envoyés sur le réseau.</p>
+      <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> suppl&eacute;mentaires
+      (%I et %O) qui permettent d'enregistrer le nombre r&eacute;el d'octets re&ccedil;us et
+      envoy&eacute;s sur le r&eacute;seau.</p>
     
 
     <h3>Journalisation de style investigation judiciaire (forensic logging)</h3>
       
 
       <p>Le module <code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code> permet la journalisation
-      à des fins d'investigation judiciaire des requêtes des clients. La
-      journalisation est effectuée avant et après le traitement de la requête,
-      qui fait donc l'objet de deux entrées dans le journal. Le générateur de
-      journaux d'investigation est très strict et ne permet aucune
-      personnalisation. C'est un inestimable outil de débogage et de sécurité.</p>
+      &agrave; des fins d'investigation judiciaire des requ&ecirc;tes des clients. La
+      journalisation est effectu&eacute;e avant et apr&egrave;s le traitement de la requ&ecirc;te,
+      qui fait donc l'objet de deux entr&eacute;es dans le journal. Le g&eacute;n&eacute;rateur de
+      journaux d'investigation est tr&egrave;s strict et ne permet aucune
+      personnalisation. C'est un inestimable outil de d&eacute;bogage et de s&eacute;curit&eacute;.</p>
     
 
-    <h3><a name="pidfile" id="pidfile">Fichier PID</a></h3>
+    <h3 id="pidfile">Fichier PID</h3>
       
 
-      <p>Au démarrage, le démon httpd Apache enregistre l'identifiant du
+      <p>Au d&eacute;marrage, le d&eacute;mon httpd Apache enregistre l'identifiant du
       processus httpd parent dans le fichier <code>logs/httpd.pid</code>.
-      Le nom de ce fichier peut être modifié à l'aide de la directive
+      Le nom de ce fichier peut &ecirc;tre modifi&eacute; &agrave; l'aide de la directive
       <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. Cet identifiant
-      permet à l'administrateur de redémarrer et arrêter le démon en
+      permet &agrave; l'administrateur de red&eacute;marrer et arr&ecirc;ter le d&eacute;mon en
       envoyant des signaux au processus parent ; sous Windows, vous devez
-      utiliser l'option de ligne de commande -k. Pour plus de détails,
-      consulter la page <a href="stopping.html">Arrêt et redémarrage</a>.</p>
+      utiliser l'option de ligne de commande -k. Pour plus de d&eacute;tails,
+      consulter la page <a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a>.</p>
     
 
-    <h3><a name="scriptlog" id="scriptlog">Journal des scripts</a></h3>
+    <h3 id="scriptlog">Journal des scripts</h3>
       
 
-      <p>Afin de faciliter le débogage, la directive
+      <p>Afin de faciliter le d&eacute;bogage, la directive
       <code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code> vous permet
-      d'enregistrer les entrées et sorties des scripts CGI. Elle ne doit être
-      utilisée que pendant la phase de test, et en aucun cas sur un
+      d'enregistrer les entr&eacute;es et sorties des scripts CGI. Elle ne doit &ecirc;tre
+      utilis&eacute;e que pendant la phase de test, et en aucun cas sur un
       serveur en production. Vous trouverez plus d'informations dans la
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     
 
-    <h3><a name="debug" id="debug">Journalisation de débogage configurable</a></h3>
+    <h3 id="debug">Journalisation de d&eacute;bogage configurable</h3>
         
 
         <p>La directive <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code>
-	vous permet de créer vos propres messages de journalisation
-	personnalisés pour faciliter vos opérations de débogage.
+	vous permet de cr&eacute;er vos propres messages de journalisation
+	personnalis&eacute;s pour faciliter vos op&eacute;rations de d&eacute;bogage.
         </p>
     
     
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

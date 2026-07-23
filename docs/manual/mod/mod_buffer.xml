@@ -76,8 +76,7 @@
 <description>Maximum size in bytes to buffer by the buffer filter</description>
 <syntax>BufferSize integer</syntax>
 <default>BufferSize 131072</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>

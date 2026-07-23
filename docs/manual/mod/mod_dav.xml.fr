@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915685 -->
+<!-- English Revision: 1934445 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -18,7 +18,7 @@
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
+See the License for the specific language governing permissions and
  limitations under the License.
 -->
 
@@ -56,29 +56,31 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     compilé dans le serveur ou chargé au démarrage à l'aide de la
     directive <directive module="mod_so">LoadModule</directive>.</p>
 
-    <p>Si vous souhaitez limiter l'accès aux répertoires où DAV est
-    activé, vous pouvez ajouter une clause <directive module="core"
-    type="section">Limit</directive> dans la section <directive
-    module="core" type="section">Location</directive> considérée. Pour
-    définir la quantité maximale de données en octets qu'un client
-    DAV peut envoyer par requête, vous devez utiliser la directive
-    <directive module="core">LimitXMLRequestBody</directive>, car La
-    directive <directive module="core">LimitRequestBody</directive>
-    "habituelle" n'a aucune incidence sur les requêtes DAV.</p>
+    <p>Dans l'exemple ci-après, la directive <directive module="mod_authz_core" 
+    type="section">RequireAny</directive> permet de s'assurer que les méthodes
+    spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
+    <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
+    authentifiés.</p>
+
+    <p>Pour définir la quantité maximale de données en octets qu'un client DAV
+    peut envoyer par requête, vous devez utiliser la directive <directive
+    module="core">LimitXMLRequestBody</directive>, car La directive <directive
+    module="core">LimitRequestBody</directive> "habituelle" n'a aucune incidence
+    sur les requêtes DAV.</p>
 
     <example><title>Exemple complet</title>
       <highlight language="config">
 &lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
-    Require all granted
     Dav On
 
     AuthType Basic
     AuthName "DAV"
     AuthUserFile "user.passwd"
 
-    &lt;LimitExcept GET POST OPTIONS&gt;
+    &lt;RequireAny&gt;
+        Require method GET POST OPTIONS
         Require user admin
-    &lt;/LimitExcept&gt;
+    &lt;/RequireAny&gt;
 &lt;/Directory&gt;
       </highlight>
     </example>
@@ -289,7 +291,7 @@ Infinity</description>
 
 <usage>
     <p>La directive <directive>DavMSext</directive> permet d'activer la prise en
-    charge des extensions de Microsoft. Ses valeurs possibles sont :</p>
+    charge des extensions de Microsoft. Ses valeurs possibles sont&nbsp;:</p>
         <ul>
             <li><code>None</code> Aucune extension de Microsoft n'est prise en
 	    charge.</li>
@@ -302,6 +304,51 @@ Infinity</description>
 	    actuellement implémentée.</li>
         </ul>
     
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavHonorMtimeHeader</name>
+<description>Permettre aux clients de définir les temps de modification des
+ressources à l’aide de l’en-tête de requête X-OC-Mtime </description>
+<syntax>DavHonorMtimeHeader on|off</syntax>
+<default>DavHonorMtimeHeader off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>La directive <directive>DavHonorMtimeHeader</directive> permet d’indiquer
+    si <module>mod_dav</module> doit prendre en compte l’en-tête de requête
+    <code>X-OC-Mtime</code> lors du traitement des requêtes <code>PUT</code> et
+    <code>MKCOL</code>. Cet en-tête est utilisé par certains clients de
+    synchronisation de WebDAV pour préserver les temps de modification originaux
+    des fichiers chargés.</p>
+
+    <p>Lorsque cette directive est activée, si un client envoie une requête
+    <code>PUT</code> ou <code>MKCOL</code> comportant un en-tête
+    <code>X-OC-Mtime</code>, le serveur définira le temps de modification de la
+    ressource avec la valeur spécifiée dans cet en-tête. La valeur de l’en-tête
+    doit être un horodatage Unix (en secondes depuis l’Epoch) exprimé sous la
+    forme d’un entier décimal.</p>
+
+    <p>Si l’en-tête est présent mais mal formé (par exemple s’il contient des
+    caractères autres que des chiffres), le serveur répondra avec une erreur 400
+    Bad Request.</p>
+
+    <note type="warning">
+    <p>Activer cette directive permet aux clients de manipuler les temps de
+    modification des fichiers sur le serveur. Ne l’activez que pour des
+    emplacements où les clients sont fiables et protégez toujours l’accès avec
+    une authentification.</p>
+    </note>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+&lt;Directory "/var/www/dav/sync"&gt;
+    Dav On
+    DavHonorMtimeHeader on
+&lt;/Directory&gt;
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 

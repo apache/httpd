@@ -131,7 +131,7 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
     err = "unable to parse response";
     log_level = MD_LOG_ERR;
     
-    if (APR_SUCCESS == (rv = md_acme_get_json(&json, acme, authz->url, p))
+    if (APR_SUCCESS == (rv = md_acme_get_json(&json, acme, authz->url, 1, p))
         && (s = md_json_gets(json, MD_KEY_STATUS, NULL))) {
             
         authz->domain = md_json_gets(json, MD_KEY_IDENTIFIER, MD_KEY_VALUE, NULL); 
@@ -385,7 +385,7 @@ static apr_status_t cha_tls_alpn_01_setup(md_acme_authz_cha_t *cha, md_acme_auth
                 rv = md_store_save(store, p, MD_SG_CHALLENGES, authz->domain, cfn,
                                    MD_SV_CERT, (void*)cha_cert, 0);
             }
-            ++notify_server;
+            notify_server = 1;
         }
     }
     
@@ -594,7 +594,7 @@ static apr_status_t find_type(void *baton, size_t index, md_json_t *json)
     cha_find_ctx *ctx = baton;
     
     const char *ctype = md_json_gets(json, MD_KEY_TYPE, NULL);
-    if (ctype && !apr_strnatcasecmp(ctx->type, ctype)) {
+    if (ctype && !apr_cstr_casecmp(ctx->type, ctype)) {
         ctx->accepted = cha_from_json(ctx->p, index, json);
         return 0;
     }
@@ -644,7 +644,7 @@ apr_status_t md_acme_authz_respond(md_acme_authz_t *authz, md_acme_t *acme, md_s
 
         if (fctx.accepted) {
             for (j = 0; j < (int)CHA_TYPES_LEN; ++j) {
-                if (!apr_strnatcasecmp(CHA_TYPES[j].name, fctx.accepted->type)) {
+                if (!apr_cstr_casecmp(CHA_TYPES[j].name, fctx.accepted->type)) {
                     md_result_activity_printf(result, "Setting up challenge '%s' for domain %s", 
                                               fctx.accepted->type, authz->domain);
                     rv = CHA_TYPES[j].setup(fctx.accepted, authz, acme, store, key_specs,
@@ -702,7 +702,7 @@ apr_status_t md_acme_authz_teardown(struct md_store_t *store, const char *token,
         domain = strchr(challenge, ':');
         *domain = '\0'; domain++;
         for (i = 0; i < (int)CHA_TYPES_LEN; ++i) {
-            if (!apr_strnatcasecmp(CHA_TYPES[i].name, challenge)) {
+            if (!apr_cstr_casecmp(CHA_TYPES[i].name, challenge)) {
                 if (CHA_TYPES[i].teardown) {
                     return CHA_TYPES[i].teardown(store, domain, md, env, p);
                 }

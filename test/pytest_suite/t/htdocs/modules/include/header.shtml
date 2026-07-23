@@ -1,0 +1,7 @@
+<html>
+<head>
+<title><!--#echo var="QUERY_STRING" --></title>
+<meta http-equiv="Content-Type" content="text/html">
+</head>
+
+<h1><!--#echo var="QUERY_STRING" --></h1>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1310494:1755981 (outdated) -->
+<!-- English Revision: 1310494:1935166 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -26,10 +26,10 @@
 
 <manualpage metafile="urlmapping.xml.meta">
 
-  <title>URL’lerin Dosya Sistemi ile Eşleştirilmesi</title>
+  <title>URL'lerin Dosya Sistemi ile Eşleştirilmesi</title>
 
   <summary>
-    <p>Bu belgede, bir istekte belirtilen URL’nin sunulacak dosyanın dosya
+    <p>Bu belgede, bir istekte belirtilen URL'nin sunulacak dosyanın dosya
       sistemindeki yerini bulmak için Apache HTTP Sunucusu tarafından nasıl
       kullanıldığı açıklanmaktadır.</p>
   </summary>
@@ -74,7 +74,7 @@
 <section id="documentroot"><title><code>DocumentRoot</code></title>
 
     <p>Yapılan bir isteğe hangi dosyanın sunulacağına karar verirken
-      httpd’nin öntanımlı davranışı istek için URL yolunu (URL’den konak ismi
+      httpd'nin öntanımlı davranışı istek için URL yolunu (URL'den konak ismi
       ve port ayrıldıktan sonra kalan kısım) alıp bunu yapılandırma dosyasında
       <directive module="core">DocumentRoot</directive> yönergesi ile
       belirtilen dizinin sonuna eklemektir. Bu nedenle, <directive
@@ -105,7 +105,7 @@
 
     <p>Bazen dosya sisteminde doğrudan <directive module="core"
       >DocumentRoot</directive> altında bulunmayan dosyalara da erişim izni
-      vermek gerekir. httpd’de bunu sağlamanın çeşitli yolları vardır. Unix
+      vermek gerekir. httpd'de bunu sağlamanın çeşitli yolları vardır. Unix
       sistemlerinde sembolik bağlar sayesinde dosya sisteminin farklı
       yerlerindeki dosyaları ve dizinleri <directive module="core"
       >DocumentRoot</directive> altındaymış gibi göstermek mümkündür.
@@ -121,7 +121,7 @@
     <example>Alias /belgeler /var/http</example>
 
     <p>yapılandırması ile
-      <code>http://mesela.dom/belgeler/dizin/dosya.html</code> URL’si için
+      <code>http://mesela.dom/belgeler/dizin/dosya.html</code> URL'si için
       dosya sistemindeki <code>/var/http/dizin/dosya.html</code> dosyası
       sunulacaktır. Hedef dizindeki dosyaları birer <glossary ref="cgi"
       >CGI</glossary> betiği olarak imlemesi dışında <directive
@@ -138,7 +138,7 @@
       /home/$1/cgi-bin/$2</example>
 
     <p>satırı sayesinde <code>http://mesela.dom/~user/cgi-bin/betik.cgi</code>
-      URL’si <code>/home/user/cgi-bin/betik.cgi</code> dosyası ile
+      URL'si <code>/home/user/cgi-bin/betik.cgi</code> dosyası ile
       eşleştirilir ve dosya bir CGI betiği olarak çalıştırılırdı.</p>
 </section>
 
@@ -174,7 +174,7 @@
       yapılandırılmışsa istenen etki <directive
       module="mod_alias">AliasMatch</directive> yönergesi ile sağlanabilir.
       Örneğin, <code>http://mesela.dom/sayfalar/birisi/dosya.html</code>
-      URL’si ile <code>/home/birisi/public_html/dosya.html</code> dosyasını
+      URL'si ile <code>/home/birisi/public_html/dosya.html</code> dosyasını
       eşlemek için <code>AliasMatch</code> yönergesi şöyle
       kullanılabilirdi:</p>
 
@@ -184,7 +184,7 @@
 
 <section id="redirect"><title>URL Yönlendirme</title>
 
-    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri httpd’ye
+    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri httpd'ye
       içeriği dosya sisteminin belli bir yerinden alıp istemciye göndermesini
       söyler. Bazen istemciye, istediği içeriğe farklı bir URL ile
       erişebileceğini ve bu URL için ayrı bir istek yapması gerektiğini
@@ -253,9 +253,9 @@
 
     <p>Yalnız, belgelerin içindeki hiperbağların yeniden yazılmayacağına
       dikkat ediniz. Dolayısıyla, belge içinde
-      <code>dahili.mesela.dom</code>’u ismiyle hedef alan mutlak hiperbağlar
+      <code>dahili.mesela.dom</code>'u ismiyle hedef alan mutlak hiperbağlar
       varsa bunlar istemci tarafından vekil sunucudan değil doğrudan
-      <code>dahili.mesela.dom</code>’dan istenecektir. Bir sayfanın içindeki bu
+      <code>dahili.mesela.dom</code>'dan istenecektir. Bir sayfanın içindeki bu
       bağları (ve diğer içeriği) <module>mod_substitute</module> modülü
       kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
 
@@ -263,7 +263,7 @@
       Substitute s/dahili\.mesela\.dom/harici.mesela.dom/i
     </example>
 
-     <p>HTML ve XHTML’de hiperbağları daha bilgece yeniden yazabilen
+     <p>HTML ve XHTML'de hiperbağları daha bilgece yeniden yazabilen
       <module>mod_proxy_html</module> modülü de kullanılabilir. Yeniden
       yazılması gereken URL eşlemlerini oluşturmanızı sağlar, böylece karmaşık
       vekil senaryoları oluşturulabilir.</p>
@@ -296,7 +296,7 @@
       ve hiperbağların çalışmaya devam edeceklerinden emin olabilirsiniz.</p>
 
     <p>"Dosya orada yok" ("File Not Found") hatalarının diğer bir bildik
-      sebebi de URL’lerin hiperbağlarda veya doğrudan tarayıcıda kasıtlı ya da
+      sebebi de URL'lerin hiperbağlarda veya doğrudan tarayıcıda kasıtlı ya da
       kasıtsız, yanlış yazılmasıdır. Bu tür sorunlarda yardımcı olması için
       httpd <module>mod_speling</module> (sic) adında bir modülle gelir. Bu
       modül etkin kılındığında htpd, "Dosya orada yok" ("File Not Found")
@@ -321,7 +321,7 @@
       gerçeklerken <module>mod_rewrite</module> modülünün kullanılmasını
       sağlamak için çok kullanışlıdır.</p>
 
-    <p>Yerinde bulunmayan içeriğin bulunması çabalarının tümü Apache’nin 404
+    <p>Yerinde bulunmayan içeriğin bulunması çabalarının tümü Apache'nin 404
       (Dosya orada yok) HTTP durum kodlu bir hata sayfası döndürmesine yol
       açar. Bu sayfanın içeriği <directive module="core"
       >ErrorDocument</directive> yönergesi ile denetlenebilir ve <a

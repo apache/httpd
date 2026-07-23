@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1044378 -->
+<!-- English Revision: 1933438 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 <!--
@@ -28,8 +28,8 @@
 
 <summary>
 
-    <p>La FAQ a &eacute;t&eacute; transf&eacute;r&eacute;e vers le <a
-    href="http://wiki.apache.org/httpd/FAQ">Wiki du serveur HTTP</a>.</p>
+    <p>La FAQ a été transférée vers le <a
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Wiki du serveur HTTP</a>.</p>
 </summary>
 
 </manualpage>

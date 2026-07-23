@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision:1888002 -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -86,6 +86,56 @@ d'Apache HTTPD</compatibility>
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
     </highlight>
+</section>
+
+<section id="authzresults"><title>États des résultats d’autorisation</title>
+
+    <p>Chaque fournisseur d’autorisation renvoie un résultat parmi trois
+    possibles lorsqu’il évalue une directive <directive
+    module="mod_authz_core">Require</directive> :</p>
+
+    <dl>
+      <dt><strong>Granted</strong></dt>
+      <dd>Le fournisseur a vérifié que la requête satisfait à ses conditions.</dd>
+
+ <dt><strong>Denied</strong></dt>
+      <dd>Le fournisseur a déterminé que la requête ne satisfait pas à ses
+      conditions.</dd>
+
+      <dt><strong>Neutral</strong></dt>
+      <dd>Le fournisseur n’a pas d’opinion à propos de la requête. Cela peut se
+      produire lorsqu’un fournisseur n’est pas pertinent pour la requête (par
+      exemple, une vérification d’appartenance à un groupe alors que la requête
+      n’implique pas d’autorisation basée sur le groupe).</dd>
+    </dl>
+
+    <p>Les directives de conteneur d’autorisation interprètent ces trois
+    résultats comme suit :</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".25"/><column width=".25"/><column width=".25"/><column width=".25"/></columnspec>
+    <tr><th>Conteneur</th><th>Autorisé si...</th><th>Refusé si...</th><th>Neutre
+    traité comme...</th></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireAny</directive></td>
+        <td>au moins un fournisseur autorise</td>
+        <td>tous les fournisseurs refusent</td>
+        <td>refus (ne satisfait pas aux conditions)</td></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireAll</directive></td>
+        <td>aucun fournisseur ne refuse (et au moins un autorise)</td>
+        <td>tout fournisseur refuse</td>
+        <td>autorise (ne bloque pas la vérification)</td></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireNone</directive></td>
+        <td>aucun fournisseur n’autorise</td>
+        <td>tout fournisseur autorise</td>
+        <td>autorise (ne bloque pas la vérification)</td></tr>
+    </table>
+
+    <p>Quand une directive <directive>Require</directive> est inversée avec
+    <code>not</code> (par exemple, <code>Require not group temps</code>), un
+    résultat autorisé est inversé en refusé et vice-versa, mais un résultat
+    neutre reste neutre. Une directive inversée ne peut donc jamais autoriser
+    une requête indépendamment.</p>
+
 </section>
 
 <section id="requiredirectives"><title>Les directives Require</title>
@@ -249,12 +299,10 @@ d'autorisation</title>
 
 Alias "/secure" "/webpages/secure"
 &lt;Directory "/webpages/secure"&gt;
-    Require all granted
-
-    AuthBasicProvider file
-
     AuthType Basic
-    AuthName LDAP_Protected_Place
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
 
     #Opération logique implicite : OU inclusif
     Require ldap-group-alias1
@@ -425,6 +473,7 @@ Require group admin
 
 <seealso><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></seealso>
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
@@ -458,6 +507,7 @@ positif.</description>
 </usage>
 
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 
@@ -502,6 +552,7 @@ retourne elle-même un résultat positif.</description>
 </usage>
 
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 
@@ -545,6 +596,7 @@ pas.</description>
 </usage>
 
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 

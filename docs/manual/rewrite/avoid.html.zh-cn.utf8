@@ -1,0 +1,258 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="zh-cn"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>何时不使用 mod_rewrite - Apache HTTP 服务器 版本 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP 服务器版本 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="https://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>何时不使用 mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>可用语言: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/avoid.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
+
+
+<p>本文档是 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了关于
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 最重要的概念之一&mdash;&mdash;
+即何时应避免使用它。</p>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 应被视为最后的手段，
+当其他替代方案不能满足需求时才使用。在有更简单替代方案的情况下使用它，
+会导致配置混乱、脆弱且难以维护。
+了解有哪些替代方案可用是掌握 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 的重要一步。</p>
+
+<p>请注意，这些示例中的许多不会在你的特定服务器配置中直接生效，
+因此理解它们非常重要，而不仅仅是将示例复制粘贴到你的配置中。</p>
+
+<p>最常见的适合使用 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 的情况是，
+最佳解决方案需要访问服务器配置文件，而你没有该访问权限。
+某些配置指令只能在服务器配置文件中使用。因此，
+如果你处于只能使用 .htaccess 文件的托管环境中，
+你可能需要借助 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>。</p>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#redirect">简单重定向</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#alias">URL 别名</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhosts">虚拟主机</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">简单代理</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenv">环境变量测试</a></li>
+</ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="redirect">简单重定向 <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+
+
+<p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> 提供了 <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> 和 <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> 指令，
+它们提供了将一个 URL 重定向到另一个 URL 的方法。
+这种简单的将一个 URL 或一类 URL 重定向到其他地方的操作，
+应使用这些指令而不是
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 来完成。
+<code>RedirectMatch</code> 允许你在重定向条件中包含正则表达式，
+提供了使用 <code>RewriteRule</code> 的许多好处。</p>
+
+<p><code>RewriteRule</code> 的一个常见用途是重定向整类 URL。
+例如，<code>/one</code> 目录中的所有 URL 必须重定向到
+<code>http://one.example.com/</code>，或者所有 <code>http</code>
+请求必须重定向到 <code>https</code>。</p>
+
+<p>这些情况更适合使用 <code>Redirect</code> 指令处理。
+请记住，<code>Redirect</code> 会保留路径信息。也就是说，
+对 URL <code>/one</code> 的重定向也会重定向其下的所有 URL，
+例如 <code>/one/two.html</code> 和 <code>/one/three/four.html</code>。</p>
+
+<p>要将 <code>/one</code> 下的 URL 重定向到
+<code>http://one.example.com</code>，请执行以下操作：</p>
+
+<pre class="prettyprint lang-config">Redirect "/one/" "http://one.example.com/"</pre>
+
+
+<p>要将一个主机名重定向到另一个，例如将
+<code>example.com</code> 重定向到 <code>www.example.com</code>，
+请参阅<a href="remapping.html#canonicalhost">规范主机名</a>方案。</p>
+
+<p>要将 <code>http</code> URL 重定向到 <code>https</code>，
+请执行以下操作：</p>
+
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL 配置放在这里
+&lt;/VirtualHost&gt;</pre>
+
+
+<p>当同一作用域中存在其他 <code>RewriteRule</code> 指令时，
+使用 <code>RewriteRule</code> 来完成此任务可能是合适的。
+这是因为，当 <code>Redirect</code> 和 <code>RewriteRule</code>
+指令在同一作用域中时，无论它们在配置文件中的出现顺序如何，
+<code>RewriteRule</code> 指令都会先执行。</p>
+
+<p>对于 <em>http 到 https</em> 的重定向，
+当你无权访问主服务器配置文件，
+而被迫在 <code>.htaccess</code> 文件中执行此任务时，
+使用 <code>RewriteRule</code> 是合适的。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="alias">URL 别名 <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
+指令提供了从 URI 到目录的映射&mdash;&mdash;通常是
+<code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> 之外的目录。
+虽然可以使用 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 执行此映射，
+但出于简便性和性能原因，<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
+是首选方法。</p>
+
+<div class="example"><h3>使用 Alias</h3><pre class="prettyprint lang-config">Alias "/cats" "/var/www/virtualhosts/felines/htdocs"</pre>
+</div>
+
+<p>
+当你无权访问服务器配置文件时，使用 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+执行此映射可能是合适的。Alias 只能在服务器或虚拟主机上下文中使用，
+不能在 <code>.htaccess</code> 文件中使用。
+</p>
+
+<p>如果你的服务器启用了 <code>Options FollowSymLinks</code>，
+符号链接将是实现同样目标的另一种方式。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="vhosts">虚拟主机 <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<p>虽然可以<a href="vhosts.html">使用 mod_rewrite 处理虚拟主机</a>，
+但这很少是正确的方式。创建单独的
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+块几乎总是正确的做法。如果你有大量的虚拟主机，
+可以考虑使用 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> 来自动创建这些主机。</p>
+
+<p><code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> 等模块对于动态创建大量虚拟主机也很有用。</p>
+
+<p>当你使用的托管服务不提供服务器配置文件的访问权限，
+你只能使用 <code>.htaccess</code> 文件进行配置时，
+使用 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 创建虚拟主机可能是合适的。</p>
+
+<p>请参阅<a href="vhosts.html">使用 mod_rewrite 的虚拟主机</a>文档，
+了解如何实现此目的（如果这仍然看起来是正确的方法）。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="proxy">简单代理 <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 提供了 <a href="flags.html#flag_p">[P]</a> 标志，用于将重写后的 URI 通过
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 传递。</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]</pre>
+
+
+<p>但是，在许多情况下，当不需要实际的模式匹配时（如上面的示例所示），
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> 指令是更好的选择。
+上面的示例可以表示为：</p>
+
+<pre class="prettyprint lang-config">ProxyPass "/images/" "http://imageserver.local/images/"</pre>
+
+
+<p>请注意，无论你使用
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 还是
+<code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>，
+你仍然需要使用
+<code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
+指令来捕获后端服务器发出的重定向：</p>
+
+<pre class="prettyprint lang-config">ProxyPassReverse "/images/" "http://imageserver.local/images/"</pre>
+
+
+<p>当同一作用域中有其他 <code>RewriteRule</code> 生效时，
+你可能需要使用 <code>RewriteRule</code> 代替，
+因为 <code>RewriteRule</code> 通常会在 <code>ProxyPass</code>
+之前生效，可能会抢先处理你要完成的操作。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="setenv">环境变量测试 <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 经常用于根据特定环境变量或请求头
+是否存在来执行特定操作。使用
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
+指令可以更高效地完成此操作。</p>
+
+<p>例如，考虑使用 <code class="directive">RewriteRule</code>
+来强制使用规范主机名（如 <code>www.example.com</code> 而不是
+<code>example.com</code>）的常见场景。可以使用
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
+指令来完成，如下所示：</p>
+
+<pre class="prettyprint lang-config">&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;</pre>
+
+
+<p>此技术可用于根据任何请求头、响应头或环境变量执行操作，
+在许多常见场景中替代 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>。</p>
+
+<p>特别请参阅<a href="../expr.html">表达式求值文档</a>，
+了解在 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
+配置段和某些其他指令中可以使用哪些类型的表达式。</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>可用语言: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/avoid.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

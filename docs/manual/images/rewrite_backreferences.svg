@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 180" width="700" height="180">
+  <defs>
+    <marker id="arrowhead-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowhead-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowhead-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#16a34a"/>
+    </marker>
+    <style>
+      text { font-family: "Courier New", Courier, monospace; font-size: 11px; fill: #333; }
+      .sans { font-family: Arial, Helvetica, sans-serif; }
+      .label { font-family: Arial, Helvetica, sans-serif; font-size: 9px; }
+      .directive { font-weight: bold; fill: #000; }
+      .ref1 { fill: #2563eb; font-weight: bold; }
+      .ref2 { fill: #16a34a; font-weight: bold; }
+      .refcond { fill: #dc2626; font-weight: bold; }
+      rect.hl1 { fill: #dbeafe; stroke: #2563eb; stroke-width: 1.5; rx: 2; ry: 2; }
+      rect.hl2 { fill: #dcfce7; stroke: #16a34a; stroke-width: 1.5; rx: 2; ry: 2; }
+      rect.hlc { fill: #fee2e2; stroke: #dc2626; stroke-width: 1.5; rx: 2; ry: 2; }
+    </style>
+  </defs>
+
+  <!-- Line 1: RewriteCond %{DOCUMENT_ROOT}/$1 !-f -->
+  <text x="10" y="25" class="directive">RewriteCond</text>
+  <text x="100" y="25">%{DOCUMENT_ROOT}/</text>
+  <text x="220" y="25" class="ref1">$1</text>
+  <text x="240" y="25">!-f</text>
+
+  <!-- Line 2: RewriteCond %{HTTP_HOST} ^(admin.example.com)$ -->
+  <text x="10" y="55" class="directive">RewriteCond</text>
+  <text x="100" y="55">%{HTTP_HOST}  ^</text>
+  <rect class="hlc" x="206" y="41" width="130" height="18"/>
+  <text x="208" y="55" class="refcond">(admin.example.com)</text>
+  <text x="338" y="55">$</text>
+
+  <!-- Line 3: RewriteRule ^/?([a-z]+)/(.*)$ /admin.foo?page=$1&id=$2&host=%1 [PT] -->
+  <text x="10" y="95" class="directive">RewriteRule</text>
+  <text x="100" y="95">^/?</text>
+  <rect class="hl1" x="117" y="81" width="58" height="18"/>
+  <text x="119" y="95" class="ref1">([a-z]+)</text>
+  <text x="176" y="95">/</text>
+  <rect class="hl2" x="183" y="81" width="33" height="18"/>
+  <text x="185" y="95" class="ref2">(.*)</text>
+  <text x="217" y="95">$</text>
+
+  <text x="245" y="95">/admin.foo?page=</text>
+  <text x="365" y="95" class="ref1">$1</text>
+  <text x="379" y="95">&amp;id=</text>
+  <text x="407" y="95" class="ref2">$2</text>
+  <text x="421" y="95">&amp;host=</text>
+  <text x="462" y="95" class="refcond">%1</text>
+  <text x="485" y="95">[PT]</text>
+
+  <!-- Arrow: $1 from Rule ([a-z]+) UP to Cond 1 TestString $1 (blue) -->
+  <path d="M 146,81 C 146,60 220,40 222,29"
+        style="stroke: #2563eb; stroke-width: 2; fill: none; marker-end: url(#arrowhead-blue);"/>
+
+  <!-- Arrow: $1 from Rule ([a-z]+) RIGHT to Substitution $1 (blue) -->
+  <path d="M 146,99 C 146,125 365,125 371,99"
+        style="stroke: #2563eb; stroke-width: 2; fill: none; marker-end: url(#arrowhead-blue);"/>
+  <text x="250" y="132" class="label ref1">$1</text>
+
+  <!-- Arrow: $2 from Rule (.*) RIGHT to Substitution $2 (green) -->
+  <path d="M 200,99 C 200,140 407,140 413,99"
+        style="stroke: #16a34a; stroke-width: 2; fill: none; marker-end: url(#arrowhead-green);"/>
+  <text x="310" y="148" class="label ref2">$2</text>
+
+  <!-- Arrow: %1 from Cond 2 (admin.example.com) DOWN to Substitution %1 (red) -->
+  <path d="M 270,59 C 350,65 462,70 468,81"
+        style="stroke: #dc2626; stroke-width: 2; fill: none; marker-end: url(#arrowhead-red);"/>
+  <text x="390" y="68" class="label refcond">%1</text>
+
+  <!-- Legend -->
+  <text x="10" y="175" class="sans label" style="fill: #666;">Blue $1, $2 = captured from RewriteRule Pattern (matched first).  Red %1 = captured from last matched RewriteCond.  $1 also available in Cond TestStrings.</text>
+</svg>

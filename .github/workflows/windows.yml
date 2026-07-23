@@ -7,14 +7,27 @@ on:
       - 'docs/**'
       - STATUS
       - CHANGES
+      - README*
+      - '**.md'
       - changes-entries/*
+    tags:
+      - 2.*
   pull_request:
     branches: [ "trunk", "2.4.x" ]
     paths-ignore:
       - 'docs/**'
       - STATUS
       - CHANGES
+      - README*
+      - '**.md'
       - changes-entries/*
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -34,8 +47,16 @@ jobs:
     env: 
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
     steps:
+      - name: Prepare Environment
+        run: |
+          $root = &(Join-Path ${env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe") -property installationpath -latest
+          Import-Module (Join-Path $root "Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
+          Enter-VsDevShell -VsInstallPath $root -DevCmdArguments "-arch=${{ matrix.arch }}"
+
+          ls env: | foreach { "$($_.Name)=$($_.Value)" >> $env:GITHUB_ENV }
+
       - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
               core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -44,20 +65,17 @@ jobs:
       - name: Install dependencies
         run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Configure CMake
-        shell: cmd
         run: |
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
-            cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} ^
-                -G "${{ matrix.generator }}" ^
-                -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
-                -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include ^
+            cmake --version
+            cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
+                -G "${{ matrix.generator }}" `
+                -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
+                -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib"
 
       - name: Build
-        shell: cmd
         run: |
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
             cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}

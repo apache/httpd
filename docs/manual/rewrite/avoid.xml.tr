@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1933071:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="avoid.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite Ne Zaman Kullanılmamalı</title>
+
+<summary>
+
+<p>Bu belge, <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+<module>mod_rewrite</module> hakkındaki belki de en önemli kavramlardan
+birini açıklar: ne zaman kullanılmaması gerektiğini.</p>
+
+<p><module>mod_rewrite</module>, diğer alternatiflerin yetersiz kaldığı
+durumlarda son çare olarak düşünülmelidir. Daha basit alternatifler
+varken kullanılması, kafa karıştırıcı, kırılgan ve bakımı zor
+yapılandırmalara yol açar. Hangi alternatiflerin mevcut olduğunu
+anlamak, <module>mod_rewrite</module> konusunda uzmanlaşmanın çok
+önemli bir adımıdır.</p>
+
+<p>Bu örneklerin birçoğunun sizin sunucu yapılandırmanızda değişiklik
+yapılmadan çalışmayacağını unutmayın; bu nedenle örnekleri
+yapılandırmanıza kopyalayıp yapıştırmak yerine anlamanız
+önemlidir.</p>
+
+<p><module>mod_rewrite</module> modülünün doğru araç olduğu en yaygın
+durum, en iyi çözümün sunucu yapılandırma dosyalarına erişim
+gerektirdiği ancak bu erişime sahip olmadığınız durumdur. Bazı
+yapılandırma yönergeleri yalnızca sunucu yapılandırma dosyasında
+kullanılabilir. Bu nedenle, yalnızca .htaccess dosyalarıyla
+çalışabileceğiniz bir barındırma ortamındaysanız,
+<module>mod_rewrite</module> kullanmanız gerekebilir.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Modül belgeleri</a></seealso>
+<seealso><a href="intro.html">mod_rewrite'a giriş</a></seealso>
+<seealso><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></seealso>
+<seealso><a href="access.html">Erişim denetimi</a></seealso>
+<seealso><a href="vhosts.html">Sanal konaklar</a></seealso>
+<seealso><a href="proxy.html">Vekil kullanımı</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap Kullanımı</a></seealso>
+<seealso><a href="advanced.html">İleri teknikler</a></seealso>
+<!--<seealso><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></seealso>-->
+
+<section id="redirect">
+<title>Basit Yönlendirme</title>
+
+<p><module>mod_alias</module>, bir URL'yi başka birine yönlendirme
+aracı sağlayan <directive module="mod_alias">Redirect</directive> ve
+<directive module="mod_alias">RedirectMatch</directive> yönergelerini
+sunar. Bir URL'nin veya bir URL sınıfının başka bir yere bu tür basit
+yönlendirmesi, <directive module="mod_rewrite">RewriteRule</directive>
+yerine bu yönergeler kullanılarak gerçekleştirilmelidir.
+<code>RedirectMatch</code>, yönlendirme kriterlerinize düzenli ifade
+eklemenize olanak tanır ve <code>RewriteRule</code> kullanmanın
+avantajlarının birçoğunu sağlar.</p>
+
+<p><code>RewriteRule</code> için yaygın bir kullanım, URL'lerin tüm bir
+sınıfını yönlendirmektir. Örneğin, <code>/one</code> dizinindeki tüm
+URL'ler <code>http://one.example.com/</code> adresine yönlendirilmeli
+veya belki tüm <code>http</code> istekleri <code>https</code>'ye
+yönlendirilmelidir.</p>
+
+<p>Bu durumlar <code>Redirect</code> yönergesiyle daha iyi ele alınır.
+<code>Redirect</code> yönergesinin yol bilgisini koruduğunu
+unutmayın. Yani, <code>/one</code> URL'si için bir yönlendirme,
+<code>/one/two.html</code> ve <code>/one/three/four.html</code>
+gibi altındaki tüm URL'leri de yönlendirecektir.</p>
+
+<p><code>/one</code> altındaki URL'leri
+<code>http://one.example.com</code> adresine yönlendirmek için
+şunları yapın:</p>
+
+<highlight language="config">
+Redirect "/one/" "http://one.example.com/"
+</highlight>
+
+<p>Bir konak adını başka birine yönlendirmek için, örneğin
+<code>example.com</code>'u <code>www.example.com</code>'a yönlendirmek
+için <a href="remapping.html#canonicalhost">Kurallı Konak Adları</a>
+tarifine bakın.</p>
+
+<p><code>http</code> URL'lerini <code>https</code>'ye yönlendirmek
+için şunları yapın:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL yapılandırması burada yer alır
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p><code>RewriteRule</code> kullanarak bu görevi gerçekleştirmek, aynı
+kapsamda başka <code>RewriteRule</code> yönergeleri varsa uygun
+olabilir. Çünkü aynı kapsamda <code>Redirect</code> ve
+<code>RewriteRule</code> yönergeleri olduğunda,
+<code>RewriteRule</code> yönergeleri yapılandırma dosyasındaki sıraya
+bakılmaksızın önce çalışacaktır.</p>
+
+<p><em>http-to-https</em> yönlendirmesi durumunda, ana sunucu
+yapılandırma dosyasına erişiminiz yoksa ve bu görevi bunun yerine bir
+<code>.htaccess</code> dosyasında gerçekleştirmek zorundaysanız,
+<code>RewriteRule</code> kullanımı uygun olacaktır.</p>
+
+</section>
+
+<section id="alias"><title>URL Takma Adlandırma</title>
+<p><directive module="mod_alias">Alias</directive> yönergesi, bir
+URI'den bir dizine - genellikle <directive
+module="core">DocumentRoot</directive> dışındaki bir dizine - eşleme
+sağlar. Bu eşlemeyi <module>mod_rewrite</module> ile gerçekleştirmek
+mümkün olsa da, basitlik ve performans nedeniyle <directive
+module="mod_alias">Alias</directive> tercih edilen yöntemdir.</p>
+
+<example><title>Alias Kullanımı</title>
+<highlight language="config">
+Alias "/cats" "/var/www/virtualhosts/felines/htdocs"
+</highlight>
+</example>
+
+<p>
+Bu eşlemeyi gerçekleştirmek için <module>mod_rewrite</module>
+kullanımı, sunucu yapılandırma dosyalarına erişiminiz olmadığında
+uygun olabilir. Alias yalnızca sunucu veya sanal konak bağlamında
+kullanılabilir, <code>.htaccess</code> dosyasında kullanılamaz.
+</p>
+
+<p>Sunucunuzda <code>Options FollowSymLinks</code> etkinse, sembolik
+bağlantılar aynı şeyi gerçekleştirmenin başka bir yolu olabilir.</p>
+</section>
+
+<section id="vhosts"><title>Sanal Konak Oluşturma</title>
+<p><a href="vhosts.html">mod_rewrite ile sanal konakları</a> yönetmek
+mümkün olsa da, nadiren doğru yoldur. Ayrı ayrı <directive
+module="core" type="section">VirtualHost</directive> blokları
+oluşturmak neredeyse her zaman doğru yaklaşımdır. Çok sayıda sanal
+konağınız olması durumunda, bu konakları otomatik olarak oluşturmak
+için <module>mod_vhost_alias</module> kullanmayı düşünün.</p>
+
+<p><module>mod_macro</module> gibi modüller de çok sayıda sanal konağı
+devingen olarak oluşturmak için yararlıdır.</p>
+
+<p>Sanal konak oluşturma için <module>mod_rewrite</module> kullanımı,
+sunucu yapılandırma dosyalarına erişim sağlamayan bir barındırma
+hizmeti kullanıyorsanız ve yapılandırmayı <code>.htaccess</code>
+dosyaları kullanarak yapmak zorundaysanız uygun olabilir.</p>
+
+<p>Yine de doğru yaklaşım gibi görünüyorsa, bunu nasıl
+gerçekleştirebileceğiniz hakkında daha fazla ayrıntı için <a
+href="vhosts.html">mod_rewrite ile sanal konaklar</a> belgesine
+bakın.</p>
+
+</section>
+
+<section id="proxy"><title>Basit Vekil Kullanımı</title>
+
+<p><directive module="mod_rewrite">RewriteRule</directive>, yeniden
+yazılmış URI'leri <module>mod_proxy</module> üzerinden geçirmek için
+<a href="flags.html#flag_p">[P]</a> bayrağını sağlar.</p>
+
+<highlight language="config">
+RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]
+</highlight>
+
+<p>Ancak birçok durumda, yukarıdaki örnekte gösterildiği gibi gerçek
+bir kalıp eşleştirmesine gerek olmadığında, <directive
+module="mod_proxy">ProxyPass</directive> yönergesi daha iyi bir
+seçimdir. Buradaki örnek şöyle ifade edilebilir:</p>
+
+<highlight language="config">
+ProxyPass "/images/" "http://imageserver.local/images/"
+</highlight>
+
+<p>İster <directive module="mod_rewrite">RewriteRule</directive>
+ister <directive module="mod_proxy">ProxyPass</directive> kullanın,
+arka uç sunucu tarafından verilen yönlendirmeleri yakalamak için yine de
+<directive module="mod_proxy">ProxyPassReverse</directive> yönergesini
+kullanmanız gerekeceğini unutmayın:</p>
+
+<highlight language="config">
+ProxyPassReverse "/images/" "http://imageserver.local/images/"
+</highlight>
+
+<p>Aynı kapsamda diğer <code>RewriteRule</code>'lar etkinse,
+<code>RewriteRule</code> kullanmanız gerekebilir; çünkü
+<code>RewriteRule</code> genellikle <code>ProxyPass</code>'tan önce
+etki eder ve yapmaya çalıştığınız şeyi geçersiz kılabilir.</p>
+
+</section>
+
+<section id="setenv"><title>Ortam Değişkeni Sınaması</title>
+
+<p><module>mod_rewrite</module>, belirli bir ortam değişkeninin veya
+istek başlığının varlığına veya yokluğuna bağlı olarak belirli bir
+eylem yapmak için sıklıkla kullanılır. Bu, <directive module="core"
+type="section">If</directive> yönergesi kullanılarak daha verimli bir
+şekilde yapılabilir.</p>
+
+<p>Örneğin, <directive>RewriteRule</directive> kullanılarak
+<code>www.example.com</code> gibi kurallı bir konak adının
+zorlanmasının yaygın senaryosunu ele alalım. Bu, burada gösterildiği
+gibi <directive module="core" type="section">If</directive>
+yönergesi kullanılarak yapılabilir:</p>
+
+<highlight language="config">
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>Bu teknik, herhangi bir istek başlığına, yanıt başlığına veya ortam
+değişkenine dayalı eylemler yapmak için kullanılabilir ve birçok yaygın
+senaryoda <module>mod_rewrite</module> yerine geçer.</p>
+
+<p>Özellikle <directive module="core" type="section">If</directive>
+bölümlerinde ve belirli diğer yönergelerde kullanabileceğiniz ifade
+türlerine genel bir bakış için <a href="../expr.html">ifade
+değerlendirme belgelerine</a> bakın.</p>
+
+</section>
+
+</manualpage>

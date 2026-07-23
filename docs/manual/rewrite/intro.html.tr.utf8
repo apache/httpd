@@ -1,0 +1,424 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache mod_rewrite'a Giriş - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite'a Giriş</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
+
+<p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanımı i&ccedil;in gerekli temel kavramları
+a&ccedil;ıklar. Diğer belgeler daha ayrıntılıdır, ancak bu belge
+başlangı&ccedil; yapmak isteyenlere yardımcı olmalıdır.
+</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Giriş</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#regex">D&uuml;zenli İfadeler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewriterule">RewriteRule Temelleri</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flags">Yeniden Yazma Bayrakları</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritecond">Yeniden Yazma Koşulları</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritemap">Yeniden yazma eşlemleri</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#htaccess">.htaccess dosyaları</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="introduction">Giriş <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<p>Apache mod&uuml;l&uuml; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, URL değiştirmeleri
+yapmanın bir yolunu sunan &ccedil;ok g&uuml;&ccedil;l&uuml; ve karmaşık bir mod&uuml;ld&uuml;r. Bununla
+ihtiya&ccedil; duyabileceğiniz neredeyse her t&uuml;rl&uuml; URL yeniden yazma işlemini
+ger&ccedil;ekleştirebilirsiniz. Ancak biraz karmaşıktır ve yeni başlayanlar
+i&ccedil;in korkutucu olabilir. Yeniden yazma kurallarını, ger&ccedil;ekte ne
+yaptıklarını anlamadan sihirli form&uuml;ller olarak ele alma eğilimi de
+vardır.</p>
+
+<p>Bu belge, takip eden i&ccedil;eriğin k&ouml;r&uuml; k&ouml;r&uuml;ne kopyalanmak yerine
+anlaşılması i&ccedil;in yeterli arka plan bilgisi sağlamaya &ccedil;alışmaktadır.
+</p>
+
+<p>Bir&ccedil;ok yaygın URL değiştirme g&ouml;revinin <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+mod&uuml;l&uuml;n&uuml;n t&uuml;m g&uuml;c&uuml;n&uuml; ve karmaşıklığını gerektirmediğini unutmayın.
+Basit g&ouml;revler i&ccedil;in <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> mod&uuml;l&uuml;ne ve <a href="../urlmapping.html">URL'lerin dosya sistemine
+eşlenmesi</a> belgelerine bakın.</p>
+
+<p>Son olarak, devam etmeden &ouml;nce <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+mod&uuml;l&uuml;n&uuml;n g&uuml;nl&uuml;k seviyesini <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+y&ouml;nergesini kullanarak izleme seviyelerinden birine yapılandırmayı
+unutmayın. Bu, bunaltıcı miktarda bilgi sağlasa da,
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> yapılandırma sorunlarını ayıklamada
+vazge&ccedil;ilmezdir; &ccedil;&uuml;nk&uuml; her kuralın nasıl işlendiğini tam olarak
+g&ouml;sterir.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="regex">D&uuml;zenli İfadeler <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, <a href="http://pcre.org/">Perl
+Uyumlu D&uuml;zenli İfade</a> s&ouml;zvarlığını kullanır. Bu belgede, d&uuml;zenli
+ifadelere ayrıntılı bir başvuru sağlamaya &ccedil;alışmıyoruz. Bunun i&ccedil;in
+<a href="http://pcre.org/pcre.txt">PCRE kılavuz sayfalarını</a>,
+<a href="http://perldoc.perl.org/perlre.html">Perl d&uuml;zenli ifade
+kılavuz sayfasını</a> ve <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Jeffrey
+Friedl'ın Mastering Regular Expressions kitabını</a> (&uuml;&ccedil;&uuml;nc&uuml; baskısı
+2006'dandır, ancak d&uuml;zenli ifade s&ouml;zdizimi temelde değişmemiştir ve
+bu konu hakkında kesin başvuru kaynağı olmaya devam etmektedir)
+&ouml;neririz.</p>
+
+<p>Bu belgede, bunaltıcı olmadan başlamanıza yetecek kadar d&uuml;zenli
+ifade s&ouml;zvarlığı sağlamaya &ccedil;alışıyoruz; b&ouml;ylece <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> kuralları sihirli
+form&uuml;ller yerine bilimsel form&uuml;ller olacaktır.</p>
+
+<h3 id="regexvocab">D&uuml;zenli ifade s&ouml;zvarlığı</h3>
+
+<p>D&uuml;zenli ifadeler ve <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> kuralları yazmak i&ccedil;in
+ihtiya&ccedil; duyacağınız asgari yapı taşları aşağıdadır. Bunlar kesinlikle
+tam bir d&uuml;zenli ifade s&ouml;zvarlığını temsil etmez, ancak başlamak ve
+temel d&uuml;zenli ifadeleri okumak i&ccedil;in iyi bir yerdir.</p>
+
+<table>
+<tr>
+<th>Karakter</th>
+<th>Anlam</th>
+<th>&Ouml;rnek</th>
+</tr>
+
+<tr>
+    <td><code>.</code></td>
+    <td>Herhangi bir tek karakterle eşleşir</td>
+    <td><code>c.t</code>; <code>cat</code>, <code>cot</code>,
+      <code>cut</code> vb. ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>+</code></td>
+    <td>&Ouml;nceki eşleşmeyi bir veya daha fazla kez tekrarlar</td>
+    <td><code>a+</code>; <code>a</code>, <code>aa</code>,
+      <code>aaa</code> vb. ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>&Ouml;nceki eşleşmeyi sıfır veya daha fazla kez tekrarlar</td>
+    <td><code>a*</code>; <code>a+</code> ile aynı şeylerle eşleşir
+      ancak ayrıca boş dizgeyle de eşleşir</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>Eşleşmeyi isteğe bağlı yapar</td>
+    <td><code>colou?r</code>; <code>color</code> ve
+    <code>colour</code> ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>Sonraki karakteri kodlar</td>
+    <td><code>\.</code>; yukarıda a&ccedil;ıklandığı gibi <em>herhangi bir tek
+    karakter</em> yerine <code>.</code> (nokta) ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>&Ccedil;apa olarak adlandırılır, dizgenin başlangıcıyla eşleşir</td>
+    <td><code>^a</code>; <code>a</code> ile başlayan bir dizgeyle
+    eşleşir</td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>Diğer &ccedil;apa, dizgenin sonuyla eşleşir</td>
+    <td><code>a$</code>; <code>a</code> ile biten bir dizgeyle
+    eşleşir</td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>Birka&ccedil; karakteri tek bir birime gruplar ve geri başvuruda
+      kullanılmak &uuml;zere bir eşleşme yakalar</td>
+    <td><code>(ab)+</code>; <code>ababab</code> ile eşleşir - yani
+      <code>+</code> gruba uygulanır. Geri başvurular hakkında daha
+      fazla bilgi i&ccedil;in <a href="#InternalBackRefs">aşağıya</a>
+      bakın</td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>Bir karakter sınıfı - karakterlerden biriyle eşleşir</td>
+    <td><code>c[uoa]t</code>; <code>cut</code>, <code>cot</code> veya
+      <code>cat</code> ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>Olumsuz karakter sınıfı - belirtilmeyen herhangi bir
+      karakterle eşleşir</td>
+    <td><code>c[^/]t</code>; <code>cat</code> veya <code>c=t</code>
+      ile eşleşir ancak <code>c/t</code> ile eşleşmez</td></tr>
+</table>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;nde <code>!</code> karakteri
+d&uuml;zenli ifadeyi olumsuzlamak i&ccedil;in kullanılabilir. Yani, bir dizge
+yalnızca ifadenin geri kalanıyla eşleşmezse eşleşmiş sayılır.</p>
+
+
+
+<h3 id="InternalBackRefs">D&uuml;zenli İfade Geri Başvuru
+Kullanılabilirliği</h3>
+
+      <p>Burada hatırlanması gereken &ouml;nemli bir şey vardır:
+      <em>Kalıp</em>'ta veya <em>CondPattern</em>'lerden birinde
+      parantez kullandığınızda, <code>$N</code> ve <code>%N</code>
+      dizgeleriyle kullanılabilecek dahili geri başvurular oluşturulur
+      (aşağıya bakın). Bunlar, bir
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      y&ouml;nergesinin <em>Değiştirme</em> parametresini veya bir
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+      y&ouml;nergesinin <em>SınamaDizgesi</em> parametresini oluşturmak
+      i&ccedil;in kullanılabilir.</p>
+      <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      kalıplarındaki yakalamalar (sezgiye aykırı olarak) kendinden
+      &ouml;nceki t&uuml;m <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+      y&ouml;nergelerinde kullanılabilir; &ccedil;&uuml;nk&uuml; <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ifadesi bireysel
+      koşullardan &ouml;nce değerlendirilir.</p>
+
+      <p>Şekil 1, geri başvuruların genişletilmek &uuml;zere hangi
+      konumlara aktarıldığını ve RewriteRule, RewriteCond eşleştirme
+      akışını g&ouml;sterir. Sonraki b&ouml;l&uuml;mlerde bu geri başvuruların nasıl
+      kullanılacağını inceleyeceğiz; bu nedenle ilk başta biraz yabancı
+      g&ouml;r&uuml;n&uuml;rse endişelenmeyin.
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png" alt="RewriteRule ve RewriteCond eşleştirme akışı"><br>
+      <dfn>Şekil 1:</dfn> Bir kural boyunca geri başvuru akışı.<br>
+      Bu &ouml;rnekte, <code>/test/1234</code> i&ccedil;in bir istek <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code> olarak d&ouml;n&uuml;şt&uuml;r&uuml;lecektir.
+</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewriterule">RewriteRule Temelleri <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
+boşluklarla ayrılmış &uuml;&ccedil; arg&uuml;mandan oluşur. Arg&uuml;manlar şunlardır:</p>
+<ol>
+<li><var>Kalıp</var>: hangi gelen URL'lerin kuraldan etkileneceği;</li>
+<li><var>Değiştirme</var>: eşleşen isteklerin nereye g&ouml;nderileceği;</li>
+<li><var>[bayraklar]</var>: yeniden yazılmış isteği etkileyen
+se&ccedil;enekler.</li>
+</ol>
+
+<p><var>Kalıp</var> bir <a href="#regex">d&uuml;zenli ifadedir</a>.
+İlk başta (ilk yeniden yazma kuralı i&ccedil;in veya bir değiştirme
+ger&ccedil;ekleşene kadar) gelen isteğin URL yoluyla (konak adından sonra
+ancak sorgu dizgesinin başlangıcını g&ouml;steren soru işaretinden &ouml;nceki
+kısım) veya dizin başına bağlamda kuralın tanımlandığı dizine g&ouml;re
+isteğin yoluyla eşleştirilir. Bir değiştirme ger&ccedil;ekleştikten sonra
+izleyen kurallar değiştirilen değerle eşleştirilir.
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" alt="RewriteRule y&ouml;nergesinin s&ouml;zdizimi"><br>
+      <dfn>Şekil 2:</dfn> RewriteRule y&ouml;nergesinin s&ouml;zdizimi.
+</p>
+
+
+<p><var>Değiştirme</var> kendisi &uuml;&ccedil; şeyden biri olabilir:</p>
+
+<dl>
+<dt>1. Bir kaynağa tam dosya sistemi yolu</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web/puzzles.html"</pre>
+
+<p>Bu, <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> y&ouml;nergesine
+benzer şekilde bir isteği dosya sistemindeki keyfi bir konuma
+eşler.</p>
+</dd>
+
+<dt>2. Bir kaynağa web yolu</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/games$" "/puzzles.html"</pre>
+
+<p><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+<code>/usr/local/apache2/htdocs</code> olarak ayarlanmışsa, bu
+y&ouml;nerge <code>http://example.com/games</code> isteklerini
+<code>/usr/local/apache2/htdocs/puzzles.html</code> yoluna
+eşler.</p>
+
+</dd>
+
+<dt>3. Mutlak bir URL</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
+
+<p>Bu, istemciye belirtilen URL i&ccedil;in yeni bir istek yapmasını
+s&ouml;yler.</p>
+</dd>
+</dl>
+
+<div class="warning"><strong>1</strong> ve <strong>2</strong>'nin s&ouml;zdiziminin tamamen aynı olduğunu unutmayın. Aralarındaki fark, <strong>1</strong> durumunda hedef yolun en &uuml;st d&uuml;zeyinin (yani <code>/usr/</code>) dosya sisteminde mevcut olması, <strong>2</strong> durumunda ise mevcut olmamasıdır (yani dosya sisteminde k&ouml;k d&uuml;zeyinde bir <code>/bar/</code> dizini yoktur).</div>
+
+<p><var>Değiştirme</var>, <var>Kalıp</var> tarafından eşleşen gelen
+URL yolunun b&ouml;l&uuml;mlerine <em>geri başvurular</em> da i&ccedil;erebilir. Şunu
+ele alalım:</p>
+<pre class="prettyprint lang-config">RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"</pre>
+
+<p><code>$1</code> değişkeni, <var>Kalıp</var> i&ccedil;indeki parantez
+i&ccedil;indeki ifadeyle eşleşen metinle değiştirilir. &Ouml;rneğin,
+<code>http://example.com/product/r14df/view</code> isteği
+<code>/var/web/productdb/r14df</code> yoluna eşlenir.</p>
+
+<p>Parantez i&ccedil;inde birden fazla ifade varsa, bunlar sırasıyla
+<code>$1</code>, <code>$2</code>, <code>$3</code> ve sonraki
+değişkenlerde kullanılabilir.</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="flags">Yeniden Yazma Bayrakları <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+y&ouml;nergesinin davranışı, kuralın sonuna bir veya daha fazla bayrak
+uygulanarak değiştirilebilir. &Ouml;rneğin, bir kuralın eşleştirme
+davranışı <code>[NC]</code> bayrağı uygulanarak b&uuml;y&uuml;k/k&uuml;&ccedil;&uuml;k harf
+duyarsız yapılabilir:
+</p>
+<pre class="prettyprint lang-config">RewriteRule "^puppy.html" "smalldog.html" [NC]</pre>
+
+
+<p>Kullanılabilir bayraklar, anlamları ve &ouml;rnekleri hakkında daha
+fazla ayrıntı i&ccedil;in <a href="flags.html">Yeniden Yazma Bayrakları</a>
+belgesine bakın.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewritecond">Yeniden Yazma Koşulları <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<p>Ardından gelen <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesine tabi
+olacak istek t&uuml;rlerini kısıtlamak i&ccedil;in bir veya daha fazla <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> y&ouml;nergesi
+kullanılabilir. İlk arg&uuml;man isteğin bir &ouml;zelliğini tanımlayan bir
+değişken, ikinci arg&uuml;man değişkenle eşleşmesi gereken bir <a href="#regex">d&uuml;zenli ifade</a> ve &uuml;&ccedil;&uuml;nc&uuml; isteğe bağlı arg&uuml;man
+eşleşmenin nasıl değerlendirileceğini değiştiren bayrakların bir
+listesidir.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" alt="RewriteCond y&ouml;nergesinin s&ouml;zdizimi"><br>
+      <dfn>Şekil 3:</dfn> RewriteCond y&ouml;nergesinin s&ouml;zdizimi
+</p>
+
+<p>&Ouml;rneğin, belirli bir IP aralığından gelen t&uuml;m istekleri farklı
+bir sunucuya g&ouml;ndermek i&ccedil;in şunu kullanabilirsiniz:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"</pre>
+
+
+<p>Birden fazla <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+belirtildiğinde, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+y&ouml;nergesinin uygulanması i&ccedil;in hepsinin eşleşmesi gerekir. &Ouml;rneğin,
+sorgu dizgelerinde "hack" s&ouml;zc&uuml;ğ&uuml;n&uuml; i&ccedil;eren istekleri reddetmek, ancak
+"go" s&ouml;zc&uuml;ğ&uuml;n&uuml; i&ccedil;eren bir &ccedil;erez taşıyanları hari&ccedil; tutmak i&ccedil;in şunu
+kullanabilirsiniz:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]</pre>
+
+<p>&Uuml;nlem işaretinin olumsuz bir eşleşme belirttiğine dikkat edin;
+kural yalnızca &ccedil;erez "go" i&ccedil;ermiyorsa uygulanır.</p>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+y&ouml;nergelerindeki d&uuml;zenli ifadelerdeki eşleşmeler, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesindeki
+<var>Değiştirme</var>'nin bir par&ccedil;ası olarak <code>%1</code>,
+<code>%2</code> vb. değişkenler kullanılarak kullanılabilir. &Ouml;rneğin,
+şu kural siteye erişmek i&ccedil;in kullanılan konak adına bağlı olarak
+isteği farklı bir dizine y&ouml;nlendirecektir:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
+
+<p>İstek <code>http://example.com/foo/bar</code> i&ccedil;in ise
+<code>%1</code> değeri <code>example.com</code> ve <code>$1</code>
+değeri <code>foo/bar</code> olacaktır.</p>
+
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewritemap">Yeniden yazma eşlemleri <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> y&ouml;nergesi,
+tabir yerindeyse yeniden yazma işleminizi yapacak harici bir işlev
+&ccedil;ağırmanın bir yolunu sunar. Bu, <a href="rewritemap.html">RewriteMap ek belgelerinde</a> daha ayrıntılı
+olarak tartışılmaktadır.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="htaccess">.htaccess dosyaları <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+
+<p>Yeniden yazma genellikle ana sunucu yapılandırma ayarında
+(herhangi bir <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> b&ouml;l&uuml;m&uuml;n&uuml;n dışında) veya
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+kapsayıcıları i&ccedil;inde yapılandırılır. Bu, yeniden yazma yapmanın en
+kolay yoludur ve &ouml;nerilir. Ancak yeniden yazmayı <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> b&ouml;l&uuml;mlerinde veya
+<a href="../howto/htaccess.html"><code>.htaccess</code>
+dosyalarında</a> bazı ek karmaşıklık pahasına yapmak m&uuml;mk&uuml;nd&uuml;r. Bu
+tekniğe dizin başına yeniden yazma denir.</p>
+
+<p>Sunucu başına yeniden yazmadan temel fark, <code>.htaccess</code>
+dosyasını i&ccedil;eren dizinin yol &ouml;nekinin,
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesinde
+eşleştirmeden &ouml;nce &ccedil;ıkarılmasıdır. Ayrıca, isteğin d&uuml;zg&uuml;n şekilde
+eşlenmesini sağlamak i&ccedil;in <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> kullanılmalıdır.</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

@@ -13,6 +13,8 @@ class HttpdErrorLog:
 
     RE_ERRLOG_WARN = re.compile(r'.*\[[^:]+:warn].*')
     RE_ERRLOG_ERROR = re.compile(r'.*\[[^:]+:error].*')
+    RE_ERRLOG_CRASH = re.compile(r'.*\bexit signal (?:Segmentation fault|Abort(ed)?|Bus error)\b.*')
+    RE_ERRLOG_ASAN = re.compile(r'.*==\d+==ERROR: (?:Address|Memory|Leak|Thread)Sanitizer:.*')
     RE_APLOGNO = re.compile(r'.*\[[^:]+:(error|warn)].* (?P<aplogno>AH\d+): .+')
 
     def __init__(self, path: str):
@@ -76,6 +78,10 @@ class HttpdErrorLog:
         for l in lognos:
             self._ignored_lognos.add(l)
 
+    def remove_ignored_lognos(self, lognos: List[str]):
+        for l in lognos:
+            self._ignored_lognos.discard(l)
+
     def _is_ignored(self, line: str) -> bool:
         if self._lookup_matches(line, self._ignored_matches):
             return True
@@ -121,6 +127,10 @@ class HttpdErrorLog:
                     if self._is_ignored(line):
                         continue
                     if line in self._caught_matches:
+                        continue
+                    if self.RE_ERRLOG_CRASH.match(line) or \
+                            self.RE_ERRLOG_ASAN.match(line):
+                        errors.append(line)
                         continue
                     m = self.RE_ERRLOG_WARN.match(line)
                     if m and line not in self._caught_warnings:

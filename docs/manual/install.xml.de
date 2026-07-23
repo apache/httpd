@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 239255:1874056 (outdated) -->
+<!-- English Revision: 239255:1935202 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -40,7 +40,7 @@
     schaffen, die der vieler anderer Open Source Projekte &#228;hnlich
     sieht.</p>
 
-    <p>Wenn Sie von einer Unterversion auf die n&auml;chste aktualisieren (z.B.
+    <p>Wenn Sie von einer Unterversion auf die nächste aktualisieren (z.B.
     von 2.0.50 auf 2.0.51), springen Sie bitte zum Abschnitt <a
     href="#upgrading">Upgrade</a>.</p>
 </summary>
@@ -161,8 +161,8 @@
       sicherzustellen, dass der richtige Interpreter von
       <program>configure</program> ausgew&#228;hlt wird.
       Wenn kein Perl 5-Interpreter vom <program>configure</program>-Skript
-      gefunden werden kann, k&ouml;nnen Sie die betroffenen Hilfsskripte nicht
-      verwenden, sind jedoch selbstverst&auml;ndlich nach wie vor in der Lage,
+      gefunden werden kann, können Sie die betroffenen Hilfsskripte nicht
+      verwenden, sind jedoch selbstverständlich nach wie vor in der Lage,
       den Apache 2.0 zu bauen und zu installieren.</dd>
     </dl>
 </section>
@@ -172,22 +172,22 @@
     <p>Der Apache kann von der <a
     href="http://httpd.apache.org/download.cgi">Apache HTTP Server
     Downloadseite</a> heruntergeladen werden, auf der verschiedene Spiegelserver
-    angegeben sind. F&uuml;r die meisten Benutzer des Apache ist es auf
-    Unix-&auml;hnlichen Systemen am Besten, die Quellcodeversion herunterzuladen
+    angegeben sind. Für die meisten Benutzer des Apache ist es auf
+    Unix-ähnlichen Systemen am Besten, die Quellcodeversion herunterzuladen
     und zu kompilieren. Der Erstellungsprozess (weiter unten beschrieben) ist
-    einfach und erlaubt es Ihnen, den Server Ihren Bed&uuml;rfnissen anzupassen.
-    Dazu kommt, dass Bin&auml;rdistributionen gegen&uuml;ber der aktuellen
-    Quellcodeversion oft veraltet sind. Wenn Sie tats&auml;chlich ein
-    Bin&auml;rpaket herunterladen, folgen Sie bitte den Anweisungen in der Datei
+    einfach und erlaubt es Ihnen, den Server Ihren Bedürfnissen anzupassen.
+    Dazu kommt, dass Binärdistributionen gegenüber der aktuellen
+    Quellcodeversion oft veraltet sind. Wenn Sie tatsächlich ein
+    Binärpaket herunterladen, folgen Sie bitte den Anweisungen in der Datei
     <code>INSTALL.bindist</code>, die der Distribution beiliegt.</p>
 
-    <p>Es ist wichtig, dass Sie nach dem Herunterladen &uuml;berpr&uuml;fen,
-    dass es sich um einer vollst&auml;ndige und unver&auml;nderte Version des
-    Apache HTTP Servers handelt. Das k&ouml;nnen Sie erreichen, indem Sie das
-    heruntergeladene Paket gegen die PGP-Signatur pr&uuml;fen. Einzelheiten dazu
+    <p>Es ist wichtig, dass Sie nach dem Herunterladen überprüfen,
+    dass es sich um einer vollständige und unveränderte Version des
+    Apache HTTP Servers handelt. Das können Sie erreichen, indem Sie das
+    heruntergeladene Paket gegen die PGP-Signatur prüfen. Einzelheiten dazu
     erfahren Sie auf der <a
     href="http://httpd.apache.org/download.cgi#verify">Download-Seite</a>. Es
-    ist auch ein erweitertes Beispiel verf&uuml;gbar, dass die <a
+    ist auch ein erweitertes Beispiel verfügbar, dass die <a
     href="http://httpd.apache.org/dev/verification.html">Anwendung von PGP</a>
     beschreibt.</p>
 
@@ -229,36 +229,36 @@
     Reihe von Variablen und Kommandozeilenoptionen.</p>
 
     <p>Die wichtigste Option ist <code>--prefix</code>, der Ablageort, an dem
-    der Apache sp&auml;ter installiert wird, da er f&uuml;r diesen Ort
+    der Apache später installiert wird, da er für diesen Ort
     konfiguriert werden muss, um korrekt zu arbeiten. Eine feinere Einstellung
     der Dateiablagen ist mit weiteren <a
     href="programs/configure.html#installationdirectories">configure-Optionen</a>
-    m&ouml;glich.</p>
+    möglich.</p>
 
-    <p>Weiterhin k&ouml;nnen Sie zu diesem Zeitpunkt festlegen, welche <a
-    href="programs/configure.html#optionalfeatures">Funktionalit&auml;t</a> Sie
-    in den Apache aufnehmen m&ouml;chten, indem Sie <a href="mod/">Module</a>
-    aktivieren oder deaktivieren. Der Apache bindet standardm&auml;&szlig;ig
+    <p>Weiterhin können Sie zu diesem Zeitpunkt festlegen, welche <a
+    href="programs/configure.html#optionalfeatures">Funktionalität</a> Sie
+    in den Apache aufnehmen möchten, indem Sie <a href="mod/">Module</a>
+    aktivieren oder deaktivieren. Der Apache bindet standardmäßig
     einen Satz von <a href="mod/module-dict.html#Status">Basismodulen</a> ein.
     Andere Module werden mit Hilfe der Option
     <code>--enable-<var>module</var></code> aktiviert, wobei <var>module</var>
-    den Namen des Moduls ohne das Pr&auml;fix <code>mod_</code> darstellt.
+    den Namen des Moduls ohne das Präfix <code>mod_</code> darstellt.
     Ausserdem sind alle Unterstriche durch Bindestriche zu ersetzen. Sie
-    k&ouml;nnen sich auch entscheiden, Module als "<a href="dso.html">Shared
+    können sich auch entscheiden, Module als "<a href="dso.html">Shared
     Objects (DSOs)</a>" zu kompilieren, welche zur Laufzeit ge- und entladen
-    werden k&ouml;nnen. Dazu verwenden Sie die Option
-    <code>--enable-<var>module</var>=shared</code>. Entsprechend k&ouml;nnen Sie
+    werden können. Dazu verwenden Sie die Option
+    <code>--enable-<var>module</var>=shared</code>. Entsprechend können Sie
     Basismodule mit der Option <code>--disable-<var>module</var></code>
     deaktivieren. Lassen Sie Vorsicht walten. wenn Sie diese Optionen verwenden,
     da <program>configure</program> Sie nicht warnen kann, wenn die von Ihnen
     angegebenen Module nicht existieren; die Option wird dann einfach
     ignoriert.</p>
 
-    <p>Zus&auml;tzlich ist es zuweilen notwendig, das
+    <p>Zusätzlich ist es zuweilen notwendig, das
     <program>configure</program>-Skript mit Extrainformationen zum Ablageort
     Ihres Compilers, Ihrer Bibliotheken oder Header-Dateien zu versorgen. Das
     tun Sie, indem Sie entweder Umgebungsvariablen oder Kommandozeilenoptionen
-    an <program>configure</program> &uuml;bergeben. F&uuml;r mehr Informationen
+    an <program>configure</program> übergeben. Für mehr Informationen
     lesen Sie bitte die Hilfeseite zu <program>configure</program>.</p>
 
     <p>Um einen kurzen Eindruck zu gewinnen, welche M&#246;glichkeiten Sie
@@ -350,35 +350,35 @@
 <section id="upgrading"><title>Upgrade</title>
 
     <p>Der erste Schritt beim Aktualisieren besteht darin, die
-    Versionsank&uuml;ndigung sowie die <code>CHANGES</code>-Datei in der
-    Quelltextdistribution zu lesen, um &Auml;nderungen zu finden, die Ihr
-    System m&ouml;glicherweise betreffen. Wenn Sie einen gr&ouml;&szlig;eren
-    Versionssprung durchf&uuml;hren (z.B. vom 1.3 auf 2.0 oder von 2.0 auf
-    2.2), wird es wahrscheinlich auch gr&ouml;&szlig;ere Unterschiede in der
+    Versionsankündigung sowie die <code>CHANGES</code>-Datei in der
+    Quelltextdistribution zu lesen, um Änderungen zu finden, die Ihr
+    System möglicherweise betreffen. Wenn Sie einen größeren
+    Versionssprung durchführen (z.B. vom 1.3 auf 2.0 oder von 2.0 auf
+    2.2), wird es wahrscheinlich auch größere Unterschiede in der
     Kompilier- und Laufzeitkonfiguration geben, die manuelle Nacharbeiten
-    erfordern. Au&szlig;erdem m&uuml;ssen alle Module aktualisiert
-    werden, um den &Auml;nderungen der Modul-API gerecht zu werden.</p>
+    erfordern. Außerdem müssen alle Module aktualisiert
+    werden, um den Änderungen der Modul-API gerecht zu werden.</p>
 
     <p>Die Aktualisierung einer Unterversion auf eine andere (z.B. von 2.0.55
-    auf 2.0.57) ist einfacher. <code>make install</code> &uuml;berschreibt
+    auf 2.0.57) ist einfacher. <code>make install</code> überschreibt
     keine der bereits existierenden Dokumente, Log- und Konfigurationsdateien.
-    Ausserdem bem&uuml;hen sich die Entwickler, inkompatible &Auml;nderungen
+    Ausserdem bemühen sich die Entwickler, inkompatible Änderungen
     der <program>configure</program>-Optionen, der Laufzeitkonfiguration sowie
-    der Modul-API zu vermeiden. In den meisten F&auml;llen sollten Sie in der
+    der Modul-API zu vermeiden. In den meisten Fällen sollten Sie in der
     Lage sein, den gleichen <program>configure</program>-Befehl, die gleiche
     Konfiguration und die gleichen Module wieder zu verwenden. (Das gilt erst
-    seit Version 2.0.41 -- fr&uuml;here Versionen enthielten noch inkompatible
-    &Auml;nderungen).</p>
+    seit Version 2.0.41 -- frühere Versionen enthielten noch inkompatible
+    Änderungen).</p>
 
-    <p>Um auf eine neue Unterversion zu aktualisieren, suchen Sie zun&auml;chst
+    <p>Um auf eine neue Unterversion zu aktualisieren, suchen Sie zunächst
     die Datei <code>config.nice</code> im <code>build</code>-Verzeichnis
     Ihrer Serverinstallation oder im Wurzelverzeichnis des Quelltextbaums
-    der alten Installation. Die Datei enth&auml;lt den genauen
+    der alten Installation. Die Datei enthält den genauen
     <program>configure</program>-Befehl, der verwendet wurde, um den
     Quellcode zu konfigurieren. Um jetzt von einer Version auf die
-    n&auml;chste zu aktualisieren, kopieren Sie einfach die
+    nächste zu aktualisieren, kopieren Sie einfach die
     <code>config.nice</code> in das Verzeichnis der neuen Version,
-    passen sie bei Bedarf an, und f&uuml;hren Sie sie aus:</p>
+    passen sie bei Bedarf an, und führen Sie sie aus:</p>
 
     <example>
       $ ./config.nice<br />
@@ -389,12 +389,12 @@
     </example>
 
     <note type="warning">Sie sollten jede neue Version immer in Ihrer Umgebung
-    testen, bevor Sie sie produktiv schalten. Beispielsweise k&ouml;nnen Sie
+    testen, bevor Sie sie produktiv schalten. Beispielsweise können Sie
     die neue Version neben der alten installieren, indem Sie ein anderes
-    <code>--prefix</code> und einen anderen Port w&auml;hlen (durch Anpassen der
+    <code>--prefix</code> und einen anderen Port wählen (durch Anpassen der
     <directive module="mpm_common">Listen</directive>-Direktive). So
-    k&ouml;nnen Sie auf eventuelle Inkompatibilit&auml;ten testen, bevor Sie
-    endg&uuml;ltig die neue Version verwenden.</note>
+    können Sie auf eventuelle Inkompatibilitäten testen, bevor Sie
+    endgültig die neue Version verwenden.</note>
 </section>
 
 </manualpage>

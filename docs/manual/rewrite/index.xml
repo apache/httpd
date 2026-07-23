@@ -23,65 +23,71 @@
 <manualpage metafile="index.xml.meta">
 <parentdocument href="../"/>
 
-  <title>Apache mod_rewrite</title>
+  <title>Guide to Apache mod_rewrite</title>
 
 <summary>
+
+<p><em>The great thing about mod_rewrite is it gives you all the
+configurability and flexibility of Sendmail. The downside to
+mod_rewrite is that it gives you all the configurability and
+flexibility of Sendmail.</em>
+-- Brian Behlendorf</p>
+
+<p><em>Despite the tons of examples and docs, mod_rewrite is voodoo.
+Damned cool voodoo, but still voodoo.</em>
+-- Brian Moore</p>
 
     <p><module>mod_rewrite</module> provides a way to modify incoming
     URL requests, dynamically, based on <a href="intro.html#regex">regular
     expression</a> rules. This allows you to map arbitrary URLs onto
     your internal URL structure in any way you like.</p>
 
-      <p>It supports an unlimited number of rules and an
-      unlimited number of attached rule conditions for each rule to
-      provide a really flexible and powerful URL manipulation
-      mechanism. The URL manipulations can depend on various tests:
-      server variables, environment variables, HTTP
-      headers, time stamps, external database lookups, and various other
-      external programs or handlers, can be used to achieve granular URL
-      matching.</p>
+    <p>This guide supplements <a href="../mod/mod_rewrite.html">the
+    reference manual</a> with annotated examples, conceptual
+    explanations, and practical advice. It is organized as follows:</p>
 
-      <p>Rewrite rules can operate on the full URLs, including the path-info
-      and query string portions, and may be used in per-server context
-      (<code>httpd.conf</code>), per-virtualhost context (<directive
-      type="section" module="core">VirtualHost</directive> blocks), or
-      per-directory context (<code>.htaccess</code> files and <directive
-      type="section" module="core">Directory</directive> blocks). The
-      rewritten result can lead to further rules, internal
-      sub-processing, external request redirection, or proxy
-      passthrough, depending on what <a href="flags.html">flags</a> you
-      attach to the rules.</p>
+<dl>
+<dt><a href="intro.html">Introduction</a></dt>
+<dd>Core concepts: regular expression syntax, RewriteRule and
+RewriteCond basics, and how mod_rewrite fits into the request
+processing lifecycle.</dd>
 
-      <p>Since mod_rewrite is so powerful, it can indeed be rather
-      complex. This document supplements the <a
-      href="../mod/mod_rewrite.html">reference documentation</a>, and
-      attempts to allay some of that complexity, and provide highly
-      annotated examples of common scenarios that you may handle with
-      mod_rewrite. But we also attempt to show you when you should not
-      use mod_rewrite, and use other standard Apache features instead,
-      thus avoiding this unnecessary complexity.</p>
+<dt><a href="htaccess.html">Per-directory Rewrites</a></dt>
+<dd>The key differences between using rewrite rules in server
+configuration versus <glossary ref="perdirectory">per-directory</glossary> 
+context, including path stripping, RewriteBase, and the looping behavior 
+of the [L] flag.</dd>
 
+<dt><a href="flags.html">RewriteRule Flags</a></dt>
+<dd>A complete reference for all flags that can modify the behavior of
+a RewriteRule, with examples for each.</dd>
 
-<ul>
-<li><a href="../mod/mod_rewrite.html">mod_rewrite reference
-documentation</a></li>
-<li><a href="intro.html">Introduction to regular expressions and mod_rewrite</a></li>
-<li><a href="flags.html">RewriteRule Flags</a></li>
-<li><a href="rewritemap.html">Using RewriteMap</a></li>
-<li><a href="avoid.html">When <strong>NOT</strong> to use mod_rewrite</a></li>
-<li><a href="remapping.html">Using mod_rewrite for redirection and remapping of URLs</a></li>
-<li><a href="access.html">Using mod_rewrite to control access</a></li>
-<li><a href="vhosts.html">Dynamic virtual hosts with mod_rewrite</a></li>
-<li><a href="proxy.html">Dynamic proxying with mod_rewrite</a></li>
-<li><a href="advanced.html">Advanced techniques</a></li>
-<li><a href="tech.html">Technical details</a></li>
-</ul>
+<dt><a href="rewritemap.html">Using RewriteMap</a></dt>
+<dd>How to use external lookup sources &mdash; text files, DBM databases,
+SQL queries, and internal functions &mdash; to drive your rewrite
+rules.</dd>
+
+<dt><a href="remapping.html">Redirection and Remapping</a></dt>
+<dd>Recipes for common tasks: HTTPS redirection, canonical hostnames,
+trailing slash normalization, front-controller routing, and more.</dd>
+
+<dt><a href="vhosts.html">Dynamic Virtual Hosts</a></dt>
+<dd>Using mod_rewrite to dynamically map hostnames to document roots
+without individual VirtualHost blocks.</dd>
+
+<dt><a href="avoid.html">When NOT to use mod_rewrite</a></dt>
+<dd>Many common tasks are better accomplished with simpler directives.
+This document shows the alternatives and when to prefer them.</dd>
+
+<dt><a href="tech.html">Technical Details</a></dt>
+<dd>How mod_rewrite hooks into the Apache request processing phases,
+and the order in which rules and conditions are evaluated.</dd>
+</dl>
 </summary>
 
-<seealso><a href="../mod/mod_rewrite.html">mod_rewrite reference
-documentation</a></seealso>
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite Reference Documentation</a></seealso>
 <seealso><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
 wiki</a></seealso>
 <seealso><a href="../glossary.html">Glossary</a></seealso>
 

@@ -98,6 +98,7 @@ struct md_acme_t {
     const char *user_agent;
     const char *proxy_url;
     const char *ca_file;
+    const char *proxy_ca_file;
     
     const char *acct_id;            /* local storage id account was loaded from or NULL */
     struct md_acme_acct_t *acct;    /* account at ACME server to use for requests */
@@ -118,6 +119,7 @@ struct md_acme_t {
             const char *key_change;
             const char *revoke_cert;
             const char *new_nonce;
+            const char *renewal_info;
             struct apr_array_header_t *profiles;
         } v2;
     } api;
@@ -150,9 +152,12 @@ apr_status_t md_acme_init(apr_pool_t *pool, const char *base_version, int init_s
  * @param p       pool to used
  * @param url     url of the server, optional if known at path
  * @param proxy_url optional url of a HTTP(S) proxy to use
+ * @param ca_file optional CA trust anchor file to use
+ * @param proxy_ca_file optional CA trust anchor file to use for the HTTP proxy
  */
 apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
-                            const char *proxy_url, const char *ca_file);
+                            const char *proxy_url, const char *ca_file,
+                            const char *proxy_ca_file);
 
 /**
  * Contact the ACME server and retrieve its directory information.
@@ -275,6 +280,7 @@ apr_status_t md_acme_GET(md_acme_t *acme, const char *url,
                          md_acme_req_json_cb *on_json,
                          md_acme_req_res_cb *on_res,
                          md_acme_req_err_cb *on_err,
+                         int get_as_post,
                          void *baton);
 /**
  * Perform a POST against the ACME url. If a on_json callback is given and
@@ -301,7 +307,7 @@ apr_status_t md_acme_POST(md_acme_t *acme, const char *url,
  * Retrieve a JSON resource from the ACME server 
  */
 apr_status_t md_acme_get_json(struct md_json_t **pjson, md_acme_t *acme, 
-                              const char *url, apr_pool_t *p);
+                              const char *url, int get_as_post, apr_pool_t *p);
 
 
 apr_status_t md_acme_req_body_init(md_acme_req_t *req, struct md_json_t *jpayload);

@@ -78,13 +78,13 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
 
 <section id="env"><title>Environment Variables</title>
     <p>In addition to the configuration directives that control the
-    behaviour of <module>mod_proxy</module>, an <dfn>environment
+    behavior of <module>mod_proxy</module>, an <dfn>environment
     variable</dfn> may also control the SCGI protocol
     provider:</p>
     <dl>
         <dt>proxy-scgi-pathinfo</dt>
         <dd>By default <module>mod_proxy_scgi</module> will neither create
-        nor export the <var>PATH_INFO</var> environment variable. This allows
+        nor export the <var><glossary ref="pathinfo">PATH_INFO</glossary></var> environment variable. This allows
         the backend SCGI server to correctly determine <var>SCRIPT_NAME</var>
         and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
         If instead you need <module>mod_proxy_scgi</module> to generate
@@ -112,7 +112,7 @@ header</description>
     optimizations, which are not possible if the file comes over the backend
     socket.  Additionally, the file contents are not transmitted twice.</p>
     <p>The <directive>ProxySCGISendfile</directive> argument determines the
-    gateway behaviour:</p>
+    gateway behavior:</p>
     <dl>
     <dt><code>Off</code></dt>
     <dd>No special handling takes place.</dd>

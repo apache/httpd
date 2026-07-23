@@ -44,9 +44,7 @@ by other LDAP modules</description>
     <p>SSL/TLS support is dependent on which LDAP toolkit has been
     linked to <glossary>APR</glossary>. As of this writing, APR-util supports:
     <a href="http://www.openldap.org/">OpenLDAP SDK</a> (2.x or later),
-    <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
-    SDK</a>, <a href="https://wiki.mozilla.org/LDAP_C_SDK">
-    Mozilla LDAP SDK</a>, native Solaris LDAP SDK (Mozilla based) or the
+    <a href="https://wiki.mozilla.org/LDAP_C_SDK">Mozilla LDAP SDK</a>, native Solaris LDAP SDK (Mozilla based) or the
     native Microsoft LDAP SDK. See the <a href="http://apr.apache.org">APR</a>
     website for details.</p>
 
@@ -212,12 +210,7 @@ LDAPOpCacheTTL 600
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -233,12 +226,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -286,12 +274,7 @@ LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
 LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
 # Specify the secmod file if required
 LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -299,38 +282,6 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
 &lt;/Location&gt;
-        </highlight>
-
-    </section>
-
-    <section id="settingcerts-novell"><title>Novell SDK</title>
-
-        <p>One or more CA certificates must be specified for the Novell
-        SDK to work correctly. These certificates can be specified as
-        binary DER or Base64 (PEM) encoded files.</p>
-
-        <p>Note: Client certificates are specified globally rather than per
-        connection, and so must be specified with the <directive module="mod_ldap"
-        >LDAPTrustedGlobalCert</directive>
-        directive as below. Trying to set client certificates via the
-        <directive module="mod_ldap">LDAPTrustedClientCert</directive>
-        directive will cause an error to be logged
-        when an attempt is made to connect to the LDAP server.</p>
-
-        <p>The SDK supports both SSL and STARTTLS, set using the
-        <directive module="mod_ldap">LDAPTrustedMode</directive> parameter.
-        If an ldaps:// URL is specified,
-        SSL mode is forced, override this directive.</p>
-
-        <highlight language="config">
-# Specify two CA certificate files
-LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
-LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-# Specify a client certificate file and key
-LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
-LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
-# Do not use this directive, as it will throw an error
-#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
         </highlight>
 
     </section>
@@ -359,20 +310,15 @@ LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
 # Specify two CA certificate files
 LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
 LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
+&lt;Location "/protected"&gt;
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
     LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
     LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
     # CA certs respecified due to per-directory client certs
     LDAPTrustedClientCert CA_DER /certs/cacert1.der
     LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
 &lt;/Location&gt;
@@ -615,10 +561,10 @@ Certificate Authority or global client certificates</description>
       <li>CERT_BASE64 - PEM encoded client certificate</li>
       <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
       <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
-      <li>CERT_PFX - PKCS#12 encoded client certificate (Novell SDK)</li>
+      <li>CERT_PFX - PKCS#12 encoded client certificate</li>
       <li>KEY_DER - binary DER encoded private key</li>
       <li>KEY_BASE64 - PEM encoded private key</li>
-      <li>KEY_PFX - PKCS#12 encoded private key (Novell SDK)</li>
+      <li>KEY_PFX - PKCS#12 encoded private key</li>
     </ul>
 </usage>
 </directivesynopsis>
@@ -772,7 +718,7 @@ connection client certificates.</description>
 
     <p>Since 2.4.10, new measures are in place to avoid the reference time
     from being inflated by cache hits or slow requests.  First, the reference
-    time is not updated if no backend LDAP conncetions were needed. Second,
+    time is not updated if no backend LDAP connections were needed. Second,
     the reference time uses the time the HTTP request was received instead
     of the time the request is completed.</p>
 

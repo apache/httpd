@@ -114,6 +114,7 @@
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -138,6 +139,7 @@
 <syntax>LoadModule <em>module filename</em></syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>

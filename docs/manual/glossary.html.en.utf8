@@ -1,49 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Glossary - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glossary</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Glossary</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>This glossary defines some of the common terminology related to Apache in
+    <p>This glossary defines some of the common terminology related to Apache HTTP Server in
       particular, and web serving in general. More information on each concept
       is provided in the links.</p>
   </div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="definitions" id="definitions">Definitions</a> <a title="Permanent link" href="#definitions" class="permalink">&para;</a></h2>
+<h2 id="definitions">Definitions <a title="Permanent link" href="#definitions" class="permalink">&para;</a></h2>
 
   <dl>
     <dt><a name="accesscontrol" id="accesscontrol">Access Control</a></dt>
-    <dd>The restriction of access to network realms. In an Apache context
-      usually the restriction of access to certain <em>URLs</em>.<br /> See:  <a href="howto/auth.html">Authentication, Authorization, and Access
+    <dd>The restriction of access to network realms. In an httpd context
+      usually the restriction of access to certain <em>URLs</em>.<br> See:  <a href="howto/auth.html">Authentication, Authorization, and Access
       Control</a>
     </dd>
 
@@ -57,21 +57,21 @@
         eXtension Tool</a> <a name="apxs" id="apxs">(apxs)</a></dt>
     <dd>A perl script that aids in compiling <a class="glossarylink" href="./glossary.html#module" title="see glossary">module</a> sources into Dynamic Shared Objects
       (<a class="glossarylink" href="./glossary.html#dso" title="see glossary">DSO</a>s) and helps install them in the
-      Apache Web server.<br />
+      httpd web server.<br>
       See: Manual Page: <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     </dd>
 
     <dt><a name="apacheportableruntime" id="apacheportableruntime">Apache Portable Runtime</a> <a name="apr" id="apr">(APR)</a></dt>
     <dd>A set of libraries providing many of the basic interfaces
       between the server and the operating system.  APR is developed
-      parallel to the Apache HTTP Server as an independent project.<br />
+      parallel to the Apache HTTP Server as an independent project.<br>
       See: <a href="http://apr.apache.org/">Apache Portable Runtime
       Project</a>
     </dd>
 
     <dt><a name="authentication" id="authentication">Authentication</a></dt>
     <dd>The positive identification of a network entity such as a server, a
-      client, or a user.<br />
+      client, or a user.<br>
       See: <a href="howto/auth.html">Authentication, Authorization, and Access
       Control</a>
     </dd>
@@ -83,7 +83,7 @@
       the issuer), plus the owner's <a class="glossarylink" href="./glossary.html#publickey" title="see glossary">public
       key</a> and the
       signature made by the CA. Network entities verify these signatures
-      using CA certificates.<br />
+      using CA certificates.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -93,7 +93,7 @@
       submission to a <a class="glossarylink" href="./glossary.html#certificationauthority" title="see glossary">Certification
       Authority</a>, which signs it with the <a class="glossarylink" href="./glossary.html#privatekey" title="see glossary">Private Key</a> of their CA
       <em>Certificate</em>. Once the CSR is signed, it becomes a real
-      certificate.<br />
+      certificate.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -102,27 +102,26 @@
     <dd>A trusted third party whose purpose is to sign certificates for network
       entities it has authenticated using secure means. Other network entities
       can check the signature to verify that a CA has authenticated the bearer
-      of a certificate.<br />
+      of a certificate.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
     <dt><a name="cipher" id="cipher">Cipher</a></dt>
     <dd>An algorithm or system for data encryption. Examples are DES, IDEA, RC4,
-      etc.<br />
+      etc.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
     <dt><a name="ciphertext" id="ciphertext">Ciphertext</a></dt>
     <dd>The result after <a class="glossarylink" href="./glossary.html#plaintext" title="see glossary">Plaintext</a> is
-      passed through a <a class="glossarylink" href="./glossary.html#cipher" title="see glossary">Cipher</a>.<br /> See: <a href="ssl/">SSL/TLS Encryption</a>
+      passed through a <a class="glossarylink" href="./glossary.html#cipher" title="see glossary">Cipher</a>.<br> See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
     <dt><a name="commongatewayinterface" id="commongatewayinterface">Common
         Gateway Interface</a> <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>A standard definition for an interface between a web server and an
       external program that allows the external program to service requests.
-      There is an <a href="http://www.ietf.org/rfc/rfc3875">Informational
-      RFC</a> which covers the specifics.<br />
+      There is an Informational RFC (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>) which covers the specifics.<br>
       See: <a href="howto/cgi.html">Dynamic Content with CGI</a>
     </dd>
 
@@ -132,7 +131,7 @@
     <dt><a name="configurationfile" id="configurationfile">Configuration
         File</a></dt>
     <dd>A text file containing <a class="glossarylink" href="./glossary.html#directive" title="see glossary">Directives</a>
-      that control the configuration of Apache.<br />
+      that control the configuration of httpd.<br>
       See: <a href="configuring.html">Configuration Files</a>
     </dd>
 
@@ -144,9 +143,9 @@
 
     <dt><a name="context" id="context">Context</a></dt>
     <dd>An area in the <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration
-      files</a> where certain types of <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directives</a> are allowed.<br />
+      files</a> where certain types of <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directives</a> are allowed.<br>
       See: <a href="mod/directive-dict.html#Context">Terms Used to Describe
-      Apache Directives</a>
+      httpd Directives</a>
     </dd>
 
     <dt><a name="digitalsignature" id="digitalsignature">Digital
@@ -157,31 +156,31 @@
       embedded in a <em>Certificate</em>, then encrypting the hash with its own
       <em>Private Key</em>. Only the CA's public key can decrypt the signature,
       verifying that the CA has authenticated the network entity that owns the
-      <em>Certificate</em>.<br />
+      <em>Certificate</em>.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
     <dt><a name="directive" id="directive">Directive</a></dt>
-    <dd>A configuration command that controls one or more aspects of Apache's
-      behavior.  Directives are placed in the <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">Configuration File</a><br />
+    <dd>A configuration command that controls one or more aspects of httpd's
+      behavior.  Directives are placed in the <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">Configuration File</a><br>
     See: <a href="mod/directives.html">Directive Index</a>
     </dd>
 
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">Dynamic
         Shared Object</a> <a name="dso" id="dso">(DSO)</a></dt>
     <dd><a class="glossarylink" href="./glossary.html#module" title="see glossary">Modules</a> compiled separately from the
-      Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary that can be loaded on-demand.<br />
+      Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary that can be loaded on-demand.<br>
       See: <a href="dso.html">Dynamic Shared Object Support</a>
     </dd>
 
     <dt><a name="environmentvariable" id="environmentvariable">Environment
         Variable</a> <a name="env-variable" id="env-variable">(env-variable)</a></dt>
     <dd>Named variables managed by the operating system shell and used to store
-      information and communicate between programs.  Apache also contains
+      information and communicate between programs.  httpd also contains
       internal variables that are referred to as environment variables, but are
-      stored in internal Apache structures, rather than in the shell
-      environment.<br />
-      See: <a href="env.html">Environment Variables in Apache</a>
+      stored in internal httpd structures, rather than in the shell
+      environment.<br>
+      See: <a href="env.html">Environment Variables in Apache httpd</a>
     </dd>
 
     <dt><a name="export-crippled" id="export-crippled">Export-Crippled</a></dt>
@@ -189,7 +188,7 @@
       with the United States' Export Administration Regulations (EAR).
       Export-crippled cryptographic software is limited to a small key size,
       resulting in <em>Ciphertext</em> which usually can be decrypted by brute
-      force.<br />
+      force.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -199,7 +198,7 @@
       while output filters process documents on the server before they are sent
       to the client.  For example, the <code>INCLUDES</code> output filter
       processes documents for <a class="glossarylink" href="./glossary.html#ssi" title="see glossary">Server Side
-      Includes</a>.<br />
+      Includes</a>.<br>
       See: <a href="filter.html">Filters</a>
     </dd>
 
@@ -212,13 +211,13 @@
     </dd>
 
     <dt><a name="handler" id="handler">Handler</a></dt>
-    <dd>An internal Apache representation of the action to be performed when a
+    <dd>An internal httpd representation of the action to be performed when a
       file is called. Generally, files have implicit handlers, based on the file
       type. Normally, all files are simply served by the server, but certain
       file types are "handled" separately.  For example, the
       <code>cgi-script</code> handler designates files to be processed as
-      <a class="glossarylink" href="./glossary.html#cgi" title="see glossary">CGIs</a>.<br />
-      See: <a href="handler.html">Apache's Handler Use</a>
+      <a class="glossarylink" href="./glossary.html#cgi" title="see glossary">CGIs</a>.<br>
+      See: <a href="handler.html">httpd's Handler Use</a>
     </dd>
 
     <dt><a name="hash" id="hash">Hash</a></dt>
@@ -237,29 +236,29 @@
     <dd>A <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration file</a> that
       is placed inside the web tree and applies configuration <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directives</a> to the directory where it is
       placed and all sub-directories.  Despite its name, this file can hold
-      almost any type of directive, not just access-control directives.<br />
+      almost any type of directive, not just access-control directives.<br>
       See: <a href="configuring.html">Configuration Files</a>
     </dd>
 
     <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
-    <dd>The main Apache <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration
+    <dd>The main httpd <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">configuration
       file</a>.  The default location is
       <code>/usr/local/apache2/conf/httpd.conf</code>, but it may be moved using
-      run-time or compile-time configuration.<br />
+      run-time or compile-time configuration.<br>
       See: <a href="configuring.html">Configuration Files</a>
     </dd>
 
     <dt><a name="hypertexttransferprotocol" id="hypertexttransferprotocol">HyperText Transfer Protocol</a>
       <a name="http" id="hhtp">(HTTP)</a></dt>
-    <dd>The standard transmission protocol used on the World Wide Web.  Apache
+    <dd>The standard transmission protocol used on the World Wide Web.  httpd
       implements version 1.1 of the protocol, referred to as HTTP/1.1 and
-      defined by <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      defined by <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>.
     </dd>
 
     <dt><a name="https" id="https">HTTPS</a></dt>
     <dd>The HyperText Transfer Protocol (Secure), the standard encrypted
       communication mechanism on the World Wide Web. This is actually just HTTP
-      over <a class="glossarylink" href="./glossary.html#ssl" title="see glossary">SSL</a>.<br />
+      over <a class="glossarylink" href="./glossary.html#ssl" title="see glossary">SSL</a>.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -272,7 +271,7 @@
 
     <dt><a name="messagedigest" id="messagedigest">Message Digest</a></dt>
     <dd>A hash of a message, which can be used to verify that the contents of
-      the message have not been altered in transit.<br />
+      the message have not been altered in transit.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -283,45 +282,66 @@
       separated by a slash.  Some examples are <code>text/html</code>,
       <code>image/gif</code>, and <code>application/octet-stream</code>.  In
       HTTP, the MIME-type is transmitted in the <code>Content-Type</code>
-      <a class="glossarylink" href="./glossary.html#header" title="see glossary">header</a>.<br />
+      <a class="glossarylink" href="./glossary.html#header" title="see glossary">header</a>.<br>
       See: <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
 
     <dt><a name="module" id="module">Module</a></dt>
-    <dd>An independent part of a program.  Much of Apache's functionality is
+    <dd>An independent part of a program.  Much of httpd's functionality is
       contained in modules that you can choose to include or exclude.  Modules
-      that are compiled into the Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary are
+      that are compiled into the <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary are
       called <dfn>static modules</dfn>, while modules that are stored
       separately and can be optionally loaded at run-time are called
       <dfn>dynamic modules</dfn> or <a class="glossarylink" href="./glossary.html#dso" title="see glossary">DSOs</a>.
       Modules that are included by default
-      are called <dfn>base modules</dfn>. Many modules are available for Apache
+      are called <dfn>base modules</dfn>. Many modules are available for httpd
       that are not distributed as part of the Apache HTTP Server <a class="glossarylink" href="./glossary.html#tarball" title="see glossary">tarball</a>.  These are referred to as
-      <dfn>third-party modules</dfn>.<br />
+      <dfn>third-party modules</dfn>.<br>
       See: <a href="mod/">Module Index</a>
     </dd>
 
     <dt><a name="modulemagicnumber" id="modulemagicnumber">Module Magic
       Number</a> (<a name="mmn" id="mmn">MMN</a>)</dt>
-    <dd>Module Magic Number is a constant defined in the Apache source code that
+    <dd>Module Magic Number is a constant defined in the httpd source code that
       is associated with binary compatibility of modules. It is changed when
-      internal Apache structures, function calls and other significant parts of
+      internal httpd structures, function calls and other significant parts of
       API change in such a way that binary compatibility cannot be guaranteed
       any more. On MMN change, all third party modules have to be at least
       recompiled, sometimes even slightly changed in order to work with the new
-      version of Apache.
+      version of httpd.
     </dd>
 
     <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
-    <dd>The Open Source toolkit for SSL/TLS<br />
+    <dd>The Open Source toolkit for SSL/TLS<br>
       See <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
     </dd>
 
     <dt><a name="passphrase" id="passphrase">Pass Phrase</a></dt>
     <dd>The word or phrase that protects private key files. It prevents
       unauthorized users from encrypting them. Usually it's just the secret
-      encryption/decryption key used for <a class="glossarylink" href="./glossary.html#cipher" title="see glossary">Ciphers</a>.<br />
+      encryption/decryption key used for <a class="glossarylink" href="./glossary.html#cipher" title="see glossary">Ciphers</a>.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
+    </dd>
+
+    <dt><a name="perdirectory" id="perdirectory">Per-directory Context</a></dt>
+    <dd>A <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directive</a> is in
+      per-directory context when it appears in a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, or <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> section in the main
+      configuration files, or in a <code>.htaccess</code> file.
+      In per-directory context, directives apply only to the
+      directory (or set of files) they are associated with.<br>
+      See: <a href="sections.html">Configuration Sections</a>
+    </dd>
+
+    <dt><a name="pathinfo" id="pathinfo">PATH_INFO</a></dt>
+    <dd>The trailing path information that follows the actual filename
+      in a URL. For example, if <code>/app/index.php/extra/path</code>
+      maps to the file <code>/app/index.php</code>, then the PATH_INFO
+      is <code>/extra/path</code>. It is passed to CGI scripts, PHP,
+      and other handlers as additional context about the request. The
+      <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive controls
+      whether requests with trailing path information are accepted or
+      rejected.<br>
+      See: <a href="https://www.rfc-editor.org/rfc/rfc3875#section-4.1.5">RFC 3875</a>
     </dd>
 
     <dt><a name="plaintext" id="plaintext">Plaintext</a></dt>
@@ -330,7 +350,7 @@
     <dt><a name="privatekey" id="privatekey">Private Key</a></dt>
     <dd>The secret key in a <a class="glossarylink" href="./glossary.html#publickeycryptography" title="see glossary">Public Key
       Cryptography</a> system, used to decrypt incoming messages and
-      sign outgoing ones.<br />
+      sign outgoing ones.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -340,14 +360,14 @@
       on to the origin server, and then returns the response from the origin
       server to the client.  If several clients request the same content, the
       proxy can deliver that content from its cache, rather than requesting it
-      from the origin server each time, thereby reducing response time.<br />
+      from the origin server each time, thereby reducing response time.<br>
       See: <a href="mod/mod_proxy.html">mod_proxy</a>
     </dd>
 
     <dt><a name="publickey" id="publickey">Public Key</a></dt>
     <dd>The publicly available key in a <a class="glossarylink" href="./glossary.html#publickeycryptography" title="see glossary">Public Key Cryptography</a> system,
       used to encrypt messages bound for its owner and to decrypt signatures
-      made by its owner.<br />
+      made by its owner.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -355,7 +375,7 @@
     <dd>The study and application of asymmetric encryption systems, which use
       one key for encryption and another for decryption. A corresponding pair of
       such keys constitutes a key pair. Also called Asymmetric Cryptography.
-      <br />
+      <br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -364,7 +384,7 @@
     <dd>A way of describing a pattern in text - for example, "all the words that
       begin with the letter A" or "every 10-digit phone number" or even "Every
       sentence with two commas in it, and no capital letter Q". Regular
-      expressions are useful in Apache because they let you apply certain
+      expressions are useful in httpd because they let you apply certain
       attributes against collections of files or resources in very flexible ways
       - for example, all .gif and .jpg files under any "images" directory could
       be written as "<code>/images/.*(jpg|gif)$</code>".  In places where
@@ -374,7 +394,7 @@
       to the whole matched expression. To write a literal dollar sign in a
       replacement string, it can be escaped with a backslash. Historically, the
       variable &amp; could be used as alias for $0 in some places. This is no
-      longer possible since version 2.3.6.  Apache uses Perl Compatible Regular
+      longer possible since version 2.3.6.  httpd uses Perl Compatible Regular
       Expressions provided by the <a href="http://www.pcre.org/">PCRE</a>
       library.  You can find more documentation about PCRE's regular expression
       syntax at that site, or at
@@ -392,7 +412,7 @@
     <dd>A protocol created by Netscape Communications Corporation for general
       communication authentication and encryption over TCP/IP networks.  The most
       popular usage is <em>HTTPS</em>, i.e. the HyperText Transfer Protocol (HTTP)
-      over SSL.<br />
+      over SSL.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -402,14 +422,14 @@
       hostname in the initial SSL handshake message, so that the web
       server can select the correct virtual host configuration to use
       in processing the SSL handshake.  It was added to SSL starting
-      with the TLS extensions, RFC 3546.  <br />
+      with the TLS extensions, RFC 3546.  <br>
       See: <a href="ssl/ssl_faq.html">the SSL FAQ</a>
-      and <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+      and <a href="https://www.rfc-editor.org/rfc/rfc3546">RFC 3546</a>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">Server Side
         Includes</a> <a name="ssi" id="ssi">(SSI)</a></dt>
-    <dd>A technique for embedding processing directives inside HTML files.<br />
+    <dd>A technique for embedding processing directives inside HTML files.<br>
       See: <a href="howto/ssi.html">Introduction to Server Side Includes</a>
     </dd>
 
@@ -422,7 +442,7 @@
     </dd>
 
     <dt><a name="subrequest" id="subrequest">Subrequest</a></dt>
-    <dd>Apache provides a subrequest API to modules that allows other
+    <dd>httpd provides a subrequest API to modules that allows other
         filesystem or URL paths to be partially or fully evaluated by
         the server. Example consumers of this API are
         <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>,
@@ -432,13 +452,13 @@
     <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">Symmetric
         Cryptography</a></dt>
     <dd>The study and application of <em>Ciphers</em> that use a single secret key
-      for both encryption and decryption operations.<br />
+      for both encryption and decryption operations.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
     <dt><a name="tarball" id="tarball">Tarball</a></dt>
     <dd>A package of files gathered together using the <code>tar</code> utility.
-      Apache distributions are stored in compressed tar archives or using
+      httpd distributions are stored in compressed tar archives or using
       pkzip.
     </dd>
 
@@ -446,7 +466,7 @@
         Layer Security</a> <a name="tls" id="tls">(TLS)</a></dt>
     <dd>The successor protocol to SSL, created by the Internet Engineering Task
       Force (IETF) for general communication authentication and encryption over
-      TCP/IP networks. TLS version 1 is nearly identical with SSL version 3.<br />
+      TCP/IP networks. TLS version 1 is nearly identical with SSL version 3.<br>
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
@@ -462,54 +482,58 @@
     <dt><a name="uniformresourceidentifier" id="uniformresourceidentifier">Uniform Resource Identifier</a>
       <a name="URI" id="URI">(URI)</a></dt>
     <dd>A compact string of characters for identifying an abstract or physical
-      resource.  It is formally defined by <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
+      resource.  It is formally defined by <a href="https://www.rfc-editor.org/rfc/rfc2396">RFC 2396</a>.  URIs used on the
       world-wide web are commonly referred to as <a class="glossarylink" href="./glossary.html#url" title="see glossary">URLs</a>.
     </dd>
 
     <dt><a name="virtualhosting" id="virtualhosting">Virtual Hosting</a></dt>
-    <dd>Serving multiple websites using a single instance of Apache.  <em>IP
+    <dd>Serving multiple websites using a single instance of httpd.  <em>IP
       virtual hosting</em> differentiates between websites based on their IP
       address, while <em>name-based virtual hosting</em> uses only the name of the
-      host and can therefore host many sites on the same IP address.<br />
-      See: <a href="vhosts/">Apache Virtual Host documentation</a>
+      host and can therefore host many sites on the same IP address.<br>
+      See: <a href="vhosts/">httpd Virtual Host documentation</a>
     </dd>
 
     <dt><a name="x.509" id="x.509">X.509</a></dt>
     <dd>An authentication certificate scheme recommended by the International
-      Telecommunication Union (ITU-T) which is used for SSL/TLS authentication.<br /> See: <a href="ssl/">SSL/TLS Encryption</a>
+      Telecommunication Union (ITU-T) which is used for SSL/TLS authentication.<br> See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
   </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/glossary.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

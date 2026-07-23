@@ -33,14 +33,13 @@
 <summary>
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>. It provides support for the
-    <a href="http://www.fastcgi.com/">FastCGI</a> protocol.</p>
+    <a href="https://fastcgi-archives.github.io/">FastCGI</a> protocol.</p>
 
     <p>Thus, in order to get the ability of handling the <code>FastCGI</code>
     protocol, <module>mod_proxy</module> and
     <module>mod_proxy_fcgi</module> have to be present in the server.</p>
 
-    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
-    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <module>mod_proxy_fcgi</module> has no provision for starting the
     application process; <program>fcgistarter</program> is provided
     (on some platforms) for that purpose. Alternatively, external launching
@@ -174,7 +173,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
        allows the normal mapping of URI to filename to occur in the server, and the
        local filesystem result is passed to the backend.  When FastCGI is
        configured this way, the server can calculate the most accurate
-       PATH_INFO.
+       <glossary ref="pathinfo">PATH_INFO</glossary>.
       </p>
     <example><title>Proxy via Handler</title>
       <highlight language="config">
@@ -203,7 +202,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
 
 <section id="env"><title>Environment Variables</title>
     <p>In addition to the configuration directives that control the
-    behaviour of <module>mod_proxy</module>, there are a number of
+    behavior of <module>mod_proxy</module>, there are a number of
     <dfn>environment variables</dfn> that control the FCGI protocol
     provider:</p>
     <dl>
@@ -346,8 +345,7 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TR
     <highlight language="config">ProxyFCGISetEnvIf true VARIABLE</highlight>
 
   The CGI/1.1 specification
-  <a href="https://tools.ietf.org/html/rfc3875#section-4.1">does not
-  distinguish</a> between a variable with an empty value and a variable that
+  does not distinguish (<rfc section="4.1">3875</rfc>) between a variable with an empty value and a variable that
   does not exist. However, many CGI and FastCGI implementations distinguish (or
   allow scripts to distinguish) between the two. The choice of which to use is
   dependent upon your implementation and your reason for modifying the variable.

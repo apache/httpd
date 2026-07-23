@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924145 -->
+<!-- English Revision: 1933858 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -32,8 +32,7 @@
     HTTP Apache</compatibility>
 
     <summary>
-	<p>Ce module ajoute le support de HTTP/2 (<a
-	href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) au serveur HTTP
+	<p>Ce module ajoute la prise en charge de HTTP/2 (<rfc>7540</rfc>) au serveur HTTP
 	Apache.</p>
 
         <p>Il s'appuie sur la bibliothèque <a
@@ -291,7 +290,7 @@ Protocols h2 h2c http/1.1
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
-	    <context>directory</context>
+            <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
 	<compatibility>Disponible à partir de la version 2.4.18 du serveur HTTP
@@ -319,8 +318,8 @@ Protocols h2 h2c http/1.1
             <p>
                 Les server pushes sont détectés en inspectant les
 		en-têtes <code>Link</code> des réponses (voir
-		https://tools.ietf.org/html/rfc5988 pour la
-		spécification). Lorsqu'un lien spécifié de cette manière
+		<rfc>8288</rfc> pour la
+		spécification des liens du web). Lorsqu'un lien spécifié de cette manière
 		possède l'attribut <code>rel=preload</code>, il est
 		considéré comme devant faire l'objet d'un push.
             </p>
@@ -373,7 +372,7 @@ Protocols h2 h2c http/1.1
     <directivesynopsis>
         <name>H2PushDiarySize</name>
         <description>Taille du journal des Pushes H2</description>
-        <syntax>H2PushDiarySize n</syntax>
+        <syntax>H2PushDiarySize <var>n</var></syntax>
         <default>H2PushDiarySize 256</default>
         <contextlist>
             <context>server config</context>
@@ -412,7 +411,7 @@ Protocols h2 h2c http/1.1
     <directivesynopsis>
         <name>H2PushPriority</name>
         <description>Priorité des pushes H2</description>
-        <syntax>H2PushPriority <em>mime-type</em> [after|before|interleaved] [<em>weight</em>]</syntax>
+        <syntax>H2PushPriority <var>mime-type</var> [after|before|interleaved] [<var>weight</var>]</syntax>
         <default>H2PushPriority * After 16</default>
         <contextlist>
             <context>server config</context>
@@ -563,7 +562,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
-	    <context>directory</context>
+            <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
 
@@ -609,7 +608,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     <directivesynopsis>
         <name>H2MaxSessionStreams</name>
         <description>Nombre maximal de flux actifs par session HTTP/2.</description>
-        <syntax>H2MaxSessionStreams <em>n</em></syntax>
+        <syntax>H2MaxSessionStreams <var>n</var></syntax>
         <default>H2MaxSessionStreams 100</default>
         <contextlist>
             <context>server config</context>
@@ -634,7 +633,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2StreamMaxMemSize</name>
         <description>Quantité maximale de données en sortie mises en tampon par
 	flux.</description>
-        <syntax>H2StreamMaxMemSize <em>bytes</em></syntax>
+        <syntax>H2StreamMaxMemSize <var>bytes</var></syntax>
         <default>H2StreamMaxMemSize 65536</default>
         <contextlist>
             <context>server config</context>
@@ -663,7 +662,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2WindowSize</name>
         <description>Taille maximale des paquets de données pour les transmissions client
 	vers serveur.</description>
-        <syntax>H2WindowSize <em>bytes</em></syntax>
+        <syntax>H2WindowSize <var>bytes</var></syntax>
         <default>H2WindowSize 65535</default>
         <contextlist>
             <context>server config</context>
@@ -696,7 +695,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2MinWorkers</name>
         <description>Nombre minimal de threads à utiliser pour chaque processus
 	enfant.</description>
-        <syntax>H2MinWorkers <em>n</em></syntax>
+        <syntax>H2MinWorkers <var>n</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -720,7 +719,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2MaxWorkers</name>
         <description>Nombre maximal de threads à utiliser pour chaque processus
 	enfant.</description>
-        <syntax>H2MaxWorkers <em>n</em></syntax>
+        <syntax>H2MaxWorkers <var>n</var></syntax>
         <contextlist>
             <context>server config</context>
         </contextlist>
@@ -749,7 +748,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2MaxWorkerIdleSeconds</name>
         <description>Nombre maximal de secondes pendant lequel une unité de
 	traitement h2 pourra rester inactive sans être arrêtée.</description>
-        <syntax>H2MaxWorkerIdleSeconds <em>n</em></syntax>
+        <syntax>H2MaxWorkerIdleSeconds <var>n</var></syntax>
         <default>H2MaxWorkerIdleSeconds 600</default>
         <contextlist>
             <context>server config</context>
@@ -859,7 +858,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2TLSWarmUpSize</name>
         <description>Taille des paquets durant la phase initiale de la connexion
 	TLS</description>
-        <syntax>H2TLSWarmUpSize <em>amount</em></syntax>
+        <syntax>H2TLSWarmUpSize <var>amount</var></syntax>
         <default>H2TLSWarmUpSize 1048576</default>
         <contextlist>
             <context>server config</context>
@@ -922,7 +921,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2TLSCoolDownSecs</name>
         <description>Durée d'inactivité d'une connexion TLS avant diminution de
 	la taille des paquets</description>
-        <syntax>H2TLSCoolDownSecs <em>seconds</em></syntax>
+        <syntax>H2TLSCoolDownSecs <var>seconds</var></syntax>
         <default>H2TLSCoolDownSecs 1</default>
         <contextlist>
             <context>server config</context>
@@ -1014,7 +1013,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     <directivesynopsis>
         <name>H2PushResource</name>
         <description>Déclare des ressources à proposer ("pusher") au client</description>
-        <syntax>H2PushResource [add] <em>path</em> [critical]</syntax>
+        <syntax>H2PushResource [add] <var>path</var> [critical]</syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -1089,7 +1088,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2Padding</name>
         <description>Spécifie un intervalle de nombres d'octets de bourrage à
 	ajouter aux trames utiles</description>
-        <syntax>H2Padding <em>numbits</em></syntax>
+        <syntax>H2Padding <var>numbits</var></syntax>
         <default>H2Padding 0</default>
         <contextlist>
             <context>server config</context>
@@ -1181,7 +1180,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
     <directivesynopsis>
         <name>H2MaxDataFrameLen</name>
         <description>Nombre maximal d'octets dans une trame HTTP/2 DATA</description>
-        <syntax>H2MaxDataFrameLen <em>n</em></syntax>
+        <syntax>H2MaxDataFrameLen <var>n</var></syntax>
         <default>H2MaxDataFrameLen 0</default>
         <contextlist>
             <context>server config</context>
@@ -1210,7 +1209,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <name>H2EarlyHint</name>
         <description>Ajoute un en-tête de réponse à consulter dans le code de
 	retour 103 Early Hints</description>
-        <syntax>H2EarlyHint <em>name</em> <em>value</em></syntax>
+        <syntax>H2EarlyHint <var>name</var> <var>value</var></syntax>
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
@@ -1229,7 +1228,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
 		et ils ont pour but principal d'envoyer des informations de
 		"préchargement" aux navigateurs clients.
             </p><p>
-                <em>name</em> et <em>value</em> doivent être des champs
+                <var>name</var> et <var>value</var> doivent être des champs
 		d'en-tête HTTP valables sous peine de provoquer des échecs de
 		réponse. La directive <directive>H2EarlyHints</directive> doit
 		encore être activée pour permettre l'envoi de réponses
@@ -1315,8 +1314,8 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
 
     <directivesynopsis>
         <name>H2MaxHeaderBlockLen</name>
-        <description>Taille maximale des en-têtes d’une réponse</description>
-        <syntax>H2MaxHeaderBlockLen <em>n</em></syntax>
+        <description>Taille maximale des en-têtes d'une réponse</description>
+        <syntax>H2MaxHeaderBlockLen <var>n</var></syntax>
         <default>H2MaxHeaderBlockLen 0</default>
         <contextlist>
             <context>server config</context>
@@ -1328,14 +1327,44 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         <usage>
             <p>
                 La directive <directive>H2MaxHeaderBlockLen</directive> permet
-		de définir la taille maximale globale des en-têtes d’une
-		réponse. Définir cette directive à 0 implique une taille maximale
-		de 64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
+		de définir la taille maximale globale des en-têtes d'une
+		réponse. Définir cette directive à&nbsp;0 implique une taille maximale
+		de&nbsp;64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
             </p>
             <p>
                 Les réponses dont la somme des tailles de tous les en-têtes est
 		supérieure à la valeur de cette directive ne seront pas traitées
 		et provoqueront une réinitialisation du flux.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+        <directivesynopsis>
+        <name>H2MaxStreamErrors</name>
+        <description>Nombre maximal toléré d'erreurs dues au client</description>
+        <syntax>H2MaxStreamErrors <var>n</var></syntax>
+        <default>H2MaxStreamErrors 8</default>
+        <contextlist>
+            <context>server config</context>
+            <context>virtual host</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+	Apache.</compatibility>
+
+        <usage>
+            <p>
+		La directive <directive>H2MaxStreamErrors</directive> permet de
+		définir le nombre maximal toléré d'erreurs de flux HTTP/2
+		causées par le client. Si cette limite est dépassée, la
+		connexion sera fermée. Les erreurs de flux sont des violations
+		du protocole sur un flux HTTP/2 individuel pour lesquelles la
+		spécification du protocole n'exige pas de fermeture de la
+		connexion, mais qui peuvent être un signe d'activité
+		malveillante de la part du client.
+            </p>
+            <p>
+                Définissez cette directive à 0 pour vous prémunir contre les
+		clients qui provoquent des erreurs.
             </p>
         </usage>
     </directivesynopsis>

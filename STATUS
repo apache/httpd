@@ -50,6 +50,11 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+* PR 69946 (https://bz.apache.org/bugzilla/show_bug.cgi?id=69946)
+  Authentication Bypass in mod_autht_jwt via JWT Claim Prefix Matching Inbox
+
+* PR 70051 (https://bz.apache.org/bugzilla/show_bug.cgi?id=70051)
+  This is one of several security issues reported in the new MS-WDV code.
 
 CURRENT VOTES:
 
@@ -96,7 +101,18 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     - disentangle core filters to server one purpose only, so that H2
       versions can reuse them properly.
 
-  * Remove mod_access_compat?
+  * Candidates to remove:
+    - mod_access_compat
+    - mod_imagemap
+    - mod_cern_meta
+    - mod_privileges
+    - mod_noloris
+    - mod_ssl_ct
+    - OS/2 support
+    - Netware support
+    - mod_ssl OCSP stapling support (mod_md's is better)
+    - OpenSSL < 3 support (mod_ssl/ab)
+    - MPMs: simple, motorz
 
   * Ditch platforms/89/old prereqs or anything else?
 

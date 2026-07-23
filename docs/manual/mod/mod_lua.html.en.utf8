@@ -1,39 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_lua - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_lua</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_lua.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lua.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_lua.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks into various portions of the httpd
 request processing</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>lua_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_lua.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>lua_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_lua.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -57,46 +57,44 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Basic Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writinghandlers">Writing Handlers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writingauthzproviders">Writing Authorization Providers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writinghooks">Writing Hooks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Data Structures</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#functions">Built in functions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#apache2">apache2 Package</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modifying contents with Lua filters</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#databases">Database connectivity</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basicconf">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#writinghandlers">Writing Handlers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#writingauthzproviders">Writing Authorization Providers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#writinghooks">Writing Hooks</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#datastructures">Data Structures</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#functions">Built in functions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logging">Logging Functions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#apache2">apache2 Package</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#modifying_buckets">Modifying contents with Lua filters</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#databases">Database connectivity</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#luaauthzprovider">LuaAuthzProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookfixups">LuaHookFixups</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahooklog">LuaHookLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahookpretranslate">LuaHookPreTranslate</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luainherit">LuaInherit</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luainputfilter">LuaInputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luaoutputfilter">LuaOutputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luaquickhandler">LuaQuickHandler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#luascope">LuaScope</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luaauthzprovider">LuaAuthzProvider</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luacodecache">LuaCodeCache</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookfixups">LuaHookFixups</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahooklog">LuaHookLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahookpretranslate">LuaHookPreTranslate</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luainherit">LuaInherit</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luainputfilter">LuaInputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luamaphandler">LuaMapHandler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luaoutputfilter">LuaOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luapackagecpath">LuaPackageCPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luapackagepath">LuaPackagePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luaquickhandler">LuaQuickHandler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luaroot">LuaRoot</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#luascope">LuaScope</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lua">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lua">Report a bug</a></li></ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lua">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lua">Report a bug</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basicconf" id="basicconf">Basic Configuration</a> <a title="Permanent link" href="#basicconf" class="permalink">&para;</a></h2>
+<h2 id="basicconf">Basic Configuration <a title="Permanent link" href="#basicconf" class="permalink">&para;</a></h2>
 
 <p>The basic module loading directive is</p>
 
@@ -104,7 +102,7 @@ trust, as it can be abused to change the internal workings of httpd.</p>
 
 
 <p>
-<code>mod_lua</code> provides a handler named <code>lua-script</code>,
+<code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> provides a handler named <code>lua-script</code>,
 which can be used with a <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> or
 <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive:</p>
 
@@ -114,7 +112,7 @@ which can be used with a <code class="directive"><a href="../mod/core.html#setha
 
 
 <p>
-This will cause <code>mod_lua</code> to handle requests for files
+This will cause <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> to handle requests for files
 ending in <code>.lua</code> by invoking that file's
 <code>handle</code> function.
 </p>
@@ -122,21 +120,21 @@ ending in <code>.lua</code> by invoking that file's
 <p>For more flexibility, see <code class="directive">LuaMapHandler</code>.
 </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writinghandlers" id="writinghandlers">Writing Handlers</a> <a title="Permanent link" href="#writinghandlers" class="permalink">&para;</a></h2>
+<h2 id="writinghandlers">Writing Handlers <a title="Permanent link" href="#writinghandlers" class="permalink">&para;</a></h2>
 <p> In the Apache HTTP Server API, the handler is a specific kind of hook
 responsible for generating the response.  Examples of modules that include a
 handler are <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>,
 and <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</p>
 
-<p><code>mod_lua</code> always looks to invoke a Lua function for the handler, rather than
+<p><code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> always looks to invoke a Lua function for the handler, rather than
 just evaluating a script body CGI style. A handler function looks
 something like this:</p>
 
 
 <pre class="prettyprint lang-lua">
-<strong>example.lua</strong><br />
+<strong>example.lua</strong><br>
 -- example handler
 
 require "string"
@@ -182,9 +180,9 @@ This means (and in fact encourages) that you can have multiple
 handlers (or hooks, or filters) in the same script.
 </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writingauthzproviders" id="writingauthzproviders">Writing Authorization Providers</a> <a title="Permanent link" href="#writingauthzproviders" class="permalink">&para;</a></h2>
+<h2 id="writingauthzproviders">Writing Authorization Providers <a title="Permanent link" href="#writingauthzproviders" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides a high-level interface to
@@ -210,7 +208,7 @@ without authentication, or if the authenticated user matches the second
 argument:</p>
 
 <pre class="prettyprint lang-lua">
-<strong>authz_provider.lua</strong><br />
+<strong>authz_provider.lua</strong><br>
 
 require 'apache2'
 
@@ -235,9 +233,9 @@ end</pre>
 &lt;/Location&gt;</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writinghooks" id="writinghooks">Writing Hooks</a> <a title="Permanent link" href="#writinghooks" class="permalink">&para;</a></h2>
+<h2 id="writinghooks">Writing Hooks <a title="Permanent link" href="#writinghooks" class="permalink">&para;</a></h2>
 
 <p>Hook functions are how modules (and Lua scripts) participate in the
 processing of requests. Each type of hook exposed by the server exists for
@@ -246,7 +244,7 @@ performing access control, or setting mime types:</p>
 
 <table class="bordered"><tr class="header">
         <th>Hook phase</th>
-        <th>mod_lua directive</th>
+        <th><code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> directive</th>
         <th>Description</th>
     </tr>
 <tr>
@@ -332,7 +330,7 @@ they'll return OK, DONE, or DECLINED, which you can write in Lua as
 
 
 <pre class="prettyprint lang-lua">
-<strong>translate_name.lua</strong><br />
+<strong>translate_name.lua</strong><br>
 -- example hook that rewrites the URI to a filesystem path.
 
 require 'apache2'
@@ -349,7 +347,7 @@ end</pre>
 
 
 <pre class="prettyprint lang-lua">
-<strong>translate_name2.lua</strong><br />
+<strong>translate_name2.lua</strong><br>
 --[[ example hook that rewrites one URI to another URI. It returns a
      apache2.DECLINED to give other URL mappers a chance to work on the
      substitution, including the core translate_name hook which maps based
@@ -369,9 +367,9 @@ function translate_name(r)
     return apache2.DECLINED
 end</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="datastructures" id="datastructures">Data Structures</a> <a title="Permanent link" href="#datastructures" class="permalink">&para;</a></h2>
+<h2 id="datastructures">Data Structures <a title="Permanent link" href="#datastructures" class="permalink">&para;</a></h2>
 
 <dl>
 <dt>request_rec</dt>
@@ -397,7 +395,7 @@ end</pre>
 <tr class="odd">
           <td><code>ap_auth_type</code></td>
           <td>string</td>
-          <td>no</td>
+          <td>yes</td>
           <td>If an authentication check was made, this is set to the type
           of authentication (f.x. <code>basic</code>)</td>
         </tr>
@@ -456,13 +454,13 @@ end</pre>
           <td><code>context_prefix</code></td>
           <td>string</td>
           <td>no</td>
-          <td />
+          <td></td>
         </tr>
 <tr class="odd">
           <td><code>context_document_root</code></td>
           <td>string</td>
           <td>no</td>
-          <td />
+          <td></td>
         </tr>
 <tr>
           <td><code>document_root</code></td>
@@ -490,9 +488,9 @@ end</pre>
           <td>string</td>
           <td>yes</td>
           <td>The name of the <a href="../handler.html">handler</a> that should serve this request, f.x.
-            <code>lua-script</code> if it is to be served by mod_lua. This is typically set by the
+            <code>lua-script</code> if it is to be served by <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. This is typically set by the
             <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> or <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>
-            directives, but could also be set via mod_lua to allow another handler to serve up a specific request
+            directives, but could also be set via <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> to allow another handler to serve up a specific request
             that would otherwise not be served by it.
             </td>
         </tr>
@@ -573,7 +571,7 @@ end</pre>
           <td><code>path_info</code></td>
           <td>string</td>
           <td>no</td>
-          <td>The PATH_INFO extracted from this request.</td>
+          <td>The <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a> extracted from this request.</td>
         </tr>
 <tr class="odd">
           <td><code>port</code></td>
@@ -675,9 +673,9 @@ end</pre>
 </table>
            </dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="functions" id="functions">Built in functions</a> <a title="Permanent link" href="#functions" class="permalink">&para;</a></h2>
+<h2 id="functions">Built in functions <a title="Permanent link" href="#functions" class="permalink">&para;</a></h2>
 
 <p>The request_rec object has (at least) the following methods:</p>
 
@@ -1036,9 +1034,9 @@ local line = r:wsread()</pre>
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging Functions</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Logging Functions <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
 
 <pre class="prettyprint lang-lua">-- examples of logging messages
 r:trace1("This is a trace log message") -- trace1 through trace8 can be used
@@ -1052,9 +1050,9 @@ r:crit("This is a crit log message")
 r:emerg("This is an emerg log message")</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="apache2" id="apache2">apache2 Package</a> <a title="Permanent link" href="#apache2" class="permalink">&para;</a></h2>
+<h2 id="apache2">apache2 Package <a title="Permanent link" href="#apache2" class="permalink">&para;</a></h2>
 <p>A package named <code>apache2</code> is available with (at least) the following contents.</p>
 <dl>
   <dt>apache2.OK</dt>
@@ -1076,9 +1074,9 @@ r:emerg("This is an emerg log message")</pre>
 
 </dl>
 <p>(Other HTTP status codes are not yet implemented.)</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="modifying_buckets" id="modifying_buckets">Modifying contents with Lua filters</a> <a title="Permanent link" href="#modifying_buckets" class="permalink">&para;</a></h2>
+<h2 id="modifying_buckets">Modifying contents with Lua filters <a title="Permanent link" href="#modifying_buckets" class="permalink">&para;</a></h2>
     
     <p>
     Filter functions implemented via <code class="directive"><a href="#luainputfilter">LuaInputFilter</a></code>
@@ -1115,9 +1113,9 @@ r:emerg("This is an emerg log message")</pre>
     coroutine.yield([optional footer to be appended to the content])
 end</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="databases" id="databases">Database connectivity</a> <a title="Permanent link" href="#databases" class="permalink">&para;</a></h2>
+<h2 id="databases">Database connectivity <a title="Permanent link" href="#databases" class="permalink">&para;</a></h2>
     
     <p>
     Mod_lua implements a simple database feature for querying and running commands
@@ -1158,7 +1156,7 @@ end</pre>
     </p>
     <pre class="prettyprint lang-lua">local database = r:dbacquire("mod_dbd")</pre>
 
-    <h3><a name="database_object" id="database_object">Database object and contained functions</a></h3>
+    <h3 id="database_object">Database object and contained functions</h3>
         
         <p>The database object returned by <code>dbacquire</code> has the following methods:</p>
         <p><strong>Normal select and query from a database:</strong></p>
@@ -1192,13 +1190,13 @@ database:close()
 local connected = database:active()</pre>
 
     
-    <h3><a name="result_sets" id="result_sets">Working with result sets</a></h3>
+    <h3 id="result_sets">Working with result sets</h3>
     
     <p>The result set returned by <code>db:select</code> or by the prepared statement functions
     created through <code>db:prepare</code> can be used to
-    fetch rows synchronously or asynchronously, depending on the row number specified:<br />
-    <code>result(0)</code> fetches all rows in a synchronous manner, returning a table of rows.<br />
-    <code>result(-1)</code> fetches the next available row in the set, asynchronously.<br />
+    fetch rows synchronously or asynchronously, depending on the row number specified:<br>
+    <code>result(0)</code> fetches all rows in a synchronous manner, returning a table of rows.<br>
+    <code>result(-1)</code> fetches the next available row in the set, asynchronously.<br>
     <code>result(N)</code> fetches row number <code>N</code>, asynchronously:
     </p>
     <pre class="prettyprint lang-lua">-- fetch a result set using a regular query:
@@ -1246,13 +1244,13 @@ if not err then
 end</pre>
 
     
-    <h3><a name="closing_databases" id="closing_databases">Closing a database connection</a></h3>
+    <h3 id="closing_databases">Closing a database connection</h3>
         
 
     <p>Database handles should be closed using <code>database:close()</code> when they are no longer
     needed. If you do not close them manually, they will eventually be garbage collected and
-    closed by mod_lua, but you may end up having too many unused connections to the database
-    if you leave the closing up to mod_lua. Essentially, the following two measures are
+    closed by <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>, but you may end up having too many unused connections to the database
+    if you leave the closing up to <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. Essentially, the following two measures are
     the same:
     </p>
     <pre class="prettyprint lang-lua">-- Method 1: Manually close a handle
@@ -1265,7 +1263,7 @@ database = nil -- throw away the reference
 collectgarbage() -- close the handle via GC</pre>
 
     
-    <h3><a name="database_caveat" id="database_caveat">Precautions when working with databases</a></h3>
+    <h3 id="database_caveat">Precautions when working with databases</h3>
     
     <p>Although the standard <code>query</code> and <code>run</code> functions are freely
     available, it is recommended that you use prepared statements whenever possible, to
@@ -1277,8 +1275,8 @@ collectgarbage() -- close the handle via GC</pre>
     
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a name="luaauthzprovider" id="luaauthzprovider">Directive</a> <a title="Permanent link" href="#luaauthzprovider" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luaauthzprovider"><span id="LuaAuthzProvider">LuaAuthzProvider</span> Directive <a title="Permanent link" href="#luaauthzprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Plug an authorization provider function into <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
@@ -1307,8 +1305,8 @@ end</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a> <a title="Permanent link" href="#luacodecache" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luacodecache"><span id="LuaCodeCache">LuaCodeCache</span> Directive <a title="Permanent link" href="#luacodecache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the compiled code cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
@@ -1336,8 +1334,8 @@ LuaCodeCache never</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookAccessChecker" id="LuaHookAccessChecker">LuaHookAccessChecker</a> <a name="luahookaccesschecker" id="luahookaccesschecker">Directive</a> <a title="Permanent link" href="#luahookaccesschecker" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookaccesschecker"><span id="LuaHookAccessChecker">LuaHookAccessChecker</span> Directive <a title="Permanent link" href="#luahookaccesschecker" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the access_checker phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
@@ -1353,8 +1351,8 @@ hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
    control when this script runs relative to other modules.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker">Directive</a> <a title="Permanent link" href="#luahookauthchecker" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookauthchecker"><span id="LuaHookAuthChecker">LuaHookAuthChecker</span> Directive <a title="Permanent link" href="#luahookauthchecker" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the auth_checker phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name [early|late]</code></td></tr>
@@ -1403,8 +1401,8 @@ end</pre>
    control when this script runs relative to other modules.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a> <a name="luahookcheckuserid" id="luahookcheckuserid">Directive</a> <a title="Permanent link" href="#luahookcheckuserid" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookcheckuserid"><span id="LuaHookCheckUserID">LuaHookCheckUserID</span> Directive <a title="Permanent link" href="#luahookcheckuserid" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the check_user_id phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</code></td></tr>
@@ -1414,8 +1412,8 @@ end</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookFixups" id="LuaHookFixups">LuaHookFixups</a> <a name="luahookfixups" id="luahookfixups">Directive</a> <a title="Permanent link" href="#luahookfixups" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookfixups"><span id="LuaHookFixups">LuaHookFixups</span> Directive <a title="Permanent link" href="#luahookfixups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the fixups phase of a request
 processing</td></tr>
@@ -1430,8 +1428,8 @@ processing</td></tr>
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a> <a name="luahookinsertfilter" id="luahookinsertfilter">Directive</a> <a title="Permanent link" href="#luahookinsertfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookinsertfilter"><span id="LuaHookInsertFilter">LuaHookInsertFilter</span> Directive <a title="Permanent link" href="#luahookinsertfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the insert_filter phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</code></td></tr>
@@ -1441,8 +1439,8 @@ processing</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Not Yet Implemented</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookLog" id="LuaHookLog">LuaHookLog</a> <a name="luahooklog" id="luahooklog">Directive</a> <a title="Permanent link" href="#luahooklog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahooklog"><span id="LuaHookLog">LuaHookLog</span> Directive <a title="Permanent link" href="#luahooklog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the access log phase of a request
 processing</td></tr>
@@ -1487,8 +1485,8 @@ end</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a> <a title="Permanent link" href="#luahookmaptostorage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookmaptostorage"><span id="LuaHookMapToStorage">LuaHookMapToStorage</span> Directive <a title="Permanent link" href="#luahookmaptostorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the map_to_storage phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</code></td></tr>
@@ -1535,8 +1533,8 @@ end</pre>
 
     
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookPreTranslate" id="LuaHookPreTranslate">LuaHookPreTranslate</a> <a name="luahookpretranslate" id="luahookpretranslate">Directive</a> <a title="Permanent link" href="#luahookpretranslate" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahookpretranslate"><span id="LuaHookPreTranslate">LuaHookPreTranslate</span> Directive <a title="Permanent link" href="#luahookpretranslate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the pre_translate phase of a request
 processing</td></tr>
@@ -1552,8 +1550,8 @@ processing</td></tr>
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a> <a title="Permanent link" href="#luahooktranslatename" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahooktranslatename"><span id="LuaHookTranslateName">LuaHookTranslateName</span> Directive <a title="Permanent link" href="#luahooktranslatename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the translate name phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name [early|late]</code></td></tr>
@@ -1602,8 +1600,8 @@ end</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a> <a name="luahooktypechecker" id="luahooktypechecker">Directive</a> <a title="Permanent link" href="#luahooktypechecker" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luahooktypechecker"><span id="LuaHookTypeChecker">LuaHookTypeChecker</span> Directive <a title="Permanent link" href="#luahooktypechecker" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the type_checker phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
@@ -1631,8 +1629,8 @@ end</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaInherit" id="LuaInherit">LuaInherit</a> <a name="luainherit" id="luainherit">Directive</a> <a title="Permanent link" href="#luainherit" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luainherit"><span id="LuaInherit">LuaInherit</span> Directive <a title="Permanent link" href="#luainherit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls how parent configuration sections are merged into children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaInherit none|parent-first|parent-last</code></td></tr>
@@ -1651,8 +1649,8 @@ end</pre>
     <p> In previous 2.3.x releases, the default was effectively to ignore LuaHook*
     directives from parent configuration sections.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a> <a name="luainputfilter" id="luainputfilter">Directive</a> <a title="Permanent link" href="#luainputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luainputfilter"><span id="LuaInputFilter">LuaInputFilter</span> Directive <a title="Permanent link" href="#luainputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content input filtering</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
@@ -1707,8 +1705,8 @@ filters</a>" for more information.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a> <a title="Permanent link" href="#luamaphandler" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luamaphandler"><span id="LuaMapHandler">LuaMapHandler</span> Directive <a title="Permanent link" href="#luamaphandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map a path to a lua handler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</code></td></tr>
@@ -1737,8 +1735,8 @@ filters</a>" for more information.
         provided.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a> <a name="luaoutputfilter" id="luaoutputfilter">Directive</a> <a title="Permanent link" href="#luaoutputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luaoutputfilter"><span id="LuaOutputFilter">LuaOutputFilter</span> Directive <a title="Permanent link" href="#luaoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a Lua function for content output filtering</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
@@ -1800,8 +1798,8 @@ information.
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath">Directive</a> <a title="Permanent link" href="#luapackagecpath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luapackagecpath"><span id="LuaPackageCPath">LuaPackageCPath</span> Directive <a title="Permanent link" href="#luapackagecpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a directory to lua's package.cpath</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackageCPath /path/to/include/?.soa</code></td></tr>
@@ -1816,8 +1814,8 @@ information.
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a> <a name="luapackagepath" id="luapackagepath">Directive</a> <a title="Permanent link" href="#luapackagepath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luapackagepath"><span id="LuaPackagePath">LuaPackagePath</span> Directive <a title="Permanent link" href="#luapackagepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a directory to lua's package.path</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackagePath /path/to/include/?.lua</code></td></tr>
@@ -1834,8 +1832,8 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaQuickHandler" id="LuaQuickHandler">LuaQuickHandler</a> <a name="luaquickhandler" id="luaquickhandler">Directive</a> <a title="Permanent link" href="#luaquickhandler" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luaquickhandler"><span id="LuaQuickHandler">LuaQuickHandler</span> Directive <a title="Permanent link" href="#luaquickhandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the quick handler of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
@@ -1855,10 +1853,10 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
    context.</p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a name="luaroot" id="luaroot">Directive</a> <a title="Permanent link" href="#luaroot" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luaroot"><span id="LuaRoot">LuaRoot</span> Directive <a title="Permanent link" href="#luaroot" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path for resolving relative paths for mod_lua directives</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path for resolving relative paths for <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> directives</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaRoot /path/to/a/directory</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
@@ -1866,13 +1864,13 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Specify the base path which will be used to evaluate all
-    relative paths within mod_lua. If not specified they
+    relative paths within <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. If not specified they
     will be resolved relative to the current working directory,
     which may not always work well for a server.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a> <a title="Permanent link" href="#luascope" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="luascope"><span id="LuaScope">LuaScope</span> Directive <a title="Permanent link" href="#luascope" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn, thread -- default is once</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn|thread|server [min] [max]</code></td></tr>
@@ -1922,29 +1920,33 @@ LuaPackagePath /scripts/lib/?/init.lua</pre>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_lua.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lua.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_lua.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_lua.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

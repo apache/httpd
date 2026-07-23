@@ -55,7 +55,7 @@ class TestProfiles:
         assert stat["profile"] == "default", f'{stat}'
         assert stat['cert']['rsa']['valid']['until'], f'{stat}'
         ts = email.utils.parsedate_to_datetime(stat['cert']['rsa']['valid']['until'])
-        valid = ts - datetime.datetime.now(datetime.UTC)
+        valid = ts - datetime.datetime.now(datetime.timezone.utc)
         assert valid.days in [89, 90]
 
     # create a MD with 'shortlived' profile, get cert
@@ -79,7 +79,7 @@ class TestProfiles:
         assert stat["profile"] == "shortlived", f'{stat}'
         assert stat['cert']['rsa']['valid']['until'], f'{stat}'
         ts = email.utils.parsedate_to_datetime(stat['cert']['rsa']['valid']['until'])
-        valid = ts - datetime.datetime.now(datetime.UTC)
+        valid = ts - datetime.datetime.now(datetime.timezone.utc)
         assert valid.days in [5, 6]
 
     # create a MD with unknown 'XXX' profile, get cert
@@ -122,7 +122,7 @@ class TestProfiles:
         assert stat["profile"] == "XXX", f'{stat}'
         assert len(stat['cert']) == 0, f'{stat}'
         assert stat['renewal']['errors'] > 0, f'{stat}'
-        assert stat['renewal']['last']['activity'] == 'Creating new order', f'{stat}'
+        assert stat['renewal']['last']['activity'] == 'Creating new order, key-spec=default, profile=XXX, replacing-cert=none', f'{stat}'
         MDConf(env).install()
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.httpd_error_log.ignore_recent(matches=[

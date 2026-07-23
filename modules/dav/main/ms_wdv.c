@@ -6,6 +6,7 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "http_log.h"
+#include "http_core.h"
 
 #include "mod_dav.h"
 
@@ -35,13 +36,16 @@ static void delete_if_fixup(request_rec *r)
     const char *if_hdr;
     const char *cp;
     apr_size_t len;
+    int has_open, has_close;
 
     if ((if_hdr =  apr_table_get(r->headers_in, "If")) == NULL)
         goto out;
 
     /* check for parenthesis enclosed value */
     len = strlen(if_hdr);
-    if (if_hdr[0] != '(' || if_hdr[len - 1]!= ')')
+    has_open = (len > 0 && if_hdr[0] == '(');
+    has_close = (len > 0 && if_hdr[len - 1] == ')');
+    if (!has_open || !has_close)
         goto out;
 
     for (cp = if_hdr; *cp; cp++) {
@@ -196,10 +200,13 @@ static dav_error *mswdv_combined_lock(request_rec *r)
      * section 4.5 suggests using Lock-Token without brakets.
      */
     if (lock_token_hdr) {
-        apr_size_t len = strlen(lock_token_hdr);
+        char *parsed_locktoken;
 
-        if (lock_token_hdr[0] == '<' || lock_token_hdr[len - 1] == '>')
-            lock_token_hdr = apr_pstrndup(r->pool, lock_token_hdr + 1, len - 2);
+        err = dav_parse_locktoken(r->pool, lock_token_hdr, &parsed_locktoken);
+        if (err != NULL)
+            goto out;
+
+        lock_token_hdr = parsed_locktoken;
     }
 
     if (lock_timeout_hdr) {
@@ -589,7 +596,7 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
     apr_bucket_brigade *bb;
     apr_status_t status;
     apr_size_t len = 16;
-    apr_off_t proppatch_len;
+    apr_off_t proppatch_len, limit;
     char proppatch_len_str[16 + 1];
     char *proppatch_data;
 
@@ -618,6 +625,19 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
         return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, status,
                              "Bad PROPPATCH part length");
 
+    /* Validate PROPPATCH length against configured limits. Note
+     * ap_get_limit_xml_body() has a maximum of AP_MAX_LIMIT_XML_BODY
+     * giving a safe upper bound to in-memory caching. */
+    limit = ap_get_limit_xml_body(r);
+    if (limit > 0 && proppatch_len > limit) {
+        return dav_new_error(r->pool, HTTP_REQUEST_ENTITY_TOO_LARGE, 0, 0,
+                             "PROPPATCH part length exceeds configured limit");
+    }
+    if (proppatch_len <= 0) {
+        return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                             "invalid or negative PROPPATCH part length");
+    }
+
     apr_brigade_destroy(bb);
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
@@ -635,13 +655,15 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
      * need to copy the PROPPATCH data to perform subrequest in
      * dav_mswdv_postprocessing().
      */
-    proppatch_data = apr_palloc(r->pool, proppatch_len);
+    proppatch_data = apr_palloc(r->pool, proppatch_len + 1);
 
     len = proppatch_len;
     status = apr_brigade_flatten(bb, proppatch_data, &len);
     if (status != APR_SUCCESS)
         return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, status,
                              "Error flattening PROPPATCH part");
+
+    proppatch_data[len] = '\0';
 
     apr_table_setn(r->notes, "dav_mswdv_proppatch_data", proppatch_data);
 
@@ -816,4 +838,3 @@ DAV_DECLARE(apr_status_t) dav_mswdv_input(ap_filter_t *f,
 
     return APR_SUCCESS;
 }
-

@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTXT2DBM" 1 "2019-11-13" "Apache HTTP Server" "httxt2dbm"
+.TH "HTTXT2DBM" 1 "2026-04-30" "Apache HTTP Server" "httxt2dbm"
 
 .SH NAME
 httxt2dbm \- Generate dbm files for use with RewriteMap
@@ -58,8 +58,9 @@ Name of the output dbm files\&.
 .SH "EXAMPLES"
  
 .nf
-
-      httxt2dbm -i rewritemap\&.txt -o rewritemap\&.dbm
-      httxt2dbm -f SDBM -i rewritemap\&.txt -o rewritemap\&.dbm 
+ 
+httxt2dbm -i rewritemap\&.txt -o rewritemap\&.dbm
+httxt2dbm -f SDBM -i rewritemap\&.txt -o rewritemap\&.dbm
+ 
 .fi
  

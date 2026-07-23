@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1905716 -->
+<!-- English Revision: 1933722 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -78,8 +78,8 @@ contient des directives qui ne seront appliquées que si un paramètre appropri�
 été défini dans la ligne de commande de <program>httpd</program> ou à l'aide d'une
 directive <directive module="core">Define</directive>.  Par exemple, avec la
 configuration suivante, toutes les requêtes seront redirigées vers un autre site
-si le serveur est démarré en utilisant la ligne de commande : <code>httpd
--DClosedForNow</code> :</p>
+si le serveur est démarré en utilisant la ligne de commande&nbsp;: <code>httpd
+-DClosedForNow</code>&nbsp;:</p>
 
 <highlight language="config">
 &lt;IfDefine ClosedForNow&gt;
@@ -88,7 +88,7 @@ si le serveur est démarré en utilisant la ligne de commande : <code>httpd
 </highlight>
 
 <p>Le conteneur <directive type="section" module="core">IfModule</directive>
-est similaire ; les directives qu'il contient ne s'appliqueront que si
+est similaire&nbsp;; les directives qu'il contient ne s'appliqueront que si
 un module particulier est disponible au niveau du serveur.
 Le module doit être soit compilé statiquement dans le serveur, soit
 dynamiquement et dans ce cas, la ligne <directive
@@ -114,7 +114,7 @@ module <module>mod_mime_magic</module> est disponible.</p>
 <directive type="section" module="mod_version">IfVersion</directive>
 est similaire aux conteneurs <directive type="section"
 module="core">IfDefine</directive> et <directive type="section"
-module="core">IfModule</directive> ; les directives qu'il contient ne
+module="core">IfModule</directive>&nbsp;; les directives qu'il contient ne
 s'appliqueront que si une version particulière du serveur s'exécute. Ce
 conteneur a été conçu pour une utilisation dans les suites de tests
 et les grands réseaux qui doivent prendre en compte différentes versions
@@ -130,7 +130,7 @@ et configurations de httpd.</p>
 <p><directive type="section" module="core">IfDefine</directive>,
 <directive type="section" module="core">IfModule</directive> et
 <directive type="section" module="mod_version">IfVersion</directive>
-peuvent inverser leur test conditionnel en le faisant précéder d'un « ! ».
+peuvent inverser leur test conditionnel en le faisant précéder d'un «&nbsp;!&nbsp;».
 De plus, ces sections peuvent être imbriquées afin de définir des restrictions
 plus complexes.</p>
 </section>
@@ -236,23 +236,40 @@ toute requête commençant par la chaîne de caractères <code>/private</code>.<
 <p>Le conteneur <directive type="section" module="core">Location</directive>
 n'a pas besoin de faire référence à un élément du système de fichiers.
 À ce titre, l'exemple suivant montre comment faire correspondre une URL
-particulière à un gestionnaire interne du serveur HTTP Apache fourni par le module
+particulière à un gestionnaire interne fourni par le module
 <module>mod_status</module>.
 Il n'est pas nécessaire de trouver un fichier nommé <code>server-status</code>
 dans le système de fichiers.</p>
 
 <highlight language="config">
+# Un URL vers un gestionnaire interne :
 &lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;
+
+# Un chemin d’URL vers un dorsal de mandataire inverse :
+&lt;Location "/app"&gt;
+    ProxyPass "http://backend.example.com/"
+    ProxyPassReverse "http://backend.example.com/"
+&lt;/Location&gt;
+
+# Interdire l’accès à un chemin d’URL sans tenir compte de ce qui le traite :
+&lt;Location "/private"&gt;
+    Require all denied
+&lt;/Location&gt;
 </highlight>
+
+<p>Étant donné que la section <directive type="section"
+module="core">Location</directive> opère sur des URLs, et non sur des chemins du
+système de fichiers, il s'agit du conteneur approprié pour la configuration du
+mandataire et les points de terminaison fournis par les modules.</p>
 </section>
 
 <section id="overlapping-webspace"><title>Espace web imbriqué</title>
 <p>Pour contrôler deux URLs imbriquées, on doit tenir compte de l'ordre
 dans lequel certaines sections ou directives sont évaluées. Pour
 <directive type="section" module="core">Location</directive>, on doit
-avoir :</p>
+avoir&nbsp;:</p>
 <highlight language="config">
 &lt;Location "/foo"&gt;
 &lt;/Location&gt;
@@ -260,13 +277,13 @@ avoir :</p>
 &lt;/Location>
 </highlight>
 <p>Les directives <directive type="section"
-module="mod_alias">Alias</directive>, quant à elles, sont évaluées vice-versa :</p>
+module="mod_alias">Alias</directive>, quant à elles, sont évaluées vice-versa&nbsp;:</p>
 <highlight language="config">
 Alias "/foo/bar" "/srv/www/uncommon/bar"
 Alias "/foo" "/srv/www/common/foo"
 </highlight>
 <p>Ceci est aussi vrai pour les directives <directive
-module="mod_proxy">ProxyPass</directive> :</p>
+module="mod_proxy">ProxyPass</directive>&nbsp;:</p>
 <highlight language="config">
 ProxyPass "/special-area" "http://special.example.com" smax=5 max=10
 ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofailover=On
@@ -282,14 +299,14 @@ module="core">Directory</directive>, <directive type="section"
 module="core">Files</directive> et <directive type="section"
 module="core">Location</directive> peuvent utiliser des caractères de
 remplacement de style shell comme dans la fonction <code>fnmatch</code> de la
-bibliothèque C standard.  Le caractère « * » correspond à toute séquence de
-caractères, « ? » à un caractère seul, et « [<em>seq</em>] » à tout caractère
-contenu dans <em>seq</em>.  Le caractère « / » ne peut pas faire l'objet d'un
-remplacement ; il doit être spécifié explicitement.</p>
+bibliothèque C standard.  Le caractère «&nbsp;*&nbsp;» correspond à toute séquence de
+caractères, «&nbsp;?&nbsp;» à un caractère seul, et «&nbsp;[<em>seq</em>]&nbsp;» à tout caractère
+contenu dans <em>seq</em>.  Le caractère «&nbsp;/&nbsp;» ne peut pas faire l'objet d'un
+remplacement&nbsp;; il doit être spécifié explicitement.</p>
 
 <p>Si une définition des critères de correspondance encore plus souple est
 nécessaire, chaque conteneur possède son équivalent acceptant les expressions
-rationnelles : <directive type="section"
+rationnelles&nbsp;: <directive type="section"
 module="core">DirectoryMatch</directive>, <directive type="section"
 module="core">FilesMatch</directive> et <directive type="section"
 module="core">LocationMatch</directive> acceptent les <glossary
@@ -301,7 +318,7 @@ directives sont appliquées.</p>
 
 <p>Un conteneur qui modifie la configuration de tous les répertoires
 utilisateurs à l'aide de caractères de remplacement mais sans utiliser les
-expressions rationnelles pourrait ressembler à ceci :</p>
+expressions rationnelles pourrait ressembler à ceci&nbsp;:</p>
 
 <highlight language="config">
 &lt;Directory "/home/*/public_html"&gt;
@@ -311,7 +328,7 @@ expressions rationnelles pourrait ressembler à ceci :</p>
 
 <p>Avec les conteneurs utilisant les expressions rationnelles,
 on peut interdire l'accès à de nombreux types de fichiers d'images
-simultanément :</p>
+simultanément&nbsp;:</p>
 <highlight language="config">
 +&lt;FilesMatch "\.(?i:gif|jpe?g|png)$"&gt;
     Require all denied
@@ -338,7 +355,7 @@ href="expr.html">expression</a> et au sein de modules comme
 permet de modifier la configuration en fonction d'une condition qui peut
 être définie sous la forme d'une expression booléenne. Dans l'exemple
 suivant, l'accès est interdit si l'en-tête HTTP Referer ne commence pas
-par « http://www.example.com/ ».</p>
+par «&nbsp;http://www.example.com/&nbsp;».</p>
 <highlight language="config">
 &lt;If "!(%{HTTP_REFERER} -strmatch 'http://www.example.com/*')"&gt;
     Require all denied
@@ -374,7 +391,7 @@ Par exemple, imaginez la configuration suivante :</p>
 
 <p>Elle fonctionne correctement si la requête appelle
 <code>http://yoursite.example.com/dir/</code>. Mais que va-t-il se passer si
-votre système de fichiers est insensible à la casse ?  Votre restriction va
+votre système de fichiers est insensible à la casse&nbsp;?  Votre restriction va
 pouvoir être tout simplement contournée en envoyant une requête sur
 <code>http://yoursite.example.com/DIR/</code>. Le conteneur <directive
 type="section" module="core">Directory</directive>, quant à lui, s'appliquera à
@@ -401,7 +418,7 @@ toutes les requêtes sans tenir compte de l'URL spécifique.</p>
 
 <section id="nesting"><title>Imbrication des sections</title>
 
-<p>Certains types de sections peuvent être imbriqués : d'une part, on peut
+<p>Certains types de sections peuvent être imbriqués&nbsp;: d'une part, on peut
 utiliser les sections <directive type="section" module="core">Files</directive>
 à l'intérieur des sections <directive type="section"
 module="core">Directory</directive>, d'autre part, on peut utiliser les
@@ -440,7 +457,7 @@ sites qui correspondent à l'URL spécifiée et auxquels on a
 accédé à l'aide du serveur mandataire du module <module>mod_proxy</module>.
 Par exemple, la configuration suivante n'autorisera qu'un sous-ensemble de
 clients à accéder au site <code>www.example.com</code> en passant par le serveur
-mandataire :</p>
+mandataire&nbsp;:</p>
 
 <highlight language="config">
 &lt;Proxy "http://www.example.com/*"&gt;
@@ -449,7 +466,7 @@ mandataire :</p>
 </highlight>
 </section>
 
-<section id="whatwhere"><title>Quelles sont les directives autorisées ?</title>
+<section id="whatwhere"><title>Quelles sont les directives autorisées&nbsp;?</title>
 
 <p>Pour déterminer quelles sont les directives autorisées pour tel type de
 section de configuration, vérifiez le <a
@@ -464,7 +481,7 @@ l'est aussi d'un point de vue syntaxique dans les sections
 <directive type="section" module="core">LocationMatch</directive>,
 <directive type="section" module="mod_proxy">Proxy</directive>
 et <directive type="section" module="mod_proxy">ProxyMatch</directive>.
-Il y a cependant quelques exceptions :</p>
+Il y a cependant quelques exceptions&nbsp;:</p>
 
 <ul>
 <li>La directive <directive module="core">AllowOverride</directive>
@@ -491,7 +508,7 @@ Il est important de savoir comment cet ordre est défini car il peut avoir
 des effets importants sur la manière dont les directives de configuration
 sont interprétées.</p>
 
-    <p>L'ordre dans lequel les sections sont appliquées est :</p>
+    <p>L'ordre dans lequel les sections sont appliquées est&nbsp;:</p>
 
     <ol>
       <li> Les sections <directive type="section"
@@ -525,19 +542,27 @@ sont interprétées.</p>
     l'ordre dans lequel elles apparaissent dans les fichiers de configuration.
     Par exemple, une requête pour <em>/foo/bar</em> correspondra à
     <code>&lt;Location "/foo/bar"&gt;</code> et <code>&lt;Location
-    "/foo"&gt;</code> (dans ce cas le groupe 4) : les deux sections seront
+    "/foo"&gt;</code> (dans ce cas le groupe 4)&nbsp;: les deux sections seront
     évaluées mais selon l'ordre dans lequel elles apparaissent dans le fichier
     de configuration.</li>
     <li>Les sections <directive
     type="section" module="core">Directory</directive> (groupe 1 ci-dessus)
-    sont traitées dans l'ordre du répertoire le plus court vers le plus long.
+    sont traitées dans l'ordre du répertoire le plus court vers le plus long
+    (sans tenir compte de leur ordre d’apparition dans le fichier de
+    configuration).
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
     traitée avant <code>&lt;Directory
     "/var/web/dir/subdir"&gt;</code>.</li>
-    <li>Si plusieurs sections <directive
-    type="section" module="core">Directory</directive> s'appliquent au même
-    répertoire, elles sont traitées selon l'ordre dans lequel elles
-    apparaissent dans le fichier de configuration.</li>
+    <li>Si plusieurs sections <directive type="section"
+    module="core">Directory</directive> s'appliquent au même répertoire, elles
+    sont traitées selon l'ordre dans lequel elles apparaissent dans le fichier
+    de configuration. La même règle s’applique lorsque plusieurs sections
+    <directive type="section" module="core">DirectoryMatch</directive>,
+    <directive type="section" module="core">Files</directive>, <directive
+    type="section" module="core">FilesMatch</directive>, <directive
+    type="section" module="core">Location</directive> ou <directive
+    type="section" module="core">LocationMatch</directive> ciblent à la même
+    ressource.</li>
     <li>Les sections de configuration incluses à laide de la directive <directive
     module="core">Include</directive> sont traitées comme si elles se
     trouvaient réellement dans le fichier qui les inclut à la position de la
@@ -547,7 +572,13 @@ sont interprétées.</p>
     module="core">VirtualHost</directive>
     sont appliquées <em>après</em> les sections correspondantes situées en
     dehors de la définition du serveur virtuel, ce qui permet au serveur virtuel
-    de prévaloir sur la configuration du serveur global.</li>
+    de prévaloir sur la configuration du serveur global. Notez qu’à la
+    différence des autres types de section, un seul <directive type="section"
+    module="core">serveur virtuel</directive> est sélectionné pour une requête
+    — les directives de plusieurs serveurs virtuels correspondants ne sont
+    jamais fusionnées. Voir <a href="vhosts/details.html">Correspondance des
+    serveurs virtuels</a> pour des détails à propos de la manière dont les
+    serveurs virtuels sont sélectionnés.</li>
     <li>Quand la requête est servie par le module <module>mod_proxy</module>,
     le conteneur <directive module="mod_proxy" type="section">Proxy</directive>
     prend la place du conteneur <directive module="core"
@@ -561,9 +592,27 @@ sont interprétées.</p>
         </li>
         <li>Lorsqu'une section <directive type="section" module="core"
 	>If</directive> est utilisée dans un fichier <code>.htaccess</code>, les
-	directives incluses dans un répertoire parent seront fusionnées
-	<em>après</em> les directives non-incluses dans un sous-répertoire.
+	directives incluses dans un "directory" parent seront fusionnées
+	<em>après</em> les directives non-incluses dans un "directory" enfant.
 	</li>
+	<li><note type="warning"><title>Avertissement : une directive
+	&lt;Limit&gt; au sein d’une section &lt;Location&gt; peut accorder un
+	accès silencieusement</title>
+        <p>Utiliser la directive <directive type="section"
+	module="core">Limit</directive> au sein d’une section <directive
+	type="section" module="core">Location</directive> pour restreindre
+	la liste des méthodes HTTP autorisées peut donner des résultats
+	inattendus. Pour les méthodes non spécifiées par la directive <directive
+	type="section" module="core">Limit</directive>, la section <directive
+	type="section" module="core">Location</directive> hôte est traitée comme
+	n’imposant aucune condition d’autorisation, ce qui a effectivement pour
+	effet d’accorder l’accès et outrepasse toute éventuelle restriction
+	d’une section <directive type="section"
+	module="core">Directory</directive> qui, autrement, aurait dû s’appliquer.
+	C’est pourquoi il est préférable d’utiliser la directive <directive
+	type="section" module="core">LimitExcept</directive> ou de définir les
+	autorisations sans restriction sur les méthodes.</p>
+        </note></li>
     </ul>
 
 	<note><title>Note technique</title>
@@ -578,8 +627,8 @@ sont interprétées.</p>
 <section id="relationship-module-configuration"><title>Interactions entre
 modules et sections de configuration</title>
     <p>Une question se pose souvent après avoir lu comment les sections de
-    configuration sont fusionnées : comment et quand les directives de modules
-    particuliers comme <module>mod_rewrite</module> sont-elles interprétées ? La
+    configuration sont fusionnées&nbsp;: comment et quand les directives de modules
+    particuliers comme <module>mod_rewrite</module> sont-elles interprétées&nbsp;? La
     réponse n'est pas triviale et nécessite un approfondissement. Chaque module
     httpd gère sa propre configuration, et chacune de ses directives dans
     httpd.conf définit un élément de configuration dans un contexte particulier.
@@ -594,7 +643,7 @@ modules et sections de configuration</title>
     processus de fusion se poursuit jusqu'à ce que toutes les sections de
     configuration aient été évaluées.</p>
     <p>Après l'étape précédente, le traitement proprement dit de la requête HTTP
-    peut commencer : chaque module peut effectuer toute tâche qui lui incombe,
+    peut commencer&nbsp;: chaque module peut effectuer toute tâche qui lui incombe,
     et pour déterminer de quelle manière il doit agir, il peut s'appuyer
     sur le noyau de httpd pour retrouver sa configuration globale issue de la
     fusion précédente.</p>
@@ -603,7 +652,7 @@ modules et sections de configuration</title>
     module="mod_headers">Header</directive> du module
     <module>mod_headers</module> pour définir un en-tête HTTP spécifique. Quelle
     valeur httpd va-t-il affecter à l'en-tête <code>CustomHeaderName</code> pour
-    une requête vers <code>/example/index.html</code> ?
+    une requête vers <code>/example/index.html</code>&nbsp;?
     </p>
     <highlight language="config">
 
@@ -690,15 +739,15 @@ d'une quelconque restriction d'accès placée dans les sections <directive modul
 type="section">Directory</directive>, la section <directive
 module="core" type="section">Location</directive> sera
 évaluée en dernier et permettra un accès au serveur sans aucune restriction.
-En d'autres termes, l'ordre de la combinaison des sections est important ;
-soyez donc prudent !</p>
+En d'autres termes, l'ordre de la combinaison des sections est important&nbsp;;
+soyez donc prudent&nbsp;!</p>
 
 <highlight language="config">
 &lt;Location "/"&gt;
     Require all granted
 &lt;/Location&gt;
 
-# Grrrr !  Cette section &lt;Directory&gt; n'aura aucun effet
+# Grrrr&nbsp;!  Cette section &lt;Directory&gt; n'aura aucun effet
 &lt;Directory "/"&gt;
     &lt;RequireAll&gt;
         Require all granted

@@ -71,6 +71,13 @@
       if you try to use it. The module is being documented for
       completeness, and is not necessarily supported.</dd>
 
+      <dt>Deprecated</dt>
+
+      <dd>A module with "Deprecated" status is still available and
+      functional, but its use is discouraged. The module may be
+      removed in the next minor release. Check the module's documentation for 
+      recommended replacements or migration paths.</dd>
+
       <dt>External</dt>
 
       <dd>Modules which are not included with the base Apache

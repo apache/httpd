@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1333548:1880986 (outdated) -->
+<!-- English Revision: 1333548:1933438 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -90,7 +90,7 @@ Dokumentation</title>
     <page href="developer/">Dokumentation for udviklere</page>
     <page href="http://httpd.apache.org/docs-project/">Hjælp med dokumentationen</page>
     <page href="misc/">Andre noter</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

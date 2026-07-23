@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1886996 -->
+<!-- English Revision: 1934059 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -17,7 +17,7 @@
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
@@ -120,6 +120,12 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
     <code>AJP_</code> sont transmises au serveur original en tant
     qu'attributs de requête AJP (le préfixe <code>AJP_</code> étant supprimé du
     nom de la clé).</p>
+
+    <p>Notez que ces attributs de requête ne sont accessibles que sur demande
+    directe à l’aide de la méthode <code>HttpServletRequest.getAttribute</code>
+    — l’implémentation par Tomcat de la méthode <a
+    href="https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/connector/Request.html#getAttributeNames--"><code>getAttributeNames</code></a>
+    ne les liste pas comme ceux qui sont gérés comme des attributs internes.</p>
 </section>
 
 <section id="overviewprotocol"><title>Vue d'ensemble du protocole</title>

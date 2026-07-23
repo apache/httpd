@@ -127,6 +127,16 @@
 #define MODSSL_HAVE_OPENSSL_STORE 0
 #endif
 
+/*
+ * Check if we have an ECH-enabled OpenSSL. If we do then this symbol will
+ * be defined in ssl.h and we compile in ECH code.
+ */
+#if defined(SSL_OP_ECH_GREASE)
+#define HAVE_OPENSSL_ECH
+#else
+#undef HAVE_OPENSSL_ECH
+#endif
+
 #if (OPENSSL_VERSION_NUMBER < 0x0090801f)
 #error mod_ssl requires OpenSSL 0.9.8a or later
 #endif
@@ -143,6 +153,12 @@
 #else
 #define MODSSL_SSL_CIPHER_CONST
 #define MODSSL_SSL_METHOD_CONST
+#endif
+
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+#define MODSSL_X509_EXT_CONST const
+#else
+#define MODSSL_X509_EXT_CONST
 #endif
 
 #if defined(LIBRESSL_VERSION_NUMBER)
@@ -272,6 +288,11 @@
 #define DH_bits(x)                 (BN_num_bits(x->p))
 #define X509_up_ref(x)             (CRYPTO_add(&(x)->references, +1, CRYPTO_LOCK_X509))
 #define EVP_PKEY_up_ref(pk)        (CRYPTO_add(&(pk)->references, +1, CRYPTO_LOCK_EVP_PKEY))
+#define ASN1_STRING_get0_data(x)   ((x)->data)
+#define ASN1_STRING_length(x)      ((int)(x)->length)
+#define X509_get0_serialNumber(x) X509_get_serialNumber(x)
+#define X509_get0_notBefore(x)        X509_get_notBefore(x)
+#define X509_get0_notAfter(x)         X509_get_notAfter(x)
 #else
 void init_bio_methods(void);
 void free_bio_methods(void);
@@ -548,6 +569,19 @@ typedef struct {
     int          nBytes;
 } ssl_randseed_t;
 
+/* SNI vhost compatibility policy. */
+typedef enum {
+    MODSSL_SNIVH_STRICT   = 0,
+    MODSSL_SNIVH_SECURE   = 1,
+    MODSSL_SNIVH_AUTHONLY = 2,
+    MODSSL_SNIVH_INSECURE = 3
+} modssl_snivhpolicy_t;
+
+/* Maps modssl_snivhpolicy_t back into a config option string. */
+#define MODSSL_SNIVH_NAME(p_) ((p_) == MODSSL_SNIVH_STRICT ? "strict" : \
+                               ((p_) == MODSSL_SNIVH_SECURE ? "secure" : \
+                                ((p_) == MODSSL_SNIVH_AUTHONLY ? "authonly" : "insecure" )))
+
 /**
  * Define the structure of an ASN.1 anything
  */
@@ -694,7 +728,9 @@ typedef struct {
     apr_array_header_t   *aRandSeed;
 #endif
 
+#if MODSSL_HAVE_ENGINE_API
     const char     *szCryptoDevice; /* ENGINE device (if available) */
+#endif
 
 #ifdef HAVE_OCSP_STAPLING
     const ap_socache_provider_t *stapling_cache;
@@ -711,6 +747,8 @@ typedef struct {
 #ifdef HAVE_FIPS
     BOOL             fips;
 #endif
+
+    modssl_snivhpolicy_t snivh_policy;
 } SSLModConfigRec;
 
 /** Structure representing configured filenames for certs and keys for
@@ -864,12 +902,16 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *server;
 #ifdef HAVE_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
+    const char      *sni_policy_hash;
 #endif
 #ifndef OPENSSL_NO_COMP
     BOOL             compression;
 #endif
     BOOL             session_tickets;
     BOOL             clienthello_vars;
+#ifdef HAVE_OPENSSL_ECH
+    const char      *echkeydir;
+#endif
 };
 
 /**
@@ -917,6 +959,9 @@ const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
 const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
+#ifdef HAVE_OPENSSL_ECH
+const char  *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg);
+#endif
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
@@ -943,6 +988,7 @@ const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
 const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLVHostSNIPolicy(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag);
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
@@ -1031,6 +1077,9 @@ int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #endif
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
 int          ssl_callback_ClientHello(SSL *, int *, void *);
+#ifdef HAVE_OPENSSL_ECH
+unsigned int ssl_callback_ECH(SSL *, const char *);
+#endif
 #endif
 #ifdef HAVE_TLS_SESSION_TICKETS
 int ssl_callback_SessionTicket(SSL *ssl,
@@ -1174,16 +1223,16 @@ void         ssl_log_ssl_error(const char *, int, int, server_rec *);
  * counterparts. */
 void ssl_log_xerror(const char *file, int line, int level,
                     apr_status_t rv, apr_pool_t *p, server_rec *s,
-                    X509 *cert, const char *format, ...)
+                    const X509 *cert, const char *format, ...)
     __attribute__((format(printf,8,9)));
 
 void ssl_log_cxerror(const char *file, int line, int level,
-                     apr_status_t rv, conn_rec *c, X509 *cert,
+                     apr_status_t rv, conn_rec *c, const X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 
 void ssl_log_rxerror(const char *file, int line, int level,
-                     apr_status_t rv, request_rec *r, X509 *cert,
+                     apr_status_t rv, request_rec *r, const X509 *cert,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 

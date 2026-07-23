@@ -42,7 +42,15 @@
     <directive module="mpm_common">MaxRequestWorkers</directive>, which
     controls the maximum total number of threads that may be
     launched.</p>
+
+    <p>When built as a DSO module, it can be loaded with:</p>
+
+    <highlight language="config">
+LoadModule mpm_worker_module modules/mod_mpm_worker.so
+    </highlight>
+
 </summary>
+<seealso><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache HTTP Server uses</a></seealso>
 
 <section id="how-it-works"><title>How it Works</title>

@@ -63,6 +63,7 @@
 #include "mod_xml2enc.h"
 #include "http_request.h"
 #include "ap_expr.h"
+#include "util_varbuf.h"
 
 /* globals set once at startup */
 static ap_rxplus_t *old_expr;
@@ -122,9 +123,7 @@ typedef struct {
     proxy_html_conf *cfg;
     htmlParserCtxtPtr parser;
     apr_bucket_brigade *bb;
-    char *buf;
-    size_t offset;
-    size_t avail;
+    struct ap_varbuf vb;
     const char *encoding;
     urlmap *map;
     const char *etag;
@@ -133,6 +132,7 @@ typedef struct {
     apr_size_t rmin;
 } saxctxt;
 
+#define DEFAULT_BUFSZ (8192)
 
 #define NORM_LC 0x1
 #define NORM_MSSLASH 0x2
@@ -156,17 +156,17 @@ static const char *const xhtml_etag = " />";
 static const char *const DEFAULT_DOCTYPE = "";
 #define DEFAULT_ETAG html_etag
 
-static void normalise(unsigned int flags, char *str)
+static void normalise(unsigned int flags, struct ap_varbuf *vb)
 {
-    char *p;
+    apr_size_t n;
     if (flags & NORM_LC)
-        for (p = str; *p; ++p)
-            if (isupper(*p))
-                *p = tolower(*p);
+        for (n = 0; n < vb->strlen; ++n)
+            vb->buf[n] = apr_tolower(vb->buf[n]);
 
     if (flags & NORM_MSSLASH)
-        for (p = ap_strchr(str, '\\'); p; p = ap_strchr(p+1, '\\'))
-            *p = '/';
+        for (n = 0; n < vb->strlen; ++n)
+            if (vb->buf[n] == '\\')
+                vb->buf[n] = '/';
 
 }
 #define consume_buffer(ctx,inbuf,bytes,flag) \
@@ -195,113 +195,90 @@ static void pcharacters(void *ctxt, const xmlChar *uchars, int length)
     FLUSH;
 }
 
-static void preserve(saxctxt *ctx, const size_t len)
-{
-    char *newbuf;
-    if (len <= (ctx->avail - ctx->offset))
-        return;
-    else while (len > (ctx->avail - ctx->offset))
-        ctx->avail += ctx->cfg->bufsz;
-
-    newbuf = ap_realloc(ctx->buf, ctx->avail);
-    if (newbuf != ctx->buf) {
-        if (ctx->buf)
-            apr_pool_cleanup_kill(ctx->f->r->pool, ctx->buf,
-                                  (int(*)(void*))free);
-        apr_pool_cleanup_register(ctx->f->r->pool, newbuf,
-                                  (int(*)(void*))free, apr_pool_cleanup_null);
-        ctx->buf = newbuf;
-    }
-}
-
-static void pappend(saxctxt *ctx, const char *buf, const size_t len)
-{
-    preserve(ctx, len);
-    memcpy(ctx->buf+ctx->offset, buf, len);
-    ctx->offset += len;
-}
-
 static void dump_content(saxctxt *ctx)
 {
     urlmap *m;
     char *found;
     size_t s_from, s_to;
     size_t match;
-    char c = 0;
     int nmatch;
     ap_regmatch_t pmatch[10];
-    char *subs;
     size_t len, offs;
     urlmap *themap = ctx->map;
+    struct ap_varbuf temp;
 #ifndef GO_FASTER
     int verbose = APLOGrtrace1(ctx->f->r);
 #endif
 
-    pappend(ctx, &c, 1);        /* append null byte */
-        /* parse the text for URLs */
+    /* Ensure buffer is null-terminated and strlen is set */
+    if (ctx->vb.strlen == AP_VARBUF_UNKNOWN) {
+        ctx->vb.strlen = strlen(ctx->vb.buf);
+    }
+
+    ap_varbuf_init(ctx->f->r->pool, &temp, 0);
+
+    /* parse the text for URLs */
     for (m = themap; m; m = m->next) {
         if (!(m->flags & M_CDATA))
             continue;
         if (m->flags & M_REGEX) {
+            temp.strlen = 0;
             nmatch = 10;
             offs = 0;
-            while (!ap_regexec(m->from.r, ctx->buf+offs, nmatch, pmatch, 0)) {
+            while (!ap_regexec(m->from.r, ctx->vb.buf+offs, nmatch, pmatch, 0)) {
                 match = pmatch[0].rm_so;
                 s_from = pmatch[0].rm_eo - match;
-                subs = ap_pregsub(ctx->f->r->pool, m->to, ctx->buf+offs,
-                                  nmatch, pmatch);
-                s_to = strlen(subs);
-                len = strlen(ctx->buf);
-                offs += match;
                 VERBOSEB(
                     const char *f = apr_pstrndup(ctx->f->r->pool,
-                    ctx->buf + offs, s_from);
+                    ctx->vb.buf + offs + match, s_from);
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, ctx->f->r,
-                                  "C/RX: match at %s, substituting %s", f, subs);
+                                  "C/RX: match at %s, substituting with pattern %s",
+                                  f, m->to);
                 )
-                if (s_to > s_from) {
-                    preserve(ctx, s_to - s_from);
-                    memmove(ctx->buf+offs+s_to, ctx->buf+offs+s_from,
-                            len + 1 - s_from - offs);
-                    memcpy(ctx->buf+offs, subs, s_to);
-                }
-                else {
-                    memcpy(ctx->buf + offs, subs, s_to);
-                    memmove(ctx->buf+offs+s_to, ctx->buf+offs+s_from,
-                            len + 1 - s_from - offs);
-                }
-                offs += s_to;
+                /* Copy text before the match */
+                ap_varbuf_strmemcat(&temp, ctx->vb.buf+offs, match);
+                /* Append the substitution */
+                ap_varbuf_regsub(&temp, m->to, ctx->vb.buf+offs, nmatch, pmatch, 0);
+                /* Continue past the match */
+                offs += pmatch[0].rm_eo;
             }
+            /* Copy any remaining text */
+            ap_varbuf_strcat(&temp, ctx->vb.buf+offs);
+            /* Replace the original buffer with the result */
+            ctx->vb.strlen = 0;
+            ap_varbuf_strmemcat(&ctx->vb, temp.buf, temp.strlen);
         }
         else {
             s_from = strlen(m->from.c);
             s_to = strlen(m->to);
-            for (found = strstr(ctx->buf, m->from.c); found;
-                 found = strstr(ctx->buf+match+s_to, m->from.c)) {
-                match = found - ctx->buf;
+            for (found = strstr(ctx->vb.buf, m->from.c); found;
+                 found = strstr(ctx->vb.buf+match+s_to, m->from.c)) {
+                match = found - ctx->vb.buf;
                 if ((m->flags & M_ATSTART) && (match != 0))
                     break;
-                len = strlen(ctx->buf);
+                len = ctx->vb.strlen;
                 if ((m->flags & M_ATEND) && (match < (len - s_from)))
                     continue;
                 VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, ctx->f->r,
                                       "C: matched %s, substituting %s",
                                       m->from.c, m->to));
                 if (s_to > s_from) {
-                    preserve(ctx, s_to - s_from);
-                    memmove(ctx->buf+match+s_to, ctx->buf+match+s_from,
+                    ap_varbuf_grow(&ctx->vb, len + s_to - s_from);
+                    memmove(ctx->vb.buf+match+s_to, ctx->vb.buf+match+s_from,
                             len + 1 - s_from - match);
-                    memcpy(ctx->buf+match, m->to, s_to);
+                    memcpy(ctx->vb.buf+match, m->to, s_to);
                 }
                 else {
-                    memcpy(ctx->buf+match, m->to, s_to);
-                    memmove(ctx->buf+match+s_to, ctx->buf+match+s_from,
+                    memcpy(ctx->vb.buf+match, m->to, s_to);
+                    memmove(ctx->vb.buf+match+s_to, ctx->vb.buf+match+s_from,
                             len + 1 - s_from - match);
                 }
+                ctx->vb.strlen = len - s_from + s_to;
             }
         }
     }
-    AP_fwrite(ctx, ctx->buf, strlen(ctx->buf), 1);
+    AP_fwrite(ctx, ctx->vb.buf, ctx->vb.strlen, 1);
+    ap_varbuf_free(&temp);
 }
 static void pinternalSubset(void* ctxt, const xmlChar *name,
                             const xmlChar *externalID, const xmlChar *sysID)
@@ -335,7 +312,7 @@ static void pcdata(void *ctxt, const xmlChar *uchars, int length)
     const char *chars = (const char*) uchars;
     saxctxt *ctx = (saxctxt*) ctxt;
     if (ctx->cfg->extfix) {
-        pappend(ctx, chars, length);
+        ap_varbuf_strmemcat(&ctx->vb, chars, length);
     }
     else {
         /* not sure if this should force-flush
@@ -352,15 +329,14 @@ static void pcomment(void *ctxt, const xmlChar *uchars)
         return;
 
     if (ctx->cfg->extfix) {
-        pappend(ctx, "<!--", 4);
-        pappend(ctx, chars, strlen(chars));
-        pappend(ctx, "-->", 3);
+        ap_varbuf_strcat(&ctx->vb, "<!--");
+        ap_varbuf_strcat(&ctx->vb, chars);
+        ap_varbuf_strcat(&ctx->vb, "-->");
     }
     else {
         ap_fputs(ctx->f->next, ctx->bb, "<!--");
         AP_fwrite(ctx, chars, strlen(chars), 1);
         ap_fputs(ctx->f->next, ctx->bb, "-->");
-        dump_content(ctx);
     }
 }
 static void pendElement(void *ctxt, const xmlChar *uname)
@@ -384,9 +360,9 @@ static void pendElement(void *ctxt, const xmlChar *uname)
     /* TODO - implement HTML "allowed here" using the stack */
     /* nah.  Keeping the stack is too much overhead */
 
-    if (ctx->offset > 0) {
+    if (ctx->vb.strlen > 0) {
         dump_content(ctx);
-        ctx->offset = 0;        /* having dumped it, we can re-use the memory */
+        ctx->vb.strlen = 0;     /* having dumped it, we can re-use the memory */
     }
     if (!desc || !desc->empty) {
         ap_fprintf(ctx->f->next, ctx->bb, "</%s>", name);
@@ -399,7 +375,6 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     int required_attrs;
     int num_match;
     size_t offs, len;
-    char *subs;
     rewrite_t is_uri;
     const char** a;
     urlmap *m;
@@ -418,6 +393,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     const htmlElemDesc* desc = htmlTagLookup(uname);
     urlmap *themap = ctx->map;
     const char *accept_charset = NULL;
+    struct ap_varbuf temp;
 
 
 #ifdef HAVE_STACK
@@ -464,6 +440,8 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
         }
     }
 
+    ap_varbuf_init(ctx->f->r->pool, &temp, 0);
+
     ap_fputc(ctx->f->next, ctx->bb, '<');
     ap_fputs(ctx->f->next, ctx->bb, name);
 
@@ -494,9 +472,10 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                     break;
                 }
             }
-            ctx->offset = 0;
+            ctx->vb.strlen = 0;
+            ctx->vb.buf[0] = '\0';
             if (a[1]) {
-                pappend(ctx, a[1], strlen(a[1])+1);
+                ap_varbuf_strcat(&ctx->vb, a[1]);
                 is_uri = ATTR_IGNORE;
                 if (linkattrs) {
                     tattr *attrs = (tattr*) linkattrs->elts;
@@ -525,59 +504,53 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                             continue;
                         if (m->flags & M_REGEX) {
                             nmatch = 10;
-                            if (!ap_regexec(m->from.r, ctx->buf, nmatch,
+                            if (!ap_regexec(m->from.r, ctx->vb.buf, nmatch,
                                             pmatch, 0)) {
                                 ++num_match;
-                                offs = match = pmatch[0].rm_so;
+                                match = pmatch[0].rm_so;
                                 s_from = pmatch[0].rm_eo - match;
-                                subs = ap_pregsub(ctx->f->r->pool, m->to,
-                                                  ctx->buf, nmatch, pmatch);
                                 VERBOSE({
                                     const char *f;
                                     f = apr_pstrndup(ctx->f->r->pool,
-                                                     ctx->buf + offs, s_from);
+                                                     ctx->vb.buf + match, s_from);
                                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0,
                                                   ctx->f->r,
-                                         "H/RX: match at %s, substituting %s",
-                                                  f, subs);
+                                         "H/RX: match at %s, substituting with pattern %s",
+                                                  f, m->to);
                                 })
-                                s_to = strlen(subs);
-                                len = strlen(ctx->buf);
-                                if (s_to > s_from) {
-                                    preserve(ctx, s_to - s_from);
-                                    memmove(ctx->buf+offs+s_to,
-                                            ctx->buf+offs+s_from,
-                                            len + 1 - s_from - offs);
-                                    memcpy(ctx->buf+offs, subs, s_to);
-                                }
-                                else {
-                                    memcpy(ctx->buf + offs, subs, s_to);
-                                    memmove(ctx->buf+offs+s_to,
-                                            ctx->buf+offs+s_from,
-                                            len + 1 - s_from - offs);
-                                }
+                                temp.strlen = 0;
+                                /* Copy text before match */
+                                ap_varbuf_strmemcat(&temp, ctx->vb.buf, match);
+                                /* Append substitution */
+                                ap_varbuf_regsub(&temp, m->to, ctx->vb.buf, nmatch, pmatch, 0);
+                                /* Copy text after match */
+                                ap_varbuf_strcat(&temp, ctx->vb.buf + pmatch[0].rm_eo);
+                                /* Replace buffer */
+                                ctx->vb.strlen = 0;
+                                ap_varbuf_strmemcat(&ctx->vb, temp.buf, temp.strlen);
                             }
                         } else {
                             s_from = strlen(m->from.c);
-                            if (!strncasecmp(ctx->buf, m->from.c, s_from)) {
+                            if (!strncasecmp(ctx->vb.buf, m->from.c, s_from)) {
                                 ++num_match;
                                 s_to = strlen(m->to);
-                                len = strlen(ctx->buf);
+                                len = ctx->vb.strlen;
                                 VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_TRACE3,
                                                       0, ctx->f->r,
                                               "H: matched %s, substituting %s",
                                                       m->from.c, m->to));
                                 if (s_to > s_from) {
-                                    preserve(ctx, s_to - s_from);
-                                    memmove(ctx->buf+s_to, ctx->buf+s_from,
+                                    ap_varbuf_grow(&ctx->vb, len + s_to - s_from);
+                                    memmove(ctx->vb.buf+s_to, ctx->vb.buf+s_from,
                                             len + 1 - s_from);
-                                    memcpy(ctx->buf, m->to, s_to);
+                                    memcpy(ctx->vb.buf, m->to, s_to);
                                 }
                                 else {     /* it fits in the existing space */
-                                    memcpy(ctx->buf, m->to, s_to);
-                                    memmove(ctx->buf+s_to, ctx->buf+s_from,
+                                    memcpy(ctx->vb.buf, m->to, s_to);
+                                    memmove(ctx->vb.buf+s_to, ctx->vb.buf+s_from,
                                             len + 1 - s_from);
                                 }
+                                ctx->vb.strlen = len - s_from + s_to;
                                 break;
                             }
                         }
@@ -592,79 +565,73 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                         if (!(m->flags & M_EVENTS))
                             continue;
                         if (m->flags & M_REGEX) {
+                            temp.strlen = 0;
                             nmatch = 10;
                             offs = 0;
-                            while (!ap_regexec(m->from.r, ctx->buf+offs,
+                            while (!ap_regexec(m->from.r, ctx->vb.buf+offs,
                                                nmatch, pmatch, 0)) {
                                 match = pmatch[0].rm_so;
                                 s_from = pmatch[0].rm_eo - match;
-                                subs = ap_pregsub(ctx->f->r->pool, m->to, ctx->buf+offs,
-                                                    nmatch, pmatch);
                                 VERBOSE({
                                     const char *f;
                                     f = apr_pstrndup(ctx->f->r->pool,
-                                                     ctx->buf + offs, s_from);
+                                                     ctx->vb.buf + offs + match, s_from);
                                     ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0,
                                                   ctx->f->r,
-                                           "E/RX: match at %s, substituting %s",
-                                                  f, subs);
+                                           "E/RX: match at %s, substituting with pattern %s",
+                                                  f, m->to);
                                 })
-                                s_to = strlen(subs);
-                                offs += match;
-                                len = strlen(ctx->buf);
-                                if (s_to > s_from) {
-                                    preserve(ctx, s_to - s_from);
-                                    memmove(ctx->buf+offs+s_to,
-                                            ctx->buf+offs+s_from,
-                                            len + 1 - s_from - offs);
-                                    memcpy(ctx->buf+offs, subs, s_to);
-                                }
-                                else {
-                                    memcpy(ctx->buf + offs, subs, s_to);
-                                    memmove(ctx->buf+offs+s_to,
-                                            ctx->buf+offs+s_from,
-                                            len + 1 - s_from - offs);
-                                }
-                                offs += s_to;
+                                /* Copy text before match */
+                                ap_varbuf_strmemcat(&temp, ctx->vb.buf+offs, match);
+                                /* Append substitution */
+                                ap_varbuf_regsub(&temp, m->to, ctx->vb.buf+offs, nmatch, pmatch, 0);
+                                /* Continue past the match */
+                                offs += pmatch[0].rm_eo;
                                 ++num_match;
                             }
+                            /* Copy any remaining text */
+                            ap_varbuf_strcat(&temp, ctx->vb.buf+offs);
+                            /* Replace buffer */
+                            ctx->vb.strlen = 0;
+                            ap_varbuf_strmemcat(&ctx->vb, temp.buf, temp.strlen);
                         }
                         else {
-                            found = strstr(ctx->buf, m->from.c);
-                            if ((m->flags & M_ATSTART) && (found != ctx->buf))
+                            found = strstr(ctx->vb.buf, m->from.c);
+                            if ((m->flags & M_ATSTART) && (found != ctx->vb.buf))
                                 continue;
                             while (found) {
                                 s_from = strlen(m->from.c);
                                 s_to = strlen(m->to);
-                                match = found - ctx->buf;
+                                match = found - ctx->vb.buf;
                                 if ((s_from < strlen(found))
                                     && (m->flags & M_ATEND)) {
-                                    found = strstr(ctx->buf+match+s_from,
+                                    found = strstr(ctx->vb.buf+match+s_from,
                                                    m->from.c);
                                     continue;
                                 }
                                 else {
-                                    found = strstr(ctx->buf+match+s_to,
+                                    found = strstr(ctx->vb.buf+match+s_to,
                                                    m->from.c);
                                 }
                                 VERBOSE(ap_log_rerror(APLOG_MARK, APLOG_TRACE3,
                                                       0, ctx->f->r,
                                               "E: matched %s, substituting %s",
                                                       m->from.c, m->to));
-                                len = strlen(ctx->buf);
+                                len = ctx->vb.strlen;
                                 if (s_to > s_from) {
-                                    preserve(ctx, s_to - s_from);
-                                    memmove(ctx->buf+match+s_to,
-                                            ctx->buf+match+s_from,
+                                    ap_varbuf_grow(&ctx->vb, len + s_to - s_from);
+                                    memmove(ctx->vb.buf+match+s_to,
+                                            ctx->vb.buf+match+s_from,
                                             len + 1 - s_from - match);
-                                    memcpy(ctx->buf+match, m->to, s_to);
+                                    memcpy(ctx->vb.buf+match, m->to, s_to);
                                 }
                                 else {
-                                    memcpy(ctx->buf+match, m->to, s_to);
-                                    memmove(ctx->buf+match+s_to,
-                                            ctx->buf+match+s_from,
+                                    memcpy(ctx->vb.buf+match, m->to, s_to);
+                                    memmove(ctx->vb.buf+match+s_to,
+                                            ctx->vb.buf+match+s_from,
                                             len + 1 - s_from - match);
                                 }
+                                ctx->vb.strlen = len - s_from + s_to;
                                 ++num_match;
                             }
                         }
@@ -681,13 +648,13 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
             else {
 
                 if (ctx->cfg->flags != 0)
-                    normalise(ctx->cfg->flags, ctx->buf);
+                    normalise(ctx->cfg->flags, &ctx->vb);
 
                 /* write the attribute, using pcharacters to html-escape
                    anything that needs it in the value.
                 */
                 ap_fputstrs(ctx->f->next, ctx->bb, " ", a[0], "=\"", NULL);
-                pcharacters(ctx, (const xmlChar*)ctx->buf, strlen(ctx->buf));
+                pcharacters(ctx, (const xmlChar*)ctx->vb.buf, ctx->vb.strlen);
                 ap_fputc(ctx->f->next, ctx->bb, '"');
             }
             /* PR#64443: watch for accept-charset from backend */
@@ -701,7 +668,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
         ap_fprintf(ctx->f->next, ctx->bb, " accept-charset=\"%s\"",
                    accept_charset);
     }
-    ctx->offset = 0;
+    ctx->vb.strlen = 0;
     if (desc && desc->empty)
         ap_fputs(ctx->f->next, ctx->bb, ctx->etag);
     else
@@ -713,6 +680,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                       "HTML element %s is missing %d required attributes",
                       name, required_attrs);
     }
+    ap_varbuf_free(&temp);
 }
 
 static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
@@ -881,6 +849,8 @@ static saxctxt *check_filter_init (ap_filter_t *f)
         proxy_html_conf *cfg;
         const char *force;
         const char *errmsg = NULL;
+        apr_size_t bufsz;
+
         cfg = ap_get_module_config(f->r->per_dir_config, &proxy_html_module);
         force = apr_table_get(f->r->subprocess_env, "PROXY_HTML_FORCE");
 
@@ -914,6 +884,8 @@ static saxctxt *check_filter_init (ap_filter_t *f)
                                       f->r->connection->bucket_alloc);
         fctx->cfg = cfg;
         fctx->etag = cfg->etag;
+        bufsz = (cfg->bufsz <= 0 || cfg->bufsz > (128 * 1024)) ? DEFAULT_BUFSZ : cfg->bufsz;
+        ap_varbuf_init(f->r->pool, &fctx->vb, bufsz);
         apr_table_unset(f->r->headers_out, "Content-Length");
 
         if (cfg->interp)
@@ -1086,7 +1058,7 @@ static void *proxy_html_config(apr_pool_t *pool, char *x)
     proxy_html_conf *ret = apr_pcalloc(pool, sizeof(proxy_html_conf));
     ret->doctype = DEFAULT_DOCTYPE;
     ret->etag = DEFAULT_ETAG;
-    ret->bufsz = 8192;
+    ret->bufsz = DEFAULT_BUFSZ;
     /* ret->interp = 1; */
     /* don't initialise links and events until they get set/used */
     return ret;
@@ -1393,7 +1365,7 @@ static void proxy_html_insert(request_rec *r)
 }
 static void proxy_html_hooks(apr_pool_t *p)
 {
-    static const char *aszSucc[] = { "mod_filter.c", NULL };
+    static const char *const aszSucc[] = { "mod_filter.c", NULL };
     ap_register_output_filter_protocol("proxy-html", proxy_html_filter,
                                        NULL, AP_FTYPE_RESOURCE,
                           AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH);

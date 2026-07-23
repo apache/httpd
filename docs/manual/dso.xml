@@ -95,8 +95,10 @@
         <code>mod_foo.so</code>:</p>
 
 <example>
-$ ./configure --prefix=/path/to/install --enable-foo<br />
+<highlight language="sh">
+$ ./configure --prefix=/path/to/install --enable-foo
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -108,8 +110,10 @@ $ make install
       <code>httpd.conf</code>.</p>
 
 <example>
-$ ./configure --enable-mods-shared=all<br />
+<highlight language="sh">
+$ ./configure --enable-mods-shared=all
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -122,8 +126,10 @@ $ make install
       <code>--enable-load-all-modules</code>.</p>
 
 <example>
-$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
+<highlight language="sh">
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -134,8 +140,10 @@ $ make install
         source tree using <program>apxs</program>:
 
 <example>
-$ cd /path/to/3rdparty<br />
+<highlight language="sh">
+$ cd /path/to/3rdparty
 $ apxs -cia mod_foo.c
+</highlight>
 </example>
       </li>
     </ol>

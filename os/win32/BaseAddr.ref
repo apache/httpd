@@ -123,7 +123,6 @@ mod_cache_socache.so        0x70B60000    0x00020000
 mod_allowhandlers.so        0x70B80000    0x00010000
 mod_macro.so                0x70B90000    0x00020000
 mod_proxy_wstunnel.so       0x70BB0000    0x00020000
-mod_apreq.so                0x70BD0000    0x00020000
 mod_authnz_fcgi.so          0x70BF0000    0x00020000
 mod_dialup.so               0x70C10000    0x00010000
 mod_optional_fn_export.so   0x70C20000    0x00010000
@@ -139,5 +138,4 @@ mod_proxy_hcheck.so         0x70E00000    0x00020000
 mod_socache_redis.so        0x70E20000    0x00020000
 mod_md.so                   0x70E40000    0x00030000
 mod_proxy_uwsgi.so          0x70E70000    0x00020000
-libapreq.dll                0x70E90000    0x00020000
 mod_log_json.so             0x70EB0000    0x00020000

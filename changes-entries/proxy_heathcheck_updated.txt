@@ -1,0 +1,2 @@
+  *) mod_proxy_hcheck: Fix healthcheck disabled due to child restart while
+     updating. [Yann Ylavic]

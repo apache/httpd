@@ -1,0 +1,4 @@
+  *) mod_mime_magic: Add MimeMagicDecompression directive to control
+     decompression of compressed files for MIME type detection.
+     Decompression is now disabled by default. PR 69985.
+     [Gordon Messmer <gmessmer redhat.com>]

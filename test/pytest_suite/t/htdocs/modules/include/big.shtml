@@ -1,0 +1,18 @@
+<!--#set var="one" value="hello"-->
+<!--#if expr="\"$one\" = \"hello\""-->
+<!--#set var="two" value="pass"-->
+<!--#echo var="one"-->
+<!--#else -->
+<!--#include file="inc-three.shtml"-->
+<!--#set var="two" value="fail"-->
+fail1
+<!--#endif -->
+<!--#if expr="\"$two\" = \"$one\""-->
+fail2
+<!--#elif expr="\"$two\" = \"fail\""-->
+fail3
+<!--#else -->
+<!--#echo var="two"-->
+<!--#include file="if4.shtml"-->
+<!--#endif -->
+<!--#echo var="one"-->

@@ -39,14 +39,16 @@ typedef struct md_reg_t md_reg_t;
  * @param pm memory pool to use for creation
  * @param store the store to base on
  * @param proxy_url optional URL of a proxy to use for requests
- * @param ca_file  optioinal CA trust anchor file to use
+ * @param ca_certs optional CA trust anchor file to use
+ * @param proxy_ca_certs optional CA trust anchor file to use for the HTTP proxy
  * @param min_delay minimum delay between renewal attempts for a domain
- * @param retry_failover numer of failed renewals attempt to fail over to alternate ACME ca
+ * @param retry_failover number of failed renewals attempt to fail over to alternate ACME ca
  */
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, md_store_t *store,
-                           const char *proxy_url, const char *ca_file,
-                           apr_time_t min_delay, int retry_failover,
-                           int use_store_locks, apr_time_t lock_wait_timeout);
+                           const char *proxy_url, const char *ca_certs,
+                           const char *proxy_ca_certs, apr_time_t min_delay,
+                           int retry_failover, int use_store_locks,
+                           apr_time_t lock_wait_timeout);
 
 md_store_t *md_reg_store_get(md_reg_t *reg);
 
@@ -183,6 +185,14 @@ int md_reg_should_renew(md_reg_t *reg, const md_t *md, apr_pool_t *p);
  */
 apr_time_t md_reg_renew_at(md_reg_t *reg, const md_t *md, apr_pool_t *p);
 
+/* Check ACME Renewal Info, if available, for the CA recommended time
+ * (and optional reason URL) for certificate renewal.
+ * Returns 0 if not availble.
+ */
+apr_time_t md_reg_ari_renew_at(const char **purl, md_reg_t *reg,
+                               const md_t *md, struct apr_table_t *env,
+                               struct md_result_t *result, apr_pool_t *p);
+
 /**
  * Return the timestamp up to which *all* certificates for the MD can be used.
  * A value of 0 indicates that there is no certificate.
@@ -216,7 +226,8 @@ struct md_proto_driver_t {
     md_reg_t *reg;
     md_store_t *store;
     const char *proxy_url;
-    const char *ca_file;
+    const char *ca_certs;
+    const char *proxy_ca_certs;
     const md_t *md;
 
     int can_http;
@@ -233,6 +244,8 @@ typedef apr_status_t md_proto_init_preload_cb(md_proto_driver_t *driver, struct 
 typedef apr_status_t md_proto_preload_cb(md_proto_driver_t *driver, 
                                          md_store_group_t group, struct md_result_t *result);
 typedef apr_status_t md_proto_complete_md_cb(md_t *md, apr_pool_t *p);
+typedef apr_status_t md_proto_get_ari(md_proto_driver_t *driver, struct md_result_t *result,
+                                      apr_time_t *prenew_at, const char **purl);
 
 struct md_proto_t {
     const char *protocol;
@@ -241,6 +254,7 @@ struct md_proto_t {
     md_proto_init_preload_cb *init_preload;
     md_proto_preload_cb *preload;
     md_proto_complete_md_cb *complete_md;
+    md_proto_get_ari *get_ari;
 };
 
 /**

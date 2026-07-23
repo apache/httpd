@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933438:1935430 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="tech.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite 技術的詳細</title>
+
+<summary>
+<p>このドキュメントでは、<module>mod_rewrite</module> と URL マッチングの
+技術的な詳細について説明します。</p>
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+<seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>
+<seealso><a href="access.html">アクセス制御</a></seealso>
+<seealso><a href="vhosts.html">バーチャルホスト</a></seealso>
+<seealso><a href="proxy.html">プロキシ</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap の使用</a></seealso>
+<seealso><a href="advanced.html">高度なテクニック</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>
+
+<section id="InternalAPI"><title>API フェーズ</title>
+
+    <p>Apache HTTP Server は、いくつかのフェーズでリクエストを処理します。
+    各フェーズでは、リクエストライフサイクルのその部分を処理するために
+    1 つ以上のモジュールが呼び出される可能性があります。フェーズには、
+    URL からファイル名への変換、認証、認可、コンテンツ、ロギングなどが
+    含まれます。(これは完全なリストではありません。)</p>
+
+    <p><module>mod_rewrite</module> は、URL の書き換え方法に影響を与えるために、
+    これらのフェーズ (しばしば「フック」と呼ばれます) のうち 2 つで
+    動作します。</p>
+
+    <p>まず、URL からファイル名への変換フックを使用します。これは
+    HTTP リクエストが読み取られた後、認可が開始される前に発生します。
+    次に、Fixup フックを使用します。これは認可フェーズの後、
+    ディレクトリ単位の設定ファイル (<code>.htaccess</code> ファイル)
+    が読み取られた後、コンテンツハンドラが呼び出される前です。</p>
+
+    <p>リクエストが到着し、対応するサーバまたはバーチャルホストが
+    決定された後、書き換えエンジンはサーバ単位の設定に含まれる
+    <module>mod_rewrite</module> ディレクティブの処理を開始します。
+    (つまり、メインサーバ設定ファイルと
+    <directive module="core" type="section">Virtualhost</directive>
+    セクション内のディレクティブです。) これは URL からファイル名への
+    変換フェーズで発生します。</p>
+
+    <p>数ステップ後、最終的なデータディレクトリが見つかると、
+    ディレクトリ単位の設定ディレクティブ (<code>.htaccess</code>
+    ファイルと <directive module="core"
+    type="section">Directory</directive> ブロック) が適用されます。
+    これは Fixup フェーズで発生します。</p>
+
+    <p>これらの各ケースで、<module>mod_rewrite</module> は
+    <code>REQUEST_URI</code> を新しい URL またはファイル名に
+    書き換えます。</p>
+
+    <p>ディレクトリ単位のコンテキスト (つまり <code>.htaccess</code>
+    ファイルと <code>Directory</code> ブロック内) では、URL が既に
+    ファイル名に変換された後にこれらのルールが適用されます。このため、
+    <module>mod_rewrite</module> が最初に <directive
+    module="mod_rewrite">RewriteRule</directive> ディレクティブと比較する
+    URL パスは、変換されたファイル名のフルファイルシステムパスから、
+    現在のディレクトリのパス (末尾のスラッシュを含む) を先頭から
+    削除したものになります。</p>
+
+    <p>例として: ルールが /var/www/foo/.htaccess にあり、
+    /foo/bar/baz へのリクエストが処理されている場合、^bar/baz$ のような
+    式がマッチします。</p>
+
+    <p>ディレクトリ単位のコンテキストで置換が行われた場合、新しい URL で
+    新しい内部サブリクエストが発行され、リクエストフェーズの処理が
+    再開されます。置換が相対パスの場合、<directive
+    module="mod_rewrite">RewriteBase</directive> ディレクティブが
+    置換の前に付加する URL パスプレフィックスを決定します。
+    ディレクトリ単位のコンテキストでは、ループを避けるために、
+    最終的に (将来のディレクトリ単位の書き換え処理の「ラウンド」で)
+    置換を行わないルールを作成するよう注意する必要があります。
+    (この問題の詳細については
+    <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
+    を参照してください。)</p>
+
+    <p>ディレクトリ単位のコンテキストでの URL のさらなる操作のため、
+    そのコンテキストでは書き換えルールを異なるように作成するよう
+    注意する必要があります。特に、先頭のディレクトリパスが書き換えルールが
+    認識する URL から削除されることを忘れないでください。詳細については
+    以下の例を参照してください。</p>
+
+    <table border="1">
+
+        <tr>
+            <th>ルールの場所</th>
+            <th>ルール</th>
+        </tr>
+
+        <tr>
+            <td>VirtualHost セクション</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>ドキュメントルートの .htaccess ファイル</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>images ディレクトリの .htaccess ファイル</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
+        </tr>
+
+    </table>
+
+    <p><module>mod_rewrite</module> がさまざまなコンテキストで URL をどのように
+    操作するかについてさらに詳しくは、書き換え中に作成される
+    <a href="../mod/mod_rewrite.html#logging">ログエントリ</a>を
+    参照してください。</p>
+
+</section>
+
+<section id="InternalRuleset"><title>ルールセットの処理</title>
+
+      <p>これら 2 つの API フェーズで <module>mod_rewrite</module> がトリガー
+      されると、設定構造体 (サーバ単位のコンテキストではスタートアップ時に
+      作成されたもの、ディレクトリ単位のコンテキストでは Apache カーネルの
+      ディレクトリウォーク中に作成されたもの) から設定済みのルールセットを
+      読み取ります。次に、含まれるルールセット (1 つ以上のルールとその
+      条件のセット) を使用して URL 書き換えエンジンが起動されます。
+      URL 書き換えエンジン自体の動作は、両方の設定コンテキストで
+      まったく同じです。最終結果の処理のみが異なります。</p>
+
+      <p>ルールセット内のルールの順序は重要です。書き換えエンジンは
+      特殊な (あまり直感的ではない) 順序でルールを処理するためです。
+      ルールは次のとおりです: 書き換えエンジンはルールセットをルールごとに
+      (<directive module="mod_rewrite">RewriteRule</directive>
+      ディレクティブ) ループし、特定のルールがマッチすると、対応する
+      条件 (<code>RewriteCond</code> ディレクティブ) をオプションで
+      ループします。歴史的な理由により、条件が先に記述されるため、
+      制御フローは少し冗長になります。詳細は図 1 を参照してください。</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png"
+          alt="RewriteRule と RewriteCond マッチングのフロー" /><br />
+      <dfn>図 1:</dfn> 書き換えルールセットを通る制御フロー
+</p>
+      <p>まず、URL が各ルールの <em>Pattern</em> に対してマッチされます。
+      マッチしない場合、<module>mod_rewrite</module> はそのルールの処理を
+      直ちに停止し、次のルールに進みます。<em>Pattern</em> がマッチすると、
+      <module>mod_rewrite</module> は対応するルール条件 (設定内の RewriteRule の
+      直前に記述される RewriteCond ディレクティブ) を探します。
+      条件がない場合、URL を <em>Substitution</em> 文字列から構築された
+      新しい値で置換し、ルールループを続行します。条件が存在する場合、
+      記述された順序で処理する内部ループを開始します。条件のロジックは
+      異なります: 現在の URL に対してパターンをマッチさせるのではなく、
+      まず変数の展開、バックリファレンス、マップ検索<em>等</em>を行って
+      <em>TestString</em> 文字列を作成し、それに対して
+      <em>CondPattern</em> をマッチさせようとします。パターンがマッチしない
+      場合、条件のセット全体と対応するルールが失敗します。パターンが
+      マッチすると、次の条件が処理され、条件がなくなるまで続きます。
+      すべての条件がマッチした場合、URL の <em>Substitution</em> による
+      置換の処理が続行されます。</p>
+
+</section>
+
+
+</manualpage>

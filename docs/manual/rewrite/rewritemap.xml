@@ -29,20 +29,15 @@ the use of the <directive module="mod_rewrite">RewriteMap</directive> directive,
 and provides examples of each of the various <directive module="mod_rewrite"
 >RewriteMap</directive> types.</p>
 
-    <note type="warning">Note that many of these examples won't work unchanged in your
-particular server configuration, so it's important that you understand
-them, rather than merely cutting and pasting the examples into your
-configuration.</note>
-
-  </summary>
+      </summary>
   <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
   <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
   <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
-  <seealso><a href="access.html">Controlling access</a></seealso>
-  <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-  <seealso><a href="proxy.html">Proxying</a></seealso>
-  <seealso><a href="advanced.html">Advanced techniques</a></seealso>
-  <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+  <seealso><a href="flags.html">RewriteRule Flags</a></seealso>
+    <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+      <seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
+<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Technical details</a></seealso>
 
   <section id="introduction">
     <title>Introduction</title>
@@ -149,7 +144,7 @@ may be used, and give examples of each.</p>
     >RewriteRule</directive>:
     </p>
 
-   <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
+   <p> <strong>Redirect a URL-path to an all-lowercase version of itself</strong></p>
     <highlight language="config">
 RewriteMap lc int:tolower
 RewriteRule "(.*)" "${lc:$1}" [R]
@@ -349,16 +344,31 @@ by many requests.
     <p>When a MapType of <code>prg</code> is used, the MapSource is a
     filesystem path to an executable program which will providing the
     mapping behavior. This can be a compiled binary file, or a program
-    in an interpreted language such as Perl or Python.</p>
+    in an interpreted language such as Python or Perl.</p>
 
     <p>This program is started once, when the Apache HTTP Server is
     started, and then communicates with the rewriting engine via
-    <code>STDIN</code> and <code>STDOUT</code>. That is, for each map
-    function lookup, it expects one argument via <code>STDIN</code>, and
-    should return one new-line terminated response string on
-    <code>STDOUT</code>. If there is no corresponding lookup value, the
-    map program should return the four-character string
-    "<code>NULL</code>" to indicate this.</p>
+    <code>STDIN</code> and <code>STDOUT</code>. For each map function
+    lookup, the key is written to the program's <code>STDIN</code>,
+    followed by a newline character. The program should read one line
+    from <code>STDIN</code> (up to and including the newline), and
+    write its response as a single newline-terminated line on
+    <code>STDOUT</code>. Keys will never contain newline characters;
+    if a key containing a newline is encountered, the lookup will
+    fail.</p>
+
+    <p>If there is no corresponding lookup value, the map program
+    should return the four-character string "<code>NULL</code>" to
+    indicate this. Note that this comparison is case-insensitive, so
+    "null", "Null", etc. are also treated as a failed lookup. As a
+    consequence, it is not possible for a mapping program to return
+    the literal string "NULL" as a mapped value.</p>
+
+    <p>The program's <code>STDERR</code> is inherited from the
+    httpd parent process, so anything the program writes to
+    <code>STDERR</code> will end up in the same place as httpd's
+    own error output (typically the <directive
+    module="core">ErrorLog</directive>).</p>
 
     <p>External rewriting programs are not started if they're defined in
     a context that does not have <directive
@@ -377,23 +387,56 @@ by many requests.
     <directive module="core">Mutex</directive> directive.</p>
 
     <p>A simple example is shown here which will replace all dashes with
-    underscores in a request URI.</p>
+    underscores in a request URL-path.</p>
 
     <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
-RewriteMap d2u "prg:/www/bin/dash2under.programlisting" apache:apache
+RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
 RewriteRule "-" "${d2u:%{REQUEST_URI}}"
     </highlight>
 
-    <p><strong>dash2under.pl</strong></p>
-    <highlight language="perl">
-#!/usr/bin/perl
-$| = 1; # Turn off I/O buffering
-while (&lt;STDIN&gt;) {
-    s/-/_/g; # Replace dashes with underscores
-    print $_;
-}
+    <p><strong>dash2under.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)
     </highlight>
+
+    <p>A more complete example shows the typical pattern for a
+    prg: map program: read a line, look up the result, and write
+    it back. Diagnostic output is written to <code>STDERR</code>,
+    which ends up in the Apache error log.</p>
+
+    <p><strong>Rewrite configuration</strong></p>
+    <highlight language="config">
+RewriteMap vhost2docroot "prg:/www/bin/vhost_lookup.py"
+RewriteRule "^/(.*)$" "${vhost2docroot:%{HTTP_HOST}}/$1"
+    </highlight>
+
+    <p><strong>vhost_lookup.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+"""Map a hostname to its document root directory."""
+import sys
+
+VHOSTS = {
+    "example.com": "/srv/www/example",
+    "blog.example.com": "/srv/www/blog",
+}
+
+for line in sys.stdin:
+    host = line.strip().lower()
+    docroot = VHOSTS.get(host)
+    if docroot:
+        print(docroot, flush=True)
+    else:
+        # "NULL" tells mod_rewrite the lookup failed
+        print("NULL", flush=True)
+        print(f"vhost_lookup: no match for {host!r}", file=sys.stderr)
+    </highlight>
+
 
 <note><title>Caution!</title>
 <ul>
@@ -401,14 +444,24 @@ while (&lt;STDIN&gt;) {
 hangs, it will cause httpd to wait indefinitely for a response from the
 map, which will, in turn, cause httpd to stop responding to
 requests.</li>
-<li>Be sure to turn off buffering in your program. In Perl this is done
-by the second line in the example script: <code>$| = 1;</code> This will
-of course vary in other languages. Buffered I/O will cause httpd to wait
-for the output, and so it will hang.</li>
+<li>Be sure to turn off buffering in your program. In the Python example
+above, this is done by passing <code>flush=True</code> to
+<code>print()</code>. Buffered I/O will cause httpd to wait for the
+output, and so it will hang. This is the single most common cause
+of prg: maps appearing to "do nothing" &mdash; the program has the
+answer but httpd never sees it because it is stuck in a buffer.</li>
 <li>Remember that there is only one copy of the program, started at
 server startup. All requests will need to go through this one bottleneck.
 This can cause significant slowdowns if many requests must go through
 this process, or if the script itself is very slow.</li>
+<li>If the mapping program terminates, it will not be automatically
+restarted. Subsequent lookups will fail until the server is
+restarted.</li>
+<li>The mapping program is always killed and restarted on any server
+restart (graceful or otherwise), regardless of whether the related
+configuration directives have changed. On shutdown, the program is
+sent <code>SIGTERM</code>; if it does not exit within 3 seconds, it
+is sent <code>SIGKILL</code>.</li>
 </ul>
 </note>
 
@@ -448,6 +501,75 @@ RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
     (such as case-sensitivity) required for your database.</p></note>
 
   </section>
+
+  <section id="sharding">
+
+  <title>URL-based sharding across multiple backends</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>A common technique for distributing the burden of
+      server load or storage space is called "sharding".
+      When using this method, a front-end server will use the
+      url to consistently "shard" users or objects to separate
+      backend servers.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>A mapping is maintained, from users to target servers, in
+      external map files. They look like:</p>
+
+<example>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+# ... and so on
+</example>
+
+  <p>We put this into a <code>map.users-to-hosts</code> file. The
+    aim is to map;</p>
+
+<example>
+/u/user1/anypath
+</example>
+
+  <p>to</p>
+
+<example>
+http://physical_host_of_user1/u/user/anypath
+</example>
+
+      <p>thus every URL path need not be valid on every backend physical
+      host. The following ruleset does this for us with the help of the map
+      files assuming that server0 is a default server which will be used if
+      a user has no entry in the map:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
+</highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>For distributing requests across backend servers,
+      <module>mod_proxy_balancer</module> provides a more robust and
+      configurable approach, with support for health checking, load
+      weighting, and session stickiness. The <code>txt:</code> map
+      approach shown here is simpler but lacks these features.</p>
+    </dd>
+  </dl>
+
+  <p>See the <directive module="mod_rewrite">RewriteMap</directive>
+  documentation for more discussion of the syntax of this directive.</p>
+
+  </section>
+
   <section id="summary">
     <title>Summary</title>
 

@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Log Files - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Log Files</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Log Files</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/logs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>In order to effectively manage a web server, it is necessary
@@ -38,22 +38,22 @@
     logging capabilities, and how to understand what the logs
     contain.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#security">Security Warning</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Error Log</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#permodule">Per-module logging</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Access Log</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rotation">Log Rotation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#piped">Piped Logs</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">Other Log Files</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#overview">Overview</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#security">Security Warning</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#errorlog">Error Log</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#permodule">Per-module logging</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#accesslog">Access Log</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rotation">Log Rotation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#piped">Piped Logs</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhost">Virtual Hosts</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#other">Other Log Files</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Overview</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Overview <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
     
 
-  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td /></tr></table>
+  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td></td></tr></table>
 
   <p>
   The Apache HTTP Server provides a variety of different mechanisms for
@@ -71,9 +71,9 @@
   part of the http server.
   </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Warning</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Security Warning <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
 
     <p>Anyone who can write to the directory where Apache httpd is
@@ -89,9 +89,9 @@
     possible for malicious clients to insert control-characters in
     the log files, so care must be taken in dealing with raw
     logs.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errorlog" id="errorlog">Error Log</a> <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
+<h2 id="errorlog">Error Log <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
@@ -118,7 +118,7 @@
 
     <div class="example"><p><code>
     [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
-    [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    [client 72.15.99.187] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </code></p></div>
 
     <p>The first item in the log entry is the date and time of the
@@ -126,9 +126,16 @@
     case) and the severity level of that message. This is followed by
     the process ID and, if appropriate, the thread ID, of the process
     that experienced the condition. Next, we have the client address
-    that made the request. And finally is the detailed error message,
-    which in this case indicates a request for a file that did not
-    exist.</p>
+    that made the request. And finally is the detailed error message.</p>
+
+    <div class="note"><p>Note that some messages that were previously logged at
+    <code>error</code> level have been downgraded to <code>info</code>
+    level in httpd 2.4. For example, "File does not exist" messages
+    for 404 responses are logged at <code>info</code> level and will
+    not appear in the error log with the default
+    <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> of <code>warn</code>.
+    To restore the previous behavior, use
+    <code>LogLevel warn core:info</code>.</p></div>
 
     <p>A very wide variety of different messages can appear in the
     error log. Most look similar to the example above. The error
@@ -149,9 +156,9 @@
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="permodule" id="permodule">Per-module logging</a> <a title="Permanent link" href="#permodule" class="permalink">&para;</a></h2>
+<h2 id="permodule">Per-module logging <a title="Permanent link" href="#permodule" class="permalink">&para;</a></h2>
     
 
     <p>The <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> directive
@@ -176,9 +183,9 @@
     <div class="note">This replaces the per-module logging directives, such as
     <code>RewriteLog</code>, that were present in earlier versions of
     the server.</div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="accesslog" id="accesslog">Access Log</a> <a title="Permanent link" href="#accesslog" class="permalink">&para;</a></h2>
+<h2 id="accesslog">Access Log <a title="Permanent link" href="#accesslog" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
@@ -210,7 +217,7 @@
     sections. For a complete list of the possible contents of the
     format string, see the <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code> <a href="mod/mod_log_config.html#formats">format strings</a>.</p>
 
-    <h3><a name="common" id="common">Common Log Format</a></h3>
+    <h3 id="common">Common Log Format</h3>
       
 
       <p>A typical configuration for the access log might look as
@@ -299,13 +306,13 @@ CustomLog "logs/access_log" common</pre>
           The format is:
 
           <p class="indent">
-            <code>[day/month/year:hour:minute:second zone]<br />
-             day = 2*digit<br />
-             month = 3*letter<br />
-             year = 4*digit<br />
-             hour = 2*digit<br />
-             minute = 2*digit<br />
-             second = 2*digit<br />
+            <code>[day/month/year:hour:minute:second zone]<br>
+             day = 2*digit<br>
+             month = 3*letter<br>
+             year = 4*digit<br>
+             hour = 2*digit<br>
+             minute = 2*digit<br>
+             second = 2*digit<br>
              zone = (`+' | `-') 4*digit</code>
           </p>
           <p>It is possible to have the time displayed in another format
@@ -338,8 +345,7 @@ CustomLog "logs/access_log" common</pre>
         beginning in 2), a redirection (codes beginning in 3), an
         error caused by the client (codes beginning in 4), or an
         error in the server (codes beginning in 5). The full list of
-        possible status codes can be found in the <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
-        specification</a> (RFC2616 section 10).</dd>
+        possible status codes can be found in the HTTP specification (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>) (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
@@ -351,7 +357,7 @@ CustomLog "logs/access_log" common</pre>
       </dl>
     
 
-    <h3><a name="combined" id="combined">Combined Log Format</a></h3>
+    <h3 id="combined">Combined Log Format</h3>
       
 
       <p>Another commonly used format string is called the Combined
@@ -395,7 +401,7 @@ CustomLog "log/access_log" combined</pre>
       </dl>
     
 
-    <h3><a name="multiple" id="multiple">Multiple Access Logs</a></h3>
+    <h3 id="multiple">Multiple Access Logs</h3>
       
 
       <p>Multiple access logs can be created simply by specifying
@@ -418,7 +424,7 @@ CustomLog "logs/agent_log" "%{User-agent}i"</pre>
       the log format can be specified directly in the <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> directive.</p>
     
 
-    <h3><a name="conditional" id="conditional">Conditional Logs</a></h3>
+    <h3 id="conditional">Conditional Logs</h3>
       
 
       <p>There are times when it is convenient to exclude certain
@@ -483,9 +489,9 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
       easier to simply post-process the log files to remove requests
       that you do not want to consider.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rotation" id="rotation">Log Rotation</a> <a title="Permanent link" href="#rotation" class="permalink">&para;</a></h2>
+<h2 id="rotation">Log Rotation <a title="Permanent link" href="#rotation" class="permalink">&para;</a></h2>
     
 
     <p>On even a moderately busy server, the quantity of
@@ -509,18 +515,18 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
     logs to save space is:</p>
 
     <div class="example"><p><code>
-      mv access_log access_log.old<br />
-      mv error_log error_log.old<br />
-      apachectl graceful<br />
-      sleep 600<br />
+      mv access_log access_log.old<br>
+      mv error_log error_log.old<br>
+      apachectl graceful<br>
+      sleep 600<br>
       gzip access_log.old error_log.old
     </code></p></div>
 
     <p>Another way to perform log rotation is using <a href="#piped">piped logs</a> as discussed in the next
     section.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="piped" id="piped">Piped Logs</a> <a title="Permanent link" href="#piped" class="permalink">&para;</a></h2>
+<h2 id="piped">Piped Logs <a title="Permanent link" href="#piped" class="permalink">&para;</a></h2>
     
 
     <p>Apache httpd is capable of writing error and access log
@@ -566,7 +572,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
 CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common</pre>
 
 
-    <p>This was the default behaviour for Apache 2.2.
+    <p>This was the default behavior for Apache 2.2.
     Depending on the shell specifics this might lead to
     an additional shell process for the lifetime of the logging
     pipe program and signal handling problems during restart.
@@ -585,9 +591,9 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     caveats for changing the Windows registry apply, but you might also exhaust
     the desktop heap pool if the number is adjusted too high.</p>
     </div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Virtual Hosts <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
     <p>When running a server with many <a href="vhosts/">virtual
@@ -619,17 +625,17 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     later split the log into individual files. For example,
     consider the following directives.</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog "logs/access_log" comonvhost</pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+CustomLog "logs/access_log" commonvhost</pre>
 
 
     <p>The <code>%v</code> is used to log the name of the virtual
     host that is serving the request. Then a program like <a href="programs/split-logfile.html">split-logfile</a> can be used to
     post-process the access log in order to split it into one file
     per virtual host.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">Other Log Files</a> <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">Other Log Files <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
@@ -653,7 +659,7 @@ CustomLog "logs/access_log" comonvhost</pre>
          It can be an invaluable debugging and security tool.</p>
     
 
-    <h3><a name="pidfile" id="pidfile">PID File</a></h3>
+    <h3 id="pidfile">PID File</h3>
       
 
       <p>On startup, Apache httpd saves the process id of the parent
@@ -666,7 +672,7 @@ CustomLog "logs/access_log" comonvhost</pre>
       and Restarting</a> page.</p>
     
 
-    <h3><a name="scriptlog" id="scriptlog">Script Log</a></h3>
+    <h3 id="scriptlog">Script Log</h3>
       
 
       <p>In order to aid in debugging, the
@@ -676,7 +682,7 @@ CustomLog "logs/access_log" comonvhost</pre>
       More information is available in the <a href="mod/mod_cgi.html">mod_cgi</a> documentation.</p>
     
 
-    <h3><a name="debug" id="debug">Configurable debug logging</a></h3>
+    <h3 id="debug">Configurable debug logging</h3>
         
 
         <p>The <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code> 
@@ -687,32 +693,36 @@ CustomLog "logs/access_log" comonvhost</pre>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/logs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

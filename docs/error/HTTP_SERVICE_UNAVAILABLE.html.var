@@ -16,13 +16,13 @@ Content-language: de
 Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
---><!--#set var="TITLE" value="Zugriff nicht m&ouml;glich!"
+--><!--#set var="TITLE" value="Zugriff nicht möglich!"
 --><!--#include virtual="include/top.html" -->
 
     Der Server ist derzeit nicht in der Lage die Anfrage
-    zu bearbeiten. Entweder ist der Server derzeit &uuml;berlastet
-    oder wegen Wartungsarbeiten nicht verf&uuml;gbar.
-    Bitte versuchen Sie es sp&auml;ter wieder. 
+    zu bearbeiten. Entweder ist der Server derzeit überlastet
+    oder wegen Wartungsarbeiten nicht verfügbar.
+    Bitte versuchen Sie es später wieder. 
     
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -43,12 +43,12 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Servicio no disponible!" -->
+<!--#set var="TITLE" value="¡Servicio no disponible!" -->
 <!--#include virtual="include/top.html" -->
 
     El servidor no puede procesar su solicitud en este momento
     debido a tareas de mantenimiento o a problemas de capacidad.
-    Por favor, int&eacute;ntelo de nuevo m&aacute;s tarde.
+    Por favor, inténtelo de nuevo más tarde.
 
 <!--#include virtual="include/bottom.html" -->
 ----------es--
@@ -60,9 +60,9 @@ Body:----------fr--
 --><!--#set var="TITLE" value="Service inaccessible!"
 --><!--#include virtual="include/top.html" -->
 
-    En raison de travaux de maintenance ou de probl&egrave;mes
-    de capacit&eacute; le serveur n'est pas en mesure de r&eacute;pondre
-    &agrave; votre requ&ecirc;te pour l'instant. Veuillez r&eacute;essayer
+    En raison de travaux de maintenance ou de problèmes
+    de capacité le serveur n'est pas en mesure de répondre
+    à votre requête pour l'instant. Veuillez réessayer
      plus tard.
 
 <!--#include virtual="include/bottom.html" -->
@@ -71,13 +71,13 @@ Body:----------fr--
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="Seirbh&iacute;s do&uacute;s&aacute;idte!"
+<!--#set var="TITLE" value="Seirbhís doúsáidte!"
 --><!--#include virtual="include/top.html" -->
 
-    N&iacute;l an freastala&iacute; seo in ann do chuid 
-    iarratais a l&iacute;onadh ag an am seo, toisc 
-    c&oacute;th&aacute;bh&aacute;il n&oacute; fhaidhbeanna cumas.
-    D&eacute;an iarracht eile n&iacute;os d&eacute;ana&iacute;, le do thoil.
+    Níl an freastalaí seo in ann do chuid 
+    iarratais a líonadh ag an am seo, toisc 
+    cóthábháil nó fhaidhbeanna cumas.
+    Déan iarracht eile níos déanaí, le do thoil.
 <!--#include virtual="include/bottom.html" -->
 ----------ga--
 
@@ -88,10 +88,10 @@ Body:----------it--
 --><!--#set var="TITLE" value="Servizio non disponibile!"
 --><!--#include virtual="include/top.html" -->
 
-    Il server in questo momento non &egrave; in grado di
+    Il server in questo momento non è in grado di
     soddisfare la richiesta per motivi di manutenzione
     o di sovraccarico del sistema.
-    Per favore, riprova pi&ugrave; tardi.
+    Per favore, riprova più tardi.
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
@@ -168,11 +168,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Servi&ccedil;o indispon&iacute;vel!"
+--><!--#set var="TITLE" value="Serviço indisponível!"
 --><!--#include virtual="include/top.html" -->
 
-    O servidor est&aacute; temporariamente fora de servi&ccedil;o
-    para manutan&ccedil;&atilde;o ou devido a problemas de capacidade.
+    O servidor está temporariamente fora de serviço
+    para manutanção ou devido a problemas de capacidade.
     Por favor tente acessar mais tarde.
 
 <!--#include virtual="include/bottom.html" -->
@@ -181,12 +181,12 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Servi&ccedil;o indispon&iacute;vel!"
+<!--#set var="TITLE" value="Serviço indisponível!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor est&aacute; tempor&aacute;riamente incapaz de servir
-	o seu pedido devido a uma interrup&ccedil;&atilde;o para
-	manuten&ccedil;&atilde;o ou problemas de capacidade. Por favor
+	O servidor está temporáriamente incapaz de servir
+	o seu pedido devido a uma interrupção para
+	manutenção ou problemas de capacidade. Por favor
 	tente de novo mais tarde.
 
 <!--#include virtual="include/bottom.html" -->
@@ -236,12 +236,12 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
+--><!--#set var="TITLE" value="Tjänsten ej tillgänglig!"
 --><!--#include virtual="include/top.html" -->
 
-    Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
-    utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
-    eller kapacitetsbegr&auml;nsningar. V&auml;nligen f&ouml;rs&ouml;k
+    Servern är för tillfället oförmögen att
+    utföra din förfrågan på grund av underhåll
+    eller kapacitetsbegränsningar. Vänligen försök
     igen senare.
 
 <!--#include virtual="include/bottom.html" -->

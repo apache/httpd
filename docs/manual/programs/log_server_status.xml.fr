@@ -25,17 +25,17 @@
 <manualpage metafile="log_server_status.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
-<title>log_server_status - Enregistrement p&eacute;riodique de l'&eacute;tat du serveur</title>
+<title>log_server_status - Enregistrement périodique de l'état du serveur</title>
 
 <summary>
-    <p>Ce script perl a &eacute;t&eacute; con&ccedil;u pour &ecirc;tre ex&eacute;cut&eacute; &agrave; intervalles
-    r&eacute;guliers via un d&eacute;clencheur de type cron. Il se connecte au serveur
-    pour en extraire des informations quant &agrave; son &eacute;tat. Il formate ces
+    <p>Ce script perl a été conçu pour être exécuté à intervalles
+    réguliers via un déclencheur de type cron. Il se connecte au serveur
+    pour en extraire des informations quant à son état. Il formate ces
     informations sous la forme d'une seule ligne qu'il enregistre dans
-    un fichier. Vous devez &eacute;diter la valeur des variables en t&ecirc;te de
-    script afin de d&eacute;finir le chemin du fichier de sortie. Pour que ce
+    un fichier. Vous devez éditer la valeur des variables en tête de
+    script afin de définir le chemin du fichier de sortie. Pour que ce
     script puisse fonctionner, <module>mod_status</module> doit au
-    pr&eacute;alable &ecirc;tre charg&eacute; et configur&eacute;.</p>
+    préalable être chargé et configuré.</p>
 </summary>
 
 <section id="configure"><title>Mode d'emploi</title>
@@ -46,17 +46,17 @@
 my $wherelog = "/usr/local/apache2/logs/";  # Le fichier de sortie sera
 					# du style "/usr/local/apache2/logs/19960312"
 my $server   = "localhost";        # Nom du serveur, par exemple "www.foo.com"
-my $port     = "80";               # Port d'&eacute;coute du serveur
-my $request = "/server-status/?auto";    # Requ&ecirc;te &agrave; soumettre
+my $port     = "80";               # Port d'écoute du serveur
+my $request = "/server-status/?auto";    # Requête à soumettre
 </highlight>
 
 <p>Ces variables doivent contenir des valeurs correctes, et le
-gestionnaire <code>/server-status</code> doit &ecirc;tre configur&eacute; pour le
-r&eacute;pertoire consid&eacute;r&eacute;. En outre, l'utilisateur qui ex&eacute;cute le script doit
-avoir les droits d'&eacute;criture sur le chemin du fichier de sortie.</p>
+gestionnaire <code>/server-status</code> doit être configuré pour le
+répertoire considéré. En outre, l'utilisateur qui exécute le script doit
+avoir les droits d'écriture sur le chemin du fichier de sortie.</p>
 
-<p>L'ex&eacute;cution p&eacute;riodique du script via cron permet d'obtenir un jeu de
-rapports d'&eacute;tat qui pourra &ecirc;tre utilis&eacute; &agrave; des fins d'analyse
+<p>L'exécution périodique du script via cron permet d'obtenir un jeu de
+rapports d'état qui pourra être utilisé à des fins d'analyse
 statistique.</p>
 
 </section>

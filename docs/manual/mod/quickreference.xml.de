@@ -25,14 +25,14 @@
   <summary>
     <p>Die Kurzreferenz der Direktiven zeigt die Verwendung,
     Voreinstellung, den Status und den Kontext aller
-    Apache-Konfigurationsanweisungen. F&uuml;r weitergehende Informationen
+    Apache-Konfigurationsanweisungen. Für weitergehende Informationen
     schauen Sie bitte im <a
     href="directive-dict.html">Verzeichnis der Direktiven</a>.</p>
 
-    <p>Die erste Spalte enth&auml;lt den Namen und die Verwendung.
+    <p>Die erste Spalte enthält den Namen und die Verwendung.
     Die zweite Spalte zeigt die Voreinstellung der Direktive, sofern
     eine Voreinstellung existiert. Wenn die Voreinstellung zu breit
-    f&uuml;r die Anzeige ist, wird sie abgeschnitten und mit einem
+    für die Anzeige ist, wird sie abgeschnitten und mit einem
     nachfolgenden "+" versehen.</p>
 
     <p>Die dritte und vierte Spalte geben den Kontext an, in dem die

@@ -25,7 +25,7 @@
   <title>Glossary</title>
 
   <summary>
-    <p>This glossary defines some of the common terminology related to Apache in
+    <p>This glossary defines some of the common terminology related to Apache HTTP Server in
       particular, and web serving in general. More information on each concept
       is provided in the links.</p>
   </summary>
@@ -34,7 +34,7 @@
 
   <dl>
     <dt><a name="accesscontrol" id="accesscontrol">Access Control</a></dt>
-    <dd>The restriction of access to network realms. In an Apache context
+    <dd>The restriction of access to network realms. In an httpd context
       usually the restriction of access to certain <em>URLs</em>.<br /> See:  <a
       href="howto/auth.html">Authentication, Authorization, and Access
       Control</a>
@@ -51,7 +51,7 @@
     <dd>A perl script that aids in compiling <glossary
       ref="module">module</glossary> sources into Dynamic Shared Objects
       (<glossary ref="dso">DSO</glossary>s) and helps install them in the
-      Apache Web server.<br />
+      httpd web server.<br />
       See: Manual Page: <program>apxs</program>
     </dd>
 
@@ -122,8 +122,7 @@
         Gateway Interface</a> <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>A standard definition for an interface between a web server and an
       external program that allows the external program to service requests.
-      There is an <a href="http://www.ietf.org/rfc/rfc3875">Informational
-      RFC</a> which covers the specifics.<br />
+      There is an Informational RFC (<rfc>3875</rfc>) which covers the specifics.<br />
       See: <a href="howto/cgi.html">Dynamic Content with CGI</a>
     </dd>
 
@@ -134,7 +133,7 @@
     <dt><a name="configurationfile" id="configurationfile">Configuration
         File</a></dt>
     <dd>A text file containing <glossary ref="directive">Directives</glossary>
-      that control the configuration of Apache.<br />
+      that control the configuration of httpd.<br />
       See: <a href="configuring.html">Configuration Files</a>
     </dd>
 
@@ -149,7 +148,7 @@
       files</glossary> where certain types of <glossary
       ref="directive">directives</glossary> are allowed.<br />
       See: <a href="mod/directive-dict.html#Context">Terms Used to Describe
-      Apache Directives</a>
+      httpd Directives</a>
     </dd>
 
     <dt><a name="digitalsignature" id="digitalsignature">Digital
@@ -165,7 +164,7 @@
     </dd>
 
     <dt><a name="directive" id="directive">Directive</a></dt>
-    <dd>A configuration command that controls one or more aspects of Apache's
+    <dd>A configuration command that controls one or more aspects of httpd's
       behavior.  Directives are placed in the <glossary
       ref="configurationfile">Configuration File</glossary><br />
     See: <a href="mod/directives.html">Directive Index</a>
@@ -182,11 +181,11 @@
         Variable</a> <a name="env-variable"
         id="env-variable">(env-variable)</a></dt>
     <dd>Named variables managed by the operating system shell and used to store
-      information and communicate between programs.  Apache also contains
+      information and communicate between programs.  httpd also contains
       internal variables that are referred to as environment variables, but are
-      stored in internal Apache structures, rather than in the shell
+      stored in internal httpd structures, rather than in the shell
       environment.<br />
-      See: <a href="env.html">Environment Variables in Apache</a>
+      See: <a href="env.html">Environment Variables in Apache httpd</a>
     </dd>
 
     <dt><a name="export-crippled" id="export-crippled">Export-Crippled</a></dt>
@@ -218,13 +217,13 @@
     </dd>
 
     <dt><a name="handler" id="handler">Handler</a></dt>
-    <dd>An internal Apache representation of the action to be performed when a
+    <dd>An internal httpd representation of the action to be performed when a
       file is called. Generally, files have implicit handlers, based on the file
       type. Normally, all files are simply served by the server, but certain
       file types are "handled" separately.  For example, the
       <code>cgi-script</code> handler designates files to be processed as
       <glossary ref="cgi">CGIs</glossary>.<br />
-      See: <a href="handler.html">Apache's Handler Use</a>
+      See: <a href="handler.html">httpd's Handler Use</a>
     </dd>
 
     <dt><a name="hash" id="hash">Hash</a></dt>
@@ -249,7 +248,7 @@
     </dd>
 
     <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
-    <dd>The main Apache <glossary ref="configurationfile">configuration
+    <dd>The main httpd <glossary ref="configurationfile">configuration
       file</glossary>.  The default location is
       <code>/usr/local/apache2/conf/httpd.conf</code>, but it may be moved using
       run-time or compile-time configuration.<br />
@@ -259,9 +258,9 @@
     <dt><a name="hypertexttransferprotocol"
       id="hypertexttransferprotocol">HyperText Transfer Protocol</a>
       <a name="http" id="hhtp">(HTTP)</a></dt>
-    <dd>The standard transmission protocol used on the World Wide Web.  Apache
+    <dd>The standard transmission protocol used on the World Wide Web.  httpd
       implements version 1.1 of the protocol, referred to as HTTP/1.1 and
-      defined by <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+      defined by <rfc>2616</rfc>.
     </dd>
 
     <dt><a name="https" id="https">HTTPS</a></dt>
@@ -296,14 +295,14 @@
     </dd>
 
     <dt><a name="module" id="module">Module</a></dt>
-    <dd>An independent part of a program.  Much of Apache's functionality is
+    <dd>An independent part of a program.  Much of httpd's functionality is
       contained in modules that you can choose to include or exclude.  Modules
-      that are compiled into the Apache <program>httpd</program> binary are
+      that are compiled into the <program>httpd</program> binary are
       called <dfn>static modules</dfn>, while modules that are stored
       separately and can be optionally loaded at run-time are called
       <dfn>dynamic modules</dfn> or <glossary ref="dso">DSOs</glossary>.
       Modules that are included by default
-      are called <dfn>base modules</dfn>. Many modules are available for Apache
+      are called <dfn>base modules</dfn>. Many modules are available for httpd
       that are not distributed as part of the Apache HTTP Server <glossary
       ref="tarball">tarball</glossary>.  These are referred to as
       <dfn>third-party modules</dfn>.<br />
@@ -312,13 +311,13 @@
 
     <dt><a name="modulemagicnumber" id="modulemagicnumber">Module Magic
       Number</a> (<a name="mmn" id="mmn">MMN</a>)</dt>
-    <dd>Module Magic Number is a constant defined in the Apache source code that
+    <dd>Module Magic Number is a constant defined in the httpd source code that
       is associated with binary compatibility of modules. It is changed when
-      internal Apache structures, function calls and other significant parts of
+      internal httpd structures, function calls and other significant parts of
       API change in such a way that binary compatibility cannot be guaranteed
       any more. On MMN change, all third party modules have to be at least
       recompiled, sometimes even slightly changed in order to work with the new
-      version of Apache.
+      version of httpd.
     </dd>
 
     <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
@@ -332,6 +331,31 @@
       encryption/decryption key used for <glossary
       ref="cipher">Ciphers</glossary>.<br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
+    </dd>
+
+    <dt><a name="perdirectory" id="perdirectory">Per-directory Context</a></dt>
+    <dd>A <glossary ref="directive">directive</glossary> is in
+      per-directory context when it appears in a <directive type="section"
+      module="core">Directory</directive>, <directive type="section"
+      module="core">DirectoryMatch</directive>, <directive type="section"
+      module="core">Files</directive>, or <directive type="section"
+      module="core">FilesMatch</directive> section in the main
+      configuration files, or in a <code>.htaccess</code> file.
+      In per-directory context, directives apply only to the
+      directory (or set of files) they are associated with.<br />
+      See: <a href="sections.html">Configuration Sections</a>
+    </dd>
+
+    <dt><a name="pathinfo" id="pathinfo">PATH_INFO</a></dt>
+    <dd>The trailing path information that follows the actual filename
+      in a URL. For example, if <code>/app/index.php/extra/path</code>
+      maps to the file <code>/app/index.php</code>, then the PATH_INFO
+      is <code>/extra/path</code>. It is passed to CGI scripts, PHP,
+      and other handlers as additional context about the request. The
+      <directive module="core">AcceptPathInfo</directive> directive controls
+      whether requests with trailing path information are accepted or
+      rejected.<br />
+      See: <rfc section="4.1.5">3875</rfc>
     </dd>
 
     <dt><a name="plaintext" id="plaintext">Plaintext</a></dt>
@@ -376,7 +400,7 @@
     <dd>A way of describing a pattern in text - for example, "all the words that
       begin with the letter A" or "every 10-digit phone number" or even "Every
       sentence with two commas in it, and no capital letter Q". Regular
-      expressions are useful in Apache because they let you apply certain
+      expressions are useful in httpd because they let you apply certain
       attributes against collections of files or resources in very flexible ways
       - for example, all .gif and .jpg files under any "images" directory could
       be written as "<code>/images/.*(jpg|gif)$</code>".  In places where
@@ -386,7 +410,7 @@
       to the whole matched expression. To write a literal dollar sign in a
       replacement string, it can be escaped with a backslash. Historically, the
       variable &amp; could be used as alias for $0 in some places. This is no
-      longer possible since version 2.3.6.  Apache uses Perl Compatible Regular
+      longer possible since version 2.3.6.  httpd uses Perl Compatible Regular
       Expressions provided by the <a href="http://www.pcre.org/">PCRE</a>
       library.  You can find more documentation about PCRE's regular expression
       syntax at that site, or at
@@ -416,7 +440,7 @@
       in processing the SSL handshake.  It was added to SSL starting
       with the TLS extensions, RFC 3546.  <br />
       See: <a href="ssl/ssl_faq.html">the SSL FAQ</a>
-      and <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+      and <rfc>3546</rfc>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">Server Side
@@ -434,7 +458,7 @@
     </dd>
 
     <dt><a name="subrequest" id="subrequest">Subrequest</a></dt>
-    <dd>Apache provides a subrequest API to modules that allows other
+    <dd>httpd provides a subrequest API to modules that allows other
         filesystem or URL paths to be partially or fully evaluated by
         the server. Example consumers of this API are
         <directive module="mod_dir">DirectoryIndex</directive>,
@@ -450,7 +474,7 @@
 
     <dt><a name="tarball" id="tarball">Tarball</a></dt>
     <dd>A package of files gathered together using the <code>tar</code> utility.
-      Apache distributions are stored in compressed tar archives or using
+      httpd distributions are stored in compressed tar archives or using
       pkzip.
     </dd>
 
@@ -476,18 +500,17 @@
       id="uniformresourceidentifier">Uniform Resource Identifier</a>
       <a name="URI" id="URI">(URI)</a></dt>
     <dd>A compact string of characters for identifying an abstract or physical
-      resource.  It is formally defined by <a
-        href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
+      resource.  It is formally defined by <rfc>2396</rfc>.  URIs used on the
       world-wide web are commonly referred to as <glossary
         ref="url">URLs</glossary>.
     </dd>
 
     <dt><a name="virtualhosting" id="virtualhosting">Virtual Hosting</a></dt>
-    <dd>Serving multiple websites using a single instance of Apache.  <em>IP
+    <dd>Serving multiple websites using a single instance of httpd.  <em>IP
       virtual hosting</em> differentiates between websites based on their IP
       address, while <em>name-based virtual hosting</em> uses only the name of the
       host and can therefore host many sites on the same IP address.<br />
-      See: <a href="vhosts/">Apache Virtual Host documentation</a>
+      See: <a href="vhosts/">httpd Virtual Host documentation</a>
     </dd>
 
     <dt><a name="x.509" id="x.509">X.509</a></dt>

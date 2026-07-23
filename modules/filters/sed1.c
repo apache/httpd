@@ -433,10 +433,10 @@ apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, apr_size_t bufsz
 
     while (bufsz) {
         apr_status_t rc = 0;
-        char *n;
+        const char *n;
         apr_size_t llen;
 
-        n = memchr(buf, '\n', bufsz);
+        n = memchr((char *)buf, '\n', bufsz);
         if (n == NULL)
             break;
 

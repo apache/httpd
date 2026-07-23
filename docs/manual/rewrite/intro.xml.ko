@@ -1,0 +1,405 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1933423:1935426 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="intro.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite 소개</title>
+
+<summary>
+<p>이 문서는 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">참조 문서</a>를 보충합니다.
+<module>mod_rewrite</module> 사용에 필요한 기본 개념을
+설명합니다. 다른 문서에서 더 자세히 다루지만, 이 문서는
+초보자가 시작하는 데 도움이 될 것입니다.
+</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">모듈 문서</a></seealso>
+<!-- <seealso><a href="intro.html">mod_rewrite 소개</a></seealso> -->
+<seealso><a href="remapping.html">리다이렉션과 재매핑</a></seealso>
+<seealso><a href="access.html">접근 제어</a></seealso>
+<seealso><a href="vhosts.html">가상 호스트</a></seealso>
+<seealso><a href="proxy.html">프록시</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap 사용하기</a></seealso>
+<seealso><a href="advanced.html">고급 기술</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite를 사용하지 말아야 할 경우</a></seealso>
+
+<section id="introduction"><title>소개</title>
+<p>Apache 모듈 <module>mod_rewrite</module>는 URL 조작을
+수행하는 방법을 제공하는 매우 강력하고 정교한 모듈입니다.
+이를 사용하면 필요한 거의 모든 유형의 URL 재작성을 수행할 수
+있습니다. 그러나 다소 복잡하며 초보자에게 위협적일 수
+있습니다. 또한 실제로 무엇을 하는지 이해하지 않고 재작성
+규칙을 마법의 주문처럼 취급하는 경향이 있습니다.</p>
+
+<p>이 문서는 이후의 내용이 단순히 맹목적으로 복사되는 것이
+아니라 이해되도록 충분한 배경 지식을 제공하고자 합니다.
+</p>
+
+<p>많은 일반적인 URL 조작 작업에는
+<module>mod_rewrite</module>의 전체 기능과 복잡성이 필요하지
+않다는 것을 기억하십시오. 간단한 작업에는
+<module>mod_alias</module>와
+<a href="../urlmapping.html">파일 시스템에 URL 매핑</a>
+문서를 참조하십시오.</p>
+
+<p>마지막으로 진행하기 전에 <directive
+module="core">LogLevel</directive> 지시어를 사용하여
+<module>mod_rewrite</module>의 로그 레벨을 trace 레벨 중
+하나로 구성하십시오. 이는 압도적인 양의 정보를 제공할 수
+있지만, <module>mod_rewrite</module> 설정의 문제를
+디버깅하는 데 필수적입니다. 각 규칙이 어떻게 처리되는지
+정확히 알려주기 때문입니다.</p>
+
+</section>
+
+<section id="regex"><title>정규 표현식</title>
+
+<p><module>mod_rewrite</module>는 <a href="http://pcre.org/">Perl
+호환 정규 표현식</a> 어휘를 사용합니다. 이 문서에서는
+정규 표현식에 대한 자세한 참조를 제공하지 않습니다.
+이를 위해 <a href="http://pcre.org/pcre.txt">PCRE 매뉴얼
+페이지</a>, <a href="http://perldoc.perl.org/perlre.html">Perl
+정규 표현식 매뉴얼 페이지</a> 및
+<a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Jeffrey
+Friedl의 Mastering Regular Expressions</a>(3판은 2006년에
+출판되었지만 정규 표현식 구문은 본질적으로 변경되지 않았으며
+이 주제에 대한 결정적인 참고 자료로 남아 있습니다)를
+권장합니다.</p>
+
+<p>이 문서에서는 <directive
+module="mod_rewrite">RewriteRule</directive>이 마법의 주문이
+아닌 과학적 공식이 되도록 압도적이지 않은 수준에서 시작하기에
+충분한 정규 표현식 어휘를 제공하고자 합니다.</p>
+
+<section id="regexvocab"><title>정규 표현식 어휘</title>
+
+<p>다음은 정규 표현식과 <directive
+module="mod_rewrite">RewriteRule</directive>을 작성하기 위해
+필요한 최소한의 구성 요소입니다. 이것들이 완전한 정규 표현식
+어휘를 나타내지는 않지만 시작하기에 좋은 출발점이며, 기본적인
+정규 표현식을 읽고 자신만의 것을 작성하는 데 도움이 될
+것입니다.</p>
+
+<table>
+<tr>
+<th>문자</th>
+<th>의미</th>
+<th>예제</th>
+</tr>
+
+<tr>
+    <td><code>.</code></td>
+    <td>임의의 단일 문자와 일치</td>
+    <td><code>c.t</code>는 <code>cat</code>, <code>cot</code>,
+      <code>cut</code> 등과 일치</td>
+</tr>
+<tr>
+    <td><code>+</code></td>
+    <td>이전 일치를 한 번 이상 반복</td>
+    <td><code>a+</code>는 <code>a</code>, <code>aa</code>,
+      <code>aaa</code> 등과 일치</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>이전 일치를 0번 이상 반복</td>
+    <td><code>a*</code>는 <code>a+</code>가 일치하는 모든 것과
+      일치하지만 빈 문자열과도 일치</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>일치를 선택적으로 만듦</td>
+    <td><code>colou?r</code>는 <code>color</code>와
+    <code>colour</code>에 일치</td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>다음 문자를 이스케이프</td>
+    <td><code>\.</code>는 위에서 설명한 <em>임의의 단일 문자</em>가
+    아닌 <code>.</code>(점)과 일치</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>앵커라고 하며, 문자열의 시작과 일치</td>
+    <td><code>^a</code>는 <code>a</code>로 시작하는 문자열과 일치</td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>다른 앵커, 문자열의 끝과 일치</td>
+    <td><code>a$</code>는 <code>a</code>로 끝나는 문자열과 일치</td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>여러 문자를 단일 단위로 그룹화하고 역참조에서
+      사용할 일치를 캡처</td>
+    <td><code>(ab)+</code>는 <code>ababab</code>과 일치 -
+      즉, <code>+</code>가 그룹에 적용됨.
+      역참조에 대한 자세한 내용은 <a href="#InternalBackRefs">아래</a>를
+      참조</td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>문자 클래스 - 문자 중 하나와 일치</td>
+    <td><code>c[uoa]t</code>는 <code>cut</code>, <code>cot</code> 또는
+      <code>cat</code>과 일치</td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>부정 문자 클래스 - 지정되지 않은 모든 문자와 일치</td>
+    <td><code>c[^/]t</code>는 <code>cat</code> 또는 <code>c=t</code>와
+      일치하지만 <code>c/t</code>와는 일치하지 않음</td></tr>
+</table>
+
+<p><module>mod_rewrite</module>에서 <code>!</code> 문자는
+정규 표현식 앞에 사용하여 부정할 수 있습니다. 즉, 문자열이
+나머지 표현식과 일치하지 않는 경우에만 일치한 것으로
+간주됩니다.</p>
+
+</section>
+
+<section id="InternalBackRefs"><title>정규 표현식 역참조 사용 가능성</title>
+
+      <p>여기서 기억해야 할 중요한 점이 있습니다:
+      <em>Pattern</em>이나 <em>CondPattern</em> 중 하나에서
+      괄호를 사용할 때마다 내부적으로 역참조가 생성되며
+      문자열 <code>$N</code>과 <code>%N</code>(아래 참조)으로
+      사용할 수 있습니다. 이것들은
+      <directive module="mod_rewrite">RewriteRule</directive>의
+      <em>Substitution</em> 매개변수 또는
+      <directive module="mod_rewrite">RewriteCond</directive>의
+      <em>TestString</em> 매개변수를 생성하는 데 사용할 수
+      있습니다.</p>
+      <p><directive module="mod_rewrite">RewriteRule</directive>
+      패턴의 캡처는 (직관에 반하여) 모든 선행
+      <directive module="mod_rewrite">RewriteCond</directive>
+      지시어에서 사용할 수 있습니다.
+      <directive module="mod_rewrite">RewriteRule</directive>
+      표현식이 개별 조건보다 먼저 평가되기 때문입니다.</p>
+
+      <p>그림 1은 역참조가 확장을 위해 전달되는 위치와
+      RewriteRule, RewriteCond 매칭의 흐름을 보여줍니다.
+      다음 장에서 이러한 역참조를 사용하는 방법을 탐구할
+      것이므로, 처음에 다소 생소하게 느껴져도 걱정하지
+      마십시오.
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png"
+      alt="RewriteRule과 RewriteCond 매칭의 흐름" /><br />
+      <dfn>그림 1:</dfn> 규칙을 통한 역참조 흐름.<br />
+      이 예제에서 <code>/test/1234</code>에 대한 요청은 <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>으로 변환됩니다.
+</p>
+
+</section>
+</section>
+
+<section id="rewriterule"><title>RewriteRule 기본</title>
+<p><directive module="mod_rewrite">RewriteRule</directive>은
+공백으로 구분된 세 개의 인수로 구성됩니다. 인수는 다음과
+같습니다:</p>
+<ol>
+<li><var>Pattern</var>: 규칙의 영향을 받는 들어오는 URL;</li>
+<li><var>Substitution</var>: 일치하는 요청이 전송되어야 할 곳;</li>
+<li><var>[flags]</var>: 재작성된 요청에 영향을 미치는 옵션.</li>
+</ol>
+
+<p><var>Pattern</var>은 <a href="#regex">정규 표현식</a>입니다.
+처음에는(첫 번째 재작성 규칙이거나 치환이 발생하기 전까지)
+들어오는 요청의 URL 경로(호스트명 뒤부터 쿼리 문자열의
+시작을 나타내는 물음표 앞까지의 부분) 또는 디렉토리별
+컨텍스트에서는 규칙이 정의된 디렉토리에 상대적인 요청
+경로와 비교됩니다. 치환이 발생하면 이후의 규칙은 치환된
+값과 비교됩니다.
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png"
+      alt="RewriteRule 지시어의 구문" /><br />
+      <dfn>그림 2:</dfn> RewriteRule 지시어의 구문.
+</p>
+
+
+<p><var>Substitution</var>은 자체적으로 다음 세 가지 중
+하나일 수 있습니다:</p>
+
+<dl>
+<dt>1. 자원에 대한 전체 파일 시스템 경로</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games" "/usr/local/games/web/puzzles.html"
+</highlight>
+<p>이것은 <directive module="mod_alias">Alias</directive>
+지시어와 마찬가지로 요청을 파일 시스템의 임의의 위치에
+매핑합니다.</p>
+</dd>
+
+<dt>2. 자원에 대한 웹 경로</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games$" "/puzzles.html"
+</highlight>
+<p><directive module="core">DocumentRoot</directive>가
+<code>/usr/local/apache2/htdocs</code>로 설정된 경우 이
+지시어는 <code>http://example.com/games</code>에 대한 요청을
+<code>/usr/local/apache2/htdocs/puzzles.html</code> 경로로
+매핑합니다.</p>
+
+</dd>
+
+<dt>3. 절대 URL</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]
+</highlight>
+<p>이것은 클라이언트에게 지정된 URL에 대한 새 요청을 하도록
+지시합니다.</p>
+</dd>
+</dl>
+
+<note type="warning"><strong>1</strong>과 <strong>2</strong>는 정확히 동일한 구문을 가집니다. 차이점은 <strong>1</strong>의 경우 대상 경로의 최상위 수준(즉, <code>/usr/</code>)이 파일 시스템에 존재하는 반면, <strong>2</strong>의 경우 존재하지 않는다는 것입니다. (즉, 파일 시스템에 <code>/bar/</code>라는 루트 수준 디렉토리가 없습니다.)</note>
+
+<p><var>Substitution</var>은 <var>Pattern</var>에 의해
+일치된 들어오는 URL 경로의 부분에 대한
+<em>역참조</em>를 포함할 수도 있습니다. 다음을
+고려하십시오:</p>
+<highlight language="config">
+RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"
+</highlight>
+<p>변수 <code>$1</code>은 <var>Pattern</var>의 괄호 안의
+표현식에 의해 일치된 텍스트로 대체됩니다. 예를 들어,
+<code>http://example.com/product/r14df/view</code>에 대한
+요청은 <code>/var/web/productdb/r14df</code> 경로에
+매핑됩니다.</p>
+
+<p>괄호 안의 표현식이 둘 이상인 경우 변수
+<code>$1</code>, <code>$2</code>, <code>$3</code> 등의
+순서로 사용할 수 있습니다.</p>
+
+
+</section>
+
+<section id="flags"><title>재작성 플래그</title>
+<p><directive module="mod_rewrite">RewriteRule</directive>의
+동작은 규칙 끝에 하나 이상의 플래그를 적용하여 수정할 수
+있습니다. 예를 들어, 규칙의 매칭 동작을 <code>[NC]</code>
+플래그를 적용하여 대소문자를 구분하지 않도록 만들 수
+있습니다:
+</p>
+<highlight language="config">
+RewriteRule "^puppy.html" "smalldog.html" [NC]
+</highlight>
+
+<p>사용 가능한 플래그, 그 의미 및 예제에 대한 자세한
+내용은 <a href="flags.html">재작성 플래그</a> 문서를
+참조하십시오.</p>
+
+</section>
+
+
+<section id="rewritecond"><title>재작성 조건</title>
+<p>하나 이상의 <directive module="mod_rewrite">RewriteCond</directive>
+지시어를 사용하여 다음
+<directive module="mod_rewrite">RewriteRule</directive>의 대상이
+되는 요청 유형을 제한할 수 있습니다. 첫 번째 인수는 요청의
+특성을 설명하는 변수이고, 두 번째 인수는 변수와 일치해야 하는
+<a href="#regex">정규 표현식</a>이며, 세 번째 선택적 인수는
+일치 평가 방식을 수정하는 플래그 목록입니다.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png"
+      alt="RewriteCond 지시어의 구문" /><br />
+      <dfn>그림 3:</dfn> RewriteCond 지시어의 구문
+</p>
+
+<p>예를 들어, 특정 IP 범위의 모든 요청을 다른 서버로
+보내려면 다음을 사용할 수 있습니다:</p>
+<highlight language="config">
+RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"
+</highlight>
+
+<p>둘 이상의 <directive module="mod_rewrite">RewriteCond</directive>가
+지정된 경우 <directive module="mod_rewrite">RewriteRule</directive>이
+적용되려면 모든 조건이 일치해야 합니다. 예를 들어, 쿼리
+문자열에 "hack"이라는 단어가 포함된 요청을 거부하되, "go"라는
+단어가 포함된 쿠키가 있는 경우는 제외하려면 다음을 사용할 수
+있습니다:</p>
+<highlight language="config">
+RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]
+</highlight>
+<p>느낌표는 부정 일치를 지정하므로, 쿠키에 "go"가 포함되지
+않은 경우에만 규칙이 적용됩니다.</p>
+
+<p><directive module="mod_rewrite">RewriteCond</directive>에
+포함된 정규 표현식의 일치는 변수 <code>%1</code>,
+<code>%2</code> 등을 사용하여
+<directive module="mod_rewrite">RewriteRule</directive>의
+<var>Substitution</var>의 일부로 사용할 수 있습니다.
+예를 들어, 사이트에 접근하는 데 사용된 호스트명에 따라
+요청을 다른 디렉토리로 보내는 다음과 같습니다:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"
+</highlight>
+<p><code>http://example.com/foo/bar</code>에 대한 요청이면
+<code>%1</code>은 <code>example.com</code>을 포함하고
+<code>$1</code>은 <code>foo/bar</code>를 포함합니다.</p>
+
+
+
+</section>
+
+<section id="rewritemap"><title>재작성 맵</title>
+
+<p><directive module="mod_rewrite">RewriteMap</directive> 지시어는
+재작성을 수행할 외부 함수를 호출하는 방법을 제공합니다.
+이에 대한 자세한 내용은 <a href="rewritemap.html">RewriteMap
+보충 문서</a>에서 논의됩니다.</p>
+</section>
+
+<section id="htaccess"><title>.htaccess 파일</title>
+
+<p>재작성은 일반적으로 주 서버 설정(
+<directive type="section" module="core">Directory</directive>
+섹션 외부)에서 또는
+<directive type="section" module="core">VirtualHost</directive>
+컨테이너 내에서 구성됩니다. 이것이 재작성을 수행하는 가장
+쉬운 방법이며 권장됩니다. 그러나 약간의 추가 복잡성을
+감수하면
+<directive type="section" module="core">Directory</directive>
+섹션이나 <a href="../howto/htaccess.html"><code>.htaccess</code>
+파일</a>에서도 재작성을 수행할 수 있습니다. 이 기술을
+디렉토리별 재작성이라고 합니다.</p>
+
+<p>서버별 재작성과의 주요 차이점은 <code>.htaccess</code>
+파일이 포함된 디렉토리의 경로 접두사가
+<directive module="mod_rewrite">RewriteRule</directive>에서
+매칭하기 전에 제거된다는 것입니다. 또한
+<directive module="mod_rewrite">RewriteBase</directive>를
+사용하여 요청이 올바르게 매핑되도록 해야 합니다.</p>
+
+</section>
+
+</manualpage>

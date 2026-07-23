@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1869811 -->
+<!-- English Revision: 1934441 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -24,16 +24,16 @@
 
 <modulesynopsis metafile="mod_allowhandlers.xml.meta">
 <name>mod_allowhandlers</name>
-<description>Facilite la d&eacute;finition de la liste des gestionnaires HTTP
-qui peuvent &ecirc;tre utilis&eacute;s pour le serveur</description>
+<description>Facilite la définition de la liste des gestionnaires HTTP
+qui peuvent être utilisés pour le serveur</description>
 <status>Experimental</status>
 <sourcefile>mod_allowhandlers.c</sourcefile>
 <identifier>allowhandlers_module</identifier>
 
 
 <summary>
-<p>Ce module facilite la d&eacute;finition de la liste des gestionnaires HTTP
-qui peuvent &ecirc;tre utilis&eacute;s pour une requ&ecirc;te. Voici un exemple de ligne de
+<p>Ce module facilite la définition de la liste des gestionnaires HTTP
+qui peuvent être utilisés pour une requête. Voici un exemple de ligne de
 configuration :</p>
 
 <highlight language="config">
@@ -42,9 +42,9 @@ configuration :</p>
 &lt;/Location&gt;
 </highlight>
 
-<p>Il impl&eacute;mente aussi un gestionnaire nomm&eacute; <code>forbidden</code> qui
-ne fait que renvoyer la r&eacute;ponse "403 FORBIDDEN" au client. Ce
-gestionnaire peut &ecirc;tre sp&eacute;cifi&eacute; par des directives comme <directive
+<p>Il implémente aussi un gestionnaire nommé <code>forbidden</code> qui
+ne fait que renvoyer la réponse "403 FORBIDDEN" au client. Ce
+gestionnaire peut être spécifié par des directives comme <directive
 module="mod_mime">AddHandler</directive>.</p>
 
 </summary>
@@ -54,7 +54,7 @@ module="mod_mime">AddHandler</directive>.</p>
 
 <directivesynopsis>
 <name>AllowHandlers</name>
-<description>Restreint l'acc&egrave;s aux gestionnaires sp&eacute;cifi&eacute;s</description>
+<description>Restreint l'accès aux gestionnaires spécifiés</description>
 <syntax>AllowHandlers [not] none|<em>nom-gestionnaire</em>
 [none|<em>nom-gestionnaire</em>]...</syntax>
 <default>AllowHandlers all</default>
@@ -63,11 +63,11 @@ module="mod_mime">AddHandler</directive>.</p>
 
 <usage>
 
-<p>Les noms de gestionnaires sont sensibles &agrave; la casse. Le nom r&eacute;serv&eacute;
-<code>none</code> peut &ecirc;tre utilis&eacute; dans le cas o&ugrave; aucun gestionnaire
-n'a &eacute;t&eacute; d&eacute;fini. Le nom r&eacute;serv&eacute; <code>all</code>, quant &agrave; lui, peut &ecirc;tre
-utilis&eacute; pour autoriser &agrave; nouveau tous les gestionnaires dans une section
-de configuration ult&eacute;rieure, m&ecirc;me si certains en-t&ecirc;tes ont &eacute;t&eacute; interdits
+<p>Les noms de gestionnaires sont sensibles à la casse. Le nom réservé
+<code>none</code> peut être utilisé dans le cas où aucun gestionnaire
+n'a été défini. Le nom réservé <code>all</code>, quant à lui, peut être
+utilisé pour autoriser à nouveau tous les gestionnaires dans une section
+de configuration ultérieure, même si certains en-têtes ont été interdits
 en aval :</p>
 
 <highlight language="config">

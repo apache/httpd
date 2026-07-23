@@ -150,7 +150,7 @@ int h2_proxy_iq_shift(h2_proxy_iqueue *q);
  * common helpers
  ******************************************************************************/
 /* h2_proxy_log2(n) iff n is a power of 2 */
-unsigned char h2_proxy_log2(int n);
+unsigned char h2_proxy_log2(unsigned int n);
 
 /*******************************************************************************
  * HTTP/2 header helpers

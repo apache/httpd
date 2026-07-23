@@ -2214,7 +2214,7 @@ static int lua_websocket_greet(lua_State *L)
         if (encoded_len) {
             encoded = apr_palloc(r->pool, encoded_len);
             encoded_len = apr_base64_encode(encoded, (char*) digest, APR_SHA1_DIGESTSIZE);
-            r->status = 101;
+            r->status = HTTP_SWITCHING_PROTOCOLS;
             apr_table_setn(r->headers_out, "Upgrade", "websocket");
             apr_table_setn(r->headers_out, "Connection", "Upgrade");
             apr_table_setn(r->headers_out, "Sec-WebSocket-Accept", encoded);
@@ -2547,7 +2547,7 @@ APLUA_REQ_TRACE(6)
 APLUA_REQ_TRACE(7)
 APLUA_REQ_TRACE(8)
 
-/* handle r.status = 201 */
+/* handle r.status = HTTP_CREATED */
 static int req_newindex(lua_State *L)
 {
     const char *key;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1926342 -->
+<!-- English Revision: 1934599 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,6 +78,7 @@
 <seealso><directive module="mod_ssl">SSLRequire</directive></seealso>
 <seealso><directive module="mod_log_debug">LogMessage</directive></seealso>
 <seealso><module>mod_include</module></seealso>
+<seealso><a href="env.html">Variables d’environnement dans Apache httpd</a></seealso>
 
   <section id="grammar">
     <title>Syntaxe en Forme de Backus-Naur</title>
@@ -212,6 +213,13 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
     la phase d'authentification. Par conséquent, la variable
     <code>%{REMOTE_USER}</code> ne sera pas encore définie à ce stade.</p>
 
+    <p>Pour des informations à propos de la définition et de la manipulation des
+    variables d’environnement de requête (en utilisant <directive
+    module="mod_env">SetEnv</directive>, <directive
+    module="mod_setenvif">SetEnvIf</directive>, le drapeau <code>[E=...]</code>
+    de <module>mod_rewrite</module>'s et d’autres directives), voir <a
+    href="env.html">Variables d’environnement dans Apache httpd</a>.</p>
+
     <p>Les variables suivantes contiennent la valeur de l'en-tête de
     requête HTTP correspondant. La <a href="#functions">fonction</a>
     <code>req</code> permet d'extraire les valeurs des autres
@@ -248,7 +256,10 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
     <tr><td><code>REQUEST_SCHEME</code></td>
         <td>Le protocole associé à l'URI de la requête</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
-        <td>La partie chemin de l'URI de la requête</td></tr>
+	<td>La partie chemin de l'URI de la requête en excluant la chaîne de
+	paramètres. Notez que cette variable diffère de la variable
+	d’environnement CGI de même nom qui, quant à elle, inclut la chaîne de
+	paramètres.</td></tr>
     <tr><td><code>DOCUMENT_URI</code></td>
         <td>Idem <code>REQUEST_URI</code></td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
@@ -268,7 +279,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
         <td>Le nom d'utilisateur du propriétaire du script.</td></tr>
     <tr><td><code>SCRIPT_GROUP</code></td>
         <td>Le nom du groupe auquel appartient le script.</td></tr>
-    <tr><td><code>PATH_INFO</code></td>
+    <tr><td><glossary ref="pathinfo">PATH_INFO</glossary></td>
         <td>L'information relative au nom de chemin située en fin, voir
 	la directive <directive module="core">AcceptPathInfo</directive></td></tr>
     <tr><td><code>QUERY_STRING</code></td>
@@ -639,8 +650,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
 	spécifiée toutes les occurrences de "from" par "to". Le premier
 	paramètre ne doit pas être une chaîne littérale.</td><td></td></tr>
     <tr><td><code>escapehtml</code></td>
-        <td>Protège une chaîne HTML à l’aide de séquences
-	d’échappement.</td><td></td></tr>
+        <td>Protège une chaîne HTML à l'aide de séquences
+	d'échappement.</td><td></td></tr>
 
     </table>
 
@@ -670,6 +681,12 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
     général plus tard, mais le moment exact dépend de la directive dans laquelle
     l'expression a été utilisée.
     </note>
+
+    <p>La fonction <code>reqenv</code> permet de tester les <a
+    href="env.html#special">variables d’environnement à utilisation spéciale</a>
+    (telles que <code>no-gzip</code>, <code>nokeepalive</code>, etc.), ainsi que
+    toute variable définie à l’aide de <a href="env.html#setting">SetEnv,
+    SetEnvIf ou mod_rewrite</a>.</p>
 
     <p>Lorsque les fonctions <code>req</code> ou <code>http</code> sont
     utilisées, le nom d'en-tête sera automatiquement ajouté à l'en-tête

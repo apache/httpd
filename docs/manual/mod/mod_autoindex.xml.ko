@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 103423:1894455 (outdated) -->
+<!-- English Revision: 103423:1933762 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -460,8 +460,9 @@
 <directivesynopsis>
 <name>IndexHeadInsert</name>
 <description>Inserts text in the HEAD section of an index page.</description>
-<contextlist><context>server config</context><context>virtual
-host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 

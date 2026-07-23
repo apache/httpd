@@ -1,9 +1,11 @@
 import pytest
+import re
+import socket
 
 from .env import H2Conf, H2TestEnv
 
 
-@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
 class TestH2Proxy:
 
     def test_h2_600_01(self, env):
@@ -198,3 +200,27 @@ class TestH2Proxy:
         # stream (exit_code != 0) or give a 503 response.
         if r.exit_code == 0:
             assert r.response['status'] in [502, 503]
+
+    # test missing host header
+    def test_h2_600_33(self, env):
+
+        conf = H2Conf(env, extras={
+            'base': [
+                'ProxyPreserveHost on',
+                f'ProxyPass /test/ h2c://127.0.0.1:{env.http_port}/',
+            ],
+        })
+        conf.install()
+        assert env.apache_restart() == 0
+
+        with socket.create_connection(
+                ('localhost', int(env.http_port))) as sock:
+            sock.sendall("GET /test/\r\n\r\n".encode())
+        warn_message = re.compile(
+            r'.*HTTP/0\.9 request \(with no Host header\)'
+            r' and preserve host set, forcing hostname.*'
+        )
+        assert env.httpd_error_log.scan_recent(warn_message, timeout=5)
+        env.httpd_error_log.ignore_recent(matches=[
+            r'.*HTTP/0\.9 request \(with no Host header\).*', ],
+            lognos=["AH10511"])

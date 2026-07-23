@@ -142,7 +142,7 @@ apr_status_t sct_parse(const char *source,
     ap_assert(rv == APR_SUCCESS);
 
     if (fields->extlen != 0) {
-        if (fields->extlen < len) {
+        if (len < fields->extlen) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          APLOGNO(02770) "SCT size %" APR_SIZE_T_FMT " has no "
                          "space for %hu bytes of extensions",
@@ -176,7 +176,7 @@ apr_status_t sct_parse(const char *source,
     rv = ctutil_deserialize_uint16(&cur, &len, &fields->siglen);
     ap_assert(rv == APR_SUCCESS);
 
-    if (fields->siglen < len) {
+    if (len < fields->siglen) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      APLOGNO(02772) "SCT has no space for signature");
         return APR_EINVAL;

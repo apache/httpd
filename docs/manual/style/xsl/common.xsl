@@ -26,7 +26,7 @@
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+                  xmlns="">
 
 <!--                                                                      -->
 <!-- Please, don't hard-code output strings! Use the language             -->
@@ -106,8 +106,7 @@
 <xsl:template name="head">
 <head>
     &lf;
-    <meta http-equiv="Content-Type"
-          content="text/html; charset={$output-encoding}" />&lf;
+    <meta name="viewport" content="width=device-width, initial-scale=1" />&lf;
     <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>
             &lf;
@@ -174,10 +173,10 @@
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
     <link href="{$path}/style/css/prettify.css" type="text/css" rel="stylesheet" />&lf;
-    <script type="text/javascript" src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
+    <script src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
-        <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
+        <link rel="shortcut icon" href="{$path}/images/favicon.png" />
         <xsl:if test="$is-retired">
             <xsl:choose>
             <xsl:when test="$upgrade">
@@ -228,7 +227,7 @@
 </div>&lf;
 
 <div id="path">&lf;
-    <a href="http://www.apache.org/">
+    <a href="https://www.apache.org/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -237,7 +236,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/">
+    <a href="https://httpd.apache.org/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -246,7 +245,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/docs/">
+    <a href="https://httpd.apache.org/docs/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -390,42 +389,18 @@
 <xsl:call-template name="langavail">
     <xsl:with-param name="position" select="'bottom'" />
 </xsl:call-template>
-<xsl:choose>
-<xsl:when test="not($is-chm or $is-zip or $metafile/basename = 'index')">
-<div class="top"><a href="#page-header"><img alt="top" src="{$path}/images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="comments_section" id="comments_section"><xsl:value-of select="$message[@id='comments']" /></a></h2>
-<div class="warning"><strong>Notice:</strong><br/>This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>&lf;
-<script type="text/javascript">
-<xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.comments;<xsl:value-of select="concat($metafile/path, $metafile/basename, '.html')" disable-output-escaping="yes" /><xsl:text disable-output-escaping="yes"><![CDATA[';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]]]>></xsl:text></script>
-</div>
-</xsl:when>
-</xsl:choose>
+
+<!-- Comments section used to be here -->
+
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:text>Copyright 2025 The Apache Software Foundation.</xsl:text><br />
+        <xsl:text>Copyright 2026 The Apache Software Foundation.</xsl:text><br />
         <xsl:if test="normalize-space($message[@id='before-license'])">
             <xsl:value-of select="$message[@id='before-license']"/>
             <xsl:text> </xsl:text>
         </xsl:if>
 
-        <a href="http://www.apache.org/licenses/LICENSE-2.0">
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">
             <xsl:if test="$ext-target">
                 <xsl:attribute name="target">_blank</xsl:attribute>
             </xsl:if>
@@ -442,10 +417,31 @@ var comments_identifier = 'http://httpd.apache.org/docs/]]></xsl:text>&httpd.com
 
 </div> <!-- /footer -->
 
-<script type="text/javascript">
+<script>
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]]]>></xsl:text></script>
 </xsl:template>
@@ -459,6 +455,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <xsl:param name="position" select="'top'" />
 
 <xsl:if test="not($is-chm or $is-zip)">
+<xsl:if test="$position = 'top'"><button class="lang-toggle" aria-label="Toggle language list"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>&lf;</xsl:if>
 <div class="{$position}lang">&lf;
     <p>
         <span>
@@ -520,9 +517,8 @@ if (typeof(prettyPrint) !== 'undefined') {
     <h2>
         <xsl:choose>
         <xsl:when test="@id">
-          <a id="{@id}" name="{@id}">
-              <xsl:apply-templates select="title" mode="print" />
-          </a>
+          <xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+          <xsl:apply-templates select="title" mode="print" />
           <xsl:text> </xsl:text>
           <a class="permalink" href="#{@id}" title="{$message[@id='permalink']}">&para;</a>
         </xsl:when>
@@ -548,9 +544,8 @@ if (typeof(prettyPrint) !== 'undefined') {
 <h3>
     <xsl:choose>
     <xsl:when test="@id">
-        <a id="{@id}" name="{@id}">
-            <xsl:apply-templates select="title" mode="print" />
-        </a>
+        <xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+        <xsl:apply-templates select="title" mode="print" />
     </xsl:when>
 
     <xsl:otherwise>
@@ -740,7 +735,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 
     <xsl:text> | </xsl:text>
 
-    <a href="http://wiki.apache.org/httpd/FAQ">
+    <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">
         <xsl:value-of select="$message[@id='faq']" />
     </a>
 
@@ -754,6 +749,12 @@ if (typeof(prettyPrint) !== 'undefined') {
 
     <a href="{$path}/sitemap.html">
         <xsl:value-of select="$message[@id='sitemap']" />
+    </a>
+
+    <xsl:text> | </xsl:text>
+
+    <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">
+        <xsl:value-of select="$message[@id='httpdreportabug']" />
     </a>
 </p>
 </xsl:template>
@@ -1246,6 +1247,30 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- /glossary -->
 
 <!-- ==================================================================== -->
+<!-- link to an RFC at www.rfc-editor.org                                 -->
+<!-- ==================================================================== -->
+<xsl:template match="rfc">
+  <xsl:variable name="rfcnum">
+    <xsl:value-of select="normalize-space(.)"/>
+  </xsl:variable>
+
+  <xsl:variable name="rfcurl">
+    <xsl:text>https://www.rfc-editor.org/rfc/rfc</xsl:text>
+    <xsl:value-of select="$rfcnum"/>
+    <xsl:if test="@section">
+      <xsl:text>#section-</xsl:text>
+      <xsl:value-of select="@section"/>
+    </xsl:if>
+    <xsl:if test="@anchor">
+      <xsl:text>#</xsl:text>
+      <xsl:value-of select="@anchor"/>
+    </xsl:if>
+  </xsl:variable>
+
+  <a href="{$rfcurl}">RFC <xsl:value-of select="$rfcnum"/></a>
+</xsl:template>
+<!-- /rfc -->
+
 <!-- Filter &#160; in text() nodes.                                       -->
 <!-- In some environments this character won't be transformed correctly,  -->
 <!-- so we just write it explicitly as "&nbsp;" into the output.         -->

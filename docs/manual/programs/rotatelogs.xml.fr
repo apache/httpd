@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1906433 -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,7 +29,7 @@
   ces derniers dans un "pipe"</title>
 
 <summary>
-     <p><code>rotatelogs</code> est un programme simple à utiliser en
+     <p><program>rotatelogs</program> est un programme simple à utiliser en
      conjonction avec la fonctionnalité d'Apache de redirection dans un
      "pipe" des fichiers journaux. Il supporte une rotation basée sur un
      intervalle de temps ou une taille maximale du journal.</p>
@@ -68,20 +68,20 @@ spécifié. Cette option permet de consulter le journal de manière
 continue malgré les rotations via une commande du style <code>tail -F
 nom-lien</code>.</p>
 <p>Si le nom du lien spécifié n'est pas un chemin absolu, il est relatif au
-répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
+répertoire de travail de <program>rotatelogs</program> qui correspond à la valeur de
 la directive <directive module="core">ServerRoot</directive> lorsque la commande
-<code>rotatelogs</code> est exécutée par le serveur.  
+<program>rotatelogs</program> est exécutée par le serveur.  
 </p>
 </dd>
 
 <dt><code>-p</code> <var>programme</var></dt>
-<dd><p>Avec cette option, <code>rotatelogs</code> exécutera le programme
+<dd><p>Avec cette option, <program>rotatelogs</program> exécutera le programme
 <var>programme</var> chaque fois qu'un nouveau fichier journal sera
 ouvert. Le nom du fichier nouvellement ouvert est passé comme premier
 argument au programme. Si l'exécution se produit après une rotation,
 l'ancien nom du fichier journal est passé au programme comme second
 argument.</p>
-<p> <code>rotatelogs</code>
+<p> <program>rotatelogs</program>
 n'attend pas la fin du <var>programme</var> pour continuer son
 exécution, et cessera tout enregistrement de codes d'erreur lorsqu'il
 aura terminé son processus.</p>
@@ -96,7 +96,7 @@ du fichier journal ne sont pas modifiées par cette rotation.</p>
 
 <dt><code>-f</code></dt>
 <dd>Ouvre le fichier journal immédiatement, dès que
-<code>rotatelogs</code> démarre, au lieu d'attendre la lecture de la
+<program>rotatelogs</program> démarre, au lieu d'attendre la lecture de la
 première entrée de journal (pour les sites peu chargés, il peut
 s'écouler un temps substantiel entre le démarrage du serveur et le
 traitement de la première requête, temps pendant lequel le fichier
@@ -142,13 +142,13 @@ Cette option permet d'écraser des fichiers journaux au démarrage et au cours d
 la rotation. Avec -n 3, la série de fichiers conservés sera "logfile",
 "logfile.1", "logfile.2" avec écrasement de "logfile".
 <br />
-Lorsque ce programme ouvre « logfile », ce dernier sera seulement tronqué si
+Lorsque ce programme ouvre «&nbsp;logfile&nbsp;», ce dernier sera seulement tronqué si
 l'option <code>-t</code> est aussi spécifiée. Toute rotation subséquente sera
 précédée d'une troncature du fichier cible. Dans le cas d'une rotation basée sur
 la taille sans l'option <code>-t</code> et si des fichiers journaux sont déjà en
 place, cette option peut provoquer des résultats inattendus comme l'envoi des
-entrées de journal initiales vers « logfile.1 », les entrées de « logfile.1 »
-n'étant pas conservées, même si des fichiers « logfile.n » n'ont pas encore été
+entrées de journal initiales vers «&nbsp;logfile.1&nbsp;», les entrées de «&nbsp;logfile.1&nbsp;»
+n'étant pas conservées, même si des fichiers «&nbsp;logfile.n&nbsp;» n'ont pas encore été
 utilisés.
 <br/>
 Disponible à partir de la version 2.4.5 du serveur HTTP Apache.</dd>
@@ -176,9 +176,9 @@ mégaoctets, et si la limite de 5 mégaoctets a été atteinte deux fois
 dans la même journée, le même nom de fichier va être généré, et la
 rotation va écraser le fichier existant.</p>
 <p>Si le nom du fichier journal n'est pas un chemin absolu, il est relatif au
-répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
+répertoire de travail de <program>rotatelogs</program> qui correspond à la valeur de
 la directive <directive module="core">ServerRoot</directive> lorsque la commande
-<code>rotatelogs</code> est exécutée par le serveur.  
+<program>rotatelogs</program> est exécutée par le serveur.  
 </p>
 </dd>
 

@@ -1,0 +1,6 @@
+  *) mod_dav: Add DAVHonorMtimeHeader directive, if enabled
+     the X-Oc-Mtime request header can be used to control
+     resource modification times.  [Leo LI <i hardrain980.com>]
+     
+  *) mod_dav_fs: Add support for changing resource modification times.
+     [Leo LI <i hardrain980.com>]

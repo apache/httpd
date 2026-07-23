@@ -1,0 +1,459 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Tutorial do Servidor HTTP Apache: arquivos .htaccess - Servidor HTTP Apache Vers&atilde;o 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="../glossary.html">Gloss&aacute;rio</a> | <a href="../sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="../">Vers&atilde;o 2.5</a> &gt; <a href="./">Como Fazer / Tutoriais</a></div><div id="page-content"><div id="preamble"><h1>Tutorial do Servidor HTTP Apache: arquivos .htaccess</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../pt-br/howto/htaccess.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+</div>
+<div class="outofdate">Esta tradu&ccedil;&atilde;o pode estar desatualizada.
+        Verifique a vers&atilde;o em ingl&ecirc;s para altera&ccedil;&otilde;es recentes.</div>
+
+<p>Arquivos <code>.htaccess</code> oferecem um meio de fazer altera&ccedil;&otilde;es
+nas configura&ccedil;&otilde;es por diret&oacute;rio, sem modificar diretamente os arquivos
+de configura&ccedil;&atilde;o principais do servidor.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">Arquivos .htaccess </a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#what">O que eles s&atilde;o / Como us&aacute;-los</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#when">Quando (n&atilde;o) usar arquivos .htaccess</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#how">Como as diretivas s&atilde;o aplicadas</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#auth">Exemplo de Autentica&ccedil;&atilde;o</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssi">Exemplo de Server Side Includes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewrite">Regras de reescrita em arquivos .htaccess</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi">Exemplo de CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">Resolvendo Problemas</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="related">Arquivos .htaccess  <a title="Link permanente" href="#related" class="permalink">&para;</a></h2>
+    <table class="related"><tr><th>M&oacute;dulos Relacionados</th><th>Diretrizes Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="what">O que eles s&atilde;o / Como us&aacute;-los <a title="Link permanente" href="#what" class="permalink">&para;</a></h2>
+    
+
+    <p>Os arquivos <code>.htaccess</code> (ou "arquivos de configura&ccedil;&atilde;o distribu&iacute;dos")
+    oferecem um meio de fazer altera&ccedil;&otilde;es nas configura&ccedil;&otilde;es por diret&oacute;rio. Um
+    arquivo, contendo uma ou mais diretivas de configura&ccedil;&otilde;es, &eacute; colocado em um
+    diret&oacute;rio em particular e as diretivas se aplicam a este diret&oacute;rio e a
+    todos os seus subdiret&oacute;rios.</p>
+
+    <div class="note"><h3>Observa&ccedil;&atilde;o:</h3>
+      <p>Se o nome do arquivo precisar ser diferente de <code>.htaccess</code>,
+      ele pode ser alterado atrav&eacute;s da diretiva <code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code>. Por exemplo,
+      se a prefer&ecirc;ncia for chamar o arquivo de <code>.config</code>, pode
+      ser adicionada a seguinte linha ao arquivo de configura&ccedil;&atilde;o do servidor:</p>
+
+      <pre class="prettyprint lang-config">AccessFileName ".config"</pre>
+
+    </div>
+
+    <p>Diretivas nos arquivos <code>.htaccess</code> usam a mesma sintaxe
+    que os <a href="../configuring.html#syntax">arquivos principais
+    de configura&ccedil;&atilde;o</a>. O que pode ser colocado nesses arquivos &eacute; determinado pelas
+    diretivas <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> E
+    <code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code>.
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> especifica, em
+    categorias, quais diretivas ser&atilde;o honradas caso sejam encontradas em um
+    arquivo <code>.htaccess</code>, enquanto que <code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code> nomeia diretivas
+    individuais a serem permitidas (consulte <a href="#when">abaixo</a>). Se uma diretiva
+    for permitida, a documenta&ccedil;&atilde;o para essa diretiva conter&aacute; uma se&ccedil;&atilde;o Override,
+    especificando que valor precisa estar em <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> para que essa diretiva
+    seja permitida.</p>
+
+    <div class="note">O valor padr&atilde;o de <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> &eacute; <code>None</code>.
+    Isto significa que arquivos <code>.htaccess</code> s&atilde;o completamente ignorados
+    a menos que sejam explicitamente habilitados para um diret&oacute;rio.</div>
+
+    <p>Por exemplo, ao procurar na documenta&ccedil;&atilde;o pela diretiva <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>,
+    pode-se notar que ela &eacute; permitida nos arquivos <code>.htaccess</code>.
+    (Veja a linha Contexto no sum&aacute;rio das diretivas.) A
+    linha <a href="../mod/directive-dict.html#Context">Override</a> apresenta
+    <code>FileInfo</code>. Assim, deve-se ter pelo menos
+    <code>AllowOverride FileInfo</code> para que essa diretiva seja
+    honrada nos arquivos <code>.htaccess</code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="when">Quando (n&atilde;o) usar arquivos .htaccess <a title="Link permanente" href="#when" class="permalink">&para;</a></h2>
+
+    <p>Se for poss&iacute;vel o acesso ao arquivo de principal de configura&ccedil;&atilde;o do servidor, todas
+    as configura&ccedil;&otilde;es devem ser colocadas l&aacute; em vez de inseri-las em arquivos
+    <code>.htaccess</code>. Isto inclui autentica&ccedil;&atilde;o de usu&aacute;rios,
+    regras do <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> e qualquer outra coisa que voc&ecirc; tenha
+    tenta&ccedil;&atilde;o de colocar no <code>.htaccess</code>. Diretivas na configura&ccedil;&atilde;o
+    principal s&atilde;o carregadas assim que o servidor inicia, e n&atilde;o a cada
+    requisi&ccedil;&atilde;o, e o <code>mod_rewrite</code> em particular funciona melhor
+    no contexto de configura&ccedil;&atilde;o do servidor.</p>
+
+    <p>Os arquivos <code>.htaccess</code> devem ser usados ​​nos casos em que os
+    provedores de conte&uacute;do precisam fazer altera&ccedil;&otilde;es de configura&ccedil;&atilde;o no servidor
+    por diret&oacute;rio, mas n&atilde;o t&ecirc;m acesso "root" ao sistema do servidor.
+    Isto &eacute; comum com ambientes de hospedagem gerenciados, hospedagem baseada
+    em painel de controle (como cPanel ou Plesk), e sistemas de gerenciamento de conte&uacute;do onde
+    a aplica&ccedil;&atilde;o envia um arquivo <code>.htaccess</code> como parte de sua
+    distribui&ccedil;&atilde;o. Caso o administrador do servidor n&atilde;o esteja disposto a fazer
+    altera&ccedil;&otilde;es de configura&ccedil;&atilde;o frequentes, pode ser desej&aacute;vel permitir que
+    usu&aacute;rios individuais fa&ccedil;am essas altera&ccedil;&otilde;es em arquivos <code>.htaccess</code>
+    por conta pr&oacute;pria.</p>
+
+    <p>Existem dois motivos principais para preferir o arquivo principal de configura&ccedil;&atilde;o
+    no lugar do <code>.htaccess</code>: desempenho e seguran&ccedil;a.</p>
+
+    <p>Desempenho: Quando a diretiva <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
+    est&aacute; configurada para permitir o uso de arquivos <code>.htaccess</code>, o httpd
+    procurar&aacute; em todos os diret&oacute;rios por arquivos <code>.htaccess</code>. Portanto,
+    permitir arquivos <code>.htaccess</code> causa uma queda de desempenho,
+    independentemente de serem realmente usados ou n&atilde;o! Al&eacute;m disso, o
+    arquivo <code>.htaccess</code> &eacute; carregado sempre que um documento &eacute;
+    solicitado.</p>
+
+    <p>Observe ainda que o httpd precisa procurar arquivos <code>.htaccess</code>
+    em todos os diret&oacute;rios de n&iacute;vel superior, a fim de ter um conjunto completo de
+    diretivas que ele deve aplicar. (Consulte a se&ccedil;&atilde;o sobre <a href="#how">como
+    as diretivas s&atilde;o aplicadas</a>.) Assim, se um arquivo for solicitado de um
+    diret&oacute;rio <code>/www/htdocs/example</code>, o httpd precisa procurar os
+    seguintes arquivos:</p>
+
+    <pre class="prettyprint lang-config">/.htaccess
+/www/.htaccess
+/www/htdocs/.htaccess
+/www/htdocs/example/.htaccess</pre>
+
+
+    <p>Assim, para cada acesso a um arquivo fora desse diret&oacute;rio, h&aacute; 4
+    acessos adicionais ao sistema de arquivos, mesmo que nenhum desses arquivos esteja
+    presente. (Observe que isso s&oacute; ocorreria se
+    os arquivos <code>.htaccess</code> estivessem habilitados para o diret&oacute;rio <code>/</code>, o que
+    normalmente n&atilde;o acontece.)</p>
+
+    <p>Seguran&ccedil;a: Voc&ecirc; est&aacute; permitindo
+    que usu&aacute;rios modifiquem a configura&ccedil;&atilde;o do servidor, o que pode resultar em altera&ccedil;&otilde;es sobre
+    as quais voc&ecirc; n&atilde;o tem controle.Considere cuidadosamente se deseja conceder
+    esse privil&eacute;gio aos usu&aacute;rios. Observe tamb&eacute;m que conceder aos usu&aacute;rios menos
+    privil&eacute;gios do que o necess&aacute;rio levar&aacute; a solicita&ccedil;&otilde;es adicionais de suporte
+    t&eacute;cnico. Certifique-se de informar claramente aos usu&aacute;rios qual o n&iacute;vel de
+    privil&eacute;gios que foi condedido a eles. Especificar exatamente o valor definido para
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> e direcion&aacute;-los
+    para a documenta&ccedil;&atilde;o relevante evitar&aacute; muita confus&atilde;o
+    posteriormente.</p>
+
+    <p>Se for necess&aacute;rio conceder acesso ao <code>.htaccess</code> por&eacute;m limitando
+    a um conjunto espec&iacute;fico de diretivas em vez de categorias inteiras, use a
+    diretiva <code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code>. Isso
+    permite nomear diretivas individuais que s&atilde;o permitidas, fornecendo
+    um controle mais fino que a <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> sozinha:</p>
+
+    <pre class="prettyprint lang-config"># Permite somente diretivas espec&iacute;ficas, e n&atilde;o categorias inteiras
+AllowOverride None
+AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</pre>
+
+
+    <p>Com esta configura&ccedil;&atilde;o, qualquer diretiva que n&atilde;o esteja explicitamente listada
+    causar&aacute; um erro de servidor se encontrada em um arquivo <code>.htaccess</code>.
+    Isto &eacute; um meio termo &uacute;til entre o acesso total e nenhum
+    acesso.</p>
+
+    <p>Observe que &eacute; completamente equivalente colocar um arquivo <code>.htaccess</code>
+    em um diret&oacute;rio <code>/www/htdocs/example</code> contendo uma
+    diretiva, e colocar essa mesma diretiva em uma se&ccedil;&atilde;o Directory
+    <code>&lt;Directory "/www/htdocs/example"&gt;</code> na configura&ccedil;&atilde;o principal do
+    servidor:</p>
+
+    <p>Arquivo <code>.htaccess</code> em <code>/www/htdocs/example</code>:</p>
+
+    <div class="example"><h3>Conte&uacute;do do arquivo .htaccess em
+    <code>/www/htdocs/example</code></h3><pre class="prettyprint lang-config">AddType text/example ".exm"</pre>
+</div>
+
+    <div class="example"><h3>Se&ccedil;&atilde;o do arquivo <code>httpd.conf</code>
+    </h3><pre class="prettyprint lang-config">&lt;Directory "/www/htdocs/example"&gt;
+    AddType text/example ".exm"
+&lt;/Directory&gt;</pre>
+</div>
+
+    <p>O uso de arquivos <code>.htaccess</code> pode ser completamente desativado
+    definindo a diretiva <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
+    como <code>none</code>:</p>
+
+    <pre class="prettyprint lang-config">AllowOverride None</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="how">Como as diretivas s&atilde;o aplicadas <a title="Link permanente" href="#how" class="permalink">&para;</a></h2>
+
+    <p>As diretivas de configura&ccedil;&atilde;o encontradas em um arquivo <code>.htaccess</code>
+    s&atilde;o aplicadas ao diret&oacute;rio em que o arquivo <code>.htaccess</code>
+    est&aacute; localizado e a todos os seus subdiret&oacute;rios. No entanto, &eacute; importante
+    lembrar tamb&eacute;m que pode haver arquivos <code>.htaccess</code>
+    em diret&oacute;rios acima na &aacute;rvore. As diretivas s&atilde;o aplicadas na ordem em que
+    s&atilde;o encontradas. Portanto, um arquivo <code>.htaccess</code> em um determinado
+    diret&oacute;rio pode sobrescrever diretivas encontradas em arquivos <code>.htaccess</code>
+    localizados acima na &aacute;rvore de diret&oacute;rios. E estes, por sua vez, podem ter
+    sobrescrito diretivas encontradas ainda acima na &aacute;rvore, ou no pr&oacute;prio arquivo de
+    configura&ccedil;&atilde;o principal do servidor.</p>
+
+    <p>Exemplo:</p>
+
+    <p>No diret&oacute;rio <code>/www/htdocs/example1</code>, considere
+    um arquivo <code>.htaccess</code> contendo o seguinte:</p>
+
+    <pre class="prettyprint lang-config">Options +ExecCGI</pre>
+
+
+    <p>(Observa&ccedil;&atilde;o: "<code>AllowOverride Options</code>" precisa estar em vigor
+    para permitir o uso da diretiva "<code class="directive"><a href="../mod/core.html#options">Options</a></code>" em
+    arquivos <code>.htaccess</code>.)</p>
+
+    <p>No diret&oacute;rio <code>/www/htdocs/example1/example2</code>, considere
+    um arquivo <code>.htaccess</code> contendo:</p>
+
+    <pre class="prettyprint lang-config">Options Includes</pre>
+
+
+    <p>Devido a este segundo arquivo <code>.htaccess</code>, no diret&oacute;rio
+    <code>/www/htdocs/example1/example2</code>, a execu&ccedil;&atilde;o de CGI n&atilde;o &eacute;
+    permitida, pois apenas <code>Options Includes</code> est&aacute; em vigor, o que
+    sobrescreve completamente qualquer configura&ccedil;&atilde;o anterior que possa ter estado
+    em vigor.</p>
+
+    <h3 id="merge">Mesclagem do .htaccess com os arquivos principais
+        de configura&ccedil;&atilde;o</h3>
+
+        <p>Conforme discutido na documenta&ccedil;&atilde;o sobre <a href="../sections.html">Se&ccedil;&otilde;es de Configura&ccedil;&atilde;o</a>,
+        os arquivos <code>.htaccess</code> podem sobrescrever as se&ccedil;&otilde;es <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> para
+        o diret&oacute;rio correspondente, mas ser&atilde;o sobrescritos por outros tipos
+        de se&ccedil;&otilde;es de configura&ccedil;&atilde;o dos arquivos de configura&ccedil;&atilde;o principais.
+        Esse fato pode ser usado para impor certas configura&ccedil;&otilde;es, mesmo na
+        presen&ccedil;a de uma configura&ccedil;&atilde;o <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> permissiva. Por exemplo, para
+        impedir a execu&ccedil;&atilde;o de scripts, permitindo que qualquer outra configura&ccedil;&atilde;o seja feita em
+        <code>.htaccess</code>, pode ser usado:</p>
+
+        <pre class="prettyprint lang-config">&lt;Directory "/www/htdocs"&gt;
+    AllowOverride All
+&lt;/Directory&gt;
+
+&lt;Location "/"&gt;
+    Options +IncludesNoExec -ExecCGI
+&lt;/Location&gt;</pre>
+
+
+        <div class="note">Este exemplo pressup&otilde;e que <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> seja <code>/www/htdocs</code>.</div>
+    
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="auth">Exemplo de Autentica&ccedil;&atilde;o <a title="Link permanente" href="#auth" class="permalink">&para;</a></h2>
+
+    <p>Como em qualquer caso de uso de <code>.htaccess</code>, inserir estas diretivas em
+    um bloco <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> &eacute;
+    preferido quando se tem acesso &agrave; configura&ccedil;&atilde;o principal (consulte
+    <a href="#when">above</a>). O exemplo s seguir mostra o m&eacute;todo
+    <code>.htaccess</code>:</p>
+
+    <p>Conte&uacute;do de <code>.htaccess</code>:</p>
+
+    <pre class="prettyprint lang-config">AuthType Basic
+AuthName "Senha Requerida"
+AuthUserFile "/www/senhas/arquivo.senhas"
+AuthGroupFile "/www/senhas/arquivo.grupos"
+Require group admins</pre>
+
+
+    <p>Observe que <code>AllowOverride AuthConfig</code> deve estar em vigor
+    para que essas diretivas tenham algum efeito.</p>
+
+    <p>Consulte o <a href="auth.html">tutorial de autentica&ccedil;&atilde;o</a> para uma
+    discuss&atilde;o mais completa sobre autentica&ccedil;&atilde;o e autoriza&ccedil;&atilde;o.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="ssi">Exemplo de Server Side Includes <a title="Link permanente" href="#ssi" class="permalink">&para;</a></h2>
+
+    <p>Outro uso comum de arquivos <code>.htaccess</code> &eacute; habilitar
+    inclus&otilde;es do lado do servidor para um diret&oacute;rio espec&iacute;fico. Isso pode ser feito com
+    as seguintes diretivas de configura&ccedil;&atilde;o, colocadas em um
+    arquivo <code>.htaccess</code> no diret&oacute;rio desejado:</p>
+
+    <pre class="prettyprint lang-config">Options +Includes
+AddType text/html shtml
+AddHandler server-parsed shtml</pre>
+
+
+    <p>Observe que <code>AllowOverride Options</code> e <code>AllowOverride
+    FileInfo</code> devem estar ambos em vigor para que essas diretivas tenham algum
+    efeito.</p>
+
+    <p>Consulte o <a href="ssi.html">tutorial SSI</a> para uma discuss&atilde;o mais
+    completa sobre includes do lado do servidor.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewrite">Regras de reescrita em arquivos .htaccess <a title="Link permanente" href="#rewrite" class="permalink">&para;</a></h2>
+    <p>Ao usar <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> em
+    arquivos .htaccess, esteja ciente de que o contexto por diret&oacute;rio
+    muda um pouco as coisas. Em particular, as regras s&atilde;o consideradas relativas
+    ao diret&oacute;rio atual, em vez de serem o URI solicitado original.
+    Considere os seguintes exemplos:</p>
+
+    <pre class="prettyprint lang-config"># No arquivo httpd.conf
+RewriteRule "^/imagens/(.+)\.jpg" "/imagens/$1.png"
+
+# No arquivo .htaccess do diret&oacute;rio raiz
+RewriteRule "^imagens/(.+)\.jpg" "imagens/$1.png"
+
+# No arquivo .htaccess do diret&oacute;rio imagens/
+RewriteRule "^(.+)\.jpg" "$1.png"</pre>
+
+
+    <p>Em um arquivo <code>.htaccess</code> no diret&oacute;rio de documentos, a barra inicial
+    &eacute; removida do valor fornecido para <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, e no subdiret&oacute;rio
+    <code>imagens</code>, <code>/imagens/</code> &eacute; removido
+    dele. Portanto, a express&atilde;o regular precisa omitir essa parte
+    tamb&eacute;m.</p>
+
+    <p>Observe tamb&eacute;m que no contexto do <code>.htaccess</code>, express&otilde;es regulares s&atilde;o
+    recompiladas a cada requisi&ccedil;&atilde;o, enquanto que na configura&ccedil;&atilde;o principal do servidor elas
+    s&atilde;o compiladas apenas uma vez e armazenadas em cache.</p>
+
+    <p>Consulte a <a href="../rewrite/">documenta&ccedil;&atilde;o do mod_rewrite</a> para
+    obter mais detalhes sobre como usar o <code>mod_rewrite</code>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="cgi">Exemplo de CGI <a title="Link permanente" href="#cgi" class="permalink">&para;</a></h2>
+
+    <div class="note">Scripts CGI s&atilde;o um mecanismo legado para conte&uacute;do din&acirc;mico. Para novos
+    desenvolvimentos, considere o uso de <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> com um
+    servidor de aplica&ccedil;&atilde;o FastCGI ou um manipulador espec&iacute;fico para algum framework. A
+    informa&ccedil;&atilde;o abaixo permanece &uacute;til para ambientes que ainda dependem de
+    CGI tradicional.</div>
+
+    <p>Pode ser necess&aacute;rio usar um arquivo <code>.htaccess</code> para permitir
+    a execu&ccedil;&atilde;o de programas CGI em um diret&oacute;rio espec&iacute;fico. Isso pode ser
+    implementado com a seguinte configura&ccedil;&atilde;o:</p>
+
+    <pre class="prettyprint lang-config">Options +ExecCGI
+AddHandler cgi-script cgi pl</pre>
+
+
+    <p>Alternativamente, se for necess&aacute;rio que todos os arquivos no diret&oacute;rio especificado sejam
+    considerados programas CGI, isso pode ser feito com a seguinte
+    configura&ccedil;&atilde;o:</p>
+
+    <pre class="prettyprint lang-config">Options +ExecCGI
+SetHandler cgi-script</pre>
+
+
+    <p>Observe que <code>AllowOverride Options</code> e <code>AllowOverride
+    FileInfo</code> devem estar ambos em vigor para que essas diretivas tenham algum
+    efeito.</p>
+
+    <p>Consulte o <a href="cgi.html">tutorial CGI</a> para uma discuss&atilde;o mais
+    completa sobre programa&ccedil;&atilde;o e configura&ccedil;&atilde;o CGI.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="troubleshoot">Resolvendo Problemas <a title="Link permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
+
+    <p>Quando s&atilde;o colocadas diretivas de configura&ccedil;&atilde;o em um arquivo <code>.htaccess</code>
+    e n&atilde;o &eacute; obtido o efeito desejado, h&aacute; uma s&eacute;rie de
+    coisas que podem estar dando errado.</p>
+
+    <p>O problema mais comum &eacute; que a diretiva <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> n&atilde;o est&aacute;
+    configurada de forma que suas diretivas de configura&ccedil;&atilde;o sejam respeitadas.
+    Certifique-se de que n&atilde;o exista um <code>AllowOverride None</code> em vigor
+    para o escopo do arquivo em quest&atilde;o. Um bom teste para isso &eacute; colocar uma
+    palavra sem sentido no seu arquivo <code>.htaccess</code> e recarregar a
+    p&aacute;gina:</p>
+
+    <pre class="prettyprint lang-config">TestMe</pre>
+
+
+    <p>Se um erro do servidor (HTTP 500) n&atilde;o
+    for gerado, &eacute; quase certeza que <code>AllowOverride
+    None</code> esteja em vigor.</p>
+
+    <p>Se, por outro lado, erros do servidor estiverem sendo gerados ao tentar
+    acessar documentos, verifique o registro de erros do httpd. Ele provavelmente informar&aacute;
+    que a diretiva usada no arquivo <code>.htaccess</code> n&atilde;o &eacute;
+    permitida.</p>
+
+    <pre class="prettyprint lang-config">[Tue May 06 09:12:31.528374 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here</pre>
+
+
+    <p>Isso indicar&aacute; que foi usada uma diretiva que
+    nunca &eacute; permitida em arquivos <code>.htaccess</code>, ou que simplesmente
+    n&atilde;o existe um <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> definido para
+    um n&iacute;vel suficiente para a diretiva usada. Consulte a
+    documenta&ccedil;&atilde;o dessa diretiva espec&iacute;fica para determinar qual
+    &eacute; o caso.</p>
+
+    <p>Alternativamente, pode aparecer um erro de sintaxe no
+    uso da pr&oacute;pria diretiva.</p>
+
+    <pre class="prettyprint lang-config">[Tue May 06 09:14:02.946218 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters</pre>
+
+
+    <p>Neste caso, a mensagem de erro deve ser espec&iacute;fica para o
+    erro de sintaxe cometido.</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../pt-br/howto/htaccess.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="../glossary.html">Gloss&aacute;rio</a> | <a href="../sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

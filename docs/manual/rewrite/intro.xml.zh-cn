@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English Revision: 1933423:1935426 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="intro.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite 简介</title>
+
+<summary>
+<p>本文档是 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了使用
+<module>mod_rewrite</module> 所需的基本概念。
+其他文档会更详细地介绍，但本文档应该能帮助初学者入门。
+</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">模块文档</a></seealso>
+<!-- <seealso><a href="intro.html">mod_rewrite 简介</a></seealso> -->
+<seealso><a href="remapping.html">重定向和重映射</a></seealso>
+<seealso><a href="access.html">访问控制</a></seealso>
+<seealso><a href="vhosts.html">虚拟主机</a></seealso>
+<seealso><a href="proxy.html">代理</a></seealso>
+<seealso><a href="rewritemap.html">使用 RewriteMap</a></seealso>
+<seealso><a href="advanced.html">高级技术</a></seealso>
+<seealso><a href="avoid.html">何时不使用 mod_rewrite</a></seealso>
+
+<section id="introduction"><title>介绍</title>
+<p>Apache 模块 <module>mod_rewrite</module> 是一个非常强大且复杂的模块，
+它提供了进行 URL 操作的方法。使用它，你几乎可以完成所有类型的 URL 重写。
+然而，它有一定的复杂性，可能会令初学者望而生畏。
+还有一种倾向是将重写规则视为魔法咒语，在不真正理解其作用的情况下使用它们。</p>
+
+<p>本文档试图提供足够的背景知识，使接下来的内容被理解，
+而不仅仅是盲目复制。
+</p>
+
+<p>请记住，许多常见的 URL 操作任务不需要 <module>mod_rewrite</module>
+的全部功能和复杂性。对于简单任务，请参阅 <module>mod_alias</module>
+和关于<a href="../urlmapping.html">将 URL 映射到文件系统</a>的文档。</p>
+
+<p>最后，在继续之前，请务必使用
+<directive module="core">LogLevel</directive>
+指令将 <module>mod_rewrite</module> 的日志级别配置为 trace 级别之一。
+虽然这可能会产生大量信息，但在调试 <module>mod_rewrite</module>
+配置问题时它是不可或缺的，因为它会告诉你每条规则是如何被处理的。</p>
+
+</section>
+
+<section id="regex"><title>正则表达式</title>
+
+<p><module>mod_rewrite</module> 使用 <a href="http://pcre.org/">Perl
+兼容正则表达式</a>词汇。在本文档中，我们不试图提供正则表达式的详细参考。
+为此，我们推荐 <a href="http://pcre.org/pcre.txt">PCRE 手册页</a>、
+<a href="http://perldoc.perl.org/perlre.html">Perl 正则表达式手册页</a>
+以及 <a
+href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Jeffrey
+Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
+但正则表达式语法基本没有变化，它仍然是该主题的权威参考）。</p>
+
+<p>在本文档中，我们试图提供足够的正则表达式词汇来帮助你入门，
+而不会让你感到不知所措，希望
+<directive module="mod_rewrite">RewriteRule</directive>
+是科学公式，而不是魔法咒语。</p>
+
+<section id="regexvocab"><title>正则表达式词汇</title>
+
+<p>以下是编写正则表达式和
+<directive module="mod_rewrite">RewriteRule</directive>
+所需的最基本构建块。它们当然不代表完整的正则表达式词汇，
+但它们是一个好的起点，应该能帮助你阅读基本的正则表达式并编写自己的正则表达式。</p>
+
+<table>
+<tr>
+<th>字符</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+
+<tr>
+    <td><code>.</code></td>
+    <td>匹配任意单个字符</td>
+    <td><code>c.t</code> 将匹配 <code>cat</code>、<code>cot</code>、
+      <code>cut</code> 等</td>
+</tr>
+<tr>
+    <td><code>+</code></td>
+    <td>重复前一个匹配一次或多次</td>
+    <td><code>a+</code> 匹配 <code>a</code>、<code>aa</code>、
+      <code>aaa</code> 等</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>重复前一个匹配零次或多次</td>
+    <td><code>a*</code> 匹配 <code>a+</code> 匹配的所有内容，
+      但也会匹配空字符串</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>使匹配变为可选</td>
+    <td><code>colou?r</code> 将匹配 <code>color</code> 和
+    <code>colour</code></td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>转义下一个字符</td>
+    <td><code>\.</code> 将匹配 <code>.</code>（点）而不是如上所述的
+    <em>任意单个字符</em></td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>称为锚点，匹配字符串的开头</td>
+    <td><code>^a</code> 匹配以 <code>a</code> 开头的字符串</td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>另一个锚点，匹配字符串的结尾</td>
+    <td><code>a$</code> 匹配以 <code>a</code> 结尾的字符串</td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>将多个字符组合为一个单元，并捕获匹配以用于反向引用</td>
+    <td><code>(ab)+</code> 匹配 <code>ababab</code>——即
+      <code>+</code> 应用于整个组。关于反向引用的更多信息见
+      <a href="#InternalBackRefs">下文</a></td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>字符类——匹配其中一个字符</td>
+    <td><code>c[uoa]t</code> 匹配 <code>cut</code>、<code>cot</code> 或
+      <code>cat</code></td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>否定字符类——匹配未指定的任意字符</td>
+    <td><code>c[^/]t</code> 匹配 <code>cat</code> 或 <code>c=t</code>
+      但不匹配 <code>c/t</code></td></tr>
+</table>
+
+<p>在 <module>mod_rewrite</module> 中，<code>!</code>
+字符可以在正则表达式前使用来否定它。也就是说，
+只有当字符串不匹配表达式的其余部分时，才认为匹配成功。</p>
+
+</section>
+
+<section id="InternalBackRefs"><title>正则表达式反向引用的可用性</title>
+
+      <p>这里有一个重要的事情要记住：每当你在<em>模式</em>或某个
+      <em>CondPattern</em> 中使用括号时，都会在内部创建反向引用，
+      可以使用字符串 <code>$N</code> 和 <code>%N</code>（见下文）来引用。
+      这些可用于创建
+      <directive module="mod_rewrite">RewriteRule</directive> 的
+      <em>替换</em>参数或
+      <directive module="mod_rewrite">RewriteCond</directive> 的
+      <em>TestString</em> 参数。</p>
+      <p><directive module="mod_rewrite">RewriteRule</directive>
+      模式中的捕获（看似违反直觉地）可供所有前面的
+      <directive module="mod_rewrite">RewriteCond</directive> 指令使用，
+      因为 <directive module="mod_rewrite">RewriteRule</directive>
+      表达式在各个条件之前就已被求值。</p>
+
+      <p>图 1 显示了反向引用被传递到哪些位置进行展开，
+      并说明了 RewriteRule 和 RewriteCond 匹配的流程。
+      在接下来的章节中，我们将探索如何使用这些反向引用，
+      所以如果你一开始觉得有些陌生，不必担心。
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png"
+      alt="RewriteRule 和 RewriteCond 匹配流程" /><br />
+      <dfn>图 1：</dfn>反向引用在规则中的流向。<br />
+      在此示例中，对 <code>/test/1234</code> 的请求将被转换为 <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>。
+</p>
+
+</section>
+</section>
+
+<section id="rewriterule"><title>RewriteRule 基础</title>
+<p><directive module="mod_rewrite">RewriteRule</directive>
+由三个以空格分隔的参数组成。这些参数是：</p>
+<ol>
+<li><var>Pattern</var>：哪些传入的 URL 应受此规则影响；</li>
+<li><var>Substitution</var>：匹配的请求应被发送到哪里；</li>
+<li><var>[flags]</var>：影响重写请求的选项。</li>
+</ol>
+
+<p><var>Pattern</var> 是一个<a href="#regex">正则表达式</a>。
+它最初（对于第一条重写规则或直到发生替换为止）与传入请求的 URL 路径
+（主机名之后但问号之前的部分，问号表示查询字符串的开始）进行匹配，
+或者在目录级上下文中与请求相对于定义规则的目录的路径进行匹配。
+一旦发生替换，后续规则将与替换后的值进行匹配。
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png"
+      alt="RewriteRule 指令的语法" /><br />
+      <dfn>图 2：</dfn>RewriteRule 指令的语法。
+</p>
+
+
+<p><var>Substitution</var> 本身可以是以下三种之一：</p>
+
+<dl>
+<dt>1. 资源的完整文件系统路径</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games" "/usr/local/games/web/puzzles.html"
+</highlight>
+<p>这将请求映射到文件系统上的任意位置，
+类似于 <directive module="mod_alias">Alias</directive> 指令。</p>
+</dd>
+
+<dt>2. 资源的 Web 路径</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games$" "/puzzles.html"
+</highlight>
+<p>如果 <directive module="core">DocumentRoot</directive> 设置为
+<code>/usr/local/apache2/htdocs</code>，则此指令会将对
+<code>http://example.com/games</code> 的请求映射到路径
+<code>/usr/local/apache2/htdocs/puzzles.html</code>。</p>
+
+</dd>
+
+<dt>3. 绝对 URL</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]
+</highlight>
+<p>这告诉客户端对指定 URL 发出新的请求。</p>
+</dd>
+</dl>
+
+<note type="warning">请注意 <strong>1</strong> 和 <strong>2</strong>
+的语法完全相同。它们之间的区别在于，对于 <strong>1</strong>，
+目标路径的顶层（即 <code>/usr/</code>）存在于文件系统上，
+而对于 <strong>2</strong>，它不存在。
+（即文件系统中没有 <code>/bar/</code> 作为根级目录。）</note>
+
+<p><var>Substitution</var> 还可以包含对传入 URL 路径中由
+<var>Pattern</var> 匹配的部分的<em>反向引用</em>。
+请看以下示例：</p>
+<highlight language="config">
+RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"
+</highlight>
+<p>变量 <code>$1</code> 将被替换为 <var>Pattern</var>
+中括号内的表达式所匹配的任何文本。例如，对
+<code>http://example.com/product/r14df/view</code> 的请求将被映射到路径
+<code>/var/web/productdb/r14df</code>。</p>
+
+<p>如果括号中有多个表达式，它们将按顺序出现在变量
+<code>$1</code>、<code>$2</code>、<code>$3</code> 等中。</p>
+
+
+</section>
+
+<section id="flags"><title>重写标志</title>
+<p><directive module="mod_rewrite">RewriteRule</directive>
+的行为可以通过在规则末尾应用一个或多个标志来修改。
+例如，可以通过应用 <code>[NC]</code>
+标志使规则的匹配行为不区分大小写：
+</p>
+<highlight language="config">
+RewriteRule "^puppy.html" "smalldog.html" [NC]
+</highlight>
+
+<p>有关可用标志、其含义和示例的更多详细信息，
+请参阅<a href="flags.html">重写标志</a>文档。</p>
+
+</section>
+
+
+<section id="rewritecond"><title>重写条件</title>
+<p>一个或多个 <directive module="mod_rewrite">RewriteCond</directive>
+指令可用于限制将受后续
+<directive module="mod_rewrite">RewriteRule</directive> 影响的请求类型。
+第一个参数是描述请求特征的变量，
+第二个参数是必须匹配该变量的<a href="#regex">正则表达式</a>，
+第三个可选参数是修改匹配评估方式的标志列表。</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png"
+      alt="RewriteCond 指令的语法" /><br />
+      <dfn>图 3：</dfn>RewriteCond 指令的语法
+</p>
+
+<p>例如，要将来自特定 IP 范围的所有请求发送到不同的服务器，
+你可以使用：</p>
+<highlight language="config">
+RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"
+</highlight>
+
+<p>当指定了多个 <directive module="mod_rewrite">RewriteCond</directive> 时，
+它们必须全部匹配才能应用
+<directive module="mod_rewrite">RewriteRule</directive>。
+例如，要拒绝查询字符串中包含"hack"一词的请求，
+除非它们还包含含有"go"一词的 cookie，你可以使用：</p>
+<highlight language="config">
+RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]
+</highlight>
+<p>请注意，感叹号指定否定匹配，
+因此只有当 cookie 不包含"go"时才应用该规则。</p>
+
+<p><directive module="mod_rewrite">RewriteCond</directive>
+中正则表达式的匹配结果可以作为
+<directive module="mod_rewrite">RewriteRule</directive> 中
+<var>Substitution</var> 的一部分，使用变量 <code>%1</code>、
+<code>%2</code> 等。例如，这将根据用于访问站点的主机名
+将请求定向到不同的目录：</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"
+</highlight>
+<p>如果请求是 <code>http://example.com/foo/bar</code>，
+则 <code>%1</code> 将包含 <code>example.com</code>，
+<code>$1</code> 将包含 <code>foo/bar</code>。</p>
+
+
+
+</section>
+
+<section id="rewritemap"><title>重写映射</title>
+
+<p><directive module="mod_rewrite">RewriteMap</directive>
+指令提供了一种调用外部函数来为你执行重写的方法。
+这在 <a href="rewritemap.html">RewriteMap 补充文档</a>中有更详细的讨论。</p>
+</section>
+
+<section id="htaccess"><title>.htaccess 文件</title>
+
+<p>重写通常在主服务器配置中（在任何
+<directive type="section" module="core">Directory</directive>
+配置段之外）或在
+<directive type="section" module="core">VirtualHost</directive>
+容器中配置。这是执行重写的最简单方式，也是推荐的方式。
+但是，也可以在
+<directive type="section" module="core">Directory</directive>
+配置段或 <a href="../howto/htaccess.html"><code>.htaccess</code>
+文件</a>中执行重写，但会增加一些额外的复杂性。
+这种技术称为目录级重写。</p>
+
+<p>与服务器级重写的主要区别在于，
+包含 <code>.htaccess</code> 文件的目录路径前缀在
+<directive module="mod_rewrite">RewriteRule</directive>
+中匹配之前会被去除。此外，应使用
+<directive module="mod_rewrite">RewriteBase</directive>
+来确保请求被正确映射。</p>
+
+</section>
+
+</manualpage>

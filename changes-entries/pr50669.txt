@@ -1,0 +1,3 @@
+  *) Unix MPMs: Add --enable-sigusr2 configure option to use
+     SIGUSR2 rather than SIGWINCH for graceful-stop.  PR 50669
+     [Joe Orton]

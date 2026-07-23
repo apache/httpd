@@ -1,38 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_dbd - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_dbd</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_dbd.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dbd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_dbd.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Manages SQL database connections</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>dbd_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dbd.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>dbd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_dbd.c</td></tr></table>
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> manages SQL database connections using
@@ -40,39 +40,36 @@
     to modules requiring SQL database functions, and takes care of
     managing databases with optimal efficiency and scalability
     for both threaded and non-threaded MPMs.  For details, see the
-    <a href="http://apr.apache.org/">APR</a> website and this overview of the
-    <a href="http://people.apache.org/~niq/dbd.html">Apache DBD Framework</a>
-    by its original developer.
-</p>
+    <a href="http://apr.apache.org/">APR</a> website.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#pooling">Connection Pooling</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#connecting">Connecting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#API">Apache DBD API</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#prepared">SQL Prepared Statements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">SECURITY WARNING</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#pooling">Connection Pooling</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#connecting">Connecting</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#API">Apache DBD API</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#prepared">SQL Prepared Statements</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">SECURITY WARNING</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdexptime">DBDExptime</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdinitsql">DBDInitSQL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdkeep">DBDKeep</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdmax">DBDMax</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdmin">DBDMin</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdparams">DBDParams</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdpersist">DBDPersist</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdpreparesql">DBDPrepareSQL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbdriver">DBDriver</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdexptime">DBDExptime</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdinitsql">DBDInitSQL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdkeep">DBDKeep</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdmax">DBDMax</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdmin">DBDMin</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdparams">DBDParams</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdpersist">DBDPersist</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdpreparesql">DBDPrepareSQL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbdriver">DBDriver</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dbd">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dbd">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../misc/password_encryptions.html">Password Formats</a></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="pooling" id="pooling">Connection Pooling</a> <a title="Permanent link" href="#pooling" class="permalink">&para;</a></h2>
+<h2 id="pooling">Connection Pooling <a title="Permanent link" href="#pooling" class="permalink">&para;</a></h2>
     <p>This module manages database connections, in a manner
-    optimised for the platform.  On non-threaded platforms,
+    optimized for the platform.  On non-threaded platforms,
     it provides a persistent connection in the manner of
     classic LAMP (Linux, Apache, Mysql, Perl/PHP/Python).
     On threaded platform, it provides an altogether more
@@ -80,9 +77,9 @@
     described in <a href="http://www.apachetutor.org/dev/reslist">this
     article at ApacheTutor</a>.  Note that <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
     supersedes the modules presented in that article.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="connecting" id="connecting">Connecting</a> <a title="Permanent link" href="#connecting" class="permalink">&para;</a></h2>
+<h2 id="connecting">Connecting <a title="Permanent link" href="#connecting" class="permalink">&para;</a></h2>
 
     <p>To connect to your database, you'll need to specify
     a driver, and connection parameters. These vary from
@@ -102,9 +99,9 @@ DBDParams host=localhost,dbname=pony,user=shetland,pass=appaloosa</pre>
     <p>See <code class="directive">DBDParams</code> for connection string
     information for each of the supported database drivers.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="API" id="API">Apache DBD API</a> <a title="Permanent link" href="#API" class="permalink">&para;</a></h2>
+<h2 id="API">Apache DBD API <a title="Permanent link" href="#API" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> exports five functions for other modules
     to use. The API is as follows:</p>
 
@@ -145,9 +142,9 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="prepared" id="prepared">SQL Prepared Statements</a> <a title="Permanent link" href="#prepared" class="permalink">&para;</a></h2>
+<h2 id="prepared">SQL Prepared Statements <a title="Permanent link" href="#prepared" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> supports SQL prepared statements on behalf
     of modules that may wish to use them.  Each prepared statement
     must be assigned a name (label), and they are stored in a hash:
@@ -167,9 +164,9 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 	prepared statements. If set to 1, any broken connections will be attempted
 	fixed, but as mod_dbd is not informed, the prepared statements will be invalidated.
 	</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">SECURITY WARNING</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">SECURITY WARNING <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
     <p>Any web/database application needs to secure itself against SQL
     injection attacks.  In most cases, Apache DBD is safe, because
@@ -204,8 +201,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>An alternative to this may be the third-party ODBC driver,
     which offers the security of genuine prepared statements.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDExptime" id="DBDExptime">DBDExptime</a> <a name="dbdexptime" id="dbdexptime">Directive</a> <a title="Permanent link" href="#dbdexptime" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdexptime"><span id="DBDExptime">DBDExptime</span> Directive <a title="Permanent link" href="#dbdexptime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keepalive time for idle connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDExptime <var>time-in-seconds</var></code></td></tr>
@@ -219,8 +216,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDInitSQL" id="DBDInitSQL">DBDInitSQL</a> <a name="dbdinitsql" id="dbdinitsql">Directive</a> <a title="Permanent link" href="#dbdinitsql" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdinitsql"><span id="DBDInitSQL">DBDInitSQL</span> Directive <a title="Permanent link" href="#dbdinitsql" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Execute an SQL statement after connecting to a database</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDInitSQL <var>"SQL statement"</var></code></td></tr>
@@ -234,8 +231,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     entry when a new connection is made to the database.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDKeep" id="DBDKeep">DBDKeep</a> <a name="dbdkeep" id="dbdkeep">Directive</a> <a title="Permanent link" href="#dbdkeep" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdkeep"><span id="DBDKeep">DBDKeep</span> Directive <a title="Permanent link" href="#dbdkeep" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum sustained number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDKeep <var>number</var></code></td></tr>
@@ -249,8 +246,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDMax" id="DBDMax">DBDMax</a> <a name="dbdmax" id="dbdmax">Directive</a> <a title="Permanent link" href="#dbdmax" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdmax"><span id="DBDMax">DBDMax</span> Directive <a title="Permanent link" href="#dbdmax" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDMax <var>number</var></code></td></tr>
@@ -263,8 +260,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     (threaded platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDMin" id="DBDMin">DBDMin</a> <a name="dbdmin" id="dbdmin">Directive</a> <a title="Permanent link" href="#dbdmin" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdmin"><span id="DBDMin">DBDMin</span> Directive <a title="Permanent link" href="#dbdmin" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Minimum number of connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDMin <var>number</var></code></td></tr>
@@ -277,8 +274,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     platforms only).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDParams" id="DBDParams">DBDParams</a> <a name="dbdparams" id="dbdparams">Directive</a> <a title="Permanent link" href="#dbdparams" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdparams"><span id="DBDParams">DBDParams</span> Directive <a title="Permanent link" href="#dbdparams" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parameters for database connection</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDParams
@@ -309,8 +306,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDPersist" id="DBDPersist">DBDPersist</a> <a name="dbdpersist" id="dbdpersist">Directive</a> <a title="Permanent link" href="#dbdpersist" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdpersist"><span id="DBDPersist">DBDPersist</span> Directive <a title="Permanent link" href="#dbdpersist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to use persistent connections</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPersist On|Off</code></td></tr>
@@ -332,8 +329,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <code>On</code>, respectively.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a> <a name="dbdpreparesql" id="dbdpreparesql">Directive</a> <a title="Permanent link" href="#dbdpreparesql" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdpreparesql"><span id="DBDPrepareSQL">DBDPrepareSQL</span> Directive <a title="Permanent link" href="#dbdpreparesql" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an SQL prepared statement</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></code></td></tr>
@@ -347,8 +344,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     This directive prepares an SQL statement and assigns it a label.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DBDriver" id="DBDriver">DBDriver</a> <a name="dbdriver" id="dbdriver">Directive</a> <a title="Permanent link" href="#dbdriver" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dbdriver"><span id="DBDriver">DBDriver</span> Directive <a title="Permanent link" href="#dbdriver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify an SQL driver</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDriver <var>name</var></code></td></tr>
@@ -365,29 +362,33 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_dbd.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dbd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_dbd.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../fr/mod/mod_dbd.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1920586 -->
+<!-- English Revision: 1933657 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -306,9 +306,9 @@ Listen 192.170.2.5:8000
       compilé en désactivant les adresses IPv4, il s'agit du comportement par
       défaut et cette option n'a alors aucun effet).</li>
 
-      <li><code>multipathtcp</code> : active l’utilisation de <a
+      <li><code>multipathtcp</code> : active l'utilisation de <a
       href="https://mptcp.dev">Multipath TCP (MPTCP)</a> pour les sockets. Notez
-      que cette option n’est actuellement prise en charge que par Linux.
+      que cette option n'est actuellement prise en charge que par Linux.
       </li>
     </ul>
 
@@ -323,7 +323,7 @@ Listen 192.170.2.5:8000
 <seealso><a href="../bind.html">Définition des adresses et ports
 qu'utilise le serveur HTTP Apache</a></seealso>
 <seealso><a
-href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Autre
+href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">Autre
 discussion à propos du message d'erreur <code>Address already in
 use</code>, citant d'autres causes possibles.</a></seealso>
 </directivesynopsis>
@@ -445,6 +445,30 @@ connexions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ListenTCPDeferAccept</name>
+<description>Valeur de l'option de socket TCP_DEFER_ACCEPT si elle est
+définie</description>
+<syntax>ListenTCPDeferAccept <var>integer</var></syntax>
+<default>ListenTCPDeferAccept 30</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module>
+</modulelist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>La valeur spécifiée ici est définie comme valeur de l'option de socket
+    <code>TCP_DEFER_ACCEPT</code> si cette dernière est définie sur le socket
+    d'écoute. Cela se produit sous Linux lorsque la directive <directive
+    module="core">AcceptFilter</directive> est définie à toute autre valeur que
+    <code>none</code>. Dans tous les autres cas, ce réglage est ignoré. Pour
+    plus de détails, voir la page de manuel de <a
+    href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a> sous
+    Linux.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>MaxRequestWorkers</name>
 <description>Nombre maximum de connexions pouvant être traitées
 simultanément</description>
@@ -478,8 +502,8 @@ simultanément</description>
     <p>Pour les serveur threadés et hybrides (utilisant <em>par
     exemple</em> <module>event</module> ou <module>worker</module>),
     <directive>MaxRequestWorkers</directive> définit alors le nombre total de
-    threads qui seront disponibles pour servir les clients. Dans le
-    cas des MPMs hybrides, la valeur par défaut est <code>16</code>
+    threads qui seront disponibles pour servir les clients. Pour les MPMs
+    hybrides et threadés, la valeur par défaut est <code>16</code>
     (directive <directive
     module="mpm_common">ServerLimit</directive>) multiplié par la valeur
     <code>25</code> (directive <directive module="mpm_common"
@@ -488,6 +512,26 @@ simultanément</description>
     plus de 16 processus, vous devez aussi augmenter la valeur de la
     directive <directive module="mpm_common"
     >ServerLimit</directive>.</p>
+
+    <p>Pour les MPMs threadés et hybrides, la valeur de la directive
+    <directive>MaxRequestWorkers</directive> doit supérieure ou égale à celle de
+    la directive <directive module="mpm_common">ThreadsPerChild</directive> et
+    doit être un multiple entier de cette dernière. Si elle n’est pas un
+    multiple de cette dernière, le serveur l’arrondit par le bas au démarrage au
+    multiple le plus proche et journalise un avertissement.</p>
+
+    <example><title>Avertissement : MaxRequestWorkers trop petit</title>
+    WARNING: MaxRequestWorkers of 10 is less than ThreadsPerChild
+    of 25, increasing to 25. MaxRequestWorkers must be at least as
+    large as the number of threads in a single server.
+    </example>
+
+    <example><title>Avertissement : MaxRequestWorkers n’est pas un multiple de
+    ThreadsPerChild</title>
+    WARNING: MaxRequestWorkers of 90 is not an integer multiple of
+    ThreadsPerChild of 25, decreasing to nearest multiple 75, for a
+    maximum of 3 servers.
+    </example>
 
     <p>Le nom de la directive <directive>MaxRequestWorkers</directive>
     était <directive>MaxClients</directive> avant la version 2.3.13. Cet
@@ -636,6 +680,10 @@ pour pouvoir traiter les pics de requêtes</description>
     <module>mpm_netware</module>. Pour <module>mpmt_os2</module>, la
     valeur par défaut est <code>5</code>.</p>
 
+    <p>La valeur de la directive <directive>MinSpareThreads</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
+
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -706,9 +754,9 @@ le serveur HTTP Apache</a></seealso>
     <p>Le serveur va fixer la taille du tampon TCP en entrée au
     nombre d'octets spécifié.</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>Si la directive est définie à <code>0</code>, le serveur va utiliser la
+    valeur par défaut adoptée par le système d'exploitation. Sinon, elle doit
+    être supérieure ou égale à <code>512</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -731,9 +779,9 @@ le serveur HTTP Apache</a></seealso>
     à dire</em> de l'ordre de 100ms comme sur les liaisons rapides
     transcontinentales).</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>Si la directive est définie à <code>0</code>, le serveur va utiliser la
+    valeur par défaut adoptée par le système d'exploitation. Sinon, elle doit
+    être supérieure ou égale à <code>512</code>.</p>
 
     <p>L'amélioration des performances des connexions à grande vitesse
     et à temps de latence élevé, peut nécessiter
@@ -820,6 +868,10 @@ processus</description>
       modifier la valeur de MAX_SERVER_LIMIT dans le fichier source du
       mpm et recompiler le serveur.</p>
     </note>
+
+    <p>La valeur de la directive <directive>ServerLimit</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
 </usage>
 <seealso><a href="../stopping.html">Arrêter et redémarrer
 le serveur HTTP Apache</a></seealso>
@@ -852,6 +904,12 @@ démarrage</description>
     <code>StartServers 3</code> ; la valeur par défaut est
     <code>5</code> pour <module>prefork</module> et <code>2</code>
     pour <module>mpmt_os2</module>.</p>
+
+    <p>La valeur de la directive <directive>StartServers</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé. Pour le module
+    <module>mpmt_os2</module>, la valeur 0 est aussi acceptée ; les valeurs
+    inférieures à 0 sont automatiquement augmentées à 1.</p>
 </usage>
 </directivesynopsis>
 
@@ -932,6 +990,10 @@ processus enfant</description>
       MAX_THREAD_LIMIT dans le fichier source du mpm et recompiler le
       serveur.</p>
     </note>
+
+    <p>La valeur de la directive <directive>ThreadLimit</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
 </usage>
 </directivesynopsis>
 
@@ -969,6 +1031,16 @@ enfant</description>
     avertissement sera enregistré dans le journal. La relation entre ces deux
     directives est expliquée dans la <directive
     module="mpm_common">documentation de la directive ThreadLimit</directive>.</p>
+
+    <p>La valeur de la directive <directive>ThreadsPerChild</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
+
+    <p>La valeur de la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive> doit être un multiple
+    entier de celle de la directive <directive>ThreadsPerChild</directive>. Voir
+    la directive <directive module="mpm_common">MaxRequestWorkers</directive>
+    pour les détails.</p>
 </usage>
 </directivesynopsis>
 

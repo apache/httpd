@@ -1,5 +1,7 @@
-DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
-	logresolve.pl phf_abuse_log.cgi split-logfile envvars-std
+DISTCLEAN_TARGETS = apxs apxs-ng apachectl dbmmanage dbmmanage-ng \
+	log_server_status log_server_status-ng logresolve.pl logresolve.py \
+	phf_abuse_log.cgi phf_abuse_log-ng.cgi split-logfile split-logfile-ng \
+	envvars-std
 
 CLEAN_TARGETS = suexec
 
@@ -17,7 +19,7 @@ install:
 	@test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir)
 	@test -d $(DESTDIR)$(libexecdir) || $(MKINSTALLDIRS) $(DESTDIR)$(libexecdir)
 	@cp -p $(top_builddir)/server/httpd.exp $(DESTDIR)$(libexecdir)
-	@for i in apxs dbmmanage; do \
+	@for i in apxs apxs-ng dbmmanage dbmmanage-ng; do \
 	    if test -f "$(builddir)/$$i"; then \
 	        cp -p $$i $(DESTDIR)$(bindir); \
 	        chmod 755 $(DESTDIR)$(bindir)/$$i; \

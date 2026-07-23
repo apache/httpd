@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1044378 -->
+<!-- English Revision: 1044378:1933438 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -26,7 +26,7 @@
 <title>Sıkça Sorulan Sorular</title>
 
 <summary>
-    <p>SSS belgesi <a href="http://wiki.apache.org/httpd/FAQ">HTTP Server
+    <p>SSS belgesi <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">HTTP Server
       Wiki</a>'ye taşındı.</p>
 </summary>
 

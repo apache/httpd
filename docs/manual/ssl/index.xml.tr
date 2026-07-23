@@ -34,7 +34,7 @@
     Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin
     kullanıldığı Sağlam Şifreleme desteğini sağlayan <a
     href="http://www.openssl.org/" >OpenSSL</a> kütüphanesine bir arayüz
-    içerir. Bu modül ve belgeler Ralf S. Engelschall’ın mod_ssl projesine
+    içerir. Bu modül ve belgeler Ralf S. Engelschall'ın mod_ssl projesine
     dayanmaktadır.</p>
 </summary>
 

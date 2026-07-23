@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1690137:1874148 (outdated) -->
+<!-- English Revision: 1690137:1933438 (outdated) -->
 <!-- Spanish Translation: Daniel Ferradal -->
 
 <!--
@@ -708,7 +708,7 @@ CacheMaxExpire 21600
     <section id="further-considerations">
         <title>Otras Consideraciones</title>
 
-        <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
+        <p>Armado con el conocimiento de cómo afinar el sistema para entregar el rendimiento deseado, pronto descubrirá que <em>un</em> solo sistema puede provocar un cuello de botella. Cómo hacer que un sistema sea apto para crecimiento, o como afinar un número de sistemas como uno solo será comentado en la página<a href="https://cwiki.apache.org/confluence/display/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
         </p>
     </section>
 </manualpage>

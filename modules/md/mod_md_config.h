@@ -32,7 +32,6 @@ typedef enum {
     MD_CONFIG_RENEW_WINDOW,
     MD_CONFIG_WARN_WINDOW,
     MD_CONFIG_TRANSITIVE,
-    MD_CONFIG_PROXY,
     MD_CONFIG_REQUIRE_HTTPS,
     MD_CONFIG_MUST_STAPLE,
     MD_CONFIG_NOTIFY_CMD,
@@ -41,6 +40,7 @@ typedef enum {
     MD_CONFIG_STAPLE_OTHERS,
     MD_CONFIG_CA_PROFILE,
     MD_CONFIG_CA_PROFILE_MANDATORY,
+    MD_CONFIG_ARI_RENEWALS,
 } md_config_var_t;
 
 typedef enum {
@@ -52,7 +52,6 @@ typedef struct md_mod_conf_t md_mod_conf_t;
 struct md_mod_conf_t {
     apr_array_header_t *mds;           /* all md_t* defined in the config, shared */
     const char *base_dir;              /* base dir for store */
-    const char *proxy_url;             /* proxy url to use (or NULL) */
     struct md_reg_t *reg;              /* md registry instance */
     struct md_ocsp_reg_t *ocsp;        /* ocsp status registry */
 
@@ -76,7 +75,7 @@ struct md_mod_conf_t {
     md_timeslice_t *ocsp_renew_window; /* time before exp. that we start renewing ocsp resp. */
     const char *cert_check_name;       /* name of the linked certificate check site */
     const char *cert_check_url;        /* url "template for" checking a certificate */
-    const char *ca_certs;              /* root certificates to use for connections */
+    apr_time_t initial_delay;          /* how long to delay the first cert renewal check */
     apr_time_t check_interval;         /* duration between cert renewal checks */
     apr_time_t min_delay;              /* minimum delay for retries */
     int retry_failover;                /* number of errors to trigger CA failover */
@@ -110,8 +109,14 @@ typedef struct md_srv_conf_t {
 
     int stapling;                      /* OCSP stapling enabled */
     int staple_others;                 /* Provide OCSP stapling for non-MD certificates */
+    int ari_renewals;                  /* ACME ARI extension enabled */
 
     const char *dns01_cmd;             /* DNS challenge command, override global command */
+    const char *proxy_url;             /* Proxy URL, override global command */
+    const char *ca_certs;              /* root certificates to use for connections,
+                                          override global command */
+    const char *proxy_ca_certs;        /* root certificates to use for proxy connections,
+                                          override global command */
 
     md_t *current;                     /* md currently defined in <MDomainSet xxx> section */
     struct apr_array_header_t *assigned; /* post_config: MDs that apply to this server */

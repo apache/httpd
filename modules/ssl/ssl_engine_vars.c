@@ -41,10 +41,10 @@
 
 static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, request_rec *r, const char *var);
 static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, const char *var);
-static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, const char *var);
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xsname, const char *var);
 static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var);
-static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
-static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, const ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, const ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var, int pem);
 static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
@@ -430,6 +430,50 @@ const char *ssl_var_lookup(apr_pool_t *p, server_rec *s,
     return result ? result : "";
 }
 
+#ifdef HAVE_OPENSSL_ECH
+/* Extract ECH status variable from SSL object 'ssl' */
+static const char *ssl_var_lookup_ech_status(apr_pool_t *p, const char *var,
+                                             SSL *ssl)
+{
+    char *inner_sni = NULL, *outer_sni = NULL;
+    int echrv;
+    const char *result = NULL;
+
+    if (ssl == NULL)
+        return result;
+    echrv = SSL_ech_get1_status(ssl, &inner_sni, &outer_sni);
+    if (strcEQ(var, "STATUS")) {
+        switch (echrv) {
+        case SSL_ECH_STATUS_NOT_TRIED:
+            result = "not attempted";
+            break;
+        case SSL_ECH_STATUS_FAILED:
+            result = "tried but failed";
+            break;
+        case SSL_ECH_STATUS_BAD_NAME:
+            result = "ECH worked but bad name";
+            break;
+        case SSL_ECH_STATUS_SUCCESS:
+            result = "success";
+            break;
+        default:
+            result = "error getting ECH status";
+        }
+    }
+    else if (echrv == SSL_ECH_STATUS_SUCCESS) {
+        if (strcEQ(var, "INNER_SNI")) {
+            result = apr_pstrdup(p, inner_sni);
+        }
+        if (strcEQ(var, "OUTER_SNI")) {
+            result = apr_pstrdup(p, outer_sni);
+        }
+    }
+    OPENSSL_free(inner_sni);
+    OPENSSL_free(outer_sni);
+    return result;
+}
+#endif
+
 static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
                                       request_rec *r, const char *var)
 {
@@ -544,12 +588,17 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn,
         }
     }
 #endif
+#ifdef HAVE_OPENSSL_ECH
+    else if (ssl != NULL && strcEQn(var, "ECH_", 4)) {
+        result = ssl_var_lookup_ech_status(p, var+4, ssl);
+    }
+#endif
 
     return result;
 }
 
 static const char *ssl_var_lookup_ssl_cert_dn_oneline(apr_pool_t *p, request_rec *r,
-                                                X509_NAME *xsname)
+                                                      const X509_NAME *xsname)
 {
     char *result = NULL;
     SSLDirConfigRec *dc;
@@ -580,7 +629,7 @@ static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *
                                            const char *var)
 {
     const char *result;
-    X509_NAME *xsname;
+    const X509_NAME *xsname;
     int nid;
 
     result = NULL;
@@ -592,13 +641,13 @@ static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *
         result = ssl_var_lookup_ssl_cert_serial(p, xs);
     }
     else if (strcEQ(var, "V_START")) {
-        result = ssl_var_lookup_ssl_cert_valid(p, X509_get_notBefore(xs));
+        result = ssl_var_lookup_ssl_cert_valid(p, X509_get0_notBefore(xs));
     }
     else if (strcEQ(var, "V_END")) {
-        result = ssl_var_lookup_ssl_cert_valid(p, X509_get_notAfter(xs));
+        result = ssl_var_lookup_ssl_cert_valid(p, X509_get0_notAfter(xs));
     }
     else if (strcEQ(var, "V_REMAIN")) {
-        result = ssl_var_lookup_ssl_cert_remain(p, X509_get_notAfter(xs));
+        result = ssl_var_lookup_ssl_cert_remain(p, X509_get0_notAfter(xs));
     }
     else if (*var && strcEQ(var+1, "_DN")) {
         if (*var == 'S')
@@ -671,6 +720,7 @@ static const struct {
     { "G",     NID_givenName,              1 },
     { "S",     NID_surname,                1 },
     { "D",     NID_description,            1 },
+    { "SerialNumber", NID_serialNumber,    1 },
 #ifdef NID_userId
     { "UID",   NID_userId,                 1 },
 #endif
@@ -678,12 +728,12 @@ static const struct {
     { NULL,    0,                          0 }
 };
 
-static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
-                                        const char *var)
+static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xsname,
+                                              const char *var)
 {
     const char *ptr;
     const char *result;
-    X509_NAME_ENTRY *xsne;
+    const X509_NAME_ENTRY *xsne;
     int i, j, n, idx = 0, raw = 0;
     apr_size_t varlen;
 
@@ -710,7 +760,7 @@ static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname,
             for (j = 0; j < X509_NAME_entry_count(xsname); j++) {
                 xsne = X509_NAME_get_entry(xsname, j);
 
-                n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
+                n = OBJ_obj2nid(X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
                     result = modssl_X509_NAME_ENTRY_to_string(p, xsne, raw);
@@ -767,7 +817,7 @@ static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const ch
         return NULL;
 }
 
-static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, const ASN1_TIME *tm)
 {
     BIO* bio;
 
@@ -778,23 +828,33 @@ static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
     return modssl_bio_free_read(p, bio);
 }
 
-#define DIGIT2NUM(x) (((x)[0] - '0') * 10 + (x)[1] - '0')
+/* Evaluates to true if asn1 isn't a valid ASN.1 TIME; RFC3280
+ * mandates that the seconds digits are present even though ASN.1
+ * doesn't. */
+#define INVALID_ASN1_TIME(asn1) (                                       \
+    ((asn1)->type == V_ASN1_UTCTIME && (asn1)->length < 11)             \
+    || ((asn1)->type == V_ASN1_GENERALIZEDTIME && (asn1)->length < 13)  \
+    || ASN1_TIME_check(asn1) != 1)
 
 /* Return a string giving the number of days remaining until 'tm', or
  * "0" if this can't be determined. */
-static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, const ASN1_TIME *tm)
 {
+#if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+    int diff;
+
+    if (ASN1_TIME_check(tm) != 1 || ASN1_TIME_diff(&diff, NULL, NULL, tm) != 1) {
+        return "0";
+    }
+#else
     apr_time_t then, now = apr_time_now();
     apr_time_exp_t exp = {0};
     long diff;
     unsigned char *dp;
 
-    /* Fail if the time isn't a valid ASN.1 TIME; RFC3280 mandates
-     * that the seconds digits are present even though ASN.1
-     * doesn't. */
-    if ((tm->type == V_ASN1_UTCTIME && tm->length < 11) ||
-        (tm->type == V_ASN1_GENERALIZEDTIME && tm->length < 13) ||
-        !ASN1_TIME_check(tm)) {
+#define DIGIT2NUM(x) (((x)[0] - '0') * 10 + (x)[1] - '0')
+
+    if (INVALID_ASN1_TIME(tm)) {
         return "0";
     }
 
@@ -808,7 +868,7 @@ static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     }
 
     exp.tm_mon = DIGIT2NUM(dp) - 1;
-    exp.tm_mday = DIGIT2NUM(dp + 2) + 1;
+    exp.tm_mday = DIGIT2NUM(dp + 2);
     exp.tm_hour = DIGIT2NUM(dp + 4);
     exp.tm_min = DIGIT2NUM(dp + 6);
     exp.tm_sec = DIGIT2NUM(dp + 8);
@@ -818,6 +878,7 @@ static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
     }
 
     diff = (long)((apr_time_sec(then) - apr_time_sec(now)) / (60*60*24));
+#endif
 
     return diff > 0 ? apr_ltoa(p, diff) : "0";
 }
@@ -869,7 +930,7 @@ static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl)
 
     serialNumber = X509_get_serialNumber(xs);
     if (serialNumber) {
-        X509_NAME *issuer = X509_get_issuer_name(xs);
+        const X509_NAME *issuer = X509_get_issuer_name(xs);
         if (issuer) {
             BIGNUM *bn = ASN1_INTEGER_to_BN(serialNumber, NULL);
             if((decimal = BN_bn2dec(bn)) == NULL) {
@@ -1052,9 +1113,9 @@ static const char *ssl_var_lookup_ssl_version(const char *var)
 /* Add each RDN in 'xn' to the table 't' where the NID is present in
  * 'nids', using key prefix 'pfx'.  */
 static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
-                       X509_NAME *xn, apr_pool_t *p)
+                       const X509_NAME *xn, apr_pool_t *p)
 {
-    X509_NAME_ENTRY *xsne;
+    const X509_NAME_ENTRY *xsne;
     apr_hash_t *count;
     int i, nid;
 
@@ -1069,7 +1130,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
 
          /* Retrieve the nid, and check whether this is one of the nids
           * which are to be extracted. */
-         nid = OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
+         nid = OBJ_obj2nid(X509_NAME_ENTRY_get_object(xsne));
 
          tag = apr_hash_get(nids, &nid, sizeof nid);
          if (tag) {
@@ -1182,19 +1243,19 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
  * parse the extension type as a primitive string.  This will fail for
  * any structured extension type per the docs.  Returns non-zero on
  * success and writes the string to the given bio. */
-static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
+static int dump_extn_value(BIO *bio, const ASN1_OCTET_STRING *str)
 {
-    const unsigned char *pp = str->data;
+    const unsigned char *pp = ASN1_STRING_get0_data(str);
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
 
-    if(!ret) {
-      return rv;
+    if (!ret) {
+        return rv;
     }
 
     /* This allows UTF8String, IA5String, VisibleString, or BMPString;
      * conversion to UTF-8 is forced. */
-    if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {
+    if (d2i_DISPLAYTEXT(&ret, &pp, ASN1_STRING_length(str))) {
         ASN1_STRING_print_ex(bio, ret, ASN1_STRFLGS_UTF8_CONVERT);
         rv = 1;
     }
@@ -1241,7 +1302,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
      */
     array = apr_array_make(p, count, sizeof(char *));
     for (j = 0; j < count; j++) {
-        X509_EXTENSION *ext = X509_get_ext(xs, j);
+        MODSSL_X509_EXT_CONST X509_EXTENSION *ext = X509_get_ext(xs, j);
 
         if (OBJ_cmp(X509_EXTENSION_get_object(ext), oid) == 0) {
             BIO *bio = BIO_new(BIO_s_mem());

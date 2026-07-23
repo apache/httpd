@@ -38,6 +38,26 @@ struct ap_slotmem_instance_t {
 static struct ap_slotmem_instance_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 
+static int slotmem_size_mul(apr_size_t a, apr_size_t b, apr_size_t *res)
+{
+    if (a != 0 && b > ((apr_size_t)-1) / a) {
+        return 0;
+    }
+
+    *res = a * b;
+    return 1;
+}
+
+static int slotmem_size_add(apr_size_t a, apr_size_t b, apr_size_t *res)
+{
+    if (a > ((apr_size_t)-1) - b) {
+        return 0;
+    }
+
+    *res = a + b;
+    return 1;
+}
+
 static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
     unsigned int i;
@@ -67,9 +87,18 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
 {
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
-    apr_size_t basesize = (item_size * item_num);
+    apr_size_t basesize;
+    apr_size_t inuse_size;
+    apr_size_t alloc_size;
 
     const char *fname;
+
+    if (!slotmem_size_mul(item_size, (apr_size_t)item_num, &basesize)
+            || !slotmem_size_mul((apr_size_t)item_num, sizeof(char),
+                                 &inuse_size)
+            || !slotmem_size_add(basesize, inuse_size, &alloc_size)) {
+        return APR_EINVAL;
+    }
 
     if (name) {
         if (name[0] == ':')
@@ -97,7 +126,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
 
     /* create the memory using the gpool */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_instance_t));
-    res->base = apr_pcalloc(gpool, basesize + (item_num * sizeof(char)));
+    res->base = apr_pcalloc(gpool, alloc_size);
     if (!res->base)
         return APR_ENOSHMAVAIL;
 
@@ -156,6 +185,10 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *score, unsigned int id, 
     if (id >= score->num)
         return APR_EINVAL;
 
+    if (score->size != 0
+            && (apr_size_t)id > ((apr_size_t)-1) / score->size)
+        return APR_EINVAL;
+
     ptr = (char *)score->base + score->size * id;
     if (!ptr)
         return APR_ENOSHMAVAIL;
@@ -172,11 +205,14 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-
-    inuse = slot->inuse + id;
     if (id >= slot->num) {
         return APR_EINVAL;
     }
+    if (dest_len > slot->size) {
+        return APR_EINVAL;
+    }
+
+    inuse = slot->inuse + id;
     if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
         return APR_NOTFOUND;
     }
@@ -198,11 +234,14 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-
-    inuse = slot->inuse + id;
     if (id >= slot->num) {
         return APR_EINVAL;
     }
+    if (src_len > slot->size) {
+        return APR_EINVAL;
+    }
+
+    inuse = slot->inuse + id;
     if (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse) {
         return APR_NOTFOUND;
     }

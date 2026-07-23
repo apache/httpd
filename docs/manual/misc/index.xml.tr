@@ -42,13 +42,13 @@
     </note>
 
     <dl>
-      <dt><a href="perf-tuning.html">Başarım Arttırma İpuçları - Apache’ye
+      <dt><a href="perf-tuning.html">Başarım Arttırma İpuçları - Apache'ye
         İnce Ayar Çekilmesi</a></dt>
 
       <dd>
         <p>Yüksek başarım elde etmek için Apache yapılandırmasında (çalışma
           anında ve derleme sırasında) yapılacaklar ile ilgili bazı bilgiler
-          yanında Apache’de bazı şeylerin (bir şeyleri hızlandıran ve
+          yanında Apache'de bazı şeylerin (bir şeyleri hızlandıran ve
           yavaşlatan şeylerin) yapılma ve yapılmama sebepleri
           açıklanmıştır.</p>
       </dd>
@@ -63,7 +63,7 @@
       <dt><a href="relevant_standards.html">İlgili Standartlar</a></dt>
 
       <dd>
-        <p>Bu belge Apache’nin uyacağı standartların bir çoğuna atıfta
+        <p>Bu belge Apache'nin uyacağı standartların bir çoğuna atıfta
           bulunmak amacıyla hazırlanmıştır.</p>
       </dd>
 

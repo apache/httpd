@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1819907 -->
+<!-- English Revision: 1934245 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -494,13 +494,11 @@ Require ip 127.0.0.1
 	module="core">LogLevel</directive> au niveau répertoire.
         </li>
 
-	<li><module>mod_proxy_scgi</module>: certaines applications web
-	ne fonctionneront plus correctement avec la nouvelle
-	configuration de <code>PATH_INFO</code> qui est différente de
-	celle de la version 2.2. La configuration
-	précédente peut être
-	restaurée en définissant la variable
-	<code>proxy-scgi-pathinfo</code>.</li>
+	<li><module>mod_proxy_scgi</module> : certaines applications web ne
+	fonctionneront plus correctement avec la nouvelle configuration de
+	<glossary ref="pathinfo">PATH_INFO</glossary> qui est différente de
+	celle de la version 2.2. La configuration précédente peut être restaurée
+	en définissant la variable <code>proxy-scgi-pathinfo</code>.</li>
 
 	<li><module>mod_ssl</module>: le contrôle de révocation des
 	certificats basé sur les CRL doit être maintenant explicitement
@@ -590,6 +588,9 @@ Require ip 127.0.0.1
       la directive <directive
       module="mod_cgid">CGIDScriptTImeout</directive>.
       </li>
+
+      <li>Le symbole <code>&lt;set&gt;</code> de <module>mod_include</module>
+      n'effectue plus le décodage d'entité sur la valeur définie.</li>
 
     </ul>
 

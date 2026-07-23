@@ -1,37 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Site Map - Apache HTTP サーバ バージョン 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div>
 <div id="page-content"><div id="preamble"><h1>Site Map</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -44,20 +44,20 @@
 の一覧です。</p>
 </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="./images/down.gif" /> <a href="#release">リリースのメモ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#using">Apache HTTP サーバの使用</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache バーチャルホストドキュメント</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ssl">Apache の SSL/TLS 暗号化</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#howto">ガイド、チュートリアル、ハウツー</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#platform">プラットフォーム固有の情報</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP サーバとサポートプログラム</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#misc">Apache その他</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache モジュール</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">開発者のためのドキュメント</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#index">用語集と索引</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#release">リリースのメモ</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#using">Apache HTTP サーバの使用</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#vhosts">Apache バーチャルホストドキュメント</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#ssl">Apache の SSL/TLS 暗号化</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#howto">ガイド、チュートリアル、ハウツー</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#platform">プラットフォーム固有の情報</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programs">Apache HTTP サーバとサポートプログラム</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#misc">Apache その他</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#modules">Apache モジュール</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#developer">開発者のためのドキュメント</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#index">用語集と索引</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="release" id="release">リリースのメモ</a></h2>
 <ul><li><a href="upgrading.html">2.2 から 2.4 へのアップグレード</a></li>
 <li><a href="new_features_2_4.html">Apache 2.3/2.4 の新機能</a></li>
@@ -65,7 +65,7 @@
 <li><a href="new_features_2_0.html">Apache 2.0 の新機能</a></li>
 <li><a href="license.html">Apache License</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="using" id="using">Apache HTTP サーバの使用</a></h2>
 <ul><li><a href="install.html">Apache のコンパイルとインストール</a></li>
 <li><a href="invoking.html">Apache の起動</a></li>
@@ -89,7 +89,7 @@
 <li><a href="misc/perf-tuning.html">性能に関するヒント</a></li>
 <li><a href="rewrite/">URL リライトガイド</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache バーチャルホストドキュメント</a></h2>
 <ul><li class="separate"><a href="vhosts/">概略</a></li>
 <li><a href="vhosts/name-based.html">名前ベースのバーチャルホスト</a></li>
@@ -100,7 +100,7 @@
 <li><a href="vhosts/fd-limits.html">ファイル記述子の限界</a></li>
 <li><a href="dns-caveats.html">DNS と Apache とに関係する問題</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache の SSL/TLS 暗号化</a></h2>
 <ul><li class="separate"><a href="ssl/">概略</a></li>
 <li><a href="ssl/ssl_intro.html">SSL/TLS 暗号化: 入門</a></li>
@@ -108,7 +108,7 @@
 <li><a href="ssl/ssl_howto.html">SSL/TLS 暗号化: ハウツー</a></li>
 <li><a href="ssl/ssl_faq.html">SSL/TLS 暗号化: FAQ</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="howto" id="howto">ガイド、チュートリアル、ハウツー</a></h2>
 <ul><li class="separate"><a href="howto/">概略</a></li>
 <li><a href="howto/auth.html">認証</a></li>
@@ -117,7 +117,7 @@
 <li><a href="howto/htaccess.html">.htaccess ファイル</a></li>
 <li><a href="howto/public_html.html">ユーザ毎のウェブディレクトリ</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="platform" id="platform">プラットフォーム固有の情報</a></h2>
 <ul><li class="separate"><a href="platform/">概略</a></li>
 <li><a href="platform/windows.html">Microsoft Windows での Apache の使用</a></li>
@@ -126,7 +126,7 @@
 <li><a href="platform/netware.html">Novell NetWare で Apache を使う</a></li>
 <li><a href="platform/perf-hp.html">HPUX で高性能ウェブサーバを実行する</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="programs" id="programs">Apache HTTP サーバとサポートプログラム</a></h2>
 <ul><li class="separate"><a href="programs/">概略</a></li>
 <li><a href="programs/httpd.html">マニュアルページ: httpd</a></li>
@@ -144,18 +144,19 @@
 <li><a href="programs/suexec.html">マニュアルページ: suexec</a></li>
 <li><a href="programs/other.html">他のプログラム</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache その他</a></h2>
 <ul><li class="separate"><a href="misc/">概略</a></li>
 <li><a href="misc/relevant_standards.html">関連する標準規格</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache モジュール</a></h2>
 <ul><li><a href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</a></li>
 <li><a href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</a></li>
 </ul><ul><li><a href="mod/core.html">Apache コア機能</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM 共通ディレクティブ</a></li>
 <li><a href="mod/event.html">Apache MPM event</a></li>
+<li><a href="mod/motorz.html">Apache MPM motorz</a></li>
 <li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
 <li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
 <li><a href="mod/prefork.html">Apache MPM prefork</a></li>
@@ -202,7 +203,6 @@
 <li><a href="mod/mod_data.html">Apache モジュール mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache モジュール mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache モジュール mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Apache モジュール mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Apache モジュール mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Apache モジュール mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Apache モジュール mod_dialup</a></li>
@@ -247,6 +247,7 @@
 <li><a href="mod/mod_proxy.html">Apache モジュール mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache モジュール mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache モジュール mod_proxy_balancer</a></li>
+<li><a href="mod/mod_proxy_beacon.html">Apache モジュール mod_proxy_beacon</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache モジュール mod_proxy_connect</a></li>
 <li><a href="mod/mod_proxy_express.html">Apache モジュール mod_proxy_express</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Apache モジュール mod_proxy_fcgi</a></li>
@@ -296,7 +297,7 @@
 <li><a href="mod/mod_watchdog.html">Apache モジュール mod_watchdog</a></li>
 <li><a href="mod/mod_xml2enc.html">Apache モジュール mod_xml2enc</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="developer" id="developer">開発者のためのドキュメント</a></h2>
 <ul><li class="separate"><a href="developer/">概略</a></li>
 <li><a href="developer/API.html">Apache API メモ</a></li>
@@ -309,7 +310,7 @@
 <li><a href="developer/request.html">Apache 2.0 のリクエスト処理</a></li>
 <li><a href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="index" id="index">用語集と索引</a></h2>
 <ul><li><a href="glossary.html">用語集</a></li>
 <li><a href="mod/">モジュール索引</a></li>
@@ -320,34 +321,38 @@
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/sitemap.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2024 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

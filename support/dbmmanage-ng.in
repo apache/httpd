@@ -1,0 +1,417 @@
+#!@pythonbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# dbmmanage-ng -- Python port of the historical Perl dbmmanage.
+#
+# This is a behavior-compatible reimplementation of support/dbmmanage.in
+# in Python 3.  It manages user/password DBM files for Apache auth.
+#
+# usage: dbmmanage <DBMfile> <command> <user> <password> <groups> <comment>
+
+import os
+import re
+import sys
+import base64
+import hashlib
+import getpass
+import random
+import dbm
+
+# Python's crypt module is deprecated in 3.11+ and removed in 3.13.  The
+# Perl original uses crypt(), so we use it too -- but degrade gracefully
+# if it is unavailable on this interpreter.
+try:
+    import crypt as _crypt
+except ImportError:
+    _crypt = None
+
+
+# The set of characters used to build salts: [./0-9A-Za-z], matching the
+# Perl genseed()/randchar() range.
+_SALT_CHARS = "./0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# Default hashing method, like the Perl original (crypt on Unix).
+hash_method = "crypt"
+
+
+def usage():
+    # Commands are listed sorted, like "join '|', sort keys %dbmc::".
+    cmds = "|".join(sorted(COMMANDS.keys()))
+    sys.stderr.write(
+        "Usage: dbmmanage [enc] dbname command "
+        "[username [pw [group[,group] [comment]]]]\n"
+        "\n"
+        "    where enc is  -d for crypt hashing (default except on Win32, Netware)\n"
+        "                  -m for MD5 hashing (default on Win32, Netware)\n"
+        "                  -s for SHA1 hashing\n"
+        "                  -p for plaintext\n"
+        "\n"
+        "    command is one of: " + cmds + "\n"
+        "\n"
+        "    pw of . for update command retains the old password\n"
+        "    pw of - (or blank) for update command prompts for the password\n"
+        "\n"
+        "    groups or comment of . (or blank) for update command retains old values\n"
+        "    groups or comment of - for update command clears the existing value\n"
+        "    groups or comment of - for add and adduser commands is the empty value\n"
+    )
+    sys.exit(1)
+
+
+def die(msg):
+    sys.stderr.write(msg)
+    sys.exit(1)
+
+
+def randchar(n=1):
+    return "".join(random.choice(_SALT_CHARS) for _ in range(n))
+
+
+def saltpw_crypt():
+    # The Perl original optionally uses a "newstyle" salt on bsdos; that is
+    # an obscure edge case, so we always use the traditional 2-char salt.
+    return randchar(2)
+
+
+def hashpw_crypt(pw, salt=None):
+    if _crypt is None:
+        die("dbmmanage: crypt hashing is not available on this Python "
+            "interpreter.\nPlease use a different hashing option (-m, -s, -p).\n")
+    if not salt:
+        salt = saltpw_crypt()
+    return _crypt.crypt(pw, salt)
+
+
+def saltpw_md5():
+    return randchar(8)
+
+
+# Apache's apr1 / md5crypt algorithm.  Python's stdlib has no apr1
+# implementation, so we implement it here.  This is the classic md5crypt
+# routine with the magic string "$apr1$".  Given the same (pw, salt) it
+# produces the identical $apr1$<salt>$<hash> string as htpasswd / Apache.
+def apache_md5_crypt(pw, salt):
+    magic = "$apr1$"
+    pw_b = pw.encode("utf-8", "surrogateescape")
+
+    # If a full $apr1$salt$ string was passed in (e.g. when verifying),
+    # extract just the salt portion.
+    if salt.startswith(magic):
+        salt = salt[len(magic):]
+    salt = salt.split("$", 1)[0]
+    salt = salt[:8]
+    salt_b = salt.encode("ascii")
+
+    # Primary digest: password + magic + salt.
+    ctx = hashlib.md5(pw_b + magic.encode("ascii") + salt_b)
+
+    # Alternate digest: password + salt + password.
+    alt = hashlib.md5(pw_b + salt_b + pw_b).digest()
+
+    # Add as many chars of the alternate digest as the password length.
+    pw_len = len(pw_b)
+    i = pw_len
+    while i > 0:
+        ctx.update(alt[:16] if i > 16 else alt[:i])
+        i -= 16
+
+    # For each bit of the password length, add either a NUL byte or the
+    # first byte of the password.
+    i = pw_len
+    while i:
+        if i & 1:
+            ctx.update(b"\x00")
+        else:
+            ctx.update(pw_b[:1])
+        i >>= 1
+
+    final = ctx.digest()
+
+    # 1000 iterations of strengthening.
+    for i in range(1000):
+        ctx = hashlib.md5()
+        if i & 1:
+            ctx.update(pw_b)
+        else:
+            ctx.update(final)
+        if i % 3:
+            ctx.update(salt_b)
+        if i % 7:
+            ctx.update(pw_b)
+        if i & 1:
+            ctx.update(final)
+        else:
+            ctx.update(pw_b)
+        final = ctx.digest()
+
+    # Custom base64 encoding (md5crypt order/alphabet: ./0-9A-Za-z).
+    itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+    def _to64(v, n):
+        out = []
+        for _ in range(n):
+            out.append(itoa64[v & 0x3f])
+            v >>= 6
+        return "".join(out)
+
+    out = ""
+    out += _to64((final[0] << 16) | (final[6] << 8) | final[12], 4)
+    out += _to64((final[1] << 16) | (final[7] << 8) | final[13], 4)
+    out += _to64((final[2] << 16) | (final[8] << 8) | final[14], 4)
+    out += _to64((final[3] << 16) | (final[9] << 8) | final[15], 4)
+    out += _to64((final[4] << 16) | (final[10] << 8) | final[5], 4)
+    out += _to64(final[11], 2)
+
+    return magic + salt + "$" + out
+
+
+def hashpw_md5(pw, salt=None):
+    if not salt:
+        salt = saltpw_md5()
+    return apache_md5_crypt(pw, salt)
+
+
+def hashpw_sha1(pw, salt=None):
+    # '{SHA}' + base64(sha1(pw)).  The Perl original used unpadded base64
+    # from Digest::SHA1 then appended a literal "="; the de-facto correct
+    # Apache htpasswd {SHA} format is the standard *padded* base64 (28
+    # chars ending in "=" for a 20-byte digest), which base64.b64encode
+    # produces directly.
+    return "{SHA}" + base64.b64encode(
+        hashlib.sha1(pw.encode("utf-8", "surrogateescape")).digest()
+    ).decode("ascii")
+
+
+def hashpw(pw, salt=None):
+    if hash_method == "md5":
+        return hashpw_md5(pw, salt)
+    elif hash_method == "sha1":
+        return hashpw_sha1(pw, salt)
+    elif hash_method == "crypt":
+        return hashpw_crypt(pw, salt)
+    return pw  # otherwise return plaintext
+
+
+def prompt_pass(prompt="Enter password:"):
+    pwd = getpass.getpass(prompt)
+    if not len(pwd):
+        die("Can't use empty password!\n")
+    return pwd
+
+
+# ---------------------------------------------------------------------------
+# DBM access helpers.  dbm stores bytes; we use latin-1 consistently so that
+# arbitrary hashed-password bytes round-trip cleanly.
+# ---------------------------------------------------------------------------
+
+_ENC = "latin-1"
+
+
+def db_has(db, key):
+    return key.encode(_ENC) in db
+
+
+def db_get(db, key):
+    return db[key.encode(_ENC)].decode(_ENC)
+
+
+def db_set(db, key, value):
+    db[key.encode(_ENC)] = value.encode(_ENC)
+
+
+def db_del(db, key):
+    del db[key.encode(_ENC)]
+
+
+def db_keys(db):
+    return [k.decode(_ENC) for k in db.keys()]
+
+
+# ---------------------------------------------------------------------------
+# Commands (the Perl dbmc:: subs).  These operate on the module-level state
+# (db, key, hashed_pwd, groups, comment, is_update).
+# ---------------------------------------------------------------------------
+
+class State:
+    db = None
+    key = None
+    hashed_pwd = None
+    groups = None
+    comment = None
+    is_update = False
+
+
+S = State()
+
+
+def cmd_add():
+    if not S.hashed_pwd:
+        die("Can't use empty password!\n")
+    if not S.is_update:
+        if db_has(S.db, S.key):
+            die("Sorry, user `%s' already exists!\n" % S.key)
+    groups = S.groups or ""
+    comment = S.comment or ""
+    if groups == "-":
+        groups = ""
+    if comment == "-":
+        comment = ""
+    if comment:
+        groups = groups + ":" + comment
+    value = S.hashed_pwd
+    if groups:
+        value = value + ":" + groups
+    db_set(S.db, S.key, value)
+    action = "updated" if S.is_update else "added"
+    print("User %s %s with password hashed to %s using %s"
+          % (S.key, action, value, hash_method))
+
+
+def cmd_adduser():
+    value = prompt_pass("New password:")
+    if prompt_pass("Re-type new password:") != value:
+        die("They don't match, sorry.\n")
+    S.hashed_pwd = hashpw(value)
+    cmd_add()
+
+
+def cmd_update():
+    if not db_has(S.db, S.key):
+        die("Sorry, user `%s' doesn't exist!\n" % S.key)
+    parts = (db_get(S.db, S.key).split(":", 2) + ["", "", ""])[:3]
+    if S.hashed_pwd == ".":
+        S.hashed_pwd = parts[0]
+    if not S.groups or S.groups == ".":
+        S.groups = parts[1]
+    if not S.comment or S.comment == ".":
+        S.comment = parts[2]
+    if not S.hashed_pwd or S.hashed_pwd == "-":
+        cmd_adduser()
+    else:
+        cmd_add()
+
+
+def cmd_delete():
+    if not db_has(S.db, S.key):
+        die("Sorry, user `%s' doesn't exist!\n" % S.key)
+    db_del(S.db, S.key)
+    print("`%s' deleted" % S.key)
+
+
+def cmd_view():
+    if S.key:
+        # Like Perl's $DB{$key}, a missing key yields the empty value.
+        val = db_get(S.db, S.key) if db_has(S.db, S.key) else ""
+        print("%s:%s" % (S.key, val))
+    else:
+        for k in db_keys(S.db):
+            v = db_get(S.db, k)
+            if v:
+                print("%s:%s" % (k, v))
+
+
+def cmd_check():
+    global hash_method
+    if not db_has(S.db, S.key):
+        die("Sorry, user `%s' doesn't exist!\n" % S.key)
+    chkpass = (db_get(S.db, S.key).split(":", 2) + ["", "", ""])[0]
+    testpass = prompt_pass()
+    if chkpass[:6] == "$apr1$":
+        hash_method = "md5"
+    elif chkpass[:5] == "{SHA}":
+        hash_method = "sha1"
+    elif len(chkpass) == 13 and chkpass != testpass:
+        hash_method = "crypt"
+    else:
+        hash_method = "plain"
+    ok = hashpw(testpass, chkpass) == chkpass
+    print(hash_method + (" password ok" if ok else " password mismatch"))
+
+
+def cmd_import():
+    for line in sys.stdin:
+        line = line.rstrip("\n").rstrip("\r")
+        if not line:
+            continue
+        fields = (line.split(":", 3) + ["", "", "", ""])[:4]
+        S.key, S.hashed_pwd, S.groups, S.comment = fields
+        cmd_add()
+
+
+COMMANDS = {
+    "add": cmd_add,
+    "adduser": cmd_adduser,
+    "check": cmd_check,
+    "delete": cmd_delete,
+    "import": cmd_import,
+    "update": cmd_update,
+    "view": cmd_view,
+}
+
+
+def main():
+    global hash_method
+    argv = sys.argv[1:]
+
+    # Consume the enc flag from the front of argv, if present.
+    if argv and argv[0] == "-d":
+        argv.pop(0)
+        hash_method = "crypt"
+    elif argv and argv[0] == "-m":
+        argv.pop(0)
+        hash_method = "md5"
+    elif argv and argv[0] == "-p":
+        argv.pop(0)
+        hash_method = "plain"
+    elif argv and argv[0] == "-s":
+        argv.pop(0)
+        hash_method = "sha1"
+
+    file = argv[0] if len(argv) > 0 else None
+    command = argv[1] if len(argv) > 1 else None
+    S.key = argv[2] if len(argv) > 2 else None
+    S.hashed_pwd = argv[3] if len(argv) > 3 else None
+    S.groups = argv[4] if len(argv) > 4 else None
+    S.comment = argv[5] if len(argv) > 5 else None
+
+    if not file or not command or command not in COMMANDS:
+        usage()
+
+    # remove extension if any: .db, .db?, .pag, .dir
+    file = re.sub(r"\.(db.?|pag|dir)$", "", file)
+
+    S.is_update = command == "update"
+
+    # view/check open read-only; everything else read-write (create).
+    if command in ("view", "check"):
+        flag = "r"
+    else:
+        flag = "c"
+
+    try:
+        S.db = dbm.open(file, flag)
+    except Exception as e:
+        die("Can't open %s: %s\n" % (file, e))
+
+    try:
+        COMMANDS[command]()
+    finally:
+        S.db.close()
+
+
+if __name__ == "__main__":
+    main()

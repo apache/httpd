@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.pt-br.xsl"?>
+<!-- English Revision: 1933438 -->
+<!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="invoking.xml.meta">
+
+  <title>Executando o Apache</title>
+
+<summary>
+    <p>No Windows o Apache geralmente é executado como um serviço.
+    Para detalhes, consulte: <a
+    href="platform/windows.html#winsvc">Executando o Apache como um Serviço</a>.
+    </p>
+
+    <p>No Unix o programa <program>httpd</program>
+    é executado como um daemon em fica continuamente em
+    segundo plano para gerenciar as requisições. Este documento descreve como
+    executar o <program>httpd</program>.</p>
+</summary>
+
+<seealso><a href="stopping.html">Interrompendo e Reiniciando</a></seealso>
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
+
+<section id="startup"><title>Como o Apache Inicia</title>
+
+    <p>Se a diretiva <directive module="mpm_common">Listen</directive>
+    especificada no arquivo de configuração indicar o padrão 80 (ou qualquer outra
+    porta abaixo de 1024), será necessário ter privilégios de root
+    para iniciar o Apache, para que ele possa se vincular a esta porta privilegiada.
+    Depois que o servidor for iniciado e executar algumas atividades preliminares,
+    como abrir seus arquivos de registro, ele iniciará vários
+    processos filhos que realizam o trabalho de monitorar e
+    responder às requisições de clientes. O processo principal <code>httpd</code>
+    continua a ser executado como usuário root, mas os processos filhos
+    são executados como um usuário com menos privilégios. Isso é controlado pelo
+    <a href="mpm.html">Módulo de Multiprocessamento</a> selecionado.</p>
+
+    <p>O método recomendado para chamar o executável <program>httpd</program>
+    é usar o script de controle <program>apachectl</program>. Este
+    script define certas variáveis ​​de ambiente necessárias para que
+    o <program>httpd</program> funcione corretamente em alguns sistemas operacionais
+    e, em seguida, chama o binário <program>httpd</program>.
+    O <program>apachectl</program> repassará quaisquer argumentos da linha de comando,
+    portanto, quaisquer opções do <program>httpd</program> também podem ser usadas com o
+    <program>apachectl</program>. Você também pode editar diretamente o
+    script <program>apachectl</program> alterando a variável <code>HTTPD</code>
+    no início para especificar o local correto do
+    binário <program>httpd</program> e quaisquer argumentos da linha de comando que você
+    deseje que estejam <em>sempre</em> presentes.</p>
+
+    <p>A primeira coisa que o <program>httpd</program> faz quando é
+    chamado é localizar e ler o <a
+    href="configuring.html">arquivo de configuração</a>
+    <code>httpd.conf</code>. A localização deste arquivo é definida no
+    momento da compilação, mas é possível especificar sua localização no momento da execução
+    usando a opção de linha de comando <code>-f</code> como em:</p>
+
+<example>/usr/local/apache2/bin/apachectl -f
+      /usr/local/apache2/conf/httpd.conf</example>
+
+    <p>Se tudo correr bem durante a inicialização, o servidor se desconectará do
+    terminal e o prompt de comando retornará quase
+    imediatamente. Isso indica que o servidor está em funcionamento.
+    Você pode então usar seu navegador para se conectar ao servidor e visualizar
+    a página de teste no diretório <directive
+    module="core">DocumentRoot</directive>.</p>
+</section>
+
+<section id="errors"><title>Erros Durante a Inicialização</title>
+
+    <p>Se o Apache sofrer um problema fatal durante a inicialização, ele
+    escreverá uma mensagem descrevendo o problema no console ou
+    no <directive module="core">ErrorLog</directive> antes de
+    encerrar. Uma das mensagens de erro mais comuns é "<code>Não foi possível
+    vincular à porta ...</code>". Essa mensagem geralmente é causada por
+    um dos seguintes motivos:</p>
+
+    <ul>
+      <li>Tentativa de iniciar o servidor em uma porta privilegiada sem
+      estar logado como usuário root; ou</li>
+
+      <li>Tentativa de iniciar o servidor quando já existe outra instância
+      do Apache ou de algum outro servidor web vinculada à mesma
+      porta.</li>
+    </ul>
+
+    <p>Para obter mais instruções sobre como solucionar problemas, consulte as
+    <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> do Apache.</p>
+</section>
+
+<section id="boot"><title>Começando na inicialização do sistema</title>
+
+    <p>Se você deseja que seu servidor continue em execução após uma reinicialização
+    do sistema, adicione uma chamada a <program>apachectl</program> aos seus
+    arquivos de inicialização do sistema (normalmente <code>rc.local</code> ou um arquivo em
+    um diretório <code>rc.N</code>). Isso iniciará o Apache como
+    root. Antes de fazer isso, certifique-se de que seu servidor esteja devidamente
+    configurado para restrições de segurança e acesso.</p>
+
+    <p>O script <program>apachectl</program> foi projetado para funcionar como um
+    script de inicialização SysV padrão; ele pode receber os argumentos
+    <code>start</code>, <code>restart</code> e <code>stop</code>
+    e traduzi-los nos sinais apropriados para
+    <program>httpd</program>. Portanto, a maioria das vezes é só adicionar
+    <program>apachectl</program> ao diretório de inicialização apropriado. Mas certifique-se
+    de verificar os requisitos exatos do seu sistema.</p>
+</section>
+
+<section id="info"><title>Informações Adicionais</title>
+
+    <p>Informações adicionais sobre as opções de linha de comando de <program>
+    httpd</program> e <program>apachectl</program>, bem como outros programas de suporte
+    incluídos com o servidor, estão disponíveis na página
+    <a href="programs/">Servidor e Programas de Suporte</a>.
+    Há também documentação sobre todos os <a
+    href="mod/">módulos</a> incluídos na distribuição do Apache
+    e as <a href="mod/directives.html">diretivas</a> que eles
+    fornecem.</p>
+</section>
+
+</manualpage>

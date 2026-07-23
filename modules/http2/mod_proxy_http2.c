@@ -239,9 +239,15 @@ static void request_done(h2_proxy_ctx *ctx, request_rec *r,
                       ctx->id, touched, error_code);
         ctx->r_done = 1;
         if (touched) ctx->r_may_retry = 0;
-        ctx->r_status = error_code? HTTP_BAD_GATEWAY :
-            ((status == APR_SUCCESS)? OK :
-             ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE));
+        if (apr_table_get(r->notes, "proxy-error-override")) {
+            ctx->r_status = r->status;
+            r->status = OK;
+        }
+        else {
+          ctx->r_status = error_code? HTTP_BAD_GATEWAY :
+              ((status == APR_SUCCESS)? OK :
+               ap_map_http_request_error(status, HTTP_SERVICE_UNAVAILABLE));
+        }
     }
 }    
 
@@ -428,7 +434,12 @@ run_connect:
     if (ctx->cfront->aborted) goto cleanup;
     status = ctx_run(ctx);
 
-    if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->cfront->aborted) {
+    if (apr_table_get(r->notes, "proxy-error-override")) {
+        /* pass on out */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, ctx->cfront,
+                      "proxy-error-override status %d", ctx->r_status);
+    }
+    else if (ctx->r_status != APR_SUCCESS && ctx->r_may_retry && !ctx->cfront->aborted) {
         /* Not successfully processed, but may retry, tear down old conn and start over */
         if (ctx->p_conn) {
             ctx->p_conn->close = 1;
@@ -463,7 +474,7 @@ cleanup:
 
     ap_set_module_config(ctx->cfront->conn_config, &proxy_http2_module, NULL);
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, status, ctx->cfront,
-                  APLOGNO(03377) "leaving handler");
+                  APLOGNO(03377) "leaving handler -> %d", ctx->r_status);
     return ctx->r_status;
 }
 

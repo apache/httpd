@@ -70,7 +70,7 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
     <p>Aliases and Redirects occurring in different contexts are processed
     like other directives according to standard <a
-    href="../sections.html#mergin">merging rules</a>.  But when multiple
+    href="../sections.html#merging">merging rules</a>.  But when multiple
     Aliases or Redirects occur in the same context (for example, in the
     same <directive type="section" module="core">VirtualHost</directive>
     section) they are processed in a particular order.</p>
@@ -117,7 +117,6 @@ Alias "/foo" "/gaq"
 <syntax>Alias [<var>URL-path</var>]
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context>
 </contextlist>
 
 <usage>

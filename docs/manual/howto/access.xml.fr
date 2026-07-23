@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1745189 -->
+<!-- English Revision: 1935507 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,9 +46,8 @@
 <section id="host"><title>Contrôle d'accès en fonction de l'hôte du
 client</title>
     <p>
-    Si vous souhaitez restreindre l'accès à certaines parties de votre
-    site web en fonction de l'adresse de l'hôte de vos visiteurs, le
-    plus simple pour y parvenir consiste à utiliser le module
+    Si vous souhaitez restreindre l'accès à certaines parties de votre site web
+    en fonction de l'adresse de l'hôte de vos visiteurs, utilisez le module
     <module>mod_authz_host</module>.
     </p>
 
@@ -75,10 +74,12 @@ client</title>
 
     <p>Les directives Require s'utilisent comme suit :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Require host <var>address</var>
 Require ip <var>ip.address</var>
-    </highlight>
+</highlight>
+</example>
 
     <p>Dans la première forme, <var>nom-hôte</var> est un nom de domaine
     pleinement qualifié (fqdn), ou un nom de domaine partiel ; vous
@@ -89,12 +90,29 @@ Require ip <var>ip.address</var>
     sous-réseau ou une spécification CIDR de la forme réseau/nnn. Il est
     possible de spécifier des adresses IPv4 ou IPv6.</p>
 
+<example><title>Exemples de formats d’adresse IP</title>
+<highlight language="config">
+# Adresse IP complète
+Require ip 10.2.3.4
+# Adresse IP partielle (correspond à tout hôte dans la tranche 172.20.0.0/16)
+Require ip 172.20
+# Paire réseau/masque
+Require ip 192.168.1.0/255.255.255.0
+# Spécification réseau/CIDR
+Require ip 192.168.1.0/24
+# Adresse IPv6
+Require ip 2001:db8::a00:20ff:fea7:ccea
+# Adresse IPv6 avec CIDR
+Require ip 2001:db8:1::/48
+</highlight>
+</example>
+
     <p>Voir <a href="../mod/mod_authz_host.html#requiredirectives">la
     documentation de mod_authz_host</a> pour d'autres exemples de cette
     syntaxe.</p>
 
     <p>Vous pouvez insérer le mot-clé <code>not</code> pour inverser un
-    critère particulier. Notez que le mot <code>not</code> réalise la
+    critère particulier. Le mot <code>not</code> réalise la
     négation sur la valeur, et ne peut pas être utilisé seul pour autoriser
     ou interdire une requête, car <em>non vrai</em> ne
     veut pas ici forcément dire <em>faux</em>. Ainsi, pour interdire la
@@ -104,29 +122,37 @@ Require ip <var>ip.address</var>
     spamer votre forum, vous pouvez ajouter cette ligne pour lui refuser
     l'accès :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
+Require all granted
+Require not ip 10.252.46.165
 &lt;/RequireAll&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>Les visiteurs possédant cette adresse (<code>10.252.46.165</code>) ne pourront pas voir le
     contenu concerné par cette directive. Si vous voulez interdir
     l'accès à une machine en fonction de son nom, vous pouvez ajouter
     ceci :</p>
 
-    <highlight language="config">Require not host <var>host.example.com</var></highlight>
+<example>
+<highlight language="config">
+Require not host <var>host.example.com</var>
+</highlight>
+</example>
 
     <p>Et si vous voulez interdire l'accès à un domaine particulier,
     vous pouvez spécifier des adresses IP partielles ou des noms de
     domaine, comme ceci :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Require not ip 192.168.205
-Require not host phishers.example.com moreidiots.example
+Require not host phishers.example.com badguys.example
 Require not host gov
-    </highlight>
+</highlight>
+</example>
 
     <p>Les directives <directive
     module="mod_authz_core">RequireAll</directive>, <directive
@@ -146,20 +172,24 @@ arbitraires</title>
     fonction du user-agent (le type de navigateur), vous pouvez
     spécifier ceci :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
-    Require all denied
+Require all denied
 &lt;/If&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>En utilisant la syntaxe <code>expr</code> de la directive
     <directive module="mod_authz_core">Require</directive>, l'exemple
     précédent peut aussi s'écrire :</p>
 
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Require expr %{HTTP_USER_AGENT} != 'BadBot'
-    </highlight>
+</highlight>
+</example>
 
     <note><title>Avertissement :</title>
     <p>Contrôler l'accès en fonction de l'en-tête
@@ -185,12 +215,14 @@ d'accès</title>
     <p>Par exemple, pour bloquer l'accès à une ressources entre 20h et
     7h du matin, vous pouvez utiliser <module>mod_rewrite</module> :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
 RewriteCond "%{TIME_HOUR}" "&lt;07"
 RewriteRule "^/fridge" "-" [F]
-    </highlight>
+</highlight>
+</example>
 
     <p>Toute requête arrivant après 20h ou avant 7h du matin provoquera
     l'envoi d'une réponse de type 403 Forbidden. Vous pouvez utiliser
@@ -220,6 +252,14 @@ RewriteRule "^/fridge" "-" [F]
 
     <p>Voir aussi le How-To <a href="auth.html">Authentification and
     autorisation</a>.</p>
+
+    <p>Voir la <a href="../sections.html#merging">documentation sur la fusion
+    des sections de configuration</a> pour un avertissement à propos de la
+    manière dont la directive <directive type="section"
+    module="core">Limit</directive> au sein d’une section <directive
+    type="section" module="core">Location</directive> peut outrepasser
+    silencieusement les restrictions d’accès d’une section <directive
+    type="section" module="core">Directory</directive>.</p>
 </section>
 
 </manualpage>

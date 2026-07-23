@@ -9,14 +9,6 @@ http://httpd.apache.org/docs-project/docsformat.html
 To Do List
 =======================
 
-- Update the http://httpd.apache.org/docs-project/docsformat.html
-  document to be useful. In particular:
-    - Document the translation process.
-    - Generally update it to make it reflect the current reality of how
-      we work.
-    -  Improving the documentation of the documentations' build system
-       itself (requirements, procedures)
-
 - Continue to enhance the FAQ, which is in the wiki:
   http://wiki.apache.org/httpd/FAQ
 
@@ -35,13 +27,6 @@ To Do List
   They both need review and updates to reflect the current state
   of the art.
 
-- Windows platform docs are in desperate need of rewrites/updates for 2.x.
-    - Bill Rowe is a good contact for tech questions.
-    - "using apache" has been done, "compiling apache" is still open
-    - hints on uninstalling apache (exit monitor, close directories,
-      registry entries etc) (PR 10154)
-    - FAQ: UTF-8 config and URL encoding for non-ascii characters.
-
 - New Auth system
     - Much clean-up and enhancement of aaa howto (Can someone clarify
       exactly what needs cleaned up and enhanced?)
@@ -49,19 +34,8 @@ To Do List
     - Discussion of DBD auth, and, in particular, examples of how to set
       up auth using each of the supported databases.
 
-- Expression syntax for <If>, Require expr, SetEnvIfExpr, CustomLog, ...
-  Start is in expr.xml, igalic is working on this
-
-- modules docs
-    - the following modules added since 2.2 lack documentation
-        - mod_serf
-        - mpm_simple
-      the list may be incomplete
-      maybe some of the modules will not be included in 2.4
-    - mod_suexec: very little documentation
-
 - mod_substitute and reverse proxies: Add example using mod_filter
-  (see: http://marc.info/?l=apache-httpd-users&m=128830729603423&w=2)
+  (see: http://lists.apache.org/thread/kcdy8hyrqjpyy56bf63fzcgtl33kkblz)
 
 -Mod auth spanish doc add the following that a community member has created.
 https://github.com/valenbg1/auth-example-mod-apache
@@ -124,7 +98,7 @@ https://github.com/valenbg1/auth-example-mod-apache
   are accurate, and others are way outdated.
 
 - I'd like to expand the discussion of conditional logging, and add a
-  few more useful exmaples.
+  few more useful examples.
   That would be a good place to document logging of cache hit/miss:
   https://issues.apache.org/bugzilla/show_bug.cgi?id=48241#c2
 
@@ -160,10 +134,4 @@ https://github.com/valenbg1/auth-example-mod-apache
   https://issues.apache.org/bugzilla/show_bug.cgi?id=45526 for details
   of what's broken. For the moment, PDF docs are no longer referenced on
   the docs site.
-
-- Add example of using -p flag to rotatelogs to do something useful.
-
-- Log rotation doc - http://httpd.apache.org/docs/2.4/logs.html#rotation
-  needs to mention rotatelogs as well as fairly standard log rotation
-  stuff, rather than encouraging people to do this by hand.
 

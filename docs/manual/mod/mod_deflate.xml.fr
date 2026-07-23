@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1911874 -->
+<!-- English Revision: 1934516 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,7 +33,7 @@ client</description>
 
 <summary>
     <p>Le module <module>mod_deflate</module> implémente le filtre de
-    sortie <code>DEFLATE</code> qui permet de comprimer la sortie de
+    sortie <code>DEFLATE</code> qui permet de compresser la sortie de
     votre serveur avant de l'envoyer au client sur le réseau.</p>
 </summary>
 <seealso><a href="../filter.html">Les filtres</a></seealso>
@@ -54,10 +54,10 @@ client</description>
 	données compressées par deflate. Pour plus de détails,
 	documentez-vous sur la famille d'attaques "BREACH".</p>
     </note>
-    <p>Voici un exemple simple de configuration qui permet de comprimer
+    <p>Voici un exemple simple de configuration qui permet de compresser
     les types de contenu à base de texte.</p>
 
-    <example><title>Ne comprime que certains types de documents</title>
+    <example><title>Ne compresse que certains types de documents</title>
     <highlight language="config">
       AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
     </highlight>
@@ -88,7 +88,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       particuliers, vous pouvez utiliser la directive <directive
       module="mod_filter">AddOutputFilterByType</directive>. Voici un exemple
       où la compression n'est activée que pour les fichiers html de la
-      documentation d'Apache :</p>
+      documentation d'Apache httpd:</p>
 
       <highlight language="config">
 &lt;Directory "/your-server-root/manual"&gt;
@@ -106,13 +106,13 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 	l'aide de la directive <directive
 	module="mod_env">SetEnv</directive>, permet d'ignorer la
 	configuration de votre navigateur quant aux codages acceptés, et
-	d'envoyer sans condition une sortie comprimée.
+	d'envoyer sans condition une sortie compressée.
       </note>
 
     </section>
     <section id="inflate"><title>Décompression de la sortie</title>
       <p>Le module <module>mod_deflate</module> fournit aussi un filtre
-      permettant de décomprimer un corps de réponse comprimé par gzip.
+      permettant de décompresser un corps de réponse compressé par gzip.
       Pour activer cette fonctionnalité, vous devez insérer le filtre
       <code>INFLATE</code> dans la chaîne de filtrage en sortie via la
       directive <directive module="core">SetOutputFilter</directive> ou
@@ -126,15 +126,15 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 &lt;/Location&gt;
       </highlight>
 
-      <p>Dans cet exemple, les sorties comprimées par gzip en
-      provenance de example.com seront décomprimées afin de pouvoir
+      <p>Dans cet exemple, les sorties compressées par gzip en
+      provenance de example.com seront décompressées afin de pouvoir
       être éventuellement traitées par d'autres filtres.
       </p>
 
     </section>
     <section id="input"><title>Décompression de l'entrée</title>
       <p>Le module <module>mod_deflate</module> fournit également un filtre
-      permettant de décomprimer un corps de requête comprimé par gzip.
+      permettant de décompresser un corps de requête compressé par gzip.
       Pour activer cette fonctionnalité, vous devez insérer le filtre
       <code>DEFLATE</code> dans la chaîne de filtrage en entrée via la
       directive <directive module="core">SetInputFilter</directive> ou
@@ -149,11 +149,11 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
 
       <p>Désormais, si une requête contient un en-tête
       <code>Content-Encoding: gzip</code>, son corps sera
-      automatiquement décomprimé. Peu de navigateurs sont actuellement
-      en mesure de comprimer les corps de requêtes. Cependant,
+      automatiquement décompressé. Peu de navigateurs sont actuellement
+      en mesure de compresser les corps de requêtes. Cependant,
       certaines applications spécialisées supportent les requêtes
-      comprimées, comme par exemple certains clients <a
-      href="http://www.webdav.org">WebDAV</a>.</p>
+      compressées, comme par exemple certains clients <a
+      href="https://www.webdav.org">WebDAV</a>.</p>
 
       <note type="warning"><title>Note à propos de l'en-tête
       <code>Content-Length</code></title>
@@ -174,7 +174,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
     mandataires qu'une réponse enregistrée dans le cache ne doit être
     envoyée qu'aux clients qui ont envoyé l'en-tête de requête
     <code>Accept-Encoding</code> approprié. Ceci permet d'éviter l'envoi
-    d'un contenu comprimé à un client qui ne sera pas en mesure
+    d'un contenu compressé à un client qui ne sera pas en mesure
     de l'interpréter.</p>
 
     <p>Si vous avez défini des exclusions spécifiques dépendant, par
@@ -189,7 +189,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip
       Header append Vary User-Agent
     </highlight>
 
-    <p>Si votre décision de comprimer le contenu dépend d'autres
+    <p>Si votre décision de compresser le contenu dépend d'autres
     informations que celles contenues dans les en-têtes de la requête
     (par exemple la version HTTP), vous devez attribuer à l'en-tête
     <code>Vary</code> la valeur <code>*</code>, ce qui permet d'empêcher
@@ -301,7 +301,7 @@ CustomLog "logs/deflate_log" deflate
 
 <directivesynopsis>
 <name>DeflateBufferSize</name>
-<description>Taille du fragment que zlib devra comprimer en une seule
+<description>Taille du fragment que zlib devra compresser en une seule
 fois</description>
 <syntax>DeflateBufferSize <var>valeur</var></syntax>
 <default>DeflateBufferSize 8096</default>
@@ -310,7 +310,7 @@ fois</description>
 
 <usage>
     <p>La directive <directive>DeflateBufferSize</directive> permet de
-    spécifier la taille en octets du fragment que zlib devra comprimer
+    spécifier la taille en octets du fragment que zlib devra compresser
     en une seule fois. Si la taille de la réponse compressée est supérieure à
     celle spécifiée par cette directive, httpd passera à un mode d'encodage
     fragmenté (l'en-tête HTTP <code>Transfer-Encoding</code> prend la valeur
@@ -390,12 +390,14 @@ compression</default>
 Apache</compatibility>
 
 <usage>
-    <p>La directive
-    <directive>DeflateInflateLimitRequestBody</directive> permet de
-    spécifier la taille maximale d'un corps de requête décompressé. Si
-    elle n'est pas définie, c'est la valeur de la directive <directive
-    module="core">LimitRequestBody</directive> qui s'applique au corps
-    de requête décompressé.</p>
+    <p>La directive <directive>DeflateInflateLimitRequestBody</directive> permet
+    de spécifier la taille maximale d'un corps de requête décompressé. Si elle
+    n'est pas définie, c'est la valeur de la directive <directive
+    module="core">LimitRequestBody</directive> qui s'applique au corps de
+    requête décompressé. Une valeur de <code>0</code> signifie qu’aucune limite
+    n’est imposée à la taille du corps décompressé (d’autres limites telles que
+    celles de la directive <directive module="core">LimitRequestBody</directive>
+    peuvent cependant s’appliquer).</p>
 </usage>
 </directivesynopsis>
 

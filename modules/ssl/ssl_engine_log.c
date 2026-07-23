@@ -126,7 +126,7 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
 static void ssl_log_cert_error(const char *file, int line, int level,
                                apr_status_t rv, const server_rec *s,
                                const conn_rec *c, const request_rec *r,
-                               apr_pool_t *p, X509 *cert, const char *format,
+                               apr_pool_t *p, const X509 *cert, const char *format,
                                va_list ap)
 {
     char buf[HUGE_STRING_LEN];
@@ -167,14 +167,14 @@ static void ssl_log_cert_error(const char *file, int line, int level,
             }
 
             BIO_puts(bio, " / serial: ");
-            if (i2a_ASN1_INTEGER(bio, X509_get_serialNumber(cert)) == -1)
+            if (i2a_ASN1_INTEGER(bio, X509_get0_serialNumber(cert)) == -1)
                 BIO_puts(bio, "(ERROR)");
 
             BIO_puts(bio, " / notbefore: ");
-            ASN1_TIME_print(bio, X509_get_notBefore(cert));
+            ASN1_TIME_print(bio, X509_get0_notBefore(cert));
 
             BIO_puts(bio, " / notafter: ");
-            ASN1_TIME_print(bio, X509_get_notAfter(cert));
+            ASN1_TIME_print(bio, X509_get0_notAfter(cert));
 
             BIO_puts(bio, "]");
 
@@ -212,7 +212,7 @@ static void ssl_log_cert_error(const char *file, int line, int level,
  * in the other cases we use the connection and request pool, respectively).
  */
 void ssl_log_xerror(const char *file, int line, int level, apr_status_t rv,
-                    apr_pool_t *ptemp, server_rec *s, X509 *cert,
+                    apr_pool_t *ptemp, server_rec *s, const X509 *cert,
                     const char *fmt, ...)
 {
     if (APLOG_IS_LEVEL(s,level)) {
@@ -225,7 +225,7 @@ void ssl_log_xerror(const char *file, int line, int level, apr_status_t rv,
 }
 
 void ssl_log_cxerror(const char *file, int line, int level, apr_status_t rv,
-                     conn_rec *c, X509 *cert, const char *fmt, ...)
+                     conn_rec *c, const X509 *cert, const char *fmt, ...)
 {
     if (APLOG_IS_LEVEL(mySrvFromConn(c),level)) {
        va_list ap;
@@ -237,7 +237,7 @@ void ssl_log_cxerror(const char *file, int line, int level, apr_status_t rv,
 }
 
 void ssl_log_rxerror(const char *file, int line, int level, apr_status_t rv,
-                     request_rec *r, X509 *cert, const char *fmt, ...)
+                     request_rec *r, const X509 *cert, const char *fmt, ...)
 {
     if (APLOG_R_IS_LEVEL(r,level)) {
        va_list ap;

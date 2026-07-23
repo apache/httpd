@@ -1,0 +1,301 @@
+#test config derived from httpd-2.0/docs/conf/ssl-std.conf -*- text -*-
+
+<IfModule @ssl_module@>
+    #base config that can be used by any SSL enabled VirtualHosts
+    AddType application/x-x509-ca-cert .crt
+    AddType application/x-pkcs7-crl    .crl
+
+    # hack to allow environment variable to affect test config
+    <IfFile !${NO_TEST_SNIPOLICY}>
+    <IfVersion >= 2.4.66>
+       SSLVHostSNIPolicy insecure
+    </Ifversion>
+    </IfFile>
+
+    <IfDefine TEST_SSL_SESSCACHE>
+       SSLSessionCache      ${SSL_SESSCACHE}
+    </IfDefine>
+    <IfDefine !TEST_SSL_SESSCACHE>
+      SSLSessionCache        none
+    </IfDefine>
+
+    <IfVersion < 2.3.4>
+    #SSLMutex  file:@ServerRoot@/logs/ssl_mutex
+    </IfVersion>
+    <IfVersion >= 2.3.4>
+    # mutex created automatically
+    # config needed only if file-based mutexes are used and
+    # default lock file dir is inappropriate
+    # Mutex file:/path/to/lockdir ssl-cache
+    </IfVersion>
+
+    SSLRandomSeed startup builtin
+    SSLRandomSeed connect builtin
+    #SSLRandomSeed startup file:/dev/random  512
+    #SSLRandomSeed startup file:/dev/urandom 512
+    #SSLRandomSeed connect file:/dev/random  512
+    #SSLRandomSeed connect file:/dev/urandom 512
+
+    SSLProtocol @sslproto@
+
+    <IfModule mod_log_config.c>
+        LogFormat "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %>s %b" ssl
+        CustomLog logs/ssl_request_log ssl
+    </IfModule>
+
+    SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+
+    <IfDefine TEST_SSL_PASSPHRASE_EXEC>
+        SSLPassPhraseDialog  exec:@ServerRoot@/conf/ssl/httpd-passphrase.pl
+    </IfDefine>
+    #else the default is builtin
+    <IfDefine !TEST_SSL_PASSPHRASE_EXEC>
+        SSLPassPhraseDialog  builtin
+    </IfDefine>
+
+    <IfDefine TEST_SSL_DES3_KEY>
+        SSLCertificateFile @SSLCA@/asf/certs/server_des3.crt
+
+        SSLCertificateKeyFile @SSLCA@/asf/keys/server_des3.pem
+
+#        SSLCertificateFile @SSLCA@/asf/certs/server_des3_dsa.crt
+
+#        SSLCertificateKeyFile @SSLCA@/asf/keys/server_des3_dsa.pem
+    </IfDefine>
+    #else the default is an unencrypted key
+    <IfDefine !TEST_SSL_DES3_KEY>
+        SSLCertificateFile @SSLCA@/asf/certs/server.crt
+
+        SSLCertificateKeyFile @SSLCA@/asf/keys/server.pem
+
+#        SSLCertificateFile @SSLCA@/asf/certs/server_dsa.crt
+
+#        SSLCertificateKeyFile @SSLCA@/asf/keys/server_dsa.pem
+    </IfDefine>
+
+    #SSLCertificateChainFile @SSLCA@/asf/certs/cachain.crt
+
+    SSLCACertificateFile @SSLCA@/asf/certs/ca.crt
+
+    SSLCACertificatePath @ServerRoot@/conf/ssl
+
+    SSLCARevocationFile @SSLCA@/asf/crl/ca-bundle.crl
+    <IfVersion >= 2.3.15>
+        SSLCARevocationCheck chain
+    </IfVersion>
+
+    # any string other than _default_ causes an NVH set to be created
+    <VirtualHost default:@ssl_module_name@>
+        SSLEngine on
+
+        #t/ssl/verify.t
+        Alias /verify @DocumentRoot@
+
+        <Location /verify>
+            SSLVerifyClient require
+            SSLVerifyDepth  10
+        </Location>
+
+        # t/ssl/pha.t
+        <Location /require/small>
+            SSLVerifyClient require
+            SSLVerifyDepth  10
+
+            SSLRenegBufferSize 10
+        </Location>
+        Alias /require/small      @DocumentRoot@/modules/cgi
+
+        #t/ssl/require.t
+        Alias /require/asf        @DocumentRoot@
+        Alias /require/snakeoil   @DocumentRoot@
+        Alias /require/certext    @DocumentRoot@
+        Alias /require/strcmp     @DocumentRoot@
+        Alias /require/intcmp     @DocumentRoot@
+        Alias /ssl-fakebasicauth  @DocumentRoot@
+        Alias /ssl-fakebasicauth2 @DocumentRoot@
+        Alias /ssl-cgi            @DocumentRoot@/modules/cgi
+        Alias /require-ssl-cgi    @DocumentRoot@/modules/cgi
+
+        Alias /require-aes128-cgi    @DocumentRoot@/modules/cgi
+        Alias /require-aes256-cgi    @DocumentRoot@/modules/cgi
+
+        <Location /require/asf>
+            SSLVerifyClient require
+            SSLVerifyDepth  10
+            SSLRequire (%{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \
+                        and %{SSL_CLIENT_S_DN_O} eq "ASF" \
+                        and %{SSL_CLIENT_S_DN_OU} in \
+                             {"httpd-test", "httpd", "modperl"} )
+        </Location>
+
+        <Location /require/snakeoil>
+            SSLVerifyClient require
+            SSLVerifyDepth  10
+            SSLRequire (%{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \
+                        and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \
+                        and %{SSL_CLIENT_S_DN_OU} in \
+                             {"Staff", "CA", "Dev"} )
+        </Location>
+
+        <Location /require/certext>
+            SSLVerifyClient require
+            <IfVersion > 2.3.0>
+               SSLRequire "Lemons" in PeerExtList("1.3.6.1.4.1.18060.12.0")
+            </IfVersion>
+            <IfVersion < 2.3.0>
+               <IfVersion > 2.1.6>
+                  SSLRequire "Lemons" in OID("1.3.6.1.4.1.18060.12.0")
+               </IfVersion>
+            </IfVersion>
+        </Location>
+
+        <Location /require/strcmp>
+            SSLRequire "a" < "b"
+            SSLRequire "a" lt "b"
+        </Location>
+
+        <Location /require/intcmp>
+            SSLRequire 2 < 10
+            SSLRequire 2 lt 10
+        </Location>
+
+        <Location /ssl-cgi>
+            SSLOptions +StdEnvVars
+        </Location>
+
+        <Location /require-ssl-cgi>
+            SSLOptions +StdEnvVars
+            SSLVerifyClient require
+            SSLVerifyDepth  10
+        </Location>
+
+        <Location /require-aes128-cgi>
+            SSLCipherSuite AES128-SHA
+        </Location>
+
+        <Location /require-aes256-cgi>
+            SSLCipherSuite AES256-SHA
+        </Location>
+
+        <IfModule @AUTH_MODULE@>
+            <Location /ssl-fakebasicauth>
+                SSLVerifyClient      require
+                SSLVerifyDepth       5
+                SSLOptions           +FakeBasicAuth
+                AuthName             "Snake Oil Authentication"
+                AuthType             Basic
+                AuthUserFile         @SSLCA@/asf/ssl.htpasswd
+                require              valid-user
+            </Location>
+        </IfModule>
+
+        # specific to 2.1
+        <IfModule mod_authn_anon.c>
+            <IfModule mod_auth_basic.c>
+                <Location /ssl-fakebasicauth2>
+                    SSLVerifyClient      require
+                    SSLOptions           +FakeBasicAuth +StdEnvVars
+                    AuthName             "Snake Oil Authentication"
+                    AuthType             Basic
+                    AuthBasicProvider    anon
+                    Anonymous            dummy "*"
+                    require              valid-user
+                </Location>
+            </IfModule>
+        </IfModule>
+
+        ##
+        ## mod_h2 test config
+        ##
+        <IfModule h2_module>
+            LogLevel h2:debug
+        </IfModule>
+
+        <IfModule @CGI_MODULE@>
+            <Directory @SERVERROOT@/htdocs/modules/h2>
+                Options +ExecCGI
+                AddHandler cgi-script .pl
+
+            </Directory>
+        </IfModule>
+        <Location /modules/h2/hello.pl>
+            SSLOptions +StdEnvVars
+        </Location>
+        <IfModule mod_rewrite.c>
+            RewriteEngine on
+            RewriteRule ^/modules/h2/latest.tar.gz$ /modules/h2/xxx-1.0.2a.tar.gz [R=302,NC]
+        </IfModule>
+
+    </VirtualHost>
+
+    <VirtualHost nvh:@ssl_module_name@>
+      ServerAlias nvh
+    </VirtualHost>
+
+    # An SSL vhost which does optional ccert checks at vhost level, to
+    # check for CVE CAN-2005-2700.
+      
+    <VirtualHost ssl_optional_cc>
+        SSLEngine on
+        
+        SSLVerifyClient optional
+
+        Alias /require/any        @DocumentRoot@
+        Alias /require/none       @DocumentRoot@
+
+        <Location /require/any>
+            SSLVerifyClient require
+            SSLVerifyDepth  10
+        </Location>
+    </VirtualHost>
+
+    # An SSL vhost which can be used to trigger PR 33791
+
+    <VirtualHost ssl_pr33791>
+       SSLEngine On
+
+       ErrorDocument 400 /index.html
+
+       <Location />
+           SSLVerifyClient require
+       </Location>
+    </VirtualHost>
+
+    # For t/ssl/ocsp.t --
+    <Location /modules/ssl/ocsp>
+        SetEnv SSL_CA_ROOT @sslca@/asf
+    </Location>
+    Alias /modules/ssl/ocsp            @DocumentRoot@/modules/cgi/ocsp.pl
+
+    <VirtualHost ssl_ocsp>
+       SSLEngine on
+
+     # SSLOCSPResponderCertificateFile is available from 2.4.26
+     <IfVersion >= 2.4.26>
+       SSLVerifyClient on
+
+       SSLOCSPEnable on
+       SSLOCSPDefaultResponder http://@SERVERNAME@:@PORT@/modules/ssl/ocsp
+       SSLOCSPResponderCertificateFile @SSLCA@/asf/certs/server.crt
+
+       # Ignore CRL check results
+       SSLCARevocationCheck none
+     </IfVersion>
+    </VirtualHost>
+
+    # For t/ssl/pr43738.t:
+    <IfModule mod_actions.c>
+        Action application/x-pf-action /modules/cgi/action.pl
+        
+        AddType application/x-pf-action .pfa
+    </IfModule>
+
+    <Location /modules/ssl/aes128/>
+         SSLCipherSuite AES128-SHA
+    </Location>
+
+    <Location /modules/ssl/aes256/>
+         SSLCipherSuite AES256-SHA
+    </Location>
+
+</IfModule>

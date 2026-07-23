@@ -1,0 +1,543 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="de"><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Verwendung von RewriteMap - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Verwendung von RewriteMap</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="../de/rewrite/rewritemap.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">Diese &Uuml;bersetzung ist m&ouml;glicherweise
+            nicht mehr aktuell. Bitte pr&uuml;fen Sie die englische Version auf
+            die neuesten &Auml;nderungen.</div>
+
+
+    <p>Dieses Dokument erg&auml;nzt die <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">Referenzdokumentation</a>. Es beschreibt
+die Verwendung der <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
+und bietet Beispiele f&uuml;r jeden der verschiedenen
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Typen.</p>
+
+    <div class="warning">Beachten Sie, dass viele dieser Beispiele nicht unver&auml;ndert in Ihrer
+speziellen Serverkonfiguration funktionieren werden. Es ist daher wichtig, dass Sie
+sie verstehen, anstatt die Beispiele einfach auszuschneiden und in Ihre
+Konfiguration einzuf&uuml;gen.</div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Einf&uuml;hrung</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#int">int: Interne Funktion</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#txt">txt: Klartext-Maps</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rnd">rnd: Zuf&auml;lliger Klartext</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbm">dbm: DBM-Hash-Datei</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#prg">prg: Externes Umschreibungsprogramm</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbd">dbd oder fastdbd: SQL-Abfrage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#summary">Zusammenfassung</a></li>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&uuml;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="access.html">Zugriffskontrolle</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="introduction">Einf&uuml;hrung <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+    
+
+   <p>
+   Die <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
+   definiert eine externe Funktion, die im Kontext von
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>- oder
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>-Direktiven
+   aufgerufen werden kann, um Umschreibungen durchzuf&uuml;hren, die zu
+   kompliziert oder zu spezialisiert sind, um allein mit regul&auml;ren
+   Ausdr&uuml;cken durchgef&uuml;hrt zu werden. Die Quelle f&uuml;r diese Nachschlagung
+   kann einer der in den folgenden Abschnitten aufgef&uuml;hrten Typen sein,
+   die auch in der
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Referenzdokumentation
+   aufgez&auml;hlt sind.</p>
+
+   <p>Die Syntax der <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
+   lautet wie folgt:</p>
+
+<pre class="prettyprint lang-config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</pre>
+
+
+    <p>Der <a id="mapfunc" name="mapfunc"><em>MapName</em></a> ist ein
+    beliebiger Name, den Sie der Map zuweisen und den Sie sp&auml;ter in
+    Direktiven verwenden. Argumente werden der Map &uuml;ber die folgende
+    Syntax &uuml;bergeben:</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
+        <code>}</code> <br> <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>Wenn ein solches Konstrukt auftritt, wird die Map <em>MapName</em>
+      konsultiert und der Schl&uuml;ssel <em>LookupKey</em> nachgeschlagen.
+      Wenn der Schl&uuml;ssel gefunden wird, wird das Map-Funktions-Konstrukt
+      durch <em>SubstValue</em> ersetzt. Wenn der Schl&uuml;ssel nicht gefunden
+      wird, wird es durch <em>DefaultValue</em> oder durch den leeren
+      String ersetzt, falls kein <em>DefaultValue</em> angegeben wurde.</p>
+
+    <p>Sie k&ouml;nnen beispielsweise eine
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> wie folgt
+      definieren:</p>
+    <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
+
+    <p>Sie k&ouml;nnen diese Map dann in einer
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> wie folgt
+      verwenden:</p>
+      <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
+
+
+<p>Ein Standardwert kann f&uuml;r den Fall angegeben werden, dass nichts in
+der Map gefunden wird:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"</pre>
+
+
+<div class="note"><h3>Verzeichniskontext und .htaccess-Kontext</h3>
+<p>
+Die <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive darf nicht
+in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Abschnitten oder
+<code>.htaccess</code>-Dateien verwendet werden. Sie m&uuml;ssen die Map im Server-
+oder VirtualHost-Kontext deklarieren. Sie k&ouml;nnen die Map, einmal erstellt, in
+Ihren <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>- und
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>-Direktiven in diesen
+Geltungsbereichen verwenden. Sie k&ouml;nnen sie nur nicht in diesen Geltungsbereichen
+<strong>deklarieren</strong>.</p>
+</div>
+
+<p>Die folgenden Abschnitte beschreiben die verschiedenen <em>MapType</em>s,
+die verwendet werden k&ouml;nnen, und geben Beispiele f&uuml;r jeden.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="int">int: Interne Funktion <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+    
+
+    <p>Wenn ein MapType von <code>int</code> verwendet wird, ist die
+    MapSource eine der verf&uuml;gbaren internen
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Funktionen.
+    Modulautoren k&ouml;nnen zus&auml;tzliche interne Funktionen bereitstellen,
+    indem sie diese mit der <code>ap_register_rewrite_mapfunc</code>-API
+    registrieren. Die standardm&auml;&szlig;ig bereitgestellten Funktionen sind:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br>
+             Konvertiert den Schl&uuml;ssel in Gro&szlig;buchstaben.</li>
+      <li><strong>tolower</strong>:<br>
+             Konvertiert den Schl&uuml;ssel in Kleinbuchstaben.</li>
+      <li><strong>escape</strong>:<br>
+             &Uuml;bersetzt Sonderzeichen im Schl&uuml;ssel in
+            Hex-Kodierungen.</li>
+      <li><strong>unescape</strong>:<br>
+             &Uuml;bersetzt Hex-Kodierungen im Schl&uuml;ssel zur&uuml;ck in
+            Sonderzeichen.</li>
+    </ul>
+
+    <p>
+    Um eine dieser Funktionen zu verwenden, erstellen Sie eine
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, die auf die
+    int-Funktion verweist, und verwenden Sie diese dann in Ihrer
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>:
+    </p>
+
+   <p><strong>Eine URI auf eine komplett kleingeschriebene Version umleiten</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
+
+
+    <div class="note">
+    <p>Bitte beachten Sie, dass das hier angebotene Beispiel nur zur
+    Veranschaulichung dient und keine Empfehlung ist. Wenn Sie URLs
+    unabh&auml;ngig von der Gro&szlig;-/Kleinschreibung machen m&ouml;chten, ziehen Sie
+    stattdessen die Verwendung von <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> in
+    Betracht.
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="txt">txt: Klartext-Maps <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+    
+
+    <p>Wenn ein MapType von <code>txt</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einer Klartext-Zuordnungsdatei,
+    die ein durch Leerzeichen getrenntes Schl&uuml;ssel/Wert-Paar pro Zeile
+    enth&auml;lt. Optional kann eine Zeile einen Kommentar enthalten, der
+    mit einem '#'-Zeichen beginnt.</p>
+
+    <p>Eine g&uuml;ltige Text-Rewrite-Map-Datei hat die folgende Syntax:</p>
+
+    <div class="example"><p><code>
+      # Kommentarzeile<br>
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br>
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # Kommentar<br>
+    </code></p></div>
+
+    <p>Wenn die <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    aufgerufen wird, wird das Argument im ersten Argument einer Zeile
+    gesucht und, falls gefunden, der Ersetzungswert zur&uuml;ckgegeben.</p>
+
+    <p>Beispielsweise k&ouml;nnen wir eine Map-Datei verwenden, um
+    Produktnamen in Produkt-IDs f&uuml;r leichter zu merkende URLs
+    zu &uuml;bersetzen, mit dem folgenden Rezept:</p>
+<p><strong>Produkt-zu-ID-Konfiguration</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+
+    <p>Wir nehmen hier an, dass das <code>prods.php</code>-Skript wei&szlig;,
+    was zu tun ist, wenn es ein Argument von <code>id=NOTFOUND</code>
+    erh&auml;lt, wenn ein Produkt nicht in der Nachschlagetabelle gefunden
+    wird.</p>
+
+    <p>Die Datei <code>/etc/apache2/productmap.txt</code> enth&auml;lt dann
+    Folgendes:</p>
+
+    <div class="example"><h3>Produkt-zu-ID-Map</h3><p><code>
+##<br>
+##  productmap.txt - Produkt-zu-ID-Map-Datei<br>
+##<br>
+<br>
+television 993<br>
+stereo     198<br>
+fishingrod 043<br>
+basketball 418<br>
+telephone  328
+    </code></p></div>
+
+    <p>Wenn also <code>http://example.com/product/television</code>
+    angefordert wird, wird die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+    angewendet und die Anfrage intern auf
+    <code>/prods.php?id=993</code> abgebildet.</p>
+
+    <div class="note"><h3>Hinweis: .htaccess-Dateien</h3>
+    Das gegebene Beispiel ist f&uuml;r die Verwendung im Server- oder
+    VirtualHost-Kontext konzipiert. Wenn Sie dies in einer
+    <code>.htaccess</code>-Datei verwenden m&ouml;chten, m&uuml;ssen Sie den
+    f&uuml;hrenden Schr&auml;gstrich aus dem Umschreibungsmuster entfernen, damit
+    es &uuml;bereinstimmt:
+    <pre class="prettyprint lang-config">RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+    </div>
+
+    <div class="note"><h3>Zwischengespeicherte Nachschlagungen</h3>
+    <p>
+    Die nachgeschlagenen Schl&uuml;ssel werden von httpd zwischengespeichert,
+    bis sich die <code>mtime</code> (&Auml;nderungszeit) der Map-Datei &auml;ndert
+    oder der httpd-Server neu gestartet wird. Dies gew&auml;hrleistet eine
+    bessere Leistung bei Maps, die von vielen Anfragen aufgerufen werden.
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rnd">rnd: Zuf&auml;lliger Klartext <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+    
+
+    <p>Wenn ein MapType von <code>rnd</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einer Klartext-Zuordnungsdatei,
+    wobei jede Zeile einen Schl&uuml;ssel und einen oder mehrere durch
+    <code>|</code> getrennte Werte enth&auml;lt. Einer dieser Werte wird
+    zuf&auml;llig ausgew&auml;hlt, wenn der Schl&uuml;ssel &uuml;bereinstimmt.</p>
+
+    <p>Sie k&ouml;nnen beispielsweise die folgende Map-Datei und Direktiven
+    verwenden, um eine zuf&auml;llige Lastverteilung zwischen mehreren
+    Backend-Servern &uuml;ber einen Reverse-Proxy bereitzustellen. Bilder
+    werden an einen der Server im 'static'-Pool gesendet, w&auml;hrend alles
+    andere an einen der Server im 'dynamic'-Pool gesendet wird.</p>
+
+    <div class="example"><h3>Rewrite-Map-Datei</h3><p><code>
+##<br>
+##  map.txt -- Umschreibungs-Map<br>
+##<br>
+<br>
+static   www1|www2|www3|www4<br>
+dynamic  www5|www6
+    </code></p></div>
+<p><strong>Konfigurationsdirektiven</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]</pre>
+
+
+    <p>Wenn also ein Bild angefordert wird und die erste dieser Regeln
+    &uuml;bereinstimmt, schl&auml;gt <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    den String <code>static</code> in der Map-Datei nach, die einen der
+    angegebenen Hostnamen zuf&auml;llig zur&uuml;ckgibt, der dann im
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>-Ziel verwendet wird.</p>
+
+    <p>Wenn Sie m&ouml;chten, dass einer der Server h&auml;ufiger ausgew&auml;hlt wird
+    (zum Beispiel, wenn einer der Server mehr Speicher hat und daher mehr
+    Anfragen verarbeiten kann), listen Sie ihn einfach h&auml;ufiger in der
+    Map-Datei auf.</p>
+
+    <div class="example"><p><code>
+static   www1|www1|www2|www3|www4
+    </code></p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="dbm">dbm: DBM-Hash-Datei <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+    
+
+    <p>Wenn ein MapType von <code>dbm</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einer DBM-Datenbankdatei, die
+    Schl&uuml;ssel/Wert-Paare f&uuml;r die Zuordnung enth&auml;lt. Dies funktioniert
+    genau wie die <code>txt</code>-Map, ist aber viel schneller, da eine
+    DBM indiziert ist, w&auml;hrend eine Textdatei dies nicht ist. Dies
+    erm&ouml;glicht einen schnelleren Zugriff auf den gew&uuml;nschten Schl&uuml;ssel.</p>
+
+    <p>Sie k&ouml;nnen optional einen bestimmten DBM-Typ angeben:</p>
+
+ <pre class="prettyprint lang-config">RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"</pre>
+
+
+    <p>Der Typ kann <code>sdbm</code>, <code>gdbm</code>,
+    <code>ndbm</code> oder <code>db</code> sein. Es wird jedoch
+    empfohlen, einfach das mit dem Apache HTTP Server mitgelieferte
+    Dienstprogramm <a href="../programs/httxt2dbm.html">httxt2dbm</a>
+    zu verwenden, da es die korrekte DBM-Bibliothek verwendet, die mit
+    der beim Bau von httpd selbst verwendeten &uuml;bereinstimmt.</p>
+
+    <p>Um eine DBM-Datei zu erstellen, erstellen Sie zun&auml;chst eine
+    Text-Map-Datei wie im Abschnitt <a href="#txt">txt</a> beschrieben.
+    F&uuml;hren Sie dann <code>httxt2dbm</code> aus:</p>
+
+<div class="example"><p><code>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</code></p></div>
+
+<p>Sie k&ouml;nnen dann die resultierende Datei in Ihrer
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
+referenzieren:</p>
+
+<pre class="prettyprint lang-config">RewriteMap mapname "dbm:/etc/apache/mapfile.map"</pre>
+
+
+<div class="note">
+<p>Beachten Sie, dass bei einigen DBM-Typen mehr als eine Datei mit
+einem gemeinsamen Basisnamen erzeugt wird. Beispielsweise k&ouml;nnen zwei
+Dateien namens <code>mapfile.map.dir</code> und
+<code>mapfile.map.pag</code> vorhanden sein. Dies ist normal, und Sie
+m&uuml;ssen nur den Basisnamen <code>mapfile.map</code> in Ihrer
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
+verwenden.</p>
+</div>
+
+<div class="note"><h3>Zwischengespeicherte Nachschlagungen</h3>
+<p>
+Die nachgeschlagenen Schl&uuml;ssel werden von httpd zwischengespeichert, bis
+sich die <code>mtime</code> (&Auml;nderungszeit) der Map-Datei &auml;ndert oder der
+httpd-Server neu gestartet wird. Dies gew&auml;hrleistet eine bessere Leistung
+bei Maps, die von vielen Anfragen aufgerufen werden.
+</p>
+</div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="prg">prg: Externes Umschreibungsprogramm <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+
+    <p>Wenn ein MapType von <code>prg</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einem ausf&uuml;hrbaren Programm, das
+    das Zuordnungsverhalten bereitstellt. Dies kann eine kompilierte
+    Bin&auml;rdatei oder ein Programm in einer interpretierten Sprache wie
+    Python oder Perl sein.</p>
+
+    <p>Dieses Programm wird einmal beim Start des Apache HTTP Servers
+    gestartet und kommuniziert dann mit der Umschreibungs-Engine &uuml;ber
+    <code>STDIN</code> und <code>STDOUT</code>. F&uuml;r jede Map-Funktions-Nachschlagung
+    wird der Schl&uuml;ssel auf das <code>STDIN</code> des Programms geschrieben,
+    gefolgt von einem Zeilenumbruch. Das Programm sollte eine Zeile von
+    <code>STDIN</code> lesen (bis einschlie&szlig;lich des Zeilenumbruchs) und
+    seine Antwort als einzelne durch einen Zeilenumbruch abgeschlossene
+    Zeile auf <code>STDOUT</code> schreiben. Schl&uuml;ssel enthalten niemals
+    Zeilenumbr&uuml;che; wenn ein Schl&uuml;ssel mit einem Zeilenumbruch angetroffen
+    wird, schl&auml;gt die Nachschlagung fehl.</p>
+
+    <p>Wenn es keinen entsprechenden Nachschlagewert gibt, sollte das
+    Map-Programm den vierstelligen String "<code>NULL</code>" zur&uuml;ckgeben,
+    um dies anzuzeigen. Beachten Sie, dass dieser Vergleich
+    Gro&szlig;-/Kleinschreibung ignoriert, sodass "null", "Null" usw. ebenfalls
+    als fehlgeschlagene Nachschlagung behandelt werden. Folglich ist es
+    nicht m&ouml;glich, dass ein Zuordnungsprogramm den literalen String "NULL"
+    als zugeordneten Wert zur&uuml;ckgibt.</p>
+
+    <p>Das <code>STDERR</code> des Programms wird vom httpd-Elternprozess
+    geerbt, sodass alles, was das Programm auf <code>STDERR</code> schreibt,
+    an derselben Stelle wie die eigene Fehlerausgabe von httpd erscheint
+    (typischerweise das <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>).</p>
+
+    <p>Externe Umschreibungsprogramme werden nicht gestartet, wenn sie in
+    einem Kontext definiert sind, der <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code> nicht auf <code>on</code>
+    gesetzt hat.</p>
+
+    <p>Standardm&auml;&szlig;ig werden externe Umschreibungsprogramme als der
+    Benutzer:Gruppe ausgef&uuml;hrt, der httpd gestartet hat. Auf
+    UNIX-Systemen kann dies ge&auml;ndert werden, indem Benutzername und
+    Gruppenname als drittes Argument an
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> im Format
+    <code>username:groupname</code> &uuml;bergeben werden.</p>
+
+    <p>Diese Funktion nutzt den <code>rewrite-map</code>-Mutex, der
+    f&uuml;r eine zuverl&auml;ssige Kommunikation mit dem Programm erforderlich ist.
+    Der Mutex-Mechanismus und die Sperrdatei k&ouml;nnen mit der
+    <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>-Direktive konfiguriert
+    werden.</p>
+
+    <p>Hier wird ein einfaches Beispiel gezeigt, das alle Bindestriche
+    in einem Anfrage-URI durch Unterstriche ersetzt.</p>
+
+    <p><strong>Umschreibungskonfiguration</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
+
+
+    <p><strong>dash2under.py</strong></p>
+    <pre class="prettyprint lang-python">#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)</pre>
+
+
+<div class="note"><h3>Vorsicht!</h3>
+<ul>
+<li>Halten Sie Ihr Rewrite-Map-Programm so einfach wie m&ouml;glich. Wenn das
+Programm h&auml;ngt, wartet httpd unbegrenzt auf eine Antwort von der Map,
+was wiederum dazu f&uuml;hrt, dass httpd nicht mehr auf Anfragen reagiert.</li>
+<li>Stellen Sie sicher, dass Sie die Pufferung in Ihrem Programm
+deaktivieren. Im obigen Python-Beispiel geschieht dies durch &Uuml;bergabe von
+<code>flush=True</code> an <code>print()</code>. Gepufferte I/O bewirkt,
+dass httpd auf die Ausgabe wartet und daher h&auml;ngen bleibt.</li>
+<li>Denken Sie daran, dass nur eine Kopie des Programms existiert, die
+beim Serverstart gestartet wird. Alle Anfragen m&uuml;ssen durch diesen einen
+Engpass gehen. Dies kann bei vielen Anfragen oder bei einem sehr langsamen
+Skript zu erheblichen Verlangsamungen f&uuml;hren.</li>
+<li>Wenn das Zuordnungsprogramm beendet wird, wird es nicht automatisch
+neu gestartet. Nachfolgende Nachschlagungen werden fehlschlagen, bis der
+Server neu gestartet wird.</li>
+<li>Das Zuordnungsprogramm wird bei jedem Server-Neustart (ob
+graceful oder nicht) beendet und neu gestartet, unabh&auml;ngig davon,
+ob sich die zugeh&ouml;rigen Konfigurationsdirektiven ge&auml;ndert haben. Beim
+Herunterfahren wird dem Programm <code>SIGTERM</code> gesendet; wenn
+es nicht innerhalb von 3 Sekunden beendet wird, wird <code>SIGKILL</code>
+gesendet.</li>
+</ul>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="dbd">dbd oder fastdbd: SQL-Abfrage <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+    
+
+    <p>Wenn ein MapType von <code>dbd</code> oder <code>fastdbd</code>
+    verwendet wird, ist die MapSource eine SQL-SELECT-Anweisung, die
+    ein einzelnes Argument entgegennimmt und einen einzelnen Wert
+    zur&uuml;ckgibt.</p>
+
+    <p><code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> muss so konfiguriert werden, dass es auf
+    die richtige Datenbank zeigt, damit diese Anweisung ausgef&uuml;hrt werden
+    kann.</p>
+
+    <p>Es gibt zwei Formen dieses MapType. Bei Verwendung eines MapType
+    von <code>dbd</code> wird die Abfrage bei jeder Map-Anfrage ausgef&uuml;hrt,
+    w&auml;hrend bei <code>fastdbd</code> die Datenbank-Nachschlagungen intern
+    zwischengespeichert werden. Obwohl <code>fastdbd</code> effizienter
+    und daher schneller ist, werden &Auml;nderungen an der Datenbank erst nach
+    einem Neustart des Servers &uuml;bernommen.</p>
+
+    <p>Wenn eine Abfrage mehr als eine Zeile zur&uuml;ckgibt, wird eine
+    zuf&auml;llige Zeile aus der Ergebnismenge verwendet.</p>
+
+    <div class="example"><h3>Beispiel</h3><pre class="prettyprint lang-config">RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
+</div>
+
+    <div class="note"><h3>Hinweis</h3>
+    <p>Der Abfragename wird als Label f&uuml;r eine vorbereitete
+    SQL-Anweisung an den Datenbanktreiber &uuml;bergeben und muss daher alle
+    Regeln (wie Gro&szlig;-/Kleinschreibung) einhalten, die Ihre Datenbank
+    erfordert.</p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="summary">Zusammenfassung <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+    
+
+    <p>Die <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
+    kann mehrfach vorkommen. Verwenden Sie f&uuml;r jede Zuordnungsfunktion eine
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive, um
+    ihre Umschreibungs-Map-Datei zu deklarieren.</p>
+
+    <p>Obwohl Sie eine Map nicht im Verzeichniskontext
+    (<code>.htaccess</code>-Dateien oder
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Bl&ouml;cke)
+    <strong>deklarieren</strong> k&ouml;nnen, ist es m&ouml;glich, diese Map im
+    Verzeichniskontext zu <strong>verwenden</strong>.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="../de/rewrite/rewritemap.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

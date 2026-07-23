@@ -1,0 +1,2 @@
+<!--#set var="message" value="set works"-->
+<!--#echo var="message"-->

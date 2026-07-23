@@ -11,7 +11,7 @@ from .env import H2Conf, H2TestEnv
 from pyhttpd.result import ExecResult
 
 
-@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
 class TestShutdown:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -52,6 +52,17 @@ class TestShutdown:
         # PR65731: invalid GOAWAY frame at session start when
         # MaxRequestsPerChild is reached
         # Create a low limit and only 2 children, so we'll encounter this easily
+        #
+        # This config uses ServerLimit, which only the dynamically-scaled
+        # process MPMs (prefork/worker/event) register: it caps a daemon count
+        # that floats below it. mpm_motorz uses a static fixed-size process pool
+        # (StartServers IS the hard daemon limit, so ServerLimit is meaningless)
+        # and does not register it, making the config a syntax error there.
+        # (MaxConnectionsPerChild/MaxRequestsPerChild IS supported by motorz --
+        # it is a core directive honored by the supervisor -- so only ServerLimit
+        # forces the skip.)
+        if env.mpm_module not in ['mpm_prefork', 'mpm_worker', 'mpm_event']:
+            pytest.skip(f"{env.mpm_module} does not support ServerLimit")
         conf = H2Conf(env, extras={
             'base': [
                 "ServerLimit 2",

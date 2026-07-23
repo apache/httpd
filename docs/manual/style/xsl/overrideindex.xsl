@@ -28,7 +28,7 @@
                 xmlns:httpd="http://httpd.apache.org/xsl/manual"
                 xmlns:set="http://exslt.org/sets"
                 xmlns:str="http://exslt.org/strings"
-                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns=""
                 exclude-result-prefixes="exslt func httpd set str">
 
 <!-- ======================================================================= -->
@@ -36,7 +36,7 @@
 <!-- Builds the .htaccess overridable directive index                        -->
 <!-- ======================================================================= -->
 <xsl:template match="overrideindex">
-<html xml:lang="{$doclang}" lang="{$doclang}">
+<html lang="{$doclang}">
     <xsl:call-template name="head"/>&lf;
 
     <xsl:variable name="directives"
@@ -90,11 +90,6 @@
                                 <xsl:apply-templates />
                             </li>&lf;
                         </xsl:for-each>
-                        <xsl:if test="not($is-chm or $is-zip or $metafile/basename = 'index')">
-                            <li><a href="#comments_section"><xsl:value-of
-                                    select="$message[@id='comments']" /></a>
-                            </li>
-                        </xsl:if>
                         </ul>
                     </xsl:if>
                 </div> <!-- /#quickview -->

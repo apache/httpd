@@ -1,0 +1,422 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_beacon.xml.meta">
+
+<name>mod_proxy_beacon</name>
+<description>Inscription dynamique comme membre d’un répartiteur de charge où
+les serveurs dorsaux s’annoncent eux-mêmes au mandataire inverse à l’aide de
+datagrammes UDP unicast</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_beacon.c</sourcefile>
+<identifier>proxy_beacon_module</identifier>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p>Ce module permet à des serveurs dorsaux de <em>s’annoncer eux-mêmes</em>
+    à un mandataire inverse frontal qui les ajoute alors en tant que membre
+    actif (worker) d’un répartiteur de charge de
+    <module>mod_proxy_balancer</module>.  Lorsqu’un serveur dorsal cesse de
+    s’annoncer, le mandataire l’enlève de la rotation. Cela permet une gestion
+    autonome (inscriptions et maintenance) de la liste des membres du
+    répartiteur sans avoir à éditer la configuration du mandataire ou piloter le
+    <code>balancer-manager</code> à la main.</p>
+
+    <p>La communication utilise des datagrammes pleinement <strong>unicast
+    UDP</strong> (pas de multicast qui est filtré sur la plupart des réseaux et
+    ne passe pas sur l’Internet public). Les données sont transmises du serveur
+    dorsal vers le mandataire :</p>
+
+    <ul>
+      <li>Le mandataire inverse se lie à un socket UDP et <em>reçoit</em> les
+      données sur une adresse fixe (<directive>ProxyBeaconListen</directive>).</li>
+      <li>Chaque serveur dorsal <em>envoie</em> périodiquement un court
+      datagramme d’annonce au mandataire
+      (<directive>ProxyBeaconAddress</directive>), indiquant son propre URL
+      routable (<directive>ProxyBeaconAdvertise</directive>).</li>
+    </ul>
+
+    <p>Les datagrammes sont envoyés en mode « fire-and-forget » : une annonce
+    perdue est récupérée par la prochaine annonce périodique, et le
+    réordonnancement est rejeté par une vérification d’horodatage par serveur
+    dorsal ; aucune connexion, reconnection ou couche de cadrage n’est donc
+    nécessaire.</p>
+
+    <p>Au niveau du mandataire, la directive
+    <directive>ProxyBeaconBalancer</directive> nomme le répartiteur de charge
+    auquel des serveurs dorsaux qui se sont annoncés ont été ajoutés. Les
+    changements d’appartenance s’appliquent en utilisant le même mécanisme
+    interne que l’interface web <code>balancer-manager</code> ; un serveur
+    dorsal ajouté de cette manière se comporte donc exactement comme un
+    <directive module="mod_proxy">BalancerMember</directive> configuré
+    statiquement ou ajouté manuellement, et est visible et éditable dans
+    <code>balancer-manager</code>.</p>
+
+    <p>Ce module nécessite les services de <module>mod_watchdog</module> et
+    <module>mod_proxy_balancer</module>. Le travail d’arrière-plan (écoute,
+    publication, ajout et suppression de membres) est effectué par un seul
+    processus enfant de <module>mod_watchdog</module> ; il n’est donc pas
+    disponible avec le comportement du MPM <code>prefork</code> où ce singleton
+    ne peut pas s’exécuter.</p>
+
+<note type="warning"><title>Authentification</title>
+    <p>Tout hôte qui peut atteindre le port de réception du mandataire peut
+    aussi annoncer un URL de serveur dorsal arbitraire et faire que le
+    mandataire envoie le trafic du client à ce dernier (et une adresse source
+    UDP est facile à usurper). La directive
+    <directive>ProxyBeaconSecret</directive> est par conséquent
+    <strong>requise</strong> : elle doit être définie avec la même valeur sur le
+    mandataire et sur chaque serveur dorsal, et le serveur refusera de démarrer
+    si elle est omise sur un des serveurs impliqués. Les annonces sont
+    authentifiées avec un code d’authentification de message avec clé (MAC) et
+    un horodatage, et le mandataire rejette toute annonce qui n’est pas signée
+    de manière valable ou qui est trop ancienne. Il n’existe pas de mode non
+    autentifié.</p>
+</note>
+
+<note><title>Confidentialité</title>
+    <p>Les annonces sont authentifiées mais non chiffrées ; la charge utile
+    comporte des métadonnées opérationnelles (URLs de serveur dorsal) non
+    chiffrées. La confidentialité du transport (par exemple DTLS)
+    n’est actuellement pas prise en charge et fera l’objet d’une couche
+    séparée.</p>
+</note>
+
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+<seealso><module>mod_proxy_hcheck</module></seealso>
+<seealso><module>mod_watchdog</module></seealso>
+
+<section id="examples">
+    <title>Exemple d’utilisation</title>
+
+    <p>L’exemple suivant configure un répartiteur de charge à enregistrement
+    autonome. Les serveurs dorsaux n’ont pas besoin de se connaître entre eux et
+    le mandataire n’a pas besoin d’entrées <directive
+    module="mod_proxy">BalancerMember</directive> prédéclarées &mdash; seulement
+    un répartiteur vide avec de la place pour grossir.</p>
+
+    <p>Sur le <strong>mandataire inverse</strong> :</p>
+    <highlight language="config">
+# Réception des annonces des serveurs dorsaux sur
+# l’interface réseau de cluster (UDP).
+ProxyBeaconListen 0.0.0.0:5555
+ProxyBeaconSecret    "une_grande_phrase_secrète_partagée_aléatoire_de_cluster"
+ProxyBeaconBalancer  cluster
+
+# Un serveur dorsal est éjecté de la rotation s’il ne
+# s’annonce pas pendant 30 secondes.
+ProxyBeaconTimeout   30
+
+# Un répartiteur initialement vide avec des emplacements
+# libres pour les membres dynamiques.
+&lt;Proxy balancer://cluster&gt;
+  ProxySet growth=16
+&lt;/Proxy&gt;
+ProxyPass        "/" "balancer://cluster/"
+ProxyPassReverse "/" "balancer://cluster/"
+    </highlight>
+
+    <p>Sur chaque <strong>serveur dorsal</strong> :</p>
+    <highlight language="config">
+# Annoncer au mandataire cette adresse routable de serveur dorsal
+# toutes les 10 secondes (UDP).
+ProxyBeaconAddress   proxy.example.com:5555
+ProxyBeaconAdvertise http://10.0.0.5:8080
+ProxyBeaconSecret    "une_grande_phrase_secrète_partagée_aléatoire_de_cluster"
+ProxyBeaconInterval  10
+    </highlight>
+
+    <p>Au démarrage d’un serveur dorsal, ce dernier commence à s’annoncer. Le
+    mandataire vérifie la validité de chaque annonce à l’aide de la phrase
+    secrète, ajoute <code>http://10.0.0.5:8080</code> comme membre de
+    <code>balancer://cluster</code>, et l’active. Si ce serveur dorsal arrête de
+    s’annoncer pendant une durée supérieure à la valeur de la directive
+    <directive>ProxyBeaconTimeout</directive>, le mandataire le désactive (en
+    l’enlevant de la rotation) ; si le serveur dorsal s’annonce à nouveau, il
+    est réactivé.</p>
+
+    <note>
+    <p>Un serveur dorsal ajouté à l’exécution occupe un des emplacements
+    du répartiteur pour la durée de vie du processus serveur ; plutôt que de le
+    supprimer lorsqu’il arrête de s’annoncer, il est désactivé, suivant en cela
+    le comportement du <code>balancer-manager</code> (qui peut ajouter des
+    membres à l’exécution, mais pas les supprimer). La taille du répartiteur
+    <code>augmente</code> jusqu’au nombre maximal de serveurs dorsaux que vous
+    souhaitez enregistrer.</p>
+    </note>
+
+</section>
+
+<directivesynopsis>
+<name>ProxyBeaconListen</name>
+<description>Adresse sur laquelle le mandataire inverse reçoit les annonces des
+serveurs dorsaux</description>
+<syntax>ProxyBeaconListen [<em>address</em>][:<em>port</em>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconListen</directive> marque un serveur
+    comme <em>récepteur</em> « phare » (le mandataire inverse). Il lie un socket
+    UDP à l’adresse spécifiée, par exemple <code>0.0.0.0:5555</code> pour
+    effectuer la réception sur toutes les interfaces. Un préfixe de protocole
+    (tel que <code>tcp://</code>) est accepté et ignoré.</p>
+
+    <p>L’adresse et le port sont facultatifs et, s’ils sont omis, sont hérités
+    de l’adresse et du port de ce serveur (ses directives <directive
+    module="core">Listen</directive> et <directive
+    module="core">ServerName</directive>). Si aucun argument n’est fourni,
+    l’écouteur du « phare » lie les propres adresse et port du serveur ; si
+    seule l’adresse est donnée, le port est hérité, et ainsi de suite. Étant
+    donné que UDP et TCP sont des espaces de port indépendants, lier le socket
+    du « phare » au port du serveur n’entre <em>pas</em> en collision avec
+    l’écouteur TCP du serveur &mdash; faisant que le canal du « phare » partage
+    le point de terminaison du service, qui identifie aussi le mandataire auprès
+    des serveurs dorsaux avec son adresse réelle (comme l’écouteur effectue ses
+    liens dans un processus enfant non privilégié, un port privilégié comme 80
+    ou 443 ne peut pas être partagé de cette manière ; n’utilisez le port du
+    serveur que s’il est non privilégié).</p>
+
+    <p>Les serveurs dorsaux envoient leurs annonces à l’adresse spécifiée par la
+    directive <directive>ProxyBeaconAddress</directive>. Cette dernière doit
+    être utilisée conjointement avec la directive
+    <directive>ProxyBeaconBalancer</directive> ; dans le cas contraire, les
+    annonces sont reçues et journalisées, mais aucun membre n’est ajouté. Les
+    directives <directive>ProxyBeaconListen</directive> et
+    <directive>ProxyBeaconAddress</directive> sont mutuellement exclusives sur
+    un même serveur.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconAddress</name>
+<description>Adresse du mandataire inverse à laquelle un serveur dorsal envoie
+ses annonces</description>
+<syntax>ProxyBeaconAddress <em>address:port</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconAddress</directive> marque un serveur
+    comme <em>émetteur</em> d’annonces (un serveur dorsal). Ce dernier envoie
+    des datagrammes UDP à l’adresse <directive>ProxyBeaconListen</directive> du
+    mandataire sous la forme <em>adresse:port</em>, par exemple
+    <code>proxy.example.com:5555</code> (un préfixe de protocole tel que
+    <code>tcp://</code> est accepté, mais ignoré). Étant donné que UDP est sans
+    connexion, un serveur dorsal peut être démarré avant que le mandataire soit
+    disponible : les datagrammes seront simplement supprimés et continueront à
+    être envoyés selon l’intervalle spécifié.</p>
+
+    <p>Utilisez la directive <directive>ProxyBeaconAdvertise</directive> pour
+    spécifier l’URL routable qu’annonce le serveur dorsal. Les
+    directives <directive>ProxyBeaconListen</directive> et
+    <directive>ProxyBeaconAddress</directive> sont mutuellement exclusives sur
+    un même serveur.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconAdvertise</name>
+<description>L’URL routable qu’annonce le serveur dorsal au mandataire inverse</description>
+<syntax>ProxyBeaconAdvertise <em>url</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconAdvertise</directive> permet de
+    définir l’adresse à laquelle le serveur dorsal peut être atteint (par
+    exemple <code>http://10.0.0.5:8080</code>) et que le mandataire ajoutera en
+    tant que membre <directive module="mod_proxy">BalancerMember</directive>.
+    Il doit s’agir d’un URL complet comme <code>scheme://host[:port]</code> que
+    le mandataire pourra atteindre &mdash; pas l’adresse d’écoute locale &mdash;
+    et qui sera validé lors de l’analyse de la configuration.</p>
+
+    <p>Cette directive est utilisée sur un serveur dorsal avec la directive
+    <directive>ProxyBeaconAddress</directive>. Si elle est omise, le serveur
+    dorsal envoie quand-même un signe de vie, mais pas d’URL ; le mandataire
+    journalise alors l’annonce sans ajouter de membre.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconBalancer</name>
+<description>Le nom du répartiteur de charge auquel les serveurs dorsaux
+annoncés sont ajoutés</description>
+<syntax>ProxyBeaconBalancer <em>name</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconBalancer</directive> permet de nommer
+    le répartiteur, sur le mandataire inverse, dans lequel les serveurs dorsaux
+    annoncés sont insérés en tant que membres. Indiquez seulement le nom du
+    répartiteur (par exemple <code>cluster</code> pour
+    <code>balancer://cluster</code>) ; le préfixe <code>balancer://</code> est
+    accepté et supprimé.</p>
+
+    <p>Le répartiteur nommé doit exister et disposer d’emplacements vides.
+    Déclarez-le dans un bloc <directive
+    module="mod_proxy">&lt;Proxy&gt;</directive> avec un paramètre
+    <code>growth</code> (ou utilisez la valeur de la directive <directive
+    module="mod_proxy">BalancerGrowth</directive>) de façon qu’il y ait des
+    emplacements libres pour l’ajout dynamique de membres. Cette directive est
+    utilisée conjointement avec la directive
+    <directive>ProxyBeaconListen</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconInterval</name>
+<description>Périodicité de l’envoi d’annonces par le serveur dorsal</description>
+<syntax>ProxyBeaconInterval <em>interval</em></syntax>
+<default>ProxyBeaconInterval 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconInterval</directive> permet de définir
+    la périodicité à laquelle un serveur dorsal (un serveur
+    <directive>ProxyBeaconAddress</directive>) envoie ses annonces. Elle utilise
+    la syntaxe de la directive <a
+    href="directive-dict.html#Syntax">time-interval</a> et sa valeur s’exprime
+    par défaut en secondes ; sa valeur par défaut est 5 secondes.</p>
+
+    <p>L’intervalle doit être significativement plus petit que la valeur de la
+    directive <directive>ProxyBeaconTimeout</directive>, de façon qu’une perte
+    occasionnelle ou qu’une annonce retardée ne provoquent pas l’éviction d’un
+    serveur dorsal opérationnel.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconTimeout</name>
+<description>Durée maximale de l’absence d’annonce d’un serveur dorsal au bout
+de laquelle le mandataire enlève ce dernier de la rotation</description>
+<syntax>ProxyBeaconTimeout <em>interval</em></syntax>
+<default>ProxyBeaconTimeout 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconTimeout</directive> permet de définir
+    la durée maximale pendant laquelle le mandataire attendra une annonce en
+    provenance d’un serveur dorsal avant de désactiver ce dernier (en l’enlevant
+    de la rotation). Si ce serveur dorsal renvoie une annonce par la suite, il
+    est réactivé. Cette directive utilise
+    la syntaxe de la directive <a
+    href="directive-dict.html#Syntax">time-interval</a> et sa valeur s’exprime
+    par défaut en secondes.</p>
+
+    <p>La valeur par défaut, <code>0</code>, désactive complètement l’éviction :
+    les serveurs dorsaux sont ajoutés lorsqu’ils s’annoncent mais ne sont jamais
+    désactivés automatiquement. Définissez cette directive à un multiple de
+    (quelques fois) la valeur de la directive
+    <directive>ProxyBeaconInterval</directive> du serveur dorsal pour mettre en
+    œuvre une maintenance autonome des adhésions. Cette directive est définie
+    sur le mandataire.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconSecret</name>
+<description>Phrase secrète partagée à l’avance pour authentifier les annonces
+des serveurs dorsaux</description>
+<syntax>ProxyBeaconSecret <em>secret</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconSecret</directive> permet de définir
+    une phrase secrète partagée à l’avance au sein de la grappe de serveurs.
+    Elle doit être définie avec la <em>même</em> valeur sur le mandataire
+    inverse et sur chaque serveur dorsal. Le serveur dorsal (l’émetteur) signe
+    chaque annonce avec un message-authentication code (un SipHash MAC) avec
+    clé, dérivé de la phrase secrète et avec un horodatage ; le mandataire (le
+    récepteur) recalcule le MAC et vérifie l’horodatage, en rejetant toute
+    annonce falsifiée, usurpée ou réenvoyée. Les messages réenvoyés sont
+    interceptés de deux manières : une fenêtre de fraîcheur (directive
+    <directive>ProxyBeaconMaxSkew</directive>) rejette les horodatages anciens,
+    et une vérification pour chaque serveur dorsal rejette toute annonce dont
+    l’horodatage n’avance pas strictement ; ainsi, un message capturé et renvoyé
+    (par exemple pour empêcher l’éviction d’un serveur dorsal éteint) sera
+    rejeté.</p>
+
+    <p>Cette directive est requise sur chaque serveur impliqué dans le canal du
+    mandataire phare &mdash; le mandataire
+    (<directive>ProxyBeaconListen</directive>) et chaque serveur dorsal
+    (<directive>ProxyBeaconAddress</directive>). Si elle est omise sur un de ces
+    serveurs, le serveur refusera de démarrer ; il n’existe pas de mode non
+    authentifié.</p>
+
+    <p>Toute annonce dont le MAC n’est pas valable et récent sera rejetée. Si
+    les phrases secrètes du mandataire et d’un serveur dorsal diffèrent, les
+    annonces de ce dernier seront rejetées silencieusement (et journalisées), ce
+    qui donne l’impression que le serveur dorsal n’a jamais atteint le
+    répartiteur de charge.</p>
+
+    <p>Étant donné que la phrase secrète est stockée dans le fichier de
+    configuration, définissez les permissions de ce dernier comme s’il
+    s’agissait d’une clé privée.</p>
+
+    <note><title>Synchronisation de l’horloge</title>
+    <p>La protection contre la réémission basée sur l’horodatage compare le
+    moment de l’annonce avec l’horloge du mandataire ; le mandataire et les
+    serveurs dorsaux doivent donc avoir des horloges correctement synchronisées
+    (par exemple à l’aide de NTP). Voir la directive
+    <directive>ProxyBeaconMaxSkew</directive>.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconMaxSkew</name>
+<description>Age maximal autorisé d’une annonce signée</description>
+<syntax>ProxyBeaconMaxSkew <em>interval</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>ProxyBeaconMaxSkew</directive> permet de définir
+    la fenêtre anti-réémission utilisée lorsque la directive
+    <directive>ProxyBeaconSecret</directive> est configurée : le mandataire
+    rejette toute annonce dont l’horodatage signé diffère du temps actuel d’une
+    valeur supérieure à celle de la directive
+    <directive>ProxyBeaconMaxSkew</directive>, et cela dans les deux directions.
+    Cette directive utilise la syntaxe de la directive <a
+    href="directive-dict.html#Syntax">time-interval</a> et sa valeur s’exprime
+    par défaut en secondes.</p>
+
+    <p>Si elle n’est pas définie, sa valeur par défaut est de 30 secondes. Une
+    fenêtre plus large tolère des écarts d’horloge plus grands entre les hôtes ;
+    une fenêtre plus petite restreint la tolérance sur la vérification de
+    fraîcheur. Notez que la vérification de la croissance stricte des
+    horodatages d’un même serveur (voir la directive
+    <directive>ProxyBeaconSecret</directive>) bloque les réémissions, quelle que
+    soit la valeur de cette fenêtre. Cette directive est utilisée au niveau du
+    mandataire.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

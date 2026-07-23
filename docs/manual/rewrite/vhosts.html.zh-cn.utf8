@@ -1,0 +1,237 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="zh-cn"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>使用 mod_rewrite 实现动态批量虚拟主机 - Apache HTTP 服务器 版本 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP 服务器版本 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="https://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>使用 mod_rewrite 实现动态批量虚拟主机</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>可用语言: </span><a href="../de/rewrite/vhosts.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/vhosts.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/vhosts.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/vhosts.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/vhosts.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
+
+
+<p>本文档是 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了如何使用
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 来创建动态配置的虚拟主机。</p>
+
+<div class="warning"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 通常不是配置虚拟主机的最佳方式。
+你应该首先考虑<a href="../vhosts/mass.html">其他替代方案</a>，
+然后再求助于 mod_rewrite。另请参阅"<a href="avoid.html#vhosts">如何避免使用
+mod_rewrite</a>"文档。</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#per-hostname">任意主机名的虚拟主机</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple.rewrite">使用
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 的动态虚拟主机</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#xtra-conf">使用独立的虚拟主机配置文件</a></li>
+</ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="per-hostname">任意主机名的虚拟主机 <a title="Permanent link" href="#per-hostname" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+    <p>我们希望为域中解析的每个主机名自动创建虚拟主机，
+    而无需创建新的 VirtualHost 配置段。</p>
+
+    <p>在本配置方案中，我们假设对每个用户使用主机名
+    <code><strong>SITE</strong>.example.com</code>，
+    并从 <code>/home/<strong>SITE</strong>/www</code> 提供其内容。
+    但是，我们希望 <code>www.example.com</code> 不包含在此映射中。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{HTTP_HOST} !^www\.
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1</pre>
+</dd>
+
+<dt>讨论</dt>
+    <dd>
+
+    <div class="warning">你需要注意 DNS 解析 - Apache
+    不处理名称解析。你需要为每个主机名创建 CNAME 记录，
+    或者创建 DNS 通配符记录。创建 DNS 记录超出了本文档的范围。</div>
+
+<p>内部 <code>tolower</code> RewriteMap 指令用于确保所使用的主机名全部为小写，
+以避免目录结构中的歧义。</p>
+
+<p>在 <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+中使用的括号会被捕获到反向引用 <code>%1</code>、<code>%2</code> 等中，
+而在 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+中使用的括号会被捕获到反向引用 <code>$1</code>、<code>$2</code> 等中。</p>
+
+<p>第一个 <code>RewriteCond</code> 检查主机名是否以 <code>www.</code> 开头，
+如果是，则跳过重写。</p>
+
+<p>
+与本文档中讨论的许多技术一样，<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+确实不是完成此任务的最佳方式。你应该考虑使用
+<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>，因为它能更优雅地处理静态文件之外的任何内容，
+包括动态内容和 Alias 解析。
+</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="simple.rewrite">使用
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 的动态虚拟主机 <a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
+
+    <p>此 <code>httpd.conf</code> 摘录与<a href="#per-hostname">第一个示例</a>
+    实现相同的功能。前半部分与上面对应的部分非常相似，
+    只是为了向后兼容和使 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 部分正常工作而做了一些更改；
+    后半部分配置 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 来完成实际工作。</p>
+
+    <p>因为 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 在其他 URI 转换模块
+    （例如 <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>）之前运行，
+    必须告知 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 显式忽略那些本应由这些模块处理的 URL。
+    而且，由于这些规则会绕过任何 <code>ScriptAlias</code> 指令，
+    我们必须让 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 显式执行这些映射。</p>
+
+<pre class="prettyprint lang-config"># get the server name from the Host: header
+UseCanonicalName Off
+
+# splittable logs
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog "logs/access_log" vcommon
+
+&lt;Directory "/www/hosts"&gt;
+    # ExecCGI is needed here because we can't force
+    # CGI execution in the way that ScriptAlias does
+    Options FollowSymLinks ExecCGI
+&lt;/Directory&gt;
+
+RewriteEngine On
+
+# a ServerName derived from a Host: header may be any case at all
+RewriteMap  lowercase  "int:tolower"
+
+## deal with normal documents first:
+# allow Alias /icons/ to work - repeat for other aliases
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
+# allow CGIs to work
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
+# do the magic
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
+
+## and now deal with CGIs - we have to force a handler
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="xtra-conf">使用独立的虚拟主机配置文件 <a title="Permanent link" href="#xtra-conf" class="permalink">&para;</a></h2>
+
+    <p>此方案使用更高级的 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 功能，
+    从独立的配置文件中计算从虚拟主机到文档根目录的转换。
+    这提供了更大的灵活性，但需要更复杂的配置。</p>
+
+    <p><code>vhost.map</code> 文件应类似于：</p>
+
+<div class="example"><p><code>
+customer-1.example.com  /www/customers/1<br>
+customer-2.example.com  /www/customers/2<br>
+# ...<br>
+customer-N.example.com  /www/customers/N<br>
+</code></p></div>
+
+    <p><code>httpd.conf</code> 应包含以下内容：</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+
+RewriteMap   lowercase  "int:tolower"
+
+# define the map file
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
+
+# deal with aliases as above
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+# this does the file-based remap
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
+
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]</pre>
+
+
+</div></div>
+<div class="bottomlang">
+<p><span>可用语言: </span><a href="../de/rewrite/vhosts.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/vhosts.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/vhosts.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/vhosts.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/vhosts.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

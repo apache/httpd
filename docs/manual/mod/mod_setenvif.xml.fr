@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915443 -->
+<!-- English Revision: 1933502 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,7 +67,7 @@ BrowserMatch MSIE !netscape
    contient des espaces non échappées et dans ce cas, les guillemets simples ou
    doubles sont équivalents. À la différence de <module>mod_rewrite</module>,
    <module>mod_setenvif</module> élimine tous les autres anti-slashes lorsqu'il
-   interprète l'expression ; ainsi, <code>\\</code> nécessite <code>\\\</code>
+   interprète l'expression&nbsp;; ainsi, <code>\\</code> nécessite <code>\\\</code>
    et <code>\\\</code> nécessite <code>\\\\\</code>.</p>
 
 </summary>
@@ -161,8 +161,7 @@ attributs de la requête</description>
     se présenter sous l'une des formes suivantes :</p>
 
 <ol>
-<li>Un champ d'en-tête de requête HTTP (voir la <a
-    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour
+<li>Un champ d'en-tête de requête HTTP (voir la <rfc>2616</rfc> pour
     plus d'information à leur propos) ; par exemple : <code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, ou
     <code>Accept-Language</code>. Il est possible d'utiliser une

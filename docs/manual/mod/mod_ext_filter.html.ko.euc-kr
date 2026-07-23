@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_ext_filter - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">모듈</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_ext_filter</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_ext_filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ext_filter.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_ext_filter.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ext_filter.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -64,45 +64,45 @@
 </div>
 <div id="quickview"><h3>주제</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">예제</a></li>
 </ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extfilterdefine">ExtFilterDefine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#extfilteroptions">ExtFilterOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#extfilterdefine">ExtFilterDefine</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#extfilteroptions">ExtFilterOptions</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ext_filter">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ext_filter">Report a bug</a></li></ul><h3>참고</h3>
 <ul class="seealso">
 <li><a href="../filter.html">필터</a></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">예제</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">예제 <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <h3>다른 type의 응답을 HTML로 만든다</h3>
       <div class="example"><p><code>
-        # mod_ext_filter 지시어를 가지고<br />
-        # 외부 프로그램 /usr/bin/enscript를 사용하여<br />
-        # 문서파일과 text/c 파일을 HTML로 만들고 결과의<br />
-        # type을 text/html로 변경하는 필터를 정의한다<br />
-        ExtFilterDefine c-to-html mode=output \<br />
+        # mod_ext_filter 지시어를 가지고<br>
+        # 외부 프로그램 /usr/bin/enscript를 사용하여<br>
+        # 문서파일과 text/c 파일을 HTML로 만들고 결과의<br>
+        # type을 text/html로 변경하는 필터를 정의한다<br>
+        ExtFilterDefine c-to-html mode=output \<br>
         <span class="indent">
-          intype=text/c outtype=text/html \<br />
-          cmd="/usr/bin/enscript --color -W html -Ec -o - -"<br />
+          intype=text/c outtype=text/html \<br>
+          cmd="/usr/bin/enscript --color -W html -Ec -o - -"<br>
         </span>
-        <br />
-        &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;<br />
+        <br>
+        &lt;Directory "/export/home/trawick/apacheinst/htdocs/c"&gt;<br>
         <span class="indent">
-          # 출력에 새로운 필터를 실행하는 core 지시어<br />
-          SetOutputFilter c-to-html<br />
-          <br />
-          # .c 파일의 type을 text/c로 만드는 mod_mime<br />
-          # 지시어<br />
-          AddType text/c .c<br />
-          <br />
-          # 디버그 수준을 높여서 요청마다 현재 설정을<br />
-          # 알려주는 로그문을 기록하는 mod_ext_filter<br />
-          # 지시어<br />
-          ExtFilterOptions DebugLevel=1<br />
+          # 출력에 새로운 필터를 실행하는 core 지시어<br>
+          SetOutputFilter c-to-html<br>
+          <br>
+          # .c 파일의 type을 text/c로 만드는 mod_mime<br>
+          # 지시어<br>
+          AddType text/c .c<br>
+          <br>
+          # 디버그 수준을 높여서 요청마다 현재 설정을<br>
+          # 알려주는 로그문을 기록하는 mod_ext_filter<br>
+          # 지시어<br>
+          ExtFilterOptions DebugLevel=1<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
@@ -114,17 +114,17 @@
       참고하길 바란다.</p>
 
       <div class="example"><p><code>
-        # 외부 필터를 정의하는 mod_ext_filter 지시어<br />
-        ExtFilterDefine gzip mode=output cmd=/bin/gzip<br />
-        <br />
-        &lt;Location /gzipped&gt;<br />
+        # 외부 필터를 정의하는 mod_ext_filter 지시어<br>
+        ExtFilterDefine gzip mode=output cmd=/bin/gzip<br>
+        <br>
+        &lt;Location /gzipped&gt;<br>
         <span class="indent">
-          # 출력할때 gzip 필터를 실행하는 core 지시어<br />
-          SetOutputFilter gzip<br />
-          <br />
-          # "Content-Encoding: gzip" 헤더를 추가하는<br />
-          # mod_header 지시어<br />
-          Header set Content-Encoding gzip<br />
+          # 출력할때 gzip 필터를 실행하는 core 지시어<br>
+          SetOutputFilter gzip<br>
+          <br>
+          # "Content-Encoding: gzip" 헤더를 추가하는<br>
+          # mod_header 지시어<br>
+          Header set Content-Encoding gzip<br>
         </span>
         &lt;/Location&gt;
       </code></p></div>
@@ -132,19 +132,19 @@
 
     <h3>서버를 느리게 하기</h3>
       <div class="example"><p><code>
-        # cat으로 모든 내용을 통과하는 필터를 정의하는<br />
-        # mod_ext_filter 지시어; cat은 아무것도 수정하지<br />
-        # 않는다; 단지 처리경로를 길게 하여 자원을 더 소모한다<br />
-        ExtFilterDefine slowdown mode=output cmd=/bin/cat \<br />
+        # cat으로 모든 내용을 통과하는 필터를 정의하는<br>
+        # mod_ext_filter 지시어; cat은 아무것도 수정하지<br>
+        # 않는다; 단지 처리경로를 길게 하여 자원을 더 소모한다<br>
+        ExtFilterDefine slowdown mode=output cmd=/bin/cat \<br>
         <span class="indent">
-          preservescontentlength<br />
+          preservescontentlength<br>
         </span>
-        <br />
-        &lt;Location /&gt;<br />
+        <br>
+        &lt;Location /&gt;<br>
         <span class="indent">
-          # 출력할때 slowdown 필터를 여러번 실행하는 core 지시어<br />
-          #<br />
-          SetOutputFilter slowdown;slowdown;slowdown<br />
+          # 출력할때 slowdown 필터를 여러번 실행하는 core 지시어<br>
+          #<br>
+          SetOutputFilter slowdown;slowdown;slowdown<br>
         </span>
         &lt;/Location&gt;
       </code></p></div>
@@ -152,18 +152,18 @@
 
     <h3>sed를 사용하여 응답에서 글을 대체하기</h3>
       <div class="example"><p><code>
-        # 응답에서 글을 대체하는 필터를 정의하는<br />
-        # mod_ext_filter 지시어<br />
-        #<br />
-        ExtFilterDefine fixtext mode=output intype=text/html \<br />
+        # 응답에서 글을 대체하는 필터를 정의하는<br>
+        # mod_ext_filter 지시어<br>
+        #<br>
+        ExtFilterDefine fixtext mode=output intype=text/html \<br>
         <span class="indent">
-          cmd="/bin/sed s/verdana/arial/g"<br />
+          cmd="/bin/sed s/verdana/arial/g"<br>
         </span>
-        <br />
-        &lt;Location /&gt;<br />
+        <br>
+        &lt;Location /&gt;<br>
         <span class="indent">
-          # 출력할때 fixtext 필터를 실행하는 core 지시어<br />
-          SetOutputFilter fixtext<br />
+          # 출력할때 fixtext 필터를 실행하는 core 지시어<br>
+          SetOutputFilter fixtext<br>
         </span>
         &lt;/Location&gt;
       </code></p></div>
@@ -171,56 +171,56 @@
 
     <h3>다른 필터를 추적하기</h3>
       <div class="example"><p><code>
-        # 압축 문제가 있는 특정 클라이언트(IP 192.168.1.31)에<br />
-        # 대해 mod_deflate가 읽고 쓰는 자료를 추적한다.<br />
-        # 이 필터는 mod_deflate로 보내기 전 자료를 추적한다.<br />
-        ExtFilterDefine tracebefore \<br />
+        # 압축 문제가 있는 특정 클라이언트(IP 192.168.1.31)에<br>
+        # 대해 mod_deflate가 읽고 쓰는 자료를 추적한다.<br>
+        # 이 필터는 mod_deflate로 보내기 전 자료를 추적한다.<br>
+        ExtFilterDefine tracebefore \<br>
         <span class="indent">
-          cmd="/bin/tracefilter.pl /tmp/tracebefore" \<br />
-          EnableEnv=trace_this_client<br />
+          cmd="/bin/tracefilter.pl /tmp/tracebefore" \<br>
+          EnableEnv=trace_this_client<br>
         </span>
-        <br />
-        # 이 필터는 mod_deflate에서 나오는 자료를 추적한다.<br />
-        # ftype 파라미터를 사용하지않는 경우, 기본 필터형<br />
-        # AP_FTYPE_RESOURCE는 필터 순서를 mod_deflate *이전에*<br />
-        # 둔다. AP_FTYPE_CONTENT_SET 보다 조금 높은 숫자값을<br />
-        # 지정하면 mod_deflate 이후에 실행한다.<br />
-        ExtFilterDefine traceafter \<br />
+        <br>
+        # 이 필터는 mod_deflate에서 나오는 자료를 추적한다.<br>
+        # ftype 파라미터를 사용하지않는 경우, 기본 필터형<br>
+        # AP_FTYPE_RESOURCE는 필터 순서를 mod_deflate *이전에*<br>
+        # 둔다. AP_FTYPE_CONTENT_SET 보다 조금 높은 숫자값을<br>
+        # 지정하면 mod_deflate 이후에 실행한다.<br>
+        ExtFilterDefine traceafter \<br>
         <span class="indent">
-          cmd="/bin/tracefilter.pl /tmp/traceafter" \<br />
-          EnableEnv=trace_this_client ftype=21<br />
+          cmd="/bin/tracefilter.pl /tmp/traceafter" \<br>
+          EnableEnv=trace_this_client ftype=21<br>
         </span>
-        <br />
-        &lt;Directory /usr/local/docs&gt;<br />
+        <br>
+        &lt;Directory /usr/local/docs&gt;<br>
         <span class="indent">
-          SetEnvIf Remote_Addr 192.168.1.31 trace_this_client<br />
-          SetOutputFilter tracebefore;deflate;traceafter<br />
+          SetEnvIf Remote_Addr 192.168.1.31 trace_this_client<br>
+          SetOutputFilter tracebefore;deflate;traceafter<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
 
       <div class="example"><h3>다음은 자료를 추적하는 필터이다:</h3><p><code>
-        #!/usr/local/bin/perl -w<br />
-        use strict;<br />
-        <br />
-        open(SAVE, "&gt;$ARGV[0]")<br />
+        #!/usr/local/bin/perl -w<br>
+        use strict;<br>
+        <br>
+        open(SAVE, "&gt;$ARGV[0]")<br>
         <span class="indent">
-          or die "can't open $ARGV[0]: $?";<br />
+          or die "can't open $ARGV[0]: $?";<br>
         </span>
-        <br />
-        while (&lt;STDIN&gt;) {<br />
+        <br>
+        while (&lt;STDIN&gt;) {<br>
         <span class="indent">
-          print SAVE $_;<br />
-          print $_;<br />
+          print SAVE $_;<br>
+          print $_;<br>
         </span>
-        }<br />
-        <br />
+        }<br>
+        <br>
         close(SAVE);
       </code></p></div>
     
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">지시어</a> <a title="Permanent link" href="#extfilterdefine" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="extfilterdefine"><span id="ExtFilterDefine">ExtFilterDefine</span> 지시어 <a title="Permanent link" href="#extfilterdefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>외부 필터를 정의한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
@@ -303,8 +303,8 @@
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">지시어</a> <a title="Permanent link" href="#extfilteroptions" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="extfilteroptions"><span id="ExtFilterOptions">ExtFilterOptions</span> 지시어 <a title="Permanent link" href="#extfilteroptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> 옵션을 설정한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
@@ -352,31 +352,35 @@
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_ext_filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ext_filter.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_ext_filter.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ext_filter.html" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ext_filter.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

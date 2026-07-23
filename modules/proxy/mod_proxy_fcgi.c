@@ -1342,9 +1342,10 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
     const char *err;
     sei_entry *new;
     const char *envvar = arg2;
+    unsigned int flags = 0;
 
     new = apr_array_push(dconf->env_fixups);
-    new->cond = ap_expr_parse_cmd(cmd, arg1, 0, &err, NULL);
+    new->cond = ap_expr_parse_cmd(cmd, arg1, flags, &err, NULL);
     if (err) {
         return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                             arg1, err);
@@ -1371,7 +1372,8 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
             arg3 = "";
         }
 
-        new->subst = ap_expr_parse_cmd(cmd, arg3, AP_EXPR_FLAG_STRING_RESULT, &err, NULL);
+        flags |= AP_EXPR_FLAG_STRING_RESULT;
+        new->subst = ap_expr_parse_cmd(cmd, arg3, flags, &err, NULL);
         if (err) {
             return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                                 arg3, err);

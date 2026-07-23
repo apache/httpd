@@ -23,6 +23,8 @@
 #include <apr_time.h>
 #include <apr_date.h>
 
+#include <httpd.h>
+
 #include "md_json.h"
 #include "md.h"
 #include "md_acme.h"
@@ -55,8 +57,8 @@ static apr_status_t status_get_cert_json(md_json_t **pjson, const md_cert_t *cer
     if (issuer_name)
       md_json_sets(issuer_name, json, MD_KEY_ISSUER_NAME, NULL);
     rv = md_cert_get_issuers_uri(&issuer_uri, cert, p);
-    if(rv == APR_SUCCESS && issuer_uri)
-      md_json_sets(issuer_uri, json, MD_KEY_ISSUER_URI, NULL);
+    if (rv == APR_SUCCESS && issuer_uri)
+        md_json_sets(issuer_uri, json, MD_KEY_ISSUER_URI, NULL);
     valid.start = md_cert_get_not_before(cert);
     valid.end = md_cert_get_not_after(cert);
     md_json_set_timeperiod(&valid, json, MD_KEY_VALID, NULL);
@@ -97,6 +99,31 @@ leave:
     return rv;
 }
 
+static int md_job_json_seems_valid(md_json_t *json, md_store_t *store,
+                                   md_store_group_t group, const char *name,
+                                   apr_pool_t *p)
+{
+
+    if (!json) return FALSE;
+    if ((group == MD_SG_STAGING) &&
+        md_json_getb(json, MD_KEY_FINISHED, NULL) &&
+        md_json_getb(json, MD_KEY_NOTIFIED_RENEWED, NULL)) {
+        md_t *md;
+        /* A finished job in the staging area needs to have produced results */
+        if(!md_exists(store, group, name, p)) return FALSE;
+
+        if (APR_SUCCESS == md_load(store, MD_SG_DOMAINS, name, &md, p)) {
+            int i;
+            for (i = 0; i < md_cert_count(md); ++i) {
+                md_pkey_spec_t *spec = md_pkeys_spec_get(md->pks, i);
+                if(md_pubcert_load(store, group, name, spec, NULL, p) != APR_SUCCESS)
+                    return FALSE;
+            }
+        }
+    }
+    return TRUE;
+}
+
 static apr_status_t job_loadj(md_json_t **pjson, md_store_group_t group, const char *name,
                               struct md_reg_t *reg, int with_log, apr_pool_t *p)
 {
@@ -104,7 +131,13 @@ static apr_status_t job_loadj(md_json_t **pjson, md_store_group_t group, const c
 
     md_store_t *store = md_reg_store_get(reg);
     rv = md_store_load_json(store, group, name, MD_FN_JOB, pjson, p);
-    if (APR_SUCCESS == rv && !with_log) md_json_del(*pjson, MD_KEY_LOG, NULL);
+    if (APR_SUCCESS == rv) {
+        if (!md_job_json_seems_valid(*pjson, store, group, name, p)) {
+          *pjson = NULL;
+          return APR_ENOENT;
+        }
+        if(!with_log) md_json_del(*pjson, MD_KEY_LOG, NULL);
+    }
     return rv;
 }
 
@@ -120,9 +153,14 @@ static apr_status_t status_get_cert_json_ex(
     md_json_t *certj, *jobj;
     md_timeperiod_t ocsp_valid;
     md_ocsp_cert_stat_t cert_stat;
+    const char *ari_cert_id;
     apr_status_t rv;
 
     if (APR_SUCCESS != (rv = status_get_cert_json(&certj, cert, p))) goto leave;
+
+    if (APR_SUCCESS == md_cert_get_ari_cert_id(&ari_cert_id, cert, p))
+        md_json_sets(ari_cert_id, certj, MD_KEY_ARI_CERT_ID, NULL);
+
     if (md->stapling && ocsp) {
         rv = md_ocsp_get_meta(&cert_stat, &ocsp_valid, ocsp, cert, p, md);
         if (APR_SUCCESS == rv) {
@@ -135,6 +173,7 @@ static apr_status_t status_get_cert_json_ex(
             md_json_setj(jobj, certj, MD_KEY_OCSP, MD_KEY_RENEWAL, NULL);
         }
     }
+
 leave:
     *pjson = (APR_SUCCESS == rv)? certj : NULL;
     return rv;
@@ -215,7 +254,7 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
                                        md_reg_t *reg, md_ocsp_reg_t *ocsp, 
                                        int with_logs, apr_pool_t *p)
 {
-    md_json_t *mdj, *certsj, *jobj;
+    md_json_t *mdj, *certsj, *jobj = NULL;
     int renew;
     const md_pubcert_t *pubcert;
     const md_cert_t *cert = NULL;
@@ -245,20 +284,28 @@ static apr_status_t status_get_md_json(md_json_t **pjson, const md_t *md,
     
     md_json_setb(md->stapling, mdj, MD_KEY_STAPLING, NULL);
     md_json_setb(md->watched, mdj, MD_KEY_WATCHED, NULL);
-    renew = md_reg_should_renew(reg, md, p);
+
+    renew = FALSE;
+    rv = job_loadj(&jobj, MD_SG_STAGING, md->name, reg, with_logs, p);
+    if (rv == APR_SUCCESS)
+        renew = TRUE;
+    else if (APR_STATUS_IS_ENOENT(rv)) {
+        rv = APR_SUCCESS;
+        renew = md_reg_should_renew(reg, md, p);
+    }
+    else
+        goto leave;
+
     if (renew) {
         md_json_setb(renew, mdj, MD_KEY_RENEW, NULL);
-        rv = job_loadj(&jobj, MD_SG_STAGING, md->name, reg, with_logs, p);
-        if (APR_SUCCESS == rv) {
+        if (jobj) {
             if (APR_SUCCESS == get_staging_certs_json(&certsj, md, reg, p)) {
                 md_json_setj(certsj, jobj, MD_KEY_CERT, NULL);
             }
             md_json_setj(jobj, mdj, MD_KEY_RENEWAL, NULL);
         }
-        else if (APR_STATUS_IS_ENOENT(rv)) rv = APR_SUCCESS;
-        else goto leave;
     }
-    
+
 leave:
     if (APR_SUCCESS != rv) {
         md_json_setl(rv, mdj, MD_KEY_ERROR, NULL);
@@ -281,7 +328,7 @@ apr_status_t md_status_get_json(md_json_t **pjson, apr_array_header_t *mds,
     int i;
     
     json = md_json_create(p);
-    md_json_sets(MOD_MD_VERSION, json, MD_KEY_VERSION, NULL);
+    md_json_sets(AP_SERVER_BASEREVISION, json, MD_KEY_VERSION, NULL);
     for (i = 0; i < mds->nelts; ++i) {
         md = APR_ARRAY_IDX(mds, i, const md_t *);
         status_get_md_json(&mdj, md, reg, ocsp, 0, p);
@@ -370,7 +417,8 @@ apr_status_t md_job_load(md_job_t *job)
     apr_status_t rv;
     
     rv = md_store_load_json(job->store, job->group, job->mdomain, MD_FN_JOB, &jprops, job->p);
-    if (APR_SUCCESS == rv) {
+    if ((APR_SUCCESS == rv) &&
+        md_job_json_seems_valid(jprops, job->store, job->group, job->mdomain, job->p)) {
         md_job_from_json(job, jprops, job->p);
     }
     return rv;
@@ -598,10 +646,16 @@ apr_time_t md_job_delay_on_errors(md_job_t *job, int err_count, const char *last
         delay = max_delay;
     }
     else if (err_count > 0) {
-        /* back off duration, depending on the errors we encounter in a row */
-        delay = job->min_delay << (err_count - 1);
-        if (delay > max_delay) {
-            delay = max_delay;
+        /* back off duration, depending on the errors we encounter in a row.
+         * As apr_time_t is signed, this might wrap around*/
+        int i;
+        delay = job->min_delay;
+        for (i = 0; i < (err_count - 1); ++i) {
+          delay <<= 1;
+          if ((delay <= 0) || (delay > max_delay)) {
+              delay = max_delay;
+              break;
+          }
         }
     }
     if (delay > 0) {

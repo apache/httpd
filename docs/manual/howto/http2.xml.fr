@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1899234 -->
+<!-- English Revision: 1935505 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,53 +43,48 @@
     plus efficace des ressources réseau. Il ne modifie pas les aspects
     fondamentaux de HTTP (sa sémantique). Entre autres, il y a toujours des
     requêtes, des réponses et des en-têtes. Par conséquent, si vous connaissez
-    HTTP/1, vous connaissez déjà 95% de HTTP/2.</p>
-    <p>Beaucoup a déjà été écrit à propos de HTTP/2 et de son fonctionnement. La
-    documentation la plus officielle est bien entendu sa <a
-    href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> (ou <a
-    href="http://httpwg.org/specs/rfc7540.html">cette version au format plus
-    lisible</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
-    leurs moindres détails.</p>
-    <p>Le premier document à lire lorsqu'on ne connaît pas un mécanisme n'est
-    cependant pas sa RFC. Il est préférable de comprendre tout d'abord <em>ce
-    que</em> ce mécanisme est censé faire, et seulement ensuite de lire sa RFC
-    pour comprendre <em>comment</em> il fonctionne. <a
-    href="https://daniel.haxx.se/http2/">http2  explained</a> de Daniel Stenberg
-    (l'auteur de <a href="https://curl.haxx.se">curl</a>)
-    est un bien meilleur document pour démarrer l'étude de HTTP/2. En outre, de
-    nouveaux langages s'ajoutent régulièrement à sa liste de traductions
-    disponibles !</p>
-    <p>Si vous n'avez pas envie de le lire parce que vous le trouvez trop long,
-    voici certains pièges à éviter et nouveaux termes à connaître avant de lire
-    ce document :</p>
+    HTTP/1, vous connaissez déjà 95% deHTTP/2.</p>
+
+    <p>Le protocole est définii dans la <rfc>9113</rfc> (qui rend obsolète la
+    <rfc>7540</rfc> originale). Pour une approche plus abordable, voir le
+    document <a
+    href="https://daniel.haxx.se/http2/">http2 explained</a> par Daniel
+    Stenberg, l’auteur de <a href="https://curl.haxx.se">curl</a>. Il couvre les
+    but et conception de HTTP/2 sans nécessiter d’analyse de la notation RFC
+    préalable.</p>
+
+    <p>En bref, il y a quelques nouveaux termes et pièges à éviter que vous
+    devez garder à l’esprit lors de la lecture de ce document :</p>
+
     <ul>
-        <li>A la différence de HTTP/1 qui est en texte pur, HTTP/2 est un
-	<strong>protocole binaire</strong>, et alors que le premier est lisible par
-	un humain (par exemple pour sniffer le trafic réseau), le second ne
-	l'est pas. Voir la <a
-	href="https://http2.github.io/faq/#why-is-http2-binary">FAQ
-	officielle</a> pour plus de détails.</li>
+        <li>À l’opposé de HTTP 1.1 qui est un protocole en texte pur, HTTP/2 est
+	un <strong>protocol binaire</strong>. Le premier a été pensé pour être
+	lisible par un humain (par exemple pour surveiller le trafic réseau),
+	alors que ce n’est pas le cas pour le second. Vous trouverez plus
+	d’information dans cette <a
+	href="https://http2.github.io/faq/#why-is-http2-binary">question</a> de
+	la FAQ officielle.</li>
         <li><strong>h2</strong> correspond à HTTP/2 sur TLS (négociation de
 	protocole via ALPN).</li>
-        <li><strong>h2c</strong> correspond à HTTP/2 sur TCP.</li>
-	<li>Une <strong>frame</strong> ou trame est la plus petite unité de
-	communication au sein d'une connexion HTTP/2 et comporte une en-tête et
-	une séquence d'octets de longueur variable dont la structure correspond
-	au type de trame. Voir la <a
-	href="http://httpwg.org/specs/rfc7540.html#FramingLayer">section
-	correspondante</a> de la documentation officielle pour plus de
-	détails.</li>
-        <li>Un <strong>stream</strong> est un flux bidirectionnel de frames au
-	sein d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
-	échange de messages de type requête et réponse. Voir la <a
-	href="http://httpwg.org/specs/rfc7540.html#StreamsLayer">section
-	correspondante</a> de la documentation officielle pour plus de détails.</li>
-        <li>HTTP/2 peut gérer <strong>plusieurs streams</strong> de données sur
-	la même connexion TCP, ce qui permet d'éviter le point de blocage
-	classique de HTTP/1 pour les requêtes lentes, et de ne pas avoir à
-	ouvrir de nouvelles connexions TCP pour chaque requête/réponse (les
-	connexions persistantes ou KeepAlive avaient contourné le problème dans
-	HTTP/1 mais ne l'avaient pas entièrement résolu)</li>
+        <li><strong>h2c</strong> correspond à HTTP/2 sur TCP en texte clair
+	(sans TLS). Notez que h2c a été supprimé de la spécification actuelle
+	mais que httpd le prend encore en charge.</li>
+	<li>Une <strong>trame</strong> (frame) est la plus petite unité de
+	communication au sein d’une connexion HTTP/2 ; elle comporte un en-tête
+	et une séquence d’octets de longueur variable structurée en fonction du
+	type de trame.  Vous trouverez plus d’informations dans la documentation
+	officielle de la <rfc>9113</rfc>.</li>
+	<li>Un <strong>flux</strong> (stream) est une circulation
+	bidirectionnelle de trames au sein d’une connexion HTTP/2. Le concept
+	correspondant dans HTTP 1.1 est un échange de messages requête/réponse.
+	Vous trouverez plus d’informations dans la documentation officielle de
+	la <rfc>9113</rfc>.</li>
+        <li>HTTP/2 peut gérer <strong>plusieurs flux</strong> de données sur la
+	même connexion TCP, évitant le classique blocage en tête de file
+	des requêtes HTTP 1.1 lentes, ainsi que la nécessité de réinitier des
+	connexions TCP pour chaque requête/réponse (KeepAlive contournait le
+	problème dans HTTP 1.1, mais ne le résolvait pas entièrement).</li>
+        
     </ul>
   </section>
 
@@ -97,14 +92,15 @@
     <title>HTTP/2 dans Apache httpd</title>
     <p>Le protocole HTTP/2 est implémenté dans Apache httpd via un module
     propre, pertinemment nommé <module>mod_http2</module>. Ce
-    module implémente toutes les fonctionnalités décrites par la RFC 7540 et
+    module implémente toutes les fonctionnalités décrites par la RFC 9113 et
     supporte les connexions en texte pur (http:), ou sécurisées (https:).
     La variante texte pur se nomme '<code>h2c</code>', et la variante sécurisée
     '<code>h2</code>'. <code>h2c</code> peut être en mode <em>direct</em> ou
     <code>Upgrade:</code> via une requête initiale en HTTP/1.</p>
-    <p><a href="#push">Server Push</a> est une nouvelle fonctionnalité offerte
-    aux développeurs web par HTTP/2. La section correspondante de ce document
-    vous indiquera comment votre application peut en tirer parti.</p>
+    <p><a href="#push">Server Push</a> était une nouvelle fonctionnalité offerte
+    aux développeurs web par HTTP/2, mais elle est maintenant obsolète. Voir la
+    section <a href="#earlyhints">EarlyHints</a> pour l’alternative
+    recommandée.</p>
   </section>
 
   <section id="building">
@@ -139,36 +135,43 @@
     <p>Maintenant que vous disposez d'un binaire <code>httpd</code> compilé avec le
     module <module>mod_http2</module>, l'activation de ce dernier nécessite un
     minimum de configuration supplémentaire. En premier lieu, comme pour tout
-    module Apache, vous devez le charger :</p>
-    <highlight language="config">
+    module de httpd, vous devez le charger :</p>
+<example>
+<highlight language="config">
 LoadModule http2_module modules/mod_http2.so
-    </highlight>
+</highlight>
+</example>
 
     <p>La seconde directive que vous devez ajouter à votre fichier de
     configuration est</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Protocols h2 http/1.1
 </highlight>
+</example>
     <p>Ceci permet de définir h2, la variante sécurisée, comme le protocole
     préféré pour les connexions à votre serveur. Si vous souhaitez que toutes les
     variantes soient disponibles, utilisez la directive suivante :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Protocols h2 h2c http/1.1
 </highlight>
-    <p>Selon l'endroit où vous placez cette directive, elle affectera l'ensemble
-    de votre serveur, ou seulement un ou plusieurs serveurs virtuels. Vous
+</example>
+    <p>Selon l'endroit où vous placez cette directive, elle affectera toute les
+    connexions, ou seulement celles vers un serveur virtuel spécifique. Vous
     pouvez aussi l'imbriquer comme dans l'exemple suivant :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Protocols http/1.1
 &lt;VirtualHost ...&gt;
-    ServerName test.example.org
-    Protocols h2 http/1.1
+ServerName test.example.org
+Protocols h2 http/1.1
 &lt;/VirtualHost&gt;
 </highlight>
+</example>
 
-    <p>Seules les connexions en HTTP/1 seront alors permises, sauf pour le serveur
-    virtuel <code>test.example.org</code> qui acceptera aussi les connexions SSL
-    en HTTP/2.</p>
+    <p>Seules les connexions en HTTP/1 seront alors permises, sauf pour les
+    connexions SSL vers <code>test.example.org</code> qui propose aussi HTTP/2.</p>
     <note><title>Utilisez une chaîne d'algorithmes de chiffrement forte</title>
     <p>La directive <directive module="mod_ssl">SSLCipherSuite</directive> doit
     être définie avec une chaîne d'algorithmes de chiffrement TLS forte. Même si
@@ -180,32 +183,38 @@ Protocols http/1.1
     lorsqu'on configure httpd pour HTTP/2 pour la première fois ; donc gardez la
     à l'esprit si vous voulez éviter de longues sessions de débogage ! Si vous
     voulez être sûr de définir une chaîne d'algorithmes de chiffrement
-    appropriée, évitez ceux qui sont listés dans la <a
-    href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">liste des
-    algorithmes de chiffrement TLS HTTP/2 à proscrire</a>.</p>
+    appropriée, évitez ceux qui sont listés dans la liste des
+    algorithmes de chiffrement TLS HTTP/2 à proscrire (<rfc>7540</rfc>).</p>
     </note>
     <p>L'ordre des protocoles indiqués est aussi important. Par défaut, le
     premier sera le protocole préféré. Lorsqu'un client offre plusieurs choix,
     c'est le plus à gauche qui sera sélectionné. Dans</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Protocols http/1.1 h2
 </highlight>
+</example>
     <p>le protocole préféré sera HTTP/1 et il sera toujours sélectionné sauf si
     un client ne supporte <em>que</em> h2. Comme nous souhaitons communiquer en
     HTTP/2 avec les clients qui le supportent, la meilleure définition de la
     directive est</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Protocols h2 h2c http/1.1
 </highlight>
+</example>
 
     <p>Toujours à propos de l'ordre des protocoles, le client a lui aussi ses
     propres préférences en la matière. À ce titre, si vous le souhaitez, vous
     pouvez configurer votre serveur pour qu'il sélectionne non plus son
     protocole préféré, mais au contraire le protocole préféré
     du client :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 ProtocolsHonorOrder Off
-    </highlight>
+</highlight>
+</example>
+
     <p>Avec cette directive, l'ordre des protocoles que <em>vous</em> avez
     défini devient caduque et seul l'ordre défini par le client sera pris en
     compte.</p>
@@ -253,11 +262,10 @@ ProtocolsHonorOrder Off
 
   <section id="clients">
     <title>Clients</title>
-    <p>La plupart des navigateurs modernes supportent HTTP/2, mais seulement sur
-    des connexions SSL : Firefox v43, Chrome v45, Safari v9, iOS Safari v9,
-    Opera v35, Chrome pour Android v49 et
-    Internet Explorer v11 sous Windows10 (selon cette <a
-    href="http://caniuse.com/#search=http2">source</a>).</p>
+    <p>Tous les navigateurs modernes prennent en charge HTTP/2 sur
+    des connexions TLS (<a href="https://caniuse.com/http2">source</a>). La
+    prise en charge est devenue universelle sur les navigateurs principaux à peu
+    près en 2015.</p>
     <p>D'autres clients et serveurs sont listés dans le <a
     href="https://github.com/http2/http2-spec/wiki/Implementations">wiki des
     implémentations</a> ; entre autres des implémentations pour c, c++, common
@@ -273,14 +281,19 @@ ProtocolsHonorOrder Off
     <p>Le premier d'entre eux est bien entendu <a
     href="https://curl.haxx.se">curl</a>. Assurez-vous au préalable que votre
     version supporte HTTP/2 en vérifiant ses <code>Fonctionnalités</code> :</p>
-    <highlight language="config">
-    $ curl -V
-    curl 7.45.0 (x86_64-apple-darwin15.0.0) libcurl/7.45.0 OpenSSL/1.0.2d zlib/1.2.8 nghttp2/1.3.4
-    Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...]
-    Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
-    </highlight>
-    <note><title>homebrew sous Mac OS :</title>
-    brew install curl --with-openssl --with-nghttp2
+<example>
+<highlight language="sh">
+$ curl -V
+curl 8.20.0 (x86_64-pc-linux-gnu) libcurl/8.20.0 OpenSSL/3.5.7 zlib/1.3.1 nghttp2/1.69.0
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...]
+Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
+</highlight>
+</example>
+    <note><title>Notes à propos de macOS Homebrew</title>
+    <p><code>curl</code> de Homebrew inclut par défaut la prise en charge de
+    HTTP/2. Installez le avec la commande <code>brew install curl</code> et
+    suivez les instructions affichées pour le mettre en tête du PATH de votre
+    système.</p>
     </note>
     <p>Pour une inspection en profondeur : <a href="https://wiki.wireshark.org/HTTP2">wireshark</a>.</p>
     <p>Le paquet <a href="https://nghttp2.org">nghttp2</a> inclut aussi des
@@ -295,15 +308,22 @@ ProtocolsHonorOrder Off
     </ul>
     <p>Chrome fournit des journaux détaillés des connexions HTTP/2 via la page
     <a href="chrome://net-internals/#http2">special net-internals page</a>. Il y
-    a aussi cette extension intéressante pour <a
-    href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a>
+    a aussi cette extension intéressante pour <a href="https://chromewebstore.google.com/detail/http-indicator/hgcomhbcacfkpffiphlmnlhpppcjgmbl">Chrome</a>
     et <a
-    href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a>
+    href="https://addons.mozilla.org/en-us/firefox/addon/http2-indicator/">Firefox</a>
     qui permet d'indiquer que votre navigateur utilise HTTP/2.</p>
   </section>
 
   <section id="push">
     <title>Push serveur</title>
+    <note type="warning"><title>Notification d’obsolescence</title>
+    <p>Server Push est obsolète dans la <rfc section="8.4">9113</rfc>. Les
+    navigateurs principaux (Chrome 106+, Edge 106+) ont supprimé sa prise en
+    charge. Bien que <module>mod_http2</module> implémente encore push, les
+    nouveaux déploiements doivent utiliser <a href="#earlyhints">103 Early
+    Hints</a> à titre de méthode plus fiable pour informer les clients à propos
+    des ressources nécessaires.</p>
+    </note>
     <p>Le protocole HTTP/2 permet au serveur de proposer (PUSH) des réponses
     pour lesquelles le client n'a rien demandé. La communication autour de ces
     réponses est du style : &quot;voici une requête que vous n'avez jamais
@@ -328,29 +348,37 @@ ProtocolsHonorOrder Off
     procéder vous-même à ces expérimentations :</p>
     <p><module>mod_http2</module> inspecte l'en-tête de la réponse et recherche les
     en-têtes <code>Link</code> sous un certain format :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload
-    </highlight>
+</highlight>
+</example>
     <p>Si la connexion supporte PUSH, ces deux ressources seront envoyées au
     client. En tant que développeur web vous pouvez définir ces en-têtes soit
     directement au niveau de la réponse de votre application, soit en
     configurant votre serveur via</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Location /xxx.html&gt;
-    Header add Link "&lt;/xxx.css&gt;;rel=preload"
-    Header add Link "&lt;/xxx.js&gt;;rel=preload"
+Header add Link "&lt;/xxx.css&gt;;rel=preload"
+Header add Link "&lt;/xxx.js&gt;;rel=preload"
 &lt;/Location&gt;
-    </highlight>
+</highlight>
+</example>
     <p>Si vous souhaitez utiliser des liens <code>preload</code> sans déclencher
     de PUSH, vous pouvez utiliser le paramètre <code>nopush</code> comme suit :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload;nopush
-    </highlight>
+</highlight>
+</example>
     <p>Vous pouvez aussi désactiver les PUSHes pour l'ensemble de votre
     serveur via la directive</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 H2Push Off
-    </highlight>
+</highlight>
+</example>
     <p>À savoir aussi :</p>
     <p>Le module maintient un journal des ressources ayant fait l'objet d'un
     PUSH pour chaque connexion (en général des condensés hash des URLs), et
@@ -358,14 +386,13 @@ H2Push Off
     lorsque la connexion est fermée, le journal de ses PUSHes est supprimé.</p>
     <p>Certains développeurs planchent sur la manière de permettre au client
     d'informer le serveur des ressources qu'il possède déjà dans son cache afin
-    d'éviter les PUSHes pour ces dernières, mais ceci n'en est actuellement qu'à
-    un stade très expérimental.</p>
-    <p>L'<a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
-    en-tête Accept-Push-Policy</a> est un autre dispositif expérimental
+    d'éviter les PUSHes pour ces dernières, mais aucune norme n’a émergé avant
+    que push ne devienne obsolète.</p>
+    <p>L'<a href="https://datatracker.ietf.org/doc/html/draft-ruellan-http-accept-push-policy-00">
+    en-tête Accept-Push-Policy</a> est un dispositif expérimental
     implémenté dans <module>mod_http2</module> ; il permet au client de définir pour
-    chaque requête quels genres de PUSHes il accepte.</p>
-  
-
+    chaque requête quels genres de PUSHes il accepte. Ce dispositif a été
+    abandonné et n’a jamais été adopté.</p>
     <p>
     La fonctionnalité PUSH n'apportera pas toujours le gain de performances dans
     l'obtention de réponses aux requêtes. Vous trouverez plusieurs études sur ce
@@ -390,28 +417,31 @@ H2Push Off
   </section>
 
   <section id="earlyhints">
-    <title>Suggestions précoces</title>
+    <title>EarlyHints</title>
     <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
     des en-têtes <code>Link</code> au client avant même que la réponse ne soit
     prête. Cette méthode utilise la fonctionnalité appelée "Suggestions
-    précoces" (Early Hints) décrite dans la <a
-    href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    précoces" (Early Hints) décrite dans la <rfc>8297</rfc>.</p>
     <p>Pour utiliser cette fonctionnalité, vous devez l'activer explicitement
     sur le serveur via :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 H2EarlyHints on
-    </highlight>
+</highlight>
+</example>
     <p>Elle n'est en effet pas activée par défaut car certains navigateurs
     anciens perdent pied avec de telles réponses.</p>
     <p>Une fois cette fonctionnalité activée, vous pouvez utiliser la directive
     <directive module="mod_http2">H2PushResource</directive> pour déclencher les
     suggestions précoces et les PUSHes de ressources :</p>
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Location /xxx.html&gt;
-    H2PushResource /xxx.css
-    H2PushResource /xxx.js
+H2PushResource /xxx.css
+H2PushResource /xxx.js
 &lt;/Location&gt;
-    </highlight>
+</highlight>
+</example>
     <p>Le serveur enverra alors au client une réponse <code>"103 Early
     Hints"</code> dès qu'il <em>commencera</em> à traiter la requête. Selon
     votre application web, cet envoi peut intervenir beaucoup plus tôt que le

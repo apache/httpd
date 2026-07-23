@@ -1,31 +1,31 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>아파치 투토리얼: Server Side Includes 소개 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>아파치 투토리얼: Server Side Includes 소개</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>아파치 투토리얼: Server Side Includes 소개</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -35,19 +35,19 @@
 <p>Server-side includes를 사용하여 HTML 문서에 동적인 내용을
 추가할 수 있다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">소개</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#what">SSI가 무엇인가?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring">SSI가 가능하도록 서버 설정하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basic">기본 SSI 지시어</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#additionalexamples">추가 예제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">이외에 설정할 수 있는 것은?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exec">명령어 실행하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#advanced">고급 SSI 기법</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#conclusion">결론</a></li>
-</ul><h3>참고</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">소개</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#what">SSI가 무엇인가?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#configuring">SSI가 가능하도록 서버 설정하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basic">기본 SSI 지시어</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#additionalexamples">추가 예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">이외에 설정할 수 있는 것은?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#exec">명령어 실행하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#advanced">고급 SSI 기법</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#conclusion">결론</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">소개</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">소개 <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
  <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>이 글은 보통 SSI라고 부르는 Server Side Includes를 설명한다.
@@ -57,9 +57,9 @@
     <p>이 글의 뒷부분은 SSI 지시어 조건문과 같은 고급기법을
     설명한다.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what" id="what">SSI가 무엇인가?</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
+<h2 id="what">SSI가 무엇인가? <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
     <p>SSI (Server Side Includes)는 HTML 페이지에 사용하는 지시어로,
     페이지를 서비스할때 서버가 처리한다. SSI를 사용하면 CGI
@@ -73,9 +73,9 @@
     시간과 같이 적은 정보를 추가하는데 좋다. 그러나 페이지를
     서비스할때 페이지의 대부분을 생성해야 한다면 다른 방법을
     찾아봐야 한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">SSI가 가능하도록 서버 설정하기</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
+<h2 id="configuring">SSI가 가능하도록 서버 설정하기 <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
 
 
     <p>서버가 SSI를 처리하려면 <code>httpd.conf</code> 파일이나
@@ -95,7 +95,7 @@
     하나는 다음과 같은 지시어로 <code>.shtml</code>과 같은 특정
     파일 확장자를 가진 파일을 처리하는 방법이다.</p>
 <div class="example"><p><code>
-        AddType text/html .shtml<br />
+        AddType text/html .shtml<br>
         AddOutputFilter INCLUDES .shtml
 </code></p></div>
 
@@ -142,9 +142,9 @@
       파일에 직접 만기일을 설정하면 브라우저와 프록시가 문서를
       캐쉬할 수 있다.</li>
     </ol>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">기본 SSI 지시어</a> <a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
+<h2 id="basic">기본 SSI 지시어 <a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
 
     <p>SSI 지시어의 사용법은 다음과 같다.</p>
 <div class="example"><p><code>
@@ -158,7 +158,7 @@
     <p>element는 다음중 하나다. 다음 회에 더 자세히 설명할 것이다.
     지금은 SSI로 할 수 있는 몇가지 예를 보인다</p>
 
-<h3><a name="todaysdate" id="todaysdate">오늘 날짜</a></h3>
+<h3 id="todaysdate">오늘 날짜</h3>
 
 <div class="example"><p><code>
         &lt;!--#echo var="DATE_LOCAL" --&gt;
@@ -174,12 +174,12 @@
     사용한다.</p>
 
 <div class="example"><p><code>
-        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br />
+        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br>
         Today is &lt;!--#echo var="DATE_LOCAL" --&gt;
 </code></p></div>
 
 
-<h3><a name="lastmodified" id="lastmodified">파일의 수정일</a></h3>
+<h3 id="lastmodified">파일의 수정일</h3>
 
 <div class="example"><p><code>
         이 문서는 &lt;!--#flastmod file="index.html" --&gt;에 마지막으로 수정되었다
@@ -188,7 +188,7 @@
     <p>이 element도 <code>timefmt</code> 형식 설정에 달렸다.</p>
 
 
-<h3><a name="cgi" id="cgi">CGI 프로그램 결과를 포함하기</a></h3>
+<h3 id="cgi">CGI 프로그램 결과를 포함하기</h3>
 
     <p>일반적인 SSI 사용법중 하나로, 많이들 애용하는 ``방문수
     카운터'' 같은 CGI 프로그램 결과를 출력한다.</p>
@@ -198,22 +198,22 @@
 </code></p></div>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="additionalexamples" id="additionalexamples">추가 예제</a> <a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
+<h2 id="additionalexamples">추가 예제 <a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
 
 
     <p>다음은 HTML 문서에 사용할 수 있는 몇가지 SSI 예제다.</p>
 
-<h3><a name="docmodified" id="docmodified">이 문서가 언제 마지막으로
-수정되었나?</a></h3>
+<h3 id="docmodified">이 문서가 언제 마지막으로
+수정되었나?</h3>
 
     <p>앞에서 SSI를 사용하여 사용자에게 문서의 최근수정일을
     알릴 수 있다고 말했다. 그러나 실제 방법은 알려주지 않았다.
     다음 코드를 HTML 문서에 사용하면 페이지에 시간 기록을 남긴다.
     물론 위에서 설명한대로 SSI가 올바로 작동해야 한다.</p>
 <div class="example"><p><code>
-        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br />
+        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br>
         이 문서는 &lt;!--#flastmod file="ssi.shtml" --&gt;에 마지막으로 수정되었다;
 </code></p></div>
 
@@ -222,7 +222,7 @@
     원한다면, 파일명 대신 <code>LAST_MODIFIED</code> 변수를
     사용한다.</p>
 <div class="example"><p><code>
-        &lt;!--#config timefmt="%D" --&gt;<br />
+        &lt;!--#config timefmt="%D" --&gt;<br>
         This file last modified &lt;!--#echo var="LAST_MODIFIED" --&gt;
 </code></p></div>
 
@@ -230,7 +230,7 @@
     <code>strftime</code>을 찾아봐라. 문법은 같다.</p>
 
 
-<h3><a name="standard-footer" id="standard-footer">표준 페이지 하단을 포함하기</a></h3>
+<h3 id="standard-footer">표준 페이지 하단을 포함하기</h3>
 
 
     <p>여러 페이지가 있는 사이트를 관리한다면 페이지 전체를
@@ -258,9 +258,9 @@
     포함하는 식으로 여러번 계속 포함할 수도 있다.</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">이외에 설정할 수 있는 것은?</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">이외에 설정할 수 있는 것은? <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
 
 
     <p>시간 형식 <code>config</code>(설정) 외에 두가지를 더
@@ -284,9 +284,9 @@
     형식을 <code>config</code>(설정)할 수 있다. 바이트로 크기를
     보여주려면 <code>bytes</code>, 적절히 Kb나 Mb로 크기를
     보여주려면 <code>abbrev</code>를 사용한다.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exec" id="exec">명령어 실행하기</a> <a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
+<h2 id="exec">명령어 실행하기 <a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
     
 
     <p>나는 다음 달에 작은 CGI 프로그램과 SSI를 같이 사용하는
@@ -295,15 +295,15 @@
     <code>/bin/sh</code>나 Win32를 사용한다면 DOS 쉘) 사용하여
     명령어를 실행한다. 예를 들어, 다음은 디렉토리 목록을 보여준다.</p>
 <div class="example"><p><code>
-        &lt;pre&gt;<br />
-        &lt;!--#exec cmd="ls" --&gt;<br />
+        &lt;pre&gt;<br>
+        &lt;!--#exec cmd="ls" --&gt;<br>
         &lt;/pre&gt;
 </code></p></div>
 
     <p>or, on Windows</p>
 <div class="example"><p><code>
-        &lt;pre&gt;<br />
-        &lt;!--#exec cmd="dir" --&gt;<br />
+        &lt;pre&gt;<br>
+        &lt;!--#exec cmd="dir" --&gt;<br>
         &lt;/pre&gt;
 </code></p></div>
 
@@ -317,15 +317,15 @@
     사용해선 안된다. <code>Options</code> 지시어에
     <code>IncludesNOEXEC</code> 아규먼트를 사용하여 SSI를 허용하지만
     <code>exec</code> 기능을 막을 수 있다.</p> 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="advanced" id="advanced">고급 SSI 기법</a> <a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
+<h2 id="advanced">고급 SSI 기법 <a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
 
 
     <p>내용을 출력하는 기능 외에 아파치 SSI는 변수 설정이 가능하고,
     비교문과 조건문에 이 변수를 사용할 수 있다.</p>
 
-<h3><a name="caveat" id="caveat">경고</a></h3>
+<h3 id="caveat">경고</h3>
 
     <p>이 글에서 설명하는 대부분의 기능은 아파치 1.2 이후부터
     사용할 수 있다. 물론, 아파치 1.2 이상을 사용하지 않는다면
@@ -333,7 +333,7 @@
     것이다.</p>
 
 
-<h3><a name="variables" id="variables">변수 설정</a></h3>
+<h3 id="variables">변수 설정</h3>
 
     <p><code>set</code> 지시어를 사용하여 나중에 사용할 변수를
     설정할 수 있다. 앞으로 변수가 필요하기때문에 먼저 설명한다.
@@ -365,7 +365,7 @@
 </code></p></div>
 
 
-<h3><a name="conditional" id="conditional">조건 표현식</a></h3>
+<h3 id="conditional">조건 표현식</h3>
 
 
     <p>변수를 설정하고 비교할 수 있으니 조건문이 가능하다. 이제
@@ -377,9 +377,9 @@
 
     <p>조건문 구조는 다음과 같다.</p>
 <div class="example"><p><code>
-    &lt;!--#if expr="test_condition" --&gt;<br />
-    &lt;!--#elif expr="test_condition" --&gt;<br />
-    &lt;!--#else --&gt;<br />
+    &lt;!--#if expr="test_condition" --&gt;<br>
+    &lt;!--#elif expr="test_condition" --&gt;<br>
+    &lt;!--#else --&gt;<br>
     &lt;!--#endif --&gt;
 </code></p></div>
 
@@ -391,7 +391,7 @@
 
     <p>설정파일에 다음 줄을 추가한다.</p>
 <div class="example"><p><code>
-        BrowserMatchNoCase macintosh Mac<br />
+        BrowserMatchNoCase macintosh Mac<br>
         BrowserMatchNoCase MSIE InternetExplorer
 </code></p></div>
 
@@ -400,10 +400,10 @@
 
     <p>그리고 SSI 문서에 다음과 같이 적는다.</p>
 <div class="example"><p><code>
-        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
-        여기에 사과문가 나온다<br />
-        &lt;!--#else --&gt;<br />
-        여기에 멋진 JavaScript 코드가 나온다<br />
+        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br>
+        여기에 사과문가 나온다<br>
+        &lt;!--#else --&gt;<br>
+        여기에 멋진 JavaScript 코드가 나온다<br>
         &lt;!--#endif --&gt;
 </code></p></div>
 
@@ -417,9 +417,9 @@
     지시어로 환경변수를 설정할 수 있기때문에 CGI 없이도 멋지게
     동적인 내용을 만들 수 있다.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="conclusion" id="conclusion">결론</a> <a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
+<h2 id="conclusion">결론 <a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
 
     <p>SSI는 확실히 CGI나 동적인 웹페이지를 생성하는 다른 기술을
     대체할 수 없다. 그러나 많은 추가 작업없이 페이지에 동적인
@@ -427,32 +427,36 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/ssi.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

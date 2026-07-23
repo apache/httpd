@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 600" width="440" height="600">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 10px; fill: #333; }
+      .title { font-size: 12px; font-weight: bold; }
+      .phase { font-size: 11px; font-weight: bold; fill: #444; }
+      .label { font-size: 9px; fill: #555; }
+      .small { font-size: 8px; fill: #666; font-style: italic; }
+      rect.process { fill: #e8e8e8; stroke: #333; stroke-width: 1.2; rx: 4; ry: 4; }
+      polygon.decision { fill: #fff8dc; stroke: #333; stroke-width: 1.2; }
+      rect.terminal { fill: #d4edda; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.redirect { fill: #f8d7da; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.phase-box { fill: #fafafa; stroke: #888; stroke-width: 1.2; rx: 8; ry: 8; }
+      line, path { stroke: #333; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+      .dashed { stroke-dasharray: 5,4; }
+    </style>
+  </defs>
+
+  <text x="220" y="16" text-anchor="middle" class="title">Figure 1: The Per-Request Rewrite Process</text>
+
+  <!-- Incoming URL -->
+  <rect class="terminal" x="150" y="28" width="140" height="26"/>
+  <text x="220" y="45" text-anchor="middle">Incoming URL</text>
+  <line x1="220" y1="54" x2="220" y2="74"/>
+
+  <!-- ==================== PHASE 1 ==================== -->
+  <rect class="phase-box" x="30" y="74" width="380" height="195"/>
+  <text x="45" y="90" class="phase">Per-server rules (httpd.conf)</text>
+
+  <!-- Get next rule -->
+  <rect class="process" x="160" y="98" width="120" height="24"/>
+  <text x="220" y="114" text-anchor="middle">Get next rule</text>
+  <line x1="220" y1="122" x2="220" y2="139"/>
+
+  <!-- Decision: Pattern matches? -->
+  <polygon class="decision" points="220,139 290,157 220,175 150,157"/>
+  <text x="220" y="160" text-anchor="middle">Pattern</text>
+  <text x="220" y="170" text-anchor="middle">matches?</text>
+
+  <!-- No match → swoopy loop back (left side) -->
+  <path d="M 150,157 C 110,157 105,140 105,130 C 105,115 110,110 160,110"/>
+  <text x="113" y="148" class="label">No</text>
+
+  <!-- Yes → check conditions -->
+  <line x1="220" y1="175" x2="220" y2="192"/>
+  <text x="228" y="187" class="label">Yes</text>
+
+  <!-- Decision: Conditions met? -->
+  <polygon class="decision" points="220,192 290,210 220,228 150,210"/>
+  <text x="220" y="210" text-anchor="middle">Conditions</text>
+  <text x="220" y="220" text-anchor="middle">met?</text>
+
+  <!-- Conditions not met → swoopy loop back (left side, wider arc) -->
+  <path d="M 150,210 C 80,210 80,160 80,135 C 80,115 100,108 160,110"/>
+  <text x="92" y="200" class="label">No</text>
+
+  <!-- Conditions met → substitute -->
+  <line x1="220" y1="228" x2="220" y2="245"/>
+  <text x="228" y="240" class="label">Yes</text>
+
+  <!-- Substitute -->
+  <rect class="process" x="160" y="245" width="120" height="24"/>
+  <text x="220" y="261" text-anchor="middle">Substitute URL</text>
+
+  <!-- After substitution → swoopy loop back to next rule (right side) -->
+  <path d="M 280,257 C 340,257 350,220 350,180 C 350,140 340,110 280,110"/>
+  <text x="356" y="185" class="label" transform="rotate(90,356,185)">next rule</text>
+
+  <!-- All rules done → exit phase 1 -->
+  <line x1="220" y1="269" x2="220" y2="292"/>
+  <text x="103" y="137" class="small">(no more rules)</text>
+
+  <!-- ==================== REDIRECT CHECK ==================== -->
+  <polygon class="decision" points="220,292 285,310 220,328 155,310"/>
+  <text x="220" y="313" text-anchor="middle">Redirect?</text>
+
+  <!-- Yes → redirect response (left, gentle curve) -->
+  <path d="M 155,310 C 120,310 90,310 80,310"/>
+  <text x="125" y="304" class="label">Yes</text>
+  <rect class="redirect" x="15" y="297" width="70" height="26"/>
+  <text x="50" y="314" text-anchor="middle">Redirect</text>
+
+  <!-- No → per-directory -->
+  <line x1="220" y1="328" x2="220" y2="350"/>
+  <text x="228" y="342" class="label">No</text>
+
+  <!-- ==================== PHASE 2 ==================== -->
+  <rect class="phase-box" x="30" y="350" width="380" height="195"/>
+  <text x="45" y="366" class="phase">Per-directory rules (.htaccess)</text>
+
+  <!-- Get next rule -->
+  <rect class="process" x="160" y="374" width="120" height="24"/>
+  <text x="220" y="390" text-anchor="middle">Get next rule</text>
+  <line x1="220" y1="398" x2="220" y2="415"/>
+
+  <!-- Decision: Pattern matches? -->
+  <polygon class="decision" points="220,415 290,433 220,451 150,433"/>
+  <text x="220" y="436" text-anchor="middle">Pattern</text>
+  <text x="220" y="446" text-anchor="middle">matches?</text>
+
+  <!-- No → swoopy loop back (left side) -->
+  <path d="M 150,433 C 110,433 105,420 105,406 C 105,392 110,386 160,386"/>
+  <text x="113" y="424" class="label">No</text>
+
+  <!-- Yes → check conditions -->
+  <line x1="220" y1="451" x2="220" y2="468"/>
+  <text x="228" y="463" class="label">Yes</text>
+
+  <!-- Decision: Conditions met? -->
+  <polygon class="decision" points="220,468 290,486 220,504 150,486"/>
+  <text x="220" y="486" text-anchor="middle">Conditions</text>
+  <text x="220" y="496" text-anchor="middle">met?</text>
+
+  <!-- Conditions not met → swoopy loop back (left side, wider) -->
+  <path d="M 150,486 C 80,486 80,436 80,411 C 80,391 100,384 160,386"/>
+  <text x="92" y="476" class="label">No</text>
+
+  <!-- Conditions met → substitute -->
+  <line x1="220" y1="504" x2="220" y2="521"/>
+  <text x="228" y="516" class="label">Yes</text>
+
+  <!-- Substitute -->
+  <rect class="process" x="160" y="521" width="120" height="24"/>
+  <text x="220" y="537" text-anchor="middle">Substitute URL</text>
+
+  <!-- After substitution → swoopy loop back (right side) -->
+  <path d="M 280,533 C 340,533 350,496 350,456 C 350,416 340,386 280,386"/>
+  <text x="356" y="461" class="label" transform="rotate(90,356,461)">next rule</text>
+
+  <!-- Subrequest path (far right, dashed, sweeping curve back to top) -->
+  <path class="dashed" d="M 375,486 C 420,486 430,400 430,300 C 430,150 420,50 290,41"/>
+  <text x="435" y="270" class="small" transform="rotate(90,435,270)">subrequest (restart)</text>
+
+  <!-- All rules done → result -->
+  <line x1="220" y1="545" x2="220" y2="566"/>
+
+  <!-- Final result -->
+  <rect class="terminal" x="145" y="566" width="150" height="26"/>
+  <text x="220" y="583" text-anchor="middle">Resulting URL / Filename</text>
+</svg>

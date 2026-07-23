@@ -55,7 +55,7 @@
     </related>
 
     <p>The HTTP protocol follows the <strong>robustness principle</strong>
-    as described in <a href="http://tools.ietf.org/html/rfc1122">RFC1122</a>,
+    as described in <rfc>1122</rfc>,
     which states <strong>"Be liberal in what you accept, and conservative in
     what you send"</strong>. As a result of this principle, HTTP clients will
     compensate for and recover from incorrect or misconfigured responses, or
@@ -137,8 +137,7 @@
     the ETag of the response, the server should return
     <code>412 Precondition Failed</code>. Full details of how to handle an
     <code>If-Match</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">
-    RFC2616 section 14.24</a>.</dd>
+    <rfc section="14.24">2616</rfc>.</dd>
 
     <dt><code>If-None-Match</code></dt>
     <dd>If the provided ETag in the <code>If-None-Match</code> header matches
@@ -146,24 +145,21 @@
     <code>304 Not Modified</code> for GET/HEAD requests, or
     <code>412 Precondition Failed</code> for other methods. Full details of how
     to handle an <code>If-None-Match</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">
-    RFC2616 section 14.26</a>.</dd>
+    <rfc section="14.26">2616</rfc>.</dd>
 
     <dt><code>If-Modified-Since</code></dt>
     <dd>If the provided date in the <code>If-Modified-Since</code> header is
     older than the <code>Last-Modified</code> header of the response, the server
     should return <code>304 Not Modified</code>. Full details of how to handle an
     <code>If-Modified-Since</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">
-    RFC2616 section 14.25</a>.</dd>
+    <rfc section="14.25">2616</rfc>.</dd>
 
     <dt><code>If-Unmodified-Since</code></dt>
     <dd>If the provided date in the <code>If-Modified-Since</code> header is
     newer than the <code>Last-Modified</code> header of the response, the server
     should return <code>412 Precondition Failed</code>. Full details of how to
     handle an <code>If-Unmodified-Since</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">
-    RFC2616 section 14.28</a>.</dd>
+    <rfc section="14.28">2616</rfc>.</dd>
 
     <dt><code>If-Range</code></dt>
     <dd>If the provided ETag or date in the <code>If-Range</code> header matches
@@ -171,8 +167,7 @@
     is present, the server should return
     <code>206 Partial Response</code>. Full details of how to handle an
     <code>If-Range</code> header can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">
-    RFC2616 section 14.27</a>.</dd>
+    <rfc section="14.27">2616</rfc>.</dd>
 
     </dl>
 
@@ -202,8 +197,7 @@
 
     <p>There are a number of ways of determining the length of a response
     body, described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
-    RFC2616 section 4.4 Message Length</a>.</p>
+    <rfc section="4.4">2616</rfc> (Message Length).</p>
 
     <p>When the <code>Content-Length</code> header is present, the size of
     the body is declared at the start of the response. If this information
@@ -256,8 +250,7 @@
 
     <p>The media type of the body is placed in the <code>Content-Type</code>
     header, and the format of the header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
-    RFC2616 section 3.7 Media Types</a>.</p>
+    <rfc section="3.7">2616</rfc> (Media Types).</p>
 
     <p>A syntactically valid content type might look as follows:</p>
 
@@ -268,10 +261,12 @@
     <p>Invalid content types might include:</p>
 
     <example>
-      # invalid<br />
-      Content-Type: foo<br />
-      # blank<br />
-      Content-Type:
+<highlight language="config">
+# invalid
+Content-Type: foo
+# blank
+Content-Type:
+</highlight>
     </example>
 
     <p>The server administrator has the option to restrict the policy to one
@@ -300,8 +295,7 @@
 
     <p>There are a number of ways of determining the length of a response
     body, described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">
-    RFC2616 section 4.4 Message Length</a>.</p>
+    <rfc section="4.4">2616</rfc> (Message Length).</p>
 
     <p>When the <code>Content-Length</code> header is present, the size of
     the body is declared at the start of the response. HTTP/1.1 defines the
@@ -371,8 +365,7 @@
 
     <p>Full details of how a freshness lifetime is calculated is described in
     full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">
-    RFC2616 section 13.2 Expiration Model</a>.</p>
+    <rfc section="13.2">2616</rfc> (Expiration Model).</p>
 
     <p>During the freshness lifetime, a cache does not need to contact the
     origin server at all, it can simply pass the cached content as is back
@@ -410,11 +403,9 @@
 
     <p>Full details of how content may be declared uncacheable is described in
     full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">
-    RFC2616 section 14.9.1 What is Cacheable</a>, and within the definition
+    <rfc section="14.9.1">2616</rfc> (What is Cacheable), and within the definition
     for the <code>Pragma</code> header in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">
-    RFC2616 section 14.32 Pragma</a>.</p>
+    <rfc section="14.32">2616</rfc> (Pragma).</p>
 
     <p>Most specifically, should any of the following header combinations
     exist in the response headers, the response will be rejected:</p>
@@ -451,11 +442,9 @@
     <code>Last-Modified</code> header.</p>
 
     <p>The <code>ETag</code> header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">
-    RFC2616 section 14.19 Etag</a>, and the <code>Last-Modified</code> header
+    <rfc section="14.19">2616</rfc> (Etag), and the <code>Last-Modified</code> header
     is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">
-    RFC2616 section 14.29 Last-Modified</a>.</p>
+    <rfc section="14.29">2616</rfc> (Last-Modified).</p>
 
     <p>In addition to being checked present, the headers are checked for
     syntax.</p>
@@ -486,8 +475,7 @@
     forbidden by the administrator.</p>
 
     <p>The <code>Vary</code> header is described in full in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">
-    RFC2616 section 14.44 Vary</a>.</p>
+    <rfc section="14.44">2616</rfc> (Vary).</p>
 
     <p>Some client provided headers, such as <code>User-Agent</code>,
     can contain thousands or millions of combinations of values over a period

@@ -1,0 +1,2 @@
+  *) mod_ldap: Fix intermittent worker crashes under concurrent
+     LDAP-authenticated requests.  [Joe Orton]

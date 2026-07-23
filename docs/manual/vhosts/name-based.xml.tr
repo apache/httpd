@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1301398:1884608 (outdated) -->
+<!-- English Revision: 1301398:1933739 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -41,9 +41,9 @@ Barındırma</a></seealso>
 <seealso><a href="examples.html">Çok kullanılan sanal konak yapılandırma
 örnekleri</a></seealso>
 
-<section id="namevip"><title>İsme dayalı ve IP’ye dayalı Sanal Konaklar</title>
+<section id="namevip"><title>İsme dayalı ve IP'ye dayalı Sanal Konaklar</title>
 
-    <p><a href="ip-based.html">IP’ye dayalı sanal konaklar</a>da sunulacak
+    <p><a href="ip-based.html">IP'ye dayalı sanal konaklar</a>da sunulacak
       sanal konağı doğru tespit edebilmek için bağlantının yapıldığı IP
       adresine bakılır. Bu bakımdan her konak için ayrı bir IP adresine
       gereksinim vardır.</p>
@@ -56,9 +56,9 @@ Barındırma</a></seealso>
       ismini doğru IP adresiyle eşlemek için DNS sunucunuzu yapılandırdıktan
       sonra Apache HTTP sunucusunu farklı konak isimlerini tanıyacak şekilde
       yapılandırmanız yeterli olur. İsme dayalı sanal barındırma ayrıca zaten
-      kıt olan IP adreslerine talebi de azaltır. Bu nedenle, IP’ye dayalı sanal
+      kıt olan IP adreslerine talebi de azaltır. Bu nedenle, IP'ye dayalı sanal
       konakları kullanmanızı gerektiren donanım kullanmadıkça isme  dayalı
-      sanal konaklar kullanmalısınız. İstemci uyumuna bağlı IP’ye dayalı
+      sanal konaklar kullanmalısınız. İstemci uyumuna bağlı IP'ye dayalı
       sanal barındırma için eskiden varolan sebepler genel amaçlı bir HTTP
       sunucusu için artık uygulanabilir değildir.</p>
 
@@ -162,7 +162,7 @@ Barındırma</a></seealso>
     <p>İsterseniz, <directive type="section" module="core"
       >VirtualHost</directive> yönergesinde argüman olarak <code>*</code>
       yerine doğrudan bir IP adresi belirtebilirsiniz. Hatta, daha sonra, isme
-      dayalı sanal konakları bir IP adresinden ve IP’ye dayalı olanları veya
+      dayalı sanal konakları bir IP adresinden ve IP'ye dayalı olanları veya
       isme dayalı diğer bir sanal konak grubunu diğer IP adreslerinden sunmak
       isteyebilirsiniz.</p>
 

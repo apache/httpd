@@ -1,33 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_mime - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_mime</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_mime.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_mime.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -37,7 +37,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>mime_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_mime.c</td></tr></table>
 <h3>概要</h3>
@@ -90,30 +90,30 @@
 </div>
 <div id="quickview"><h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#multipleext">複数の拡張子のあるファイル</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">コンテントエンコーディング</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">文字セットと言語</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multipleext">複数の拡張子のあるファイル</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#contentencoding">コンテントエンコーディング</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#charset-lang">文字セットと言語</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addhandler">AddHandler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addinputfilter">AddInputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addlanguage">AddLanguage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilter">AddOutputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addtype">AddType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#defaultlanguage">DefaultLanguage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mimeoptions">MimeOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multiviewsmatch">MultiviewsMatch</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removecharset">RemoveCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removeencoding">RemoveEncoding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removehandler">RemoveHandler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removeinputfilter">RemoveInputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removelanguage">RemoveLanguage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removeoutputfilter">RemoveOutputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addcharset">AddCharset</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addencoding">AddEncoding</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addhandler">AddHandler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addinputfilter">AddInputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addlanguage">AddLanguage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addoutputfilter">AddOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addtype">AddType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#defaultlanguage">DefaultLanguage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mimeoptions">MimeOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multiviewsmatch">MultiviewsMatch</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removecharset">RemoveCharset</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removeencoding">RemoveEncoding</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removehandler">RemoveHandler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removeinputfilter">RemoveInputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removelanguage">RemoveLanguage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removeoutputfilter">RemoveOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#removetype">RemoveType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#typesconfig">TypesConfig</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime">Report a bug</a></li></ul><h3>参照</h3>
 <ul class="seealso">
@@ -124,10 +124,10 @@
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
-<li><a href="#comments_section">コメント</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multipleext" id="multipleext">複数の拡張子のあるファイル</a> <a title="Permanent link" href="#multipleext" class="permalink">&para;</a></h2>
+<h2 id="multipleext">複数の拡張子のあるファイル <a title="Permanent link" href="#multipleext" class="permalink">&para;</a></h2>
     <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em>通常は</em>関係ありません。例えば、ファイル <code>welcome.html.fr</code>
     がコンテントタイプは <code>text/html</code>
     に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
@@ -174,9 +174,9 @@
     &lt;/FilesMatch&gt;
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="contentencoding" id="contentencoding">コンテントエンコーディング</a> <a title="Permanent link" href="#contentencoding" class="permalink">&para;</a></h2>
+<h2 id="contentencoding">コンテントエンコーディング <a title="Permanent link" href="#contentencoding" class="permalink">&para;</a></h2>
     <p>特定の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
     のファイルはインターネットでの転送を簡単にするために、
     さらに符号化することができます。これは通常は <code>gzip</code> の
@@ -213,9 +213,9 @@
     送ります。</p>
 
     <div class="example"><p><code>Content-encoding: pkzip</code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="charset-lang" id="charset-lang">文字セットと言語</a> <a title="Permanent link" href="#charset-lang" class="permalink">&para;</a></h2>
+<h2 id="charset-lang">文字セットと言語 <a title="Permanent link" href="#charset-lang" class="permalink">&para;</a></h2>
     <p>ファイルタイプとファイルエンコーディングの他に重要な情報は
     ドキュメントの書かれている言語と、どの文字セットでファイルが表示
     されるべきか、というものです。たとえば、ドキュメントはベトナムの
@@ -239,14 +239,14 @@
     使うことでマッチの
     処理に含めることも外すこともできます。</p>
 
-    <h3><a name="charset" id="charset">Charset</a></h3>
+    <h3 id="charset">Charset</h3>
       <p>さらに情報を伝えるために、Apache は文書の言語を
       <code>Content-Language</code> ヘッダで送ることもあります。
       また、情報を正しく表示するために使用すべき文字セットを示すために
       <code>Conten-Type</code> ヘッダに情報を追加することもあります。</p>
 
       <div class="example"><p><code>
-        Content-Language: en, fr<br />
+        Content-Language: en, fr<br>
         Content-Type: text/plain; charset=ISO-8859-1
       </code></p></div>
 
@@ -254,15 +254,15 @@
       使用すべき文字セットの名前です。</p>
     
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">ディレクティブ</a> <a title="Permanent link" href="#addcharset" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addcharset"><span id="AddCharset">AddCharset</span> ディレクティブ <a title="Permanent link" href="#addcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定された文字セットにマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddCharset <var>charset</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddCharset</code> ディレクティブは、
@@ -273,9 +273,9 @@
     <var>extension</var> のためのマッピングを上書きします。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      AddLanguage ja .ja<br />
-      AddCharset EUC-JP .euc<br />
-      AddCharset ISO-2022-JP .jis<br />
+      AddLanguage ja .ja<br>
+      AddCharset EUC-JP .euc<br>
+      AddCharset ISO-2022-JP .jis<br>
       AddCharset SHIFT_JIS .sjis
     </code></p></div>
 
@@ -298,8 +298,8 @@
 <li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">ディレクティブ</a> <a title="Permanent link" href="#addencoding" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addencoding"><span id="AddEncoding">AddEncoding</span> ディレクティブ <a title="Permanent link" href="#addencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたエンコーディング
 にマップする</td></tr>
@@ -307,7 +307,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddEncoding</code> ディレクティブは、
@@ -318,7 +318,7 @@
     同じ拡張子 <var>extension</var> のためのマッピングを上書きします。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      <code>AddEncoding x-gzip .gz<br />
+      <code>AddEncoding x-gzip .gz<br>
        AddEncoding x-compress .Z</code>
     </code></p></div>
 
@@ -348,15 +348,15 @@
     <var>extension</var>はそれぞれと比較されます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">ディレクティブ</a> <a title="Permanent link" href="#addhandler" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addhandler"><span id="AddHandler">AddHandler</span> ディレクティブ <a title="Permanent link" href="#addhandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたハンドラにマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddHandler <var>handler-name</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p>拡張子 <var>extension</var> が名前にあるファイルは指定された <a href="../handler.html">handler-name</a> に扱われます。
@@ -384,8 +384,8 @@
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter">ディレクティブ</a> <a title="Permanent link" href="#addinputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addinputfilter"><span id="AddInputFilter">AddInputFilter</span> ディレクティブ <a title="Permanent link" href="#addinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子をクライアントのリクエストを処理する
     フィルタにマップする</td></tr>
@@ -393,7 +393,7 @@
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -420,15 +420,15 @@
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">ディレクティブ</a> <a title="Permanent link" href="#addlanguage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addlanguage"><span id="AddLanguage">AddLanguage</span> ディレクティブ <a title="Permanent link" href="#addlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名を指定された言語にマップ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddLanguage <var>MIME-lang</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddLanguage</code> ディレクティブは、与えられた拡張子を指定された
@@ -438,8 +438,8 @@
     <var>extension</var> のためのマッピングを上書きします。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      AddEncoding x-compress .Z<br />
-      AddLanguage en .en<br />
+      AddEncoding x-compress .Z<br>
+      AddLanguage en .en<br>
       AddLanguage fr .fr
     </code></p></div>
 
@@ -455,8 +455,8 @@
     最後のものが使用されます。すなわち、次のような場合、</p>
 
     <div class="example"><p><code>
-      AddLanguage en .en<br />
-      AddLanguage en-gb .en<br />
+      AddLanguage en .en<br>
+      AddLanguage en-gb .en<br>
       AddLanguage en-us .en
     </code></p></div>
 
@@ -473,8 +473,8 @@
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">ディレクティブ</a> <a title="Permanent link" href="#addoutputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addoutputfilter"><span id="AddOutputFilter">AddOutputFilter</span> ディレクティブ <a title="Permanent link" href="#addoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子をサーバからの応答を処理するフィルタに
     マップする</td></tr>
@@ -482,7 +482,7 @@
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -516,15 +516,15 @@
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">ディレクティブ</a> <a title="Permanent link" href="#addtype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addtype"><span id="AddType">AddType</span> ディレクティブ <a title="Permanent link" href="#addtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddType</code> ディレクティブは、
@@ -563,15 +563,15 @@
 <li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">ディレクティブ</a> <a title="Permanent link" href="#defaultlanguage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="defaultlanguage"><span id="DefaultLanguage">DefaultLanguage</span> ディレクティブ <a title="Permanent link" href="#defaultlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>あるスコープのすべてのファイルを指定された言語に
 設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultLanguage <var>MIME-lang</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">DefaultLanguage</code> ディレクティブは、Apache
@@ -603,8 +603,8 @@
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MimeOptions" id="MimeOptions">MimeOptions</a> <a name="mimeoptions" id="mimeoptions">ディレクティブ</a> <a title="Permanent link" href="#mimeoptions" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mimeoptions"><span id="MimeOptions">MimeOptions</span> ディレクティブ <a title="Permanent link" href="#mimeoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Configures mod_mime behavior</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MimeOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
@@ -616,15 +616,15 @@
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo">ディレクティブ</a> <a title="Permanent link" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="modmimeusepathinfo"><span id="ModMimeUsePathInfo">ModMimeUsePathInfo</span> ディレクティブ <a title="Permanent link" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>path_info</code> コンポーネントをファイル名の一部として扱うように
 <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> に通知する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ModMimeUsePathInfo Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0.41 以降</td></tr>
 </table>
@@ -657,8 +657,8 @@
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">ディレクティブ</a> <a title="Permanent link" href="#multiviewsmatch" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="multiviewsmatch"><span id="MultiviewsMatch">MultiviewsMatch</span> ディレクティブ <a title="Permanent link" href="#multiviewsmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>MultiViews でのマッチングの検索に含ませる
 ファイルのタイプを指定する</td></tr>
@@ -667,7 +667,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -716,8 +716,8 @@
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">ディレクティブ</a> <a title="Permanent link" href="#removecharset" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removecharset"><span id="RemoveCharset">RemoveCharset</span> ディレクティブ <a title="Permanent link" href="#removecharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
@@ -725,7 +725,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.24 以降で使用可能</td></tr>
 </table>
@@ -743,8 +743,8 @@
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">ディレクティブ</a> <a title="Permanent link" href="#removeencoding" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removeencoding"><span id="RemoveEncoding">RemoveEncoding</span> ディレクティブ <a title="Permanent link" href="#removeencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
 を解除する</td></tr>
@@ -752,7 +752,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveEncoding</code> ディレクティブは、
@@ -762,11 +762,11 @@
     取り消すことができます。</p>
 
     <div class="example"><h3>/foo/.htaccess:</h3><p><code>
-      AddEncoding x-gzip .gz<br />
-      AddType text/plain .asc<br />
-      &lt;Files *.gz.asc&gt;<br />
+      AddEncoding x-gzip .gz<br>
+      AddType text/plain .asc<br>
+      &lt;Files *.gz.asc&gt;<br>
       <span class="indent">
-        RemoveEncoding .gz<br />
+        RemoveEncoding .gz<br>
       </span>
       &lt;/Files&gt;
     </code></p></div>
@@ -788,8 +788,8 @@
     また、最初のドットはあってもなくても構いません。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">ディレクティブ</a> <a title="Permanent link" href="#removehandler" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removehandler"><span id="RemoveHandler">RemoveHandler</span> ディレクティブ <a title="Permanent link" href="#removehandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子に関連付けられたすべてのハンドラを
 解除する</td></tr>
@@ -797,7 +797,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveHandler</code> ディレクティブ
@@ -823,15 +823,15 @@
     また、最初のドットはあってもなくても構いません。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">ディレクティブ</a> <a title="Permanent link" href="#removeinputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removeinputfilter"><span id="RemoveInputFilter">RemoveInputFilter</span> ディレクティブ <a title="Permanent link" href="#removeinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveInputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -850,15 +850,15 @@
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">ディレクティブ</a> <a title="Permanent link" href="#removelanguage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removelanguage"><span id="RemoveLanguage">RemoveLanguage</span> ディレクティブ <a title="Permanent link" href="#removelanguage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた言語を解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveLanguage <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.24 以降で使用可能</td></tr>
 </table>
@@ -872,15 +872,15 @@
     最初のドットはついてもつかなくても構いません。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">ディレクティブ</a> <a title="Permanent link" href="#removeoutputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removeoutputfilter"><span id="RemoveOutputFilter">RemoveOutputFilter</span> ディレクティブ <a title="Permanent link" href="#removeoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイル拡張子に関連付けられた出力フィルタを解除する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降でのみ使用可能</td></tr>
 </table>
@@ -902,8 +902,8 @@
 <li><code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">ディレクティブ</a> <a title="Permanent link" href="#removetype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="removetype"><span id="RemoveType">RemoveType</span> ディレクティブ <a title="Permanent link" href="#removetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの拡張子と関連付けられたコンテントタイプを
 解除する</td></tr>
@@ -911,7 +911,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveType</code> ディレクティブは与えられた拡張子の
@@ -940,14 +940,14 @@
     また、最初のドットはあってもなくても構いません。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">ディレクティブ</a> <a title="Permanent link" href="#typesconfig" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="typesconfig"><span id="TypesConfig">TypesConfig</span> ディレクティブ <a title="Permanent link" href="#typesconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>mime.types</code> ファイルの位置</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TypesConfig <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">TypesConfig</code> ディレクティブは、
@@ -996,30 +996,34 @@
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_mime.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_mime.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">コメント</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

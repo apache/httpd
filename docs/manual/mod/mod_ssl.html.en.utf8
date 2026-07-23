@@ -1,46 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_ssl - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_ssl</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_ssl.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_ssl.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_ssl.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ssl_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ssl.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>ssl_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_ssl.c</td></tr></table>
 <h3>Summary</h3>
 
 <p>This module provides SSL v3 and TLS v1.x support for the Apache
 HTTP Server. SSL v2 is no longer supported.</p>
 
-<p>This module relies on <a href="http://www.openssl.org/">OpenSSL</a>
+<p>This module relies on <a href="https://www.openssl.org/">OpenSSL</a>
 to provide the cryptographic engine.</p>
 
 <p>Further details, discussion, and examples are provided in the
@@ -48,92 +48,92 @@ to provide the cryptographic engine.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#envvars">Environment Variables</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logformats">Custom Log Formats</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#notes">Request Notes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#expressionparser">Expression Parser Extension</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Authorization providers for use with Require</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#envvars">Environment Variables</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logformats">Custom Log Formats</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#notes">Request Notes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#expressionparser">Expression Parser Extension</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authzproviders">Authorization providers for use with Require</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcadnrequestpath">SSLCADNRequestPath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcarevocationcheck">SSLCARevocationCheck</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslciphersuite">SSLCipherSuite</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcompression">SSLCompression</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspproxyurl">SSLOCSPProxyURL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslocspuserequestnonce">SSLOCSPUseRequestNonce</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssloptions">SSLOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslpolicy">SSLPolicy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslprotocol">SSLProtocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxyengine">SSLProxyEngine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverify">SSLProxyVerify</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslrandomseed">SSLRandomSeed</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslrenegbuffersize">SSLRenegBufferSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslrequire">SSLRequire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslrequiressl">SSLRequireSSL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslsessionticketkeyfile">SSLSessionTicketKeyFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslsessiontickets">SSLSessionTickets</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslsrpunknownuserseed">SSLSRPUnknownUserSeed</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingcache">SSLStaplingCache</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingfaketrylater">SSLStaplingFakeTryLater</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingforceurl">SSLStaplingForceURL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingrespondertimeout">SSLStaplingResponderTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslusername">SSLUserName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslusestapling">SSLUseStapling</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequestpath">SSLCADNRequestPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationcheck">SSLCARevocationCheck</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslciphersuite">SSLCipherSuite</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcompression">SSLCompression</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslechkeydir">SSLECHKeyDir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslengine">SSLEngine</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslfips">SSLFIPS</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspenable">SSLOCSPEnable</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspnoverify">SSLOCSPNoverify</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspproxyurl">SSLOCSPProxyURL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocsprespondercertificatefile">SSLOCSPResponderCertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocsprespondertimeout">SSLOCSPResponderTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspresponsemaxage">SSLOCSPResponseMaxAge</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspresponsetimeskew">SSLOCSPResponseTimeSkew</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslocspuserequestnonce">SSLOCSPUseRequestNonce</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssloptions">SSLOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslpolicy">SSLPolicy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslprotocol">SSLProtocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxyengine">SSLProxyEngine</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxyverify">SSLProxyVerify</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslrandomseed">SSLRandomSeed</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslrenegbuffersize">SSLRenegBufferSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslrequire">SSLRequire</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslrequiressl">SSLRequireSSL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslsessioncache">SSLSessionCache</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslsessionticketkeyfile">SSLSessionTicketKeyFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslsessiontickets">SSLSessionTickets</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslsrpunknownuserseed">SSLSRPUnknownUserSeed</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingcache">SSLStaplingCache</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingfaketrylater">SSLStaplingFakeTryLater</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingforceurl">SSLStaplingForceURL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingrespondertimeout">SSLStaplingResponderTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslusername">SSLUserName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslusestapling">SSLUseStapling</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslverifyclient">SSLVerifyClient</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Report a bug</a></li></ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Report a bug</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="envvars" id="envvars">Environment Variables</a> <a title="Permanent link" href="#envvars" class="permalink">&para;</a></h2>
+<h2 id="envvars">Environment Variables <a title="Permanent link" href="#envvars" class="permalink">&para;</a></h2>
 
 <p>This module can be configured to provide several items of SSL information
 as additional environment variables to the SSI and CGI namespace. Except for
@@ -166,30 +166,30 @@ compatibility variables.</p>
 <tr class="odd"><td><code>SSL_CLIENT_M_VERSION</code></td>          <td>string</td>    <td>The version of the client certificate</td></tr>
 <tr><td><code>SSL_CLIENT_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the client certificate</td></tr>
 <tr class="odd"><td><code>SSL_CLIENT_S_DN</code></td>               <td>string</td>    <td>Subject DN in client's certificate</td></tr>
-<tr><td><code>SSL_CLIENT_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr><td><code>SSL_CLIENT_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><em>n</em></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type otherName, Microsoft User Principal Name form (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
+<tr><td><code>SSL_CLIENT_S_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of client's Subject DN</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_SAN_Email_</code><var>n</var></td> <td>string</td>  <td>Client certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr><td><code>SSL_CLIENT_SAN_DNS_</code><var>n</var></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_SAN_OTHER_msUPN_</code><var>n</var></td> <td>string</td>    <td>Client certificate's subjectAltName extension entries of type otherName, Microsoft User Principal Name form (OID 1.3.6.1.4.1.311.20.2.3)</td></tr>
 <tr><td><code>SSL_CLIENT_I_DN</code></td>               <td>string</td>    <td>Issuer DN of client's certificate</td></tr>
-<tr class="odd"><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
+<tr class="odd"><td><code>SSL_CLIENT_I_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
 <tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
 <tr class="odd"><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
 <tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
 <tr class="odd"><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
 <tr class="odd"><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
-<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
+<tr><td><code>SSL_CLIENT_CERT_CHAIN_</code><var>n</var></td> <td>string</td>    <td>PEM-encoded certificates in client certificate chain</td></tr>
 <tr class="odd"><td><code>SSL_CLIENT_CERT_RFC4523_CEA</code></td>   <td>string</td>    <td>Serial number and issuer of the certificate. The format matches that of the CertificateExactAssertion in RFC4523</td></tr>
-<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><em>reason</em></td></tr>
+<tr><td><code>SSL_CLIENT_VERIFY</code></td>             <td>string</td>    <td><code>NONE</code>, <code>SUCCESS</code>, <code>GENEROUS</code> or <code>FAILED:</code><var>reason</var></td></tr>
 <tr class="odd"><td><code>SSL_SERVER_M_VERSION</code></td>          <td>string</td>    <td>The version of the server certificate</td></tr>
 <tr><td><code>SSL_SERVER_M_SERIAL</code></td>           <td>string</td>    <td>The serial of the server certificate</td></tr>
 <tr class="odd"><td><code>SSL_SERVER_S_DN</code></td>               <td>string</td>    <td>Subject DN in server's certificate</td></tr>
-<tr><td><code>SSL_SERVER_SAN_Email_</code><em>n</em></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_SAN_DNS_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
-<tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><em>n</em></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type otherName, SRVName form (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_S_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
+<tr><td><code>SSL_SERVER_SAN_Email_</code><var>n</var></td> <td>string</td>  <td>Server certificate's subjectAltName extension entries of type rfc822Name</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_SAN_DNS_</code><var>n</var></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type dNSName</td></tr>
+<tr><td><code>SSL_SERVER_SAN_OTHER_dnsSRV_</code><var>n</var></td> <td>string</td>    <td>Server certificate's subjectAltName extension entries of type otherName, SRVName form (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_S_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of server's Subject DN</td></tr>
 <tr><td><code>SSL_SERVER_I_DN</code></td>               <td>string</td>    <td>Issuer DN of server's certificate</td></tr>
-<tr class="odd"><td><code>SSL_SERVER_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
+<tr class="odd"><td><code>SSL_SERVER_I_DN_</code><var>x509</var></td> <td>string</td>    <td>Component of server's Issuer DN</td></tr>
 <tr><td><code>SSL_SERVER_V_START</code></td>            <td>string</td>    <td>Validity of server's certificate (start time)</td></tr>
 <tr class="odd"><td><code>SSL_SERVER_V_END</code></td>              <td>string</td>    <td>Validity of server's certificate (end time)</td></tr>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
@@ -198,11 +198,23 @@ compatibility variables.</p>
 <tr class="odd"><td><code>SSL_SRP_USER</code></td>                  <td>string</td>    <td>SRP username</td></tr>
 <tr><td><code>SSL_SRP_USERINFO</code></td>              <td>string</td>    <td>SRP user info</td></tr>
 <tr class="odd"><td><code>SSL_TLS_SNI</code></td>                   <td>string</td>    <td>Contents of the SNI TLS extension (if supplied with ClientHello)</td></tr>
+<tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>number</td>    <td>Round-trip time of TLS handshake in microseconds including endpoint processing (set to empty string if OpenSSL version prior to 3.2 or if round-trip time can not be determined)</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>string</td>    <td>Version field (legacy) from ClientHello as four hex encoded characters</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>string</td>    <td>Cipher Suites from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>string</td>    <td>Extension IDs from ClientHello as four hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>string</td>    <td>Value of Supported Groups extension (10) from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>string</td>    <td>Value of EC Point Formats extension (11) from ClientHello as two hex encoded characters per item</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>string</td>    <td>Value of Signature Algorithms extension (13) from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>string</td>    <td>Value of ALPN extension (16) from ClientHello as hex encoded string including leading string lengths</td></tr>
+<tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>string</td>    <td>Value of Supported Versions extension (43) from ClientHello as four hex encoded characters per item</td></tr>
+<tr class="odd"><td><code>SSL_ECH_STATUS</code></td>                <td>string</td>    <td><code>success</code> means that others also mean what they say</td></tr>
+<tr><td><code>SSL_ECH_INNER_SNI</code></td>             <td>string</td>    <td>SNI value that was encrypted in ECH (or `NONE`)</td></tr>
+<tr class="odd"><td><code>SSL_ECH_OUTER_SNI</code></td>             <td>string</td>    <td>SNI value that was seen in plaintext SNI (or `NONE`)</td></tr>
 </table>
 
-<p><em>x509</em> specifies a component of an X.509 DN; one of
+<p><var>x509</var> specifies a component of an X.509 DN; one of
 <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code>.  In httpd 2.2.0 and
-later, <em>x509</em> may also include a numeric <code>_n</code>
+later, <var>x509</var> may also include a numeric <code>_n</code>
 suffix.  If the DN in question contains multiple attributes of the
 same name, this suffix is used as a zero-based index to select a
 particular attribute.  For example, where the server certificate
@@ -217,19 +229,23 @@ the <code class="directive"><a href="#ssloptions">SSLOptions</a></code> directiv
 first (or only) attribute of any DN is added only under a non-suffixed
 name; i.e. no <code>_0</code> suffixed entries are added.</p>
 
-<p>In httpd 2.4.32 and later, an optional <em>_RAW</em> suffix may be
-added to <em>x509</em> in a DN component, to suppress conversion of
+<p>In httpd 2.4.32 and later, an optional <var>_RAW</var> suffix may be
+added to <var>x509</var> in a DN component, to suppress conversion of
 the attribute value to UTF-8. This must be placed after the index
 suffix (if any). For example, <code>SSL_SERVER_S_DN_OU_RAW</code> or
 <code>SSL_SERVER_S_DN_OU_0_RAW</code> could be used.</p>
 
-<p>The format of the <em>*_DN</em> variables has changed in Apache HTTPD
+<p>The format of the <var>*_DN</var> variables has changed in Apache HTTPD
 2.3.11. See the <code>LegacyDNStringFormat</code> option for
 <code class="directive"><a href="#ssloptions">SSLOptions</a></code> for details.</p>
 
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
+<p>The <code>SSL_CLIENTHELLO_*</code> variables require the directive 
+<code class="directive"><a href="#sslclienthellovars">SSLClientHelloVars</a></code> to be 
+enabled or they will not be populated.</p>
+ 
 <p>A number of additional environment variables can also be used
 in <code class="directive">SSLRequire</code> expressions, or in custom log
 formats:</p>
@@ -250,41 +266,41 @@ REQUEST_URI            REMOTE_USER</pre></div>
 <p>In these contexts, two special formats can also be used:</p>
 
 <dl>
-  <dt><code>ENV:<em>variablename</em></code></dt>
+  <dt><code>ENV:<var>variablename</var></code></dt>
   <dd>This will expand to the standard environment
-  variable <em>variablename</em>.</dd>
+  variable <var>variablename</var>.</dd>
 
-  <dt><code>HTTP:<em>headername</em></code></dt>
+  <dt><code>HTTP:<var>headername</var></code></dt>
   <dd>This will expand to the value of the request header with name
-  <em>headername</em>.</dd>
+  <var>headername</var>.</dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logformats" id="logformats">Custom Log Formats</a> <a title="Permanent link" href="#logformats" class="permalink">&para;</a></h2>
+<h2 id="logformats">Custom Log Formats <a title="Permanent link" href="#logformats" class="permalink">&para;</a></h2>
 
 <p>When <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
 loaded (under DSO situation) additional functions exist for the <a href="mod_log_config.html#formats">Custom Log Format</a> of
 <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>. First there is an
-additional ``<code>%{</code><em>varname</em><code>}x</code>''
+additional ``<code>%{</code><var>varname</var><code>}x</code>''
 eXtension format function which can be used to expand any variables
 provided by any module, especially those provided by mod_ssl which can
 you find in the above table.</p>
 <p>
 For backward compatibility there is additionally a special
-``<code>%{</code><em>name</em><code>}c</code>'' cryptography format function
+``<code>%{</code><var>name</var><code>}c</code>'' cryptography format function
 provided. Information about this function is provided in the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">CustomLog "logs/ssl_request_log" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"</pre>
 </div>
 <p>These formats even work without setting the <code>StdEnvVars</code>
 option of the <code class="directive"><a href="#ssloptions">SSLOptions</a></code>
 directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Request Notes</a> <a title="Permanent link" href="#notes" class="permalink">&para;</a></h2>
+<h2 id="notes">Request Notes <a title="Permanent link" href="#notes" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> sets "notes" for the request which can be
-used in logging with the <code>%{<em>name</em>}n</code> format
+used in logging with the <code>%{<var>name</var>}n</code> format
 string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
 
 <p>The notes supported are as follows:</p>
@@ -307,50 +323,53 @@ string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_conf
   for the current connection, the note is not set.</dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="expressionparser" id="expressionparser">Expression Parser Extension</a> <a title="Permanent link" href="#expressionparser" class="permalink">&para;</a></h2>
+<h2 id="expressionparser">Expression Parser Extension <a title="Permanent link" href="#expressionparser" class="permalink">&para;</a></h2>
 
 <p>When <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built into Apache or at least
 loaded (under DSO situation) any <a name="envvars">variables</a>
 provided by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> can be used in expressions
 for the <a href="../expr.html">ap_expr Expression Parser</a>.
 The variables can be referenced using the syntax
-``<code>%{</code><em>varname</em><code>}</code>''. Starting
+``<code>%{</code><var>varname</var><code>}</code>''. Starting
 with version 2.4.18 one can also use the
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> style syntax
-``<code>%{SSL:</code><em>varname</em><code>}</code>'' or
+``<code>%{SSL:</code><var>varname</var><code>}</code>'' or
 the function style syntax
-``<code>ssl(</code><em>varname</em><code>)</code>''.</p>
+``<code>ssl(</code><var>varname</var><code>)</code>''.</p>
 <div class="example"><h3>Example (using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>)</h3><pre class="prettyprint lang-config">Header set X-SSL-PROTOCOL "expr=%{SSL_PROTOCOL}"
 Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"</pre>
 </div>
 <p>This feature even works without setting the <code>StdEnvVars</code>
 option of the <code class="directive"><a href="#ssloptions">SSLOptions</a></code>
 directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authzproviders" id="authzproviders">Authorization providers for use with Require</a> <a title="Permanent link" href="#authzproviders" class="permalink">&para;</a></h2>
+<h2 id="authzproviders">Authorization providers for use with Require <a title="Permanent link" href="#authzproviders" class="permalink">&para;</a></h2>
 
-  <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> provides a few authentication providers for use
-  with <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>'s
+  <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> provides the following authorization providers
+  for use with <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>'s
   <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.</p>
 
-  <h3><a name="reqssl" id="reqssl">Require ssl</a></h3>
+  <h3 id="reqssl">Require ssl</h3>
 
     <p>The <code>ssl</code> provider denies access if a connection is not
-       encrypted with SSL. This is similar to the
-       <code class="directive">SSLRequireSSL</code> directive.</p>
+       encrypted with SSL. Unlike the
+       <code class="directive">SSLRequireSSL</code> directive, this can be
+       combined with other <code class="directive">Require</code> directives in
+       <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code> or
+       <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code> blocks.</p>
 
     <pre class="prettyprint lang-config">Require ssl</pre>
 
 
   
 
-  <h3><a name="reqverifyclient" id="reqverifyclient">Require ssl-verify-client</a></h3>
+  <h3 id="reqverifyclient">Require ssl-verify-client</h3>
 
-    <p>The <code>ssl</code> provider allows access if the user is
-       authenticated with a valid client certificate. This is only
+    <p>The <code>ssl-verify-client</code> provider allows access if the
+       user is authenticated with a valid client certificate. This is only
        useful if <code>SSLVerifyClient optional</code> is in effect.</p>
 
     <p>The following example grants access if the user is authenticated
@@ -363,8 +382,8 @@ Require valid-user</pre>
   
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCACertificateFile" id="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile" id="sslcacertificatefile">Directive</a> <a title="Permanent link" href="#sslcacertificatefile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcacertificatefile"><span id="SSLCACertificateFile">SSLCACertificateFile</span> Directive <a title="Permanent link" href="#sslcacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
 for Client Auth</td></tr>
@@ -384,13 +403,19 @@ preference. This can be used alternatively and/or additionally to
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCACertificatePath" id="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath" id="sslcacertificatepath">Directive</a> <a title="Permanent link" href="#sslcacertificatepath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcacertificatepath"><span id="SSLCACertificatePath">SSLCACertificatePath</span> Directive <a title="Permanent link" href="#sslcacertificatepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for
 Client Auth</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCACertificatePath <em>directory-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCACertificatePath <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -404,14 +429,20 @@ verify the client certificate on Client Authentication.</p>
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
-<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+<var>hash-value</var><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"</pre>
 </div>
 
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCADNRequestFile" id="SSLCADNRequestFile">SSLCADNRequestFile</a> <a name="sslcadnrequestfile" id="sslcadnrequestfile">Directive</a> <a title="Permanent link" href="#sslcadnrequestfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcadnrequestfile"><span id="SSLCADNRequestFile">SSLCADNRequestFile</span> Directive <a title="Permanent link" href="#sslcadnrequestfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</td></tr>
@@ -447,13 +478,19 @@ PEM-encoded CA certificates.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCADNRequestPath" id="SSLCADNRequestPath">SSLCADNRequestPath</a> <a name="sslcadnrequestpath" id="sslcadnrequestpath">Directive</a> <a title="Permanent link" href="#sslcadnrequestpath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcadnrequestpath"><span id="SSLCADNRequestPath">SSLCADNRequestPath</span> Directive <a title="Permanent link" href="#sslcadnrequestpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCADNRequestPath <em>directory-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCADNRequestPath <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -467,22 +504,28 @@ details.</p>
 <p>The files in this directory have to be PEM-encoded and are accessed
 through hash filenames. So usually you can't just place the
 Certificate files there: you also have to create symbolic links named
-<em>hash-value</em><code>.N</code>. And you should always make sure
+<var>hash-value</var><code>.N</code>. And you should always make sure
 this directory contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"</pre>
 </div>
 
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a> <a name="sslcarevocationcheck" id="sslcarevocationcheck">Directive</a> <a title="Permanent link" href="#sslcarevocationcheck" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcarevocationcheck"><span id="SSLCARevocationCheck">SSLCARevocationCheck</span> Directive <a title="Permanent link" href="#sslcarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none [<em>flag</em>s ...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationCheck chain|leaf|none [<var>flag</var>s ...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional <em>flag</em>s available in httpd 2.4.21 or
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Optional <var>flag</var>s available in httpd 2.4.21 or
 later</td></tr>
 </table>
 <p>
@@ -493,7 +536,7 @@ configured. When set to <code>chain</code> (recommended setting),
 CRL checks are applied to all certificates in the chain, while setting it to
 <code>leaf</code> limits the checks to the end-entity cert.
 </p>
-<p>The available <em>flag</em>s are:</p>
+<p>The available <var>flag</var>s are:</p>
 <ul>
 <li><code>no_crl_for_cert_ok</code>
     <p>
@@ -510,8 +553,8 @@ CRL checks are applied to all certificates in the chain, while setting it to
     <code>"unable to get certificate CRL"</code> error.
     </p>
     <p>
-    The <em>flag</em> <code>no_crl_for_cert_ok</code> allows to restore
-    previous behaviour.
+    The <var>flag</var> <code>no_crl_for_cert_ok</code> allows to restore
+    previous behavior.
     </p>
 </li>
 </ul>
@@ -521,8 +564,8 @@ CRL checks are applied to all certificates in the chain, while setting it to
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCARevocationFile" id="SSLCARevocationFile">SSLCARevocationFile</a> <a name="sslcarevocationfile" id="sslcarevocationfile">Directive</a> <a title="Permanent link" href="#sslcarevocationfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcarevocationfile"><span id="SSLCARevocationFile">SSLCARevocationFile</span> Directive <a title="Permanent link" href="#sslcarevocationfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for
 Client Auth</td></tr>
@@ -541,13 +584,19 @@ used alternatively and/or additionally to <code class="directive"><a href="#sslc
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCARevocationPath" id="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath" id="sslcarevocationpath">Directive</a> <a title="Permanent link" href="#sslcarevocationpath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcarevocationpath"><span id="SSLCARevocationPath">SSLCARevocationPath</span> Directive <a title="Permanent link" href="#sslcarevocationpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA CRLs for
 Client Auth</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationPath <em>directory-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationPath <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -560,14 +609,20 @@ These are used to revoke the client certificate on Client Authentication.</p>
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
-<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+<var>hash-value</var><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"</pre>
 </div>
 
+<p>The files in this directory are read at server startup, while the server
+is still running as <code>root</code> (before privilege dropping), so they
+may be owned by and readable only by <code>root</code>. The files are not
+re-read during normal operation; a server restart is required for changes
+to take effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCertificateChainFile" id="SSLCertificateChainFile">SSLCertificateChainFile</a> <a name="sslcertificatechainfile" id="sslcertificatechainfile">Directive</a> <a title="Permanent link" href="#sslcertificatechainfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcertificatechainfile"><span id="SSLCertificateChainFile">SSLCertificateChainFile</span> Directive <a title="Permanent link" href="#sslcertificatechainfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of PEM-encoded Server CA Certificates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateChainFile <var>file-path</var></code></td></tr>
@@ -608,9 +663,15 @@ confused in this situation.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCertificateFile" id="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile" id="sslcertificatefile">Directive</a> <a title="Permanent link" href="#sslcertificatefile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcertificatefile"><span id="SSLCertificateFile">SSLCertificateFile</span> Directive <a title="Permanent link" href="#sslcertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server PEM-encoded X.509 certificate data file or token identifier</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateFile <var>file-path</var>|<var>certid</var></code></td></tr>
@@ -625,9 +686,10 @@ If using a PEM file, at minimum, the file must include an end-entity (leaf) cert
 The directive can be used multiple times (referencing different filenames)
 to support multiple algorithms for server authentication - typically
 RSA, DSA, and ECC. The number of supported algorithms depends on the
-OpenSSL version being used for mod_ssl: with version 1.0.0 or later,
-<code>openssl list-public-key-algorithms</code> will output a list
-of supported algorithms, see also the note below about limitations
+OpenSSL version being used for mod_ssl: with version 3.0 or later,
+<code>openssl list -public-key-algorithms</code> (or 
+<code>openssl list-public-key-algorithms</code> with OpenSSL 1.0)  will output a list
+of supported algorithms. See the note below about limitations
 of OpenSSL versions prior to 1.0.2 and the ways to work around them.
 </p>
 
@@ -656,15 +718,34 @@ algorithm type.
 Finally the end-entity certificate's private key can also be
 added to the certificate file instead of using a separate
 <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
-directive. This practice is highly discouraged. If it is used,
-the certificate files using such an embedded key must be configured
-after the certificates using a separate key file. If the private
-key is encrypted, the pass phrase dialog is forced at startup time.
-</p>
+directive.</p>
+
+<div class="warning"><h3>Do not combine key and certificate in one file</h3>
+<p>This practice is highly discouraged for the following reasons:</p>
+<ul>
+<li><strong>Security</strong>: Keeping the private key in a separate file
+allows stricter file permissions. The certificate file can be
+world-readable (it is public data), while the key file should be
+readable only by root. Combining them in one file means any
+misconfiguration or vulnerability that exposes the certificate file
+also exposes the private key.</li>
+<li><strong>Ordering constraint</strong>: If a combined file is used,
+all <code class="directive">SSLCertificateFile</code> directives referencing
+such combined files must appear <em>after</em> any
+<code class="directive">SSLCertificateFile</code> directives that use a
+separate key file. Violating this ordering will cause errors at
+startup.</li>
+<li><strong>Maintenance</strong>: Separate files make it immediately
+clear which file contains what, simplifying certificate rotation
+and audits.</li>
+</ul>
+<p>If the private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
+</div>
 
 <p>As an alternative to storing certificates and private keys in
 files, a certificate identifier can be used to identify a certificate
-stored in a token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are
+stored in a token.  Currently, only PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>) are
 recognized as certificate identifiers, and can be used in conjunction
 with the OpenSSL <code>pkcs11</code> engine or provider.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
 certificate and private key can be loaded through the single
@@ -677,7 +758,7 @@ Beginning with version 2.4.7, mod_ssl makes use of
 standardized DH parameters with prime lengths of 2048, 3072 and 4096 bits
 and with additional prime lengths of 6144 and 8192 bits beginning with
 version 2.4.10
-(from <a href="http://www.ietf.org/rfc/rfc3526.txt">RFC 3526</a>), and hands
+(from <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC 3526</a>), and hands
 them out to clients based on the length of the certificate's RSA/DSA key.
 With Java-based clients in particular (Java 7 or earlier), this may lead
 to handshake failures - see this
@@ -719,9 +800,15 @@ SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
 SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The file is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCertificateKeyFile" id="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile" id="sslcertificatekeyfile">Directive</a> <a title="Permanent link" href="#sslcertificatekeyfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcertificatekeyfile"><span id="SSLCertificateKeyFile">SSLCertificateKeyFile</span> Directive <a title="Permanent link" href="#sslcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server PEM-encoded private key file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></code></td></tr>
@@ -743,16 +830,17 @@ to support multiple algorithms for server authentication. For each
 directive, there must be a matching <code class="directive">SSLCertificateFile</code>
 directive.</p>
 
-<p>
-The private key may also be combined with the certificate in the file given by
-<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>, but this practice
-is highly discouraged. If it is used, the certificate files using such
-an embedded key must be configured after the certificates using a separate
-key file.</p>
+<div class="warning"><h3>Do not combine key and certificate in one file</h3>
+<p>The private key may also be combined with the certificate in the
+file given by <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>,
+but this practice is highly discouraged. See the warning in the
+<code class="directive">SSLCertificateFile</code> documentation for a full
+explanation of the risks and constraints.</p>
+</div>
 
 <p>As an alternative to storing private keys in files, a key
 identifier can be used to identify a private key stored in a
-token.  Currently, only <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
+token.  Currently, only PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>) are recognized as private key
 identifiers, and can be used in conjunction with the OpenSSL
 <code>pkcs11</code> engine or provider.</p>
 
@@ -762,13 +850,19 @@ SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
 SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
+<p>This file is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it should be owned by
+and readable only by <code>root</code>, since it contains the private key.
+The file is not re-read during normal operation; a server restart is
+required for changes to take effect.</p>
+
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCipherSuite" id="SSLCipherSuite">SSLCipherSuite</a> <a name="sslciphersuite" id="sslciphersuite">Directive</a> <a title="Permanent link" href="#sslciphersuite" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslciphersuite"><span id="SSLCipherSuite">SSLCipherSuite</span> Directive <a title="Permanent link" href="#sslciphersuite" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 handshake</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCipherSuite [<em>protocol</em>] <em>cipher-spec</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCipherSuite [<var>protocol</var>] <var>cipher-spec</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCipherSuite DEFAULT (depends on OpenSSL version)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -776,7 +870,7 @@ handshake</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This complex directive uses a colon-separated <em>cipher-spec</em> string
+This complex directive uses a colon-separated <var>cipher-spec</var> string
 consisting of OpenSSL cipher specifications to configure the Cipher Suite the
 client is permitted to negotiate in the SSL handshake phase. The optional 
 protocol specifier can configure the Cipher Suite for a specific SSL version.
@@ -796,22 +890,22 @@ Since TLSv1.3 does not offer renegotiations, specifying ciphers for it in
 a directory context is not allowed.</p>
 <p>
 For a list of TLSv1.3 cipher names, see 
-<a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_ciphersuites.html">the OpenSSL
+<a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">the OpenSSL
 documentation</a>.</p>
 <p>
-An SSL cipher specification in <em>cipher-spec</em> is composed of 4 major
+An SSL cipher specification in <var>cipher-spec</var> is composed of 4 major
 attributes plus a few extra minor ones:</p>
 <ul>
-<li><em>Key Exchange Algorithm</em>:<br />
+<li><em>Key Exchange Algorithm</em>:<br>
     RSA, Diffie-Hellman, Elliptic Curve Diffie-Hellman, Secure Remote Password
 </li>
-<li><em>Authentication Algorithm</em>:<br />
+<li><em>Authentication Algorithm</em>:<br>
     RSA, Diffie-Hellman, DSS, ECDSA, or none.
 </li>
-<li><em>Cipher/Encryption Algorithm</em>:<br />
+<li><em>Cipher/Encryption Algorithm</em>:<br>
     AES, DES, Triple-DES, RC4, RC2, IDEA, etc.
 </li>
-<li><em>MAC Digest Algorithm</em>:<br />
+<li><em>MAC Digest Algorithm</em>:<br>
     MD5, SHA or SHA1, SHA256, SHA384.
 </li>
 </ul>
@@ -876,7 +970,7 @@ Now where this becomes interesting is that these can be put together
 to specify the order and ciphers you wish to use. To speed this up
 there are also aliases (<code>SSLv3, TLSv1, EXP, LOW, MEDIUM,
 HIGH</code>) for certain groups of ciphers. These tags can be joined
-together with prefixes to form the <em>cipher-spec</em>. Available
+together with prefixes to form the <var>cipher-spec</var>. Available
 prefixes are:</p>
 <ul>
 <li>none: add cipher to list</li>
@@ -895,7 +989,7 @@ ciphers are always disabled, as mod_ssl unconditionally adds
 
 <p>A simpler way to look at all of this is to use the ``<code>openssl ciphers
 -v</code>'' command which provides a nice way to successively create the
-correct <em>cipher-spec</em> string. The default <em>cipher-spec</em> string
+correct <var>cipher-spec</var> string. The default <var>cipher-spec</var> string
 depends on the version of the OpenSSL libraries used. Let's suppose it is
 ``<code>RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5</code>'' which
 means the following: Put <code>RC4-SHA</code> and <code>AES128-SHA</code> at
@@ -919,24 +1013,24 @@ KRB5-RC4-SHA            SSLv3 Kx=KRB5     Au=KRB5 Enc=RC4(128)  Mac=SHA1</pre></
 
 <tr><th><a name="table2">Cipher-Tag</a></th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
-<tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td /> </tr>
-<tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td /> </tr>
+<tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>IDEA-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>IDEA(128)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>RC4-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
 <tr><td><code>EXP-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-RC2-CBC-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC2(40)</td> <td>MD5</td> <td>  export</td> </tr>
 <tr><td><code>EXP-RC4-MD5</code></td> <td>SSLv3</td> <td>RSA(512)</td> <td>RSA</td> <td>RC4(40)</td> <td>MD5</td> <td>  export</td> </tr>
-<tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td /> </tr>
+<tr><td><code>NULL-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>NULL-MD5</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>None</td> <td>MD5</td> <td></td> </tr>
 <tr><td colspan="7"><em>Diffie-Hellman Ciphers:</em></td></tr>
-<tr><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td /> </tr>
-<tr><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td /> </tr>
-<tr><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td /> </tr>
+<tr><td><code>ADH-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>ADH-RC4-MD5</code></td> <td>SSLv3</td> <td>DH</td> <td>None</td> <td>RC4(128)</td> <td>MD5</td> <td></td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>RSA</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
+<tr><td><code>EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH</td> <td>DSS</td> <td>DES(56)</td> <td>SHA1</td> <td></td> </tr>
 <tr><td><code>EXP-EDH-RSA-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>RSA</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-EDH-DSS-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>DSS</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
 <tr><td><code>EXP-ADH-DES-CBC-SHA</code></td> <td>SSLv3</td> <td>DH(512)</td> <td>None</td> <td>DES(40)</td> <td>SHA1</td> <td> export</td> </tr>
@@ -944,8 +1038,28 @@ KRB5-RC4-SHA            SSLv3 Kx=KRB5     Au=KRB5 Enc=RC4(128)  Mac=SHA1</pre></
 </table>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a name="sslcompression" id="sslcompression">Directive</a> <a title="Permanent link" href="#sslcompression" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslclienthellovars"><span id="SSLClientHelloVars">SSLClientHelloVars</span> Directive <a title="Permanent link" href="#sslclienthellovars" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable collection of ClientHello variables</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLClientHelloVars on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLClientHelloVars off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.2 and later, requires OpenSSL 1.1.1 or later</td></tr>
+</table>
+<p>This directive enables collection of ClientHello data during the handshake that is retained for 
+the length of the connection so it can be exposed as <code>SSL_CLIENTHELLO_*</code> environment 
+variables for requests depending upon the <code>StdEnvVars</code> setting. The variables are 
+formatted as the hex-encoded raw buffers seen in the raw network protocol and as provided 
+by OpenSSL. GREASE (RFC 8701) values are filtered by OpenSSL when enumerating extension IDs, but 
+otherwise, are passed through unchanged for other variables. If this directive is not enabled or 
+if OpenSSL prior to version 1.1.1 is used, these variables will not have a value set.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcompression"><span id="SSLCompression">SSLCompression</span> Directive <a title="Permanent link" href="#sslcompression" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable compression on the SSL level</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCompression on|off</code></td></tr>
@@ -964,11 +1078,11 @@ CRIME attack).</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCryptoDevice" id="SSLCryptoDevice">SSLCryptoDevice</a> <a name="sslcryptodevice" id="sslcryptodevice">Directive</a> <a title="Permanent link" href="#sslcryptodevice" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcryptodevice"><span id="SSLCryptoDevice">SSLCryptoDevice</span> Directive <a title="Permanent link" href="#sslcryptodevice" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable use of a cryptographic hardware accelerator</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCryptoDevice <em>engine</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCryptoDevice <var>engine</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLCryptoDevice builtin</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -990,23 +1104,138 @@ SSLCryptoDevice ubsec</pre>
 
 <p>
 With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
-is specified using a <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>
+is specified using a PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>)
 then it is tried to load the key and certificate from an OpenSSL provider.
 The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
-and it must support the <a href="https://www.openssl.org/docs/man3.0/man7/provider-storemgmt.html">STORE method</a>
-for <a href="https://tools.ietf.org/html/rfc7512">PKCS#11 URIs</a>.
+and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
+for PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>).
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLEngine" id="SSLEngine">SSLEngine</a> <a name="sslengine" id="sslengine">Directive</a> <a title="Permanent link" href="#sslengine" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslechkeydir"><span id="SSLECHKeyDir">SSLECHKeyDir</span> Directive <a title="Permanent link" href="#sslechkeydir" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Load the set of Encrypted Client Hello (ECH) PEM files in the named directory</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLECHKeyDir <var>dirname</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.5.1 and later</td></tr>
+</table>
+
+<p>
+ECH is specified in
+    <a href="https://www.rfc-editor.org/rfc/rfc9849">RFC 9849</a>
+httpd supports ECH "shared-mode" where the httpd instance does the
+ECH decryption and also hosts both the ECH `public-name` and `backend` web
+sites.  
+</p>
+
+<p>
+The <code>SSLECHKeyDir</code> directive 
+names the directory where ECH PEM files (named <code>*.ech</code>) are stored.
+Once an ECH PEM file is successfully loaded, httpd will perform ECH decryption
+and, if that succeeds, will process the relevant TLS session using the 
+SNI from the inner ClientHello.
+</p>
+
+<div class="example"><h3>Example ECH Config</h3><pre class="prettyprint lang-config">...
+SSLEngine On
+SSLProtocol TLSv1.3
+SSLECHKeyDir /etc/apache2/echkeydir
+...
+# virtual hosts
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName example.com
+    DocumentRoot "/var/www/dir-example.com"
+&lt;/VirtualHost&gt;
+&lt;VirtualHost *:443&gt;
+    SSLEngine On
+    SSLProtocol TLSv1.3
+    ServerName foo.example.com
+    DocumentRoot "/var/www/dir-foo.example.com"
+&lt;/VirtualHost&gt;
+...</pre>
+</div>
+
+<div class="note"><h3>ECH Key Generation and Publication</h3>
+<p>
+In the above, we describe a configuration that uses <code>example.com</code> as the
+ECH <code>public-name</code> and where <code>foo.example.com</code> is a web-site for which we want
+ECH to be used, with both hosted on the same httpd instance.
+</p>
+<p>
+Using ECH requires that httpd load an ECH key pair with a private value for ECH
+decryption. Browsers will require that the public component of that key pair be
+published in the DNS. With OpenSSL we generate and store that key pair in an ECH PEM
+formatted file as shown below.
+</p>
+<p>
+To generate ECH PEM files, use the ECH-enabled openssl command line
+to generate an ECH key pair and store the result in an ECH PEM file.
+You must also supply the <code>public-name</code> required by the ECH protocol.
+</p>
+<p>
+Key generation operations should be carried out under whatever local account is
+used for httpd configuration.
+</p>
+<div class="example"><h3>Example: ECH Key Generation</h3><pre class="prettyprint lang-config">~# OSSL=/home/user/code/openssl/apps/openssl
+~# mkdir -p /etc/apache2/echkeydir
+~# chmod 700 /etc/apache2/echkeydir
+~# cd /etc/apache2/echkeydir
+~# $OSSL ech -public-name example.com -o example.com.pem.ech
+~# cat example.com.pem.ech
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VuBCIEIJi22Im2rJ/lJqzNFZdGfsVfmknXAc8xz3fYPhD0Na5I
+-----END PRIVATE KEY-----
+-----BEGIN ECHCONFIG-----
+AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEA
+AQALZXhhbXBsZS5vcmcAAA==
+-----END ECHCONFIG-----</pre>
+</div>
+<p>
+The ECHConfig value then needs to be published in an HTTPS resource record in
+the DNS, so as to be accessible as shown below:
+</p>
+<div class="example"><h3>Accessing an ECH config from DNS</h3><pre class="prettyprint lang-config">$ dig +short HTTPS foo.example.com
+1 . ech=AD7+DQA6QwAgACA8mxkEsSTp2xXC/RUFCC6CZMMgdM4x1iTWKu3EONjbMAAEAAEAAQALZXhhbXBsZS5vcmcAAA==</pre>
+</div>
+<p>
+Various other fields may be included in an HTTPS resource record. For many
+httpd deployments, existing methods for publishing DNS records may be used to
+achieve the above.  In some cases, one might use
+<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-wkech">
+A well-known URI for publishing service parameters</a>
+designed to assist web servers in handling e.g. frequent ECH key rotation.
+</p>
+</div>
+
+<div class="note"><h3>Reloading ECH Keys</h3>
+
+<p>
+Giving httpd a command line argument of <code>-k graceful</code> causes a graceful reload
+of the configuration, without dropping existing connections.
+</p>
+
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslengine"><span id="SSLEngine">SSLEngine</span> Directive <a title="Permanent link" href="#sslengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SSL Engine Operation Switch</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLEngine on|off|optional</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLEngine on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLEngine off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>
+  Support for the "optional" argument was removed in 2.4.64. It enabled
+  RFC 2817 (TLS Upgrade) support.
+</td></tr>
 </table>
 <p>
 This directive toggles the usage of the SSL/TLS Protocol Engine. This
@@ -1018,14 +1247,10 @@ SSLEngine on
 #...
 &lt;/VirtualHost&gt;</pre>
 </div>
-<p><code class="directive">SSLEngine</code> can be set to <code>optional</code>: 
-this enables support for
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
-</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLFIPS" id="SSLFIPS">SSLFIPS</a> <a name="sslfips" id="sslfips">Directive</a> <a title="Permanent link" href="#sslfips" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslfips"><span id="SSLFIPS">SSLFIPS</span> Directive <a title="Permanent link" href="#sslfips" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SSL FIPS mode Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLFIPS on|off</code></td></tr>
@@ -1052,8 +1277,8 @@ by the applicable Security Policy.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLHonorCipherOrder" id="SSLHonorCipherOrder">SSLHonorCipherOrder</a> <a name="sslhonorcipherorder" id="sslhonorcipherorder">Directive</a> <a title="Permanent link" href="#sslhonorcipherorder" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslhonorcipherorder"><span id="SSLHonorCipherOrder">SSLHonorCipherOrder</span> Directive <a title="Permanent link" href="#sslhonorcipherorder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option to prefer the server's cipher preference order</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLHonorCipherOrder on|off</code></td></tr>
@@ -1061,6 +1286,7 @@ by the applicable Security Policy.
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
 </table>
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
 the client's preference is used.  If this directive is enabled, the
@@ -1069,52 +1295,11 @@ server's preference will be used instead.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directive</a> <a title="Permanent link" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option to enable support for insecure renegotiation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available if using OpenSSL 0.9.8m or later</td></tr>
-</table>
-<p>As originally specified, all versions of the SSL and TLS protocols
-(up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
-attack
-(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
-during a renegotiation.  This vulnerability allowed an attacker to
-"prefix" a chosen plaintext to the HTTP request as seen by the web
-server.  A protocol extension was developed which fixed this
-vulnerability if supported by both client and server.</p>
-
-<p>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is linked against OpenSSL version 0.9.8m
-or later, by default renegotiation is only supported with
-clients supporting the new protocol extension.  If this directive is
-enabled, renegotiation will be allowed with old (unpatched) clients,
-albeit insecurely.</p>
-
-<div class="warning"><h3>Security warning</h3>
-<p>If this directive is enabled, SSL connections will be vulnerable to
-the Man-in-the-Middle prefix attack as described
-in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
-</div>
-
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLInsecureRenegotiation on</pre>
-</div>
-
-<p>The <code>SSL_SECURE_RENEG</code> environment variable can be used
-from an SSI or CGI script to determine whether secure renegotiation is
-supported for a given SSL connection.</p>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPDefaultResponder" id="SSLOCSPDefaultResponder">SSLOCSPDefaultResponder</a> <a name="sslocspdefaultresponder" id="sslocspdefaultresponder">Directive</a> <a title="Permanent link" href="#sslocspdefaultresponder" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspdefaultresponder"><span id="SSLOCSPDefaultResponder">SSLOCSPDefaultResponder</span> Directive <a title="Permanent link" href="#sslocspdefaultresponder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the default responder URI for OCSP validation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPDefaultResponder <em>uri</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPDefaultResponder <var>uri</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1124,16 +1309,16 @@ the URI given will be used only if no responder URI is specified in
 the certificate being verified.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPEnable" id="SSLOCSPEnable">SSLOCSPEnable</a> <a name="sslocspenable" id="sslocspenable">Directive</a> <a title="Permanent link" href="#sslocspenable" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspenable"><span id="SSLOCSPEnable">SSLOCSPEnable</span> Directive <a title="Permanent link" href="#sslocspenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable OCSP validation of the client certificate chain</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPEnable on|leaf|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPEnable on|leaf|off [<var>flags</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Mode <em>leaf</em> available in httpd 2.4.34 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Mode <em>leaf</em> available in httpd 2.4.34 and later. Flag <em>no_ocsp_for_cert_ok</em> available in 2.4.29 and later.</td></tr>
 </table>
 <p>This option enables OCSP validation of the client certificate
 chain.  If this option is enabled, certificates in the client's
@@ -1147,6 +1332,17 @@ itself, or derived by configuration; see the
 <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code>
 directives.</p>
 
+<p>The following optional flags are available:</p>
+<ul>
+<li><code>no_ocsp_for_cert_ok</code>
+    <p>When OCSP validation is enabled, a certificate that does not
+    contain an OCSP responder URL will normally cause validation to fail.
+    Adding this flag allows such certificates to pass validation. This
+    is useful in environments where some certificates in the chain do
+    not include OCSP responder information.</p>
+</li>
+</ul>
+
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVerifyClient on
 SSLOCSPEnable on
 SSLOCSPDefaultResponder "http://responder.example.com:8888/responder"
@@ -1154,8 +1350,8 @@ SSLOCSPOverrideResponder on</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a> <a name="sslocspnoverify" id="sslocspnoverify">Directive</a> <a title="Permanent link" href="#sslocspnoverify" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspnoverify"><span id="SSLOCSPNoverify">SSLOCSPNoverify</span> Directive <a title="Permanent link" href="#sslocspnoverify" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>skip the OCSP responder certificates verification</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
@@ -1169,8 +1365,8 @@ SSLOCSPOverrideResponder on</pre>
 testing an OCSP server.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPOverrideResponder" id="SSLOCSPOverrideResponder">SSLOCSPOverrideResponder</a> <a name="sslocspoverrideresponder" id="sslocspoverrideresponder">Directive</a> <a title="Permanent link" href="#sslocspoverrideresponder" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspoverrideresponder"><span id="SSLOCSPOverrideResponder">SSLOCSPOverrideResponder</span> Directive <a title="Permanent link" href="#sslocspoverrideresponder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force use of the default responder URI for OCSP validation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPOverrideResponder on|off</code></td></tr>
@@ -1184,11 +1380,11 @@ during OCSP certificate validation, regardless of whether the
 certificate being validated references an OCSP responder.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPProxyURL" id="SSLOCSPProxyURL">SSLOCSPProxyURL</a> <a name="sslocspproxyurl" id="sslocspproxyurl">Directive</a> <a title="Permanent link" href="#sslocspproxyurl" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspproxyurl"><span id="SSLOCSPProxyURL">SSLOCSPProxyURL</span> Directive <a title="Permanent link" href="#sslocspproxyurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Proxy URL to use for OCSP requests</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPProxyURL <em>url</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPProxyURL <var>url</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1198,11 +1394,11 @@ certificate being validated references an OCSP responder.</p>
 all queries to OCSP responders.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponderCertificateFile" id="SSLOCSPResponderCertificateFile">SSLOCSPResponderCertificateFile</a> <a name="sslocsprespondercertificatefile" id="sslocsprespondercertificatefile">Directive</a> <a title="Permanent link" href="#sslocsprespondercertificatefile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocsprespondercertificatefile"><span id="SSLOCSPResponderCertificateFile">SSLOCSPResponderCertificateFile</span> Directive <a title="Permanent link" href="#sslocsprespondercertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set of trusted PEM encoded OCSP responder certificates</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponderCertificateFile <em>file</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponderCertificateFile <var>file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1215,11 +1411,11 @@ where the OCSP responder certificate is self signed or omitted from the OCSP
 response.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponderTimeout" id="SSLOCSPResponderTimeout">SSLOCSPResponderTimeout</a> <a name="sslocsprespondertimeout" id="sslocsprespondertimeout">Directive</a> <a title="Permanent link" href="#sslocsprespondertimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocsprespondertimeout"><span id="SSLOCSPResponderTimeout">SSLOCSPResponderTimeout</span> Directive <a title="Permanent link" href="#sslocsprespondertimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout for OCSP queries</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponderTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponderTimeout <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPResponderTimeout 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1229,11 +1425,11 @@ response.</p>
 <code class="directive"><a href="#sslocspenable">SSLOCSPEnable</a></code> is turned on.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponseMaxAge" id="SSLOCSPResponseMaxAge">SSLOCSPResponseMaxAge</a> <a name="sslocspresponsemaxage" id="sslocspresponsemaxage">Directive</a> <a title="Permanent link" href="#sslocspresponsemaxage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspresponsemaxage"><span id="SSLOCSPResponseMaxAge">SSLOCSPResponseMaxAge</span> Directive <a title="Permanent link" href="#sslocspresponsemaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable age for OCSP responses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponseMaxAge <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponseMaxAge <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPResponseMaxAge -1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1245,11 +1441,11 @@ which means that OCSP responses are considered valid as long as their
 <code>nextUpdate</code> field is in the future.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponseTimeSkew" id="SSLOCSPResponseTimeSkew">SSLOCSPResponseTimeSkew</a> <a name="sslocspresponsetimeskew" id="sslocspresponsetimeskew">Directive</a> <a title="Permanent link" href="#sslocspresponsetimeskew" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspresponsetimeskew"><span id="SSLOCSPResponseTimeSkew">SSLOCSPResponseTimeSkew</span> Directive <a title="Permanent link" href="#sslocspresponsetimeskew" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable time skew for OCSP response validation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponseTimeSkew <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPResponseTimeSkew <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPResponseTimeSkew 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1259,8 +1455,8 @@ which means that OCSP responses are considered valid as long as their
 (when checking their <code>thisUpdate</code> and <code>nextUpdate</code> fields).</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPUseRequestNonce" id="SSLOCSPUseRequestNonce">SSLOCSPUseRequestNonce</a> <a name="sslocspuserequestnonce" id="sslocspuserequestnonce">Directive</a> <a title="Permanent link" href="#sslocspuserequestnonce" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslocspuserequestnonce"><span id="SSLOCSPUseRequestNonce">SSLOCSPUseRequestNonce</span> Directive <a title="Permanent link" href="#sslocspuserequestnonce" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a nonce within OCSP queries</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPUseRequestNonce on|off</code></td></tr>
@@ -1276,11 +1472,11 @@ the response's one. When the responder does not use nonces (e.g. Microsoft OCSP
 Responder), this option should be turned <code>off</code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOpenSSLConfCmd" id="SSLOpenSSLConfCmd">SSLOpenSSLConfCmd</a> <a name="sslopensslconfcmd" id="sslopensslconfcmd">Directive</a> <a title="Permanent link" href="#sslopensslconfcmd" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslopensslconfcmd"><span id="SSLOpenSSLConfCmd">SSLOpenSSLConfCmd</span> Directive <a title="Permanent link" href="#sslopensslconfcmd" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure OpenSSL parameters through its <em>SSL_CONF</em> API</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOpenSSLConfCmd <em>command-name</em> <em>command-value</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOpenSSLConfCmd <var>command-name</var> <var>command-value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1295,7 +1491,7 @@ features are added to OpenSSL.</p>
 depends on the OpenSSL version being used for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
 (at least version 1.0.2 is required). For a list of supported command
 names, see the section <em>Supported configuration file commands</em> in the
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
+<a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a> manual page for OpenSSL.</p>
 
 <div class="example"><h3>Examples</h3><pre class="prettyprint lang-config">SSLOpenSSLConfCmd Options -SessionTicket,ServerPreference
 SSLOpenSSLConfCmd ECDHParameters brainpoolP256r1
@@ -1317,16 +1513,16 @@ though the syntax / allowable values for the parameters may sometimes differ.</p
 where available to configure OpenSSL, and
 <code class="directive">SSLOpenSSLConfCmd</code> is only used for features of
 OpenSSL which are not configurable by mod_ssl.  It is possible that
-mod_ssl behaviour will change across versions of httpd where
+mod_ssl behavior will change across versions of httpd where
 <code class="directive">SSLOpenSSLConfCmd</code> is used.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOptions" id="SSLOptions">SSLOptions</a> <a name="ssloptions" id="ssloptions">Directive</a> <a title="Permanent link" href="#ssloptions" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssloptions"><span id="SSLOptions">SSLOptions</span> Directive <a title="Permanent link" href="#ssloptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure various SSL engine run-time options</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOptions [+|-]<em>option</em> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOptions [+|-]<var>option</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1343,7 +1539,7 @@ are merged. Any options preceded by a <code>+</code> are added to the
 options currently in force, and any options preceded by a
 <code>-</code> are removed from the options currently in force.</p>
 <p>
-The available <em>option</em>s are:</p>
+The available <var>option</var>s are:</p>
 <ul>
 <li><code>StdEnvVars</code>
     <p>
@@ -1357,7 +1553,7 @@ The available <em>option</em>s are:</p>
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
     created: <code>SSL_SERVER_CERT</code>, <code>SSL_CLIENT_CERT</code> and
-    <code>SSL_CLIENT_CERT_CHAIN_</code><em>n</em> (with <em>n</em> = 0,1,2,..).
+    <code>SSL_CLIENT_CERT_CHAIN_</code><var>n</var> (with <var>n</var> = 0,1,2,..).
     These contain the PEM-encoded X.509 Certificates of server and client for
     the current HTTPS connection and can be used by CGI scripts for deeper
     Certificate checking. Additionally all other certificates of the client
@@ -1373,7 +1569,7 @@ The available <em>option</em>s are:</p>
     be used for access control. The user name is just the Subject of the
     Client's X509 Certificate (can be determined by running OpenSSL's
     <code>openssl x509</code> command: <code>openssl x509 -noout -subject -in
-    </code><em>certificate</em><code>.crt</code>). The optional <code class="directive"><a href="#sslusername">SSLUserName</a></code> directive can be used to
+    </code><var>certificate</var><code>.crt</code>). The optional <code class="directive"><a href="#sslusername">SSLUserName</a></code> directive can be used to
     specify which part of the certificate Subject is embedded in the username.
     Note that no password is obtained from the user. Every entry in the user
     file needs this password: ``<code>xxj31ZMTZzkVA</code>'', which is the
@@ -1402,17 +1598,17 @@ The available <em>option</em>s are:</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    This <em>forces</em> forbidden access when <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> or
-    <code class="directive"><a href="#sslrequire">SSLRequire</a></code> successfully decided that access should be
-    forbidden. Usually the default is that in the case where a ``<code>Satisfy
-    any</code>'' directive is used, and other access restrictions are passed,
-    denial of access due to <code>SSLRequireSSL</code> or
-    <code>SSLRequire</code> is overridden (because that's how the Apache
-    <code>Satisfy</code> mechanism should work.) But for strict access restriction
-    you can use <code>SSLRequireSSL</code> and/or <code>SSLRequire</code> in
-    combination with an ``<code>SSLOptions +StrictRequire</code>''. Then an
-    additional ``<code>Satisfy Any</code>'' has no chance once mod_ssl has
-    decided to deny access.</p>
+    This <em>forces</em> forbidden access when
+    <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> or
+    <code class="directive"><a href="#sslrequire">SSLRequire</a></code> has decided
+    that access should be denied. Without
+    <code>StrictRequire</code>, it is possible for other
+    authorization directives (such as <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>) to override the SSL
+    access denial and grant access anyway. With
+    <code>SSLOptions +StrictRequire</code>, the denial by
+    <code>SSLRequireSSL</code> or <code>SSLRequire</code> is
+    enforced unconditionally, regardless of other authorization
+    settings.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -1448,12 +1644,12 @@ The available <em>option</em>s are:</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLPassPhraseDialog" id="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a name="sslpassphrasedialog" id="sslpassphrasedialog">Directive</a> <a title="Permanent link" href="#sslpassphrasedialog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslpassphrasedialog"><span id="SSLPassPhraseDialog">SSLPassPhraseDialog</span> Directive <a title="Permanent link" href="#sslpassphrasedialog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of pass phrase dialog for encrypted private
 keys</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLPassPhraseDialog <em>type</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLPassPhraseDialog <var>type</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLPassPhraseDialog builtin</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1467,7 +1663,7 @@ SSL-enabled virtual servers. Because for security reasons the Private
 Key files are usually encrypted, mod_ssl needs to query the
 administrator for a Pass Phrase in order to decrypt those files. This
 query can be done in two ways which can be configured by
-<em>type</em>:</p>
+<var>type</var>:</p>
 <ul>
 <li><code>builtin</code>
     <p>
@@ -1525,11 +1721,11 @@ query can be done in two ways which can be configured by
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLPolicy" id="SSLPolicy">SSLPolicy</a> <a name="sslpolicy" id="sslpolicy">Directive</a> <a title="Permanent link" href="#sslpolicy" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslpolicy"><span id="SSLPolicy">SSLPolicy</span> Directive <a title="Permanent link" href="#sslpolicy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Apply a SSLPolicy by name</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLPolicy <em>name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLPolicy <var>name</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1556,11 +1752,11 @@ overwritten. Configuration directives following an SSLPolicy may overwrite it.
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a> <a name="sslprotocol" id="sslprotocol">Directive</a> <a title="Permanent link" href="#sslprotocol" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslprotocol"><span id="SSLProtocol">SSLProtocol</span> Directive <a title="Permanent link" href="#sslprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL/TLS protocol versions</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProtocol [+|-]<em>protocol</em> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProtocol [+|-]<var>protocol</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProtocol all -SSLv3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1570,42 +1766,42 @@ overwritten. Configuration directives following an SSLPolicy may overwrite it.
 This directive can be used to control which versions of the SSL/TLS protocol
 will be accepted in new connections.</p>
 <p>
-The available (case-insensitive) <em>protocol</em>s are:</p>
+The available (case-insensitive) <var>protocol</var>s are:</p>
 <ul>
 <li><code>SSLv3</code>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
     the Netscape Corporation.
     It is the successor to SSLv2 and the predecessor to TLSv1, but is
-    deprecated in <a href="http://www.ietf.org/rfc/rfc7568.txt">RFC 7568</a>.</p></li>
+    deprecated in <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0.
     It is the successor to SSLv3 and is defined in
-    <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC 2246</a>.
+    <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC 2246</a>.
     It is supported by nearly every client.</p></li>
 
 <li><code>TLSv1.1</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.0 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC 4346</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>.</p></li>
 
 <li><code>TLSv1.2</code> (when using OpenSSL 1.0.1 and later)
     <p>
     A revision of the TLS 1.1 protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</p></li>
 
 <li><code>TLSv1.3</code> (when using OpenSSL 1.1.1 and later)
     <p>
     A new version of the TLS protocol, as defined in
-    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+    <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</p></li>
 
 <li><code>all</code>
     <p>
     This is a shortcut for ``<code>+SSLv3 +TLSv1</code>'' or
     - when using OpenSSL 1.0.1 and later -
-    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>'', respectively
+    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2 +TLSv1.3</code>'', respectively
     (except for OpenSSL versions compiled with the ``no-ssl3'' configuration
     option, where <code>all</code> does not include <code>+SSLv3</code>).</p></li>
 </ul>
@@ -1638,8 +1834,8 @@ though).
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCACertificateFile" id="SSLProxyCACertificateFile">SSLProxyCACertificateFile</a> <a name="sslproxycacertificatefile" id="sslproxycacertificatefile">Directive</a> <a title="Permanent link" href="#sslproxycacertificatefile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycacertificatefile"><span id="SSLProxyCACertificateFile">SSLProxyCACertificateFile</span> Directive <a title="Permanent link" href="#sslproxycacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
 for Remote Server Auth</td></tr>
@@ -1660,12 +1856,12 @@ preference. This can be used alternatively and/or additionally to
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCACertificatePath" id="SSLProxyCACertificatePath">SSLProxyCACertificatePath</a> <a name="sslproxycacertificatepath" id="sslproxycacertificatepath">Directive</a> <a title="Permanent link" href="#sslproxycacertificatepath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycacertificatepath"><span id="SSLProxyCACertificatePath">SSLProxyCACertificatePath</span> Directive <a title="Permanent link" href="#sslproxycacertificatepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA Certificates for
 Remote Server Auth</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCACertificatePath <em>directory-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCACertificatePath <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1679,14 +1875,14 @@ verify the remote server certificate on Remote Server Authentication.</p>
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you can't just place the Certificate files
 there: you also have to create symbolic links named
-<em>hash-value</em><code>.N</code>. And you should always make sure this directory
+<var>hash-value</var><code>.N</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCACertificatePath "/usr/local/apache2/conf/ssl.crt/"</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCARevocationCheck" id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</a> <a name="sslproxycarevocationcheck" id="sslproxycarevocationcheck">Directive</a> <a title="Permanent link" href="#sslproxycarevocationcheck" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycarevocationcheck"><span id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</span> Directive <a title="Permanent link" href="#sslproxycarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking for Remote Server Auth</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationCheck chain|leaf|none</code></td></tr>
@@ -1723,8 +1919,8 @@ to succeed - otherwise it will fail with an
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCARevocationFile" id="SSLProxyCARevocationFile">SSLProxyCARevocationFile</a> <a name="sslproxycarevocationfile" id="sslproxycarevocationfile">Directive</a> <a title="Permanent link" href="#sslproxycarevocationfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycarevocationfile"><span id="SSLProxyCARevocationFile">SSLProxyCARevocationFile</span> Directive <a title="Permanent link" href="#sslproxycarevocationfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
@@ -1745,12 +1941,12 @@ used alternatively and/or additionally to <code class="directive"><a href="#sslp
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCARevocationPath" id="SSLProxyCARevocationPath">SSLProxyCARevocationPath</a> <a name="sslproxycarevocationpath" id="sslproxycarevocationpath">Directive</a> <a title="Permanent link" href="#sslproxycarevocationpath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycarevocationpath"><span id="SSLProxyCARevocationPath">SSLProxyCARevocationPath</span> Directive <a title="Permanent link" href="#sslproxycarevocationpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationPath <em>directory-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationPath <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1764,14 +1960,14 @@ These are used to revoke the remote server certificate on Remote Server Authenti
 The files in this directory have to be PEM-encoded and are accessed through
 hash filenames. So usually you have not only to place the CRL files there.
 Additionally you have to create symbolic links named
-<em>hash-value</em><code>.rN</code>. And you should always make sure this directory
+<var>hash-value</var><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCheckPeerCN" id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</a> <a name="sslproxycheckpeercn" id="sslproxycheckpeercn">Directive</a> <a title="Permanent link" href="#sslproxycheckpeercn" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycheckpeercn"><span id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</span> Directive <a title="Permanent link" href="#sslproxycheckpeercn" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to check the remote server certificate's CN field
 </td></tr>
@@ -1812,8 +2008,8 @@ SSLProxyCheckPeerName off</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCheckPeerExpire" id="SSLProxyCheckPeerExpire">SSLProxyCheckPeerExpire</a> <a name="sslproxycheckpeerexpire" id="sslproxycheckpeerexpire">Directive</a> <a title="Permanent link" href="#sslproxycheckpeerexpire" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycheckpeerexpire"><span id="SSLProxyCheckPeerExpire">SSLProxyCheckPeerExpire</span> Directive <a title="Permanent link" href="#sslproxycheckpeerexpire" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to check if remote server certificate is expired
 </td></tr>
@@ -1833,8 +2029,8 @@ sent.
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCheckPeerName" id="SSLProxyCheckPeerName">SSLProxyCheckPeerName</a> <a name="sslproxycheckpeername" id="sslproxycheckpeername">Directive</a> <a title="Permanent link" href="#sslproxycheckpeername" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycheckpeername"><span id="SSLProxyCheckPeerName">SSLProxyCheckPeerName</span> Directive <a title="Permanent link" href="#sslproxycheckpeername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure host name checking for remote server certificates
 </td></tr>
@@ -1843,7 +2039,7 @@ sent.
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.5 and later<br />
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache HTTP Server 2.4.5 and later<br>
 The proxy section context is allowed in httpd 2.4.30 and later</td></tr>
 </table>
 <p>
@@ -1874,12 +2070,12 @@ improvements.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCipherSuite" id="SSLProxyCipherSuite">SSLProxyCipherSuite</a> <a name="sslproxyciphersuite" id="sslproxyciphersuite">Directive</a> <a title="Permanent link" href="#sslproxyciphersuite" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxyciphersuite"><span id="SSLProxyCipherSuite">SSLProxyCipherSuite</span> Directive <a title="Permanent link" href="#sslproxyciphersuite" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher Suite available for negotiation in SSL
 proxy handshake</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCipherSuite [<em>protocol</em>] <em>cipher-spec</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCipherSuite [<var>protocol</var>] <var>cipher-spec</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1892,8 +2088,8 @@ Please refer to <code class="directive"><a href="#sslciphersuite">SSLCipherSuite
 for additional information.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyEngine" id="SSLProxyEngine">SSLProxyEngine</a> <a name="sslproxyengine" id="sslproxyengine">Directive</a> <a title="Permanent link" href="#sslproxyengine" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxyengine"><span id="SSLProxyEngine">SSLProxyEngine</span> Directive <a title="Permanent link" href="#sslproxyengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SSL Proxy Engine Operation Switch</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyEngine on|off</code></td></tr>
@@ -1923,11 +2119,11 @@ server to proxy SSL/TLS requests.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyMachineCertificateChainFile" id="SSLProxyMachineCertificateChainFile">SSLProxyMachineCertificateChainFile</a> <a name="sslproxymachinecertificatechainfile" id="sslproxymachinecertificatechainfile">Directive</a> <a title="Permanent link" href="#sslproxymachinecertificatechainfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxymachinecertificatechainfile"><span id="SSLProxyMachineCertificateChainFile">SSLProxyMachineCertificateChainFile</span> Directive <a title="Permanent link" href="#sslproxymachinecertificatechainfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateChainFile <em>filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateChainFile <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -1953,15 +2149,15 @@ SSLProxyCACertificateFile</a></code>.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyMachineCertificateFile" id="SSLProxyMachineCertificateFile">SSLProxyMachineCertificateFile</a> <a name="sslproxymachinecertificatefile" id="sslproxymachinecertificatefile">Directive</a> <a title="Permanent link" href="#sslproxymachinecertificatefile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxymachinecertificatefile"><span id="SSLProxyMachineCertificateFile">SSLProxyMachineCertificateFile</span> Directive <a title="Permanent link" href="#sslproxymachinecertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateFile <em>filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateFile <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later<br />
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later<br>
 Inclusion of non-leaf (CA) certificates is permitted only in httpd 2.4.59 and later.</td></tr>
 </table>
 <p>
@@ -2009,11 +2205,11 @@ must be converted, eg. using
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyMachineCertificatePath" id="SSLProxyMachineCertificatePath">SSLProxyMachineCertificatePath</a> <a name="sslproxymachinecertificatepath" id="sslproxymachinecertificatepath">Directive</a> <a title="Permanent link" href="#sslproxymachinecertificatepath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxymachinecertificatepath"><span id="SSLProxyMachineCertificatePath">SSLProxyMachineCertificatePath</span> Directive <a title="Permanent link" href="#sslproxymachinecertificatepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificatePath <em>directory</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificatePath <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -2042,11 +2238,11 @@ must be converted, eg. using
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyProtocol" id="SSLProxyProtocol">SSLProxyProtocol</a> <a name="sslproxyprotocol" id="sslproxyprotocol">Directive</a> <a title="Permanent link" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxyprotocol"><span id="SSLProxyProtocol">SSLProxyProtocol</span> Directive <a title="Permanent link" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol flavors for proxy usage</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyProtocol [+|-]<em>protocol</em> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyProtocol [+|-]<var>protocol</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyProtocol all -SSLv3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2063,11 +2259,11 @@ for additional information.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyVerify" id="SSLProxyVerify">SSLProxyVerify</a> <a name="sslproxyverify" id="sslproxyverify">Directive</a> <a title="Permanent link" href="#sslproxyverify" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxyverify"><span id="SSLProxyVerify">SSLProxyVerify</span> Directive <a title="Permanent link" href="#sslproxyverify" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of remote server Certificate verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyVerify <em>level</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyVerify <var>level</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyVerify none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2079,7 +2275,7 @@ for additional information.
 server, this directive can be used to configure certificate
 verification of the remote server. </p>
 <p>
-The following levels are available for <em>level</em>:</p>
+The following levels are available for <var>level</var>:</p>
 <ul>
 <li><strong>none</strong>:
      no remote server Certificate is required at all</li>
@@ -2088,7 +2284,7 @@ The following levels are available for <em>level</em>:</p>
 <li><strong>require</strong>:
      the remote server <em>has to</em> present a valid Certificate</li>
 <li><strong>optional_no_ca</strong>:
-     the remote server may present a valid Certificate<br />
+     the remote server may present a valid Certificate<br>
      but it need not to be (successfully) verifiable.</li>
 </ul>
 <p>In practice only levels <strong>none</strong> and
@@ -2100,12 +2296,12 @@ authentication (but can be used to establish SSL test pages, etc.)</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyVerifyDepth" id="SSLProxyVerifyDepth">SSLProxyVerifyDepth</a> <a name="sslproxyverifydepth" id="sslproxyverifydepth">Directive</a> <a title="Permanent link" href="#sslproxyverifydepth" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxyverifydepth"><span id="SSLProxyVerifyDepth">SSLProxyVerifyDepth</span> Directive <a title="Permanent link" href="#sslproxyverifydepth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum depth of CA Certificates in Remote Server
 Certificate verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyVerifyDepth <em>number</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyVerifyDepth <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyVerifyDepth 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2127,13 +2323,13 @@ which is directly known to the server (i.e. the CA's certificate is under
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRandomSeed" id="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed" id="sslrandomseed">Directive</a> <a title="Permanent link" href="#sslrandomseed" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslrandomseed"><span id="SSLRandomSeed">SSLRandomSeed</span> Directive <a title="Permanent link" href="#sslrandomseed" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pseudo Random Number Generator (PRNG) seeding
 source</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRandomSeed <em>context</em> <em>source</em>
-[<em>bytes</em>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRandomSeed <var>context</var> <var>source</var>
+[<var>bytes</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -2147,12 +2343,12 @@ later.</p>
 
 <p>
 This configures one or more sources for seeding the Pseudo Random Number
-Generator (PRNG) in OpenSSL at startup time (<em>context</em> is
+Generator (PRNG) in OpenSSL at startup time (<var>context</var> is
 <code>startup</code>) and/or just before a new SSL connection is established
-(<em>context</em> is <code>connect</code>). This directive can only be used
+(<var>context</var> is <code>connect</code>). This directive can only be used
 in the global server context because the PRNG is a global facility.</p>
 <p>
-The following <em>source</em> variants are available:</p>
+The following <var>source</var> variants are available:</p>
 <ul>
 <li><code>builtin</code>
     <p> This is the always available builtin seeding source. Its usage
@@ -2167,10 +2363,10 @@ The following <em>source</em> variants are available:</p>
 <li><code>file:/path/to/source</code>
     <p>
     This variant uses an external file <code>/path/to/source</code> as the
-    source for seeding the PRNG. When <em>bytes</em> is specified, only the
-    first <em>bytes</em> number of bytes of the file form the entropy (and
-    <em>bytes</em> is given to <code>/path/to/source</code> as the first
-    argument). When <em>bytes</em> is not specified the whole file forms the
+    source for seeding the PRNG. When <var>bytes</var> is specified, only the
+    first <var>bytes</var> number of bytes of the file form the entropy (and
+    <var>bytes</var> is given to <code>/path/to/source</code> as the first
+    argument). When <var>bytes</var> is not specified the whole file forms the
     entropy (and <code>0</code> is given to <code>/path/to/source</code> as
     the first argument). Use this especially at startup time, for instance
     with an available <code>/dev/random</code> and/or
@@ -2191,9 +2387,9 @@ The following <em>source</em> variants are available:</p>
     <p>
     This variant uses an external executable
     <code>/path/to/program</code> as the source for seeding the
-    PRNG. When <em>bytes</em> is specified, only the first
-    <em>bytes</em> number of bytes of its <code>stdout</code> contents
-    form the entropy. When <em>bytes</em> is not specified, the
+    PRNG. When <var>bytes</var> is specified, only the first
+    <var>bytes</var> number of bytes of its <code>stdout</code> contents
+    form the entropy. When <var>bytes</var> is not specified, the
     entirety of the data produced on <code>stdout</code> form the
     entropy. Use this only at startup time when you need a very strong
     seeding with the help of an external program (for instance as in
@@ -2219,8 +2415,8 @@ SSLRandomSeed connect "file:/dev/urandom" 1024</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRenegBufferSize" id="SSLRenegBufferSize">SSLRenegBufferSize</a> <a name="sslrenegbuffersize" id="sslrenegbuffersize">Directive</a> <a title="Permanent link" href="#sslrenegbuffersize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslrenegbuffersize"><span id="SSLRenegBufferSize">SSLRenegBufferSize</span> Directive <a title="Permanent link" href="#sslrenegbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the size for the SSL renegotiation buffer</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRenegBufferSize <var>bytes</var></code></td></tr>
@@ -2248,12 +2444,12 @@ memory must be considered when changing this configuration setting.
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRequire" id="SSLRequire">SSLRequire</a> <a name="sslrequire" id="sslrequire">Directive</a> <a title="Permanent link" href="#sslrequire" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslrequire"><span id="SSLRequire">SSLRequire</span> Directive <a title="Permanent link" href="#sslrequire" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow access only when an arbitrarily complex
 boolean expression is true</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRequire <em>expression</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRequire <var>expression</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2287,7 +2483,7 @@ fulfilled in order to allow access. It is a very powerful directive because the
 requirement specification is an arbitrarily complex boolean expression
 containing any number of access checks.</p>
 <p>
-The <em>expression</em> must match the following syntax (given as a BNF
+The <var>expression</var> must match the following syntax (given as a BNF
 grammar notation):</p>
 <blockquote>
 <pre>expr     ::= "<strong>true</strong>" | "<strong>false</strong>"
@@ -2325,9 +2521,9 @@ function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"</pre>
 <code>funcname</code> the available functions are listed in
 the <a href="../expr.html#functions">ap_expr documentation</a>.</p>
 
-<p>The <em>expression</em> is parsed into an internal machine
+<p>The <var>expression</var> is parsed into an internal machine
 representation when the configuration is loaded, and then evaluated
-during request processing.  In .htaccess context, the <em>expression</em> is
+during request processing.  In .htaccess context, the <var>expression</var> is
 both parsed and executed each time the .htaccess file is encountered during
 request processing.</p>
 
@@ -2339,9 +2535,9 @@ request processing.</p>
            or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/</pre>
 </div>
 
-<p>The <code>PeerExtList(<em>object-ID</em>)</code> function expects
+<p>The <code>PeerExtList(<var>object-ID</var>)</code> function expects
 to find zero or more instances of the X.509 certificate extension
-identified by the given <em>object ID</em> (OID) in the client certificate.
+identified by the given <var>object ID</var> (OID) in the client certificate.
 The expression evaluates to true if the left-hand side string matches
 exactly against the value of an extension identified with this OID.
 (If multiple extensions with the same OID are present, at least one
@@ -2380,8 +2576,8 @@ for additional examples.
 </li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRequireSSL" id="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl" id="sslrequiressl">Directive</a> <a title="Permanent link" href="#sslrequiressl" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslrequiressl"><span id="SSLRequireSSL">SSLRequireSSL</span> Directive <a title="Permanent link" href="#sslrequiressl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Deny access when SSL is not used for the
 HTTP request</td></tr>
@@ -2401,12 +2597,12 @@ are denied which are not using SSL.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionCache" id="SSLSessionCache">SSLSessionCache</a> <a name="sslsessioncache" id="sslsessioncache">Directive</a> <a title="Permanent link" href="#sslsessioncache" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslsessioncache"><span id="SSLSessionCache">SSLSessionCache</span> Directive <a title="Permanent link" href="#sslsessioncache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of the global/inter-process SSL Session
 Cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionCache <em>type</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionCache <var>type</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLSessionCache none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2422,7 +2618,7 @@ up to four parallel requests are common) those requests are served by
 <em>different</em> pre-forked server processes. Here an inter-process cache
 helps to avoid unnecessary session handshakes.</p>
 <p>
-The following five storage <em>type</em>s are currently supported:</p>
+The following five storage <var>type</var>s are currently supported:</p>
 <ul>
 <li><code>none</code>
 
@@ -2445,10 +2641,10 @@ The following five storage <em>type</em>s are currently supported:</p>
     high load. To use this, ensure that
     <code class="module"><a href="../mod/mod_socache_dbm.html">mod_socache_dbm</a></code> is loaded.</p></li>
 
-<li><code>shmcb:/path/to/datafile</code>[<code>(</code><em>size</em><code>)</code>]
+<li><code>shmcb:/path/to/datafile</code>[<code>(</code><var>size</var><code>)</code>]
 
     <p>This makes use of a high-performance cyclic buffer
-    (approx. <em>size</em> bytes in size) inside a shared memory
+    (approx. <var>size</var> bytes in size) inside a shared memory
     segment in RAM (established via <code>/path/to/datafile</code>) to
     synchronize the local OpenSSL memory caches of the server
     processes.  This is the recommended session cache. To use this,
@@ -2476,12 +2672,12 @@ the session cache to prevent corruption.  This mutex can be configured
 using the <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> directive.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionCacheTimeout" id="SSLSessionCacheTimeout">SSLSessionCacheTimeout</a> <a name="sslsessioncachetimeout" id="sslsessioncachetimeout">Directive</a> <a title="Permanent link" href="#sslsessioncachetimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslsessioncachetimeout"><span id="SSLSessionCacheTimeout">SSLSessionCacheTimeout</span> Directive <a title="Permanent link" href="#sslsessioncachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before an SSL session expires
 in the Session Cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionCacheTimeout <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLSessionCacheTimeout 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2498,8 +2694,8 @@ values like 300 in real life.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionTicketKeyFile" id="SSLSessionTicketKeyFile">SSLSessionTicketKeyFile</a> <a name="sslsessionticketkeyfile" id="sslsessionticketkeyfile">Directive</a> <a title="Permanent link" href="#sslsessionticketkeyfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslsessionticketkeyfile"><span id="SSLSessionTicketKeyFile">SSLSessionTicketKeyFile</span> Directive <a title="Permanent link" href="#sslsessionticketkeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Persistent encryption/decryption key for TLS session tickets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionTicketKeyFile <var>file-path</var></code></td></tr>
@@ -2510,7 +2706,7 @@ values like 300 in real life.</p>
 </table>
 <p>Optionally configures a secret key for encrypting and decrypting
 TLS session tickets, as defined in
-<a href="http://www.ietf.org/rfc/rfc5077.txt">RFC 5077</a>.
+<a href="https://www.rfc-editor.org/rfc/rfc5077">RFC 5077</a>.
 Primarily suitable for clustered environments where TLS sessions information
 should be shared between multiple nodes. For single-instance httpd setups,
 it is recommended to <em>not</em> configure a ticket key file, but to
@@ -2536,8 +2732,8 @@ be protected with file permissions similar to those used for
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionTickets" id="SSLSessionTickets">SSLSessionTickets</a> <a name="sslsessiontickets" id="sslsessiontickets">Directive</a> <a title="Permanent link" href="#sslsessiontickets" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslsessiontickets"><span id="SSLSessionTickets">SSLSessionTickets</span> Directive <a title="Permanent link" href="#sslsessiontickets" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable use of TLS session tickets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSessionTickets on|off</code></td></tr>
@@ -2557,11 +2753,11 @@ forward secrecy.</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSRPUnknownUserSeed" id="SSLSRPUnknownUserSeed">SSLSRPUnknownUserSeed</a> <a name="sslsrpunknownuserseed" id="sslsrpunknownuserseed">Directive</a> <a title="Permanent link" href="#sslsrpunknownuserseed" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslsrpunknownuserseed"><span id="SSLSRPUnknownUserSeed">SSLSRPUnknownUserSeed</span> Directive <a title="Permanent link" href="#sslsrpunknownuserseed" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SRP unknown user seed</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSRPUnknownUserSeed <em>secret-string</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSRPUnknownUserSeed <var>secret-string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -2579,8 +2775,8 @@ SSLSRPUnknownUserSeed "secret"
 </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSRPVerifierFile" id="SSLSRPVerifierFile">SSLSRPVerifierFile</a> <a name="sslsrpverifierfile" id="sslsrpverifierfile">Directive</a> <a title="Permanent link" href="#sslsrpverifierfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslsrpverifierfile"><span id="SSLSRPVerifierFile">SSLSRPVerifierFile</span> Directive <a title="Permanent link" href="#sslsrpverifierfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path to SRP verifier file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLSRPVerifierFile <var>file-path</var></code></td></tr>
@@ -2608,11 +2804,11 @@ available in the <code>SSL_SRP_USERINFO</code> request environment variable.</p>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingCache" id="SSLStaplingCache">SSLStaplingCache</a> <a name="sslstaplingcache" id="sslstaplingcache">Directive</a> <a title="Permanent link" href="#sslstaplingcache" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingcache"><span id="SSLStaplingCache">SSLStaplingCache</span> Directive <a title="Permanent link" href="#sslstaplingcache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the OCSP stapling cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingCache <em>type</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingCache <var>type</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -2626,11 +2822,11 @@ the same storage types are supported as with
 <code class="directive"><a href="#sslsessioncache">SSLSessionCache</a></code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingErrorCacheTimeout" id="SSLStaplingErrorCacheTimeout">SSLStaplingErrorCacheTimeout</a> <a name="sslstaplingerrorcachetimeout" id="sslstaplingerrorcachetimeout">Directive</a> <a title="Permanent link" href="#sslstaplingerrorcachetimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingerrorcachetimeout"><span id="SSLStaplingErrorCacheTimeout">SSLStaplingErrorCacheTimeout</span> Directive <a title="Permanent link" href="#sslstaplingerrorcachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before expiring invalid responses in the OCSP stapling cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingErrorCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingErrorCacheTimeout <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingErrorCacheTimeout 600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2643,8 +2839,8 @@ To set the cache timeout for valid responses, see
 <code class="directive"><a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingFakeTryLater" id="SSLStaplingFakeTryLater">SSLStaplingFakeTryLater</a> <a name="sslstaplingfaketrylater" id="sslstaplingfaketrylater">Directive</a> <a title="Permanent link" href="#sslstaplingfaketrylater" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingfaketrylater"><span id="SSLStaplingFakeTryLater">SSLStaplingFakeTryLater</span> Directive <a title="Permanent link" href="#sslstaplingfaketrylater" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Synthesize "tryLater" responses for failed OCSP stapling queries</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingFakeTryLater on|off</code></td></tr>
@@ -2660,11 +2856,11 @@ client. Only effective if <code class="directive"><a href="#sslstaplingreturnres
 is also enabled.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingForceURL" id="SSLStaplingForceURL">SSLStaplingForceURL</a> <a name="sslstaplingforceurl" id="sslstaplingforceurl">Directive</a> <a title="Permanent link" href="#sslstaplingforceurl" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingforceurl"><span id="SSLStaplingForceURL">SSLStaplingForceURL</span> Directive <a title="Permanent link" href="#sslstaplingforceurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Override the OCSP responder URI specified in the certificate's AIA extension</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingForceURL <em>uri</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingForceURL <var>uri</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -2675,11 +2871,11 @@ the authorityInfoAccess (AIA) extension of the certificate.
 One potential use is when a proxy is used for retrieving OCSP queries.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingResponderTimeout" id="SSLStaplingResponderTimeout">SSLStaplingResponderTimeout</a> <a name="sslstaplingrespondertimeout" id="sslstaplingrespondertimeout">Directive</a> <a title="Permanent link" href="#sslstaplingrespondertimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingrespondertimeout"><span id="SSLStaplingResponderTimeout">SSLStaplingResponderTimeout</span> Directive <a title="Permanent link" href="#sslstaplingrespondertimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Timeout for OCSP stapling queries</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponderTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponderTimeout <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingResponderTimeout 10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2691,11 +2887,11 @@ One potential use is when a proxy is used for retrieving OCSP queries.</p>
 and mod_ssl is querying a responder for OCSP stapling purposes.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingResponseMaxAge" id="SSLStaplingResponseMaxAge">SSLStaplingResponseMaxAge</a> <a name="sslstaplingresponsemaxage" id="sslstaplingresponsemaxage">Directive</a> <a title="Permanent link" href="#sslstaplingresponsemaxage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingresponsemaxage"><span id="SSLStaplingResponseMaxAge">SSLStaplingResponseMaxAge</span> Directive <a title="Permanent link" href="#sslstaplingresponsemaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable age for OCSP stapling responses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponseMaxAge <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponseMaxAge <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingResponseMaxAge -1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2710,11 +2906,11 @@ which means that OCSP responses are considered valid as long as their
 <code>nextUpdate</code> field is in the future.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingResponseTimeSkew" id="SSLStaplingResponseTimeSkew">SSLStaplingResponseTimeSkew</a> <a name="sslstaplingresponsetimeskew" id="sslstaplingresponsetimeskew">Directive</a> <a title="Permanent link" href="#sslstaplingresponsetimeskew" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingresponsetimeskew"><span id="SSLStaplingResponseTimeSkew">SSLStaplingResponseTimeSkew</span> Directive <a title="Permanent link" href="#sslstaplingresponsetimeskew" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowable time skew for OCSP stapling response validation</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponseTimeSkew <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingResponseTimeSkew <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingResponseTimeSkew 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2727,8 +2923,8 @@ which get included in the TLS handshake (OCSP stapling). Only applicable
 if <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> is turned on.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingReturnResponderErrors" id="SSLStaplingReturnResponderErrors">SSLStaplingReturnResponderErrors</a> <a name="sslstaplingreturnrespondererrors" id="sslstaplingreturnrespondererrors">Directive</a> <a title="Permanent link" href="#sslstaplingreturnrespondererrors" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingreturnrespondererrors"><span id="SSLStaplingReturnResponderErrors">SSLStaplingReturnResponderErrors</span> Directive <a title="Permanent link" href="#sslstaplingreturnrespondererrors" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pass stapling related OCSP errors on to client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingReturnResponderErrors on|off</code></td></tr>
@@ -2743,14 +2939,17 @@ stapling related OCSP queries (such as responses with an overall status
 other than "successful", responses with a certificate status other than
 "good", expired responses etc.) on to the client.
 If set to <code>off</code>, only responses indicating a certificate status
-of "good" will be included in the TLS handshake.</p>
+of "good" or "revoked" will be included in the TLS handshake.
+Responses with a "revoked" status are always included regardless of
+this setting, because suppressing a known revocation would be a
+security risk.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingStandardCacheTimeout" id="SSLStaplingStandardCacheTimeout">SSLStaplingStandardCacheTimeout</a> <a name="sslstaplingstandardcachetimeout" id="sslstaplingstandardcachetimeout">Directive</a> <a title="Permanent link" href="#sslstaplingstandardcachetimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstaplingstandardcachetimeout"><span id="SSLStaplingStandardCacheTimeout">SSLStaplingStandardCacheTimeout</span> Directive <a title="Permanent link" href="#sslstaplingstandardcachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of seconds before expiring responses in the OCSP stapling cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingStandardCacheTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStaplingStandardCacheTimeout <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStaplingStandardCacheTimeout 3600</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2765,8 +2964,8 @@ used for controlling the timeout for invalid/unavailable responses.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck">Directive</a> <a title="Permanent link" href="#sslstrictsnivhostcheck" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstrictsnivhostcheck"><span id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</span> Directive <a title="Permanent link" href="#sslstrictsnivhostcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to allow non-SNI clients to access a name-based virtual
 host.
@@ -2786,6 +2985,15 @@ If set to <code>on</code> in any other virtual host, SNI unaware clients
 are not allowed to access this particular virtual host.
 </p>
 
+<p>
+If set to <code>on</code> in server context (globally, outside any
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block),
+the setting is inherited by all virtual hosts that do not override it.
+This has the same effect as setting it to <code>on</code> in every
+default name-based virtual host: non-SNI clients will be denied access
+to any name-based virtual host.
+</p>
+
 <div class="warning"><p>
 This option is only available if httpd was compiled against an SNI capable
 version of OpenSSL.
@@ -2795,11 +3003,11 @@ version of OpenSSL.
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLUserName" id="SSLUserName">SSLUserName</a> <a name="sslusername" id="sslusername">Directive</a> <a title="Permanent link" href="#sslusername" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslusername"><span id="SSLUserName">SSLUserName</span> Directive <a title="Permanent link" href="#sslusername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Variable name to determine user name</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLUserName <em>varname</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLUserName <var>varname</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -2809,19 +3017,22 @@ version of OpenSSL.
 This directive sets the "user" field in the Apache request object.
 This is used by lower modules to identify the user with a character
 string. In particular, this may cause the environment variable
-<code>REMOTE_USER</code> to be set.  The <em>varname</em> can be
+<code>REMOTE_USER</code> to be set.  The <var>varname</var> can be
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
-<p>When the <code>FakeBasicAuth</code> option is enabled, this directive
-instead controls the value of the username embedded within the basic
-authentication header (see <a href="#ssloptions">SSLOptions</a>).</p>
+<p>When the <code>FakeBasicAuth</code> option (see
+<a href="#ssloptions">SSLOptions</a>) or the
+<code class="directive"><a href="#authbasicfake">AuthBasicFake</a></code> directive is in
+effect, this directive controls which part of the client certificate is
+used as the username. Without <code class="directive">SSLUserName</code>,
+<code>REMOTE_USER</code> may not be set for other modules and CGI scripts.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLUserName SSL_CLIENT_S_DN_CN</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLUseStapling" id="SSLUseStapling">SSLUseStapling</a> <a name="sslusestapling" id="sslusestapling">Directive</a> <a title="Permanent link" href="#sslusestapling" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslusestapling"><span id="SSLUseStapling">SSLUseStapling</span> Directive <a title="Permanent link" href="#sslusestapling" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable stapling of OCSP responses in the TLS handshake</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLUseStapling on|off</code></td></tr>
@@ -2845,7 +3056,7 @@ OCSP response for a single cert. For server certificates with intermediate
 CA certificates in their chain (the typical case nowadays),
 stapling in its current implementation therefore only partially achieves the
 stated goal of "saving roundtrips and resources" - see also
-<a href="http://www.ietf.org/rfc/rfc6961.txt">RFC 6961</a>
+<a href="https://www.rfc-editor.org/rfc/rfc6961">RFC 6961</a>
 (TLS Multiple Certificate Status Extension).
 </p>
 
@@ -2858,11 +3069,11 @@ of OCSP responses.  These mutexes can be configured using the
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLVerifyClient" id="SSLVerifyClient">SSLVerifyClient</a> <a name="sslverifyclient" id="sslverifyclient">Directive</a> <a title="Permanent link" href="#sslverifyclient" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslverifyclient"><span id="SSLVerifyClient">SSLVerifyClient</span> Directive <a title="Permanent link" href="#sslverifyclient" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of Client Certificate verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVerifyClient <em>level</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVerifyClient <var>level</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLVerifyClient none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -2878,7 +3089,7 @@ established. In per-directory context it forces a SSL renegotiation with the
 reconfigured client verification level after the HTTP request was read but
 before the HTTP response is sent.</p>
 <p>
-The following levels are available for <em>level</em>:</p>
+The following levels are available for <var>level</var>:</p>
 <ul>
 <li><strong>none</strong>:
      no client Certificate is required at all</li>
@@ -2887,7 +3098,7 @@ The following levels are available for <em>level</em>:</p>
 <li><strong>require</strong>:
      the client <em>has to</em> present a valid Certificate</li>
 <li><strong>optional_no_ca</strong>:
-     the client may present a valid Certificate<br />
+     the client may present a valid Certificate<br>
      but it need not to be (successfully) verifiable. This option
      cannot be relied upon for client authentication.  </li>
 </ul>
@@ -2895,12 +3106,12 @@ The following levels are available for <em>level</em>:</p>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLVerifyDepth" id="SSLVerifyDepth">SSLVerifyDepth</a> <a name="sslverifydepth" id="sslverifydepth">Directive</a> <a title="Permanent link" href="#sslverifydepth" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslverifydepth"><span id="SSLVerifyDepth">SSLVerifyDepth</span> Directive <a title="Permanent link" href="#sslverifydepth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum depth of CA Certificates in Client
 Certificate verification</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVerifyDepth <em>number</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVerifyDepth <var>number</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLVerifyDepth 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -2927,33 +3138,112 @@ known to the server (i.e. the CA's certificate is under
 </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslvhostsnipolicy"><span id="SSLVHostSNIPolicy">SSLVHostSNIPolicy</span> Directive <a title="Permanent link" href="#sslvhostsnipolicy" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set compatibility policy for SNI client access to virtual hosts.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLVHostSNIPolicy strict|secure|authonly|insecure</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLVHostSNIPolicy secure</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.66 and later</td></tr>
+</table><p>This directive sets the policy applied when checking whether the
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+identified by the <code>Host</code> request header in an HTTP request
+is compatible with the <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> identified from the SNI
+extension sent during the initial TLS connection handshake. If an HTTP
+request is associated with a virtual host which has an incompatible
+SSL/TLS configuration under the policy used, an HTTP error response
+with status code 421 ("Misdirected Request") will be sent.</p>
+
+<p>The policy also applies to TLS connections where an SNI extension
+is not sent during the handshake, implicitly using the default or
+first virtual host definition. If the Host header in an HTTP request
+on such a connection identifies any other non-default virtual host,
+the compatibility policy is tested.</p>
+
+<p>The <code>strict</code> policy blocks all HTTP requests which are
+identified with a different virtual host to that identified by SNI.
+The <code>insecure</code> policy allows all HTTP requests regardless
+of virtual host identified; such a configuration may be vulnerable to
+<a href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
+</p>
+
+<p>The (default) <code>secure</code>, and <code>authonly</code>
+policies compare specific aspects of the SSL configuration for the two
+virtual hosts, which are grouped into two categories:</p>
+
+<ul>
+  <li><strong>server certificate/key, or protocol/cipher
+  restrictions</strong>: directives which determine the server
+  certificate or key (<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> etc), cipher or
+  protocol restrictions (<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> and <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>)</li>
+
+  <li><strong>client verification and authentication
+  settings</strong>: directives which affect TLS client certificate
+  verification or authentication, such as <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; any use of <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
+</ul>
+
+<p>This table illustrates whether an HTTP request will be blocked or
+allowed when the virtual host configurations differ as described,
+under each different policy setting:</p>
+
+<table class="bordered"><tr class="header">
+  <th>Policy mode</th>
+  <th>Any VirtualHost mismatch</th>
+  <th>Server certificate/key, <br>or protocol/cipher restrictions</th>
+  <th>Client verification/<br>authentication settings</th>
+</tr>
+<tr>
+  <td><code>strict</code></td><td>blocked</td><td>blocked</td><td>blocked</td>
+</tr>
+<tr class="odd">
+  <td><code>secure</code></td><td>allowed</td><td>blocked</td><td>blocked</td>
+</tr>
+<tr>
+  <td><code>authonly</code></td><td>allowed</td><td>allowed</td><td>blocked</td>
+</tr>
+<tr class="odd">
+  <td><code>insecure</code></td><td>allowed</td><td>allowed</td><td>allowed</td>
+</tr>
+</table>
+
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVHostSNIPolicy authonly</pre>
+</div>
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_ssl.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_ssl.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ssl.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_ssl.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

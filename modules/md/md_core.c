@@ -112,6 +112,8 @@ md_t *md_create_empty(apr_pool_t *p)
         md->transitive = -1;
         md->acme_tls_1_domains = apr_array_make(p, 5, sizeof(const char *));
         md->stapling = -1;
+        md->profile_mandatory = -1;
+        md->ari_renewals = -1;
         md->defn_name = "unknown";
         md->defn_line_number = 0;
     }
@@ -256,6 +258,9 @@ md_t *md_clone(apr_pool_t *p, const md_t *src)
         md->acme_tls_1_domains = md_array_str_compact(p, src->acme_tls_1_domains, 0);
         md->stapling = src->stapling;
         if (src->dns01_cmd) md->dns01_cmd = apr_pstrdup(p, src->dns01_cmd);
+        if (src->proxy_url) md->proxy_url = apr_pstrdup(p, src->proxy_url);
+        if (src->ca_certs) md->ca_certs = apr_pstrdup(p, src->ca_certs);
+        if (src->proxy_ca_certs) md->proxy_ca_certs = apr_pstrdup(p, src->proxy_ca_certs);
         if (src->cert_files) md->cert_files = md_array_str_clone(p, src->cert_files);
         if (src->pkey_files) md->pkey_files = md_array_str_clone(p, src->pkey_files);
     }    
@@ -313,12 +318,16 @@ md_json_t *md_to_json(const md_t *md, apr_pool_t *p)
         if (md->pkey_files) md_json_setsa(md->pkey_files, json, MD_KEY_PKEY_FILES, NULL);
         md_json_setb(md->stapling > 0, json, MD_KEY_STAPLING, NULL);
         if (md->dns01_cmd) md_json_sets(md->dns01_cmd, json, MD_KEY_CMD_DNS01, NULL);
+        if (md->proxy_url) md_json_sets(md->proxy_url, json, MD_KEY_PROXY_URL, NULL);
+        if (md->ca_certs) md_json_sets(md->ca_certs, json, MD_KEY_CA_CERTS, NULL);
+        if (md->proxy_ca_certs) md_json_sets(md->proxy_ca_certs, json, MD_KEY_PROXY_CA_CERTS, NULL);
         if (md->ca_eab_kid && strcmp("none", md->ca_eab_kid)) {
             md_json_sets(md->ca_eab_kid, json, MD_KEY_EAB, MD_KEY_KID, NULL);
             if (md->ca_eab_hmac) md_json_sets(md->ca_eab_hmac, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
         }
         if (md->profile) md_json_sets(md->profile, json, MD_KEY_PROFILE, NULL);
         md_json_setb(md->profile_mandatory > 0, json, MD_KEY_PROFILE_MANDATORY, NULL);
+        md_json_setb(md->ari_renewals > 0, json, MD_KEY_ARI_RENEWALS, NULL);
         return json;
     }
     return NULL;
@@ -381,6 +390,9 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         }
         md->stapling = (int)md_json_getb(json, MD_KEY_STAPLING, NULL);
         md->dns01_cmd = md_json_dups(p, json, MD_KEY_CMD_DNS01, NULL);
+        md->proxy_url = md_json_dups(p, json, MD_KEY_PROXY_URL, NULL);
+        md->ca_certs = md_json_dups(p, json, MD_KEY_CA_CERTS, NULL);
+        md->proxy_ca_certs = md_json_dups(p, json, MD_KEY_PROXY_CA_CERTS, NULL);
         if (md_json_has_key(json, MD_KEY_EAB, NULL)) {
             md->ca_eab_kid = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_KID, NULL);
             md->ca_eab_hmac = md_json_dups(p, json, MD_KEY_EAB, MD_KEY_HMAC, NULL);
@@ -389,6 +401,7 @@ md_t *md_from_json(md_json_t *json, apr_pool_t *p)
         md->profile_mandatory = (int)md_json_getb(json, MD_KEY_PROFILE_MANDATORY, NULL);
         if (md_json_has_key(json, MD_KEY_PROFILE, NULL))
             md->profile = md_json_dups(p, json, MD_KEY_PROFILE, NULL);
+        md->ari_renewals = (int)md_json_getb(json, MD_KEY_ARI_RENEWALS, NULL);
         return md;
     }
     return NULL;
@@ -426,7 +439,7 @@ const char *md_get_ca_name_from_url(apr_pool_t *p, const char *url)
     unsigned int i;
 
     for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
-        if (!apr_strnatcasecmp(KNOWN_CAs[i].url, url)) {
+        if (!apr_cstr_casecmp(KNOWN_CAs[i].url, url)) {
             return KNOWN_CAs[i].name;
         }
     }
@@ -444,7 +457,7 @@ apr_status_t md_get_ca_url_from_name(const char **purl, apr_pool_t *p, const cha
 
     *purl = NULL;
     for (i = 0; i < sizeof(KNOWN_CAs)/sizeof(KNOWN_CAs[0]); ++i) {
-        if (!apr_strnatcasecmp(KNOWN_CAs[i].name, name)) {
+        if (!apr_cstr_casecmp(KNOWN_CAs[i].name, name)) {
             *purl = KNOWN_CAs[i].url;
             goto leave;
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924775 -->
+<!-- English Revision: 1933587 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,8 +43,7 @@
     d'environnement.</note>
 
     <p><module>mod_cache</module> implémente un <strong>filtre de mise
-    en cache de contenu HTTP</strong> conforme à la <a
-    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>, avec
+    en cache de contenu HTTP</strong> conforme à la <rfc>2616</rfc>, avec
     support de la mise en cache des réponses dont le contenu a été
     négocié et comportant l'en-tête Vary.</p>
 
@@ -53,8 +52,7 @@
     jour, et peut apporter un gain de performances significatif si le
     serveur original supporte les <strong>requêtes
     conditionnelles</strong> en prenant en compte l'en-tête de requête
-    HTTP <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
+    HTTP If-None-Match (<rfc section="14.26">2616</rfc>).
     Le contenu n'est ainsi régénéré que lorsqu'il a été modifié, et non
     lorsqu'il a expiré.</p>
 
@@ -85,10 +83,8 @@
     éventuellement compressé par le filtre <module>mod_deflate</module>.</p>
 
     <p>Dans le mode de fonctionnement normal, <module>mod_cache</module>
-    peut être contrôlé par les en-têtes <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
-    et <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    peut être contrôlé par les en-têtes Cache-Control (<rfc section="14.9">2616</rfc>)
+    et Pragma (<rfc section="14.32">2616</rfc>)
     envoyés par un client dans une requête, ou par un serveur dans une
     réponse. Dans des circonstances exceptionnelles,
     <module>mod_cache</module> peut cependant être configuré pour
@@ -98,20 +94,18 @@
     s'insérer entre le client et le serveur, et ce type de configuration
     ne doit donc être utiliser qu'en cas de nécessité absolue.</p>
 
-    <p>La RFC 2616 permet au cache de renvoyer des données périmées
-    pendant que l'entrée périmée correspondante est mise à jour depuis
-    le serveur original, et <module>mod_cache</module> supporte cette
-    fonctionnalité lorsque la directive <directive
-    module="mod_cache">CacheLock</directive> est configurée en
-    conséquence. De telles réponses comportent un en-tête HTTP <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
-    contenant un code de réponse 110. La RFC 2616 permet aussi au cache
-    de renvoyer des données périmées lorsque la tentative de mise à jour
-    des données périmées renvoie une erreur 500 ou supérieure, et cette
-    fonctionnalité est supportée par défaut par
-    <module>mod_cache</module>. De telles réponses comportent un en-tête HTTP <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
-    contenant un code de réponse 111.</p>
+    <p>La RFC 2616 permet au cache de renvoyer des données périmées pendant que
+    l'entrée périmée correspondante est mise à jour depuis le serveur original,
+    et <module>mod_cache</module> supporte cette fonctionnalité lorsque la
+    directive <directive module="mod_cache">CacheLock</directive> est configurée
+    en conséquence. De telles réponses comportent un en-tête HTTP Warning (<rfc
+    section="14.46">2616</rfc>) contenant un code de réponse 110. La RFC 2616
+    permet aussi au cache de renvoyer des données périmées lorsque la tentative
+    de mise à jour des données périmées renvoie une erreur 500 ou supérieure, et
+    cette fonctionnalité est supportée par défaut par
+    <module>mod_cache</module>. De telles réponses comportent un en-tête HTTP
+    Warning (<rfc section="14.46">2616</rfc>) contenant un code de réponse
+    111.</p>
 
     <p><module>mod_cache</module> requiert les services d'un ou
     plusieurs modules de gestion de stockage. La distribution Apache de base
@@ -484,6 +478,14 @@ spécifiées</description>
 </contextlist>
 
 <usage>
+    <note><p>Cette directive n’est valable que dans les sections <directive
+    module="core" type="section">Location</directive> et <directive
+    module="mod_proxy" type="section">Proxy</directive> dans des contextes de
+    répertoire. Elle ne l’est pas dans les sections <directive module="core"
+    type="section">Directory</directive>, <directive module="core"
+    type="section">Files</directive> ou <directive module="core"
+    type="section">If</directive>.</p></note>
+
     <p>La directive <directive>CacheDisable</directive> enjoint
     <module>mod_cache</module> de <em>ne pas</em> mettre en cache l'URL
     spécifiée par <var>chaîne URL</var>, ainsi que les URLs de niveaux
@@ -522,8 +524,10 @@ Apache</a></seealso>
 document</description>
 <syntax>CacheMaxExpire <var>secondes</var></syntax>
 <default>CacheMaxExpire 86400 (une journée)</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -548,8 +552,10 @@ document</description>
 document</description>
 <syntax>CacheMinExpire <var>secondes</var></syntax>
 <default>CacheMinExpire 0</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -572,8 +578,10 @@ document</description>
 lorsqu'aucune date d'expiration n'a été spécifiée.</description>
 <syntax>CacheDefaultExpire <var>secondes</var></syntax>
 <default>CacheDefaultExpire 3600 (une heure)</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -597,8 +605,10 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</description>
 Modified.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -612,7 +622,15 @@ Modified.</description>
     ne possède ni date d'expiration, ni date de dernière modification, la valeur
     spécifiée par la directive <directive
     module="mod_cache">CacheDefaultExpire</directive> servira à générer une date
-    d'expiration.  </p>
+    d'expiration. </p>
+
+    <note>Plus précisément, une réponse 200 OK n'est mise en cache que si elle
+    contient au moins un des en-têtes <code>Last-Modified</code>,
+    <code>ETag</code> ou <code>Expires</code>, ou une directive
+    <code>Cache-Control: max-age</code> ou <code>s-maxage</code>. Cette
+    directive permet de s'affranchir entièrement de cette condition préalable.
+    Si un de ces en-têtes est déjà présent, cette directive n'a aucun
+    effet.</note>
 
     <highlight language="config">
       CacheIgnoreNoLastMod On
@@ -688,8 +706,10 @@ cache</description>
 fonction de la date de dernière modification.</description>
 <syntax>CacheLastModifiedFactor <var>flottant</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -833,8 +853,10 @@ l'URL lors de la mise en cache
 considère comme arrivées à expiration</description>
 <syntax>CacheStoreExpired On|Off</syntax>
 <default>CacheStoreExpired Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -860,8 +882,10 @@ considère comme arrivées à expiration</description>
 marquées comme privées</description>
 <syntax>CacheStorePrivate On|Off</syntax>
 <default>CacheStorePrivate Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -896,8 +920,10 @@ marquées comme privées</description>
 l'entête Cache-Control: a pour valeur no-store.</description>
 <syntax>CacheStoreNoStore On|Off</syntax>
 <default>CacheStoreNoStore Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>

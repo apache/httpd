@@ -95,6 +95,8 @@
         <message id="experimental" letter="X">Exp&#233;rimental</message>
         <message id="external" letter="T">Externe</message>
 
+        <message id="deprecated" letter="D">Obsolète</message>
+
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">configuration globale</message>
         <message id="virtualhost" letter="v">serveur virtuel</message>
@@ -151,13 +153,13 @@
             anglaise pour les changements r&#233;cents.</message>
         <!-- directive not translated yet -->
         <message id="nottranslated">La documentation de cette directive
-	n'a pas encore &eacute;t&eacute; traduite. Veuillez vous reporter &agrave; la version
+	n'a pas encore été traduite. Veuillez vous reporter à la version
 	en langue anglaise.</message>
 
         <!-- retirement -->
         <message id="retired.headline">A savoir</message>
         <message id="retired.description">
-            <p>Ce document concerne la version <strong>2.0</strong> du serveur HTTP Apache et celle-ci <strong>n'est plus maintenue</strong>. Si vous utilisez cette version, il est fortement recommand&eacute; de mettre &agrave; jour votre serveur vers la version actuelle (<strong>2.4</strong>), et de consulter la documentation correspondante ici :</p>
+            <p>Ce document concerne la version <strong>2.0</strong> du serveur HTTP Apache et celle-ci <strong>n'est plus maintenue</strong>. Si vous utilisez cette version, il est fortement recommandé de mettre à jour votre serveur vers la version actuelle (<strong>2.4</strong>), et de consulter la documentation correspondante ici :</p>
         </message>
         <message id="retired.current">Version actuelle de la documentation du serveur HTTP Apache</message>
         <message id="retired.document">Pour consulter la version actuelle de ce document, vous pouvez suivre <link>ce lien</link>.</message>

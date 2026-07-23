@@ -189,6 +189,218 @@ static void ssl_add_version_components(apr_pool_t *ptemp, apr_pool_t *pconf,
                  modver, AP_SERVER_BASEVERSION, incver);
 }
 
+#ifdef HAVE_OPENSSL_ECH
+/*
+ * Load any ECH PEM files we find in the ECHKeyDir directory
+ * Those are files matching "*.ech"
+ * The caller checks that echdir is non-NULL.
+ */
+static int load_echkeys(SSL_CTX *ctx, const char *echdir, server_rec *s,
+                        apr_pool_t *ptemp)
+{
+    size_t elen = 0;
+    int keystried = 0, keysworked = 0, keysloaded=0;
+    OSSL_ECHSTORE *es = NULL;
+    apr_dir_t *dir = NULL;
+    apr_finfo_t direntry;
+    apr_int32_t finfo_flags = APR_FINFO_TYPE|APR_FINFO_NAME;
+    apr_status_t dorv;
+
+    elen = strlen(echdir);
+    if ((elen + 7) >= PATH_MAX) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10521)
+                     "load_echkeys: directory name too long: %s - exiting", echdir);
+        return -1;
+    }
+    dorv = apr_dir_open(&dir, echdir, ptemp);
+    if (dorv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10522)
+                     "load_echkeys: can't open directory %s - exiting (error %d)",
+                     echdir, dorv);
+        return -1;
+    }
+    es = OSSL_ECHSTORE_new(NULL, NULL);
+    if (es == NULL) {
+        apr_dir_close(dir);
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10523)
+                "load_echkeys: can't alloc store");
+        return -1;
+    }
+
+    while ((apr_dir_read(&direntry, finfo_flags, dir)) == APR_SUCCESS) {
+        const char *fname;
+        size_t pnlen = 0;
+        apr_finfo_t theinfo;
+
+        if (direntry.filetype == APR_DIR) {
+            continue; /* don't try to load directories */
+        }
+        fname = apr_pstrcat(ptemp, echdir, "/", direntry.name, NULL);
+        if (!fname) {
+            continue;
+        }
+        pnlen = strlen(fname);
+        if (pnlen < 5 || pnlen > (PATH_MAX-1)) {
+            continue;
+        }
+        if (!(fname[pnlen - 4] == '.'
+            && fname[pnlen - 3] == 'e'
+            && fname[pnlen - 2] == 'c'
+            && fname[pnlen - 1] == 'h')) {
+            continue;
+        }
+        if (apr_stat(&theinfo, fname, APR_FINFO_MIN, ptemp) == APR_SUCCESS) {
+            BIO *in = BIO_new_file(fname, "r");
+            const int is_retry_config = OSSL_ECH_FOR_RETRY;
+
+            keystried++;
+            if (in && OSSL_ECHSTORE_read_pem(es, in, is_retry_config) == 1) {
+                ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
+                             "load_echkeys: worked for %s",fname);
+                keysworked++;
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10525)
+                             "load_echkeys: failed for %s (could be non-fatal)",
+                             fname);
+            }
+            BIO_free_all(in);
+        }
+
+    }
+    apr_dir_close(dir);
+
+    if (!OSSL_ECHSTORE_num_keys(es, &keysloaded)) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10526)
+            "OSSL_ECHSTORE_num_keys failed - exiting");
+        OSSL_ECHSTORE_free(es);
+        return -1;
+    }
+    if (SSL_CTX_set1_echstore(ctx, es) != 1) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10527)
+            "load_echkeys: SSL_CTX_set1_echstore failed");
+        OSSL_ECHSTORE_free(es);
+        return -1;
+    }
+    OSSL_ECHSTORE_free(es);
+    if (keysworked == 0) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10528)
+                     "load_echkeys: didn't load new keys (%d tried/failed) "
+                     "but we have already some (%d) - continuing",
+                     keystried, keysloaded);
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10529)
+                     "ECH: %d keys loaded", keysloaded);
+    }
+    return 0;
+}
+#endif
+
+#ifdef HAVE_TLSEXT
+/* Helper functions to create the SNI vhost policy hash. The policy
+ * hash captures the configuration elements relevant to the mode
+ * selected at runtime by SSLVHostSNIPolicy. */
+
+#define md5_str_update(ctx_, pfx_, str_) do { apr_md5_update(ctx_, pfx_, strlen(pfx_)); apr_md5_update(ctx_, str_, strlen(str_)); } while (0)
+#define md5_ifstr_update(ctx_, pfx_, str_) do { apr_md5_update(ctx_, pfx_, strlen(pfx_)); if (str_) apr_md5_update(ctx_, str_, strlen(str_)); } while (0)
+#define md5_fmt_update(ctx_, fmt_, i_) do { char s_[128]; apr_snprintf(s_, sizeof s_, fmt_, i_); \
+        apr_md5_update(ctx_, s_, strlen(s_)); } while (0)
+
+static int md5_strarray_cmp(const void *p1, const void *p2)
+{
+    return strcmp(*(char **)p1, *(char **)p2);
+}
+
+/* Hashes an array of strings in sorted order. */
+static void md5_strarray_hash(apr_pool_t *ptemp, apr_md5_ctx_t *hash,
+                              const char *pfx, apr_array_header_t *s)
+{
+    char **elts = apr_pmemdup(ptemp, s->elts, s->nelts * sizeof *elts);
+    int i;
+
+    qsort(elts, s->nelts, sizeof(char *), md5_strarray_cmp);
+
+    apr_md5_update(hash, pfx, strlen(pfx));
+    for (i = 0; i < s->nelts; i++) {
+        md5_str_update(hash, "elm:", elts[i]);
+    }
+}
+
+static void hash_sni_policy_pk(apr_pool_t *ptemp, apr_md5_ctx_t *hash, modssl_ctx_t *ctx)
+{
+    md5_fmt_update(hash, "protocol:%d", ctx->protocol);
+
+    md5_ifstr_update(hash, "ciphers:", ctx->auth.cipher_suite);
+    md5_ifstr_update(hash, "tls13_ciphers:", ctx->auth.tls13_ciphers);
+
+    md5_strarray_hash(ptemp, hash, "cert_files:", ctx->pks->cert_files);
+    md5_strarray_hash(ptemp, hash, "key_files:", ctx->pks->key_files);
+}
+
+static void hash_sni_policy_auth(apr_md5_ctx_t *hash, modssl_ctx_t *ctx)
+{
+    modssl_pk_server_t *pks = ctx->pks;
+    modssl_auth_ctx_t *a = &ctx->auth;
+
+    md5_fmt_update(hash, "verify_depth:%d", a->verify_depth);
+    md5_fmt_update(hash, "verify_mode:%d", a->verify_mode);
+
+    md5_ifstr_update(hash, "ca_name_path:", pks->ca_name_path);
+    md5_ifstr_update(hash, "ca_name_file:", pks->ca_name_file);
+    md5_ifstr_update(hash, "ca_cert_path:", a->ca_cert_path);
+    md5_ifstr_update(hash, "ca_cert_file:", a->ca_cert_file);
+    md5_ifstr_update(hash, "crl_path:", ctx->crl_path);
+    md5_ifstr_update(hash, "crl_file:", ctx->crl_file);
+    md5_fmt_update(hash, "crl_check_mask:%d", ctx->crl_check_mask);
+    md5_fmt_update(hash, "ocsp_mask:%d", ctx->ocsp_mask);
+    md5_fmt_update(hash, "ocsp_force_default:%d", ctx->ocsp_force_default);
+    md5_ifstr_update(hash, "ocsp_responder:", ctx->ocsp_responder);
+
+#ifdef HAVE_SRP
+    md5_ifstr_update(hash, "srp_vfile:", ctx->srp_vfile);
+#endif
+
+#ifdef HAVE_SSL_CONF_CMD
+    {
+        apr_array_header_t *parms = ctx->ssl_ctx_param;
+        int n;
+
+        for (n = 0; n < parms->nelts; n++) {
+            ssl_ctx_param_t *p = &APR_ARRAY_IDX(parms, n, ssl_ctx_param_t);
+
+            md5_str_update(hash, "param:", p->name);
+            md5_str_update(hash, "value:", p->value);
+        }
+    }
+#endif
+}
+#endif
+
+static char *create_sni_policy_hash(apr_pool_t *p, apr_pool_t *ptemp,
+                                    modssl_snivhpolicy_t policy,
+                                    SSLSrvConfigRec *sc)
+{
+    char *rv = NULL;
+#ifdef HAVE_TLSEXT
+    if (policy != MODSSL_SNIVH_STRICT && policy != MODSSL_SNIVH_INSECURE) {
+        apr_md5_ctx_t hash;
+        unsigned char digest[APR_MD5_DIGESTSIZE];
+
+        /* Create the vhost policy hash for comparison later. */
+        apr_md5_init(&hash);
+        hash_sni_policy_auth(&hash, sc->server);
+        if (policy == MODSSL_SNIVH_SECURE)
+            hash_sni_policy_pk(ptemp, &hash, sc->server);
+        apr_md5_final(digest, &hash);
+
+        rv = apr_palloc(p, 2 * APR_MD5_DIGESTSIZE + 1);
+        ap_bin2hex(digest, APR_MD5_DIGESTSIZE, rv); /* sets final '\0' */
+    }
+#endif
+    return rv;
+}
+
 /*  _________________________________________________________________
 **
 **  Let other answer special connection attempts. 
@@ -455,6 +667,8 @@ apr_status_t ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
                 return rv;
             }
         }
+
+        sc->sni_policy_hash = create_sni_policy_hash(p, ptemp, mc->snivh_policy, sc);
     }
 
     /*
@@ -545,6 +759,9 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
                                                 modssl_ctx_t *mctx)
 {
     apr_status_t rv;
+#ifdef HAVE_OPENSSL_ECH
+    SSLSrvConfigRec *sc = mySrvConfig(s);
+#endif
 
     /*
      * Configure TLS extensions support
@@ -575,6 +792,13 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
      * is not possible at the SNI callback stage (due to OpenSSL internals).
      */
     SSL_CTX_set_client_hello_cb(mctx->ssl_ctx, ssl_callback_ClientHello, NULL);
+#endif
+
+#ifdef HAVE_OPENSSL_ECH
+    if (sc != NULL && sc->echkeydir != NULL) {
+        /* callback logs ECH outcome */
+        SSL_CTX_ech_set_callback(mctx->ssl_ctx, ssl_callback_ECH);
+    } 
 #endif
 
 #ifdef HAVE_OCSP_STAPLING
@@ -903,7 +1127,30 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
         SSL_CTX_set_options(ctx, SSL_OP_IGNORE_UNEXPECTED_EOF);
     }
 #endif
-    
+
+#ifdef HAVE_OPENSSL_ECH
+    /* ECH only really makes sense for TLSv1.3 */
+    prot = SSL_CTX_get_max_proto_version(ctx);
+    if (sc->echkeydir) {
+        if (prot == TLS1_3_VERSION) {
+            /* try load the keys */
+            if (load_echkeys(ctx, sc->echkeydir, s, ptemp) != 0) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10531)
+                    "ECHKeyDir failed to load keys - exiting.");
+                SSL_CTX_free(ctx);
+                mctx->ssl_ctx = NULL;
+                return ssl_die(s);
+            }
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10532)
+                 "ECHKeyDir configured but TLSv1.3 turned off - exiting.");
+            SSL_CTX_free(ctx);
+            mctx->ssl_ctx = NULL;
+            return ssl_die(s);
+        } 
+    }
+#endif
+
     return APR_SUCCESS;
 }
 
@@ -1405,6 +1652,12 @@ static int ssl_no_passwd_prompt_cb(char *buf, int size, int rwflag,
                                      && ERR_GET_REASON(ec) != X509_R_UNKNOWN_KEY_TYPE))
 #endif
 
+#if MODSSL_HAVE_ENGINE_API
+#define LOG_SOURCE(mc_) ((mc_)->szCryptoDevice ? (mc_)->szCryptoDevice : "provider")
+#else
+#define LOG_SOURCE(mc_) "provider"
+#endif
+
 static apr_status_t ssl_init_server_certs(server_rec *s,
                                           apr_pool_t *p,
                                           apr_pool_t *ptemp,
@@ -1482,9 +1735,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
                 if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
                     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10137)
                                  "Failed to configure certificate %s from %s, check %s",
-                                 key_id, mc->szCryptoDevice ?
-                                             mc->szCryptoDevice : "provider",
-                                 certfile);
+                                 key_id, LOG_SOURCE(mc), certfile);
                     ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                     return APR_EGENERAL;
                 }
@@ -1496,8 +1747,7 @@ static apr_status_t ssl_init_server_certs(server_rec *s,
             if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10130)
                              "Failed to configure private key %s from %s",
-                             keyfile, mc->szCryptoDevice ?
-                                          mc->szCryptoDevice : "provider");
+                             keyfile, LOG_SOURCE(mc));
                 ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 return APR_EGENERAL;
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1926737 -->
+<!-- English Revision: 1933949 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,12 +28,12 @@
   <title>httpd - Le serveur HTTP d'Apache</title>
 
 <summary>
-     <p><code>httpd</code> est le programme du serveur HTTP d'Apache. Il
+     <p><program>httpd</program> est le programme du serveur HTTP d'Apache. Il
      a été conçu pour fonctionner sous forme de processus démon
      indépendant. Lorsqu'il est utilisé ainsi, il va créer un jeu de
      processus enfants ou de threads qui traiteront les requêtes.</p>
 
-     <p>En général, <code>httpd</code> n'est pas invoqué directement,
+     <p>En général, <program>httpd</program> n'est pas invoqué directement,
      mais plutôt via <program>apachectl</program> sur les systèmes de
      style Unix ou <a
      href="../platform/windows.html#winsvc">en tant que service sous
@@ -92,7 +92,7 @@ module="core">ServerRoot</directive>. La valeur par défaut est
 
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
-<dd>Permet de démarrer, redémarrer ou arrêter <code>httpd</code>. Voir <a
+<dd>Permet de démarrer, redémarrer ou arrêter <program>httpd</program>. Voir <a
 href="../stopping.html">Arrêter Apache httpd</a> pour plus d'informations.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
@@ -177,12 +177,12 @@ href="#dumpconf">comme indiqué ci-après</a>.</dd>
 
 <dt><code>-v</code></dt>
 
-<dd>Print the version of <code>httpd</code>, and then exit.</dd>
+<dd>Print the version of <program>httpd</program>, and then exit.</dd>
 
 <dt><code>-V</code></dt>
 
 <dd>Le programme affiche la version et les paramètres de compilation de
-<code>httpd</code>, puis se termine.</dd>
+<program>httpd</program>, puis se termine.</dd>
 
 <dt><code>-X</code></dt>
 
@@ -217,7 +217,7 @@ que le message d'erreur puisse être lu.</dd>
  
 <section id="dumpconf"><title>Affichage des options de configuration</title>
 
-<p>Les options suivantes peuvent être combinées avec l’option <var>-t</var> pour
+<p>Les options suivantes peuvent être combinées avec l'option <var>-t</var> pour
 afficher des informations à propos de la configuration :</p>
 
 <dl>
@@ -235,6 +235,31 @@ afficher des informations à propos de la configuration :</p>
   <dd>affichage détaillé des certificats SSL/TLS configurés (si
   <module>mod_ssl</module> est chargé).</dd>
 </dl>
+</section>
+
+<section id="files"><title>Fichier</title>
+
+<p>Les chemins par défaut listés ci-après peuvent être modifiés à la compilation
+ou à l’aide de différents arguments de ligne de commande et directives de
+configuration. Consulter votre installation locale pour les emplacements réels.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/conf/httpd.conf</code></dt>
+<dd>Fichier de configuration globale du serveur.</dd>
+
+<dt><code>/usr/local/apache2/conf/mime.types</code></dt>
+<dd>Correspondances de types MIME par défaut.</dd>
+
+<dt><code>/usr/local/apache2/logs/error_log</code></dt>
+<dd>Fichier du journal des erreurs.</dd>
+
+<dt><code>/usr/local/apache2/logs/access_log</code></dt>
+<dd>Fichier du journal des accès</dd>
+
+<dt><code>/usr/local/apache2/logs/httpd.pid</code></dt>
+<dd>Fichier contenant l’ID du processus du démon en cours d’exécution.</dd>
+</dl>
+
 </section>
 
 </manualpage>

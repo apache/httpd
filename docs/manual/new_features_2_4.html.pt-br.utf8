@@ -1,0 +1,482 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Vis&atilde;o geral das novas funcionalidades do Servidor HTTP Apache 2.4 - Servidor HTTP Apache Vers&atilde;o 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
+</script>
+
+<link href="./images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="./">Vers&atilde;o 2.5</a></div><div id="page-content"><div id="preamble"><h1>Vis&atilde;o geral das novas funcionalidades do Servidor HTTP Apache 2.4</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./en/new_features_2_4.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/new_features_2_4.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/new_features_2_4.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./pt-br/new_features_2_4.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div>
+
+  <p>Este documento descreve algumas das principais mudan&ccedil;as entre as
+     vers&otilde;es 2.2 e 2.4 do servidor HTTP Apache. Para obter informa&ccedil;&otilde;es sobre os novos recursos
+     desde a vers&atilde;o 2.0, consulte o documento <a href="new_features_2_2.html">Novos recursos
+     da vers&atilde;o 2.2</a>.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#core">Melhorias no N&uacute;cleo</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#newmods">Novos M&oacute;dulos</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#module">Melhorias em M&oacute;dulos</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programs">Melhorias em Programas</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#documentation">Documenta&ccedil;&atilde;o</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#developer">Mudan&ccedil;as no Desenvolvedor de M&oacute;dulos</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="core">Melhorias no N&uacute;cleo <a title="Link permanente" href="#core" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt>MPMs carreg&aacute;veis no momento da execu&ccedil;&atilde;o</dt>
+      <dd>M&uacute;ltiplos MPMs agora podem ser <a href="mpm.html#dynamic">compilados
+      como m&oacute;dulos carreg&aacute;veis</a> no momento da compila&ccedil;&atilde;o.
+      O MPM escolhido pode ser configurado no momento da execu&ccedil;&atilde;o atrav&eacute;s da
+      diretiva <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>.</dd>
+
+      <dt>MPM de Eventos</dt>
+      <dd>O <a href="mod/event.html">MPM de Eventos</a> n&atilde;o &eacute; mais experimental
+      e agora &eacute; totalmente suportado.</dd>
+
+      <dt>Suporte ass&iacute;ncrono</dt>
+      <dd>Melhoria no suporte para leitura/escrita ass&iacute;ncronas para suportar MPMs e
+      plataformas.</dd>
+
+      <dt>Configura&ccedil;&atilde;o de LogLevel por m&oacute;dulo e por diret&oacute;rio</dt>
+      <dd>A diretiva <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> agora pode ser
+      configurada por m&oacute;dulo e por diret&oacute;rio. Os novos modos <code>trace1</code>
+      a <code>trace8</code> foram adicionados acima do n&iacute;vel
+      <code>debug</code>.</dd>
+
+      <dt>Se&ccedil;&otilde;es de configura&ccedil;&atilde;o por requisi&ccedil;&atilde;o</dt>
+      <dd>Se&ccedil;&otilde;es <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>,
+          <code class="directive"><a href="./mod/core.html#elseif">&lt;ElseIf&gt;</a></code>
+          e <code class="directive"><a href="./mod/core.html#else">&lt;Else&gt;</a></code>
+          podem ser usadas para definir a configura&ccedil;&atilde;o baseada em crit&eacute;rios
+          por requisi&ccedil;&atilde;o.</dd>
+
+      <dt>Analisador de express&atilde;o de prop&oacute;sito geral</dt>
+      <dd>Um novo analisador de express&atilde;o permite especificar
+          <a href="expr.html">condi&ccedil;&otilde;es complexas</a> usando uma sintaxe comum
+          em diretivas como
+          <code class="directive"><a href="./mod/mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></code>,
+          <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>,
+          <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
+          <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
+          e outras.
+      </dd>
+
+      <dt>KeepAliveTimeout em milissegundos</dt>
+      <dd>Agora &eacute; poss&iacute;vel especificar <code class="directive"><a href="./mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> em milissegundos.
+      </dd>
+
+      <dt>Diretiva NameVirtualHost</dt>
+      <dd>N&atilde;o &eacute; mais necess&aacute;ria e tornou-se obsoleta.</dd>
+
+      <dt>Configura&ccedil;&atilde;o de Override</dt>
+      <dd>A nova diretiva <code class="directive"><a href="./mod/core.html#allowoverridelist">AllowOverrideList</a></code>
+          permite controle mais fino de quais diretivas s&atilde;o
+          permitidas em arquivos <code>.htaccess</code>.</dd>
+
+      <dt>Vari&aacute;veis do arquivo de configura&ccedil;&atilde;o</dt>
+      <dd>Agora &eacute; poss&iacute;vel definir vari&aacute;veis na configura&ccedil;&atilde;o atrav&eacute;s da diretiva
+          <code class="directive"><a href="./mod/core.html#define">Define</a></code>, permitindo uma representa&ccedil;&atilde;o
+          mais clara se o mesmo valor for usado em v&aacute;rios lugares na configura&ccedil;&atilde;o.
+      </dd>
+
+      <dt>Uso reduzido de mem&oacute;ria</dt>
+      <dd>Mesmo com v&aacute;rias novas funcionalidades, a vers&atilde;o 2.4.x tende a
+          usar menos mem&oacute;ria que a 2.2.x.</dd>
+
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="newmods">Novos M&oacute;dulos <a title="Link permanente" href="#newmods" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
+      <dd>Backend do protocolo FastCGI para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></dt>
+      <dd>Backend do protocolo SCGI para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
+      <dd>Fornece proxies reversos em massa configurados dinamicamente para
+      <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_remoteip.html">mod_remoteip</a></code></dt>
+      <dd>Substitui o endere&ccedil;o IP remoto e o nome do host do cliente aparentes para a requisi&ccedil;&atilde;o,
+      com a lista de endere&ccedil;os IP apresentada por um proxy ou um balanceador de carga por meio
+      dos cabe&ccedil;alhos da requisi&ccedil;&atilde;o.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_heartmonitor.html">mod_heartmonitor</a></code>,
+          <code class="module"><a href="./mod/mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></code></dt>
+      <dd>Permite que o m&oacute;dulo <code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> baseie suas decis&otilde;es
+      de balanceamento de carga no n&uacute;mero de conex&otilde;es ativas nos servidores de backend.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code></dt>
+      <dd>Anteriormente um m&oacute;dulo de terceiros, este suporta a corre&ccedil;&atilde;o de links
+      HTML em uma situa&ccedil;&atilde;o de proxy reverso, onde o backend gera URLs que n&atilde;o
+      s&atilde;o v&aacute;lidos para os clientes do proxy.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_sed.html">mod_sed</a></code></dt>
+      <dd>Uma substitui&ccedil;&atilde;o avan&ccedil;ada de <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>, permite
+      editar o corpo da resposta com todo o poder do sed.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_auth_form.html">mod_auth_form</a></code></dt>
+      <dd>Permite a autentica&ccedil;&atilde;o baseada em formul&aacute;rio.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_session.html">mod_session</a></code></dt>
+      <dd>Permite o uso do estado da sess&atilde;o para clientes, usando cookies ou
+      armazenamento em banco de dados.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_allowmethods.html">mod_allowmethods</a></code></dt>
+      <dd>Novo m&oacute;dulo para restringir certos m&eacute;todos HTTP sem interferir na
+      autentica&ccedil;&atilde;o ou autoriza&ccedil;&atilde;o.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code></dt>
+      <dd>Incorpora a linguagem <a href="http://www.lua.org/">Lua</a> no httpd,
+      para configura&ccedil;&atilde;o e fun&ccedil;&otilde;es de l&oacute;gica de pequenos neg&oacute;cios (experimental).</dd>
+
+      <dt><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></dt>
+      <dd>Permite a adi&ccedil;&atilde;o de registros de depura&ccedil;&atilde;o personaliz&aacute;veis ​​em
+      diferentes fases do processamento da requisi&ccedil;&atilde;o.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_buffer.html">mod_buffer</a></code></dt>
+      <dd>Fornece recursos para o armazenamento em buffer das pilhas de filtros de entrada e sa&iacute;da.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_data.html">mod_data</a></code></dt>
+      <dd>Converte o corpo da resposta em um URL de dados RFC2397.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_ratelimit.html">mod_ratelimit</a></code></dt>
+      <dd>Oferece limita&ccedil;&atilde;o de largura de banda para clientes.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_request.html">mod_request</a></code></dt>
+      <dd>Fornece filtros para manipular e disponibilizar corpos de requisi&ccedil;&atilde;o HTTP.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></dt>
+      <dd>Fornece a reflex&atilde;o do corpo de uma solicita&ccedil;&atilde;o como resposta por meio da pilha de filtros de sa&iacute;da.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code></dt>
+      <dd>Fornece um provedor de mem&oacute;ria compartilhada baseado em slots.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_xml2enc.html">mod_xml2enc</a></code></dt>
+      <dd>Anteriormente um m&oacute;dulo de terceiros, suporta a internacionaliza&ccedil;&atilde;o
+      em m&oacute;dulos de filtro baseados em libxml2 (com reconhecimento de marca&ccedil;&atilde;o).</dd>
+
+      <dt><code class="module"><a href="./mod/mod_macro.html">mod_macro</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.5)</dt>
+      <dd>Fornece macros dentro dos arquivos de configura&ccedil;&atilde;o.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.5)</dt>
+      <dd>Suporta t&uacute;neis web-socket.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_authnz_fcgi.html">mod_authnz_fcgi</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.10)</dt>
+      <dd>Permite que aplicativos autorizadores FastCGI autentiquem e/ou
+      autorizem clientes.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.17)</dt>
+      <dd>Suporte para a camada de transporte HTTP/2.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_http2.html">mod_proxy_http2</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.19)</dt>
+      <dd>Backend do protocolo HTTP/2 para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.21)</dt>
+      <dd>Suporta verifica&ccedil;&otilde;es de integridade din&acirc;micas e independentes para servidores backend proxy remotos.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_brotli.html">mod_brotli</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.26)</dt>
+      <dd>Suporta o algoritmo de compress&atilde;o Brotli.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_md.html">mod_md</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.30)</dt>
+      <dd>Suporta o protocolo ACME para automatizar o fornecimento de certificados.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_uwsgi.html">mod_proxy_uwsgi</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.30)</dt>
+      <dd>M&oacute;dulo de gateway UWSGI para <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_socache_redis.html">mod_socache_redis</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.39)</dt>
+      <dd>Suporta provedor de cache de objetos compartilhados baseado em <a href="http://redis.io/">Redis</a>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_systemd.html">mod_systemd</a></code> (dispon&iacute;vel desde a vers&atilde;o 2.4.42)</dt>
+      <dd>Integra&ccedil;&atilde;o com systemd. Permite que o httpd seja usado em um servi&ccedil;o com o
+      <code>Type=notify</code> do systemd.</dd>
+
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="module">Melhorias em M&oacute;dulos <a title="Link permanente" href="#module" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
+
+      <dd>O m&oacute;dulo <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> agora pode ser configurado para usar um
+      servidor OCSP para verificar o status de valida&ccedil;&atilde;o de um certificado de cliente.
+      O servidor de resposta padr&atilde;o &eacute; configur&aacute;vel, assim como
+      a decis&atilde;o de priorizar o servidor de resposta designado no
+      pr&oacute;prio certificado do cliente.</dd>
+
+      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> agora tamb&eacute;m suporta grampeamento OCSP, onde o
+      servidor obt&eacute;m proativamente uma verifica&ccedil;&atilde;o OCSP de seu certificado e
+      a transmite ao cliente durante a comunica&ccedil;&atilde;o inicial.</dd>
+
+      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> agora pode ser configurado para compartilhar dados de sess&atilde;o SSL
+      entre servidores atrav&eacute;s do memcached</dd>
+
+      <dd>Agora, al&eacute;m de RSA e DSA, tamb&eacute;m s&atilde;o suportadas chaves EC.</dd>
+
+      <dd>Suporte para TLS-SRP (dispon&iacute;vel na vers&atilde;o 2.4.4 e posteriores).</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
+
+      <dd>A diretiva <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+      agora &eacute; configurada de forma mais otimizada dentro de um bloco
+      <code class="directive"><a href="./mod/core.html#location">Location</a></code> ou
+      <code class="directive"><a href="./mod/core.html#locationmatch">LocationMatch</a></code>
+      e oferece uma vantagem de desempenho significativa em rela&ccedil;&atilde;o &agrave; sintaxe tradicional de dois par&acirc;metros
+      quando presente em grande n&uacute;mero.</dd>
+      <dd>O endere&ccedil;o de origem usado para solicita&ccedil;&otilde;es de proxy agora &eacute; configur&aacute;vel.</dd>
+      <dd>Suporte para sockets de dom&iacute;nio Unix para o backend (dispon&iacute;vel na vers&atilde;o 2.4.7
+      e posteriores).</dd>
+
+      <dt><code class="module"><a href="./mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dt>
+
+      <dd>Mais altera&ccedil;&otilde;es de configura&ccedil;&atilde;o em tempo de execu&ccedil;&atilde;o para BalancerMembers via balancer-manager.</dd>
+
+      <dd>BalancerMembers adicionais podem ser adicionados em tempo de execu&ccedil;&atilde;o atrav&eacute;s do balancer-manager.</dd>
+
+      <dd>Configura&ccedil;&atilde;o em tempo de execu&ccedil;&atilde;o de um subconjunto de par&acirc;metros do Balanceador.</dd>
+
+      <dd>Os membros do BalancerMembers podem ser configurados como 'Drain' para que respondam apenas a sess&otilde;es
+      persistentes existentes, permitindo que sejam desconectados corretamente.</dd>
+
+      <dd>As configura&ccedil;&otilde;es do balanceador podem persistir ap&oacute;s reinicializa&ccedil;&otilde;es.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></dt>
+
+      <dd>O filtro CACHE do m&oacute;dulo <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> pode ser inserido opcionalmente
+      em um determinado ponto da cadeia de filtros para fornecer um controle preciso sobre o cache.
+      </dd>
+
+      <dd>O m&oacute;dulo <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> agora pode armazenar em cache as solicita&ccedil;&otilde;es HEAD.</dd>
+
+      <dd>Sempre que poss&iacute;vel, as diretivas <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> agora podem ser definidas
+      por diret&oacute;rio, em vez de por servidor.</dd>
+
+      <dd>O URL base dos URLs em cache pode ser personalizado, de forma que um grupo de
+      caches possa compartilhar o mesmo prefixo de URL de endpoint.</dd>
+
+      <dd>O m&oacute;dulo <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> agora &eacute; capaz de fornecer dados em cache desatualizados
+      quando um backend estiver indispon&iacute;vel (erro 5xx).</dd>
+
+      <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> agora pode inserir HIT/MISS/REVALIDATE em
+      um cabe&ccedil;alho X-Cache.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></dt>
+      <dd>Suporte para o atributo 'onerror' dentro de um elemento 'include',
+      permitindo que um documento de erro seja exibido em caso de erro, em vez da
+      string de erro padr&atilde;o.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>,
+          <code class="module"><a href="./mod/mod_isapi.html">mod_isapi</a></code>, ...</dt>
+      <dd>A tradu&ccedil;&atilde;o de cabe&ccedil;alhos para vari&aacute;veis ​​de ambiente &eacute; mais rigorosa do que
+      antes para mitigar poss&iacute;veis ataques de "cross-site scripting" via inje&ccedil;&atilde;o de cabe&ccedil;alho.
+      Nomes de cabe&ccedil;alho contendo caracteres inv&aacute;lidos (incluindo sublinhados)
+      n&atilde;o s&atilde;o mais convertidos em vari&aacute;veis ​​de ambiente. A se&ccedil;&atilde;o <a href="env.html">Vari&aacute;veis ​​de Ambiente
+      no Apache</a> cont&eacute;m algumas dicas sobre como contornar problemas com clientes legados
+      que exigem esses cabe&ccedil;alhos. (Isso afeta todos os m&oacute;dulos que
+      usam essas vari&aacute;veis ​​de ambiente.)</dd>
+
+      <dt>Cont&ecirc;ineres de L&oacute;gica de Autoriza&ccedil;&atilde;o do <code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code></dt>
+
+      <dd>Agora &eacute; poss&iacute;vel especificar l&oacute;gica de autoriza&ccedil;&atilde;o avan&ccedil;ada usando a
+      diretiva <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>
+      e as diretivas de cont&ecirc;iner relacionadas, como
+      <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> adiciona as op&ccedil;&otilde;es <code>[QSD]</code>
+          (Query String Discard) e <code>[END]</code> para a diretiva
+          <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> para
+          simplificar cen&aacute;rios comuns de reescrita.</dd>
+      <dd>Adiciona a possibilidade de usar express&otilde;es booleanas complexas em <code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</dd>
+      <dd>Permite o uso de consultas SQL como fun&ccedil;&otilde;es <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, <code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> adiciona suporte para grupos aninhados.</dd>
+      <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> adiciona as diretivas
+          <code class="directive"><a href="./mod/mod_ldap.html#ldapconnectionpoolttl">LDAPConnectionPoolTTL</a></code>,
+          <code class="directive"><a href="./mod/mod_ldap.html#ldaptimeout">LDAPTimeout</a></code> e
+          outras melhorias no gerenciamento de limites de tempo.
+          Isso &eacute; especialmente &uacute;til para configura&ccedil;&otilde;es onde um
+          firewall com estados descarta conex&otilde;es ociosas com o servidor LDAP.</dd>
+      <dd><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> adiciona a diretiva
+          <code class="directive"><a href="./mod/mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug</a></code> para registrar
+          informa&ccedil;&otilde;es de depura&ccedil;&atilde;o fornecidas pelo kit de ferramentas LDAP utilizado.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
+      <dd><code class="module"><a href="./mod/mod_info.html">mod_info</a></code> agora pode despejar a configura&ccedil;&atilde;o pr&eacute;-analisada
+      para stdout durante a inicializa&ccedil;&atilde;o do servidor.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code></dt>
+      <dd>Novo mecanismo gen&eacute;rico para falsificar autentica&ccedil;&atilde;o b&aacute;sica (dispon&iacute;vel em
+      2.4.5 e vers&otilde;es posteriores).</dd>
+
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="programs">Melhorias em Programas <a title="Link permanente" href="#programs" class="permalink">&para;</a></h2>
+    
+    <dl>
+        <dt><code class="program"><a href="./programs/fcgistarter.html">fcgistarter</a></code></dt>
+        <dd>Novo utilit&aacute;rio inicializador de daemon FastCGI</dd>
+
+        <dt><code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code></dt>
+        <dd>Agora &eacute; poss&iacute;vel listar os URLs armazenados em cache, com metadados opcionais
+        inclu&iacute;dos.</dd>
+        <dd>Permite excluir explicitamente, do cache, URLs individuais
+        armazenadas.</dd>
+        <dd>Os tamanhos dos arquivos agora podem ser arredondados para o tamanho de bloco fornecido, fazendo com que
+        os limites de tamanho correspondam mais de perto ao tamanho real no disco.</dd>
+        <dd>O tamanho do cache agora pode ser limitado pelo n&uacute;mero de inodes, em vez de,
+        ou al&eacute;m de, ser limitado pelo tamanho dos arquivos no
+        disco.</dd>
+
+        <dt><code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code></dt>
+        <dd>Agora &eacute; poss&iacute;vel criar uma atalho para o arquivo de registro atual.</dd>
+        <dd>Agora &eacute; poss&iacute;vel invocar um script p&oacute;s-rota&ccedil;&atilde;o personalizado.</dd>
+
+        <dt><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code>, <code class="program"><a href="./programs/htdbm.html">htdbm</a></code></dt>
+        <dd>Suporte para o algoritmo bcrypt (dispon&iacute;vel na vers&atilde;o 2.4.4 e posteriores).
+        </dd>
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="documentation">Documenta&ccedil;&atilde;o <a title="Link permanente" href="#documentation" class="permalink">&para;</a></h2>
+    
+    <dl>
+        <dt>mod_rewrite</dt>
+        <dd>A documenta&ccedil;&atilde;o do <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> foi
+        reorganizada e quase completamente reescrita, com foco em
+        exemplos e uso comum, al&eacute;m de mostrar quando outras
+        solu&ccedil;&otilde;es s&atilde;o mais apropriadas. O <a href="rewrite/">Guia de
+        Reescrita</a> agora &eacute; uma se&ccedil;&atilde;o de n&iacute;vel superior com muito mais
+        detalhes e melhor organiza&ccedil;&atilde;o.</dd>
+
+        <dt>mod_ssl</dt>
+        <dd>A documenta&ccedil;&atilde;o do <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> foi bastante
+        aprimorada, com mais exemplos para iniciantes,
+        al&eacute;m do foco anterior em detalhes t&eacute;cnicos.</dd>
+
+        <dt>Guia de Cache</dt>
+        <dd>O <a href="caching.html">Guia de Cache</a> foi reescrito
+        para distinguir adequadamente entre os recursos de cache HTTP/1.1 da RFC2616
+        fornecidos pelo <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> e o cache gen&eacute;rico
+        de chave/valor fornecido pela interface <a href="socache.html">socache</a>
+        bem como para abranger o cache especializado fornecido por
+        mecanismos como o <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.</dd>
+
+    </dl>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
+<div class="section">
+<h2 id="developer">Mudan&ccedil;as no Desenvolvedor de M&oacute;dulos <a title="Link permanente" href="#developer" class="permalink">&para;</a></h2>
+    
+    <dl>
+      <dt>Adicionado o Gancho de Verifica&ccedil;&atilde;o de Configura&ccedil;&atilde;o</dt>
+
+      <dd>Um novo gancho, <code>check_config</code>, foi adicionado e &eacute; executado
+          entre os ganchos  <code>pre_config</code> e <code>open_logs</code>.
+          Ele tamb&eacute;m &eacute; executado antes do gancho <code>test_config</code>
+          quando a op&ccedil;&atilde;o <code>-t</code> &eacute; passada para o
+          <code class="program"><a href="./programs/httpd.html">httpd</a></code>. O gancho <code>check_config</code>
+          permite que m&oacute;dulos revisem os valores de diretivas de configura&ccedil;&atilde;o
+          interdependentes e os ajustem enquanto as mensagens ainda possam ser registradas
+          no console. Dessa forma, o usu&aacute;rio pode ser alertado sobre problemas de configura&ccedil;&atilde;o incorreta
+          antes que a fun&ccedil;&atilde;o principal do gancho <code>open_logs</code> redirecione
+          a sa&iacute;da do console para o log de erros.</dd>
+
+      <dt>Adicionado o Analisador de Express&otilde;es</dt>
+
+      <dd>Agora temos um analisador de express&otilde;es de prop&oacute;sito geral, cuja API &eacute;
+          exposta em <var>ap_expr.h</var>. Este &eacute; adaptado do
+          analisador de express&otilde;es implementado anteriormente em
+          <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.</dd>
+
+      <dt>Cont&ecirc;ineres de L&oacute;gica de Autoriza&ccedil;&atilde;o</dt>
+
+      <dd>Os m&oacute;dulos de autoriza&ccedil;&atilde;o agora se registram como um provedor, por meio de
+          ap_register_auth_provider(), para oferecer suporte &agrave; l&oacute;gica de autoriza&ccedil;&atilde;o avan&ccedil;ada,
+          como <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>.</dd>
+
+      <dt>Interface de Cache de Objetos Pequenos</dt>
+
+      <dd>O cabe&ccedil;alho <var>ap_socache.h</var> exp&otilde;e uma interface baseada em provedor
+      para armazenamento em cache de pequenos objetos de dados, baseada na implementa&ccedil;&atilde;o anterior
+      do cache de sess&atilde;o do <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>.
+      Provedores que utilizam um buffer c&iacute;clico de mem&oacute;ria compartilhada, arquivos dbm baseados
+      em disco e um cache distribu&iacute;do memcache s&atilde;o atualmente
+      suportados.</dd>
+
+      <dt>Adicionado o Gancho de Status de Cache</dt>
+
+      <dd>O m&oacute;dulo <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> agora inclui um novo
+      gancho <code>cache_status</code>, que &eacute; chamado quando a decis&atilde;o de cache
+      se torna conhecida. Uma implementa&ccedil;&atilde;o padr&atilde;o fornecida
+      adiciona &agrave; resposta um cabe&ccedil;alho opcional <code>X-Cache</code> e
+      <code>X-Cache-Detail</code>.</dd>
+    </dl>
+
+    <p>A documenta&ccedil;&atilde;o do desenvolvedor cont&eacute;m uma
+    <a href="developer/new_api_2_4.html">lista detalhada de altera&ccedil;&otilde;es na API</a>.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./en/new_features_2_4.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/new_features_2_4.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/new_features_2_4.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./pt-br/new_features_2_4.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

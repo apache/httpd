@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:1907762 (outdated) -->
+<!-- English Revision: 420990:1933506 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -53,7 +53,8 @@
 <syntax>AuthBasicProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
 <default>AuthBasicProvider file</default>
-<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
 <override>AuthConfig</override>
 
 <usage>
@@ -90,7 +91,8 @@
 設定します。</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
 <override>AuthConfig</override>
 
 <usage>

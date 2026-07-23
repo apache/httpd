@@ -24,7 +24,7 @@
 
 <name>mod_cern_meta</name>
 <description>CERN httpd metafile semantics</description>
-<status>Extension</status>
+<status>Deprecated</status>
 <sourcefile>mod_cern_meta.c</sourcefile>
 <identifier>cern_meta_module</identifier>
 
@@ -39,7 +39,7 @@
     CERN users who can exploit this module.</p>
 
     <p>More information on the <a
-    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    href="https://www.w3.org/Daemon/User/Config/General.html#MetaDir"
     >CERN metafile semantics</a> is available.</p>
 </summary>
 

@@ -1,47 +1,47 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>apxs - Apache Eklenti Aracı - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>apxs - Apache Eklenti Aracı - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>apxs - Apache Eklenti Aracı</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>apxs - Apache Eklenti Aracı</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/apxs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/apxs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/apxs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/apxs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/apxs.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p><code><strong>apxs</strong></code>, Apache Hiper Metin Aktarım
-     Protokolü (HTTP) sunucusu için ek modül derleme ve kurulum aracıdır. Bu
-     araç sayesinde, bir veya daha fazla kaynak veya nesne
+     Protokol&uuml; (HTTP) sunucusu i&ccedil;in ek mod&uuml;l derleme ve kurulum aracıdır. Bu
+     ara&ccedil; sayesinde, bir veya daha fazla kaynak veya nesne
      <var>dosya</var>sından bir devingen paylaşımlı nesne (DSO - "Dynamic
-     Shared Object" kısaltması) derlemek ve bu nesneyi (modülü) Apache
-     sunucusuna çalışma anında <strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong>
-     modülünün <strong><code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code></strong> yönergesi üzerinden yüklemek mümkün
+     Shared Object" kısaltması) derlemek ve bu nesneyi (mod&uuml;l&uuml;) Apache
+     sunucusuna &ccedil;alışma anında <strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong>
+     mod&uuml;l&uuml;n&uuml;n <strong><code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code></strong> y&ouml;nergesi &uuml;zerinden y&uuml;klemek m&uuml;mk&uuml;n
      olmaktadır.</p>
 
-    <p>Bu eklenti mekanizmasını platformunuzda kullanmak için DSO desteğinin
+    <p>Bu eklenti mekanizmasını platformunuzda kullanmak i&ccedil;in DSO desteğinin
      olması ve <strong><code class="program"><a href="../programs/httpd.html">httpd</a></code></strong> programının
-     <strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong> modülünü içerecek şekilde
+     <strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong> mod&uuml;l&uuml;n&uuml; i&ccedil;erecek şekilde
      derlenmiş olması gerekir. Eğer bunlar mevcut değilse
      <strong><code>apxs</code></strong> aracı durumu size bildirecektir. Bunu
      aşağıdaki komutla kendiniz de sınayabilirsiniz:</p>
@@ -50,55 +50,55 @@
       $ httpd -l
     </code></p></div>
 
-    <p><strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong> modülü gösterilen listede yer
+    <p><strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong> mod&uuml;l&uuml; g&ouml;sterilen listede yer
      almalıdır. Bu gereksinimler sağlandığı takdirde
      <strong><code>apxs</code></strong> aracı sayesinde DSO mekanizması
-     üzerinden kendi modüllerinizi kurmak suretiyle Apache sunucunuzun
-     işlevselliğini kolayca arttırabilirsiniz. Örnek bir uygulama:</p>
+     &uuml;zerinden kendi mod&uuml;llerinizi kurmak suretiyle Apache sunucunuzun
+     işlevselliğini kolayca arttırabilirsiniz. &Ouml;rnek bir uygulama:</p>
 
     <div class="example"><p><code>
-      $ apxs -i -a -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/dosya/yolu/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
-      cp mod_foo.so /dosya/yolu/apache/modules/mod_foo.so<br />
-      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
-      [`foo' modülü /dosya/yolu/apache/etc/httpd.conf'ta etkinleştiriliyor]<br />
-      $ apachectl restart<br />
-      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /dosya/yolu/apache/sbin/apachectl restart: httpd started<br />
+      $ apxs -i -a -c mod_foo.c<br>
+      gcc -fpic -DSHARED_MODULE -I/dosya/yolu/apache/include -c mod_foo.c<br>
+      ld -Bshareable -o mod_foo.so mod_foo.o<br>
+      cp mod_foo.so /dosya/yolu/apache/modules/mod_foo.so<br>
+      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br>
+      [`foo' mod&uuml;l&uuml; /dosya/yolu/apache/etc/httpd.conf'ta etkinleştiriliyor]<br>
+      $ apachectl restart<br>
+      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br>
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br>
+      /dosya/yolu/apache/sbin/apachectl restart: httpd started<br>
       $ _
     </code></p></div>
 
     <p><var>dosya</var> olarak bir C kaynak dosyası (.c), bir nesne dosyası
-     (.o) ve hatta bir kütüphane arşivi archive (.a) belirtebilirsiniz.
+     (.o) ve hatta bir k&uuml;t&uuml;phane arşivi archive (.a) belirtebilirsiniz.
      <strong><code>apxs</code></strong> aracı bu dosya uzantılarını
      tanıdığından C dosyalarını derleme işleminden, arşiv ve nesne
-     dosyalarını ise doğrudan ilintileme işleminden geçirir. Fakat böyle
-     önceden derlenmiş nesne dosyalarını kullanırken, devingen paylaşımlı
-     nesne olarak kullanılmalarını sağlamak üzere konumdan bağımsız kod (PIC)
-     üretecek şekilde derlenmiş olduklarından emin olmalısınız. Örneğin
-     GCC'yi bunun için daima <strong><code>-fpic</code></strong> seçeneği ile
-     kullanmalısınız. Diğer C derleyiciler için,
+     dosyalarını ise doğrudan ilintileme işleminden ge&ccedil;irir. Fakat b&ouml;yle
+     &ouml;nceden derlenmiş nesne dosyalarını kullanırken, devingen paylaşımlı
+     nesne olarak kullanılmalarını sağlamak &uuml;zere konumdan bağımsız kod (PIC)
+     &uuml;retecek şekilde derlenmiş olduklarından emin olmalısınız. &Ouml;rneğin
+     GCC'yi bunun i&ccedil;in daima <strong><code>-fpic</code></strong> se&ccedil;eneği ile
+     kullanmalısınız. Diğer C derleyiciler i&ccedil;in,
      <strong><code>apxs</code></strong>'in nesne dosyalarını derlerken
-     kullanacağı seçenekleri öğrenmek için o derleyicilerin kılavuz
+     kullanacağı se&ccedil;enekleri &ouml;ğrenmek i&ccedil;in o derleyicilerin kılavuz
      sayfalarına bakınız.</p>
 
-    <p>Apache'deki DSO desteği ile ilgili daha ayrıntılı bilgi edinmek için
+    <p>Apache'deki DSO desteği ile ilgili daha ayrıntılı bilgi edinmek i&ccedil;in
      <strong><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></strong> belgesini okumakla yetinmeyip
      <code>src/modules/standard/mod_so.c</code> kaynak dosyasını da
      okuyunuz.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Örnekler</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><a href="#comments_section">Yorum</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Se&ccedil;enekler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">&Ouml;rnekler</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Kullanım <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>apxs</strong> -<strong>g</strong>
     [ -<strong>S</strong> <var>isim=değer</var> ]
-    -<strong>n</strong> <var>modüladı</var></code></p>
+    -<strong>n</strong> <var>mod&uuml;ladı</var></code></p>
 
     <p><code><strong>apxs</strong> -<strong>q</strong>
     [ -<strong>v</strong> ]
@@ -111,132 +111,132 @@
     [ -<strong>I</strong> <var>include-dizini</var> ]
     [ -<strong>D</strong> <var>isim=değer</var> ]
     [ -<strong>L</strong> <var>lib-dizini</var> ]
-    [ -<strong>l</strong> <var>kütüphane-adı</var> ]
-    [ -<strong>Wc,</strong><var>derleyici-seçenekleri</var> ]
-    [ -<strong>Wl,</strong><var>ilintileyici-seçenekleri</var> ]
+    [ -<strong>l</strong> <var>k&uuml;t&uuml;phane-adı</var> ]
+    [ -<strong>Wc,</strong><var>derleyici-se&ccedil;enekleri</var> ]
+    [ -<strong>Wl,</strong><var>ilintileyici-se&ccedil;enekleri</var> ]
     <var>dosya</var> ...</code></p>
 
     <p><code><strong>apxs</strong> -<strong>i</strong>
     [ -<strong>S</strong> <var>isim=değer</var> ]
-    [ -<strong>n</strong> <var>modüladı</var> ]
+    [ -<strong>n</strong> <var>mod&uuml;ladı</var> ]
     [ -<strong>a</strong> ]
     [ -<strong>A</strong> ]
     <var>dso-dosyası</var> ...</code></p>
 
     <p><code><strong>apxs</strong> -<strong>e</strong>
     [ -<strong>S</strong> <var>isim=değer</var> ]
-    [ -<strong>n</strong> <var>modüladı</var> ]
+    [ -<strong>n</strong> <var>mod&uuml;ladı</var> ]
     [ -<strong>a</strong> ]
     [ -<strong>A</strong> ]
     <var>dso-dosyası</var> ...</code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
-    <h3><a name="options.common" id="options.common">Ortak Seçenekler</a></h3>
+<h2 id="options">Se&ccedil;enekler <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+    <h3 id="options.common">Ortak Se&ccedil;enekler</h3>
       <dl>
-        <dt><code><strong>-n</strong> <var>modüladı</var></code></dt>
+        <dt><code><strong>-n</strong> <var>mod&uuml;ladı</var></code></dt>
         <dd><code><strong>-i</strong></code> (kurulum) ve
-         <code><strong>-g</strong></code> (şablon üretimi)
-         seçenekleri için modül ismi belirtmek amacıyla kullanılır. Bir modül
-         ismi belirtmek için bu seçeneği kullanın.
-         <code><strong>-g</strong></code> seçeneği için bu gereklidir.
-         <code><strong>-i</strong></code> seçeneği için ise araç, modül
-         ismini kaynağın ismine bakarak veya (son çare olarak) dosya isminden
-         tahmin etmeye çalışarak saptamaya çalışır.</dd>
+         <code><strong>-g</strong></code> (şablon &uuml;retimi)
+         se&ccedil;enekleri i&ccedil;in mod&uuml;l ismi belirtmek amacıyla kullanılır. Bir mod&uuml;l
+         ismi belirtmek i&ccedil;in bu se&ccedil;eneği kullanın.
+         <code><strong>-g</strong></code> se&ccedil;eneği i&ccedil;in bu gereklidir.
+         <code><strong>-i</strong></code> se&ccedil;eneği i&ccedil;in ise ara&ccedil;, mod&uuml;l
+         ismini kaynağın ismine bakarak veya (son &ccedil;are olarak) dosya isminden
+         tahmin etmeye &ccedil;alışarak saptamaya &ccedil;alışır.</dd>
       </dl>
     
 
-    <h3><a name="options.query" id="options.query">Sorgu Seçenekleri</a></h3>
+    <h3 id="options.query">Sorgu Se&ccedil;enekleri</h3>
       <dl>
         <dt><code><strong>-q</strong> <var>sorgu</var></code></dt>
         <dd><code>httpd</code>'yi derlemekte kullanılacak değişkenler ve
-         ortam ayarları için bir sorgu gerçekleştirir.  When invoked without
-         <code><var>sorgu</var></code> belirtilmeksizin çağrıldığında, bilinen
+         ortam ayarları i&ccedil;in bir sorgu ger&ccedil;ekleştirir.  When invoked without
+         <code><var>sorgu</var></code> belirtilmeksizin &ccedil;ağrıldığında, bilinen
          değişkenleri değerleriyle birlikte basar. İsteğe bağlı
-         <code><strong>-v</strong></code> seçeneği liste çıktısını biçemler.
+         <code><strong>-v</strong></code> se&ccedil;eneği liste &ccedil;ıktısını bi&ccedil;emler.
 
-         <p>Modülünüzü yükleyecek <code><strong>httpd</strong></code>'yi
-          derlemek için kullanılacak ayarları elle belirtmek için kullanılır.
-          Örneğin, Apache'nin C başlık dosyalarının yerini kendi Makefile
-          dosyalarınızın içinde şöyle belirtebilirsiniz:</p>
+         <p>Mod&uuml;l&uuml;n&uuml;z&uuml; y&uuml;kleyecek <code><strong>httpd</strong></code>'yi
+          derlemek i&ccedil;in kullanılacak ayarları elle belirtmek i&ccedil;in kullanılır.
+          &Ouml;rneğin, Apache'nin C başlık dosyalarının yerini kendi Makefile
+          dosyalarınızın i&ccedil;inde ş&ouml;yle belirtebilirsiniz:</p>
         <div class="example"><p><code>
           INC=-I`apxs -q INCLUDEDIR`
         </code></p></div></dd>
       </dl>
     
 
-    <h3><a name="options.conf" id="options.conf">Yapılandırma Seçenekleri</a></h3>
+    <h3 id="options.conf">Yapılandırma Se&ccedil;enekleri</h3>
       <dl>
       <dt><code><strong>-S</strong> <var>isim=değer</var></code></dt>
-      <dd>Bu seçenek yukarıda açıklanan <code><strong>apxs</strong></code>
+      <dd>Bu se&ccedil;enek yukarıda a&ccedil;ıklanan <code><strong>apxs</strong></code>
         ayarlarını değiştirir.</dd>
       </dl>
     
 
-    <h3><a name="options.template" id="options.template">Şablon Üretme Seçenekleri</a></h3>
+    <h3 id="options.template">Şablon &Uuml;retme Se&ccedil;enekleri</h3>
       <dl>
       <dt><code><strong>-g</strong></code></dt>
-      <dd><code><var>modüladı</var></code> (<strong><code>-n</code></strong>
-       seçeneğine bakınız) adında bir alt dizin oluşturur ve içine iki dosya
-       yerleştirir: Kendi modülünüzü oluşturabilmeniz için veya
+      <dd><code><var>mod&uuml;ladı</var></code> (<strong><code>-n</code></strong>
+       se&ccedil;eneğine bakınız) adında bir alt dizin oluşturur ve i&ccedil;ine iki dosya
+       yerleştirir: Kendi mod&uuml;l&uuml;n&uuml;z&uuml; oluşturabilmeniz i&ccedil;in veya
        <code><strong>apxs</strong></code> mekanizmaları ile hemen oynamaya
-       başlayabilmeniz için <code>mod_<var>modüladı</var>.c</code> adında bir
-       modül kaynak dosyası örneği ve bu modülü derleyip kurmayı
-       kolaylaştırmak için bir <code>Makefile</code> dosyası.</dd>
+       başlayabilmeniz i&ccedil;in <code>mod_<var>mod&uuml;ladı</var>.c</code> adında bir
+       mod&uuml;l kaynak dosyası &ouml;rneği ve bu mod&uuml;l&uuml; derleyip kurmayı
+       kolaylaştırmak i&ccedil;in bir <code>Makefile</code> dosyası.</dd>
       </dl>
     
 
-    <h3><a name="options.dso" id="options.dso">DSO Derleme Seçenekleri</a></h3>
+    <h3 id="options.dso">DSO Derleme Se&ccedil;enekleri</h3>
       <dl>
       <dt><code><strong>-c</strong></code></dt>
-      <dd>Bu seçenek derleme yapılacağını belirtir. Önce belirtilen C kaynak
-       <var>dosyalar</var>ını (.c), nesne dosyalarını (.o) elde etmek için
+      <dd>Bu se&ccedil;enek derleme yapılacağını belirtir. &Ouml;nce belirtilen C kaynak
+       <var>dosyalar</var>ını (.c), nesne dosyalarını (.o) elde etmek i&ccedil;in
        derler. Sonra bunları kalan nesne dosyaları (.o ve .a) ile
        ilintileyerek <var>dso-dosyası</var> adında bir devingen paylaşımlı
-       nesne oluşturur. Eğer <strong><code>-o</code></strong> seçeneği ile
-       modül ismi belirtilmemişse <var>dosyalar</var> arasındaki ilk dosyanın
-       ismine bakarak dosya ismi tahmin edilmeye çalışılır ve
+       nesne oluşturur. Eğer <strong><code>-o</code></strong> se&ccedil;eneği ile
+       mod&uuml;l ismi belirtilmemişse <var>dosyalar</var> arasındaki ilk dosyanın
+       ismine bakarak dosya ismi tahmin edilmeye &ccedil;alışılır ve
        <code>mod_<var>isim</var>.so</code> dosya adı bu isimden elde
        edilir.</dd>
 
       <dt><code><strong>-o</strong> <var>dso-dosyası</var></code></dt>
-      <dd>Oluşturulacak devingen paylaşımlı nesnenin ismini belirtmek için
-       kullanılır. Modül ismi bu seçenekle belirtilmez ve <var>dosya</var>
-       listesinden bir isim tahmini de yapılamazsa son çare olarak
+      <dd>Oluşturulacak devingen paylaşımlı nesnenin ismini belirtmek i&ccedil;in
+       kullanılır. Mod&uuml;l ismi bu se&ccedil;enekle belirtilmez ve <var>dosya</var>
+       listesinden bir isim tahmini de yapılamazsa son &ccedil;are olarak
        <code>mod_unknown.so</code> ismi kullanılır.</dd>
 
       <dt><code><strong>-D</strong> <var>isim=değer</var></code></dt>
-      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
-       derleme işlemine kendi tanımlarınızı belirtmek için kullanın.</dd>
+      <dd>Bu se&ccedil;enek doğrudan derleme komutlarına aktarılır. Bu se&ccedil;eneği
+       derleme işlemine kendi tanımlarınızı belirtmek i&ccedil;in kullanın.</dd>
 
       <dt><code><strong>-I</strong> <var>include-dizini</var></code></dt>
-      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
-       derleme işleminde kullanılmak üzere kendi başlık dosyalarınızı içeren
-       dizinleri arama yollarına eklemek için kullanın.</dd>
+      <dd>Bu se&ccedil;enek doğrudan derleme komutlarına aktarılır. Bu se&ccedil;eneği
+       derleme işleminde kullanılmak &uuml;zere kendi başlık dosyalarınızı i&ccedil;eren
+       dizinleri arama yollarına eklemek i&ccedil;in kullanın.</dd>
 
       <dt><code><strong>-L</strong> <var>lib-dizini</var></code></dt>
-      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
-       derleme işleminde kullanılmak üzere kendi kütüphane dizinlerinizi
-       arama yollarına eklemek için kullanın.</dd>
+      <dd>Bu se&ccedil;enek doğrudan derleme komutlarına aktarılır. Bu se&ccedil;eneği
+       derleme işleminde kullanılmak &uuml;zere kendi k&uuml;t&uuml;phane dizinlerinizi
+       arama yollarına eklemek i&ccedil;in kullanın.</dd>
 
-      <dt><code><strong>-l</strong> <var>kütüphane-adı</var></code></dt>
-      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
-       derleme işleminde kullanılmak üzere kendi kütüphanelerinizi arama
-       yollarına eklemek için kullanın.</dd>
+      <dt><code><strong>-l</strong> <var>k&uuml;t&uuml;phane-adı</var></code></dt>
+      <dd>Bu se&ccedil;enek doğrudan derleme komutlarına aktarılır. Bu se&ccedil;eneği
+       derleme işleminde kullanılmak &uuml;zere kendi k&uuml;t&uuml;phanelerinizi arama
+       yollarına eklemek i&ccedil;in kullanın.</dd>
 
-      <dt><code><strong>-Wc</strong>,<var>derleyici-seçenekleri</var></code></dt>
-      <dd>Bu seçenek <code>libtool --mode=compile</code> komutuna doğrudan
-       seçenek aktarmak için kullanılır. Bu seçeneği yerel derleyiciniz için
-       gereken ek seçenekleri belirtmek için kullanın.</dd>
+      <dt><code><strong>-Wc</strong>,<var>derleyici-se&ccedil;enekleri</var></code></dt>
+      <dd>Bu se&ccedil;enek <code>libtool --mode=compile</code> komutuna doğrudan
+       se&ccedil;enek aktarmak i&ccedil;in kullanılır. Bu se&ccedil;eneği yerel derleyiciniz i&ccedil;in
+       gereken ek se&ccedil;enekleri belirtmek i&ccedil;in kullanın.</dd>
 
-      <dt><code><strong>-Wl</strong>,<var>ilintileyici-seçenekleri</var></code></dt>
-      <dd>Bu seçenek <code>libtool --mode=link</code> komutuna doğrudan
-       seçenek aktarmak için kullanılır. Bu seçeneği yerel ilintileyiciniz
-       için gereken ek seçenekleri belirtmek için kullanın.</dd>
+      <dt><code><strong>-Wl</strong>,<var>ilintileyici-se&ccedil;enekleri</var></code></dt>
+      <dd>Bu se&ccedil;enek <code>libtool --mode=link</code> komutuna doğrudan
+       se&ccedil;enek aktarmak i&ccedil;in kullanılır. Bu se&ccedil;eneği yerel ilintileyiciniz
+       i&ccedil;in gereken ek se&ccedil;enekleri belirtmek i&ccedil;in kullanın.</dd>
       </dl>
     
 
-    <h3><a name="options.dsoinstall" id="options.dsoinstall">DSO Kurulum ve Yapılandırma Seçenekleri</a></h3>
+    <h3 id="options.dsoinstall">DSO Kurulum ve Yapılandırma Se&ccedil;enekleri</h3>
     
       <dl>
       <dt><code><strong>-i</strong></code></dt>
@@ -245,55 +245,55 @@
 
       <dt><code><strong>-a</strong></code></dt>
       <dd>İlgili <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> satırını
-       Apache'nin <code>httpd.conf</code> yapılandırma dosyasına özdevinimli
-       olarak ekleyerek veya böyle bir satır varsa bunu etkin kılarak modülü
+       Apache'nin <code>httpd.conf</code> yapılandırma dosyasına &ouml;zdevinimli
+       olarak ekleyerek veya b&ouml;yle bir satır varsa bunu etkin kılarak mod&uuml;l&uuml;
        etkinleştirir.</dd>
 
       <dt><code><strong>-A</strong></code></dt>
       <dd><strong><code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code></strong>
-       yönergesini daha sonra etkinleştirmek üzere satırın başına bir diyez
+       y&ouml;nergesini daha sonra etkinleştirmek &uuml;zere satırın başına bir diyez
        imi (<code>#</code>) yerleştirmesi dışında
-       <strong><code>-a</code></strong> seçeneği ile aynıdır.</dd>
+       <strong><code>-a</code></strong> se&ccedil;eneği ile aynıdır.</dd>
 
       <dt><code><strong>-e</strong></code></dt>
-      <dd>Modülü kurmaya çalışmaksızın Apache'nin <code>httpd.conf</code>
+      <dd>Mod&uuml;l&uuml; kurmaya &ccedil;alışmaksızın Apache'nin <code>httpd.conf</code>
        yapılandırma dosyasını <strong><code>-i</code></strong> işlemine
        benzer şekilde <strong><code>-a</code></strong> ve
-       <strong><code>-A</code></strong> seçenekleri ile düzenleme işlemini
+       <strong><code>-A</code></strong> se&ccedil;enekleri ile d&uuml;zenleme işlemini
        belirtir.</dd>
       </dl>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Örnekler</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">&Ouml;rnekler <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <p>Apache'nin sunucu işlevselliğini genişletmek amacıyla kullanacağınız
-     <code>mod_foo.c</code> adında bir Apache modülünüz olduğunu varsayalım.
-     Öncelikle, C kaynak dosyasını, Apache sunucusuna çalışma anında
-     yüklenmeye uygun bir paylaşımlı nesne olarak derlemeniz gerekir. Bunu
-     sağlamak için şu komutları vermelisiniz:</p>
+     <code>mod_foo.c</code> adında bir Apache mod&uuml;l&uuml;n&uuml;z olduğunu varsayalım.
+     &Ouml;ncelikle, C kaynak dosyasını, Apache sunucusuna &ccedil;alışma anında
+     y&uuml;klenmeye uygun bir paylaşımlı nesne olarak derlemeniz gerekir. Bunu
+     sağlamak i&ccedil;in şu komutları vermelisiniz:</p>
 
     <div class="example"><p><code>
-      $ apxs -c mod_foo.c<br />
-      /dosya/yolu/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /dosya/yolu/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
+      $ apxs -c mod_foo.c<br>
+      /dosya/yolu/libtool --mode=compile gcc ... -c mod_foo.c<br>
+      /dosya/yolu/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br>
       $ _
     </code></p></div>
 
-    <p>Bundan sonra, Apache yapılandırmanızın bu paylaşımlı nesneyi yüklemek
-     için bir <strong><code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code></strong> yönergesi içermesini
+    <p>Bundan sonra, Apache yapılandırmanızın bu paylaşımlı nesneyi y&uuml;klemek
+     i&ccedil;in bir <strong><code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code></strong> y&ouml;nergesi i&ccedil;ermesini
      sağlamalısınız. <strong><code>apxs</code></strong> bu adımı
      basitleştirmek amacıyla, paylaşımlı nesneyi sunucunun <var>modules</var>
-     dizinine özdevinimli olarak kurmak ve <code>httpd.conf</code> dosyasını
-     buna uygun olarak güncellemek için bir yol sağlar. Bu sonuç şöyle elde
+     dizinine &ouml;zdevinimli olarak kurmak ve <code>httpd.conf</code> dosyasını
+     buna uygun olarak g&uuml;ncellemek i&ccedil;in bir yol sağlar. Bu sonu&ccedil; ş&ouml;yle elde
      edilebilir:</p>
 
     <div class="example"><p><code>
-      $ apxs -i -a mod_foo.la<br />
-      /dosya/yolu/instdso.sh mod_foo.la /path/to/apache/modules<br />
+      $ apxs -i -a mod_foo.la<br>
+      /dosya/yolu/instdso.sh mod_foo.la /path/to/apache/modules<br>
       /dosya/yolu/libtool --mode=install cp mod_foo.la /dosya/yolu/apache/modules
       ...
-      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
-      [`foo' modülü /dosya/yolu/apache/conf/httpd.conf'da etkinleştiriliyor] <br />
+      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br>
+      [`foo' mod&uuml;l&uuml; /dosya/yolu/apache/conf/httpd.conf'da etkinleştiriliyor] <br>
       $ _
     </code></p></div>
 
@@ -303,81 +303,85 @@
       LoadModule foo_module modules/mod_foo.so
     </code></p></div>
 
-    <p>Bunu öntanımlı olarak iptal etmek isterseniz
-     <strong><code>-A</code></strong> seçeneğini kullanmanız gerekir:</p>
+    <p>Bunu &ouml;ntanımlı olarak iptal etmek isterseniz
+     <strong><code>-A</code></strong> se&ccedil;eneğini kullanmanız gerekir:</p>
 
     <div class="example"><p><code>
       $ apxs -i -A mod_foo.c
     </code></p></div>
 
     <p><strong><code>apxs</code></strong> mekanizmalarını hızlıca denemek
-     için örnek bir Apache modül şablonunu ve bir Makefile dosyasını şöyle
+     i&ccedil;in &ouml;rnek bir Apache mod&uuml;l şablonunu ve bir Makefile dosyasını ş&ouml;yle
      oluşturabilirsiniz:</p>
 
     <div class="example"><p><code>
-      $ apxs -g -n foo<br />
-      Creating [DIR]  foo<br />
-      Creating [FILE] foo/Makefile<br />
-      Creating [FILE] foo/modules.mk<br />
-      Creating [FILE] foo/mod_foo.c<br />
-      Creating [FILE] foo/.deps<br />
+      $ apxs -g -n foo<br>
+      Creating [DIR]  foo<br>
+      Creating [FILE] foo/Makefile<br>
+      Creating [FILE] foo/modules.mk<br>
+      Creating [FILE] foo/mod_foo.c<br>
+      Creating [FILE] foo/.deps<br>
       $ _
     </code></p></div>
 
-    <p>Ardından bu örnek modülü bir paylaşımlı nesne olarak derleyip Apache
-     sunucusuna yükleyebilirsiniz:</p>
+    <p>Ardından bu &ouml;rnek mod&uuml;l&uuml; bir paylaşımlı nesne olarak derleyip Apache
+     sunucusuna y&uuml;kleyebilirsiniz:</p>
 
     <div class="example"><p><code>
-      $ cd foo<br />
-      $ make all reload<br />
-      apxs -c mod_foo.c<br />
-      /dosya/yolu/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /dosya/yolu/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      apxs -i -a -n "foo" mod_foo.la<br />
-      /dosya/yolu/instdso.sh mod_foo.la /dosya/yolu/apache/modules<br />
+      $ cd foo<br>
+      $ make all reload<br>
+      apxs -c mod_foo.c<br>
+      /dosya/yolu/libtool --mode=compile gcc ... -c mod_foo.c<br>
+      /dosya/yolu/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br>
+      apxs -i -a -n "foo" mod_foo.la<br>
+      /dosya/yolu/instdso.sh mod_foo.la /dosya/yolu/apache/modules<br>
       /dosya/yolu/libtool --mode=install cp mod_foo.la /dosya/yolu/apache/modules
       ...
-       chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
-      [`foo' modülü /dosya/yolu/apache/conf/httpd.conf'ta etkinleştiriliyor]<br />
-       apachectl restart<br />
-       /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
-      [`foo' modülü /dosya/yolu/apache/etc/httpd.conf'ta etkinleştiriliyor]<br />
-      apachectl restart<br />
-      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /dosya/yolu/apache/sbin/apachectl restart: httpd started<br />
+       chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br>
+      [`foo' mod&uuml;l&uuml; /dosya/yolu/apache/conf/httpd.conf'ta etkinleştiriliyor]<br>
+       apachectl restart<br>
+       /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br>
+      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br>
+      [`foo' mod&uuml;l&uuml; /dosya/yolu/apache/etc/httpd.conf'ta etkinleştiriliyor]<br>
+      apachectl restart<br>
+      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br>
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br>
+      /dosya/yolu/apache/sbin/apachectl restart: httpd started<br>
       $ _
     </code></p></div>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/apxs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/apxs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/apxs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/apxs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Yorum</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/apxs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<a href="../tr/programs/apxs.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

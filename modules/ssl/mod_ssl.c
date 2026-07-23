@@ -95,6 +95,8 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(RandomSeed, TAKE23,
                 "SSL Pseudo Random Number Generator (PRNG) seeding source "
                 "('startup|connect builtin|file:/path|exec:/path [bytes]')")
+    SSL_CMD_SRV(VHostSNIPolicy, TAKE1,
+                "SSL VirtualHost SNI compatibility policy setting")
 
     /*
      * Per-server context configuration directives
@@ -121,6 +123,11 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(SessionTicketKeyFile, TAKE1,
                 "TLS session ticket encryption/decryption key file (RFC 5077) "
                 "('/path/to/file' - file with 48 bytes of random data)")
+#endif
+#ifdef HAVE_OPENSSL_ECH
+    SSL_CMD_SRV(ECHKeyDir, TAKE1,
+                "TLS ECH Key Directory"
+                "('/path/to/dir' - directory with ECH key pairs)")
 #endif
     SSL_CMD_ALL(CACertificatePath, TAKE1,
                 "SSL CA Certificate path "
@@ -709,14 +716,23 @@ static int ssl_hook_process_connection(conn_rec* c)
                             AP_MODE_INIT, APR_BLOCK_READ, 0);
         apr_brigade_destroy(temp);
 
-        if (APR_SUCCESS != APR_SUCCESS) {
-            if (c->cs) {
-                c->cs->state = CONN_STATE_LINGER;
+        if (rv != APR_SUCCESS) {
+            /*
+             * We handle NON_SSL_SEND_REQLINE and NON_SSL_SEND_HDR_SEP
+             * later again in the input filter and in ssl_hook_ReadReq
+             * to return an appropriate error message to the client.
+             * Hence do not close the connection here.
+             */
+            if ((sslconn->non_ssl_request != NON_SSL_SEND_REQLINE) &&
+                (sslconn->non_ssl_request != NON_SSL_SEND_HDR_SEP)) {
+                if (c->cs) {
+                    c->cs->state = CONN_STATE_LINGER;
+                }
+                ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
+                              "SSL handshake was not completed, "
+                              "closing connection");
+                return OK;
             }
-            ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10373)
-                          "SSL handshake was not completed, "
-                          "closing connection");
-            return OK;
         }
     }
     
@@ -731,12 +747,12 @@ static void ssl_register_hooks(apr_pool_t *p)
 {
     /* ssl_hook_ReadReq needs to use the BrowserMatch settings so must
      * run after mod_setenvif's post_read_request hook. */
-    static const char *pre_prr[] = { "mod_setenvif.c", NULL };
+    static const char *const pre_prr[] = { "mod_setenvif.c", NULL };
     /* The ssl_init_Module post_config hook should run before mod_proxy's
      * for the ssl proxy main configs to be merged with vhosts' before being
      * themselves merged with mod_proxy's in proxy_hook_section_post_config.
      */
-    static const char *b_pc[] = { "mod_proxy.c", NULL};
+    static const char *const b_pc[] = { "mod_proxy.c", NULL};
 
 
     ssl_io_filter_register(p);

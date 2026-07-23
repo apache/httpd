@@ -1,27 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Developing modules for the Apache HTTP Server 2.4 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Developing modules for the Apache HTTP Server 2.4</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Developing modules for the Apache HTTP Server 2.4</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/modguide.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -29,19 +29,19 @@
 <p>This document explains how you can develop modules for the Apache HTTP
 Server 2.4</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basics">Defining a module</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#hooking">Getting started: Hooking into the server</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#handling">Building a handler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuration">Adding configuration options</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#context">Context aware configurations</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#summary">Summing up</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#snippets">Some useful snippets of code</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basics">Defining a module</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#hooking">Getting started: Hooking into the server</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#handling">Building a handler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#configuration">Adding configuration options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#context">Context aware configurations</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#summary">Summing up</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#snippets">Some useful snippets of code</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
-<h3><a name="what" id="what">What we will be discussing in this document</a></h3>
+<h2 id="introduction">Introduction <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h3 id="what">What we will be discussing in this document</h3>
 <p>
 This document will discuss how you can create modules for the Apache
 HTTP Server 2.4, by exploring an example module called
@@ -61,7 +61,7 @@ writes out its own configuration to the client.
 </p>
 
 
-<h3><a name="prerequisites" id="prerequisites">Prerequisites</a></h3>
+<h3 id="prerequisites">Prerequisites</h3>
 <p>
 First and foremost, you are expected to have a basic knowledge of how the C
 programming language works. In most cases, we will try to be as pedagogical
@@ -77,7 +77,7 @@ Apache if you do not have them already, as these are needed for compiling
 new modules.
 </p>
 
-<h3><a name="compiling" id="compiling">Compiling your module</a></h3>
+<h3 id="compiling">Compiling your module</h3>
 <p>
 To compile the source code we are building in this document, we will be
 using <a href="../programs/apxs.html">APXS</a>. Assuming your source file
@@ -87,17 +87,17 @@ as simple as:
 <div class="example"><pre>apxs -i -a -c mod_example.c</pre></div>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Defining a module</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
+<h2 id="basics">Defining a module <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
 <p>
-<img src="../images/build_a_mod_3.png" alt="Module name tags" /><br />
+<img src="../images/build_a_mod_3.png" alt="Module name tags"><br>
 Every module starts with the same declaration, or name tag if you will,
 that defines a module as <em>a separate entity within Apache</em>:</p>
 
 
 
-<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -105,7 +105,8 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
     create_svr_conf, /* Per-server configuration handler */
     merge_svr_conf,  /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -113,11 +114,12 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
 <p>
 This bit of code lets the server know that we have now registered a new module
 in the system, and that its name is <code>example_module</code>. The name
-of the module is used primarily for two things:<br />
+of the module is used primarily for three things:<br>
 </p>
 <ul>
 <li>Letting the server know how to load the module using the LoadModule</li>
 <li>Setting up a namespace for the module to use in configurations</li>
+<li>Allowing the user to distinguish an origin of log messages</li>
 </ul>
 <p>
 For now, we're only concerned with the first purpose of the module name,
@@ -136,10 +138,10 @@ file or .htaccess, how do we operate within specific contexts, and what
 handlers are we interested in registering with the Apache HTTP service. We'll
 return to all these elements later in this document.
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hooking" id="hooking">Getting started: Hooking into the server</a> <a title="Permanent link" href="#hooking" class="permalink">&para;</a></h2>
-<h3><a name="hook_intro" id="hook_intro">An introduction to hooks</a></h3>
+<h2 id="hooking">Getting started: Hooking into the server <a title="Permanent link" href="#hooking" class="permalink">&para;</a></h2>
+<h3 id="hook_intro">An introduction to hooks</h3>
 <p>
 When handling requests in Apache HTTP Server 2.4, the first thing you will need to do is
 create a hook into the request handling process. A hook is essentially a
@@ -155,8 +157,8 @@ presume to know which module is responsible for handling a specific
 request, and will ask each module whether they have an interest in a given
 request or not. It is then up to each module to either gently decline
 serving a request, accept serving it or flat out deny the request from
-being served, as authentication/authorization modules do: <br />
-<img src="../images/build_a_mod_2.png" alt="Hook handling in httpd" /><br />
+being served, as authentication/authorization modules do: <br>
+<img src="../images/build_a_mod_2.png" alt="Hook handling in httpd"><br>
 To make it a bit easier for handlers such as our mod_example to know
 whether the client is requesting content we should handle or not, the server
 has directives for hinting to modules whether their assistance is needed or
@@ -180,7 +182,7 @@ check for this handler tag relayed by <code>AddHandler</code> and reply to
 the server based on the value of this tag.
 </p>
 
-<h3><a name="hook_declaration" id="hook_declaration">Hooking into httpd</a></h3>
+<h3 id="hook_declaration">Hooking into httpd</h3>
 <p>
 To begin with, we only want to create a simple handler that replies to the
 client browser when a specific URL is requested, so we won't bother setting
@@ -189,7 +191,7 @@ definition will look like this:</p>
 
 
 
-<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,
@@ -197,7 +199,8 @@ definition will look like this:</p>
     NULL,
     NULL,
     NULL,
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -228,7 +231,7 @@ The <code>example_handler</code> reference is the function that will handle
 the request. We will discuss how to create a handler in the next chapter.
 </p>
 
-<h3><a name="hook_others" id="hook_others">Other useful hooks</a></h3>
+<h3 id="hook_others">Other useful hooks</h3>
 <p>
 Hooking into the request handling phase is but one of many hooks that you
 can create. Some other ways of hooking are:
@@ -244,9 +247,9 @@ can create. Some other ways of hooking are:
 </ul>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="handling" id="handling">Building a handler</a> <a title="Permanent link" href="#handling" class="permalink">&para;</a></h2>
+<h2 id="handling">Building a handler <a title="Permanent link" href="#handling" class="permalink">&para;</a></h2>
 <p>
 A handler is essentially a function that receives a callback when a request
 to the server is made. It is passed a record of the current request (how it was
@@ -254,8 +257,8 @@ made, which headers and requests were passed along, who's giving the
 request and so on), and is put in charge of either telling the server that it's
 not interested in the request or handle the request with the tools provided.
 </p>
-<h3><a name="simple_handler" id="simple_handler">A simple "Hello, world!"
-handler</a></h3>
+<h3 id="simple_handler">A simple "Hello, world!"
+handler</h3>
 <p>Let's start off by making a very simple request handler
 that does the following:
 </p>
@@ -295,12 +298,12 @@ In C code, our example handler will now look like this:
 <p>
 Now, we put all we have learned together and end up with a program that
 looks like
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_1.c">mod_example_1.c</a>
+<a href="mod_example_1.c">mod_example_1.c</a>
 . The functions used in this example will be explained later in the section
 <a href="#functions">"Some useful functions you should know"</a>.
 </p>
 
-<h3><a name="request_rec" id="request_rec">The request_rec structure</a></h3>
+<h3 id="request_rec">The request_rec structure</h3>
 <p>The most essential part of any request is the <em>request record
 </em>. In a call to a handler function, this is represented by the <code>
 request_rec* </code> structure passed along with every call that is made.
@@ -329,7 +332,7 @@ file or at <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/structrequ
 
 
 <p>
-Let's try out some of these variables in another example handler:<br />
+Let's try out some of these variables in another example handler:<br>
 </p>
 
 
@@ -360,7 +363,7 @@ Let's try out some of these variables in another example handler:<br />
 
 
 
-<h3><a name="return_value" id="return_value">Return values</a></h3>
+<h3 id="return_value">Return values</h3>
 <p>
 Apache relies on return values from handlers to signify whether a request
 was handled or not, and if so, whether the request went well or not. If a
@@ -388,7 +391,7 @@ it went. To do a full stop and prevent any further processing after your
 module is done, you can return the value <code>DONE</code> to let the server
 know that it should cease all activity on this request and carry on with
 the next, without informing other handlers.
-<br />
+<br>
 <strong>General response codes:</strong>
 </p>
 <ul>
@@ -409,11 +412,11 @@ the next, without informing other handlers.
 </ul>
 
 
-<h3><a name="functions" id="functions">Some useful functions you should know</a></h3>
+<h3 id="functions">Some useful functions you should know</h3>
 
 <ul>
 <li>
-    <code>ap_rputs(const char *string, request_rec *r)</code>: <br />
+    <code>ap_rputs(const char *string, request_rec *r)</code>: <br>
     Sends a string of text to the client. This is a shorthand version of <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gac827cd0537d2b6213a7c06d7c26cc36e">
     ap_rwrite</a>.
 
@@ -427,7 +430,7 @@ the next, without informing other handlers.
 </li>
 <li>
     <code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a></code>: <br />
+    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#ga5e91eb6ca777c9a427b2e82bf1eeb81d">ap_rprintf</a></code>: <br>
     This function works just like <code>printf</code>, except it sends the result to the client.
 
 
@@ -439,7 +442,7 @@ the next, without informing other handlers.
 </li>
 <li>
     <code>
-    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a>(request_rec *r, const char *type)</code>: <br />
+    <a href="http://ci.apache.org/projects/httpd/trunk/doxygen/group__APACHE__CORE__PROTO.html#gaa2f8412c400197338ec509f4a45e4579">ap_set_content_type</a>(request_rec *r, const char *type)</code>: <br>
     Sets the content type of the output you are sending.
 
 
@@ -454,7 +457,7 @@ the next, without informing other handlers.
 </ul>
 
 
-<h3><a name="memory" id="memory">Memory management</a></h3>
+<h3 id="memory">Memory management</h3>
 <p>
 Managing your resources in Apache HTTP Server 2.4 is quite easy, thanks to the memory pool
 system. In essence, each server, connection and request have their own
@@ -528,7 +531,7 @@ on a per-process based level.
 </p>
 
 
-<h3><a name="parsing" id="parsing">Parsing request data</a></h3>
+<h3 id="parsing">Parsing request data</h3>
 <p>
 In our example module, we would like to add a feature, that checks which
 type of digest, MD5 or SHA1 the client would like to see. This could be
@@ -583,7 +586,7 @@ would have to resort to a few more lines, as outlined in <a href="#get_post">thi
 </p>
 
 
-<h3><a name="advanced_handler" id="advanced_handler">Making an advanced handler</a></h3>
+<h3 id="advanced_handler">Making an advanced handler</h3>
 <p>
 Now that we have learned how to parse form data and manage our resources,
 we can move on to creating an advanced version of our module, that spits
@@ -705,13 +708,13 @@ out the MD5 or SHA1 digest of files:
 
 <p>
 This version in its entirety can be found here:
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
+<a href="mod_example_2.c">mod_example_2.c</a>.
 </p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Adding configuration options</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
+<h2 id="configuration">Adding configuration options <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 <p>
 In this next segment of this document, we will turn our eyes away from the
 digest module and create a new example module, whose only function is to
@@ -720,8 +723,8 @@ the server works with configuration, and what happens when you start writing
 advanced configurations
 for your modules.
 </p>
-<h3><a name="config_intro" id="config_intro">An introduction to configuration
-directives</a></h3>
+<h3 id="config_intro">An introduction to configuration
+directives</h3>
 <p>
 If you are reading this, then you probably already know
 what a configuration directive is. Simply put, a directive is a way of
@@ -737,7 +740,7 @@ Each of these configuration directives are handled by a separate function,
 that parses the parameters given and sets up a configuration accordingly.
 </p>
 
-<h3><a name="config_simple" id="config_simple">Making an example configuration</a></h3>
+<h3 id="config_simple">Making an example configuration</h3>
 <p>To begin with, we'll create a basic configuration in C-space:</p>
 
 
@@ -786,7 +789,7 @@ static void register_hooks(apr_pool_t *pool)
 
 /* Define our module as an entity and assign a function for registering hooks  */
 
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,            /* Per-directory configuration handler */
@@ -794,7 +797,8 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     NULL,            /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -813,7 +817,7 @@ module.
 </p>
 
 
-<h3><a name="register_directive" id="register_directive">Registering directives with the server</a></h3>
+<h3 id="register_directive">Registering directives with the server</h3>
 <p>
 What if we want to change our configuration, not by hard-coding new values
 into the module, but by using either the httpd.conf file or possibly a
@@ -823,7 +827,7 @@ reference to the configuration directives we want to register with the server:
 </p>
 
 
-<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -831,7 +835,8 @@ reference to the configuration directives we want to register with the server:
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };</pre>
 
 
@@ -850,13 +855,13 @@ will add a structure with three directives and a NULL at the end:
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };</pre>
 
 
 
 <p>
-<img src="../images/build_a_mod_4.png" alt="Directives structure" /><br />
+<img src="../images/build_a_mod_4.png" alt="Directives structure"><br>
 As you can see, each directive needs at least 5 parameters set:
 </p>
 <ol>
@@ -879,7 +884,7 @@ omitted, as the function for verifying arguments might as well be used to
 set them.</em>)
 </p>
 
-<h3><a name="directive_handler" id="directive_handler">The directive handler function</a></h3>
+<h3 id="directive_handler">The directive handler function</h3>
 <p>
 Now that we have told the server to expect some directives for our module, it's
 time to make a few functions for handling these. What the server reads in the
@@ -922,7 +927,7 @@ const char *example_set_action(cmd_parms *cmd, void *cfg, const char *arg1, cons
 
 
 
-<h3><a name="directive_complete" id="directive_complete">Putting it all together</a></h3>
+<h3 id="directive_complete">Putting it all together</h3>
 <p>
 Now that we have our directives set up, and handlers configured for them,
 we can assemble our module into one big file:
@@ -997,7 +1002,7 @@ static const command_rec        example_directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 /*
  ==============================================================================
@@ -1031,7 +1036,7 @@ static void register_hooks(apr_pool_t *pool)
  Our module name tag:
  ==============================================================================
  */
-module AP_MODULE_DECLARE_DATA   example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,               /* Per-directory configuration handler */
@@ -1039,7 +1044,8 @@ module AP_MODULE_DECLARE_DATA   example_module =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };</pre>
 
 
@@ -1061,10 +1067,10 @@ configuration file.
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="context" id="context">Context aware configurations</a> <a title="Permanent link" href="#context" class="permalink">&para;</a></h2>
-<h3><a name="context_intro" id="context_intro">Introduction to context aware configurations</a></h3>
+<h2 id="context">Context aware configurations <a title="Permanent link" href="#context" class="permalink">&para;</a></h2>
+<h3 id="context_intro">Introduction to context aware configurations</h3>
 <p>
 In Apache HTTP Server 2.4, different URLs, virtual hosts, directories etc can have very
 different meanings to the user of the server, and thus different contexts
@@ -1112,7 +1118,7 @@ specific context.
 </p>
 
 
-<h3><a name="context_base" id="context_base">Our basic configuration setup</a></h3>
+<h3 id="context_base">Our basic configuration setup</h3>
 <p>In this chapter, we will be working with a slightly modified version of
 our previous context structure. We will set a <code>context</code>
 variable that we can use to track which context configuration is being
@@ -1148,7 +1154,7 @@ used by the server in various places:
 
 
 
-<h3><a name="context_which" id="context_which">Choosing a context</a></h3>
+<h3 id="context_which">Choosing a context</h3>
 <p>
 Before we can start making our module context aware, we must first define,
 which contexts we will accept. As we saw in the previous chapter, defining
@@ -1180,7 +1186,7 @@ restrictions together to form a specific rule:
 </ul>
 
 
-<h3><a name="context_pool" id="context_pool">Using the server to allocate configuration slots</a></h3>
+<h3 id="context_pool">Using the server to allocate configuration slots</h3>
 <p> A much smarter way to manage your configurations is by letting the server
 help you create them. To do so, we must first start off by changing our
 <em>name tag</em> to let the server know, that it should assist us in creating
@@ -1189,7 +1195,7 @@ and managing our configurations. Since we have chosen the per-directory
 per-directory creator and merger function reference in our tag:</p>
 
 
-<pre class="prettyprint lang-c">module AP_MODULE_DECLARE_DATA   example_module =
+<pre class="prettyprint lang-c">AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf, /* Per-directory configuration handler */
@@ -1197,7 +1203,8 @@ per-directory creator and merger function reference in our tag:</p>
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -1206,7 +1213,7 @@ per-directory creator and merger function reference in our tag:</p>
 
 
 
-<h3><a name="context_new" id="context_new">Creating new context configurations</a></h3>
+<h3 id="context_new">Creating new context configurations</h3>
 <p>
 Now that we have told the server to help us create and manage configurations,
 our first step is to make a function for creating new, blank
@@ -1231,7 +1238,7 @@ our name tag as the Per-directory configuration handler:</p>
 
 
 
-<h3><a name="context_merge" id="context_merge">Merging configurations</a></h3>
+<h3 id="context_merge">Merging configurations</h3>
 <p>
 Our next step in creating a context aware configuration is merging
 configurations. This part of the process particularly applies to scenarios
@@ -1285,7 +1292,7 @@ two configurations and decide how they are to be merged:</p>
 
 
 
-<h3><a name="context_example" id="context_example">Trying out our new context aware configurations</a></h3>
+<h3 id="context_example">Trying out our new context aware configurations</h3>
 <p>
 Now, let's try putting it all together to create a new module that is
 context aware. First off, we'll create a configuration that lets us test
@@ -1373,7 +1380,7 @@ static const command_rec    directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, ACCESS_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, ACCESS_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, ACCESS_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 
 /*$1
@@ -1382,7 +1389,7 @@ static const command_rec    directives[] =
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
 
-module AP_MODULE_DECLARE_DATA    example_module =
+AP_DECLARE_MODULE(example) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_conf,    /* Per-directory configuration handler */
@@ -1390,7 +1397,8 @@ module AP_MODULE_DECLARE_DATA    example_module =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     directives,         /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };
 
 /*
@@ -1547,9 +1555,9 @@ void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">Summing up</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+<h2 id="summary">Summing up <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
 <p>
 We have now looked at how to create simple modules for Apache HTTP Server 2.4 and
 configuring them. What you do next is entirely up to you, but it is my
@@ -1558,11 +1566,11 @@ If you have questions on how to further develop modules, you are welcome
 to join our <a href="http://httpd.apache.org/lists.html">mailing lists</a>
 or check out the rest of our documentation for further tips.
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="snippets" id="snippets">Some useful snippets of code</a> <a title="Permanent link" href="#snippets" class="permalink">&para;</a></h2>
+<h2 id="snippets">Some useful snippets of code <a title="Permanent link" href="#snippets" class="permalink">&para;</a></h2>
 
-<h3><a name="get_post" id="get_post">Retrieve variables from POST form data</a></h3>
+<h3 id="get_post">Retrieve variables from POST form data</h3>
 
 
 
@@ -1626,7 +1634,7 @@ static int example_handler(request_rec *r)
 
     
 
-    <h3><a name="headers_out" id="headers_out">Printing out every HTTP header received</a></h3>
+    <h3 id="headers_out">Printing out every HTTP header received</h3>
 
 
 
@@ -1651,7 +1659,7 @@ static int example_handler(request_rec *r)
 
     
 
-    <h3><a name="request_body" id="request_body">Reading the request body into memory</a></h3>
+    <h3 id="request_body">Reading the request body into memory</h3>
 
 
 
@@ -1712,28 +1720,32 @@ static int example_handler(request_rec *r)
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/modguide.html" title="English">&nbsp;en&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/modguide.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

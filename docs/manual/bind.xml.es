@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1816110 -->
+<!-- English Revision: 1816110:1933438 (outdated) -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer lgilbernabe@apache.org-->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -106,7 +106,7 @@ Listen 192.0.2.5:8000
     </example>
 
     <p>Puede mirar el <a
-    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">articulo de la wiki</a>
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">articulo de la wiki</a>
     de consejos para solucionar problemas relacionados.</p>
 
 </note>

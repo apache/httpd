@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1498310 -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -25,20 +25,20 @@
 <manualpage metafile="suexec.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
-<title>suexec - Change d'utilisateur avant l'ex&eacute;cution d'un programme
+<title>suexec - Change d'utilisateur avant l'exécution d'un programme
 externe</title>
 
 <summary>
-     <p><code>suexec</code> permet au serveur HTTP Apache de changer
-     d'utilisateur avant d'ex&eacute;cuter un programme CGI. Pour ce faire, il
-     doit &ecirc;tre ex&eacute;cut&eacute; par <code>root</code>. A cet effet, comme le
-     d&eacute;mon HTTP ne s'ex&eacute;cute en g&eacute;n&eacute;ral pas en tant que
-     <code>root</code>, l'ex&eacute;cutable <code>suexec</code> doit poss&eacute;der
-     le bit setuid et avoir comme propri&eacute;taire <code>root</code>. Seul
-     <code>root</code> doit en poss&eacute;der les droits en &eacute;criture.</p>
+     <p><program>suexec</program> permet au serveur HTTP Apache de changer
+     d'utilisateur avant d'exécuter un programme CGI. Pour ce faire, il
+     doit être exécuté par <code>root</code>. A cet effet, comme le
+     démon HTTP ne s'exécute en général pas en tant que
+     <code>root</code>, l'exécutable <program>suexec</program> doit posséder
+     le bit setuid et avoir comme propriétaire <code>root</code>. Seul
+     <code>root</code> doit en posséder les droits en écriture.</p>
 
-     <p>Pour plus d'informations &agrave; propos des concepts et du mod&egrave;le de
-     s&eacute;curit&eacute; du programme suexec, veuillez vous reporter &agrave; sa
+     <p>Pour plus d'informations à propos des concepts et du modèle de
+     sécurité du programme suexec, veuillez vous reporter à sa
      documentation : <a
      href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html"
      >http://httpd.apache.org/docs/&httpd.docs;/suexec.html</a>.</p>
@@ -53,10 +53,10 @@ externe</title>
 <dl>
 <dt><code>-V</code></dt>
 
-<dd>Si vous &ecirc;tes <code>root</code>, cette option permet d'afficher les
-options de compilation du programme <code>suexec</code>. Pour des
-raisons de s&eacute;curit&eacute;, toutes les options de configuration ne sont
-modifiables qu'&agrave; la compilation.</dd>
+<dd>Si vous êtes <code>root</code>, cette option permet d'afficher les
+options de compilation du programme <program>suexec</program>. Pour des
+raisons de sécurité, toutes les options de configuration ne sont
+modifiables qu'à la compilation.</dd>
 
 </dl>
 </section>

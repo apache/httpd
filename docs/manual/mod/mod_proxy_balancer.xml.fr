@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1878784 -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -86,9 +86,9 @@ la répartition de charge</description>
     particulier la configuration du répartiteur et de ses membres.</p>
 </section>
 
-<section id="stickyness">
+<section id="stickiness">
     <title>Répartition de charge avec abonnement utilisateur
-    (stickyness)</title>
+    (stickiness)</title>
     <p>Le répartiteur supporte l'abonnement utilisateur. Lorsqu'une
     requête est mandatée vers un serveur d'arrière-plan particulier,
     toutes les requêtes suivantes du même utilisateur seront alors
@@ -239,9 +239,9 @@ ProxyPassReverse "/test" "balancer://mycluster"
     section <code>&lt;Location ...&gt;</code>.</p>
 </section>
 
-<section id="stickyness_implementation">
+<section id="stickiness_implementation">
     <title>Détails à propos de la répartition de charge par abonnement
-    (stickyness)</title>
+    (stickiness)</title>
     <p>Si l'abonnement s'appuie sur un cookie, vous devez définir le nom
     de ce cookie dont le contenu précise le serveur d'arrière-plan à
     utiliser. Pour ce faire, on utilise l'attribut
@@ -312,7 +312,7 @@ ProxyPass "/test" "balancer://mycluster" stickysession=JSESSIONID|jsessionid sco
     retenue.</p>
 </section>
 
-<section id="stickyness_troubleshooting">
+<section id="stickiness_troubleshooting">
     <title>Résolution des problèmes liés à la répartition de charge par
     abonnement</title>
     <p>Si vous êtes confronté à des erreurs d'abonnement, comme la

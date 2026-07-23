@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1745711  -->
+<!-- English Revision: 1745711:1935516 (outdated) -->
 <!-- Spanish translation : Daniel Ferradal -->
 <!-- Reviewed by: Luis Gil de Bernabé Pfeiffer -->
 
