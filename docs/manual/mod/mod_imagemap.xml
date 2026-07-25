@@ -24,7 +24,7 @@
 
 <name>mod_imagemap</name>
 <description>Server-side imagemap processing</description>
-<status>Base</status>
+<status>Deprecated</status>
 <sourcefile>mod_imagemap.c</sourcefile>
 <identifier>imagemap_module</identifier>
 
