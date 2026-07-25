@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933855 -->
+<!-- English Revision: 1936368 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -569,8 +569,10 @@ mandatées</description>
 
 <usage>
     <p>Les directives situées dans une section <directive
-    type="section">Proxy</directive> ne s'appliquent qu'au contenu
-    mandaté concerné. Les jokers de style shell sont autorisés.</p>
+    type="section">Proxy</directive> ne s'appliquent qu'au contenu mandaté
+    concerné en utilisant une recherche de correspondance simple entre le
+    préfixe de type chaîne et l’URL. Les jokers de style shell sont
+    autorisés.</p>
 
     <p>Par exemple, les lignes suivantes n'autoriseront à accéder à un
     contenu via votre serveur mandataire que les hôtes appartenant à
@@ -800,6 +802,13 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"
     d'authentification. La variable d'environnement <a
     href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> n'est plus prise en
     compte si cet argument est utilisé.</p>
+
+    <note><title>Résolution DNS et mandataires directs</title>
+    <p>Lorsqu’un mandataire direct (distant) est configuré, la résolution DNS du
+    nom d’hôte originel/dorsal n’est effectuée que sur le mandataire direct.
+    Toute règle <directive module="mod_proxy">ProxyBlock</directive> qui limite
+    l’accès à des adresses IP spécifiques doit être définie au niveau du
+    mandataire direct.</p></note>
 </usage>
 </directivesynopsis>
 
