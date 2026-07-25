@@ -821,8 +821,10 @@ mandat&eacute;es</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>Les directives situ&eacute;es dans une section <code class="directive">&lt;Proxy&gt;</code> ne s'appliquent qu'au contenu
-    mandat&eacute; concern&eacute;. Les jokers de style shell sont autoris&eacute;s.</p>
+    <p>Les directives situ&eacute;es dans une section <code class="directive">&lt;Proxy&gt;</code> ne s'appliquent qu'au contenu mandat&eacute;
+    concern&eacute; en utilisant une recherche de correspondance simple entre le
+    pr&eacute;fixe de type cha&icirc;ne et l&rsquo;URL. Les jokers de style shell sont
+    autoris&eacute;s.</p>
 
     <p>Par exemple, les lignes suivantes n'autoriseront &agrave; acc&eacute;der &agrave; un
     contenu via votre serveur mandataire que les h&ocirc;tes appartenant &agrave;
@@ -2306,6 +2308,13 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"</pre>
     sans attendre que le mandataire distant n'effectue une demande
     d'authentification. La variable d'environnement <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> n'est plus prise en
     compte si cet argument est utilis&eacute;.</p>
+
+    <div class="note"><h3>R&eacute;solution DNS et mandataires directs</h3>
+    <p>Lorsqu&rsquo;un mandataire direct (distant) est configur&eacute;, la r&eacute;solution DNS du
+    nom d&rsquo;h&ocirc;te originel/dorsal n&rsquo;est effectu&eacute;e que sur le mandataire direct.
+    Toute r&egrave;gle <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> qui limite
+    l&rsquo;acc&egrave;s &agrave; des adresses IP sp&eacute;cifiques doit &ecirc;tre d&eacute;finie au niveau du
+    mandataire direct.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
