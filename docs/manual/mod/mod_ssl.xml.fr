@@ -2287,7 +2287,7 @@ décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
   <td><code>secure</code></td><td>autorisée</td><td>bloquée</td><td>bloquée</td>
 </tr>
 <tr>
-  <td><code>authonly</code></td><td>autorisée</td><td>bloquée</td><td>autorisée</td>
+  <td><code>authonly</code></td><td>autorisée</td><td>autorisée</td><td>bloquée</td>
 </tr>
 <tr>
   <td><code>insecure</code></td><td>autorisée</td><td>autorisée</td><td>autorisée</td>
