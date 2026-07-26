@@ -1614,10 +1614,10 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
     reuse connections or cache DNS lookups. To enable connection
     pooling, define an explicit worker for the backend separately:</p>
     <highlight language="config">
-ProxyPass        "/notused" "http://backend.example.com/" connectiontimeout=5 timeout=30
+ProxySet         http://backend.example.com connectiontimeout=5 timeout=30
 ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"
     </highlight>
-    <p>The explicit <directive>ProxyPass</directive> worker definition
+    <p>The explicit <directive>ProxySet</directive> worker definition
     ensures that the backend connection pool is available for use by
     <directive>ProxyPassMatch</directive> requests.</p>
     </note>
