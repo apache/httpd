@@ -365,7 +365,7 @@ print("Hello, World.")
 
 <example>
 <highlight language="bash">
-chmod a+x first.py
+chmod a+x premier.py
 </highlight>
 </example>
 
@@ -562,7 +562,7 @@ import os
 
 print("Content-type: text/html\n")
 for key, value in os.environ.items():
-print(f"{key} --&gt; {value}&lt;br&gt;")
+    print(f"{key} --&gt; {value}&lt;br&gt;")
 </highlight>
 </example>
     </section>
