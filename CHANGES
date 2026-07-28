@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mod_ssl: Add support for OpenSSL providers across all certificates,
+     CA certificates, CRLs and keys. [Graham Leggett]
+
   *) mod_proxy_beacon: Back-end reverse proxy servers can announce
      themselves and be auto-added to their front-end proxy balancer.
      [Jim Jagielski]

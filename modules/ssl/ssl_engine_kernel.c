@@ -29,6 +29,7 @@
                                   time I was too famous.''
                                             -- Unknown                */
 #include "ssl_private.h"
+#include "httpd.h"
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include "scoreboard.h"

@@ -334,6 +334,7 @@ static void hash_sni_policy_pk(apr_pool_t *ptemp, apr_md5_ctx_t *hash, modssl_ct
     md5_ifstr_update(hash, "ciphers:", ctx->auth.cipher_suite);
     md5_ifstr_update(hash, "tls13_ciphers:", ctx->auth.tls13_ciphers);
 
+    md5_strarray_hash(ptemp, hash, "uris:", ctx->pks->uris);
     md5_strarray_hash(ptemp, hash, "cert_files:", ctx->pks->cert_files);
     md5_strarray_hash(ptemp, hash, "key_files:", ctx->pks->key_files);
 }
@@ -346,10 +347,13 @@ static void hash_sni_policy_auth(apr_md5_ctx_t *hash, modssl_ctx_t *ctx)
     md5_fmt_update(hash, "verify_depth:%d", a->verify_depth);
     md5_fmt_update(hash, "verify_mode:%d", a->verify_mode);
 
+    md5_ifstr_update(hash, "ca_name_uri:", pks->ca_name_uri);
     md5_ifstr_update(hash, "ca_name_path:", pks->ca_name_path);
     md5_ifstr_update(hash, "ca_name_file:", pks->ca_name_file);
+    md5_ifstr_update(hash, "ca_cert_uri:", a->ca_cert_uri);
     md5_ifstr_update(hash, "ca_cert_path:", a->ca_cert_path);
     md5_ifstr_update(hash, "ca_cert_file:", a->ca_cert_file);
+    md5_ifstr_update(hash, "crl_uri:", ctx->crl_uri);
     md5_ifstr_update(hash, "crl_path:", ctx->crl_path);
     md5_ifstr_update(hash, "crl_file:", ctx->crl_file);
     md5_fmt_update(hash, "crl_check_mask:%d", ctx->crl_check_mask);
@@ -848,7 +852,7 @@ static apr_status_t ssl_init_ctx_tls_extensions(server_rec *s,
 #endif
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L || \
-	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20800000L)
+    (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20800000L)
 /*
  * Enable/disable SSLProtocol. If the mod_ssl enables protocol
  * which is disabled by default by OpenSSL, show a warning.
@@ -887,7 +891,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     int protocol = mctx->protocol;
     SSLSrvConfigRec *sc = mySrvConfig(s);
 #if OPENSSL_VERSION_NUMBER >= 0x10100000L  && \
-	(!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
+    (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x20800000L)
     /* default is highest supported version, will be overridden below */
 #if SSL_HAVE_PROTOCOL_TLSV1_3 
     int prot = TLS1_3_VERSION;
@@ -978,7 +982,7 @@ static apr_status_t ssl_init_ctx_protocol(server_rec *s,
     SSL_CTX_set_options(ctx, SSL_OP_ALL);
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L  || \
-	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20800000L)
+    (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20800000L)
     /* always disable SSLv2, as per RFC 6176 */
     SSL_CTX_set_options(ctx, SSL_OP_NO_SSLv2);
 
@@ -1222,6 +1226,92 @@ int modssl_CTX_load_verify_locations(SSL_CTX *ctx,
     return 1;
 }
 
+/*
+ * OpenSSL has a SSL_CTX_load_verify_store() function, but
+ * this function loads both leaf certs and CA certs.
+ *
+ * An end user reasonably wants to configure a URI pointing at
+ * CA certs and not have any surprises if the scope of the URI
+ * included leaf certificates.
+ *
+ * As a result we consider CA certs exclusively below.
+ */
+
+static APR_INLINE
+apr_status_t modssl_CTX_load_verify_store(server_rec *s,
+                                          apr_pool_t *ptemp,
+                                          const char *uri,
+                                          int depth,
+                                          modssl_ctx_t *mctx)
+{
+#if MODSSL_HAVE_OPENSSL_STORE
+    OSSL_STORE_CTX *sctx;
+    OSSL_STORE_INFO *info;
+
+    apr_status_t status = APR_SUCCESS;
+
+    X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
+
+    ap_assert(store != NULL); /* safe to assume always non-NULL? */
+
+    if (!uri ||
+        (!(sctx = OSSL_STORE_open_ex(uri, mctx->libctx, NULL, NULL, NULL,
+                NULL, NULL, NULL)))) {
+        return APR_EGENERAL;
+    }
+
+    while (!OSSL_STORE_eof(sctx) && !OSSL_STORE_error(sctx)) {
+
+        if (!(info = OSSL_STORE_load(sctx))) {
+            continue;
+        }
+
+        switch(OSSL_STORE_INFO_get_type(info)) {
+        case OSSL_STORE_INFO_NAME: {
+
+            if (depth > 0) {
+                status = modssl_CTX_load_verify_store(s, ptemp,
+                        OSSL_STORE_INFO_get0_NAME(info),
+                        depth - 1, mctx);
+            }
+
+            break;
+        }
+        case OSSL_STORE_INFO_CERT: {
+
+            X509 *cert;
+            const X509_NAME *name;
+            X509_NAME *xname;
+
+            if (!(cert = OSSL_STORE_INFO_get0_CERT(info))) {
+                return APR_EGENERAL;
+            }
+            else if (!X509_check_ca(cert)) {
+                /* ignore leaf certificates */
+                continue;
+            }
+            if (X509_STORE_add_cert(store, cert)) {
+
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                             "Host %s: Trusted certificate from URI: %s",
+                             mctx->sc->vhost_id,
+                             modssl_X509_NAME_to_string(ptemp,
+                                     X509_get_subject_name(cert), 0));
+
+            }
+
+            break;
+        }
+        }
+    }
+
+    return status;
+#else
+    return APR_ENOTIMPL;
+#endif
+}
+
+
 static apr_status_t ssl_init_ctx_verify(server_rec *s,
                                         apr_pool_t *p,
                                         apr_pool_t *ptemp,
@@ -1258,9 +1348,19 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
     /*
      * Configure Client Authentication details
      */
-    if (mctx->auth.ca_cert_file || mctx->auth.ca_cert_path) {
+
+    if (mctx->auth.ca_cert_file || mctx->auth.ca_cert_path ||
+            mctx->auth.ca_cert_uri) {
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                      "Configuring client authentication");
+
+        if (modssl_CTX_load_verify_store(s, ptemp, mctx->auth.ca_cert_uri, 1, mctx) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                    "Unable to configure verify store "
+                    "for client authentication");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return ssl_die(s);
+        }
 
         if (!modssl_CTX_load_verify_locations(ctx, mctx->auth.ca_cert_file,
                                                    mctx->auth.ca_cert_path)) {
@@ -1271,14 +1371,22 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
             return ssl_die(s);
         }
 
-        if (mctx->pks && (mctx->pks->ca_name_file || mctx->pks->ca_name_path)) {
+        if (mctx->pks && (mctx->pks->ca_name_file || mctx->pks->ca_name_path ||
+                mctx->pks->ca_name_uri)) {
             ca_list = ssl_init_FindCAList(s, ptemp,
-                                          mctx->pks->ca_name_file,
-                                          mctx->pks->ca_name_path);
-        } else
+                                mctx->pks->ca_name_file,
+                                mctx->pks->ca_name_path,
+                                mctx->pks->ca_name_uri,
+                                mctx);
+
+        } else {
             ca_list = ssl_init_FindCAList(s, ptemp,
-                                          mctx->auth.ca_cert_file,
-                                          mctx->auth.ca_cert_path);
+                                mctx->auth.ca_cert_file,
+                                mctx->auth.ca_cert_path,
+                                mctx->auth.ca_cert_uri,
+                                mctx);
+        }
+
         if (sk_X509_NAME_num(ca_list) <= 0) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01896)
                     "Unable to determine list of acceptable "
@@ -1287,6 +1395,7 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
         }
 
         SSL_CTX_set_client_CA_list(ctx, ca_list);
+
     }
 
     /*
@@ -1354,15 +1463,98 @@ int modssl_X509_STORE_load_locations(X509_STORE *store,
                                      const char *path)
 {
 #if OPENSSL_VERSION_NUMBER < 0x30000000L
-    if (!X509_STORE_load_locations(store, file, path))
+    if (!X509_STORE_load_locations(store, file, path)) {
         return 0;
+    }
 #else
-    if (file && !X509_STORE_load_file(store, file))
+    if (file && !X509_STORE_load_file(store, file)) {
         return 0;
-    if (path && !X509_STORE_load_path(store, path))
+    }
+    if (path && !X509_STORE_load_path(store, path)) {
         return 0;
+    }
 #endif
     return 1;
+}
+
+/*
+ * OpenSSL has a X509_STORE_load_store() function, but this
+ * function has side effects - it loads both CRLs and trusted
+ * CA certificates.
+ *
+ * An end user reasonably wants to configure a URI pointing at
+ * CRLs and not have any surprises if the scope of the URI
+ * included trusted CA certificates for whatever reason.
+ *
+ * As a result we consider CRLs exclusively below.
+ */
+
+static APR_INLINE
+apr_status_t modssl_X509_STORE_load_crl(server_rec *s,
+                                        apr_pool_t *ptemp,
+                                        const char *uri,
+                                        int depth,
+                                        modssl_ctx_t *mctx)
+{
+#if MODSSL_HAVE_OPENSSL_STORE
+    OSSL_STORE_CTX *sctx;
+    OSSL_STORE_INFO *info;
+
+    apr_status_t status = APR_SUCCESS;
+
+    X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
+
+    ap_assert(store != NULL); /* safe to assume always non-NULL? */
+
+    if (!uri ||
+        (!(sctx = OSSL_STORE_open_ex(uri, mctx->libctx, NULL, NULL, NULL,
+                NULL, NULL, NULL)))) {
+        return APR_EGENERAL;
+    }
+
+    while (!OSSL_STORE_eof(sctx) && !OSSL_STORE_error(sctx)) {
+
+        if (!(info = OSSL_STORE_load(sctx))) {
+            continue;
+        }
+
+        switch(OSSL_STORE_INFO_get_type(info)) {
+        case OSSL_STORE_INFO_NAME: {
+
+            if (depth > 0) {
+                status = modssl_X509_STORE_load_crl(s, ptemp,
+                        OSSL_STORE_INFO_get0_NAME(info),
+                        depth - 1, mctx);
+            }
+
+            break;
+        }
+        case OSSL_STORE_INFO_CRL: {
+
+            X509_CRL *crl;
+
+            if (!(crl = OSSL_STORE_INFO_get0_CRL(info))) {
+                return APR_EGENERAL;
+            }
+            if (X509_STORE_add_crl(store, crl)) {
+
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                             "Host %s: Certificate revocation list from URI: %s",
+                             mctx->sc->vhost_id,
+                             modssl_X509_NAME_to_string(ptemp,
+                                     X509_CRL_get_issuer(crl), 0));
+
+            }
+
+            break;
+        }
+        }
+    }
+
+    return status;
+#else
+    return APR_ENOTIMPL;
+#endif
 }
 
 static apr_status_t ssl_init_ctx_crl(server_rec *s,
@@ -1374,6 +1566,8 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     unsigned long crlflags = 0;
     char *cfgp = mctx->pkp ? "SSLProxy" : "SSL";
     int crl_check_mode;
+
+    ap_assert(store != NULL); /* safe to assume always non-NULL? */
 
     if (mctx->ocsp_mask == UNSET) {
         mctx->ocsp_mask = SSL_OCSPCHECK_NONE;
@@ -1388,13 +1582,13 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
      * Configure Certificate Revocation List (CRL) Details
      */
 
-    if (!(mctx->crl_file || mctx->crl_path)) {
+    if (!(mctx->crl_uri || mctx->crl_file || mctx->crl_path)) {
         if (crl_check_mode == SSL_CRLCHECK_LEAF ||
             crl_check_mode == SSL_CRLCHECK_CHAIN) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01899)
                          "Host %s: CRL checking has been enabled, but "
-                         "neither %sCARevocationFile nor %sCARevocationPath "
-                         "is configured", mctx->sc->vhost_id, cfgp, cfgp);
+                         "neither %sCARevocationURI, %sCARevocationFile nor %sCARevocationPath "
+                         "is configured", mctx->sc->vhost_id, cfgp, cfgp, cfgp);
             return ssl_die(s);
         }
         return APR_SUCCESS;
@@ -1403,8 +1597,16 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01900)
                  "Configuring certificate revocation facility");
 
-    if (!store || !modssl_X509_STORE_load_locations(store, mctx->crl_file,
-                                                           mctx->crl_path)) {
+    if (!modssl_X509_STORE_load_crl(s, ptemp, mctx->crl_uri, 1, mctx)) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Host %s: unable to configure X.509 CRL uri "
+                     "for certificate revocation", mctx->sc->vhost_id);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return ssl_die(s);
+    }
+
+    if (!modssl_X509_STORE_load_locations(store,
+            mctx->crl_file, mctx->crl_path)) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01901)
                      "Host %s: unable to configure X.509 CRL storage "
                      "for certificate revocation", mctx->sc->vhost_id);
@@ -1635,6 +1837,375 @@ static int ssl_no_passwd_prompt_cb(char *buf, int size, int rwflag,
                                    void *userdata) {
    return 0;
 }
+
+
+#ifndef DEFINE_STACK_OF_EVP_PKEY
+DEFINE_STACK_OF(EVP_PKEY)
+#endif
+
+#if MODSSL_HAVE_OPENSSL_STORE
+
+apr_status_t ssl_init_uri_cleanup(void *data)
+{
+    modssl_ctx_uri_t *uctx = (modssl_ctx_uri_t *)data;
+
+    sk_X509_pop_free(uctx->cert_list, X509_free);
+    sk_EVP_PKEY_pop_free(uctx->key_list, EVP_PKEY_free);
+    sk_X509_pop_free(uctx->ca_list, X509_free);
+
+    return APR_SUCCESS;
+}
+
+/*
+ * Sort certificates oldest to newest (last one wins).
+ */
+static int compare_certs_asc(const X509 *const *a, const X509 *const *b)
+{
+    const ASN1_TIME *time_a = X509_get0_notBefore(*a);
+    const ASN1_TIME *time_b = X509_get0_notBefore(*b);
+
+    // ASN1_TIME_compare returns:
+    // -1 if time_a is earlier than time_b
+    //  0 if they are identical
+    //  1 if time_a is later than time_b
+    return ASN1_TIME_compare(time_a, time_b);
+}
+
+static int cert_match(apr_pool_t *p, X509 *cert, const char *id)
+{
+    if (id[0] == '[') {
+        const char *end = strchr(id, ']');
+        if (end && X509_check_ip_asc(cert,
+                apr_pstrndup(p, id + 1, end - id - 1), 0) == 1) {
+            return 1;
+        }
+        return 0;
+    }
+    if (X509_check_ip_asc(cert, id, 0) == 1) {
+        return 1;
+    }
+    if (X509_check_host(cert, id, 0, 0, NULL) == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+static apr_status_t ssl_init_uri(server_rec *s,
+                                 apr_pool_t *ptemp,
+                                 const char *uri,
+                                 int depth,
+                                 modssl_ctx_uri_t *uctx)
+{
+    OSSL_STORE_CTX *sctx;
+    OSSL_STORE_INFO *info;
+
+    apr_status_t status = APR_SUCCESS;
+
+    if (!uri ||
+        (!(sctx = OSSL_STORE_open_ex(uri, uctx->mctx->libctx, NULL,
+                                     modssl_get_passphrase_ui(ptemp),
+                                     modssl_get_passphrase_cb(s, ptemp,
+                                             uctx->mctx->sc->vhost_id, uri),
+                                     NULL, NULL, NULL)))) {
+        return APR_EGENERAL;
+    }
+
+    while (!OSSL_STORE_eof(sctx) && !OSSL_STORE_error(sctx)) {
+
+        if (!(info = OSSL_STORE_load(sctx))) {
+            continue;
+        }
+
+        switch(OSSL_STORE_INFO_get_type(info)) {
+        case OSSL_STORE_INFO_NAME: {
+
+            if (depth > 0) {
+                status = ssl_init_uri(s, ptemp,
+                        OSSL_STORE_INFO_get0_NAME(info),
+                        depth - 1, uctx);
+            }
+
+            break;
+        }
+        case OSSL_STORE_INFO_CERT: {
+
+            X509 *cert;
+            const X509_NAME *name;
+            X509_NAME *xname;
+
+            if (!(cert = OSSL_STORE_INFO_get1_CERT(info))) {
+                return APR_EGENERAL;
+            }
+            else if (X509_check_ca(cert)) {
+
+                if (X509_self_signed(cert, 1)) {
+
+                    uctx->num_ca_certs++;
+
+                    /* ignore root certificates */
+                    X509_free(cert);
+                    continue;
+                }
+
+                if (sk_X509_push(uctx->ca_list, cert) <= 0) {
+                    X509_free(cert);
+                    return APR_EGENERAL;
+                }
+
+                uctx->num_intermediate_certs++;
+
+            }
+            else {
+
+                uctx->num_leaf_certs++;
+
+                if (!X509_check_purpose(cert, X509_PURPOSE_SSL_SERVER, 0)) {
+                    /* ignore non server certs */
+                    X509_free(cert);
+                    continue;
+                }
+
+                /* check for a match on server name */
+                if (s->server_hostname) {
+                    if (!cert_match(ptemp, cert, s->server_hostname)) {
+                        X509_free(cert);
+                        continue;
+                    }
+                }
+
+                /* check for a match on all server aliases */
+                if (s->names && !apr_is_empty_array(s->names)) {
+                    const char **aliases = (const char **)s->names->elts;
+                    int i;
+                    for (i = 0; i < s->names->nelts; i++) {
+                        if (!cert_match(ptemp, cert, aliases[i])) {
+                            X509_free(cert);
+                            continue;
+                        }
+                    }
+                }
+
+                /* If we get here and a server name or server alias was
+                 * not specified, we use the most recently issued leaf
+                 * certificate in scope and assume the admin knows what
+                 * they are doing.
+                 */
+
+                if (sk_X509_push(uctx->cert_list, cert) <= 0) {
+                    X509_free(cert);
+                    return APR_EGENERAL;
+                }
+
+                uctx->num_server_certs++;
+
+            }
+
+            uctx->num_certs++;
+
+            break;
+        }
+        case OSSL_STORE_INFO_PKEY: {
+
+            EVP_PKEY *key;
+
+            if (!(key = OSSL_STORE_INFO_get1_PKEY(info))) {
+                return APR_EGENERAL;
+            }
+            if (sk_EVP_PKEY_push(uctx->key_list, key) <= 0) {
+                EVP_PKEY_free(key);
+                return APR_EGENERAL;
+            }
+
+            uctx->num_keys++;
+
+            break;
+        }
+        }
+    }
+
+    return status;
+}
+
+
+/*
+ * Load certs from all URIs.
+ *
+ * The end user might point their URI at a single set of
+ * PEM encoded certs using the file: scheme, or might point
+ * the URI at pkcs11: or the whole MacOS keychain and
+ * expect us to figure it out for them. Lets help as much
+ * as possible.
+ *
+ * - Load all certs across all uris.
+ * - Consider intermediate certs, add them to the store
+ * - Consider leaf certs that match the ServerName and
+ *   ServerAliases and drop if no match.
+ * - Sort certs by start date, oldest to newest
+ * - Load all keys across all uris.
+ * - Consider certs with a private key, drop the rest.
+ * - Pass each cert and key, in order, using
+ *   SSL_CTX_use_certificate and SSL_CTX_use_PrivateKey.
+ * - End result, the most recent cert for each type (RSA,
+ *   ECDSA, etc) wins.
+ *
+ */
+
+static apr_status_t ssl_init_server_uris(server_rec *s,
+                                          apr_pool_t *p,
+                                          apr_pool_t *ptemp,
+                                          modssl_ctx_t *mctx,
+                                          apr_array_header_t *pphrases)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+    const char *vhost_id = mctx->sc->vhost_id, *uri;
+    int i, k;
+    int found = 0;
+    apr_status_t status = APR_SUCCESS;
+
+    modssl_ctx_uri_t *uctx = apr_pcalloc(ptemp, sizeof(modssl_ctx_uri_t));
+
+    uctx->mctx = mctx;
+
+    uctx->cert_list = sk_X509_new_null();
+    uctx->key_list = sk_EVP_PKEY_new_null();
+    uctx->ca_list = sk_X509_new_null();
+
+    apr_pool_cleanup_register(ptemp, uctx,
+                              ssl_init_uri_cleanup,
+                              apr_pool_cleanup_null);
+
+    sk_X509_set_cmp_func(uctx->cert_list, compare_certs_asc);
+
+    /* no OpenSSL default prompts for any of the SSL_CTX_use_* calls, please */
+    SSL_CTX_set_default_passwd_cb(mctx->ssl_ctx, ssl_no_passwd_prompt_cb);
+
+    /* Iterate over the SSLCertificateURI array */
+    for (i = 0; (i < mctx->pks->uris->nelts) &&
+                (uri = APR_ARRAY_IDX(mctx->pks->uris, i,
+                                          const char *));
+         i++) {
+
+        if (uri &&
+            ssl_init_uri(s, ptemp, uri, 1, uctx) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                         "Host %s: Failed to open URI `%s'",
+                         mctx->sc->vhost_id, uri);
+            return APR_EGENERAL;
+        }
+
+    }
+
+    /* oldest to newest, last one wins */
+    sk_X509_sort(uctx->cert_list);
+
+    /* Match certs to keys */
+    for (i = sk_X509_num(uctx->cert_list) - 1; i >= 0; i--) {
+        X509 *cert = sk_X509_value(uctx->cert_list, i);
+
+        for (k = 0; k < sk_EVP_PKEY_num(uctx->key_list); k++) {
+            EVP_PKEY *pkey = sk_EVP_PKEY_value(uctx->key_list, k);
+
+            if (X509_check_private_key(cert, pkey) == 1) {
+
+                if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                                 "Host %s: Failed to use certificate: %s",
+                                 mctx->sc->vhost_id,
+                                 modssl_X509_NAME_to_string(ptemp,
+                                     X509_get_subject_name(cert), 0));
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+                    return APR_EGENERAL;
+                }
+
+                if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                                 "Host %s: Failed to use private key: %s",
+                                 mctx->sc->vhost_id,
+                                 modssl_X509_NAME_to_string(ptemp,
+                                     X509_get_subject_name(cert), 0));
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+                    return APR_EGENERAL;
+                }
+
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                             "Host %s: Server certificate from URI: %s",
+                             mctx->sc->vhost_id,
+                             modssl_X509_NAME_to_string(ptemp,
+                                     X509_get_subject_name(cert), 0));
+
+                found = 1;
+                break;
+            }
+
+        }
+    }
+
+    if (!found) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Host %s: No matching certificate/key pairs found among "
+                     "%d certs, %d CA certs, %d intermediate certs, "
+                     "%d leaf certs, %d server certs, %d keys.",
+                     mctx->sc->vhost_id,
+                     uctx->num_certs, uctx->num_ca_certs, uctx->num_intermediate_certs,
+                     uctx->num_leaf_certs,
+                     uctx->num_server_certs, uctx->num_keys);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return APR_EGENERAL;
+    }
+
+    /* Handle intermediates, must happen after cert handling */
+    for (i = sk_X509_num(uctx->ca_list) - 1; i >= 0; i--) {
+        X509 *cert = sk_X509_value(uctx->ca_list, i);
+        if (!SSL_CTX_add1_chain_cert(mctx->ssl_ctx, cert)) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                         "Host %s: Failed to add intermediate certificate: %s",
+                         mctx->sc->vhost_id,
+                         modssl_X509_NAME_to_string(ptemp,
+                                 X509_get_subject_name(cert), 0));
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+            return APR_EGENERAL;
+        }
+    }
+
+    /*
+     * Do our best to build as much of the chain as possible with
+     * the certs we were provided.
+     */
+
+    if (!SSL_CTX_build_cert_chain(mctx->ssl_ctx, SSL_BUILD_CHAIN_FLAG_NO_ROOT |
+            SSL_BUILD_CHAIN_FLAG_UNTRUSTED |
+            SSL_BUILD_CHAIN_FLAG_IGNORE_ERROR |
+            SSL_BUILD_CHAIN_FLAG_CLEAR_ERROR)) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                    "Host %s: Could not build the certificate chain from "
+                    "%d certs, %d CA certs, %d intermediate certs, "
+                       "%d leaf certs, %d server certs, %d keys.",
+                    mctx->sc->vhost_id,
+                    uctx->num_certs, uctx->num_ca_certs, uctx->num_intermediate_certs,
+                    uctx->num_leaf_certs,
+                    uctx->num_server_certs, uctx->num_keys);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        return APR_EGENERAL;
+    }
+
+    return status;
+}
+#else
+static apr_status_t ssl_init_server_uris(server_rec *s,
+                                          apr_pool_t *p,
+                                          apr_pool_t *ptemp,
+                                          modssl_ctx_t *mctx,
+                                          apr_array_header_t *pphrases)
+{
+    const char *vhost_id = mctx->sc->vhost_id;
+
+    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                "Host %s: Server certificate URIs are not supported on this platform.",
+                mctx->sc->vhost_id);
+
+    return APR_ENOTIMPL;
+}
+#endif
 
 /* SSL_CTX_use_PrivateKey_file() can fail either because the private
  * key was encrypted, or due to a mismatch between an already-loaded
@@ -2001,6 +2572,284 @@ static apr_status_t ssl_init_ticket_key(server_rec *s,
 }
 #endif
 
+#if MODSSL_HAVE_OPENSSL_STORE
+
+/*
+ * Sort certificates newest to oldest (first one wins).
+ */
+static int compare_certs_desc(const X509 *const *a, const X509 *const *b)
+{
+    const ASN1_TIME *time_a = X509_get0_notBefore(*a);
+    const ASN1_TIME *time_b = X509_get0_notBefore(*b);
+
+    // ASN1_TIME_compare returns:
+    // -1 if time_a is earlier than time_b
+    //  0 if they are identical
+    //  1 if time_a is later than time_b
+    return -ASN1_TIME_compare(time_a, time_b);
+}
+
+static apr_status_t ssl_init_proxy_uri(server_rec *s,
+                                       apr_pool_t *ptemp,
+                                       const char *uri,
+                                       int depth,
+                                       modssl_ctx_uri_t *uctx)
+{
+    OSSL_STORE_CTX *sctx;
+    OSSL_STORE_INFO *info;
+
+    apr_status_t status = APR_SUCCESS;
+
+    if (!uri ||
+        (!(sctx = OSSL_STORE_open_ex(uri, uctx->mctx->libctx, NULL,
+                                     modssl_get_passphrase_ui(ptemp),
+                                     modssl_get_passphrase_cb(s, ptemp,
+                                             uctx->mctx->sc->vhost_id, uri),
+                                     NULL, NULL, NULL)))) {
+        return APR_EGENERAL;
+    }
+
+    while (!OSSL_STORE_eof(sctx) && !OSSL_STORE_error(sctx)) {
+
+        if (!(info = OSSL_STORE_load(sctx))) {
+            continue;
+        }
+
+        switch(OSSL_STORE_INFO_get_type(info)) {
+        case OSSL_STORE_INFO_NAME: {
+
+            if (depth > 0) {
+                status = ssl_init_uri(s, ptemp,
+                        OSSL_STORE_INFO_get0_NAME(info),
+                        depth - 1, uctx);
+            }
+
+            break;
+        }
+        case OSSL_STORE_INFO_CERT: {
+
+            X509 *cert;
+            const X509_NAME *name;
+            X509_NAME *xname;
+
+            if (!(cert = OSSL_STORE_INFO_get1_CERT(info))) {
+                return APR_EGENERAL;
+            }
+            else if (X509_check_ca(cert)) {
+
+                if (X509_self_signed(cert, 1)) {
+
+                    uctx->num_ca_certs++;
+
+                    /* ignore root certificates */
+                    X509_free(cert);
+                    break;
+                }
+
+                if (sk_X509_push(uctx->ca_list, cert) <= 0) {
+                    X509_free(cert);
+                    return APR_EGENERAL;
+                }
+
+                uctx->num_intermediate_certs++;
+
+            }
+            else {
+
+                uctx->num_leaf_certs++;
+
+                if (!X509_check_purpose(cert, X509_PURPOSE_SSL_CLIENT, 0)) {
+                    /* ignore non client certs */
+                    X509_free(cert);
+                    break;
+                }
+
+                if (sk_X509_push(uctx->cert_list, cert) <= 0) {
+                    X509_free(cert);
+                    return APR_EGENERAL;
+                }
+
+                uctx->num_client_certs++;
+
+            }
+
+            uctx->num_certs++;
+
+            break;
+        }
+        case OSSL_STORE_INFO_PKEY: {
+
+            EVP_PKEY *key;
+
+            if (!(key = OSSL_STORE_INFO_get1_PKEY(info))) {
+                return APR_EGENERAL;
+            }
+            if (sk_EVP_PKEY_push(uctx->key_list, key) <= 0) {
+                EVP_PKEY_free(key);
+                return APR_EGENERAL;
+            }
+
+            uctx->num_keys++;
+
+            break;
+        }
+        }
+    }
+
+    return status;
+}
+
+static apr_status_t ssl_init_proxy_uris(server_rec *s,
+                                        apr_pool_t *p,
+                                        apr_pool_t *ptemp,
+                                        modssl_ctx_t *mctx)
+{
+    SSLModConfigRec *mc = myModConfig(s);
+    const char *vhost_id = mctx->sc->vhost_id, *uri;
+    modssl_pk_proxy_t *pkp = mctx->pkp;
+    modssl_ctx_uri_t *uctx;
+    STACK_OF(X509_INFO) *sk;
+
+    int i, k;
+    int found = 0;
+    apr_status_t status = APR_SUCCESS;
+
+    X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
+
+    ap_assert(store != NULL); /* safe to assume always non-NULL? */
+
+    if (!pkp->uris->nelts) {
+        return APR_SUCCESS;
+    }
+
+    SSL_CTX_set_post_handshake_auth(mctx->ssl_ctx, 1);
+
+    SSL_CTX_set_client_cert_cb(mctx->ssl_ctx,
+                               ssl_callback_proxy_cert);
+
+    sk = pkp->certs;
+    if (!sk) {
+        pkp->certs = sk = sk_X509_INFO_new_null();
+    }
+
+    uctx = apr_pcalloc(ptemp, sizeof(modssl_ctx_uri_t));
+
+    uctx->mctx = mctx;
+
+    uctx->cert_list = sk_X509_new_null();
+    uctx->key_list = sk_EVP_PKEY_new_null();
+    uctx->ca_list = sk_X509_new_null();
+
+    apr_pool_cleanup_register(ptemp, uctx,
+                              ssl_init_uri_cleanup,
+                              apr_pool_cleanup_null);
+
+    sk_X509_set_cmp_func(uctx->cert_list, compare_certs_desc);
+
+    /* Iterate over the SSLProxyCertificateURI array */
+    for (i = 0; (i < mctx->pkp->uris->nelts) &&
+                (uri = APR_ARRAY_IDX(mctx->pkp->uris, i,
+                                          const char *));
+         i++) {
+
+        if (uri &&
+                ssl_init_proxy_uri(s, ptemp, uri, 1, uctx) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                         "Host %s: Failed to open proxy URI `%s'",
+                         mctx->sc->vhost_id, uri);
+            return APR_EGENERAL;
+        }
+
+    }
+
+    /* newest to oldest, first one wins */
+    sk_X509_sort(uctx->cert_list);
+
+    /* Match certs to keys */
+    for (i = sk_X509_num(uctx->cert_list) - 1; i >= 0; i--) {
+        X509 *cert = sk_X509_value(uctx->cert_list, i);
+
+        for (k = 0; k < sk_EVP_PKEY_num(uctx->key_list); k++) {
+            EVP_PKEY *pkey = sk_EVP_PKEY_value(uctx->key_list, k);
+
+            if (X509_check_private_key(cert, pkey) == 1) {
+
+                X509_INFO *info = X509_INFO_new();
+                info->x_pkey = X509_PKEY_new();
+
+                X509_up_ref(cert);
+                info->x509 = cert;
+
+                EVP_PKEY_up_ref(pkey);
+                info->x_pkey->dec_pkey = pkey;
+
+                sk_X509_INFO_push(sk, info);
+
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                             "Host %s: Proxy certificate from URI: %s",
+                             mctx->sc->vhost_id,
+                             modssl_X509_NAME_to_string(ptemp,
+                                     X509_get_subject_name(cert), 0));
+
+                found = 1;
+                break;
+            }
+
+        }
+    }
+
+    if (!found) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Host %s: No matching proxy certificate/key pairs found among "
+                     "%d certs, %d CA certs, %d intermediate certs, "
+                     "%d leaf certs, %d client certs, %d keys.",
+                     mctx->sc->vhost_id,
+                     uctx->num_certs, uctx->num_ca_certs, uctx->num_intermediate_certs,
+                     uctx->num_leaf_certs,
+                     uctx->num_client_certs, uctx->num_keys);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+        sk_X509_INFO_free(sk);
+        return APR_EGENERAL;
+    }
+
+    /* Handle intermediates, must happen after cert handling */
+    for (i = sk_X509_num(uctx->ca_list) - 1; i >= 0; i--) {
+        X509 *cert = sk_X509_value(uctx->ca_list, i);
+        X509_STORE_add_cert(store, cert); /* increments cert */
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+                 "Host %s: loaded %d client certs for SSL proxy among "
+                 "%d certs, %d CA certs, %d intermediate certs, "
+                 "%d leaf certs, %d client certs, %d keys.",
+                 mctx->sc->vhost_id,
+                 sk_X509_INFO_num(sk),
+                 uctx->num_certs, uctx->num_ca_certs, uctx->num_intermediate_certs,
+                 uctx->num_leaf_certs,
+                 uctx->num_client_certs, uctx->num_keys);
+
+    return status;
+}
+#else
+static apr_status_t ssl_init_proxy_uris(server_rec *s,
+                                        apr_pool_t *p,
+                                        apr_pool_t *ptemp,
+                                        modssl_ctx_t *mctx)
+{
+    if (pkp->uris->nelts) {
+        const char *vhost_id = mctx->sc->vhost_id;
+
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                    "Host %s: Proxy certificate URIs are not supported on this platform.",
+                    mctx->sc->vhost_id);
+
+        return APR_ENOTIMPL;
+    }
+
+    return APR_SUCCESS;
+}
+#endif
+
 static BOOL load_x509_info(apr_pool_t *ptemp,
                            STACK_OF(X509_INFO) *sk,
                            const char *filename)
@@ -2030,14 +2879,10 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
                                          apr_pool_t *ptemp,
                                          modssl_ctx_t *mctx)
 {
-    int n, ncerts = 0;
     STACK_OF(X509_INFO) *sk;
     modssl_pk_proxy_t *pkp = mctx->pkp;
-    STACK_OF(X509) *chain;
-    X509_STORE_CTX *sctx;
     X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
-    int addl_chain = 0; /* non-zero if additional chain certs were
-                         * added to store */
+    int n, ncerts = 0;
 
     ap_assert(store != NULL); /* safe to assume always non-NULL? */
 
@@ -2047,7 +2892,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
      * https://github.com/openssl/openssl/issues/6933 */
     SSL_CTX_set_post_handshake_auth(mctx->ssl_ctx, 1);
 #endif
-    
+
     SSL_CTX_set_client_cert_cb(mctx->ssl_ctx,
                                ssl_callback_proxy_cert);
 
@@ -2082,7 +2927,6 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
             X509_INFO_free(inf);
             sk_X509_INFO_delete(sk, n);
             n--;
-            addl_chain = 1;
             continue;
         }
 
@@ -2093,7 +2937,7 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
                          "(missing or encrypted private key?)");
             return ssl_die(s);
         }
-        
+
         if (X509_check_private_key(inf->x509, inf->x_pkey->dec_pkey) != 1) {
             ssl_log_xerror(SSLLOG_MARK, APLOG_STARTUP, 0, ptemp, s, inf->x509,
                            APLOGNO(02326) "proxy client certificate and "
@@ -2115,36 +2959,51 @@ static apr_status_t ssl_init_proxy_certs(server_rec *s,
                  ncerts);
     pkp->certs = sk;
 
-    /* If any chain certs are configured, build the ->ca_certs chains
-     * corresponding to the loaded keypairs. */
-    if (!pkp->ca_cert_file && !addl_chain) {
-        return APR_SUCCESS;
+    if (pkp->ca_cert_file) {
+        modssl_X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
     }
 
-    /* If SSLProxyMachineCertificateChainFile is configured, load all
-     * the CA certs and have OpenSSL attempt to construct a full chain
-     * from each configured end-entity cert up to a root.  This will
-     * allow selection of the correct cert given a list of root CA
+    return APR_SUCCESS;
+}
+
+static apr_status_t ssl_init_proxy_ca_certs(server_rec *s,
+                                            apr_pool_t *p,
+                                            apr_pool_t *ptemp,
+                                            modssl_ctx_t *mctx)
+{
+    modssl_pk_proxy_t *pkp = mctx->pkp;
+
+    X509_STORE_CTX *sctx;
+    X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
+    STACK_OF(X509) *chain;
+
+    int n, ncerts = 0;
+
+    ap_assert(store != NULL); /* safe to assume always non-NULL? */
+
+    ncerts = sk_X509_INFO_num(pkp->certs);
+
+   /* If intermediate certificates have been configured, have
+     * OpenSSL attempt to construct a full chain from each
+     * configured end-entity cert up to a root.  This will allow
+     * selection of the correct cert given a list of root CA
      * names in the certificate request from the server.  */
-    pkp->ca_certs = (STACK_OF(X509) **) apr_pcalloc(p, ncerts * sizeof(sk));
+
+    pkp->ca_certs = (STACK_OF(X509) **) apr_pcalloc(p, ncerts * sizeof(STACK_OF(X509_INFO) *));
     sctx = X509_STORE_CTX_new();
 
     if (!sctx) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(02208)
                      "SSL proxy client cert initialization failed");
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        sk_X509_INFO_free(sk);
         return ssl_die(s);
     }
-
-    modssl_X509_STORE_load_locations(store, pkp->ca_cert_file, NULL);
 
     for (n = 0; n < ncerts; n++) {
         int i;
 
         X509_INFO *inf = sk_X509_INFO_value(pkp->certs, n);
         if (!X509_STORE_CTX_init(sctx, store, inf->x509, NULL)) {
-            sk_X509_INFO_free(sk);
             X509_STORE_CTX_free(sctx);
             return ssl_die(s);
         }
@@ -2268,6 +3127,14 @@ static apr_status_t ssl_init_proxy_ctx(server_rec *s,
         return rv;
     }
 
+    if ((rv = ssl_init_proxy_uris(s, p, ptemp, proxy)) != APR_SUCCESS) {
+        return rv;
+    }
+
+    if ((rv = ssl_init_proxy_ca_certs(s, p, ptemp, proxy)) != APR_SUCCESS) {
+        return rv;
+    }
+
     return APR_SUCCESS;
 }
 
@@ -2319,15 +3186,29 @@ static apr_status_t ssl_init_server_ctx(server_rec *s,
         /* additionally installed certs overrides any old chain configuration */
         sc->server->cert_chain = NULL;
     }
-    
+
     if ((rv = ssl_init_ctx(s, p, ptemp, sc->server)) != APR_SUCCESS) {
         return rv;
     }
 
-    if ((rv = ssl_init_server_certs(s, p, ptemp, sc->server, pphrases))
-        != APR_SUCCESS) {
-        return rv;
+    if (pks->cert_files->nelts) {
+
+        if ((rv = ssl_init_server_certs(s, p, ptemp, sc->server, pphrases))
+            != APR_SUCCESS) {
+            return rv;
+        }
+
     }
+
+    if (pks->uris->nelts) {
+
+        if ((rv = ssl_init_server_uris(s, p, ptemp, sc->server, pphrases))
+            != APR_SUCCESS) {
+            return rv;
+        }
+
+    }
+
 
 #ifdef HAVE_SSL_CONF_CMD
     SSL_CONF_CTX_set_ssl_ctx(cctx, sc->server->ssl_ctx);
@@ -2425,10 +3306,10 @@ apr_status_t ssl_init_ConfigureServer(server_rec *s,
             return rv;
         }
 
-	/* Initialize OCSP Responder certificate if OCSP enabled */
-	#ifndef OPENSSL_NO_OCSP
-        	ssl_init_ocsp_certificates(s, sc->server);
-	#endif
+    /* Initialize OCSP Responder certificate if OCSP enabled */
+    #ifndef OPENSSL_NO_OCSP
+            ssl_init_ocsp_certificates(s, sc->server);
+    #endif
 
     }
 
@@ -2566,6 +3447,86 @@ int ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+static int ssl_init_x509_name_cmp(const X509_NAME *const *a, const X509_NAME *const *b)
+{
+    return X509_NAME_cmp(*a, *b);
+}
+
+static apr_status_t ssl_init_ca_cert_uri(server_rec *s,
+                                         apr_pool_t *ptemp,
+                                         const char *uri,
+                                         STACK_OF(X509_NAME) *ca_list,
+                                         int depth,
+                                         modssl_ctx_t *mctx)
+{
+#if MODSSL_HAVE_OPENSSL_STORE
+    OSSL_STORE_CTX *sctx;
+    OSSL_STORE_INFO *info;
+
+    apr_status_t status = APR_SUCCESS;
+
+    sk_X509_NAME_set_cmp_func(ca_list, ssl_init_x509_name_cmp);
+
+    if (!uri || (!ca_list) ||
+        (!(sctx = OSSL_STORE_open_ex(uri, mctx->libctx, NULL, NULL, NULL,
+                NULL, NULL, NULL)))) {
+        return APR_EGENERAL;
+    }
+
+    while (!OSSL_STORE_eof(sctx) && !OSSL_STORE_error(sctx)) {
+
+        if (!(info = OSSL_STORE_load(sctx))) {
+            continue;
+        }
+
+        switch(OSSL_STORE_INFO_get_type(info)) {
+        case OSSL_STORE_INFO_NAME: {
+
+            if (depth > 0) {
+                status = ssl_init_ca_cert_uri(s, ptemp,
+                        OSSL_STORE_INFO_get0_NAME(info),
+                        ca_list, depth - 1, mctx);
+            }
+
+            break;
+        }
+        case OSSL_STORE_INFO_CERT: {
+
+            X509 *cert;
+            const X509_NAME *name;
+            X509_NAME *xname;
+
+            if (!(cert = OSSL_STORE_INFO_get0_CERT(info))) {
+                return APR_EGENERAL;
+            }
+            else if (!X509_check_ca(cert)) {
+                /* ignore leaf certificates */
+                continue;
+            }
+            else if (!(name = X509_get_subject_name(cert)) ||
+                     !(xname = X509_NAME_dup(name))) {
+                return APR_EGENERAL;
+            }
+            if (sk_X509_NAME_find(ca_list, xname) >= 0) {
+                /* duplicate */
+                X509_NAME_free(xname);
+            }
+            else if (!sk_X509_NAME_push(ca_list, xname)) {
+                X509_NAME_free(xname);
+                return APR_EGENERAL;
+            }
+
+            break;
+        }
+        }
+    }
+
+    return status;
+#else
+    return APR_ENOTIMPL;
+#endif
+}
+
 static apr_status_t ssl_init_ca_cert_path(server_rec *s,
                                           apr_pool_t *ptemp,
                                           const char *path,
@@ -2603,24 +3564,33 @@ static apr_status_t ssl_init_ca_cert_path(server_rec *s,
 STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
                                          apr_pool_t *ptemp,
                                          const char *ca_file,
-                                         const char *ca_path)
+                                         const char *ca_path,
+                                         const char *ca_uri,
+                                         modssl_ctx_t *mctx)
 {
     STACK_OF(X509_NAME) *ca_list = sk_X509_NAME_new_null();;
 
     /*
+     * Process CA certificate store uri
+     */
+    if (ca_uri &&
+        ssl_init_ca_cert_uri(s, ptemp,
+                             ca_uri, ca_list, 1, mctx) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                     "Failed to open Certificate URI `%s'", ca_uri);
+        sk_X509_NAME_pop_free(ca_list, X509_NAME_free);
+        return NULL;
+    }
+
+    /*
      * Process CA certificate bundle file
      */
-    if (ca_file) {
-        SSL_add_file_cert_subjects_to_stack(ca_list, ca_file);
-        /*
-         * If ca_list is still empty after trying to load ca_file
-         * then the file failed to load, and users should hear about that.
-         */
-        if (sk_X509_NAME_num(ca_list) == 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02210)
+    if (ca_file && SSL_add_file_cert_subjects_to_stack(ca_list, ca_file)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(02210)
                     "Failed to load SSLCACertificateFile: %s", ca_file);
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
-        }
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+        sk_X509_NAME_pop_free(ca_list, X509_NAME_free);
+        return NULL;
     }
 
     /*
@@ -2675,10 +3645,10 @@ apr_status_t ssl_init_ModuleKill(void *data)
 
         ssl_init_ctx_cleanup(sc->server);
 
-	/* Not Sure but possibly clear X509 trusted cert file */
-	#ifndef OPENSSL_NO_OCSP
-		sk_X509_pop_free(sc->server->ocsp_certs, X509_free);
-	#endif
+    /* Not Sure but possibly clear X509 trusted cert file */
+    #ifndef OPENSSL_NO_OCSP
+        sk_X509_pop_free(sc->server->ocsp_certs, X509_free);
+    #endif
 
     }
 

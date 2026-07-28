@@ -113,6 +113,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->sc                  = NULL; /* set during module init */
 
     mctx->ssl_ctx             = NULL; /* set during module init */
+    mctx->libctx              = NULL; /* set during module init */
 
     mctx->pks                 = NULL;
     mctx->pkp                 = NULL;
@@ -131,8 +132,10 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 
     mctx->crl_path            = NULL;
     mctx->crl_file            = NULL;
+    mctx->crl_uri             = NULL;
     mctx->crl_check_mask      = UNSET;
 
+    mctx->auth.ca_cert_uri   = NULL;
     mctx->auth.ca_cert_path   = NULL;
     mctx->auth.ca_cert_file   = NULL;
     mctx->auth.cipher_suite   = NULL;
@@ -200,6 +203,7 @@ static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
 
     mctx->pks = apr_pcalloc(p, sizeof(*mctx->pks));
 
+    mctx->pks->uris = apr_array_make(p, 3, sizeof(char *));
     mctx->pks->cert_files = apr_array_make(p, 3, sizeof(char *));
     mctx->pks->key_files  = apr_array_make(p, 3, sizeof(char *));
 
@@ -279,6 +283,7 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMerge(crl_file, NULL);
     cfgMergeInt(crl_check_mask);
 
+    cfgMergeString(auth.ca_cert_uri);
     cfgMergeString(auth.ca_cert_path);
     cfgMergeString(auth.ca_cert_file);
     cfgMergeString(auth.cipher_suite);
@@ -333,9 +338,11 @@ static void modssl_ctx_cfg_merge_server(apr_pool_t *p,
 {
     modssl_ctx_cfg_merge(p, base, add, mrg);
 
+    cfgMergeArray(pks->uris);
     cfgMergeArray(pks->cert_files);
     cfgMergeArray(pks->key_files);
 
+    cfgMergeString(pks->ca_name_uri);
     cfgMergeString(pks->ca_name_path);
     cfgMergeString(pks->ca_name_file);
 
@@ -386,6 +393,7 @@ static void modssl_ctx_init_proxy(SSLDirConfigRec *dc,
 
     mctx->pkp = apr_palloc(p, sizeof(*mctx->pkp));
 
+    mctx->pkp->uris = apr_array_make(p, 3, sizeof(char *));
     mctx->pkp->cert_file = NULL;
     mctx->pkp->cert_path = NULL;
     mctx->pkp->ca_cert_file = NULL;
@@ -429,6 +437,7 @@ static void modssl_ctx_cfg_merge_proxy(apr_pool_t *p,
 {
     modssl_ctx_cfg_merge(p, base, add, mrg);
 
+    cfgMergeArray(pkp->uris);
     cfgMergeString(pkp->cert_file);
     cfgMergeString(pkp->cert_path);
     cfgMergeString(pkp->ca_cert_file);
@@ -962,6 +971,44 @@ static const char *ssl_cmd_check_file(cmd_parms *parms,
 
 }
 
+static const char *ssl_cmd_check_uri(cmd_parms *parms,
+                                     const char *uri)
+{
+    OSSL_STORE_CTX *ctx;
+    unsigned long err;
+    int reason;
+
+    /* If only dumping the config, don't verify the paths */
+    if (ap_state_query(AP_SQ_RUN_MODE) == AP_SQ_RM_CONFIG_DUMP) {
+        return NULL;
+    }
+
+    ctx = OSSL_STORE_open_ex(uri, NULL, NULL, UI_null(),
+                             NULL, NULL, NULL, NULL);
+
+    if (ctx) {
+        OSSL_STORE_close(ctx);
+        return NULL;
+    }
+
+    err = ERR_peek_last_error();
+    if (ERR_GET_LIB(err) == ERR_LIB_OSSL_STORE) {
+        reason = ERR_GET_REASON(err);
+
+        if (reason == OSSL_STORE_R_UNREGISTERED_SCHEME) {
+
+            return apr_pstrcat(parms->pool, parms->cmd->name,
+                               ": uri '", uri,
+                               "' is not recognised", NULL);
+
+        }
+    }
+
+    ERR_clear_error();
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLCompression(cmd_parms *cmd, void *dcfg, int flag)
 {
 #if !defined(OPENSSL_NO_COMP)
@@ -1048,6 +1095,22 @@ static const char *ssl_cmd_check_dir(cmd_parms *parms,
 
 }
 
+const char *ssl_cmd_SSLCertificateURI(cmd_parms *cmd,
+                                      void *dcfg,
+                                      const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    *(const char **)apr_array_push(sc->server->pks->uris) = arg;
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd,
                                        void *dcfg,
                                        const char *arg)
@@ -1121,6 +1184,28 @@ const char *ssl_cmd_SSLSessionTicketKeyFile(cmd_parms *cmd,
 #define NO_PER_DIR_SSL_CA \
     "Your SSL library does not have support for per-directory CA"
 
+const char *ssl_cmd_SSLCACertificateURI(cmd_parms *cmd,
+                                        void *dcfg,
+                                        const char *arg)
+{
+    /*SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;*/
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    if (cmd->path) {
+        return NO_PER_DIR_SSL_CA;
+    }
+
+    /* XXX: bring back per-dir */
+    sc->server->auth.ca_cert_uri = arg;
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd,
                                          void *dcfg,
                                          const char *arg)
@@ -1165,6 +1250,21 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd,
     return NULL;
 }
 
+const char *ssl_cmd_SSLCADNRequestURI(cmd_parms *cmd, void *dcfg,
+                                      const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    sc->server->pks->ca_name_uri = arg;
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLCADNRequestPath(cmd_parms *cmd, void *dcfg,
                                        const char *arg)
 {
@@ -1191,6 +1291,22 @@ const char *ssl_cmd_SSLCADNRequestFile(cmd_parms *cmd, void *dcfg,
     }
 
     sc->server->pks->ca_name_file = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLCARevocationURI(cmd_parms *cmd,
+                                       void *dcfg,
+                                       const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    sc->server->crl_uri = arg;
 
     return NULL;
 }
@@ -1740,6 +1856,22 @@ const char *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *cmd,
     return NULL;
 }
 
+const char *ssl_cmd_SSLProxyCACertificateURI(cmd_parms *cmd,
+                                             void *dcfg,
+                                             const char *arg)
+{
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    dc->proxy->auth.ca_cert_uri = arg;
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *cmd,
                                               void *dcfg,
                                               const char *arg)
@@ -1768,6 +1900,22 @@ const char *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *cmd,
     }
 
     dc->proxy->auth.ca_cert_path = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLProxyCARevocationURI(cmd_parms *cmd,
+                                            void *dcfg,
+                                            const char *arg)
+{
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    dc->proxy->crl_uri = arg;
 
     return NULL;
 }
@@ -1811,6 +1959,22 @@ const char *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *cmd,
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
 
     return ssl_cmd_crlcheck_parse(cmd, arg, &dc->proxy->crl_check_mask);
+}
+
+const char *ssl_cmd_SSLProxyMachineCertificateURI(cmd_parms *cmd,
+                                                  void *dcfg,
+                                                  const char *arg)
+{
+    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
+    const char *err;
+
+    if ((err = ssl_cmd_check_uri(cmd, arg))) {
+        return err;
+    }
+
+    *(const char **)apr_array_push(dc->proxy->pkp->uris) = arg;
+
+    return NULL;
 }
 
 const char *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *cmd,
@@ -2293,7 +2457,7 @@ const char *ssl_cmd_SSLSRPUnknownUserSeed(cmd_parms *cmd, void *dcfg,
 
 /* OCSP Responder File Function to read in value */
 const char *ssl_cmd_SSLOCSPResponderCertificateFile(cmd_parms *cmd, void *dcfg, 
-					   const char *arg)
+                       const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     const char *err;
@@ -2332,6 +2496,14 @@ void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
                 modssl_pk_server_t *const pks = sc->server->pks;
                 int i;
 
+                for (i = 0; (i < pks->uris->nelts) &&
+                            APR_ARRAY_IDX(pks->uris, i, const char *);
+                     i++) {
+                    apr_file_printf(out, "  %s\n",
+                                    APR_ARRAY_IDX(pks->uris,
+                                                  i, const char *));
+                }
+
                 for (i = 0; (i < pks->cert_files->nelts) &&
                             APR_ARRAY_IDX(pks->cert_files, i, const char *);
                      i++) {
@@ -2356,6 +2528,10 @@ void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
             SSLSrvConfigRec *sc = mySrvConfig(s);
 
             if (sc && sc->server) {
+                if (sc->server->auth.ca_cert_uri) {
+                    apr_file_printf(out, "  %s\n",
+                                    sc->server->auth.ca_cert_uri);
+                }
                 if (sc->server->auth.ca_cert_path) {
                     apr_file_printf(out, "  %s\n",
                                     sc->server->auth.ca_cert_path);
@@ -2623,6 +2799,7 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
 #endif
     DMP_VERIFY(proxy? "SSLProxyVerify" : "SSLVerifyClient", auth->verify_mode);
     DMP_LONG(  proxy? "SSLProxyVerify" : "SSLVerifyDepth", auth->verify_depth);
+    DMP_STRING(proxy? "SSLProxyCACertificateURI" : "SSLCACertificateURI", auth->ca_cert_uri);
     DMP_STRING(proxy? "SSLProxyCACertificateFile" : "SSLCACertificateFile", auth->ca_cert_file);
     DMP_STRING(proxy? "SSLProxyCACertificatePath" : "SSLCACertificatePath", auth->ca_cert_path);
 }
@@ -2640,14 +2817,17 @@ static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
 
     modssl_auth_ctx_dump(&ctx->auth, p, proxy, out, indent, psep);
 
+    DMP_STRING(proxy? "SSLProxyCARevocationURI" : "SSLCARevocationURI", ctx->crl_uri);
     DMP_STRING(proxy? "SSLProxyCARevocationFile" : "SSLCARevocationFile", ctx->crl_file);
     DMP_STRING(proxy? "SSLProxyCARevocationPath" : "SSLCARevocationPath", ctx->crl_path);
     DMP_CRLCHK(proxy? "SSLProxyCARevocationCheck" : "SSLCARevocationCheck", ctx->crl_check_mask);
     if (!proxy) {
         DMP_PHRASE("SSLPassPhraseDialog", ctx->pphrase_dialog_type, ctx->pphrase_dialog_path);
         if (ctx->pks) {
+            DMP_STRING("SSLCADNRequestURI", ctx->pks->ca_name_uri);
             DMP_STRING("SSLCADNRequestFile", ctx->pks->ca_name_file);
             DMP_STRING("SSLCADNRequestPath", ctx->pks->ca_name_path);
+            DMP_STRARR("SSLCertificateURI", ctx->pks->uris);
             DMP_STRARR("SSLCertificateFile", ctx->pks->cert_files);
             DMP_STRARR("SSLCertificateKeyFile", ctx->pks->key_files);
         }
@@ -2698,6 +2878,7 @@ static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
     }
     else { /* proxy */
         if (ctx->pkp) {
+            DMP_STRARR("SSLProxyMachineCertificateURI", ctx->pkp->uris);
             DMP_STRING("SSLProxyMachineCertificateFile", ctx->pkp->cert_file);
             DMP_STRING("SSLProxyMachineCertificatePath", ctx->pkp->cert_path);
             DMP_STRING("SSLProxyMachineCertificateChainFile", ctx->pkp->ca_cert_file);
