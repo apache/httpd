@@ -47,6 +47,7 @@ struct h3_server_conf
     apr_size_t h3_max_request_body_size;
     apr_size_t h3_max_response_body_size;
     h3_tri_flag h3_alt_svc;
+    h3_tri_flag h3_address_validation;
     apr_uint32_t h3_alt_svc_max_age;
     apr_uint32_t h3_handshake_timeout;
     apr_uint32_t h3_idle_timeout;

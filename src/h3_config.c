@@ -68,6 +68,7 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_max_request_body_size = new->h3_max_request_body_size ? new->h3_max_request_body_size : base->h3_max_request_body_size;
     merged->h3_max_response_body_size = new->h3_max_response_body_size ? new->h3_max_response_body_size : base->h3_max_response_body_size;
     merged->h3_alt_svc = new->h3_alt_svc != H3_FLAG_UNSET ? new->h3_alt_svc : base->h3_alt_svc;
+    merged->h3_address_validation = new->h3_address_validation != H3_FLAG_UNSET ? new->h3_address_validation : base->h3_address_validation;
     merged->h3_alt_svc_max_age = new->h3_alt_svc_max_age ? new->h3_alt_svc_max_age : base->h3_alt_svc_max_age;
     merged->h3_handshake_timeout = new->h3_handshake_timeout ? new->h3_handshake_timeout : base->h3_handshake_timeout;
     merged->h3_idle_timeout = new->h3_idle_timeout ? new->h3_idle_timeout : base->h3_idle_timeout;
@@ -320,6 +321,14 @@ static const char* set_h3_alt_svc(cmd_parms* cmd, void* /*dummy*/, int flag)
     return NULL;
 }
 
+static const char* set_h3_address_validation(cmd_parms* cmd, void* /*dummy*/, int flag)
+{
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_address_validation = flag ? H3_FLAG_ON : H3_FLAG_OFF;
+    return NULL;
+}
+
 static const char* set_h3_alt_svc_max_age(cmd_parms* cmd, void* /*dummy*/, const char* arg)
 {
     if (!arg || !*arg)
@@ -391,6 +400,10 @@ int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, s
             {
                 vc->h3_alt_svc = H3_FLAG_ON;
             }
+            if (vc->h3_address_validation == H3_FLAG_UNSET)
+            {
+                vc->h3_address_validation = H3_FLAG_ON;
+            }
             if (vc->h3_alt_svc_max_age == 0)
             {
                 vc->h3_alt_svc_max_age = H3_ALT_SVC_MAX_AGE_DEFAULT;
@@ -456,6 +469,7 @@ const command_rec cmd_9 = AP_INIT_TAKE1("H3AltSvcMaxAge", set_h3_alt_svc_max_age
 const command_rec cmd_10 = AP_INIT_TAKE1("H3HandshakeTimeout", set_h3_handshake_timeout, NULL, RSRC_CONF, "Timeout in seconds for QUIC handshakes to complete (default: 10)");
 const command_rec cmd_11 = AP_INIT_TAKE1("H3IdleTimeout", set_h3_idle_timeout, NULL, RSRC_CONF, "Idle timeout in seconds for QUIC connections (default: 300)");
 const command_rec cmd_12 = AP_INIT_TAKE1("H3MaxResponseBodySize", set_h3_max_response_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 response body size in bytes; an explicit limit enables bounded whole-response buffering (default: unlimited streaming)");
+const command_rec cmd_13 = AP_INIT_FLAG("H3AddressValidation", set_h3_address_validation, NULL, RSRC_CONF, "Whether to validate client addresses with a QUIC Retry packet before accepting a connection (default: on)");
 
 const command_rec cmd_end = AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL);
-const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_4, cmd_5, cmd_6, cmd_7, cmd_8, cmd_9, cmd_10, cmd_11, cmd_12, cmd_end};
+const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_4, cmd_5, cmd_6, cmd_7, cmd_8, cmd_9, cmd_10, cmd_11, cmd_12, cmd_13, cmd_end};

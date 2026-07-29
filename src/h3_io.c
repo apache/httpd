@@ -297,7 +297,7 @@ int h3_io_at_connection_limit(h3_io_t* io)
 
 /* h3_keylog_cb lives in h3_ssl.c on trunk; the upstream chain defines it inline here. */
 
-static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char* key)
+static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char* key, uint64_t listener_flags)
 {
     CHECK(io);
     CHECK(cert);
@@ -324,7 +324,7 @@ static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char
     {
         SSL_CTX_set_keylog_callback(io->ssl_ctx, h3_keylog_cb);
     }
-    io->ssl_listener = SSL_new_listener(io->ssl_ctx, 0);
+    io->ssl_listener = SSL_new_listener(io->ssl_ctx, listener_flags);
     BIO* dgram_bio = BIO_new_dgram(io->udp_fd, BIO_NOCLOSE);
     BIO* peer_addr_bio = BIO_new(io->peer_addr_bio_method);
     if (!io->ssl_listener || !dgram_bio || !peer_addr_bio)
@@ -422,7 +422,8 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_pool_create failed");
         return APR_EGENERAL;
     }
-    if (build_ssl_listener(io, conf->h3_cert_path, conf->h3_key_path) != APR_SUCCESS)
+    uint64_t listener_flags = conf->h3_address_validation == H3_FLAG_OFF ? SSL_LISTENER_FLAG_NO_VALIDATE : 0;
+    if (build_ssl_listener(io, conf->h3_cert_path, conf->h3_key_path, listener_flags) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "listener setup failed");
         teardown(io);
