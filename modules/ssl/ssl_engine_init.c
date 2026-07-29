@@ -1287,8 +1287,6 @@ apr_status_t modssl_CTX_load_verify_store(server_rec *s,
         case OSSL_STORE_INFO_CERT: {
 
             X509 *cert;
-            const X509_NAME *name;
-            X509_NAME *xname;
 
             if (!(cert = OSSL_STORE_INFO_get0_CERT(info))) {
                 return APR_EGENERAL;
@@ -1299,7 +1297,7 @@ apr_status_t modssl_CTX_load_verify_store(server_rec *s,
             }
             if (X509_STORE_add_cert(store, cert)) {
 
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10599)
                              "Host %s: Trusted certificate from URI: %s",
                              mctx->sc->vhost_id,
                              modssl_X509_NAME_to_string(ptemp,
@@ -1372,7 +1370,7 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
 
         if ((rv = modssl_CTX_load_verify_store(s, ptemp,
                 mctx->auth.ca_cert_uri, 1, mctx)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(10600)
                     "Unable to configure verify store "
                     "for client authentication");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -1563,7 +1561,7 @@ apr_status_t modssl_X509_STORE_load_crl(server_rec *s,
             }
             if (X509_STORE_add_crl(store, crl)) {
 
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10601)
                              "Host %s: Certificate revocation list from URI: %s",
                              mctx->sc->vhost_id,
                              modssl_X509_NAME_to_string(ptemp,
@@ -1630,7 +1628,7 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
                  "Configuring certificate revocation facility");
 
     if ((rv = modssl_X509_STORE_load_crl(s, ptemp, mctx->crl_uri, 1, mctx)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(10602)
                      "Host %s: unable to configure X.509 CRL uri "
                      "for certificate revocation", mctx->sc->vhost_id);
         ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -1877,7 +1875,7 @@ DEFINE_STACK_OF(EVP_PKEY)
 
 #if MODSSL_HAVE_OPENSSL_STORE
 
-apr_status_t ssl_init_uri_cleanup(void *data)
+static apr_status_t ssl_init_uri_cleanup(void *data)
 {
     modssl_ctx_uri_t *uctx = (modssl_ctx_uri_t *)data;
 
@@ -1896,14 +1894,15 @@ static int compare_certs_asc(const X509 *const *a, const X509 *const *b)
     const ASN1_TIME *time_a = X509_get0_notBefore(*a);
     const ASN1_TIME *time_b = X509_get0_notBefore(*b);
 
-    // ASN1_TIME_compare returns:
-    // -1 if time_a is earlier than time_b
-    //  0 if they are identical
-    //  1 if time_a is later than time_b
+    /* ASN1_TIME_compare returns:
+     * -1 if time_a is earlier than time_b
+     *  0 if they are identical
+     *  1 if time_a is later than time_b
+     */
     return ASN1_TIME_compare(time_a, time_b);
 }
 
-static int cert_match(apr_pool_t *p, X509 *cert, const char *id)
+static int cert_match(apr_pool_t *p, X509 *cert, char *id)
 {
     if (id[0] == '[') {
         const char *end = strchr(id, ']');
@@ -1969,8 +1968,6 @@ static apr_status_t ssl_init_uri(server_rec *s,
         case OSSL_STORE_INFO_CERT: {
 
             X509 *cert;
-            const X509_NAME *name;
-            X509_NAME *xname;
 
             if (!(cert = OSSL_STORE_INFO_get1_CERT(info))) {
                 return APR_EGENERAL;
@@ -2015,7 +2012,7 @@ static apr_status_t ssl_init_uri(server_rec *s,
 
                 /* check for a match on all server aliases */
                 if (s->names && !apr_is_empty_array(s->names)) {
-                    const char **aliases = (const char **)s->names->elts;
+                    char **aliases = (char **)s->names->elts;
                     int i;
                     for (i = 0; i < s->names->nelts; i++) {
                         if (!cert_match(ptemp, cert, aliases[i])) {
@@ -2101,8 +2098,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
                                           modssl_ctx_t *mctx,
                                           apr_array_header_t *pphrases)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    const char *vhost_id = mctx->sc->vhost_id, *uri;
+    const char *uri;
     int i, k;
     int found = 0;
     apr_status_t rv = APR_SUCCESS;
@@ -2131,7 +2127,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
          i++) {
 
         if (ssl_init_uri(s, ptemp, uri, 1, uctx) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10603)
                          "Host %s: Failed to open URI `%s'",
                          mctx->sc->vhost_id, uri);
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
@@ -2153,7 +2149,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
             if (X509_check_private_key(cert, pkey) == 1) {
 
                 if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) < 1) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10604)
                                  "Host %s: Failed to use certificate: %s",
                                  mctx->sc->vhost_id,
                                  modssl_X509_NAME_to_string(ptemp,
@@ -2163,7 +2159,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
                 }
 
                 if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) < 1) {
-                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10605)
                                  "Host %s: Failed to use private key: %s",
                                  mctx->sc->vhost_id,
                                  modssl_X509_NAME_to_string(ptemp,
@@ -2172,7 +2168,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
                     return APR_EGENERAL;
                 }
 
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10606)
                              "Host %s: Server certificate from URI: %s",
                              mctx->sc->vhost_id,
                              modssl_X509_NAME_to_string(ptemp,
@@ -2186,7 +2182,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
     }
 
     if (!found) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10607)
                      "Host %s: No matching certificate/key pairs found among "
                      "%d certs, %d CA certs, %d intermediate certs, "
                      "%d leaf certs, %d server certs, %d keys.",
@@ -2202,7 +2198,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
     for (i = sk_X509_num(uctx->ca_list) - 1; i >= 0; i--) {
         X509 *cert = sk_X509_value(uctx->ca_list, i);
         if (!SSL_CTX_add1_chain_cert(mctx->ssl_ctx, cert)) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10608)
                          "Host %s: Failed to add intermediate certificate: %s",
                          mctx->sc->vhost_id,
                          modssl_X509_NAME_to_string(ptemp,
@@ -2221,7 +2217,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
             SSL_BUILD_CHAIN_FLAG_UNTRUSTED |
             SSL_BUILD_CHAIN_FLAG_IGNORE_ERROR |
             SSL_BUILD_CHAIN_FLAG_CLEAR_ERROR)) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10609)
                     "Host %s: Could not build the certificate chain from "
                     "%d certs, %d CA certs, %d intermediate certs, "
                        "%d leaf certs, %d server certs, %d keys.",
@@ -2244,7 +2240,7 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
 {
     const char *vhost_id = mctx->sc->vhost_id;
 
-    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10610)
                 "Host %s: Server certificate URIs are not supported on this platform.",
                 mctx->sc->vhost_id);
 
@@ -2627,10 +2623,11 @@ static int compare_certs_desc(const X509 *const *a, const X509 *const *b)
     const ASN1_TIME *time_a = X509_get0_notBefore(*a);
     const ASN1_TIME *time_b = X509_get0_notBefore(*b);
 
-    // ASN1_TIME_compare returns:
-    // -1 if time_a is earlier than time_b
-    //  0 if they are identical
-    //  1 if time_a is later than time_b
+    /* ASN1_TIME_compare returns:
+     * -1 if time_a is earlier than time_b
+     *  0 if they are identical
+     *  1 if time_a is later than time_b
+     */
     return -ASN1_TIME_compare(time_a, time_b);
 }
 
@@ -2681,8 +2678,6 @@ static apr_status_t ssl_init_proxy_uri(server_rec *s,
         case OSSL_STORE_INFO_CERT: {
 
             X509 *cert;
-            const X509_NAME *name;
-            X509_NAME *xname;
 
             if (!(cert = OSSL_STORE_INFO_get1_CERT(info))) {
                 OSSL_STORE_close(sctx);
@@ -2762,8 +2757,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
                                         apr_pool_t *ptemp,
                                         modssl_ctx_t *mctx)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    const char *vhost_id = mctx->sc->vhost_id, *uri;
+    const char *uri;
     modssl_pk_proxy_t *pkp = mctx->pkp;
     modssl_ctx_uri_t *uctx;
     STACK_OF(X509_INFO) *sk;
@@ -2812,7 +2806,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
 
         if (uri &&
                 ssl_init_proxy_uri(s, ptemp, uri, 1, uctx) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10611)
                          "Host %s: Failed to open proxy URI `%s'",
                          mctx->sc->vhost_id, uri);
             return APR_EGENERAL;
@@ -2843,7 +2837,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
 
                 sk_X509_INFO_push(sk, info);
 
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO()
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10612)
                              "Host %s: Proxy certificate from URI: %s",
                              mctx->sc->vhost_id,
                              modssl_X509_NAME_to_string(ptemp,
@@ -2857,7 +2851,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
     }
 
     if (!found) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10613)
                      "Host %s: No matching proxy certificate/key pairs found among "
                      "%d certs, %d CA certs, %d intermediate certs, "
                      "%d leaf certs, %d client certs, %d keys.",
@@ -2876,7 +2870,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
         X509_STORE_add_cert(store, cert); /* increments cert */
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO()
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(10614)
                  "Host %s: loaded %d client certs for SSL proxy among "
                  "%d certs, %d CA certs, %d intermediate certs, "
                  "%d leaf certs, %d client certs, %d keys.",
@@ -2897,7 +2891,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
     if (pkp->uris->nelts) {
         const char *vhost_id = mctx->sc->vhost_id;
 
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10615)
                     "Host %s: Proxy certificate URIs are not supported on this platform.",
                     mctx->sc->vhost_id);
 
@@ -3649,7 +3643,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
     if (ca_uri &&
         ssl_init_ca_cert_uri(s, ptemp,
                              ca_uri, ca_list, 1, mctx) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10616)
                      "Failed to open Certificate URI `%s'", ca_uri);
         sk_X509_NAME_pop_free(ca_list, X509_NAME_free);
         return NULL;
