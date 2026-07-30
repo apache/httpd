@@ -243,6 +243,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     r->proto_num = HTTP_VERSION(3, 0);
     r->method = apr_pstrdup(r->pool, h3s->method ? h3s->method : "GET");
     r->method_number = ap_method_number_of(r->method);
+    r->header_only = (r->method_number == M_GET && r->method[0] == 'H');
     h3s->r = r;
 
     if (h3s->path)

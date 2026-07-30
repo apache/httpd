@@ -250,6 +250,7 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
                 apr_brigade_cleanup(bb);
                 return rv;
             }
+            next = APR_BUCKET_NEXT(b);
         }
         else if (ctx->streaming && (APR_BUCKET_IS_EOS(b) || APR_BUCKET_IS_FLUSH(b)))
         {
