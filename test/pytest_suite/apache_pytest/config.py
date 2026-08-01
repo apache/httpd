@@ -295,6 +295,7 @@ class TestConfig:
         v["t_conf"] = str(serverroot / "conf")
         v["t_logs"] = str(serverroot / "logs")
         v["t_state"] = str(serverroot / "state")
+        v["statedir"] = v["t_state"]
         v["t_conf_file"] = str(serverroot / "conf" / "httpd.conf")
         v["t_pid_file"] = str(serverroot / "logs" / "httpd.pid")
         v["sslca"] = str(serverroot / "conf" / "ssl" / "ca")

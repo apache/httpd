@@ -15,7 +15,6 @@ t/conf/*.conf
 t/conf/ssl/*.pl
 t/conf/ssl/*.conf
 t/conf/ssl/ca
-t/conf/cacheroot/
 t/logs/
 t/state/
 

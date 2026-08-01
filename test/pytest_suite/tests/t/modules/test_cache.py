@@ -18,7 +18,7 @@ from apache_pytest import need_min_apache_version, need_module, t_cmp
 def test_cache(http):
     http.module("mod_cache")
 
-    cacheroot = os.path.join(http.vars("serverroot"), "conf", "cacheroot")
+    cacheroot = os.path.join(http.vars("statedir"), "cacheroot")
     os.makedirs(cacheroot, exist_ok=True)
 
     r = http.GET("/cache/")
