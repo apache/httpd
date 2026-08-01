@@ -31,7 +31,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> supportant les
 websockets</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>proxy_wstunnel_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
@@ -112,7 +112,7 @@ g&eacute;rer la requ&ecirc;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.48 du serveur HTTP Apache</td></tr>
 </table>
