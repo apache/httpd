@@ -247,7 +247,7 @@ jobs:
           # check-all-pytest`. See TEST_PYTEST in test/travis_run_linux.sh.
           - name: Python pytest test suites
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
-            pkgs: curl nghttp2-client uv
+            pkgs: curl nghttp2-client pipx
             env: |
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
@@ -379,6 +379,11 @@ jobs:
         name: config.log-${{ env.JOBID }}
         path: |
           /home/runner/build/**/config.log
+    - name: Install uv
+      if: env.TEST_PYTEST == '1'
+      run: |
+        pipx install uv
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v7
