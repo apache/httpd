@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 420990:1936574 (outdated) -->
+<!-- English Revision: 1936574 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -80,6 +80,13 @@
       <dd>Ce statut indique que le module ("module tiers") ne fait pas
       partie de la distribution de base d'Apache. Nous ne sommes pas
       responsables de ces modules et n'en assurons pas le support.</dd>
+
+      <dt>Obsolète</dt>
+
+      <dd>Un module dont le statut est « Obsolète » est toujours disponible et
+      fonctionnel, mais son utilisation est déconseillée. Il est susceptible
+      d’être supprimé dans la prochaine mise à jour mineure. Consultez sa
+      documentation pour des solutions de remplacement ou de migration.</dd>
     </dl>
 </section>
 

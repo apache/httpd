@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1738542:1936574 (outdated) -->
+<!-- English Revision: 1936574 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -27,7 +27,7 @@
 <name>mod_access_compat</name>
 <description>Autorisations de groupe à base de nom d'hôte (nom ou
 adresse IP)</description>
-<status>Extension</status>
+<status>Obsolète</status>
 <sourcefile>mod_access_compat.c</sourcefile>
 <identifier>access_compat_module</identifier>
 <compatibility>Disponible dans la version 2.3 du serveur HTTP Apache

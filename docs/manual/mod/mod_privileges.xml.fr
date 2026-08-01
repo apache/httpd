@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933402:1936574 (outdated) -->
+<!-- English Revision: 1936574 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,7 +28,7 @@
 <description>Support des privilèges de Solaris et de l'exécution des
 serveurs virtuels sous différents identifiants
 utilisateurs.</description>
-<status>Experimental</status>
+<status>Obsolète</status>
 <sourcefile>mod_privileges.c</sourcefile>
 <identifier>privileges_module</identifier>
 <compatibility>Disponible depuis la version 2.3 d'Apache sur les

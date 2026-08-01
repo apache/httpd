@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933452:1936574 (outdated) -->
+<!-- English Revision: 1936574 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -27,7 +27,7 @@
 <name>mod_cern_meta</name>
 <description>La sémantique des métafichiers du serveur httpd du
 CERN</description>
-<status>Extension</status>
+<status>Obsolète</status>
 <sourcefile>mod_cern_meta.c</sourcefile>
 <identifier>cern_meta_module</identifier>
 
