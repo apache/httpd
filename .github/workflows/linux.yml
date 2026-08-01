@@ -219,26 +219,31 @@ jobs:
             env: |
               NOTEST_LIBS=-lubsan
               TEST_UBSAN=1
+              TEST_PYTEST=1
           # -------------------------------------------------------------------------
           - name: ASan
             notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
             config: --enable-mods-shared=reallyall
+            pkgs: nghttp2-client
             env: |
               APR_VERSION=1.7.x
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
+              TEST_PYTEST=1
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: ASan, pool-debug
             notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
             config: --enable-mods-shared=reallyall
+            pkgs: nghttp2-client
             env: |
               APR_VERSION=1.7.x
               APR_CONFIG="--enable-pool-debug"
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
+              TEST_PYTEST=1
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           # Runs every pytest-based test suite (pytest_suite/ + all
@@ -247,7 +252,7 @@ jobs:
           # check-all-pytest`. See TEST_PYTEST in test/travis_run_linux.sh.
           - name: Python pytest test suites
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
-            pkgs: curl nghttp2-client pipx
+            pkgs: nghttp2-client
             env: |
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
@@ -350,9 +355,9 @@ jobs:
     - name: Install prerequisites
       run: sudo apt-get install -o Acquire::Retries=5
                     cpanminus libtool-bin libapr1-dev libaprutil1-dev
-                    liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
+                    liblua5.3-dev libbrotli-dev libcurl4-openssl-dev
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc libsasl2-dev ${{ matrix.pkgs }} check
+                    perl-doc libsasl2-dev curl pipx ${{ matrix.pkgs }} check
     - uses: actions/checkout@v6
     - uses: actions/checkout@v6
       with:

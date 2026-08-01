@@ -253,12 +253,18 @@ if test -v TEST_PYTEST -a $RV -eq 0; then
     # which isn't available here (built from source, pebble's Go module
     # currently fails to build against modern Go -- see the old commit
     # history for the details of that dead end).
+    #
+    # modules/http2 is excluded when mod_http2 wasn't built (e.g. the
+    # UBSan job's --disable-http2): its pytest package hard-requires
+    # both http2 and proxy_http2 to load, and errors at fixture setup
+    # otherwise rather than skipping.
     (cd test/clients && make)
     targets=""
     for d in test/modules/*/; do
         name=$(basename "$d")
         case "$name" in
             md|__pycache__) continue ;;
+            http2) test -f modules/http2/.libs/mod_http2.so || continue ;;
         esac
         targets="$targets modules/$name"
     done
