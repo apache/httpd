@@ -241,34 +241,19 @@ jobs:
               TEST_ASAN=1
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
-          - name: HTTP/2 test suite
+          # Runs every pytest-based test suite (pytest_suite/ + all
+          # test/modules/*/ pyhttpd suites except modules/md, which needs a
+          # local ACME/pebble server that isn't available here) via `make
+          # check-all-pytest`. See TEST_PYTEST in test/travis_run_linux.sh.
+          - name: Python pytest test suites
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
-            pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets
+            pkgs: curl nghttp2-client uv
             env: |
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
-              TEST_INSTALL=1
-              TEST_H2=1
-              TEST_CORE=1
-              TEST_PROXY=1
-          # -------------------------------------------------------------------------
-          ### TODO: if: *condition_not_24x
-          ### TODO: pebble install is broken.
-          # - name: ACME test suite
-          #   config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=event
-          #   pkgs: >-
-          #     python3-pytest nghttp2-client python3-cryptography python3-requests python3-filelock
-          #     golang-1.17 curl
-          #   env: |
-          #     APR_VERSION=1.7.6
-          #     APU_VERSION=1.6.3
-          #     APU_CONFIG="--with-crypto"
-          #     GOROOT=/usr/lib/go-1.17
-          #     NO_TEST_FRAMEWORK=1
-          #     TEST_INSTALL=1
-          #     TEST_MD=1
+              TEST_PYTEST=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
           - name: Configured w/reduced exports
@@ -403,3 +388,5 @@ jobs:
         path: |
           **/config.log
           test/perl-framework/t/logs/error_log
+          test/pytest_suite/t/logs/error_log
+          test/gen/apache/logs/error_log
