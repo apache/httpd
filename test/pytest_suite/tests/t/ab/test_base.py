@@ -18,7 +18,7 @@ import pytest
 
 
 def _ab_path(http) -> Path:
-    return Path(http.config.info.httpd).resolve().parent / "ab"
+    return Path(http.config.info.httpd).parent / "ab"
 
 
 def _run_ab(ab: Path, url: str) -> subprocess.CompletedProcess:
