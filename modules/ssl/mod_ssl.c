@@ -147,6 +147,9 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(CADNRequestFile, TAKE1,
                 "SSL CA Distinguished Name file "
                 "('/path/to/file' - PEM encoded to derive acceptable CA names to request)")
+    SSL_CMD_SRV(CADNRequestURI, TAKE1,
+                "SSL CA Distinguished Name uri "
+                "('file:', 'pkcs11:' - URI of certificates to derive acceptable CA names to request)")
     SSL_CMD_SRV(CARevocationURI, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) uri "
                 "('file:', 'pkcs11:' - URI of CRLs)")
