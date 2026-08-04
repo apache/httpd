@@ -169,7 +169,7 @@ URLs on the fly</td></tr>
       the current state of the URI matches its pattern, <strong>and</strong> if these conditions are met.</p>
 
       <p>If the <em>CondPattern</em> is prefixed with a <code>!</code> the
-      condition is determined to be true only if the the
+      condition is determined to be true only if the
       <em>CondPattern</em> does not match.</p>
 
       
@@ -1140,7 +1140,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       on where the <code class="directive">RewriteRule</code> directive is defined. </p>
 
       <p>If the pattern is prefixed with a <code>!</code> the
-      substitution will be performed only if the the
+      substitution will be performed only if the
       <em>pattern</em> does not match.</p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>

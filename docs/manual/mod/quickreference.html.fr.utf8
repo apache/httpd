@@ -1493,21 +1493,26 @@ d'une variable non d&eacute;finie</td></tr>
 cod&eacute;s en PEM pour l'authentification des clients</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&eacute;pertoire des certificats de CA cod&eacute;s en PEM pour
 l'authentification des clients</td></tr>
-<tr><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concat&eacute;nation des certificats de CA
+<tr><td><a href="mod_ssl.html#sslcacertificateuri">SSLCACertificateURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server CA certificate store for Client Authentication</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concat&eacute;nation des certificats de CA
 cod&eacute;s en PEM pour la d&eacute;finition de noms de CA acceptables</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&eacute;pertoire contenant des fichiers de certificats de CA
+<tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">R&eacute;pertoire contenant des fichiers de certificats de CA
 cod&eacute;s en PEM pour la d&eacute;finition de noms de CA acceptables</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequesturi">SSLCADNRequestURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">certificate store of CA Certificates for defining
+acceptable CA names</td></tr>
 <tr><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none [<var>flag</var>s ...]</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la v&eacute;rification des r&eacute;vocations bas&eacute;e sur les CRL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concat&eacute;nation des CRLs des CA cod&eacute;s en
 PEM pour l'authentification des clients</td></tr>
 <tr><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">R&eacute;pertoire des CRLs de CA cod&eacute;s en PEM pour
 l'authentification des clients</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant les certificats de CA du serveur cod&eacute;s en
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationuri">SSLCARevocationURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server CA certificate revocation list store for Client Authentication</td></tr>
+<tr><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant les certificats de CA du serveur cod&eacute;s en
 PEM</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <var>file-path</var>|<var>certid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier de donn&eacute;es contenant les informations de certificat X.509 du serveur
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <var>file-path</var>|<var>certid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier de donn&eacute;es contenant les informations de certificat X.509 du serveur
 cod&eacute;es au format PEM ou identificateur de jeton</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la cl&eacute; priv&eacute;e du serveur cod&eacute;e en
+<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la cl&eacute; priv&eacute;e du serveur cod&eacute;e en
 PEM</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificateuri">SSLCertificateURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server certificate and key store</td></tr>
 <tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite [<var>protocol</var>] <var>cipher-spec</var></a></td><td> DEFAULT (d&eacute;pend de  +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Algorithmes de chiffrement disponibles pour la n&eacute;gociation
 au cours de l'initialisation de la connexion SSL</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activer la collecte des variables de ClientHello</td></tr>
@@ -1548,12 +1553,14 @@ disponibles</td></tr>
 cod&eacute;s en PEM pour l'authentification des serveurs distants</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">R&eacute;pertoire des certificats de CA cod&eacute;s en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la v&eacute;rification des r&eacute;vocations bas&eacute;e sur les CRLs
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificateuri">SSLProxyCACertificateURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy CA certificate store for Remote Server Auth</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la v&eacute;rification des r&eacute;vocations bas&eacute;e sur les CRLs
 pour l'authentification du serveur distant</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fichier contenant la concat&eacute;nation des CRLs de CA cod&eacute;s en
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fichier contenant la concat&eacute;nation des CRLs de CA cod&eacute;s en
 PEM pour l'authentification des serveurs distants</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&eacute;pertoire des CRLs de CA cod&eacute;s en PEM pour
+<tr><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">R&eacute;pertoire des CRLs de CA cod&eacute;s en PEM pour
 l'authentification des serveurs distants</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationuri">SSLProxyCARevocationURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy CA certificate revocation list store for Remote Server Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration de la v&eacute;rification du champ CN du certificat
 du serveur distant
 </td></tr>
@@ -1573,133 +1580,134 @@ mandataire de choisir un certificat</td></tr>
 clients cod&eacute;s en PEM que le mandataire doit utiliser</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <var>chemin-r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">R&eacute;pertoire des cl&eacute;s et certificats clients cod&eacute;s en PEM que
 le mandataire doit utiliser</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<var>protocole</var> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit les protocoles SSL disponibles pour la fonction de
+<tr><td><a href="mod_ssl.html#sslproxymachinecertificateuri">SSLProxyMachineCertificateURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Proxy certificate and key stores</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<var>protocole</var> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit les protocoles SSL disponibles pour la fonction de
 mandataire</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <var>niveau</var></a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de v&eacute;rification du certificat du serveur
+<tr><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <var>niveau</var></a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de v&eacute;rification du certificat du serveur
 distant</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <var>niveau</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <var>niveau</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
 lors de la v&eacute;rification du certificat du serveur distant</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <var>contexte</var> <var>source</var>
-[<var>nombre</var>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source de d&eacute;clenchement du G&eacute;n&eacute;rateur de Nombres
+<tr><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <var>contexte</var> <var>source</var>
+[<var>nombre</var>]</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Source de d&eacute;clenchement du G&eacute;n&eacute;rateur de Nombres
 Pseudo-Al&eacute;atoires (PRNG)</td></tr>
-<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>taille</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit la taille du tampon de ren&eacute;gociation
+<tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>taille</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit la taille du tampon de ren&eacute;gociation
 SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire <var>expression</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">N'autorise l'acc&egrave;s que lorsqu'une expression bool&eacute;enne
+<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <var>expression</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">N'autorise l'acc&egrave;s que lorsqu'une expression bool&eacute;enne
 complexe et arbitraire est vraie</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interdit l'acc&egrave;s lorsque la requ&ecirc;te HTTP n'utilise pas
+<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interdit l'acc&egrave;s lorsque la requ&ecirc;te HTTP n'utilise pas
 SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <var>type</var></a></td><td> none </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type du cache de session SSL global et
+<tr><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <var>type</var></a></td><td> none </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Type du cache de session SSL global et
 inter-processus</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <var>secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Nombre de secondes avant l'expiration d'une session SSL
+<tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <var>secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de secondes avant l'expiration d'une session SSL
 dans le cache de sessions</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cl&eacute; de chiffrement/d&eacute;chiffrement permanente pour les
+<tr><td><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Cl&eacute; de chiffrement/d&eacute;chiffrement permanente pour les
 tickets de session TLS</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou d&eacute;sactive les tickets de session TLS</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed <var>secret-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source de randomisation pour utilisateur SRP inconnu</td></tr>
-<tr><td><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin du fichier de v&eacute;rification SRP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <var>type</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration du cache pour l'agrafage OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <var>secondes</var></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dur&eacute;e de vie des r&eacute;ponses invalides dans le cache pour
+<tr class="odd"><td><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou d&eacute;sactive les tickets de session TLS</td></tr>
+<tr><td><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed <var>secret-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Source de randomisation pour utilisateur SRP inconnu</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin du fichier de v&eacute;rification SRP</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <var>type</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration du cache pour l'agrafage OCSP</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <var>secondes</var></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dur&eacute;e de vie des r&eacute;ponses invalides dans le cache pour
 agrafage OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">G&eacute;n&egrave;re une r&eacute;ponse "tryLater" pour les requ&ecirc;tes OCSP &eacute;chou&eacute;es</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remplace l'URI du serveur OCSP sp&eacute;cifi&eacute; dans l'extension
+<tr><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">G&eacute;n&egrave;re une r&eacute;ponse "tryLater" pour les requ&ecirc;tes OCSP &eacute;chou&eacute;es</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remplace l'URI du serveur OCSP sp&eacute;cifi&eacute; dans l'extension
 AIA du certificat</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <var>secondes</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente maximum pour les requ&ecirc;tes vers les serveurs
+<tr><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <var>secondes</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Temps d'attente maximum pour les requ&ecirc;tes vers les serveurs
 OCSP</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <var>secondes</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Age maximum autoris&eacute; des r&eacute;ponses OCSP incluses dans la
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <var>secondes</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximum autoris&eacute; des r&eacute;ponses OCSP incluses dans la
 n&eacute;gociation TLS</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <var>secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dur&eacute;e de vie maximale autoris&eacute;e des r&eacute;ponses OCSP incluses dans la
+<tr><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <var>secondes</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dur&eacute;e de vie maximale autoris&eacute;e des r&eacute;ponses OCSP incluses dans la
 n&eacute;gociation TLS</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Transmet au client les erreurs survenues lors des requ&ecirc;tes
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Transmet au client les erreurs survenues lors des requ&ecirc;tes
 OCSP</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <var>secondes</var></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dur&eacute;e de vie des r&eacute;ponses OCSP dans le cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Contr&ocirc;le de l'acc&egrave;s des clients non-SNI &agrave; un serveur virtuel &agrave;
+<tr><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <var>secondes</var></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dur&eacute;e de vie des r&eacute;ponses OCSP dans le cache</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contr&ocirc;le de l'acc&egrave;s des clients non-SNI &agrave; un serveur virtuel &agrave;
 base de nom.
 </td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName <var>nom-var</var></a></td><td></td><td>sdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom de la variable servant &agrave; d&eacute;terminer le nom de
+<tr><td><a href="mod_ssl.html#sslusername">SSLUserName <var>nom-var</var></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom de la variable servant &agrave; d&eacute;terminer le nom de
 l'utilisateur</td></tr>
-<tr><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Active l'ajout des r&eacute;ponses OCSP &agrave; la n&eacute;gociation TLS</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <var>niveau</var></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de v&eacute;rification du certificat client</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <var>nombre</var></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Profondeur maximale des certificats de CA pour la
+<tr class="odd"><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'ajout des r&eacute;ponses OCSP &agrave; la n&eacute;gociation TLS</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <var>niveau</var></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de v&eacute;rification du certificat client</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <var>nombre</var></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Profondeur maximale des certificats de CA pour la
 v&eacute;rification des certificats clients</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslvhostsnipolicy">SSLVHostSNIPolicy strict|secure|authonly|insecure</a></td><td> secure </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finir la politique de compatibilit&eacute; pour l'acc&egrave;s des clients SNI
+<tr><td><a href="mod_ssl.html#sslvhostsnipolicy">SSLVHostSNIPolicy strict|secure|authonly|insecure</a></td><td> secure </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finir la politique de compatibilit&eacute; pour l'acc&egrave;s des clients SNI
 aux serveurs virtuels.</td></tr>
-<tr><td><a href="mpm_common.html#startservers">StartServers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de processus enfants du serveur cr&eacute;&eacute;s au
+<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de processus enfants du serveur cr&eacute;&eacute;s au
 d&eacute;marrage</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de threads cr&eacute;&eacute;s au d&eacute;marrage</td></tr>
-<tr><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le nom d'h&ocirc;te contenu dans une requ&ecirc;te doit &ecirc;tre
+<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads cr&eacute;&eacute;s au d&eacute;marrage</td></tr>
+<tr class="odd"><td><a href="core.html#stricthostcheck">StrictHostCheck ON|OFF</a></td><td> OFF </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine si le nom d'h&ocirc;te contenu dans une requ&ecirc;te doit &ecirc;tre
 explicitement sp&eacute;cifi&eacute; au niveau du serveur virtuel qui a pris en compte cette
 derni&egrave;re.
              </td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/mod&egrave;le/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Mod&egrave;le de substition dans le contenu de la
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/mod&egrave;le/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Mod&egrave;le de substition dans le contenu de la
 r&eacute;ponse</td></tr>
-<tr><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Modifie l'ordre de fusion des mod&egrave;les h&eacute;rit&eacute;s</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit la longueur de ligne maximale</td></tr>
-<tr><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Active ou d&eacute;sactive la fonctionnalit&eacute; suEXEC</td></tr>
-<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
+<tr class="odd"><td><a href="mod_substitute.html#substituteinheritbefore">SubstituteInheritBefore on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Modifie l'ordre de fusion des mod&egrave;les h&eacute;rit&eacute;s</td></tr>
+<tr><td><a href="mod_substitute.html#substitutemaxlinelength">SubstituteMaxLineLength <var>octets</var>(b|B|k|K|m|M|g|G)</a></td><td> 1m </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit la longueur de ligne maximale</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#suexec">Suexec On|Off</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou d&eacute;sactive la fonctionnalit&eacute; suEXEC</td></tr>
+<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Utilisateur Groupe</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">L'utilisateur et le groupe sous lesquels les programmes CGI
 doivent s'ex&eacute;cuter</td></tr>
-<tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Le nombre de threads maximum que l'on peut d&eacute;finir par
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Le nombre de threads maximum que l'on peut d&eacute;finir par
 processus enfant</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nombre de threads cr&eacute;&eacute;s par chaque processus
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>nombre</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads cr&eacute;&eacute;s par chaque processus
 enfant</td></tr>
-<tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
+<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>taille</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">La taille en octets de la pile qu'utilisent les threads qui
 traitent les connexions clients</td></tr>
-<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>time-interval</var>[s]</a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
+<tr><td><a href="core.html#timeout">TimeOut <var>time-interval</var>[s]</a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Temps pendant lequel le serveur va attendre certains
 &eacute;v&egrave;nements avant de consid&eacute;rer qu'une requ&ecirc;te a &eacute;chou&eacute;</td></tr>
-<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">D&eacute;termine le comportement des requ&ecirc;tes
+<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine le comportement des requ&ecirc;tes
 <code>TRACE</code></td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sp&eacute;cifie l'emplacement d'un fichier journal</td></tr>
-<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
-<tr class="odd"><td><a href="core.html#unclist" id="U" name="U">UNCList <var>hostname</var> [<var>hostname</var>...]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit quels sont les noms d'h&ocirc;te UNC auxquels le serveur peut acc&eacute;der
+<tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sp&eacute;cifie l'emplacement d'un fichier journal</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>chemin-fichier</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Le chemin du fichier <code>mime.types</code></td></tr>
+<tr><td><a href="core.html#unclist" id="U" name="U">UNCList <var>hostname</var> [<var>hostname</var>...]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">D&eacute;finit quels sont les noms d'h&ocirc;te UNC auxquels le serveur peut acc&eacute;der
 </td></tr>
-<tr><td><a href="core.html#undefine">UnDefine <var>nom-variable</var></a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Invalide la d&eacute;finition d'une variable</td></tr>
-<tr class="odd"><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime une macro</td></tr>
-<tr><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
-<tr class="odd"><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
-</a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Utilisation d'une macro</td></tr>
-<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">D&eacute;finit la mani&egrave;re dont le serveur d&eacute;termine son propre nom
+<tr class="odd"><td><a href="core.html#undefine">UnDefine <var>nom-variable</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Invalide la d&eacute;finition d'une variable</td></tr>
+<tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>nom</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Supprime une macro</td></tr>
+<tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>var-env</var> [<var>var-env</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Supprime des variables de l'environnement</td></tr>
+<tr><td><a href="mod_macro.html#use">Use <var>nom</var> [<var>valeur1</var> ... <var>valeurN</var>]
+</a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Utilisation d'une macro</td></tr>
+<tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit la mani&egrave;re dont le serveur d&eacute;termine son propre nom
 et son port</td></tr>
-<tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit la mani&egrave;re dont le serveur
+<tr><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">D&eacute;finit la mani&egrave;re dont le serveur
 d&eacute;termine son propre port</td></tr>
-<tr><td><a href="mod_unixd.html#user">User <var>utilisateur unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">L'utilisateur sous lequel le serveur va traiter les
+<tr class="odd"><td><a href="mod_unixd.html#user">User <var>utilisateur unix</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">L'utilisateur sous lequel le serveur va traiter les
 requ&ecirc;tes</td></tr>
-<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>nom-r&eacute;pertoire</em> [<em>nom-r&eacute;pertoire</em>] ...
-</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin des r&eacute;pertoires propres &agrave; un
+<tr><td><a href="mod_userdir.html#userdir">UserDir <em>nom-r&eacute;pertoire</em> [<em>nom-r&eacute;pertoire</em>] ...
+</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Chemin des r&eacute;pertoires propres &agrave; un
 utilisateur</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le serveur virtuel peut ex&eacute;cuter des
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine si le serveur virtuel peut ex&eacute;cuter des
 sous-processus, et d&eacute;finit les privil&egrave;ges disponibles pour ces
 dernier.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privil&egrave;ges au choix aux sous-processus cr&eacute;&eacute;s
+<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">Assigne des privil&egrave;ges au choix aux sous-processus cr&eacute;&eacute;s
 par un serveur virtuel.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;finit l'identifiant du groupe sous lequel s'ex&eacute;cute un
+<tr class="odd"><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit l'identifiant du groupe sous lequel s'ex&eacute;cute un
 serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privil&egrave;ge</var> [[+-]?nom-privil&egrave;ge] ...</a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privil&egrave;ges &agrave; un serveur virtuel.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le serveur s'ex&eacute;cute avec une s&eacute;curit&eacute; avanc&eacute;e
+<tr><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privil&egrave;ge</var> [[+-]?nom-privil&egrave;ge] ...</a></td><td></td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">Assigne des privil&egrave;ges &agrave; un serveur virtuel.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine si le serveur s'ex&eacute;cute avec une s&eacute;curit&eacute; avanc&eacute;e
 pour les serveurs virtuels.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit l'identifiant utilisateur sous lequel s'ex&eacute;cute un
+<tr><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;finit l'identifiant utilisateur sous lequel s'ex&eacute;cute un
 serveur virtuel.</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
 documents d'un serveur virtuel donn&eacute;</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique de la racine des documents pour un
+<tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique de la racine des documents pour un
 serveur virtuel donn&eacute;</td></tr>
-<tr><td><a href="core.html#virtualhost">&lt;VirtualHost
+<tr class="odd"><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>adresse IP</var>[:<var>port</var>] [<var>adresse
     IP</var>[:<var>port</var>]] ...&gt; ...
-    &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'&agrave; un nom
+    &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contient des directives qui ne s'appliquent qu'&agrave; un nom
 d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du r&eacute;pertoire des scripts CGI pour
+<tr><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique du r&eacute;pertoire des scripts CGI pour
 un serveur virtuel donn&eacute;</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Configuration dynamique du r&eacute;pertoire des scripts CGI pour
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configuration dynamique du r&eacute;pertoire des scripts CGI pour
 un serveur virtuel donn&eacute;</td></tr>
-<tr class="odd"><td><a href="core.html#warning" id="W" name="W">Warning <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Message d'avertissement personnalisable en provenance de
+<tr><td><a href="core.html#warning" id="W" name="W">Warning <var>message</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Message d'avertissement personnalisable en provenance de
 l'interpr&eacute;tation du fichier de configuration</td></tr>
-<tr><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
-<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Interpr&egrave;te les directives SSI dans les fichiers dont le bit
+<tr class="odd"><td><a href="mod_watchdog.html#watchdoginterval">WatchdogInterval <var>time-interval</var>[s]</a></td><td> 1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Intervalle Watchdog en secondes</td></tr>
+<tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Interpr&egrave;te les directives SSI dans les fichiers dont le bit
 d'ex&eacute;cution est positionn&eacute;</td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caract&egrave;res alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">D&eacute;finit des alias pour les valeurs d'encodage</td></tr>
-<tr class="odd"><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit un encodage par d&eacute;faut &agrave; utiliser lorsqu'aucune
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2encalias">xml2EncAlias <var>jeu-de-caract&egrave;res alias [alias ...]</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit des alias pour les valeurs d'encodage</td></tr>
+<tr><td><a href="mod_xml2enc.html#xml2encdefault">xml2EncDefault <var>nom</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">D&eacute;finit un encodage par d&eacute;faut &agrave; utiliser lorsqu'aucune
 information ne peut &ecirc;tre <a href="#sniffing">automatiquement d&eacute;tect&eacute;e</a></td></tr>
-<tr><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>&eacute;l&eacute;ment [&eacute;l&eacute;ment ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Indique &agrave; l'interpr&eacute;teur &agrave; partir de quelle balise il doit
+<tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse <var>&eacute;l&eacute;ment [&eacute;l&eacute;ment ...]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Indique &agrave; l'interpr&eacute;teur &agrave; partir de quelle balise il doit
 commencer son traitement.</td></tr>
 </table></div>
 <div class="bottomlang">

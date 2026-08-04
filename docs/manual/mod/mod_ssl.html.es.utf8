@@ -63,14 +63,18 @@ proveer el motor criptogr&aacute;fico.</p>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcacertificateuri">SSLCACertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequestpath">SSLCADNRequestPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequesturi">SSLCADNRequestURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationcheck">SSLCARevocationCheck</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationuri">SSLCARevocationURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslcertificateuri">SSLCertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslciphersuite">SSLCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcompression">SSLCompression</a></li>
@@ -96,9 +100,11 @@ proveer el motor criptogr&aacute;fico.</p>
 <li><img alt="" src="../images/down.gif"> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificateuri">SSLProxyCACertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationuri">SSLProxyCARevocationURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
@@ -107,6 +113,7 @@ proveer el motor criptogr&aacute;fico.</p>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificateuri">SSLProxyMachineCertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxyverify">SSLProxyVerify</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
@@ -418,6 +425,20 @@ este directorio contiene los enlaces simb&oacute;licos apropiados.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcacertificateuri">Directiva <span id="SSLCACertificateURI">SSLCACertificateURI</span> <a title="Enlace permanente" href="#sslcacertificateuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Server CA certificate store for Client Authentication</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLCACertificateURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Override">Anula:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslcadnrequestfile">Directiva <span id="SSLCADNRequestFile">SSLCADNRequestFile</span> <a title="Enlace permanente" href="#sslcadnrequestfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Fichero de certificados CA concatenados codificados en PEM para
@@ -485,6 +506,18 @@ apropiados.</p>
 </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcadnrequesturi">Directiva <span id="SSLCADNRequestURI">SSLCADNRequestURI</span> <a title="Enlace permanente" href="#sslcadnrequesturi" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>certificate store of CA Certificates for defining
+acceptable CA names</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLCADNRequestURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslcarevocationcheck">Directiva <span id="SSLCARevocationCheck">SSLCARevocationCheck</span> <a title="Enlace permanente" href="#sslcarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -587,6 +620,17 @@ que este directorio contiene los enlaces simb&oacute;licos apropiados.</p>
 </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcarevocationuri">Directiva <span id="SSLCARevocationURI">SSLCARevocationURI</span> <a title="Enlace permanente" href="#sslcarevocationuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Server CA certificate revocation list store for Client Authentication</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLCARevocationURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslcertificatechainfile">Directiva <span id="SSLCertificateChainFile">SSLCertificateChainFile</span> <a title="Enlace permanente" href="#sslcertificatechainfile" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -772,6 +816,19 @@ clave privada en otro fichero.</p>
 </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslcertificateuri">Directiva <span id="SSLCertificateURI">SSLCertificateURI</span> <a title="Enlace permanente" href="#sslcertificateuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Server certificate and key store</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLCertificateURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslciphersuite">Directiva <span id="SSLCipherSuite">SSLCipherSuite</span> <a title="Enlace permanente" href="#sslciphersuite" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -1720,6 +1777,19 @@ apropiados.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycacertificateuri">Directiva <span id="SSLProxyCACertificateURI">SSLProxyCACertificateURI</span> <a title="Enlace permanente" href="#sslproxycacertificateuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Proxy CA certificate store for Remote Server Auth</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLProxyCACertificateURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, secci&oacute;n de proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslproxycarevocationcheck">Directiva <span id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</span> <a title="Enlace permanente" href="#sslproxycarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Activa la comprobaci&oacute;n de revocaci&oacute;n basada en CRL para la
@@ -1807,6 +1877,19 @@ directorio tiene los enlaces simb&oacute;licos apropiados.</p>
 </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxycarevocationuri">Directiva <span id="SSLProxyCARevocationURI">SSLProxyCARevocationURI</span> <a title="Enlace permanente" href="#sslproxycarevocationuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Proxy CA certificate revocation list store for Remote Server Auth</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLProxyCARevocationURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, secci&oacute;n de proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslproxycheckpeercn">Directiva <span id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</span> <a title="Enlace permanente" href="#sslproxycheckpeercn" class="permalink">&para;</a></h2>
 <table class="directive">
@@ -2050,6 +2133,19 @@ de que este directorio contiene los enlaces simb&oacute;licos apropiados.</p>
 </div>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxymachinecertificateuri">Directiva <span id="SSLProxyMachineCertificateURI">SSLProxyMachineCertificateURI</span> <a title="Enlace permanente" href="#sslproxymachinecertificateuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Proxy certificate and key stores</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>SSLProxyMachineCertificateURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, secci&oacute;n de proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
+<tr><th><a href="directive-dict.html#Module">M&oacute;dulo:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table><p>The documentation for this directive has
+            not been translated yet. Please have a look at the English
+            version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslproxyprotocol">Directiva <span id="SSLProxyProtocol">SSLProxyProtocol</span> <a title="Enlace permanente" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
 <table class="directive">

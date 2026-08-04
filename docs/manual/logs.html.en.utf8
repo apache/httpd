@@ -173,8 +173,8 @@
     <p>Do this by specifying the name of the module in your
     <code class="directive">LogLevel</code> directive:</p>
 
-    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
-
+<div class="example"><pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
+</div>
 
     <p>This sets the main <code class="directive">LogLevel</code> to info, but
     turns it up to <code>trace5</code> for
@@ -223,9 +223,9 @@
       <p>A typical configuration for the access log might look as
       follows.</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common</pre>
-
+</div>
 
       <p>This defines the <em>nickname</em> <code>common</code> and
       associates it with a particular log format string. The format
@@ -363,9 +363,9 @@ CustomLog "logs/access_log" common</pre>
       <p>Another commonly used format string is called the Combined
       Log Format. It can be used as follows.</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
 CustomLog "log/access_log" combined</pre>
-
+</div>
 
       <p>This format is exactly the same as the Common Log Format,
       with the addition of two more fields. Each of the additional
@@ -413,11 +413,11 @@ CustomLog "log/access_log" combined</pre>
       information. The last two <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> lines show how
       to mimic the effects of the <code>ReferLog</code> and <code>AgentLog</code> directives.</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
 CustomLog "logs/agent_log" "%{User-agent}i"</pre>
-
+</div>
 
       <p>This example also shows that it is not necessary to define a
       nickname with the <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> directive. Instead,
@@ -437,31 +437,31 @@ CustomLog "logs/agent_log" "%{User-agent}i"</pre>
       include or exclude requests where the environment variable is
       set. Some examples:</p>
 
-      <pre class="prettyprint lang-config"># Mark requests from the loop-back interface
+<div class="example"><pre class="prettyprint lang-config"># Mark requests from the loop-back interface
 SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Mark requests for the robots.txt file
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Log what remains
 CustomLog "logs/access_log" common env=!dontlog</pre>
-
+</div>
 
       <p>As another example, consider logging requests from
       english-speakers to one log file, and non-english speakers to a
       different log file.</p>
 
-      <pre class="prettyprint lang-config">SetEnvIf Accept-Language "en" english
+<div class="example"><pre class="prettyprint lang-config">SetEnvIf Accept-Language "en" english
 CustomLog "logs/english_log" common env=english
 CustomLog "logs/non_english_log" common env=!english</pre>
-
+</div>
 
       <p>In a caching scenario one would want to know about
       the efficiency of the cache. A very simple method to
       find this out would be:</p>
 
-      <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
+<div class="example"><pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
 CustomLog "logs/access_log" common-cache</pre>
-
+</div>
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> will run before
       <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> and, when successful, will deliver the
@@ -471,9 +471,9 @@ CustomLog "logs/access_log" common-cache</pre>
       <p>In addition to the <code>env=</code> syntax, <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> supports logging values
       conditional upon the HTTP response code:</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
 LogFormat "%!200,304,302{Referer}i" refererlog</pre>
-
+</div>
 
       <p>In the first example, the <code>User-agent</code> will be
       logged if the HTTP status code is 400 or 501. In other cases, a
@@ -494,91 +494,99 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
 <h2 id="rotation">Log Rotation <a title="Permanent link" href="#rotation" class="permalink">&para;</a></h2>
     
 
-    <p>On even a moderately busy server, the quantity of
-    information stored in the log files is very large. The access
-    log file typically grows 1 MB or more per 10,000 requests. It
-    will consequently be necessary to periodically rotate the log
-    files by moving or deleting the existing logs. This cannot be
-    done while the server is running, because Apache httpd will continue
-    writing to the old log file as long as it holds the file open.
-    Instead, the server must be <a href="stopping.html">restarted</a> after the log files are
-    moved or deleted so that it will open new log files.</p>
+    <p>On even a moderately busy server, log files grow quickly &mdash;
+    the access log typically grows 1 MB or more per 10,000 requests.
+    Without rotation, logs consume disk space indefinitely and become
+    unwieldy to analyze. You should set up automatic log rotation from
+    the start.</p>
 
-    <p>By using a <em>graceful</em> restart, the server can be
-    instructed to open new log files without losing any existing or
-    pending connections from clients. However, in order to
-    accomplish this, the server must continue to write to the old
-    log files while it finishes serving old requests. It is
-    therefore necessary to wait for some time after the restart
-    before doing any processing on the log files. A typical
-    scenario that simply rotates the logs and compresses the old
-    logs to save space is:</p>
+    <h3 id="rotation-rotatelogs">Using rotatelogs (recommended)</h3>
+      
 
-    <div class="example"><p><code>
-      mv access_log access_log.old<br>
-      mv error_log error_log.old<br>
-      apachectl graceful<br>
-      sleep 600<br>
-      gzip access_log.old error_log.old
-    </code></p></div>
+      <p>The simplest approach is to use httpd's built-in
+      <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> program via <a href="#piped">piped
+      logs</a>. This rotates logs without requiring a server restart
+      and without any external tools. To rotate logs every 24 hours:</p>
 
-    <p>Another way to perform log rotation is using <a href="#piped">piped logs</a> as discussed in the next
-    section.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined
+ErrorLog  "|/usr/local/apache/bin/rotatelogs /var/log/httpd/error_log 86400"</pre>
+</div>
+
+      <p>To rotate when the log reaches a certain size (e.g., 100 MB):</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 100M" combined</pre>
+</div>
+
+      <p>You can also use a time-based filename pattern with
+      <code>strftime</code> format strings:</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log.%Y-%m-%d 86400" combined</pre>
+</div>
+
+      <p>See <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> for the full set of options,
+      including offset times, file count limits, and compression.</p>
+    
+
+    <h3 id="rotation-logrotate">Using logrotate or system log management</h3>
+      
+
+      <p>Most Linux distributions include <code>logrotate</code>, which
+      can rotate, compress, and expire log files on a schedule. If your
+      distribution already ships an httpd logrotate configuration (check
+      <code>/etc/logrotate.d/</code>), it may already be handling rotation
+      for you.</p>
+
+      <p>When using an external rotation tool like <code>logrotate</code>,
+      you need to signal httpd to reopen its log files after
+      the old ones are moved aside. The standard approach is a
+      <em>graceful</em> restart:</p>
+
+<div class="example"><pre class="prettyprint lang-sh">/usr/sbin/apachectl graceful</pre>
+</div>
+
+      <p>Your logrotate configuration's <code>postrotate</code> script
+      should include this (or the equivalent
+      <code>systemctl reload</code> command). httpd continues writing to
+      the old file handle until it receives the signal, so any post-processing
+      of rotated files should allow a brief delay.</p>
+
+    
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2 id="piped">Piped Logs <a title="Permanent link" href="#piped" class="permalink">&para;</a></h2>
     
 
-    <p>Apache httpd is capable of writing error and access log
-    files through a pipe to another process, rather than directly
-    to a file. This capability dramatically increases the
-    flexibility of logging, without adding code to the main server.
-    In order to write logs to a pipe, simply replace the filename
-    with the pipe character "<code>|</code>", followed by the name
-    of the executable which should accept log entries on its
-    standard input. The server will start the piped-log process when
-    the server starts, and will restart it if it crashes while the
-    server is running. (This last feature is why we can refer to
-    this technique as "reliable piped logging".)</p>
+    <p>httpd can write error and access log files through a pipe to
+    another process, rather than directly to a file. To use a piped
+    log, replace the filename with the pipe character
+    "<code>|</code>", followed by the command that should receive
+    log entries on its standard input:</p>
 
-    <p>Piped log processes are spawned by the parent Apache httpd
-    process, and inherit the userid of that process. This means
-    that piped log programs usually run as root. It is therefore
-    very important to keep the programs simple and secure.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined</pre>
+</div>
 
-    <p>One important use of piped logs is to allow log rotation
-    without having to restart the server. The Apache HTTP Server
-    includes a simple program called <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>
-    for this purpose. For example, to rotate the logs every 24 hours, you
-    can use:</p>
+    <p>httpd starts the piped-log process at server startup and
+    restarts it automatically if it crashes (this is sometimes called
+    "reliable piped logging"). The quotes enclose the entire piped
+    command &mdash; this syntax works for both
+    <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> and
+    <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>.</p>
 
-    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
+    <p>Piped log processes are spawned by the parent httpd process and
+    inherit its userid. This typically means they run as root, so keep
+    piped log programs simple and secure.</p>
 
+    <p>By default the piped log process is spawned directly, without
+    invoking a shell. Use "<code>|$</code>" instead of
+    "<code>|</code>" to spawn via a shell (usually
+    <code>/bin/sh -c</code>):</p>
 
-    <p>Notice that quotes are used to enclose the entire command
-    that will be called for the pipe. Although these examples are
-    for the access log, the same technique can be used for the
-    error log.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined</pre>
+</div>
 
-    <p>As with conditional logging, piped logs are a very powerful
-    tool, but they should not be used where a simpler solution like
-    off-line post-processing is available.</p>
-
-    <p>By default the piped log process is spawned without invoking
-    a shell. Use "<code>|$</code>" instead of "<code>|</code>"
-    to spawn using a shell (usually with <code>/bin/sh -c</code>):</p>
-
-    <pre class="prettyprint lang-config"># Invoke "rotatelogs" using a shell
-CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common</pre>
-
-
-    <p>This was the default behavior for Apache 2.2.
-    Depending on the shell specifics this might lead to
-    an additional shell process for the lifetime of the logging
-    pipe program and signal handling problems during restart.
-    For compatibility reasons with Apache 2.2 the notation
-    "<code>||</code>" is also supported and equivalent to using
-    "<code>|</code>".</p>
+    <p>The shell variant is occasionally needed if your piped command
+    uses shell features like globbing or variable expansion. For most
+    cases, the direct (non-shell) invocation is preferred.</p>
 
     <div class="note"><h3>Windows note</h3>
     <p>Note that on Windows, you may run into problems when running many piped
@@ -625,9 +633,9 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     later split the log into individual files. For example,
     consider the following directives.</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
 CustomLog "logs/access_log" commonvhost</pre>
-
+</div>
 
     <p>The <code>%v</code> is used to log the name of the virtual
     host that is serving the request. Then a program like <a href="programs/split-logfile.html">split-logfile</a> can be used to

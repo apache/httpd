@@ -499,6 +499,7 @@
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdhttpproxycacertificatefile">MDHttpProxyCACertificateFile</a></li>
 <li><a href="mod_md.html#mdinitialdelay">MDInitialDelay</a></li>
 <li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
@@ -748,14 +749,18 @@
 <li><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></li>
 <li><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></li>
+<li><a href="mod_ssl.html#sslcacertificateuri">SSLCACertificateURI</a></li>
 <li><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile</a></li>
 <li><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath</a></li>
+<li><a href="mod_ssl.html#sslcadnrequesturi">SSLCADNRequestURI</a></li>
 <li><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></li>
 <li><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile</a></li>
 <li><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath</a></li>
+<li><a href="mod_ssl.html#sslcarevocationuri">SSLCARevocationURI</a></li>
 <li><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></li>
 <li><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
+<li><a href="mod_ssl.html#sslcertificateuri">SSLCertificateURI</a></li>
 <li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
 <li><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><a href="mod_ssl.html#sslcompression">SSLCompression</a></li>
@@ -781,9 +786,11 @@
 <li><a href="mod_ssl.html#sslprotocol">SSLProtocol</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
+<li><a href="mod_ssl.html#sslproxycacertificateuri">SSLProxyCACertificateURI</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
+<li><a href="mod_ssl.html#sslproxycarevocationuri">SSLProxyCARevocationURI</a></li>
 <li><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><a href="mod_ssl.html#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
@@ -792,6 +799,7 @@
 <li><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
+<li><a href="mod_ssl.html#sslproxymachinecertificateuri">SSLProxyMachineCertificateURI</a></li>
 <li><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></li>
 <li><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify</a></li>
 <li><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>

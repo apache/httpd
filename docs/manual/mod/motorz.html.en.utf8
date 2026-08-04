@@ -238,9 +238,11 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
     <p>The <code class="directive">PollersPerChild</code> directive sets the number of
     poller threads created in each child process. Each poller owns its own
     pollset, timer ring and connection-recycle list, and handles a shard of
-    the child's connections, so adding pollers raises the rate at which a
-    single child can accept connections and dispatch I/O events and timer
-    expiries.</p>
+    the child's connections. Because each poller thread independently
+    accepts connections and dispatches ready I/O events and timer
+    expiries to the worker pool, adding pollers raises the rate at which a
+    single child process can handle these operations in parallel rather than
+    serializing them on one poll thread.</p>
 
     <p>A value of <code>0</code> (the default) means <em>auto</em>: the number
     of pollers is derived from the number of online CPUs, capped at a built-in

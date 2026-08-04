@@ -29,6 +29,8 @@
 <a href="../ko/mod/module-dict.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/module-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
    <p>이 문서는 아파치 <a href="./">모듈</a>을 설명하기위해
    사용한 용어를 설명한다.</p>

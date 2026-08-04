@@ -79,13 +79,13 @@ to the reverse proxy over unicast UDP datagrams</td></tr>
 <div class="warning"><h3>Authentication</h3>
     <p>Any host that can reach the proxy's receive port could otherwise announce
     an arbitrary backend URL and cause the proxy to send client traffic to it
-    (and a UDP source address is trivially spoofable). Set
-    <code class="directive">ProxyBeaconSecret</code> to the same value on the proxy and on
-    every backend so that announcements are authenticated with a keyed
-    message-authentication code (MAC) and a timestamp. When a secret is
-    configured the proxy drops any announcement that is not validly signed and
-    recent. If no secret is configured the channel is <strong>unauthenticated</strong>
-    and the proxy logs a warning at startup.</p>
+    (and a UDP source address is trivially spoofable).
+    <code class="directive">ProxyBeaconSecret</code> is therefore <strong>required</strong>:
+    it must be set to the same value on the proxy and on every backend, and the
+    server fails to start if any participating server omits it. Announcements are
+    authenticated with a keyed message-authentication code (MAC) and a timestamp,
+    and the proxy drops any announcement that is not validly signed and recent.
+    There is no unauthenticated mode.</p>
 </div>
 
 <div class="note"><h3>Confidentiality</h3>
@@ -340,16 +340,19 @@ beacons</td></tr>
     advance, so a captured-and-resent message (for example, one replayed to keep
     a dead backend from being evicted) is dropped.</p>
 
-    <p>If <code class="directive">ProxyBeaconSecret</code> is set on the proxy, every
-    announcement must carry a valid, recent MAC or it is rejected. If the
+    <p>This directive is <strong>required</strong> on every server that
+    participates in the beacon channel &mdash; the proxy
+    (<code class="directive">ProxyBeaconListen</code>) and every backend
+    (<code class="directive">ProxyBeaconAddress</code>). If any such server omits it, the
+    server fails to start; there is no unauthenticated mode.</p>
+
+    <p>Every announcement must carry a valid, recent MAC or it is rejected. If the
     secrets on the proxy and a backend differ, that backend's announcements are
     silently rejected (and logged), which appears as the backend never joining
     the balancer.</p>
 
-    <p>If no secret is configured the channel is unauthenticated and the proxy
-    emits a warning when it starts listening. Because the secret is stored in
-    the configuration file, restrict that file's permissions as you would for a
-    private key.</p>
+    <p>Because the secret is stored in the configuration file, restrict that
+    file's permissions as you would for a private key.</p>
 
     <div class="note"><h3>Clock synchronisation</h3>
     <p>The timestamp-based replay protection compares the announcement's time

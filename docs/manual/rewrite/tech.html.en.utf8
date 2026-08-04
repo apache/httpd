@@ -101,6 +101,11 @@ and URL matching.</p>
     the URL-path (or returns a redirect), <code>Redirect</code> never sees
     the request.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_module_order.png" alt="Side-by-side comparison of module processing order:           in server context, mod_rewrite runs first in the           URL-to-filename phase then mod_alias runs second; in           per-directory context, mod_alias runs first in the           URL-to-filename phase, then mod_rewrite runs later in the           Fixup phase"><br>
+      <dfn>Figure:</dfn> Module processing order reversal between server and per-directory context
+</p>
+
     <pre class="prettyprint lang-config"># In this configuration, the Redirect is never reached for /old
 # because the RewriteRule matches first &mdash; even though
 # the Redirect appears earlier in the file.
@@ -226,7 +231,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
       first, and so the control flow is a little bit long-winded. See
       Figure 2 for more details.</p>
 <p class="figure">
-      <img src="../images/rewrite_process_uri.png" alt="Flow of RewriteRule and RewriteCond matching"><br>
+      <img src="../images/rewrite_process_uri.png" alt="Flowchart showing per-rule control flow: for each rule,           check pattern against URL, evaluate RewriteCond conditions,           apply substitution if both pass, then check flags to decide           whether to stop or continue to the next rule"><br>
       <dfn>Figure 2:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>First the URL is matched against the
