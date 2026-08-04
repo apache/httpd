@@ -23,7 +23,7 @@
 
 #include <apr_pools.h>
 
-#include <openssl/ssl.h>
+#include "quic/h3q.h"
 
 #include "h3_session.h"
 
@@ -37,15 +37,15 @@ void flush_nghttp3(h3_session* session);
 
 /**
  * Allocate and register a new h3_stream for the given stream id.
- * @param session     The session that owns the stream.
- * @param sid         The QUIC stream id (RFC 9000).
- * @param stream_ssl  The SSL stream object backing the new stream.
+ * @param session  The session that owns the stream.
+ * @param sid      The QUIC stream id (RFC 9000).
+ * @param qstream  The QUIC stream object backing the new stream.
  * @return The new h3_stream, or NULL on allocation failure.
  */
-h3_stream* track_stream(h3_session* session, int64_t sid, SSL* stream_ssl);
+h3_stream* track_stream(h3_session* session, int64_t sid, h3q_stream* qstream);
 
 /**
- * Read whatever's available on the underlying SSL stream and drive the
+ * Read whatever's available on the underlying QUIC stream and drive the
  * matching nghttp3 stream state machine. Returns the set of streams that
  * became fully readable (HEADERS+DATA complete) and ready for the request
  * dispatcher.

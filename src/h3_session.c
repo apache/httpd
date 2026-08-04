@@ -29,10 +29,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <openssl/err.h>
-#include <openssl/ssl.h>
-
 #include <nghttp3/nghttp3.h>
+
+#include "quic/h3q_conn.h"
+#include "quic/h3q_stream.h"
 
 #include "h3.h"
 #include "h3_callbacks.h"
@@ -61,25 +61,7 @@ static void wake_event_thread(void)
     }
 }
 
-static SSL* open_uni_stream(SSL* ssl_conn, int64_t* out_id, server_rec* s, const char* label)
-{
-    CHECK(ssl_conn);
-    CHECK(out_id);
-    CHECK(s);
-    CHECK(label);
-    SSL* stream = SSL_new_stream(ssl_conn, SSL_STREAM_FLAG_UNI);
-    if (!stream)
-    {
-        char buf[256] = {0};
-        ERR_error_string_n(ERR_get_error(), buf, sizeof(buf));
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "SSL_new_stream(%s) failed: %s", label, buf);
-        return NULL;
-    }
-    *out_id = (int64_t)SSL_get_stream_id(stream);
-    return stream;
-}
-
-apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_listener, SSL* ssl_conn, apr_pool_t* pool)
+apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* qconn, apr_pool_t* pool)
 {
     CHECK(psession);
     CHECK(s);
@@ -87,10 +69,9 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_li
     h3_session* session = apr_pcalloc(pool, sizeof(*session));
     session->s = s;
     session->pool = pool;
-    session->ssl_listener = ssl_listener;
-    session->ssl_conn = ssl_conn;
+    session->qconn = qconn;
     session->streams = apr_hash_make(pool);
-    session->pending_free = apr_array_make(pool, 8, sizeof(SSL*));
+    session->pending_free = apr_array_make(pool, 8, sizeof(h3q_stream*));
 
     apr_status_t rv = apr_thread_mutex_create(&session->lock, APR_THREAD_MUTEX_DEFAULT, pool);
     if (rv != APR_SUCCESS)
@@ -124,13 +105,13 @@ apr_status_t h3_session_create_control_streams(h3_session* session)
         return APR_SUCCESS;
     }
     server_rec* s = session->s;
-    SSL* ssl_conn = session->ssl_conn;
+    h3q_conn* qconn = session->qconn;
 
     struct
     {
         const char* name;
         int64_t id;
-        SSL* ssl;
+        h3q_stream* st;
     } cs[] = {
         {"control", 0, NULL},
         {"qpack_enc", 0, NULL},
@@ -138,17 +119,21 @@ apr_status_t h3_session_create_control_streams(h3_session* session)
     };
     for (int i = 0; i < 3; i++)
     {
-        cs[i].ssl = open_uni_stream(ssl_conn, &cs[i].id, s, cs[i].name);
+        cs[i].st = h3q_conn_open_uni_stream(qconn, &cs[i].id);
+        if (!cs[i].st)
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "opening the %s stream failed", cs[i].name);
+        }
     }
 
-    if (!cs[0].ssl || !cs[1].ssl || !cs[2].ssl || nghttp3_conn_bind_control_stream(session->ngh3, cs[0].id) != 0 || nghttp3_conn_bind_qpack_streams(session->ngh3, cs[1].id, cs[2].id) != 0)
+    if (!cs[0].st || !cs[1].st || !cs[2].st || nghttp3_conn_bind_control_stream(session->ngh3, cs[0].id) != 0 || nghttp3_conn_bind_qpack_streams(session->ngh3, cs[1].id, cs[2].id) != 0)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "failed to initialize or bind control/qpack streams");
         for (int i = 0; i < 3; i++)
         {
-            if (cs[i].ssl)
+            if (cs[i].st)
             {
-                SSL_free(cs[i].ssl);
+                h3q_stream_free(cs[i].st);
             }
         }
         if (session->ngh3)
@@ -159,9 +144,9 @@ apr_status_t h3_session_create_control_streams(h3_session* session)
         return APR_EGENERAL;
     }
 
-    track_stream(session, cs[0].id, cs[0].ssl);
-    track_stream(session, cs[1].id, cs[1].ssl);
-    track_stream(session, cs[2].id, cs[2].ssl);
+    track_stream(session, cs[0].id, cs[0].st);
+    track_stream(session, cs[1].id, cs[1].st);
+    track_stream(session, cs[2].id, cs[2].st);
     session->control_streams_created = 1;
     return APR_SUCCESS;
 }
@@ -189,25 +174,25 @@ void h3_session_destroy(h3_session* session)
     }
     while (session->pending_free->nelts > 0)
     {
-        SSL_free(*(SSL**)apr_array_pop(session->pending_free));
+        h3q_stream_free(*(h3q_stream**)apr_array_pop(session->pending_free));
     }
-    if (session->ssl_conn)
+    if (session->qconn)
     {
-        SSL_free(session->ssl_conn);
-        session->ssl_conn = NULL;
+        h3q_conn_free(session->qconn);
+        session->qconn = NULL;
     }
     apr_thread_mutex_unlock(session->lock);
     apr_thread_mutex_destroy(session->lock);
     apr_pool_destroy(session->pool);
 }
 
-void h3_session_queue_free(h3_session* session, SSL* ssl)
+void h3_session_queue_free(h3_session* session, h3q_stream* st)
 {
-    if (!session || !ssl)
+    if (!session || !st)
     {
         return;
     }
-    APR_ARRAY_PUSH(session->pending_free, SSL*) = ssl;
+    APR_ARRAY_PUSH(session->pending_free, h3q_stream*) = st;
 }
 
 apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, size_t len)

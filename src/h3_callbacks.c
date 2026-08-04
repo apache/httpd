@@ -32,7 +32,8 @@
 #include <string.h>
 
 #include <nghttp3/nghttp3.h>
-#include <openssl/ssl.h>
+
+#include "quic/h3q_stream.h"
 
 #include "h3.h"
 #include "h3_callbacks.h"
@@ -182,7 +183,6 @@ int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data,
 
 int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* stream_user_data)
 {
-    /* OpenSSL QUIC exposes no ACK offsets; bytes accepted by SSL_write_ex count as acked. */
     (void)conn;
     (void)stream_id;
     (void)user_data;
@@ -192,17 +192,17 @@ int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen
 
 int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
 {
-    /* Send STOP_SENDING by freeing SSL object. */
+    /* Send STOP_SENDING by freeing the stream object. */
     h3_session* session = user_data;
     CHECK(session);
     h3_stream* stream = stream_user_data;
     if (stream)
     {
         h3_stream_response_cancel_locked(stream);
-        if (stream->ssl_stream)
+        if (stream->qstream)
         {
-            h3_session_queue_free(session, stream->ssl_stream);
-            stream->ssl_stream = NULL;
+            h3_session_queue_free(session, stream->qstream);
+            stream->qstream = NULL;
         }
         stream->done = 1;
         stream->body_complete = 1;
@@ -213,16 +213,11 @@ int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*ap
 
 int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_error_code, void* /*user_data*/, void* stream_user_data)
 {
-    /* Send RESET_STREAM to abandon response. */
     h3_stream* stream = stream_user_data;
     if (stream)
     {
         h3_stream_response_cancel_locked(stream);
-        if (stream->ssl_stream)
-        {
-            SSL_STREAM_RESET_ARGS args = {app_error_code};
-            SSL_stream_reset(stream->ssl_stream, &args, sizeof(args));
-        }
+        h3q_stream_reset(stream->qstream, app_error_code);
         stream->done = 1;
     }
     return 0;
@@ -237,8 +232,11 @@ int on_stream_close(nghttp3_conn* /*conn*/, int64_t /* stream_id */, uint64_t /*
     {
         h3_stream_response_cancel_locked(stream);
         stream->done = 1;
-        h3_session_queue_free(session, stream->ssl_stream);
-        stream->ssl_stream = NULL;
+        if (stream->qstream)
+        {
+            h3_session_queue_free(session, stream->qstream);
+            stream->qstream = NULL;
+        }
     }
     return 0;
 }

@@ -24,13 +24,11 @@
 #include <apr_allocator.h>
 #include <apr_atomic.h>
 #include <apr_pools.h>
-#include <apr_thread_proc.h>
 #include <apr_portable.h>
 #include <apr_thread_pool.h>
+#include <apr_thread_proc.h>
 
-#include <openssl/err.h>
-#include <openssl/ssl.h>
-
+#include <errno.h>
 #include <poll.h>
 #include <unistd.h>
 
@@ -38,255 +36,22 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "quic/h3q.h"
+#include "quic/h3q_conn.h"
+#include "quic/h3q_stream.h"
+
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_io.h"
 #include "h3_request.h"
 #include "h3_session.h"
 #include "h3_socket.h"
-#include "h3_ssl.h"
 #include "h3_stream.h"
 #include "h3_threads.h"
 #include "h3_version.h"
 #include "mod_http3.h"
 
 h3_io_t* child_h3_io = NULL;
-
-/* OpenSSL 3.5 hides an accepted connection's peer address; recover it from the datagram BIO. */
-struct h3_peer_datagram
-{
-    unsigned char* data;
-    size_t data_len;
-    BIO_ADDR* peer;
-    BIO_ADDR* local;
-    h3_peer_datagram* next;
-};
-
-static void h3_peer_addr_queue_clear(h3_io_t* io)
-{
-    h3_peer_datagram* item = io->peer_rx_head;
-    while (item)
-    {
-        h3_peer_datagram* next = item->next;
-        OPENSSL_free(item->data);
-        BIO_ADDR_free(item->peer);
-        BIO_ADDR_free(item->local);
-        OPENSSL_free(item);
-        item = next;
-    }
-    io->peer_rx_head = NULL;
-    io->peer_rx_tail = NULL;
-}
-
-static int h3_peer_addr_queue_fill(h3_io_t* io, BIO_MSG* msg, size_t stride, size_t count)
-{
-    for (size_t i = 0; i < count; i++)
-    {
-        BIO_MSG* source = (BIO_MSG*)((unsigned char*)msg + i * stride);
-        h3_peer_datagram* item = OPENSSL_zalloc(sizeof(*item));
-        if (!item || !source->data || source->data_len == 0)
-        {
-            OPENSSL_free(item);
-            h3_peer_addr_queue_clear(io);
-            return 0;
-        }
-        item->data = OPENSSL_memdup(source->data, source->data_len);
-        item->data_len = source->data_len;
-        item->peer = source->peer ? BIO_ADDR_dup(source->peer) : NULL;
-        item->local = source->local ? BIO_ADDR_dup(source->local) : NULL;
-        if (!item->data || (source->peer && !item->peer) || (source->local && !item->local))
-        {
-            OPENSSL_free(item->data);
-            BIO_ADDR_free(item->peer);
-            BIO_ADDR_free(item->local);
-            OPENSSL_free(item);
-            h3_peer_addr_queue_clear(io);
-            return 0;
-        }
-        if (io->peer_rx_tail)
-        {
-            io->peer_rx_tail->next = item;
-        }
-        else
-        {
-            io->peer_rx_head = item;
-        }
-        io->peer_rx_tail = item;
-    }
-    return 1;
-}
-
-static int h3_peer_addr_queue_pop(h3_io_t* io, BIO_MSG* msg)
-{
-    h3_peer_datagram* item = io->peer_rx_head;
-    if (!item || !msg || !msg->data || msg->data_len < item->data_len)
-    {
-        return 0;
-    }
-    memcpy(msg->data, item->data, item->data_len);
-    msg->data_len = item->data_len;
-    if (msg->peer && item->peer)
-    {
-        BIO_ADDR_copy(msg->peer, item->peer);
-    }
-    if (msg->local && item->local)
-    {
-        BIO_ADDR_copy(msg->local, item->local);
-    }
-    io->peer_rx_head = item->next;
-    if (!io->peer_rx_head)
-    {
-        io->peer_rx_tail = NULL;
-    }
-    OPENSSL_free(item->data);
-    BIO_ADDR_free(item->peer);
-    BIO_ADDR_free(item->local);
-    OPENSSL_free(item);
-    return 1;
-}
-
-int h3_io_has_buffered_datagrams(h3_io_t* io)
-{
-    return io && io->peer_rx_head != NULL;
-}
-
-static long h3_peer_addr_bio_ctrl(BIO* bio, int cmd, long num, void* ptr)
-{
-    BIO* next = BIO_next(bio);
-    return next ? BIO_ctrl(next, cmd, num, ptr) : 0;
-}
-
-static int h3_peer_addr_bio_sendmmsg(BIO* bio, BIO_MSG* msg, size_t stride, size_t num_msg, uint64_t flags, size_t* msgs_processed)
-{
-    BIO* next = BIO_next(bio);
-    return next ? BIO_sendmmsg(next, msg, stride, num_msg, flags, msgs_processed) : 0;
-}
-
-static int h3_peer_addr_bio_recvmmsg(BIO* bio, BIO_MSG* msg, size_t stride, size_t num_msg, uint64_t flags, size_t* msgs_processed)
-{
-    h3_io_t* io = BIO_get_data(bio);
-    BIO* next = BIO_next(bio);
-    if (!io || !next || !msg || !msgs_processed || num_msg == 0)
-    {
-        return 0;
-    }
-
-    BIO_ADDR_clear(io->current_peer_addr);
-    if (io->peer_rx_head)
-    {
-        *msgs_processed = 0;
-        if (!h3_peer_addr_queue_pop(io, msg))
-        {
-            return 0;
-        }
-        *msgs_processed = 1;
-        if (msg->peer)
-        {
-            BIO_ADDR_copy(io->current_peer_addr, msg->peer);
-        }
-        return 1;
-    }
-
-    size_t received = 0;
-    int rv = BIO_recvmmsg(next, msg, stride, num_msg, flags, &received);
-    if (rv && received > 0)
-    {
-        if (!h3_peer_addr_queue_fill(io, msg, stride, received)
-            || !h3_peer_addr_queue_pop(io, msg))
-        {
-            *msgs_processed = 0;
-            return 0;
-        }
-        *msgs_processed = 1;
-        if (msg->peer)
-        {
-            BIO_ADDR_copy(io->current_peer_addr, msg->peer);
-        }
-    }
-    else
-    {
-        *msgs_processed = received;
-    }
-    return rv;
-}
-
-static int h3_peer_addr_bio_destroy(BIO* bio)
-{
-    h3_io_t* io = BIO_get_data(bio);
-    if (io)
-    {
-        h3_peer_addr_queue_clear(io);
-    }
-    return 1;
-}
-
-static void h3_peer_addr_ex_free(void* /*parent*/, void* ptr, CRYPTO_EX_DATA* /*ad*/, int /*idx*/, long /*argl*/, void* /*argp*/)
-{
-    BIO_ADDR_free(ptr);
-}
-
-static int h3_new_pending_conn_cb(SSL_CTX* /*ctx*/, SSL* conn, void* arg)
-{
-    h3_io_t* io = arg;
-    if (!io || io->peer_addr_ex_index < 0 || BIO_ADDR_family(io->current_peer_addr) == AF_UNSPEC)
-    {
-        return 1;
-    }
-
-    BIO_ADDR* peer = BIO_ADDR_dup(io->current_peer_addr);
-    if (!peer || !SSL_set_ex_data(conn, io->peer_addr_ex_index, peer))
-    {
-        BIO_ADDR_free(peer);
-        return 0;
-    }
-    return 1;
-}
-
-apr_status_t h3_io_get_client_addr(h3_io_t* io, SSL* conn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip)
-{
-    CHECK(io);
-    CHECK(conn);
-    CHECK(pool);
-    CHECK(addr);
-    CHECK(client_ip);
-    if (io->peer_addr_ex_index < 0)
-    {
-        return APR_EGENERAL;
-    }
-
-    const BIO_ADDR* peer = SSL_get_ex_data(conn, io->peer_addr_ex_index);
-    if (!peer || BIO_ADDR_family(peer) == AF_UNSPEC)
-    {
-        return APR_NOTFOUND;
-    }
-
-    char* host = BIO_ADDR_hostname_string(peer, 1);
-    char* service = BIO_ADDR_service_string(peer, 1);
-    if (!host || !service)
-    {
-        OPENSSL_free(host);
-        OPENSSL_free(service);
-        return APR_ENOMEM;
-    }
-
-    char* end = NULL;
-    unsigned long port = strtoul(service, &end, 10);
-    if (service[0] == '\0' || !end || end[0] != '\0' || port > 65535)
-    {
-        OPENSSL_free(host);
-        OPENSSL_free(service);
-        return APR_EINVAL;
-    }
-
-    apr_status_t rv = apr_sockaddr_info_get(addr, host, APR_UNSPEC, (apr_port_t)port, 0, pool);
-    if (rv == APR_SUCCESS)
-    {
-        rv = apr_sockaddr_ip_get(client_ip, *addr);
-    }
-    OPENSSL_free(host);
-    OPENSSL_free(service);
-    return rv;
-}
 
 int h3_io_at_connection_limit(h3_io_t* io)
 {
@@ -295,60 +60,18 @@ int h3_io_at_connection_limit(h3_io_t* io)
     return active >= conf->h3_max_connections;
 }
 
-/* h3_keylog_cb lives in h3_ssl.c on trunk; the upstream chain defines it inline here. */
-
-static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char* key, uint64_t listener_flags)
-{
-    CHECK(io);
-    CHECK(cert);
-    CHECK(key);
-    io->ssl_ctx = SSL_CTX_new(OSSL_QUIC_server_method());
-    if (!io->ssl_ctx || SSL_CTX_use_certificate_chain_file(io->ssl_ctx, cert) <= 0 || SSL_CTX_use_PrivateKey_file(io->ssl_ctx, key, SSL_FILETYPE_PEM) <= 0)
-    {
-        return APR_EGENERAL;
-    }
-    io->current_peer_addr = BIO_ADDR_new();
-    io->peer_addr_ex_index = SSL_get_ex_new_index(0, NULL, NULL, NULL, h3_peer_addr_ex_free);
-    io->peer_addr_bio_method = BIO_meth_new(BIO_get_new_index() | BIO_TYPE_FILTER, "mod_http3 QUIC peer address filter");
-    if (!io->current_peer_addr || io->peer_addr_ex_index < 0 || !io->peer_addr_bio_method
-        || !BIO_meth_set_ctrl(io->peer_addr_bio_method, h3_peer_addr_bio_ctrl)
-        || !BIO_meth_set_sendmmsg(io->peer_addr_bio_method, h3_peer_addr_bio_sendmmsg)
-        || !BIO_meth_set_recvmmsg(io->peer_addr_bio_method, h3_peer_addr_bio_recvmmsg)
-        || !BIO_meth_set_destroy(io->peer_addr_bio_method, h3_peer_addr_bio_destroy))
-    {
-        return APR_EGENERAL;
-    }
-    SSL_CTX_set_alpn_select_cb(io->ssl_ctx, h3_alpn_select_cb, io->server);
-    SSL_CTX_set_new_pending_conn_cb(io->ssl_ctx, h3_new_pending_conn_cb, io);
-    if (getenv("SSLKEYLOGFILE"))
-    {
-        SSL_CTX_set_keylog_callback(io->ssl_ctx, h3_keylog_cb);
-    }
-    io->ssl_listener = SSL_new_listener(io->ssl_ctx, listener_flags);
-    BIO* dgram_bio = BIO_new_dgram(io->udp_fd, BIO_NOCLOSE);
-    BIO* peer_addr_bio = BIO_new(io->peer_addr_bio_method);
-    if (!io->ssl_listener || !dgram_bio || !peer_addr_bio)
-    {
-        BIO_free(dgram_bio);
-        BIO_free(peer_addr_bio);
-        return APR_EGENERAL;
-    }
-    BIO_set_data(peer_addr_bio, io);
-    BIO_push(peer_addr_bio, dgram_bio);
-    SSL_set_bio(io->ssl_listener, peer_addr_bio, peer_addr_bio);
-    if (!SSL_listen(io->ssl_listener) || !SSL_set_blocking_mode(io->ssl_listener, 0))
-    {
-        return APR_EGENERAL;
-    }
-    return APR_SUCCESS;
-}
-
 static void teardown(h3_io_t* io)
 {
     CHECK(io);
     if (io->event_thread)
     {
         io->thread_running = 0;
+        if (io->wakeup_pipe[1])
+        {
+            char wake = '1';
+            apr_size_t len = 1;
+            (void)apr_file_write(io->wakeup_pipe[1], &wake, &len);
+        }
         apr_status_t status;
         apr_thread_join(&status, io->event_thread);
         io->event_thread = NULL;
@@ -360,7 +83,6 @@ static void teardown(h3_io_t* io)
     }
     if (io->active_sessions)
     {
-        /* Wait for event_thread to shut down and remove all active sessions. */
         apr_time_t next_warning = apr_time_now() + apr_time_from_sec(5);
         while (io->active_sessions->nelts > 0)
         {
@@ -372,20 +94,11 @@ static void teardown(h3_io_t* io)
             apr_sleep(50 * 1000);
         }
     }
-    if (io->ssl_listener)
+    if (io->qengine)
     {
-        SSL_free(io->ssl_listener);
-        io->ssl_listener = NULL;
+        h3q_engine_destroy(io->qengine);
+        io->qengine = NULL;
     }
-    if (io->ssl_ctx)
-    {
-        SSL_CTX_free(io->ssl_ctx);
-        io->ssl_ctx = NULL;
-    }
-    BIO_ADDR_free(io->current_peer_addr);
-    io->current_peer_addr = NULL;
-    BIO_meth_free(io->peer_addr_bio_method);
-    io->peer_addr_bio_method = NULL;
     if (io->udp_fd >= 0)
     {
         h3_socket_close(io->udp_fd);
@@ -409,7 +122,6 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->pool = pchild;
     io->server = s;
     io->udp_fd = udp_fd;
-    io->peer_addr_ex_index = -1;
     io->active_sessions = apr_array_make(pchild, 8, sizeof(h3_session*));
     io->pending_handshakes = apr_array_make(pchild, 4, sizeof(h3_pending_handshake));
     if (apr_file_pipe_create_ex(&io->wakeup_pipe[0], &io->wakeup_pipe[1], APR_FULL_NONBLOCK, pchild) != APR_SUCCESS)
@@ -422,10 +134,17 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_pool_create failed");
         return APR_EGENERAL;
     }
-    uint64_t listener_flags = conf->h3_address_validation == H3_FLAG_OFF ? SSL_LISTENER_FLAG_NO_VALIDATE : 0;
-    if (build_ssl_listener(io, conf->h3_cert_path, conf->h3_key_path, listener_flags) != APR_SUCCESS)
+
+    char qerr[H3Q_ERRLEN] = {0};
+    h3q_config qcfg = {
+        .cert_path = conf->h3_cert_path,
+        .key_path = conf->h3_key_path,
+        .address_validation = (conf->h3_address_validation != H3_FLAG_OFF),
+    };
+    io->qengine = h3q_engine_create(&qcfg, udp_fd, qerr, sizeof(qerr));
+    if (!io->qengine)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "listener setup failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "QUIC engine initialization failed: %s", qerr);
         teardown(io);
         return APR_EGENERAL;
     }
@@ -442,7 +161,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->thread_running = 1;
     child_h3_io = io;
     apr_threadattr_t* attr = NULL;
-    if (apr_threadattr_create(&attr, pchild) != APR_SUCCESS || apr_thread_create(&io->event_thread, attr, quic_event_thread, io, pchild) != APR_SUCCESS)
+    if (apr_threadattr_create(&attr, pchild) != APR_SUCCESS || apr_thread_create(&io->event_thread, attr, h3_event_thread, io, pchild) != APR_SUCCESS)
     {
         io->thread_running = 0;
         teardown(io);
@@ -467,18 +186,14 @@ void h3_io_listen_stop(h3_io_t* io)
 
 void wait_for_event(h3_io_t* io)
 {
-    /* poll(), not select(): descriptors can exceed FD_SETSIZE. */
-    int timeout_ms = 1000;
-    struct timeval tv = {0};
-    int inf = 0;
-    if (SSL_get_event_timeout(io->ssl_listener, &tv, &inf) && !inf && (tv.tv_sec > 0 || tv.tv_usec > 0) && tv.tv_sec <= 1)
+    if (!io)
     {
-        timeout_ms = (int)(tv.tv_sec * 1000 + tv.tv_usec / 1000);
-        if (timeout_ms <= 0)
-        {
-            timeout_ms = 1;
-        }
+        return;
     }
+    int want_read = 0;
+    int want_write = 0;
+    int timeout_ms = 1000;
+    h3q_engine_want(io->qengine, &want_read, &want_write, &timeout_ms);
 
     struct pollfd pfds[2] = {{.fd = io->udp_fd, .events = 0}, {.fd = -1, .events = POLLIN}};
     nfds_t npfds = 1;
@@ -490,22 +205,19 @@ void wait_for_event(h3_io_t* io)
         npfds = 2;
     }
 
-    if (SSL_net_read_desired(io->ssl_listener))
+    if (want_read)
     {
         pfds[0].events |= POLLIN;
     }
-    if (SSL_net_write_desired(io->ssl_listener))
+    if (want_write)
     {
         pfds[0].events |= POLLOUT;
     }
-    if (!pfds[0].events && npfds == 1)
-    {
-        pfds[0].events = POLLIN;
-    }
     if (!pfds[0].events)
     {
-        pfds[0].events = POLLIN; /* force POLLIN to avoid missing UDP packets! */
+        pfds[0].events = POLLIN; /* force POLLIN to avoid missing UDP packets */
     }
+
     if (poll(pfds, npfds, timeout_ms) < 0 && errno == EINTR)
     {
         return;
@@ -515,14 +227,8 @@ void wait_for_event(h3_io_t* io)
     {
         char buf[64];
         apr_size_t len = sizeof(buf);
-        apr_file_read(io->wakeup_pipe[0], buf, &len);
+        (void)apr_file_read(io->wakeup_pipe[0], buf, &len);
     }
-}
-
-int tick_engine(SSL* conn)
-{
-    CHECK(conn);
-    return SSL_handle_events(conn) == 1;
 }
 
 void remove_pending_handshake(h3_io_t* io, int index, int free_conn)
@@ -530,7 +236,7 @@ void remove_pending_handshake(h3_io_t* io, int index, int free_conn)
     h3_pending_handshake* pending = (h3_pending_handshake*)io->pending_handshakes->elts;
     if (free_conn)
     {
-        SSL_free(pending[index].conn);
+        h3q_conn_free(pending[index].conn);
     }
     if (index < io->pending_handshakes->nelts - 1)
     {
@@ -539,7 +245,7 @@ void remove_pending_handshake(h3_io_t* io, int index, int free_conn)
     io->pending_handshakes->nelts--;
 }
 
-static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
+static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
 {
     apr_allocator_t* allocator = NULL;
     apr_pool_t* session_pool = NULL;
@@ -550,17 +256,16 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
         {
             apr_allocator_destroy(allocator);
         }
-        SSL_free(conn);
+        h3q_conn_free(conn);
         return APR_EGENERAL;
     }
     apr_allocator_owner_set(allocator, session_pool);
     apr_pool_tag(session_pool, "h3_session");
 
     h3_session* session = NULL;
-    if (h3_session_create(&session, io->server, io->ssl_listener, conn, session_pool) != APR_SUCCESS)
+    if (h3_session_create(&session, io->server, conn, session_pool) != APR_SUCCESS)
     {
-        /* Ownership of conn stays here until a session holds it. */
-        SSL_free(conn);
+        h3q_conn_free(conn);
         apr_pool_destroy(session_pool);
         return APR_EGENERAL;
     }
@@ -569,7 +274,7 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
         h3_session_destroy(session);
         return APR_EGENERAL;
     }
-    if (SSL_get_shutdown(conn))
+    if (h3q_conn_is_closed(conn))
     {
         h3_session_destroy(session);
         return APR_EGENERAL;
@@ -601,7 +306,7 @@ void progress_pending_handshakes(h3_io_t* io)
     for (int i = 0; i < io->pending_handshakes->nelts;)
     {
         h3_pending_handshake* pending = &((h3_pending_handshake*)io->pending_handshakes->elts)[i];
-        SSL* conn = pending->conn;
+        h3q_conn* conn = pending->conn;
 
         if (now - pending->accepted_at >= timeout)
         {
@@ -611,59 +316,34 @@ void progress_pending_handshakes(h3_io_t* io)
         }
 
         int finished = 0;
-        do
+        int rv = 0;
+        const char* why = NULL;
+
+        if (h3q_conn_is_closed(conn))
         {
-            int rv = 0;
-            const char* why = NULL;
+            rv = -1;
+            why = "peer closed the connection during the handshake";
+        }
+        else if (h3q_conn_is_handshake_done(conn))
+        {
+            rv = 1;
+        }
 
-            if (!tick_engine(io->ssl_listener))
-            {
-                rv = -1;
-                why = "listener event processing failed";
-            }
-            else if (SSL_get_shutdown(conn))
-            {
-                rv = -1;
-                why = "peer closed the connection during the handshake";
-            }
-            else if (SSL_is_init_finished(conn))
-            {
-                rv = 1;
-            }
-
-            if (rv == 1)
-            {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
-                spawn_serviced_session(io, conn);
-                remove_pending_handshake(io, i, 0);
-                finished = 1;
-                break;
-            }
-            if (rv == -1)
-            {
-                char errbuf[256] = {0};
-                ERR_error_string_n(ERR_peek_last_error(), errbuf, sizeof(errbuf));
-                SSL_CONN_CLOSE_INFO cci;
-                memset(&cci, 0, sizeof(cci));
-                if (SSL_get_conn_close_info(conn, &cci, sizeof(cci)))
-                {
-                    const char* origin = (cci.flags & SSL_CONN_CLOSE_FLAG_LOCAL) ? "local" : "remote";
-                    const char* layer = (cci.flags & SSL_CONN_CLOSE_FLAG_TRANSPORT) ? "transport" : "app";
-                    const char* reason = cci.reason ? cci.reason : "";
-                    char detail[320];
-
-                    snprintf(detail, sizeof(detail), "%s %s err=0x%llx frame=0x%llx reason=\"%.*s\"", origin, layer, (unsigned long long)cci.error_code, (unsigned long long)cci.frame_type, (int)cci.reason_len, reason);
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s (%s) close=[%s]", why, errbuf, detail);
-                }
-                else
-                {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s (%s)", why, errbuf);
-                }
-                remove_pending_handshake(io, i, 1);
-                finished = 1;
-                break;
-            }
-        } while (SSL_net_read_desired(io->ssl_listener) || SSL_net_write_desired(io->ssl_listener));
+        if (rv == 1)
+        {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
+            spawn_serviced_session(io, conn);
+            remove_pending_handshake(io, i, 0);
+            finished = 1;
+        }
+        else if (rv == -1)
+        {
+            char detail[H3Q_ERRLEN] = {0};
+            h3q_conn_close_reason(conn, detail, sizeof(detail));
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s close=[%s]", why, detail);
+            remove_pending_handshake(io, i, 1);
+            finished = 1;
+        }
 
         if (!finished)
         {
@@ -672,17 +352,14 @@ void progress_pending_handshakes(h3_io_t* io)
     }
 }
 
-int prepare_accepted_connection(h3_io_t* io, SSL* conn)
+int prepare_accepted_connection(h3_io_t* io, h3q_conn* conn)
 {
-    if (!SSL_set_blocking_mode(conn, 0))
+    h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
+    if (!h3q_conn_prepare(conn, conf->h3_idle_timeout))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "SSL_set_blocking_mode failed for accepted connection - dropping it");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "h3q_conn_prepare failed for accepted connection - dropping it");
         return 0;
     }
-    SSL_set_default_stream_mode(conn, SSL_DEFAULT_STREAM_MODE_NONE);
-    SSL_set_incoming_stream_policy(conn, SSL_INCOMING_STREAM_POLICY_ACCEPT, 0);
-    h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
-    SSL_set_generic_value_uint(conn, SSL_VALUE_QUIC_IDLE_TIMEOUT, conf->h3_idle_timeout * 1000);
 
     h3_pending_handshake* pending = (h3_pending_handshake*)apr_array_push(io->pending_handshakes);
     pending->conn = conn;
@@ -696,7 +373,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     CHECK(io);
     CHECK(session);
     server_rec* s = session->s;
-    SSL* conn = session->ssl_conn;
+    h3q_conn* conn = session->qconn;
 
     if (session->aborted)
     {
@@ -705,7 +382,6 @@ int service_session_pass(h3_io_t* io, h3_session* session)
 
     if (!io->thread_running)
     {
-        /* Tell the client to stop opening new streams but finish in-flight ones */
         apr_thread_mutex_lock(session->lock);
         if (!session->goaway_deadline)
         {
@@ -730,7 +406,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         }
     }
 
-    if (SSL_get_shutdown(conn))
+    if (h3q_conn_is_closed(conn))
     {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
         session->aborted = 1;
@@ -743,13 +419,13 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         return 0;
     }
 
-    for (SSL* s2 = NULL; (s2 = SSL_accept_stream(conn, SSL_ACCEPT_STREAM_NO_BLOCK)) != NULL;)
+    for (h3q_stream* s2 = NULL; (s2 = h3q_conn_accept_stream(conn)) != NULL;)
     {
         apr_atomic_inc32(&io->total_streams);
-        int64_t sid = (int64_t)SSL_get_stream_id(s2);
+        int64_t sid = h3q_stream_id(s2);
         if (sid < 0)
         {
-            SSL_free(s2);
+            h3q_stream_free(s2);
             continue;
         }
         apr_thread_mutex_lock(session->lock);
@@ -757,7 +433,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         if (!tracked)
         {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "track_stream failed for sid=%lld - freeing stream", (long long)sid);
-            SSL_free(s2);
+            h3q_stream_free(s2);
         }
         apr_thread_mutex_unlock(session->lock);
     }

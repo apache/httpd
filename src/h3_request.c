@@ -30,9 +30,12 @@
 #include <apr_strings.h>
 #include <apr_thread_pool.h>
 
+#include <netdb.h>
 #include <stdlib.h>
 
 #include <nghttp3/nghttp3.h>
+
+#include "quic/h3q.h"
 
 #include "h3.h"
 #include "h3_check.h"
@@ -55,6 +58,29 @@ typedef struct
     apr_off_t bytes_out;
     apr_off_t bytes_last_request;
 } h3_logio_config_t;
+
+/* The engine reports a raw sockaddr, so the conversion to APR belongs here. */
+static int peer_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip)
+{
+    struct sockaddr_storage peer = {0};
+    socklen_t peer_len = 0;
+    if (!h3q_engine_peer_addr(engine, qconn, &peer, &peer_len))
+    {
+        return 0;
+    }
+
+    char host[NI_MAXHOST] = {0};
+    char serv[NI_MAXSERV] = {0};
+    if (getnameinfo((const struct sockaddr*)&peer, peer_len, host, sizeof(host), serv, sizeof(serv), NI_NUMERICHOST | NI_NUMERICSERV) != 0)
+    {
+        return 0;
+    }
+    if (apr_sockaddr_info_get(addr, host, APR_UNSPEC, (apr_port_t)atoi(serv), 0, pool) != APR_SUCCESS)
+    {
+        return 0;
+    }
+    return apr_sockaddr_ip_get(client_ip, *addr) == APR_SUCCESS;
+}
 
 conn_rec* h3_synth_conn(h3_session* session)
 {
@@ -81,7 +107,7 @@ conn_rec* h3_synth_conn(h3_session* session)
     apr_port_t vhost_port = (conf && conf->host_port) ? conf->host_port : (conf ? conf->h3_port : 0);
     apr_sockaddr_info_get(&c->client_addr, c->client_ip, APR_INET, 0, 0, cpool);
     apr_sockaddr_info_get(&c->local_addr, c->local_ip, APR_INET, vhost_port, 0, cpool);
-    if (child_h3_io && h3_io_get_client_addr(child_h3_io, session->ssl_conn, cpool, &c->client_addr, &c->client_ip) == APR_SUCCESS)
+    if (child_h3_io && peer_addr_resolve(child_h3_io->qengine, session->qconn, cpool, &c->client_addr, &c->client_ip))
     {
         c->remote_host = NULL;
     }

@@ -27,9 +27,9 @@
 #include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
 
-#include <openssl/ssl.h>
-
 #include <nghttp3/nghttp3.h>
+
+#include "quic/h3q.h"
 
 typedef struct h3_session h3_session;
 typedef struct h3_stream h3_stream;
@@ -41,8 +41,7 @@ struct h3_session
     server_rec* s;
     apr_pool_t* pool;
 
-    SSL* ssl_listener;
-    SSL* ssl_conn;
+    h3q_conn* qconn;
     nghttp3_conn* ngh3;
 
     apr_thread_mutex_t* lock;
@@ -79,7 +78,7 @@ struct h3_stream
     h3_session* session;
     apr_pool_t* pool;
     int64_t stream_id;
-    SSL* ssl_stream;
+    h3q_stream* qstream;
     int done;
     /* QUIC stream send buffer was full; nghttp3 told to skip the stream. */
     int write_blocked;
@@ -123,12 +122,11 @@ struct h3_stream
  * Allocate and initialize a new HTTP/3 session.
  * @param psession Out parameter for the new session.
  * @param s        The virtual host this session is bound to.
- * @param ssl_listener The QUIC listener SSL (used to clone the ctx).
- * @param ssl_conn The accepted QUIC connection SSL.
+ * @param qconn    The accepted QUIC connection.
  * @param pool     Pool used for all session allocations.
  * @return APR_SUCCESS on success, error code otherwise.
  */
-apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_listener, SSL* ssl_conn, apr_pool_t* pool);
+apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* qconn, apr_pool_t* pool);
 
 /**
  * Create the HTTP/3 control streams (unidirectional, RFC 9114 7.2).
@@ -138,20 +136,20 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_li
 apr_status_t h3_session_create_control_streams(h3_session* session);
 
 /**
- * Tear down a session: stops the SSL object, frees the nghttp3 connection,
+ * Tear down a session: closes the QUIC connection, frees the nghttp3 connection,
  * and destroys the session pool. Safe to call with NULL.
  * @param session The session to destroy (may be NULL).
  */
 void h3_session_destroy(h3_session* session);
 
 /**
- * Queue an SSL stream object to be freed when the session lock is next
+ * Queue a QUIC stream object to be freed when the session lock is next
  * released. Used to defer frees that must not happen while another thread
  * is mid-call.
  * @param session The owning session.
- * @param ssl     The SSL stream object to free.
+ * @param st      The QUIC stream object to free.
  */
-void h3_session_queue_free(h3_session* session, SSL* ssl);
+void h3_session_queue_free(h3_session* session, h3q_stream* st);
 
 /**
  * nghttp3 data reader callback. Called by nghttp3 to pull the next chunks of

@@ -26,29 +26,21 @@
 #include <apr_atomic.h>
 #include <apr_optional.h>
 #include <apr_pools.h>
-#include <apr_thread_proc.h>
 #include <apr_thread_pool.h>
-
-#include <openssl/ssl.h>
+#include <apr_thread_proc.h>
 
 #include "h3_config.h"
+#include "quic/h3q.h"
 
 /// Optional MPM hooks; crash at runtime if unsupported.
 APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_added, (void));
 APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_removed, (void));
 
 typedef struct h3_session h3_session;
-typedef struct h3_peer_datagram h3_peer_datagram;
 
 typedef struct h3_io_t
 {
-    SSL_CTX* ssl_ctx;
-    SSL* ssl_listener;
-    BIO_METHOD* peer_addr_bio_method;
-    BIO_ADDR* current_peer_addr;
-    int peer_addr_ex_index;
-    h3_peer_datagram* peer_rx_head;
-    h3_peer_datagram* peer_rx_tail;
+    h3q_engine* qengine;
     apr_pool_t* pool;
     server_rec* server;
     int udp_fd;
@@ -71,14 +63,14 @@ typedef struct h3_io_t
 
 typedef struct h3_pending_handshake
 {
-    SSL* conn;
+    h3q_conn* conn;
     apr_time_t accepted_at;
 } h3_pending_handshake;
 
 extern h3_io_t* child_h3_io;
 
 /**
- * Build the SSL listener, bind the UDP socket via @p udp_fd, and spawn the
+ * Build the listener, bind the UDP socket via @p udp_fd, and spawn the
  * event thread. Idempotent on the same port: returns APR_EAGAIN if another
  * child already owns it.
  * @param pchild  Child process pool.
@@ -92,7 +84,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
 
 /**
  * Stop the event thread, join all worker threads, and release the UDP fd
- * and SSL context. Safe to call with NULL.
+ * and engine. Safe to call with NULL.
  * @param io The h3_io_t to tear down.
  */
 void h3_io_listen_stop(h3_io_t* io);
@@ -103,22 +95,6 @@ void h3_io_listen_stop(h3_io_t* io);
  * @return Non-zero if at the limit, zero otherwise.
  */
 int h3_io_at_connection_limit(h3_io_t* io);
-
-/** Return non-zero while the address-aware BIO has buffered received datagrams. */
-int h3_io_has_buffered_datagrams(h3_io_t* io);
-
-/**
- * Retrieve the UDP peer address captured when OpenSSL created a pending QUIC
- * connection. OpenSSL 3.5 does not otherwise expose an accepted connection's
- * peer address through its public API.
- * @param io        The owning listener instance.
- * @param conn      The accepted QUIC connection.
- * @param pool      Pool used for the APR address and numeric IP string.
- * @param addr      Receives the client's socket address.
- * @param client_ip Receives the client's numeric IP string.
- * @return APR_SUCCESS when an address is available, or an APR error.
- */
-apr_status_t h3_io_get_client_addr(h3_io_t* io, SSL* conn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip);
 
 /**
  * Service the newly established session connection. Drives HTTP/3 request processing.
@@ -135,17 +111,10 @@ int service_session_pass(h3_io_t* io, h3_session* session);
 void wait_for_event(h3_io_t* io);
 
 /**
- * Handle engine events and progress the SSL listener.
- * @param conn The SSL connection instance.
- * @return 1 on success, 0 otherwise.
- */
-int tick_engine(SSL* conn);
-
-/**
  * Remove a connection from the pending handshake array.
  * @param io        The owning h3_io_t listener instance.
  * @param index     The index of the connection in the array.
- * @param free_conn If non-zero, the connection's SSL object is freed.
+ * @param free_conn If non-zero, the connection object is freed.
  */
 void remove_pending_handshake(h3_io_t* io, int index, int free_conn);
 
@@ -153,10 +122,10 @@ void remove_pending_handshake(h3_io_t* io, int index, int free_conn);
  * Prepare a newly accepted connection before starting the handshake.
  * Sets stream modes, Incoming Stream policies, and pushes it to the pending array.
  * @param io   The owning h3_io_t listener instance.
- * @param conn The newly accepted SSL connection instance.
+ * @param conn The newly accepted QUIC connection instance.
  * @return 1 on success, 0 otherwise.
  */
-int prepare_accepted_connection(h3_io_t* io, SSL* conn);
+int prepare_accepted_connection(h3_io_t* io, h3q_conn* conn);
 
 /**
  * Progress handshakes for all pending connections, timing out stalled connections

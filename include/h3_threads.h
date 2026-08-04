@@ -51,6 +51,6 @@ void* APR_THREAD_FUNC worker_thread(apr_thread_t* thread, void* data);
  * @param data   Pointer to the h3_io_t listener instance.
  * @return NULL.
  */
-void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* thread, void* data);
+void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data);
 
 #endif /* H3_THREADS_H */
