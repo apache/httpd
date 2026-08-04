@@ -909,13 +909,13 @@ typedef struct {
 	STACK_OF(EVP_PKEY) *key_list;
 	STACK_OF(X509) *ca_list;
 
-	int num_certs;
-	int num_ca_certs;
-	int num_intermediate_certs;
-	int num_leaf_certs;
-	int num_server_certs;
-	int num_client_certs;
-	int num_keys;
+	unsigned int num_certs;
+	unsigned int num_ca_certs;
+	unsigned int num_intermediate_certs;
+	unsigned int num_leaf_certs;
+	unsigned int num_server_certs;
+	unsigned int num_client_certs;
+	unsigned int num_keys;
 
 } modssl_ctx_uri_t;
 
