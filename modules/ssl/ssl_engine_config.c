@@ -130,8 +130,8 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
 
     mctx->cert_chain          = NULL;
 
-    mctx->crl_path            = NULL;
     mctx->crl_file            = NULL;
+    mctx->crl_path            = NULL;
     mctx->crl_uri             = NULL;
     mctx->crl_check_mask      = UNSET;
 
@@ -279,8 +279,9 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
 
     cfgMergeString(cert_chain);
 
-    cfgMerge(crl_path, NULL);
     cfgMerge(crl_file, NULL);
+    cfgMerge(crl_path, NULL);
+    cfgMerge(crl_uri, NULL);
     cfgMergeInt(crl_check_mask);
 
     cfgMergeString(auth.ca_cert_uri);
@@ -2817,9 +2818,9 @@ static void modssl_ctx_dump(modssl_ctx_t *ctx, apr_pool_t *p, int proxy,
 
     modssl_auth_ctx_dump(&ctx->auth, p, proxy, out, indent, psep);
 
-    DMP_STRING(proxy? "SSLProxyCARevocationURI" : "SSLCARevocationURI", ctx->crl_uri);
     DMP_STRING(proxy? "SSLProxyCARevocationFile" : "SSLCARevocationFile", ctx->crl_file);
     DMP_STRING(proxy? "SSLProxyCARevocationPath" : "SSLCARevocationPath", ctx->crl_path);
+    DMP_STRING(proxy? "SSLProxyCARevocationURI" : "SSLCARevocationURI", ctx->crl_uri);
     DMP_CRLCHK(proxy? "SSLProxyCARevocationCheck" : "SSLCARevocationCheck", ctx->crl_check_mask);
     if (!proxy) {
         DMP_PHRASE("SSLPassPhraseDialog", ctx->pphrase_dialog_type, ctx->pphrase_dialog_path);
