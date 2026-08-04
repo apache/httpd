@@ -1,0 +1,26 @@
+# C modules build artifacts
+c-modules/Makefile
+c-modules/apache_httpd_test.h
+c-modules/*/.libs/
+c-modules/*/Makefile
+c-modules/*/*.slo
+c-modules/*/*.lo
+c-modules/*/*.la
+c-modules/*/*.o
+
+# Apache Test generated files
+t/TEST
+t/conf/apache_test_config.pm
+t/conf/*.conf
+t/conf/ssl/*.pl
+t/conf/ssl/*.conf
+t/conf/ssl/ca
+t/logs/
+
+# Generated test scripts
+t/htdocs/**/*.pl
+t/htdocs/modules/access/htaccess/.htaccess
+
+# Logs
+t/php-fpm/log/
+
