@@ -25,22 +25,23 @@
 
 #include <apr_buckets.h>
 #include <apr_pools.h>
+#include <apr_tables.h>
+
+#include "h3.h"
 
 struct h3_stream;
 
 typedef struct h3_conn_ctx_t
 {
-    ap_bucket_response* resp;
+    int resp_status;
+    apr_table_t* resp_headers;
     char* dataheap;
     apr_size_t dataheaplen;
     apr_size_t dataheapcap;
     apr_pool_t* c3reqpool;
     server_rec* s;
-    /// Set once the response body exceeds H3MaxResponseBodySize.
     int response_too_large;
-    /// Back-reference to the h3_stream.
     struct h3_stream* stream;
-    /// True when response buckets stream through the bounded per-stream queue.
     int streaming;
 } h3_conn_ctx_t;
 
@@ -82,5 +83,22 @@ apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input
  * @return APR_SUCCESS (with EOS bucket inserted) or APR_EOF.
  */
 apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
+
+#if H3_STABLE
+
+/**
+ * Finalize the response of @p r the way the core HTTP_HEADER filter would
+ * (merge err_headers_out, materialize Content-Type/-Encoding/-Language, dedup
+ * Vary, add Date/Server, honor no-cache and header-only statuses) and snapshot
+ * the resulting status and headers into @p h3ctx. On servers with response
+ * buckets this arrives as an ap_bucket_response instead; on 2.4.x the
+ * HTTP_HEADER filter is removed from H3 requests and this supplies the same
+ * data. Idempotent: does nothing once h3ctx->resp_headers is set.
+ * @param r     The request whose response is being started.
+ * @param h3ctx The per-request H3 context receiving the snapshot.
+ */
+void h3_response_finalize(request_rec* r, h3_conn_ctx_t* h3ctx);
+
+#endif /* H3_STABLE */
 
 #endif /* H3_FILTER_H */

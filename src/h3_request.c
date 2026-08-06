@@ -128,9 +128,11 @@ conn_rec* h3_synth_conn(h3_session* session)
     }
     c->bucket_alloc = apr_bucket_alloc_create(cpool);
     c->log = &s->log;
+#if H3_DEVEL
     c->slaves = apr_array_make(cpool, 4, sizeof(void*));
     c->requests = apr_array_make(cpool, 4, sizeof(void*));
     c->async_filter = -1;
+#endif
     c->clogging_input_filters = 1;
 #if APR_HAS_THREADS
     c->current_thread = ap_thread_current();
@@ -156,8 +158,8 @@ static int is_connection_specific(const char* k)
 
 static size_t build_response_nva(nghttp3_nv* nva, size_t nva_cap, request_rec* r, h3_conn_ctx_t* h3ctx, apr_pool_t* dst_pool)
 {
-    apr_table_t* hdrs = (h3ctx->resp && h3ctx->resp->headers) ? h3ctx->resp->headers : r->headers_out;
-    int status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : r->status;
+    apr_table_t* hdrs = h3ctx->resp_headers ? h3ctx->resp_headers : r->headers_out;
+    int status = h3ctx->resp_status ? h3ctx->resp_status : r->status;
     char* status_str = apr_psprintf(dst_pool, "%d", status);
     NV_SET(nva, 0, ":status", status_str);
     size_t nvlen = 1;
@@ -235,6 +237,9 @@ apr_status_t h3_response_start(request_rec* r, h3_conn_ctx_t* h3ctx)
         return APR_EINVAL;
     }
     h3_stream* h3s = h3ctx->stream;
+#if H3_STABLE
+    h3_response_finalize(r, h3ctx);
+#endif
     nghttp3_nv nva[64] = {0};
     size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
     return submit_response_nva(h3s, nva, nvlen);
@@ -275,6 +280,9 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
         apr_pool_destroy(c->pool);
         return NULL;
     }
+#if H3_STABLE
+    ap_remove_output_filter_byhandle(r->output_filters, "HTTP_HEADER");
+#endif
     r->log = c->log ? c->log : &s->log;
     r->request_time = apr_time_now();
     r->connection->keepalive = AP_CONN_KEEPALIVE;
@@ -442,7 +450,9 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     c->pool = cpool;
     c->master = session->c;
     c->sbh = NULL;
+#if H3_DEVEL
     c->requests = apr_array_make(cpool, 4, sizeof(void*));
+#endif
     c->notes = apr_table_copy(cpool, session->c->notes);
     c->conn_config = ap_create_conn_config(cpool);
     c->bucket_alloc = apr_bucket_alloc_create(cpool);

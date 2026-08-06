@@ -28,6 +28,7 @@
 
 #include <apr_pools.h>
 
+#include "h3.h"
 #include "h3_config.h"
 #include "h3_filter.h"
 #include "h3_hooks.h"
@@ -58,9 +59,8 @@ static void register_hooks(apr_pool_t* p H3_UNUSED)
 
     ap_hook_child_init(h3_child_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_stopping(h3_c1_child_stopping, NULL, NULL, APR_HOOK_MIDDLE);
+#if H3_DEVEL
     ap_hook_child_stopped(h3_c1_child_stopped, NULL, NULL, APR_HOOK_MIDDLE);
-#ifdef AP_HAS_RESPONSE_BUCKETS
-    #error Not supported for the moment.
 #endif
 }
 

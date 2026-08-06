@@ -24,6 +24,16 @@
 
 #include <nghttp3/version.h>
 
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 32) // 2.5.1-dev
+    #define H3_DEVEL 1
+    #define H3_STABLE 0
+#elif AP_MODULE_MAGIC_AT_LEAST(20120211, 143) // 2.4.69
+    #define H3_DEVEL 0
+    #define H3_STABLE 1
+#else
+    #error "Unsupported Apache version, mod_http3 requires 2.4.69 or 2.5.1"
+#endif
+
 /* Directives default and maximum values. */
 #define H3_MAX_CONCURRENT_STREAMS_DEFAULT 100
 #define H3_MAX_CONCURRENT_STREAMS_MAX 1000

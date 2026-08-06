@@ -23,6 +23,7 @@
 
 #include <apr_pools.h>
 
+#include "h3.h"
 #include "h3_config.h"
 
 /**
@@ -43,6 +44,8 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s);
  */
 void h3_c1_child_stopping(apr_pool_t* pool, int graceful);
 
+#if H3_DEVEL
+
 /**
  * Child-stopped hook: tear down the QUIC listener, join worker threads, and
  * release the SSL context. Runs once the MPM has finished waiting for the
@@ -52,5 +55,7 @@ void h3_c1_child_stopping(apr_pool_t* pool, int graceful);
  * @param graceful Non-zero for a graceful stop, zero for immediate.
  */
 void h3_c1_child_stopped(apr_pool_t* pool, int graceful);
+
+#endif
 
 #endif /* H3_SERVER_H */
