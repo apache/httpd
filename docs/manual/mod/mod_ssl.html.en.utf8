@@ -57,18 +57,14 @@ to provide the cryptographic engine.</p>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslcacertificateuri">SSLCACertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequestfile">SSLCADNRequestFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequestpath">SSLCADNRequestPath</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslcadnrequesturi">SSLCADNRequestURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationcheck">SSLCARevocationCheck</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationfile">SSLCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationpath">SSLCARevocationPath</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslcarevocationuri">SSLCARevocationURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcertificatechainfile">SSLCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcertificatefile">SSLCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslcertificateuri">SSLCertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslciphersuite">SSLCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslcompression">SSLCompression</a></li>
@@ -94,11 +90,9 @@ to provide the cryptographic engine.</p>
 <li><img alt="" src="../images/down.gif"> <a href="#sslprotocol">SSLProtocol</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslproxycacertificateuri">SSLProxyCACertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationcheck">SSLProxyCARevocationCheck</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslproxycarevocationuri">SSLProxyCARevocationURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxycheckpeername">SSLProxyCheckPeerName</a></li>
@@ -107,8 +101,9 @@ to provide the cryptographic engine.</p>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#sslproxymachinecertificateuri">SSLProxyMachineCertificateURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxyprotocol">SSLProxyProtocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxystoreuri">SSLProxyStoreURI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslproxytrusturi">SSLProxyTrustURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxyverify">SSLProxyVerify</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslrandomseed">SSLRandomSeed</a></li>
@@ -130,7 +125,10 @@ to provide the cryptographic engine.</p>
 <li><img alt="" src="../images/down.gif"> <a href="#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sslstoreuri">SSLStoreURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssltrustrequesturi">SSLTrustRequestURI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssltrusturi">SSLTrustURI</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslusername">SSLUserName</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslusestapling">SSLUseStapling</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslverifyclient">SSLVerifyClient</a></li>
@@ -449,39 +447,6 @@ to take effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslcacertificateuri"><span id="SSLCACertificateURI">SSLCACertificateURI</span> Directive <a title="Permanent link" href="#sslcacertificateuri" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server CA certificate store for Client Authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCACertificateURI <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
-OpenSSL v3 or later.</td></tr>
-</table>
-<p>
-This directive sets the <em>all-in-one</em> URI where you can assemble the
-Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
-with. These are used for Client Authentication. This can be used alternatively
-and/or additionally to <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code>
-or <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># trust certs in a PEM encoded certificate bundle
-SSLCACertificateURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
-# trust all certs in a typical Linux machine
-SSLCACertificateURI "pkcs11:token=System%20Trust"
-# trust all certs in the Windows trust store
-SSLCACertificateURI "org.openssl.winstore:"</pre>
-</div>
-
-<p>This URI is read at server startup, while the server is still running
-as <code>root</code> (before privilege dropping), so it may be owned by
-and readable only by <code>root</code>. The URI is not re-read during
-normal operation; a server restart is required for changes to take
-effect.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslcadnrequestfile"><span id="SSLCADNRequestFile">SSLCADNRequestFile</span> Directive <a title="Permanent link" href="#sslcadnrequestfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File of concatenated PEM-encoded CA Certificates
@@ -497,16 +462,16 @@ in the SSL handshake.  These CA names can be used by the client to
 select an appropriate client certificate out of those it has
 available.</p>
 
-<p>If none of the directives <code class="directive">SSLCADNRequestFile</code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, or <code class="directive"><a href="#sslcadnrequesturi">SSLCADNRequestURI</a></code> are given, then the
+<p>If none of the directives <code class="directive">SSLCADNRequestFile</code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, or <code class="directive"><a href="#ssltrustrequesturi">SSLTrustRequestURI</a></code> are given, then the
 set of acceptable CA names sent to the client is the names of all the
-CA certificates given by the <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, and <code class="directive"><a href="#sslcacertificateuri">SSLCACertificateURI</a></code> directives; in other
+CA certificates given by the <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, and <code class="directive"><a href="#ssltrusturi">SSLTrustURI</a></code> directives; in other
 words, the names of the CAs which will actually be used to verify the
 client certificate.</p>
 
 <p>In some circumstances, it is useful to be able to send a set of
 acceptable CA names which differs from the actual CAs used to verify
 the client certificate - for example, if the client certificates are
-signed by intermediate CAs. In such cases, <code class="directive">SSLCADNRequestFile</code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, and/or <code class="directive"><a href="#sslcadnrequesturi">SSLCADNRequestURI</a></code> can be used; the
+signed by intermediate CAs. In such cases, <code class="directive">SSLCADNRequestFile</code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, and/or <code class="directive"><a href="#ssltrustrequesturi">SSLTrustRequestURI</a></code> can be used; the
 acceptable CA names are then taken from the complete set of
 certificates in the directory and/or file specified by this pair of
 directives.</p>
@@ -554,56 +519,6 @@ is still running as <code>root</code> (before privilege dropping), so they
 may be owned by and readable only by <code>root</code>. The files are not
 re-read during normal operation; a server restart is required for changes
 to take effect.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslcadnrequesturi"><span id="SSLCADNRequestURI">SSLCADNRequestURI</span> Directive <a title="Permanent link" href="#sslcadnrequesturi" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>certificate store of CA Certificates for defining
-acceptable CA names</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCADNRequestURI <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-</table>
-<p>When a client certificate is requested by mod_ssl, a list of
-<em>acceptable Certificate Authority names</em> is sent to the client
-in the SSL handshake.  These CA names can be used by the client to
-select an appropriate client certificate out of those it has
-available.</p>
-
-<p>If none of the directives <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, or <code class="directive">SSLCADNRequestURI</code> are given, then the
-set of acceptable CA names sent to the client is the names of all the
-CA certificates given by the <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, and <code class="directive"><a href="#sslcacertificateuri">SSLCACertificateURI</a></code> directives; in other
-words, the names of the CAs which will actually be used to verify the
-client certificate.</p>
-
-<p>In some circumstances, it is useful to be able to send a set of
-acceptable CA names which differs from the actual CAs used to verify
-the client certificate - for example, if the client certificates are
-signed by intermediate CAs. In such cases, <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, and/or <code class="directive">SSLCADNRequestURI</code> can be used; the
-acceptable CA names are then taken from the complete set of
-certificates in the directory and/or file specified by this pair of
-directives.</p>
-
-<p><code class="directive">SSLCADNRequestURI</code> must
-specify an <em>all-in-one</em> certificate store uri containing a
-set of CA certificates.</p>
-
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCADNRequestURI "file:///usr/local/apache2/conf/ca-names.crt"</pre>
-</div>
-
-<p>A <var>file:</var> URI pointing at a file of PEM encoded certificates
-can be used instead of <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, and a <var>file:</var>
-URI pointing at a directory of PEM encoded certificates can be used
-instead of <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>.
-</p>
-
-<p>This store is read at server startup, while the server is still running
-as <code>root</code> (before privilege dropping), so it may be owned by
-and readable only by <code>root</code>. The uri is not re-read during
-normal operation; a server restart is required for changes to take
-effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -709,37 +624,6 @@ is still running as <code>root</code> (before privilege dropping), so they
 may be owned by and readable only by <code>root</code>. The files are not
 re-read during normal operation; a server restart is required for changes
 to take effect.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslcarevocationuri"><span id="SSLCARevocationURI">SSLCARevocationURI</span> Directive <a title="Permanent link" href="#sslcarevocationuri" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server CA certificate revocation list store for Client Authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCARevocationURI <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-</table>
-<p>
-This directive sets the <em>all-in-one</em> file where you can
-assemble the Certificate Revocation Lists (CRL) of Certification
-Authorities (CA) whose <em>clients</em> you deal with. These are used
-for Client Authentication. This can be used alternatively and/or
-additionally to <code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code> and <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLCARevocationURI "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"</pre>
-</div>
-
-<p>A <var>file:</var> URI pointing at a file of PEM encoded CRLs
-can be used instead of <code class="directive"><a href="#sslcarevocationfile">SSLCARevocationFile</a></code>, and a <var>file:</var>
-URI pointing at a directory of PEM encoded CRLs can be used
-instead of <code class="directive"><a href="#sslcarevocationpath">SSLCARevocationPath</a></code>.
-</p>
-
-<p>This URI is read at server startup, while the server is still running
-as <code>root</code> (before privilege dropping), so it may be owned by
-and readable only by <code>root</code>. The URI is not re-read during
-normal operation; a server restart is required for changes to take
-effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -976,86 +860,6 @@ as <code>root</code> (before privilege dropping), so it should be owned by
 and readable only by <code>root</code>, since it contains the private key.
 The file is not re-read during normal operation; a server restart is
 required for changes to take effect.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslcertificateuri"><span id="SSLCertificateURI">SSLCertificateURI</span> Directive <a title="Permanent link" href="#sslcertificateuri" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server certificate and key store</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLCertificateURI <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
-OpenSSL v3 or later.</td></tr>
-</table>
-<p>
-This directive points to a certificate store containing certificates,
-intermediate certificates, and private keys, represented by a URI.
-</p>
-<p>
-If no scheme is specified, the path will default to a <var>file:</var>
-URI, pointing at PEM encoded data, or a PKCS12 file. Other schemes
-include, but are not limited to, <var>pkcs11:</var> for smartcards and
-HSMs, <var>cng:</var> for the Windows certificate store, and
-<var>handle:</var> for TPMs. On Windows, where a file path is also a
-valid URI, the <var>file:</var> scheme must be used.
-</p>
-<p>
-The directive can be specified multiple times with tightly scoped
-URIs to target specific certificates and keys, or could be specified
-with a general URI like <var>pkcs11:</var> that considers all possible
-certificates and keys. Certificates, intermediate certificates, and keys
-can be defined in any order.
-</p>
-<p>Certificates and keys are processed as follows.
-</p>
-<ul>
-<li>Leaf certificates that do not have the purpose <var>Server Authentication</var>
-are skipped.</li>
-<li>Remaining leaf certificates are checked whether the
-<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and all
-<code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> directives match the
-hostname or IP address of the certificate, and if no match is found they
-are skipped.</li>
-<li>Intermediate certificates are considered for building certificate
-chains on a best effort basis.</li>
-<li>Keys are matched up with leaf certificates, any certificate
-without a private key is skipped.</li>
-<li>Leaf certificates with private keys are sorted oldest to newest and
-passed on for configuration.</li>
-<li>The most recently issued certificate and key pair for each algorithm
-type (RSA, ECDSA, etc) will be used for each virtual host.</li>
-<li>The server will report back to you how many certificates of each type
-were found to help you if no certificates match.</li>
-</ul>
-
-<p>If the private key is encrypted, the pass phrase dialog is forced
-at startup time.</p>
-
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Example using a PEM-encoded file.
-SSLCertificateURI "/usr/local/apache2/conf/ssl.crt/server.crt"
-# Example using a PKCS12 file.
-SSLCertificateURI "/usr/local/apache2/conf/ssl.crt/server.p12"
-# Example use of a certificate and private key from a PKCS#11 token:
-SSLCertificateURI "pkcs11:token=My%20Token%20Name;id=45"</pre>
-</div>
-
-<p>These URIs are read at server startup, while the server is still running
-as <code>root</code> (before privilege dropping), so it may be owned by
-and readable only by <code>root</code>. The URI is not re-read during
-normal operation; a server restart is required for changes to take
-effect.</p>
-
-<div class="warning"><h3>Using SSLCertificateFile and SSLCertificateURI
-together</h3>
-<p>
-You can use both SSLCertificateFile and SSLCertificateURI together, however
-there is no overlap between the mechanisms. A certificate defined by
-SSLCertificateFile will not be matched with a key from SSLCertificateURI.
-</p>
-</div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -2083,28 +1887,6 @@ contains the appropriate symbolic links.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslproxycacertificateuri"><span id="SSLProxyCACertificateURI">SSLProxyCACertificateURI</span> Directive <a title="Permanent link" href="#sslproxycacertificateuri" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Proxy CA certificate store for Remote Server Auth</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCACertificateURI <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
-OpenSSL v3 or later.</td></tr>
-</table>
-<p>
-This directive sets the <em>all-in-one</em> URI where you can assemble the
-Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
-with. These are used for Remote Server Authentication. This can be used alternatively
-and/or additionally to
-<code class="directive"><a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></code> and
-<code class="directive"><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCACertificateURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"</pre>
-</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslproxycarevocationcheck"><span id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</span> Directive <a title="Permanent link" href="#sslproxycarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable CRL-based revocation checking for Remote Server Auth</td></tr>
@@ -2186,27 +1968,6 @@ Additionally you have to create symbolic links named
 <var>hash-value</var><code>.rN</code>. And you should always make sure this directory
 contains the appropriate symbolic links.</p>
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationPath "/usr/local/apache2/conf/ssl.crl/"</pre>
-</div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslproxycarevocationuri"><span id="SSLProxyCARevocationURI">SSLProxyCARevocationURI</span> Directive <a title="Permanent link" href="#sslproxycarevocationuri" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Proxy CA certificate revocation list store for Remote Server Auth</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCARevocationURI <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
-OpenSSL v3 or later.</td></tr>
-</table>
-<p>
-This directive sets the <em>all-in-one</em> URI where you can
-assemble the Certificate Revocation Lists (CRL) of Certification
-Authorities (CA) whose <em>remote servers</em> you deal with. These are used
-for Remote Server Authentication.  This can be
-used alternatively and/or additionally to <code class="directive"><a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></code> and <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></code>.</p>
-<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyCARevocationURI "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl"</pre>
 </div>
 
 </div>
@@ -2483,10 +2244,31 @@ must be converted, eg. using
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslproxymachinecertificateuri"><span id="SSLProxyMachineCertificateURI">SSLProxyMachineCertificateURI</span> Directive <a title="Permanent link" href="#sslproxymachinecertificateuri" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sslproxyprotocol"><span id="SSLProxyProtocol">SSLProxyProtocol</span> Directive <a title="Permanent link" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol flavors for proxy usage</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyProtocol [+|-]<var>protocol</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyProtocol all -SSLv3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later</td></tr>
+</table>
+
+<p>
+This directive can be used to control the SSL protocol flavors mod_ssl should
+use when establishing its server environment for proxy . It will only connect
+to servers using one of the provided protocols.</p>
+<p>Please refer to <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>
+for additional information.
+</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslproxystoreuri"><span id="SSLProxyStoreURI">SSLProxyStoreURI</span> Directive <a title="Permanent link" href="#sslproxystoreuri" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Proxy certificate and key stores</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyMachineCertificateURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyStoreURI <var>uri</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -2532,11 +2314,11 @@ were found to help you if no certificates match.</li>
 at startup time.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Example using a PEM-encoded file.
-SSLProxyMachineCertificateURI "/usr/local/apache2/conf/ssl.crt/proxy.pem"
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 # Example using a PKCS12 file.
-SSLProxyMachineCertificateURI "/usr/local/apache2/conf/ssl.crt/proxy.p12"
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.p12"
 # Example use of a certificate and private key from a PKCS#11 token:
-SSLProxyMachineCertificateURI "pkcs11:token=My%20Token%20Name;id=45"</pre>
+SSLProxyStoreURI "pkcs11:token=My%20Token%20Name;id=45"</pre>
 </div>
 
 <p>These URIs are read at server startup, while the server is still running
@@ -2563,36 +2345,42 @@ likely fail the SSL/TLS handshake (depending on the remote server
 configuration).</p>
 
 <div class="warning"><h3>Using SSLProxyMachineCertificateFile and
-SSLProxyMachineCertificateURI together</h3>
+SSLProxyStoreURI together</h3>
 <p>
 You can use both SSLProxyMachineCertificateFile and
-SSLProxyMachineCertificateURI together, however there is
+SSLProxyStoreURI together, however there is
 no overlap between the mechanisms. A certificate defined by
 SSLProxyMachineCertificateFile will not be matched with a
-key from SSLProxyMachineCertificateURI.
+key from SSLProxyStoreURI.
 </p>
 </div>
 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2 id="sslproxyprotocol"><span id="SSLProxyProtocol">SSLProxyProtocol</span> Directive <a title="Permanent link" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sslproxytrusturi"><span id="SSLProxyTrustURI">SSLProxyTrustURI</span> Directive <a title="Permanent link" href="#sslproxytrusturi" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol flavors for proxy usage</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyProtocol [+|-]<var>protocol</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyProtocol all -SSLv3</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Proxy CA certificate store for Remote Server Auth</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyTrustURI <var>uri</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, proxy section</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The proxy section context is allowed in httpd 2.4.30 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
 </table>
-
 <p>
-This directive can be used to control the SSL protocol flavors mod_ssl should
-use when establishing its server environment for proxy . It will only connect
-to servers using one of the provided protocols.</p>
-<p>Please refer to <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>
-for additional information.
+This directive sets URIs where you can assemble the
+Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
+with. These are used for Remote Server Authentication. This can be used alternatively
+and/or additionally to
+<code class="directive"><a href="#sslproxycacertificatefile">SSLProxyCACertificateFile</a></code> and
+<code class="directive"><a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></code>.</p>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLProxyTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"</pre>
+</div>
+<p>
+This directive will also process Certificate Revocation Lists (CRL) of Certification
+Authorities (CAs) whose remote servers you deal with, if they fall within scope.
+These are used to revoke the remote server certificate on Remote Server Authentication.
 </p>
 
 </div>
@@ -3302,6 +3090,86 @@ used for controlling the timeout for invalid/unavailable responses.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sslstoreuri"><span id="SSLStoreURI">SSLStoreURI</span> Directive <a title="Permanent link" href="#sslstoreuri" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server certificate and key store</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStoreURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table>
+<p>
+This directive points to a certificate store containing certificates,
+intermediate certificates, and private keys, represented by a URI.
+</p>
+<p>
+If no scheme is specified, the path will default to a <var>file:</var>
+URI, pointing at PEM encoded data, or a PKCS12 file. Other schemes
+include, but are not limited to, <var>pkcs11:</var> for smartcards and
+HSMs, <var>cng:</var> for the Windows certificate store, and
+<var>handle:</var> for TPMs. On Windows, where a file path is also a
+valid URI, the <var>file:</var> scheme must be used.
+</p>
+<p>
+The directive can be specified multiple times with tightly scoped
+URIs to target specific certificates and keys, or could be specified
+with a general URI like <var>pkcs11:</var> that considers all possible
+certificates and keys. Certificates, intermediate certificates, and keys
+can be defined in any order.
+</p>
+<p>Certificates and keys are processed as follows.
+</p>
+<ul>
+<li>Leaf certificates that do not have the purpose <var>Server Authentication</var>
+are skipped.</li>
+<li>Remaining leaf certificates are checked whether the
+<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and all
+<code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> directives match the
+hostname or IP address of the certificate, and if no match is found they
+are skipped.</li>
+<li>Intermediate certificates are considered for building certificate
+chains on a best effort basis.</li>
+<li>Keys are matched up with leaf certificates, any certificate
+without a private key is skipped.</li>
+<li>Leaf certificates with private keys are sorted oldest to newest and
+passed on for configuration.</li>
+<li>The most recently issued certificate and key pair for each algorithm
+type (RSA, ECDSA, etc) will be used for each virtual host.</li>
+<li>The server will report back to you how many certificates of each type
+were found to help you if no certificates match.</li>
+</ul>
+
+<p>If the private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
+
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># Example using a PEM-encoded file.
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Example using a PKCS12 file.
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.p12"
+# Example use of a certificate and private key from a PKCS#11 token:
+SSLStoreURI "pkcs11:token=My%20Token%20Name;id=45"</pre>
+</div>
+
+<p>These URIs are read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The URI is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
+<div class="warning"><h3>Using SSLCertificateFile and SSLStoreURI
+together</h3>
+<p>
+You can use both SSLCertificateFile and SSLStoreURI together, however
+there is no overlap between the mechanisms. A certificate defined by
+SSLCertificateFile will not be matched with a key from SSLStoreURI.
+</p>
+</div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="sslstrictsnivhostcheck"><span id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</span> Directive <a title="Permanent link" href="#sslstrictsnivhostcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to allow non-SNI clients to access a name-based virtual
@@ -3338,6 +3206,94 @@ version of OpenSSL.
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLStrictSNIVHostCheck on</pre>
 </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssltrustrequesturi"><span id="SSLTrustRequestURI">SSLTrustRequestURI</span> Directive <a title="Permanent link" href="#ssltrustrequesturi" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>certificate store of CA Certificates for defining
+acceptable CA names</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLTrustRequestURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>When a client certificate is requested by mod_ssl, a list of
+<em>acceptable Certificate Authority names</em> is sent to the client
+in the SSL handshake.  These CA names can be used by the client to
+select an appropriate client certificate out of those it has
+available.</p>
+
+<p>If none of the directives <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, or <code class="directive">SSLTrustRequestURI</code> are given, then the
+set of acceptable CA names sent to the client is the names of all the
+CA certificates given by the <code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, and <code class="directive"><a href="#ssltrusturi">SSLTrustURI</a></code> directives; in other
+words, the names of the CAs which will actually be used to verify the
+client certificate.</p>
+
+<p>In some circumstances, it is useful to be able to send a set of
+acceptable CA names which differs from the actual CAs used to verify
+the client certificate - for example, if the client certificates are
+signed by intermediate CAs. In such cases, <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>, and/or <code class="directive">SSLTrustRequestURI</code> can be used; the
+acceptable CA names are then taken from the complete set of
+certificates in the directory and/or file specified by this pair of
+directives.</p>
+
+<p><code class="directive">SSLTrustRequestURI</code> must
+specify an <em>all-in-one</em> certificate store uri containing a
+set of CA certificates.</p>
+
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLTrustRequestURI "file:///usr/local/apache2/conf/ca-names.crt"</pre>
+</div>
+
+<p>A <var>file:</var> URI pointing at a file of PEM encoded certificates
+can be used instead of <code class="directive"><a href="#sslcadnrequestfile">SSLCADNRequestFile</a></code>, and a <var>file:</var>
+URI pointing at a directory of PEM encoded certificates can be used
+instead of <code class="directive"><a href="#sslcadnrequestpath">SSLCADNRequestPath</a></code>.
+</p>
+
+<p>This store is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The uri is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssltrusturi"><span id="SSLTrustURI">SSLTrustURI</span> Directive <a title="Permanent link" href="#ssltrusturi" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Server CA certificate store for Client Authentication</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLTrustURI <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</td></tr>
+</table>
+<p>
+This directive sets URIs where you can assemble the Certificates of Certification
+Authorities (CA) whose <em>clients</em> you deal with. These are used for Client
+Authentication. This can be used alternatively and/or additionally to
+<code class="directive"><a href="#sslcacertificatefile">SSLCACertificateFile</a></code>
+or <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>.</p>
+<div class="example"><h3>Example</h3><pre class="prettyprint lang-config"># trust certs in a PEM encoded certificate bundle
+SSLTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
+# trust all certs in a typical Linux machine
+SSLTrustURI "pkcs11:token=System%20Trust"
+# trust all certs in the Windows trust store
+SSLTrustURI "org.openssl.winstore:"</pre>
+</div>
+
+<p>
+This directive will also read in Certificate Revocation Lists (CRL) of
+Certification Authorities (CAs) whose clients you deal with. These are used
+to revoke the client certificate on Client Authentication.</p>
+
+<p>This URI is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The URI is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

@@ -1169,23 +1169,18 @@ displayed</td></tr>
 for Client Auth</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <var>directory-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 Client Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslcacertificateuri">SSLCACertificateURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server CA certificate store for Client Authentication</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
+<tr><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</td></tr>
-<tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <var>directory-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
+<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <var>directory-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 defining acceptable CA names</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequesturi">SSLCADNRequestURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">certificate store of CA Certificates for defining
-acceptable CA names</td></tr>
 <tr><td><a href="mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck chain|leaf|none [<var>flag</var>s ...]</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable CRL-based revocation checking</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
 Client Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <var>directory-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
 Client Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationuri">SSLCARevocationURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server CA certificate revocation list store for Client Authentication</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <var>file-path</var>|<var>certid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded X.509 certificate data file or token identifier</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded private key file</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificateuri">SSLCertificateURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server certificate and key store</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
+<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <var>file-path</var>|<var>certid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded X.509 certificate data file or token identifier</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded private key file</td></tr>
 <tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite [<var>protocol</var>] <var>cipher-spec</var></a></td><td> DEFAULT (depends on +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL
 handshake</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable collection of ClientHello variables</td></tr>
@@ -1215,13 +1210,11 @@ keys</td></tr>
 for Remote Server Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath <var>directory-path</var></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for
 Remote Server Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycacertificateuri">SSLProxyCACertificateURI <var>uri</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy CA certificate store for Remote Server Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable CRL-based revocation checking for Remote Server Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <var>file-path</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationcheck">SSLProxyCARevocationCheck chain|leaf|none</a></td><td> none </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable CRL-based revocation checking for Remote Server Auth</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile <var>file-path</var></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <var>directory-path</var></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
+<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath <var>directory-path</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for
 Remote Server Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxycarevocationuri">SSLProxyCARevocationURI <var>uri</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy CA certificate revocation list store for Remote Server Auth</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN on|off</a></td><td> on </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to check the remote server certificate's CN field
 </td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire on|off</a></td><td> on </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to check if remote server certificate is expired
@@ -1234,39 +1227,44 @@ proxy handshake</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatechainfile">SSLProxyMachineCertificateChainFile <var>filename</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA certificates to be used by the proxy for choosing a certificate</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile <var>filename</var></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded client certificates and keys to be used by the proxy</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath <var>directory</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded client certificates and keys to be used by the proxy</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxymachinecertificateuri">SSLProxyMachineCertificateURI <var>uri</var></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Proxy certificate and key stores</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<var>protocol</var> ...</a></td><td> all -SSLv3 </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <var>level</var></a></td><td> none </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of remote server Certificate verification</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <var>number</var></a></td><td> 1 </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
+<tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<var>protocol</var> ...</a></td><td> all -SSLv3 </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure usable SSL protocol flavors for proxy usage</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxystoreuri">SSLProxyStoreURI <var>uri</var></a></td><td></td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy certificate and key stores</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxytrusturi">SSLProxyTrustURI <var>uri</var></a></td><td></td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Proxy CA certificate store for Remote Server Auth</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <var>level</var></a></td><td> none </td><td>svp</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of remote server Certificate verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <var>number</var></a></td><td> 1 </td><td>svp</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Remote Server
 Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <var>context</var> <var>source</var>
-[<var>bytes</var>]</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding
+<tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <var>context</var> <var>source</var>
+[<var>bytes</var>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding
 source</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the size for the SSL renegotiation buffer</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <var>expression</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow access only when an arbitrarily complex
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the size for the SSL renegotiation buffer</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire <var>expression</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow access only when an arbitrarily complex
 boolean expression is true</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Deny access when SSL is not used for the
+<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Deny access when SSL is not used for the
 HTTP request</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <var>type</var></a></td><td> none </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of the global/inter-process SSL Session
+<tr class="odd"><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <var>type</var></a></td><td> none </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of the global/inter-process SSL Session
 Cache</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before an SSL session expires
+<tr><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of seconds before an SSL session expires
 in the Session Cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Persistent encryption/decryption key for TLS session tickets</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable or disable use of TLS session tickets</td></tr>
-<tr><td><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed <var>secret-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">SRP unknown user seed</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Path to SRP verifier file</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <var>type</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures the OCSP stapling cache</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <var>seconds</var></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before expiring invalid responses in the OCSP stapling cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Synthesize "tryLater" responses for failed OCSP stapling queries</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override the OCSP responder URI specified in the certificate's AIA extension</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <var>seconds</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Timeout for OCSP stapling queries</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <var>seconds</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable age for OCSP stapling responses</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable time skew for OCSP stapling response validation</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pass stapling related OCSP errors on to client</td></tr>
-<tr><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <var>seconds</var></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of seconds before expiring responses in the OCSP stapling cache</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslsessionticketkeyfile">SSLSessionTicketKeyFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Persistent encryption/decryption key for TLS session tickets</td></tr>
+<tr><td><a href="mod_ssl.html#sslsessiontickets">SSLSessionTickets on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable or disable use of TLS session tickets</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslsrpunknownuserseed">SSLSRPUnknownUserSeed <var>secret-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SRP unknown user seed</td></tr>
+<tr><td><a href="mod_ssl.html#sslsrpverifierfile">SSLSRPVerifierFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Path to SRP verifier file</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingcache">SSLStaplingCache <var>type</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the OCSP stapling cache</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingerrorcachetimeout">SSLStaplingErrorCacheTimeout <var>seconds</var></a></td><td> 600 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of seconds before expiring invalid responses in the OCSP stapling cache</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingfaketrylater">SSLStaplingFakeTryLater on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Synthesize "tryLater" responses for failed OCSP stapling queries</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingforceurl">SSLStaplingForceURL <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Override the OCSP responder URI specified in the certificate's AIA extension</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingrespondertimeout">SSLStaplingResponderTimeout <var>seconds</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Timeout for OCSP stapling queries</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingresponsemaxage">SSLStaplingResponseMaxAge <var>seconds</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum allowable age for OCSP stapling responses</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowable time skew for OCSP stapling response validation</td></tr>
+<tr><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Pass stapling related OCSP errors on to client</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <var>seconds</var></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before expiring responses in the OCSP stapling cache</td></tr>
+<tr><td><a href="mod_ssl.html#sslstoreuri">SSLStoreURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server certificate and key store</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to allow non-SNI clients to access a name-based virtual
 host.
 </td></tr>
+<tr><td><a href="mod_ssl.html#ssltrustrequesturi">SSLTrustRequestURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">certificate store of CA Certificates for defining
+acceptable CA names</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#ssltrusturi">SSLTrustURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server CA certificate store for Client Authentication</td></tr>
 <tr><td><a href="mod_ssl.html#sslusername">SSLUserName <var>varname</var></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Variable name to determine user name</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable stapling of OCSP responses in the TLS handshake</td></tr>
 <tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <var>level</var></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
