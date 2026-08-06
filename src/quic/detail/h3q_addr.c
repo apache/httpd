@@ -35,16 +35,32 @@ struct h3q_datagram
     h3q_datagram* next;
 };
 
+static void h3q_datagram_free(h3q_datagram* item)
+{
+    OPENSSL_free(item->data);
+    BIO_ADDR_free(item->peer);
+    BIO_ADDR_free(item->local);
+    OPENSSL_free(item);
+}
+
+static void h3q_queue_drop_head(h3q_engine* engine)
+{
+    h3q_datagram* item = engine->peer_rx_head;
+    engine->peer_rx_head = item->next;
+    if (!engine->peer_rx_head)
+    {
+        engine->peer_rx_tail = NULL;
+    }
+    h3q_datagram_free(item);
+}
+
 void h3q_peer_addr_queue_clear(h3q_engine* engine)
 {
     h3q_datagram* item = engine->peer_rx_head;
     while (item)
     {
         h3q_datagram* next = item->next;
-        OPENSSL_free(item->data);
-        BIO_ADDR_free(item->peer);
-        BIO_ADDR_free(item->local);
-        OPENSSL_free(item);
+        h3q_datagram_free(item);
         item = next;
     }
     engine->peer_rx_head = NULL;
@@ -92,8 +108,14 @@ static int h3q_queue_fill(h3q_engine* engine, BIO_MSG* msg, size_t stride, size_
 static int h3q_queue_pop(h3q_engine* engine, BIO_MSG* msg)
 {
     h3q_datagram* item = engine->peer_rx_head;
-    if (!item || !msg || !msg->data || msg->data_len < item->data_len)
+    if (!item || !msg || !msg->data)
     {
+        return 0;
+    }
+    if (msg->data_len < item->data_len)
+    {
+        /* Drop it, or the queue head never clears and the pump spins. */
+        h3q_queue_drop_head(engine);
         return 0;
     }
     memcpy(msg->data, item->data, item->data_len);
@@ -106,15 +128,7 @@ static int h3q_queue_pop(h3q_engine* engine, BIO_MSG* msg)
     {
         BIO_ADDR_copy(msg->local, item->local);
     }
-    engine->peer_rx_head = item->next;
-    if (!engine->peer_rx_head)
-    {
-        engine->peer_rx_tail = NULL;
-    }
-    OPENSSL_free(item->data);
-    BIO_ADDR_free(item->peer);
-    BIO_ADDR_free(item->local);
-    OPENSSL_free(item);
+    h3q_queue_drop_head(engine);
     return 1;
 }
 
