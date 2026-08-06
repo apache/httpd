@@ -292,6 +292,7 @@ class HttpdTestEnv:
         self._gen_dir = self.config.get('test', 'gen_dir')
 
         self._server_dir = os.path.join(self._gen_dir, 'apache')
+        self._server_dir = self._server_dir.replace("\\","/")
         self._server_conf_dir = os.path.join(self._server_dir, "conf")
         self._server_docs_dir = os.path.join(self._server_dir, "htdocs")
         self._server_logs_dir = os.path.join(self.server_dir, "logs")

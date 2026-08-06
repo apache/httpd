@@ -135,6 +135,7 @@ SET(EXTRA_INCLUDES        ""                             CACHE STRING "Extra inc
 SET(EXTRA_LIBS            ""                             CACHE STRING "Extra libraries")
 SET(EXTRA_COMPILE_FLAGS   ""                             CACHE STRING "Extra compile flags")
 
+
 IF(NOT EXISTS "${APR_INCLUDE_DIR}/apr.h")
   MESSAGE(FATAL_ERROR "APR include directory ${APR_INCLUDE_DIR} is not correct.")
 ENDIF()
@@ -529,7 +530,7 @@ SET(mod_md_extra_sources
   modules/md/md_ocsp.c               modules/md/md_util.c               
   modules/md/mod_md_config.c         modules/md/mod_md_drive.c
   modules/md/mod_md_os.c             modules/md/mod_md_status.c
-  modules/md/mod_md_ocsp.c           modules/md/md_tailscale.c
+  modules/md/mod_md_ocsp.c           
 )
 SET(mod_optional_hook_export_extra_defines AP_DECLARE_EXPORT) # bogus reuse of core API prefix
 SET(mod_proxy_extra_defines          PROXY_DECLARE_EXPORT)
@@ -926,6 +927,8 @@ TARGET_COMPILE_DEFINITIONS(httpd PRIVATE
   "ICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico"
 )
 TARGET_COMPILE_OPTIONS(httpd PRIVATE "${EXTRA_COMPILE_FLAGS}")
+add_compile_definitions(IF_WIN_OS_IS_UNICODE=1)
+
 SET_TARGET_PROPERTIES(httpd PROPERTIES
   LINK_FLAGS "/stack:0x40000"
 )
@@ -1093,7 +1096,7 @@ INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/support/apachectl.bat"
     execute_process(
           COMMAND ${GIT_EXECUTABLE} branch --show-current
           WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-          OUTPUT_VARIABLE GIT_BRANCH
+          OUTPUT_VARIABLE HTTPD_VERSION
           OUTPUT_STRIP_TRAILING_WHITESPACE
           ERROR_QUIET
     )

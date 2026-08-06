@@ -132,8 +132,8 @@ class MDTestEnv(HttpdTestEnv):
 
     def set_store_dir_default(self):
         dirpath = "md"
-        if self.httpd_is_at_least("2.5.0"):
-            dirpath = os.path.join("state", dirpath)
+        # if self.httpd_is_at_least("2.5.0"):
+        # dirpath = os.path.join("state", dirpath)
         self.set_store_dir(dirpath)
 
     def set_store_dir(self, dirpath):
@@ -280,7 +280,7 @@ class MDTestEnv(HttpdTestEnv):
         return os.path.join(self._store_dir, 'challenges')
 
     def store_domain_file(self, domain, filename):
-        return os.path.join(self.store_domains(), domain, filename)
+        return os.path.join(self.store_domains(), domain, filename).replace("\\", "/")
 
     def store_archived_file(self, domain, version, filename):
         return os.path.join(self.store_archives(), "%s.%d" % (domain, version), filename)

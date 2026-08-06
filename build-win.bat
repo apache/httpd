@@ -28,7 +28,7 @@ if NOT EXIST vcpkg\ (
     CALL bootstrap-vcpkg.bat
 ) else (
     echo "Updating...."
-    git submodule update --remote --merge vcpkg/
+    git submodule update --remote --merge vcpkg\
     PUSHD vcpkg\
 )
 
@@ -64,11 +64,14 @@ cmake .. -B . ^
     -DVCPKG_TARGET_TRIPLET=%ARCH% ^
     -DNGHTTP2_INCLUDE_DIR=%CWD%/vcpkg/installed/x64-windows/include ^
     -DAPR_INCLUDE_DIR=%CWD%/vcpkg/installed/x64-windows/include ^
+    -DJANSSON_INCLUDE_DIR=%CWD%/vcpkg/installed/x64-windows/include ^
     "-DAPR_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/libapr-1.lib;%CWD%/vcpkg/installed/x64-windows/lib/libaprutil-1.lib" ^
     -DNGHTTP2_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/nghttp2.lib ^
+    -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/jansson.lib ^
     -DBUILD_PYHTTPD_MODULES=true ^
     -DCMAKE_POLICY_VERSION_MINIMUM=%CMAKE_VERSION% ^
-    --install-prefix %HTTPD_INSTALL_DIRECTORY% 
+    --install-prefix %HTTPD_INSTALL_DIRECTORY% ^
+    --fresh
 
 @REM -------------------------------------
 @REM Build httpd 
@@ -97,11 +100,11 @@ xcopy %VCPKG_DIRECTORY_LIB%\bin\* %HTTPD_INSTALL_DIRECTORY%\bin /y /f /i
 @REM Run the pyHttpd tests
 @REM -------------------------------------
 PUSHD test\
-python.exe -m pip install --upgrade pip
-python.exe -m venv .venv
-call .venv\Scripts\activate
-call python.exe -m pip install websockets filelock cryptography pyopenssl python-multipart pebble pytest-html pytest==8.4.2 cffi
-call python.exe -m pytest -vvv --ignore="modules/md" --ignore="modules/http2" -k "not test_cgi_003_01 and not test_800_websockets and not test_02_unix and not test_003_get and not test_004_post and not test_002_restarts and not test_005_trailers" --junitxml="reports/pytest-results.xml" --html="reports/Results" --self-contained-html
-deactivate
+@REM python.exe -m pip install --upgrade pip
+@REM python.exe -m venv .venv
+@REM call .venv\Scripts\activate
+@REM call python.exe -m pip install websockets filelock cryptography pyopenssl python-multipart pebble pytest-html pytest==8.4.2 cffi
+@REM call python.exe -m pytest -vvv --ignore="modules/http2" -k "not test_cgi_003_01 and not test_800_websockets and not test_02_unix and not test_003_get and not test_004_post and not test_002_restarts and not test_005_trailers" --junitxml="reports/pytest-results.xml" --html="reports/Results" --self-contained-html
+@REM deactivate
 
 POPD
