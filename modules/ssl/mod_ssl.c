@@ -110,7 +110,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_ALL(CipherSuite, TAKE12,
                 "Colon-delimited list of permitted SSL Ciphers, optional preceded "
                 "by protocol identifier ('XXX:...:XXX' - see manual)")
-    SSL_CMD_SRV(CertificateURI, TAKE1,
+    SSL_CMD_SRV(StoreURI, TAKE1,
                 "SSL Server Certificate/Key uri "
                 "('file:', 'pkcs11:' - URI of certificate or key)")
     SSL_CMD_SRV(CertificateFile, TAKE1,
@@ -132,7 +132,7 @@ static const command_rec ssl_config_cmds[] = {
                 "TLS ECH Key Directory"
                 "('/path/to/dir' - directory with ECH key pairs)")
 #endif
-    SSL_CMD_SRV(CACertificateURI, TAKE1,
+    SSL_CMD_SRV(TrustURI, TAKE1,
                 "SSL CA Certificate uri "
                 "('file:', 'pkcs11:' - URI of CA certificates)")
     SSL_CMD_ALL(CACertificatePath, TAKE1,
@@ -147,12 +147,9 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(CADNRequestFile, TAKE1,
                 "SSL CA Distinguished Name file "
                 "('/path/to/file' - PEM encoded to derive acceptable CA names to request)")
-    SSL_CMD_SRV(CADNRequestURI, TAKE1,
+    SSL_CMD_SRV(TrustRequestURI, TAKE1,
                 "SSL CA Distinguished Name uri "
                 "('file:', 'pkcs11:' - URI of certificates to derive acceptable CA names to request)")
-    SSL_CMD_SRV(CARevocationURI, TAKE1,
-                "SSL CA Certificate Revocation List (CRL) uri "
-                "('file:', 'pkcs11:' - URI of CRLs)")
     SSL_CMD_SRV(CARevocationPath, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) path "
                 "('/path/to/dir' - contains PEM encoded files)")
@@ -228,8 +225,8 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_PXY(ProxyVerifyDepth, TAKE1,
                "SSL Proxy: maximum certificate verification depth "
                "('N' - number of intermediate certificates)")
-    SSL_CMD_PXY(ProxyCACertificateURI, TAKE1,
-                "SSL Proxy: uri referring to server certificates "
+    SSL_CMD_PXY(ProxyTrustURI, TAKE1,
+                "SSL Proxy: uri referring to trusted server certificates "
                 "('file:', 'pkcs11:' - URI of CA certificates)")
     SSL_CMD_PXY(ProxyCACertificateFile, TAKE1,
                "SSL Proxy: file containing server certificates "
@@ -237,9 +234,6 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_PXY(ProxyCACertificatePath, TAKE1,
                "SSL Proxy: directory containing server certificates "
                "('/path/to/dir' - contains PEM encoded certificates)")
-    SSL_CMD_PXY(ProxyCARevocationURI, TAKE1,
-                "SSL Proxy: CA Certificate Revocation List (CRL) uri "
-                "('file:', 'pkcs11:' - URI of CRLs)")
     SSL_CMD_PXY(ProxyCARevocationPath, TAKE1,
                 "SSL Proxy: CA Certificate Revocation List (CRL) path "
                 "('/path/to/dir' - contains PEM encoded files)")
@@ -248,7 +242,7 @@ static const command_rec ssl_config_cmds[] = {
                 "('/path/to/file' - PEM encoded)")
     SSL_CMD_PXY(ProxyCARevocationCheck, RAW_ARGS,
                 "SSL Proxy: CA Certificate Revocation List (CRL) checking mode")
-    SSL_CMD_PXY(ProxyMachineCertificateURI, TAKE1,
+    SSL_CMD_PXY(ProxyStoreURI, TAKE1,
                 "SSL Proxy: uri referring to client certificates "
                 "('file:', 'pkcs11:' - URI of certificate or key)")
     SSL_CMD_PXY(ProxyMachineCertificateFile, TAKE1,

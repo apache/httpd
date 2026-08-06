@@ -1168,9 +1168,9 @@ effect.</p>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLCertificateURI</name>
+<name>SSLStoreURI</name>
 <description>Server certificate and key store</description>
-<syntax>SSLCertificateURI <var>uri</var></syntax>
+<syntax>SSLStoreURI <var>uri</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.5.1 and later, when linked with
@@ -1224,11 +1224,11 @@ at startup time.</p>
 <example><title>Example</title>
 <highlight language="config">
 # Example using a PEM-encoded file.
-SSLCertificateURI "/usr/local/apache2/conf/ssl.crt/server.crt"
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.crt"
 # Example using a PKCS12 file.
-SSLCertificateURI "/usr/local/apache2/conf/ssl.crt/server.p12"
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.p12"
 # Example use of a certificate and private key from a PKCS#11 token:
-SSLCertificateURI "pkcs11:token=My%20Token%20Name;id=45"
+SSLStoreURI "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 
@@ -1238,12 +1238,12 @@ and readable only by <code>root</code>. The URI is not re-read during
 normal operation; a server restart is required for changes to take
 effect.</p>
 
-<note type="warning"><title>Using SSLCertificateFile and SSLCertificateURI
+<note type="warning"><title>Using SSLCertificateFile and SSLStoreURI
 together</title>
 <p>
-You can use both SSLCertificateFile and SSLCertificateURI together, however
+You can use both SSLCertificateFile and SSLStoreURI together, however
 there is no overlap between the mechanisms. A certificate defined by
-SSLCertificateFile will not be matched with a key from SSLCertificateURI.
+SSLCertificateFile will not be matched with a key from SSLStoreURI.
 </p>
 </note>
 
@@ -1316,9 +1316,9 @@ effect.</p>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLCACertificateURI</name>
+<name>SSLTrustURI</name>
 <description>Server CA certificate store for Client Authentication</description>
-<syntax>SSLCACertificateURI <var>uri</var></syntax>
+<syntax>SSLTrustURI <var>uri</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <override>AuthConfig</override>
@@ -1327,21 +1327,26 @@ OpenSSL v3 or later.</compatibility>
 
 <usage>
 <p>
-This directive sets the <em>all-in-one</em> URI where you can assemble the
-Certificates of Certification Authorities (CA) whose <em>clients</em> you deal
-with. These are used for Client Authentication. This can be used alternatively
-and/or additionally to <directive module="mod_ssl">SSLCACertificateFile</directive>
+This directive sets URIs where you can assemble the Certificates of Certification
+Authorities (CA) whose <em>clients</em> you deal with. These are used for Client
+Authentication. This can be used alternatively and/or additionally to
+<directive module="mod_ssl">SSLCACertificateFile</directive>
 or <directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
 # trust certs in a PEM encoded certificate bundle
-SSLCACertificateURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
+SSLTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 # trust all certs in a typical Linux machine
-SSLCACertificateURI "pkcs11:token=System%20Trust"
+SSLTrustURI "pkcs11:token=System%20Trust"
 # trust all certs in the Windows trust store
-SSLCACertificateURI "org.openssl.winstore:"
+SSLTrustURI "org.openssl.winstore:"
 </highlight>
 </example>
+
+<p>
+This directive will also read in Certificate Revocation Lists (CRL) of
+Certification Authorities (CAs) whose clients you deal with. These are used
+to revoke the client certificate on Client Authentication.</p>
 
 <p>This URI is read at server startup, while the server is still running
 as <code>root</code> (before privilege dropping), so it may be owned by
@@ -1369,12 +1374,12 @@ available.</p>
 <p>If none of the directives <directive
 module="mod_ssl">SSLCADNRequestFile</directive>, <directive
 module="mod_ssl">SSLCADNRequestPath</directive>, or <directive
-module="mod_ssl">SSLCADNRequestURI</directive> are given, then the
+module="mod_ssl">SSLTrustRequestURI</directive> are given, then the
 set of acceptable CA names sent to the client is the names of all the
 CA certificates given by the <directive
 module="mod_ssl">SSLCACertificateFile</directive>, <directive
 module="mod_ssl">SSLCACertificatePath</directive>, and <directive
-module="mod_ssl">SSLCACertificateURI</directive> directives; in other
+module="mod_ssl">SSLTrustURI</directive> directives; in other
 words, the names of the CAs which will actually be used to verify the
 client certificate.</p>
 
@@ -1384,7 +1389,7 @@ the client certificate - for example, if the client certificates are
 signed by intermediate CAs. In such cases, <directive
 module="mod_ssl">SSLCADNRequestFile</directive>, <directive
 module="mod_ssl">SSLCADNRequestPath</directive>, and/or <directive
-module="mod_ssl">SSLCADNRequestURI</directive> can be used; the
+module="mod_ssl">SSLTrustRequestURI</directive> can be used; the
 acceptable CA names are then taken from the complete set of
 certificates in the directory and/or file specified by this pair of
 directives.</p>
@@ -1443,10 +1448,10 @@ to take effect.</p>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLCADNRequestURI</name>
+<name>SSLTrustRequestURI</name>
 <description>certificate store of CA Certificates for defining
 acceptable CA names</description>
-<syntax>SSLCADNRequestURI <var>uri</var></syntax>
+<syntax>SSLTrustRequestURI <var>uri</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -1460,12 +1465,12 @@ available.</p>
 <p>If none of the directives <directive
 module="mod_ssl">SSLCADNRequestFile</directive>, <directive
 module="mod_ssl">SSLCADNRequestPath</directive>, or <directive
-module="mod_ssl">SSLCADNRequestURI</directive> are given, then the
+module="mod_ssl">SSLTrustRequestURI</directive> are given, then the
 set of acceptable CA names sent to the client is the names of all the
 CA certificates given by the <directive
 module="mod_ssl">SSLCACertificateFile</directive>, <directive
 module="mod_ssl">SSLCACertificatePath</directive>, and <directive
-module="mod_ssl">SSLCACertificateURI</directive> directives; in other
+module="mod_ssl">SSLTrustURI</directive> directives; in other
 words, the names of the CAs which will actually be used to verify the
 client certificate.</p>
 
@@ -1475,18 +1480,18 @@ the client certificate - for example, if the client certificates are
 signed by intermediate CAs. In such cases, <directive
 module="mod_ssl">SSLCADNRequestFile</directive>, <directive
 module="mod_ssl">SSLCADNRequestPath</directive>, and/or <directive
-module="mod_ssl">SSLCADNRequestURI</directive> can be used; the
+module="mod_ssl">SSLTrustRequestURI</directive> can be used; the
 acceptable CA names are then taken from the complete set of
 certificates in the directory and/or file specified by this pair of
 directives.</p>
 
-<p><directive module="mod_ssl">SSLCADNRequestURI</directive> must
+<p><directive module="mod_ssl">SSLTrustRequestURI</directive> must
 specify an <em>all-in-one</em> certificate store uri containing a
 set of CA certificates.</p>
 
 <example><title>Example</title>
 <highlight language="config">
-SSLCADNRequestURI "file:///usr/local/apache2/conf/ca-names.crt"
+SSLTrustRequestURI "file:///usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
 
@@ -1565,44 +1570,6 @@ SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 <p>This file is read at server startup, while the server is still running
 as <code>root</code> (before privilege dropping), so it may be owned by
 and readable only by <code>root</code>. The file is not re-read during
-normal operation; a server restart is required for changes to take
-effect.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SSLCARevocationURI</name>
-<description>Server CA certificate revocation list store for Client Authentication</description>
-<syntax>SSLCARevocationURI <var>uri</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
-
-<usage>
-<p>
-This directive sets the <em>all-in-one</em> file where you can
-assemble the Certificate Revocation Lists (CRL) of Certification
-Authorities (CA) whose <em>clients</em> you deal with. These are used
-for Client Authentication. This can be used alternatively and/or
-additionally to <directive
-module="mod_ssl">SSLCARevocationFile</directive> and <directive
-module="mod_ssl">SSLCARevocationPath</directive>.</p>
-<example><title>Example</title>
-<highlight language="config">
-SSLCARevocationURI "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
-</highlight>
-</example>
-
-<p>A <var>file:</var> URI pointing at a file of PEM encoded CRLs
-can be used instead of <directive
-module="mod_ssl">SSLCARevocationFile</directive>, and a <var>file:</var>
-URI pointing at a directory of PEM encoded CRLs can be used
-instead of <directive
-module="mod_ssl">SSLCARevocationPath</directive>.
-</p>
-
-<p>This URI is read at server startup, while the server is still running
-as <code>root</code> (before privilege dropping), so it may be owned by
-and readable only by <code>root</code>. The URI is not re-read during
 normal operation; a server restart is required for changes to take
 effect.</p>
 </usage>
@@ -2387,9 +2354,9 @@ SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLProxyMachineCertificateURI</name>
+<name>SSLProxyStoreURI</name>
 <description>Proxy certificate and key stores</description>
-<syntax>SSLProxyMachineCertificateURI <var>uri</var></syntax>
+<syntax>SSLProxyStoreURI <var>uri</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>Available in httpd 2.5.1 and later, when linked with
@@ -2437,11 +2404,11 @@ at startup time.</p>
 <example><title>Example</title>
 <highlight language="config">
 # Example using a PEM-encoded file.
-SSLProxyMachineCertificateURI "/usr/local/apache2/conf/ssl.crt/proxy.pem"
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.pem"
 # Example using a PKCS12 file.
-SSLProxyMachineCertificateURI "/usr/local/apache2/conf/ssl.crt/proxy.p12"
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.p12"
 # Example use of a certificate and private key from a PKCS#11 token:
-SSLProxyMachineCertificateURI "pkcs11:token=My%20Token%20Name;id=45"
+SSLProxyStoreURI "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 
@@ -2469,13 +2436,13 @@ likely fail the SSL/TLS handshake (depending on the remote server
 configuration).</p>
 
 <note type="warning"><title>Using SSLProxyMachineCertificateFile and
-SSLProxyMachineCertificateURI together</title>
+SSLProxyStoreURI together</title>
 <p>
 You can use both SSLProxyMachineCertificateFile and
-SSLProxyMachineCertificateURI together, however there is
+SSLProxyStoreURI together, however there is
 no overlap between the mechanisms. A certificate defined by
 SSLProxyMachineCertificateFile will not be matched with a
-key from SSLProxyMachineCertificateURI.
+key from SSLProxyStoreURI.
 </p>
 </note>
 
@@ -2790,9 +2757,9 @@ SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-serv
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLProxyCACertificateURI</name>
+<name>SSLProxyTrustURI</name>
 <description>Proxy CA certificate store for Remote Server Auth</description>
-<syntax>SSLProxyCACertificateURI <var>uri</var></syntax>
+<syntax>SSLProxyTrustURI <var>uri</var></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
 <compatibility>Available in httpd 2.5.1 and later, when linked with
@@ -2800,7 +2767,7 @@ OpenSSL v3 or later.</compatibility>
 
 <usage>
 <p>
-This directive sets the <em>all-in-one</em> URI where you can assemble the
+This directive sets URIs where you can assemble the
 Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
 with. These are used for Remote Server Authentication. This can be used alternatively
 and/or additionally to
@@ -2808,9 +2775,14 @@ and/or additionally to
 <directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLProxyCACertificateURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
+SSLProxyTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
 </highlight>
 </example>
+<p>
+This directive will also process Certificate Revocation Lists (CRL) of Certification
+Authorities (CAs) whose remote servers you deal with, if they fall within scope.
+These are used to revoke the remote server certificate on Remote Server Authentication.
+</p>
 </usage>
 </directivesynopsis>
 
@@ -2863,32 +2835,6 @@ module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
 <example><title>Example</title>
 <highlight language="config">
 SSLProxyCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl"
-</highlight>
-</example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>SSLProxyCARevocationURI</name>
-<description>Proxy CA certificate revocation list store for Remote Server Auth</description>
-<syntax>SSLProxyCARevocationURI <var>uri</var></syntax>
-<contextlist><context>server config</context> <context>virtual host</context>
-<context>proxy section</context></contextlist>
-<compatibility>Available in httpd 2.5.1 and later, when linked with
-OpenSSL v3 or later.</compatibility>
-
-<usage>
-<p>
-This directive sets the <em>all-in-one</em> URI where you can
-assemble the Certificate Revocation Lists (CRL) of Certification
-Authorities (CA) whose <em>remote servers</em> you deal with. These are used
-for Remote Server Authentication.  This can be
-used alternatively and/or additionally to <directive
-module="mod_ssl">SSLProxyCARevocationFile</directive> and <directive
-module="mod_ssl">SSLProxyCARevocationPath</directive>.</p>
-<example><title>Example</title>
-<highlight language="config">
-SSLProxyCARevocationURI "/usr/local/apache2/conf/ssl.crl/ca-bundle-remote-server.crl"
 </highlight>
 </example>
 </usage>

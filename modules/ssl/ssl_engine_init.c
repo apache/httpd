@@ -339,7 +339,7 @@ static void hash_sni_policy_pk(apr_pool_t *ptemp, apr_md5_ctx_t *hash, modssl_ct
     md5_strarray_hash(ptemp, hash, "key_files:", ctx->pks->key_files);
 }
 
-static void hash_sni_policy_auth(apr_md5_ctx_t *hash, modssl_ctx_t *ctx)
+static void hash_sni_policy_auth(apr_pool_t *ptemp, apr_md5_ctx_t *hash, modssl_ctx_t *ctx)
 {
     modssl_pk_server_t *pks = ctx->pks;
     modssl_auth_ctx_t *a = &ctx->auth;
@@ -347,13 +347,12 @@ static void hash_sni_policy_auth(apr_md5_ctx_t *hash, modssl_ctx_t *ctx)
     md5_fmt_update(hash, "verify_depth:%d", a->verify_depth);
     md5_fmt_update(hash, "verify_mode:%d", a->verify_mode);
 
-    md5_ifstr_update(hash, "ca_name_uri:", pks->ca_name_uri);
+    md5_strarray_hash(ptemp, hash, "trust_request_uris:", pks->trust_request_uris);
     md5_ifstr_update(hash, "ca_name_path:", pks->ca_name_path);
     md5_ifstr_update(hash, "ca_name_file:", pks->ca_name_file);
-    md5_ifstr_update(hash, "ca_cert_uri:", a->ca_cert_uri);
+    md5_strarray_hash(ptemp, hash, "trust_uris:", a->trust_uris);
     md5_ifstr_update(hash, "ca_cert_path:", a->ca_cert_path);
     md5_ifstr_update(hash, "ca_cert_file:", a->ca_cert_file);
-    md5_ifstr_update(hash, "crl_uri:", ctx->crl_uri);
     md5_ifstr_update(hash, "crl_path:", ctx->crl_path);
     md5_ifstr_update(hash, "crl_file:", ctx->crl_file);
     md5_fmt_update(hash, "crl_check_mask:%d", ctx->crl_check_mask);
@@ -393,7 +392,7 @@ static char *create_sni_policy_hash(apr_pool_t *p, apr_pool_t *ptemp,
 
         /* Create the vhost policy hash for comparison later. */
         apr_md5_init(&hash);
-        hash_sni_policy_auth(&hash, sc->server);
+        hash_sni_policy_auth(ptemp, &hash, sc->server);
         if (policy == MODSSL_SNIVH_SECURE)
             hash_sni_policy_pk(ptemp, &hash, sc->server);
         apr_md5_final(digest, &hash);
@@ -1307,6 +1306,26 @@ apr_status_t modssl_CTX_load_verify_store(server_rec *s,
 
             break;
         }
+        case OSSL_STORE_INFO_CRL: {
+
+            X509_CRL *crl;
+
+            if (!(crl = OSSL_STORE_INFO_get0_CRL(info))) {
+                OSSL_STORE_close(sctx);
+                return APR_EGENERAL;
+            }
+            if (X509_STORE_add_crl(store, crl)) {
+
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10601)
+                             "Host %s: Certificate revocation list from URI: %s",
+                             mctx->sc->vhost_id,
+                             modssl_X509_NAME_to_string(ptemp,
+                                     X509_CRL_get_issuer(crl), 0));
+
+            }
+
+            break;
+        }
         }
     }
 
@@ -1361,20 +1380,30 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
      */
 
     if (mctx->auth.ca_cert_file || mctx->auth.ca_cert_path ||
-            mctx->auth.ca_cert_uri) {
+            mctx->auth.trust_uris->nelts) {
 
+        const char *trust_uri;
+
+        int i;
         apr_status_t rv;
 
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                      "Configuring client authentication");
 
-        if ((rv = modssl_CTX_load_verify_store(s, ptemp,
-                mctx->auth.ca_cert_uri, 1, mctx)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(10600)
-                    "Unable to configure verify store "
-                    "for client authentication");
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-            return ssl_die(s);
+        for (i = 0; (i < mctx->auth.trust_uris->nelts) &&
+                    (trust_uri = APR_ARRAY_IDX(mctx->auth.trust_uris, i,
+                                              const char *));
+             i++) {
+
+            if ((rv = modssl_CTX_load_verify_store(s, ptemp,
+                    trust_uri, 1, mctx)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(10600)
+                        "Unable to configure verify store "
+                        "for client authentication: %s", trust_uri);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
+                return ssl_die(s);
+            }
+
         }
 
         if (!modssl_CTX_load_verify_locations(ctx, mctx->auth.ca_cert_file,
@@ -1387,18 +1416,18 @@ static apr_status_t ssl_init_ctx_verify(server_rec *s,
         }
 
         if (mctx->pks && (mctx->pks->ca_name_file || mctx->pks->ca_name_path ||
-                mctx->pks->ca_name_uri)) {
+                mctx->pks->trust_request_uris->nelts)) {
             ca_list = ssl_init_FindCAList(s, ptemp,
                                 mctx->pks->ca_name_file,
                                 mctx->pks->ca_name_path,
-                                mctx->pks->ca_name_uri,
+                                mctx->pks->trust_request_uris,
                                 mctx);
 
         } else {
             ca_list = ssl_init_FindCAList(s, ptemp,
                                 mctx->auth.ca_cert_file,
                                 mctx->auth.ca_cert_path,
-                                mctx->auth.ca_cert_uri,
+                                mctx->auth.trust_uris,
                                 mctx);
         }
 
@@ -1493,99 +1522,6 @@ int modssl_X509_STORE_load_locations(X509_STORE *store,
     return 1;
 }
 
-/*
- * OpenSSL has a X509_STORE_load_store() function, but this
- * function has side effects - it loads both CRLs and trusted
- * CA certificates.
- *
- * An end user reasonably wants to configure a URI pointing at
- * CRLs and not have any surprises if the scope of the URI
- * included trusted CA certificates for whatever reason.
- *
- * As a result we consider CRLs exclusively below.
- */
-
-static APR_INLINE
-apr_status_t modssl_X509_STORE_load_crl(server_rec *s,
-                                        apr_pool_t *ptemp,
-                                        const char *uri,
-                                        int depth,
-                                        modssl_ctx_t *mctx)
-{
-#if MODSSL_HAVE_OPENSSL_STORE
-    OSSL_STORE_CTX *sctx;
-    OSSL_STORE_INFO *info;
-
-    apr_status_t rv = APR_SUCCESS;
-
-    X509_STORE *store = SSL_CTX_get_cert_store(mctx->ssl_ctx);
-
-    ap_assert(store != NULL); /* safe to assume always non-NULL? */
-
-    if (!uri) {
-        return APR_SUCCESS;
-    }
-
-    if ((!(sctx = OSSL_STORE_open_ex(uri, mctx->libctx, NULL, NULL, NULL,
-                NULL, NULL, NULL)))) {
-        return APR_EGENERAL;
-    }
-
-    while (!OSSL_STORE_eof(sctx) && !OSSL_STORE_error(sctx)) {
-
-        if (!(info = OSSL_STORE_load(sctx))) {
-            continue;
-        }
-
-        switch(OSSL_STORE_INFO_get_type(info)) {
-        case OSSL_STORE_INFO_NAME: {
-
-            if (depth > 0) {
-                rv = modssl_X509_STORE_load_crl(s, ptemp,
-                        OSSL_STORE_INFO_get0_NAME(info),
-                        depth - 1, mctx);
-                if (APR_SUCCESS != rv) {
-                    OSSL_STORE_close(sctx);
-                    return rv;
-                }
-            }
-
-            break;
-        }
-        case OSSL_STORE_INFO_CRL: {
-
-            X509_CRL *crl;
-
-            if (!(crl = OSSL_STORE_INFO_get0_CRL(info))) {
-                return APR_EGENERAL;
-            }
-            if (X509_STORE_add_crl(store, crl)) {
-
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10601)
-                             "Host %s: Certificate revocation list from URI: %s",
-                             mctx->sc->vhost_id,
-                             modssl_X509_NAME_to_string(ptemp,
-                                     X509_CRL_get_issuer(crl), 0));
-
-            }
-
-            break;
-        }
-        }
-    }
-
-    OSSL_STORE_close(sctx);
-
-    return rv;
-#else
-    if (!uri) {
-        return APR_SUCCESS;
-    }
-
-    return APR_ENOTIMPL;
-#endif
-}
-
 static apr_status_t ssl_init_ctx_crl(server_rec *s,
                                      apr_pool_t *p,
                                      apr_pool_t *ptemp,
@@ -1612,12 +1548,12 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
      * Configure Certificate Revocation List (CRL) Details
      */
 
-    if (!(mctx->crl_uri || mctx->crl_file || mctx->crl_path)) {
+    if (!(mctx->auth.trust_uris->nelts || mctx->crl_file || mctx->crl_path)) {
         if (crl_check_mode == SSL_CRLCHECK_LEAF ||
             crl_check_mode == SSL_CRLCHECK_CHAIN) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(01899)
                          "Host %s: CRL checking has been enabled, but "
-                         "neither %sCARevocationURI, %sCARevocationFile nor %sCARevocationPath "
+                         "neither %sTrustURI, %sCARevocationFile nor %sCARevocationPath "
                          "is configured", mctx->sc->vhost_id, cfgp, cfgp, cfgp);
             return ssl_die(s);
         }
@@ -1626,14 +1562,6 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01900)
                  "Configuring certificate revocation facility");
-
-    if ((rv = modssl_X509_STORE_load_crl(s, ptemp, mctx->crl_uri, 1, mctx)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s, APLOGNO(10602)
-                     "Host %s: unable to configure X.509 CRL uri "
-                     "for certificate revocation", mctx->sc->vhost_id);
-        ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
-        return ssl_die(s);
-    }
 
     if (!modssl_X509_STORE_load_locations(store,
             mctx->crl_file, mctx->crl_path)) {
@@ -3632,21 +3560,32 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
                                          apr_pool_t *ptemp,
                                          const char *ca_file,
                                          const char *ca_path,
-                                         const char *ca_uri,
+                                         apr_array_header_t *trust_uris,
                                          modssl_ctx_t *mctx)
 {
+    const char *trust_uri;
+    int i;
+
     STACK_OF(X509_NAME) *ca_list = sk_X509_NAME_new_null();;
 
     /*
      * Process CA certificate store uri
      */
-    if (ca_uri &&
-        ssl_init_ca_cert_uri(s, ptemp,
-                             ca_uri, ca_list, 1, mctx) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10616)
-                     "Failed to open Certificate URI `%s'", ca_uri);
-        sk_X509_NAME_pop_free(ca_list, X509_NAME_free);
-        return NULL;
+
+    for (i = 0; (i < trust_uris->nelts) &&
+                (trust_uri = APR_ARRAY_IDX(trust_uris, i,
+                                          const char *));
+         i++) {
+
+        if (trust_uris->nelts &&
+            ssl_init_ca_cert_uri(s, ptemp,
+                                 trust_uri, ca_list, 1, mctx) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10616)
+                         "Failed to open Trust URI `%s'", trust_uri);
+            sk_X509_NAME_pop_free(ca_list, X509_NAME_free);
+            return NULL;
+        }
+
     }
 
     /*
