@@ -508,7 +508,15 @@ class HttpdTestEnv:
         return hv >= self._versiontuple(minv)
 
     def has_h2load(self):
-        return self._h2load != ""
+        if self._h2load == "":
+            return False
+        # config.ini/default may just be the bare command name ("h2load"),
+        # not a verified path -- confirm it actually resolves so
+        # h2load_is_at_least() below doesn't crash with FileNotFoundError
+        # (breaking test collection) when the tool isn't installed.
+        if os.path.dirname(self._h2load):
+            return os.path.isfile(self._h2load) and os.access(self._h2load, os.X_OK)
+        return self.has_tool(self._h2load)
 
     def h2load_is_at_least(self, minv):
         if not self.has_h2load():
