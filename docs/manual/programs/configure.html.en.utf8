@@ -1,34 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>configure - Configure the source tree - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>configure - Configure the source tree</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>The <code class="program"><a href="../programs/configure.html">configure</a></code> script configures the source tree
@@ -40,13 +38,13 @@
     distribution, is for compilation on Unix and Unix-like systems
     only. For other platforms, see the <a href="../platform/">platform</a> documentation.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#env">Environment variables</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Synopsis</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#env">Environment variables</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../install.html">Compiling and Installing</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Synopsis</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Synopsis <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p>You should call the <code class="program"><a href="../programs/configure.html">configure</a></code> script from within the
     root directory of the distribution.</p>
 
@@ -57,9 +55,9 @@
     <code>CFLAGS</code> ...), specify them as
     <code><var>VAR</var>=<var>VALUE</var></code>. See <a href="#env">below</a>
     for descriptions of some of the useful variables.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Options <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
   <ul>
     <li><a href="#configurationoptions">Configuration options</a></li>
     <li><a href="#installationdirectories">Installation directories</a></li>
@@ -68,7 +66,7 @@
     <li><a href="#supportopt">Options for support programs</a></li>
   </ul>
 
-  <h3><a name="configurationoptions" id="configurationoptions">Configuration options</a></h3>
+  <h3 id="configurationoptions">Configuration options</h3>
 
     <p>The following options influence the behavior of
     <code class="program"><a href="../programs/configure.html">configure</a></code> itself.</p>
@@ -114,8 +112,8 @@
     </dl>
   
 
-  <h3><a name="installationdirectories" id="installationdirectories">Installation
-    directories</a></h3>
+  <h3 id="installationdirectories">Installation
+    directories</h3>
 
     <p>These options define the installation directory. The installation
       tree depends on the selected layout.</p>
@@ -238,7 +236,7 @@
     
   
 
-  <h3><a name="systemtypes" id="systemtypes">System types</a></h3>
+  <h3 id="systemtypes">System types</h3>
 
     <p>These options are used to cross-compile the Apache HTTP Server to run on
       another system. In normal cases, when building and running the server on
@@ -262,7 +260,7 @@
     </dl>
   
 
-  <h3><a name="optionalfeatures" id="optionalfeatures">Optional Features</a></h3>
+  <h3 id="optionalfeatures">Optional Features</h3>
 
     <p>These options are used to fine tune the features your HTTP server will
       have.</p>
@@ -460,7 +458,7 @@
     
   
 
-  <h3><a name="packages" id="packages">Optional packages</a></h3>
+  <h3 id="packages">Optional packages</h3>
     <p>These options are used to define optional packages.</p>
 
     <h4><a name="generalpackages" id="generalpackages">General syntax</a></h4>
@@ -556,7 +554,7 @@
     
   
 
-  <h3><a name="supportopt" id="supportopt">Options for support programs</a></h3>
+  <h3 id="supportopt">Options for support programs</h3>
     <dl>
       <dt><code>--enable-static-support</code></dt>
       <dd>Build a statically linked version of the support binaries. This
@@ -650,9 +648,9 @@
       </dl>
     
   
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Environment variables</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">Environment variables <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
   <p>There are some useful environment variables to override the choices made by
     <code class="program"><a href="../programs/configure.html">configure</a></code> or to help it to find libraries and programs with
     nonstandard names or locations.</p>
@@ -679,12 +677,12 @@
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -2600,7 +2600,9 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
+        if (ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1) < 0) {
+            return "Error processing regex captures";
+        }
     }
 
     /* Make this explicit - the "/" root has 0 elements, that is, we
@@ -2685,7 +2687,9 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
+        if (ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1) < 0) {
+            return "Error processing regex captures";
+        }
     }
 
     ap_add_per_url_conf(cmd->server, new_url_conf);
@@ -2776,7 +2780,9 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (cmd->regex) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1);
+        if (ap_regname(cmd->regex, conf->refs, AP_REG_MATCH, 1) < 0) {
+            return "Error processing regex captures";
+        }
     }
 
     ap_add_file_conf(cmd->pool, (core_dir_config *)mconfig, new_file_conf);
@@ -3202,7 +3208,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 {
     /* This one's pretty generic... */
 
-    int offset = (int)(long)cmd->info;
+    apr_size_t offset = (apr_size_t)cmd->info;
     char *struct_ptr = (char *)cmd->server;
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_CONTEXT);

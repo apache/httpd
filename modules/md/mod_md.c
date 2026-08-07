@@ -44,7 +44,6 @@
 #include "md_reg.h"
 #include "md_status.h"
 #include "md_util.h"
-#include "md_version.h"
 #include "md_acme.h"
 #include "md_acme_authz.h"
 
@@ -855,6 +854,9 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     apr_status_t rv = APR_SUCCESS;
     int dry_run = 0, log_level = APLOG_DEBUG;
     md_store_t *store;
+    const char *proxy_url;
+    const char *ca_certs;
+    const char *proxy_ca_certs;
 
     apr_pool_userdata_get(&data, mod_md_init_key, s->process->pool);
     if (data == NULL) {
@@ -875,7 +877,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     }
     else {
         ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
-                     "mod_md (v%s), initializing...", MOD_MD_VERSION);
+                     "mod_md (v%s), initializing...", AP_SERVER_BASEREVISION);
     }
 
     (void)plog;
@@ -893,7 +895,11 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     rv = setup_store(&store, mc, p, s);
     if (APR_SUCCESS != rv) goto leave;
 
-    rv = md_reg_create(&mc->reg, p, store, mc->proxy_url, mc->ca_certs,
+    proxy_url = apr_table_get(mc->env, MD_KEY_PROXY_URL);
+    ca_certs = apr_table_get(mc->env, MD_KEY_CA_CERTS);
+    proxy_ca_certs = apr_table_get(mc->env, MD_KEY_PROXY_CA_CERTS);
+
+    rv = md_reg_create(&mc->reg, p, store, proxy_url, ca_certs, proxy_ca_certs,
                        mc->min_delay, mc->retry_failover,
                        mc->use_store_locks, mc->lock_wait_timeout);
     if (APR_SUCCESS != rv) {
@@ -903,7 +909,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
 
     /* renew on 30% remaining /*/
     rv = md_ocsp_reg_make(&mc->ocsp, p, store, mc->ocsp_renew_window,
-                          AP_SERVER_BASEVERSION, mc->proxy_url,
+                          AP_SERVER_BASEVERSION, proxy_url,
                           mc->min_delay);
     if (APR_SUCCESS != rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10196) "setup ocsp registry");

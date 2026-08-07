@@ -590,7 +590,16 @@ AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
 
     for (i = 0; i < namecount; i++) {
         const char *offset = nametable + i * nameentrysize;
-        int capture = ((offset[0] << 8) + offset[1]);
+        int capture = (((unsigned char)offset[0] << 8) + (unsigned char)offset[1]);
+        
+        /* Sanity check: reject unreasonably large capture group numbers.
+         * PCRE allows up to 65535 groups, but such large numbers would
+         * cause excessive memory allocation. Limit to a reasonable maximum.
+         */
+        if (capture > 1024) {
+            return -1;
+        }
+        
         while (names->nelts <= capture) {
             apr_array_push(names);
         }

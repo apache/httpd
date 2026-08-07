@@ -312,20 +312,22 @@ static apr_status_t cgi_read_stdout(apr_bucket *a, apr_file_t *out,
 {
     char *buf;
     apr_status_t rv;
+    struct cgi_bucket_data *data = a->data;
 
     *str = NULL;
     *len = APR_BUCKET_BUFF_SIZE;
     buf = apr_bucket_alloc(*len, a->list); /* XXX: check for failure? */
 
     rv = apr_file_read(out, buf, len);
-
     if (rv != APR_SUCCESS && rv != APR_EOF) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, data->r, APLOGNO(10599)
+                      "failed reading stdout from script %s",
+                      data->r->filename);
         apr_bucket_free(buf);
         return rv;
     }
 
     if (*len > 0) {
-        struct cgi_bucket_data *data = a->data;
         apr_bucket_heap *h;
 
         /* Change the current bucket to refer to what we read */
@@ -485,7 +487,7 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
 
         location = apr_table_get(r->headers_out, "Location");
 
-        if (location && r->status == 200) {
+        if (location && r->status == HTTP_OK) {
             /* For a redirect whether internal or not, discard any
              * remaining stdout from the script, and log any remaining
              * stderr output, as normal. */
@@ -498,7 +500,7 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
             }
         }
 
-        if (location && location[0] == '/' && r->status == 200) {
+        if (location && location[0] == '/' && r->status == HTTP_OK) {
             /* This redirect needs to be a GET no matter what the original
              * method was.
              */
@@ -514,7 +516,7 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
             ap_internal_redirect_handler(location, r);
             return OK;
         }
-        else if (location && r->status == 200) {
+        else if (location && r->status == HTTP_OK) {
             /* XXX: Note that if a script wants to produce its own Redirect
              * body, it now has to explicitly *say* "Status: 302"
              */

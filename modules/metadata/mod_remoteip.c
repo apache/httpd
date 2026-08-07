@@ -931,6 +931,12 @@ static int remoteip_hook_pre_connection(conn_rec *c, void *csd)
     return OK;
 }
 
+/** Return length for a v2 protocol header. */
+static apr_size_t remoteip_get_v2_len(proxy_header *hdr)
+{
+    return ntohs(hdr->v2.len);
+}
+
 /* Binary format:
  * <sig><cmd><proto><addr-len><addr>
  * sig = \x0D \x0A \x0D \x0A \x00 \x0D \x0A \x51 \x55 \x49 \x54 \x0A
@@ -950,10 +956,19 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     switch (hdr->v2.ver_cmd & 0xF) {
         case 0x00: /* LOCAL command */
             /* keep local connection address for LOCAL */
+            conn_conf->client_addr = c->client_addr;
+            conn_conf->client_ip = c->client_ip;
             return HDR_DONE;
         case 0x01: /* PROXY command */
             switch (hdr->v2.fam) {
                 case 0x11:  /* TCPv4 */
+                    if (remoteip_get_v2_len(hdr) < sizeof(hdr->v2.addr.ip4)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10597)
+                                      "RemoteIPProxyProtocol: address length "
+                                      "%" APR_SIZE_T_FMT " too short for TCPv4",
+                                      remoteip_get_v2_len(hdr));
+                        return HDR_ERROR;
+                    }
                     ret = apr_sockaddr_info_get(&conn_conf->client_addr, NULL,
                                                 APR_INET,
                                                 ntohs(hdr->v2.addr.ip4.src_port),
@@ -971,6 +986,13 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
 
                 case 0x21:  /* TCPv6 */
 #if APR_HAVE_IPV6
+                    if (remoteip_get_v2_len(hdr) < sizeof(hdr->v2.addr.ip6)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10598)
+                                      "RemoteIPProxyProtocol: address length "
+                                      "%" APR_SIZE_T_FMT " too short for TCPv6",
+                                      remoteip_get_v2_len(hdr));
+                        return HDR_ERROR;
+                    }
                     ret = apr_sockaddr_info_get(&conn_conf->client_addr, NULL,
                                                 APR_INET6,
                                                 ntohs(hdr->v2.addr.ip6.src_port),
@@ -1015,12 +1037,6 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     }
 
     return HDR_DONE;
-}
-
-/** Return length for a v2 protocol header. */
-static apr_size_t remoteip_get_v2_len(proxy_header *hdr)
-{
-    return ntohs(hdr->v2.len);
 }
 
 /** Determine if this is a v1 or v2 PROXY header.

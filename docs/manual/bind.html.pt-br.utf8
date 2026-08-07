@@ -1,169 +1,167 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Vinculando a Endereços e Portas - Servidor HTTP Apache Versão 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Vinculando a Endere&ccedil;os e Portas - Servidor HTTP Apache Vers&atilde;o 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
-<p class="apache">Servidor HTTP Apache Versão 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentação</a> &gt; <a href="./">Versão 2.5</a></div><div id="page-content"><div id="preamble"><h1>Vinculando a Endereços e Portas</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="./">Vers&atilde;o 2.5</a></div><div id="page-content"><div id="preamble"><h1>Vinculando a Endere&ccedil;os e Portas</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Línguas Disponíveis: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/bind.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/bind.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/bind.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Configurando o Servidor HTTP Apache para escutar em endereços e portas específicas.</p>
+    <p>Configurando o Servidor HTTP Apache para escutar em endere&ccedil;os e portas espec&iacute;ficas.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Visão Geral</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#reload">Alterando a configuração de Listen no reinício</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Considerações Especiais sobre IPv6</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#protocol">Especificando o protocolo com Listen</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Como Isto Funciona com Hosts Virtuais</a></li>
-</ul><h3>Veja também</h3><ul class="seealso"><li><a href="vhosts/">Hosts Virtuais</a></li><li><a href="dns-caveats.html">Problemas com DNS</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#overview">Vis&atilde;o Geral</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#reload">Alterando a configura&ccedil;&atilde;o de Listen no rein&iacute;cio</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#ipv6">Considera&ccedil;&otilde;es Especiais sobre IPv6</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#protocol">Especificando o protocolo com Listen</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhost">Como Isto Funciona com Hosts Virtuais</a></li>
+</ul><h3>Veja tamb&eacute;m</h3><ul class="seealso"><li><a href="vhosts/">Hosts Virtuais</a></li><li><a href="dns-caveats.html">Problemas com DNS</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Visão Geral</a> <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Vis&atilde;o Geral <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Módulos Relacionados</th><th>Diretrizes Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>M&oacute;dulos Relacionados</th><th>Diretrizes Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
-    <p>Quando o httpd inicia, ele se vincula a algumas portas e endereços na
-    máquina local e aguarda por requisições entrantes. Por padrão,
-    ele monitora todos os endereços na máquina. No entanto, pode ser necessário
-    monitoramento em portas específicas ou somente em
-    endereços selecionados, ou uma combinação dos dois. Isto é muitas vezes combinado com
+    <p>Quando o httpd inicia, ele se vincula a algumas portas e endere&ccedil;os na
+    m&aacute;quina local e aguarda por requisi&ccedil;&otilde;es entrantes. Por padr&atilde;o,
+    ele monitora todos os endere&ccedil;os na m&aacute;quina. No entanto, pode ser necess&aacute;rio
+    monitoramento em portas espec&iacute;ficas ou somente em
+    endere&ccedil;os selecionados, ou uma combina&ccedil;&atilde;o dos dois. Isto &eacute; muitas vezes combinado com
     o recurso de <a href="vhosts/">Host Virtual</a>, que determina como o
-    <code>httpd</code> responde a endereços, nomes de hosts e portas
+    <code>httpd</code> responde a endere&ccedil;os, nomes de hosts e portas
     diferentes.</p>
 
     <p>A diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     informa ao servidor que ele deve aceitar
-    requisições entrantes apenas na(s) porta(s) especificada(s) ou
-    em combinações de endereço e porta. Se apenas um número de porta for
+    requisi&ccedil;&otilde;es entrantes apenas na(s) porta(s) especificada(s) ou
+    em combina&ccedil;&otilde;es de endere&ccedil;o e porta. Se apenas um n&uacute;mero de porta for
     especificado na diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>,
     o servidor monitora a porta informada em todas as interfaces.
-    Se um endereço IP é informado junto com uma porta, o servidor irá monitorar
-    na porta e na interface especificadas. Múltiplas diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> podem ser usadas para
-    especificar vários endereços e portas para monitoramento. O
-    servidor responderá a requisições de quaisquer dos endereços e
+    Se um endere&ccedil;o IP &eacute; informado junto com uma porta, o servidor ir&aacute; monitorar
+    na porta e na interface especificadas. M&uacute;ltiplas diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> podem ser usadas para
+    especificar v&aacute;rios endere&ccedil;os e portas para monitoramento. O
+    servidor responder&aacute; a requisi&ccedil;&otilde;es de quaisquer dos endere&ccedil;os e
     portas listados.</p>
 
-    <p>Por exemplo, para que o servidor aceite conexões tanto na
+    <p>Por exemplo, para que o servidor aceite conex&otilde;es tanto na
     porta 80 quanto na 8000, em todas as interfaces, use:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 80
 Listen 8000</pre>
 </div>
 
-    <p>Para que o servidor aceite conexões na porta 80 para uma interface
+    <p>Para que o servidor aceite conex&otilde;es na porta 80 para uma interface
        e na porta 8000 para outra, use:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 192.0.2.1:80
 Listen 192.0.2.5:8000</pre>
 </div>
 
-    <p>Endereços IPv6 precisam ser envolvidos por colchetes, como no
+    <p>Endere&ccedil;os IPv6 precisam ser envolvidos por colchetes, como no
     exemplo a seguir:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen [2001:db8::a00:20ff:fea7:ccea]:80</pre>
 </div>
 
-    <div class="warning"><p>A sobreposição de diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> resultará em um
-    erro fatal que irá impedir o servidor de iniciar.</p>
+    <div class="warning"><p>A sobreposi&ccedil;&atilde;o de diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> resultar&aacute; em um
+    erro fatal que ir&aacute; impedir o servidor de iniciar.</p>
 
     <div class="example"><p><code>
       (48)Address already in use: make_sock: could not bind to address [::]:80
     </code></p></div>
 
-    <p>Consulte esta <a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">discussão
-    na wiki</a> para mais dicas de soluções de problemas.</p>
+    <p>Consulte esta <a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">discuss&atilde;o
+    na wiki</a> para mais dicas de solu&ccedil;&otilde;es de problemas.</p>
 
 </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="reload" id="reload">Alterando a configuração de Listen no reinício</a> <a title="Link permanente" href="#reload" class="permalink">&para;</a></h2>
+<h2 id="reload">Alterando a configura&ccedil;&atilde;o de Listen no rein&iacute;cio <a title="Link permanente" href="#reload" class="permalink">&para;</a></h2>
     
 
-    <p>Quando o httpd é reiniciado, uma consideração especial precisa ser feita para
-    alterações a diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>. Durante um reinício, o httpd mantém as portas
-    vinculadas (como na configuração original) para evitar a geração de erros
-    "Connection refused" (conexão recusada) para quaisquer novas tentativas de conexão
-    ao servidor. Se as alterações são feitas no conjunto de diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    que conflitam com a configuração antiga, a configuração irá falhar
-    e o servidor irá terminar.</p>
+    <p>Quando o httpd &eacute; reiniciado, uma considera&ccedil;&atilde;o especial precisa ser feita para
+    altera&ccedil;&otilde;es a diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>. Durante um rein&iacute;cio, o httpd mant&eacute;m as portas
+    vinculadas (como na configura&ccedil;&atilde;o original) para evitar a gera&ccedil;&atilde;o de erros
+    "Connection refused" (conex&atilde;o recusada) para quaisquer novas tentativas de conex&atilde;o
+    ao servidor. Se as altera&ccedil;&otilde;es s&atilde;o feitas no conjunto de diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    que conflitam com a configura&ccedil;&atilde;o antiga, a configura&ccedil;&atilde;o ir&aacute; falhar
+    e o servidor ir&aacute; terminar.</p>
 
-    <p>Por exemplo, alterando da configuração:</p>
+    <p>Por exemplo, alterando da configura&ccedil;&atilde;o:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 127.0.0.1:80</pre>
 </div>
 
-    <p>para a configuração a seguir pode falhar, porque a vinculação da porta 80 para
-    todos os endereços conflita com a vinculação da porta 80 somente para
+    <p>para a configura&ccedil;&atilde;o a seguir pode falhar, porque a vincula&ccedil;&atilde;o da porta 80 para
+    todos os endere&ccedil;os conflita com a vincula&ccedil;&atilde;o da porta 80 somente para
     127.0.0.1.</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 80</pre>
 </div>
 
-    <p>Para que tal configuração tenha efeito, é necessário
+    <p>Para que tal configura&ccedil;&atilde;o tenha efeito, &eacute; necess&aacute;rio
     parar e depois iniciar o servidor.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">Considerações Especiais sobre IPv6</a> <a title="Link permanente" href="#ipv6" class="permalink">&para;</a></h2>
+<h2 id="ipv6">Considera&ccedil;&otilde;es Especiais sobre IPv6 <a title="Link permanente" href="#ipv6" class="permalink">&para;</a></h2>
     
 
-    <p>Um número crescente de plataformas implementa IPv6 e o
-    <a class="glossarylink" href="./glossary.html#apr" title="ver glossário">APR</a> suporta IPv6 na maioria delas,
-    permitindo que o httpd aloque soquetes IPv6 e manipule requisições enviadas
-    através de IPv6.</p>
+    <p>Um n&uacute;mero crescente de plataformas implementa IPv6 e o
+    <a class="glossarylink" href="./glossary.html#apr" title="ver gloss&aacute;rio">APR</a> suporta IPv6 na maioria delas,
+    permitindo que o httpd aloque soquetes IPv6 e manipule requisi&ccedil;&otilde;es enviadas
+    atrav&eacute;s de IPv6.</p>
 
-    <p>Um fator complicador para administradores de httpd é definir se
-    um soquete IPv6 pode lidar tanto com conexões IPv4 quanto com
-    IPv6. Lidar com conexões IPv4 com soquete IPv6 usa
-    endereços IPv6 mapeados para IPv4, o que é permitido por padrão na maioria
-    das plataformas mas é proibido por padrão no FreeBSD, NetBSD e
-    OpenBSD, para alinhamento com a política de sistema dessas
-    plataformas. Em sistemas onde isso é proibido por padrão, um
-    parâmetro especial do programa <code class="program"><a href="./programs/configure.html">configure</a></code> pode alterar este
+    <p>Um fator complicador para administradores de httpd &eacute; definir se
+    um soquete IPv6 pode lidar tanto com conex&otilde;es IPv4 quanto com
+    IPv6. Lidar com conex&otilde;es IPv4 com soquete IPv6 usa
+    endere&ccedil;os IPv6 mapeados para IPv4, o que &eacute; permitido por padr&atilde;o na maioria
+    das plataformas mas &eacute; proibido por padr&atilde;o no FreeBSD, NetBSD e
+    OpenBSD, para alinhamento com a pol&iacute;tica de sistema dessas
+    plataformas. Em sistemas onde isso &eacute; proibido por padr&atilde;o, um
+    par&acirc;metro especial do programa <code class="program"><a href="./programs/configure.html">configure</a></code> pode alterar este
     comportamento para o httpd.</p>
 
     <p>Por outro lado, em algumas plataformas como Linux e Tru64, a
-    <strong>única</strong> forma de lidar tanto com IPv6 quanto com IPv4 é usar
-    endereços mapeados. Se o <code>httpd</code> tiver que lidar com conexões IPv4 e IPv6
-    com um mínimo de soquetes, que requerem o uso de endereços IPv6 mapeados
-    para IPv4, especifique a opção <code>--enable-v4-mapped</code> do programa <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
+    <strong>&uacute;nica</strong> forma de lidar tanto com IPv6 quanto com IPv4 &eacute; usar
+    endere&ccedil;os mapeados. Se o <code>httpd</code> tiver que lidar com conex&otilde;es IPv4 e IPv6
+    com um m&iacute;nimo de soquetes, que requerem o uso de endere&ccedil;os IPv6 mapeados
+    para IPv4, especifique a op&ccedil;&atilde;o <code>--enable-v4-mapped</code> do programa <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 
-    <p><code>--enable-v4-mapped</code> é o padrão para todas as plataformas exceto
-    para FreeBSD, NetBSD e OpenBSD, portanto esta é provavelmente a forma como o seu httpd foi
+    <p><code>--enable-v4-mapped</code> &eacute; o padr&atilde;o para todas as plataformas exceto
+    para FreeBSD, NetBSD e OpenBSD, portanto esta &eacute; provavelmente a forma como o seu httpd foi
     compilado.</p>
 
-    <p>Se o httpd tiver que lidar somente com conexões IPv4, independente do que
-    a sua plataforma e APR irão suportar, especifique um endereço IPv4 em todas as
+    <p>Se o httpd tiver que lidar somente com conex&otilde;es IPv4, independente do que
+    a sua plataforma e APR ir&atilde;o suportar, especifique um endere&ccedil;o IPv4 em todas as
     diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, como nos
     exemplos a seguir:</p>
 
@@ -171,63 +169,63 @@ Listen 192.0.2.5:8000</pre>
 Listen 192.0.2.1:80</pre>
 </div>
 
-    <p>Se a sua plataforma suporta e a intenção for lidar com conexões IPv4 e
-    IPv6 em soquetes separados (ou seja, desabilitar endereços mapeados
-    para IPv4), especifique a opção <code>--disable-v4-mapped</code> do programa <code class="program"><a href="./programs/configure.html">configure</a></code>. <code>--disable-v4-mapped</code> é o padrão
+    <p>Se a sua plataforma suporta e a inten&ccedil;&atilde;o for lidar com conex&otilde;es IPv4 e
+    IPv6 em soquetes separados (ou seja, desabilitar endere&ccedil;os mapeados
+    para IPv4), especifique a op&ccedil;&atilde;o <code>--disable-v4-mapped</code> do programa <code class="program"><a href="./programs/configure.html">configure</a></code>. <code>--disable-v4-mapped</code> &eacute; o padr&atilde;o
     no FreeBSD, NetBSD, e OpenBSD.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Especificando o protocolo com Listen</a> <a title="Link permanente" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">Especificando o protocolo com Listen <a title="Link permanente" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>O segundo argumento opcional <var>protocol</var> de
        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-       não é requerido para a maioria das
-       configurações. Se não especificado, <code>https</code> é o padrão para
-       a porta 443 e <code>http</code> é o padrão para todas as outras portas. O
-       protocolo é usado para determinar que módulo deve lidar com uma requisição e
-       para aplicar otimizações de protocolo específicas com a diretiva
+       n&atilde;o &eacute; requerido para a maioria das
+       configura&ccedil;&otilde;es. Se n&atilde;o especificado, <code>https</code> &eacute; o padr&atilde;o para
+       a porta 443 e <code>http</code> &eacute; o padr&atilde;o para todas as outras portas. O
+       protocolo &eacute; usado para determinar que m&oacute;dulo deve lidar com uma requisi&ccedil;&atilde;o e
+       para aplicar otimiza&ccedil;&otilde;es de protocolo espec&iacute;ficas com a diretiva
        <code class="directive"><a href="./mod/core.html#acceptfilter">AcceptFilter</a></code>.</p>
 
-    <p>Somente é necessário definir o protocolo se o servidor estiver monitorando
-       portas não padrão. Por exemplo, para servir um site <code>https</code> na porta 8443:</p>
+    <p>Somente &eacute; necess&aacute;rio definir o protocolo se o servidor estiver monitorando
+       portas n&atilde;o padr&atilde;o. Por exemplo, para servir um site <code>https</code> na porta 8443:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 192.170.2.1:8443 https</pre>
 </div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Como Isto Funciona com Hosts Virtuais</a> <a title="Link permanente" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Como Isto Funciona com Hosts Virtuais <a title="Link permanente" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
-    <p>A diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> não implementa
+    <p>A diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> n&atilde;o implementa
     Hosts Virtuais - ela apenas informa ao
-    servidor principal quais endereços e portas devem ser monitorados. Se nenhuma
+    servidor principal quais endere&ccedil;os e portas devem ser monitorados. Se nenhuma
     diretiva <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    for usada, o servidor se comportará
-    da mesma forma para todas as requisições aceitas. Entretanto,
+    for usada, o servidor se comportar&aacute;
+    da mesma forma para todas as requisi&ccedil;&otilde;es aceitas. Entretanto,
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     pode ser usada para especificar um comportamento diferente
-    para um ou mais dos enredeços e portas. Para implementar um
+    para um ou mais dos enrede&ccedil;os e portas. Para implementar um
     Host Virtual, o servidor primeiro precisa ser informado para monitorar o
-    endereço e a porta que serão usados. Depois, uma
-    seção <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    deve ser criada para o endereço e a porta especificados para definir o
-    comportamento desse host virtual. Observe que se a seção
+    endere&ccedil;o e a porta que ser&atilde;o usados. Depois, uma
+    se&ccedil;&atilde;o <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    deve ser criada para o endere&ccedil;o e a porta especificados para definir o
+    comportamento desse host virtual. Observe que se a se&ccedil;&atilde;o
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    estiver definida para um endereço e uma porta que o
-    servidor não estiver monitorando, o host virutal não poderá ser acessado.</p>
+    estiver definida para um endere&ccedil;o e uma porta que o
+    servidor n&atilde;o estiver monitorando, o host virutal n&atilde;o poder&aacute; ser acessado.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Línguas Disponíveis: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/bind.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/bind.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/bind.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

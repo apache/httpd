@@ -72,9 +72,10 @@
 <section id="documentroot"><title>DocumentRoot</title>
 
     <p>In deciding what file to serve for a given request, httpd's
-    default behavior is to take the <a href="directive-dict.html#Syntax">URL-Path</a> for the request (the part
-    of the URL following the hostname and port) and add it to the end
-    of the <directive module="core">DocumentRoot</directive> specified
+    default behavior is to take the 
+    <a href="directive-dict.html#Syntax">URL-path</a> for the request
+    and add it to the end of the 
+    <directive module="core">DocumentRoot</directive> specified
     in your configuration files. Therefore, the files and directories
     underneath the <directive module="core">DocumentRoot</directive>
     make up the basic document tree which will be visible from the

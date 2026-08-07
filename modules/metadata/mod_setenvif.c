@@ -437,11 +437,6 @@ static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
     const char *err;
     unsigned int flags = 0;
 
-    /* Use restricted ap_expr() parser in htaccess context. */
-    if (cmd->pool == cmd->temp_pool) {
-        flags |= AP_EXPR_FLAG_RESTRICTED;
-    }
-
     /*
      * Determine from our context into which record to put the entry.
      * cmd->path == NULL means we're in server-wide context; otherwise,

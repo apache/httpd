@@ -1,51 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache mod_rewrite Technical Details - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Technical Details</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/tech.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
 <p>This document discusses some of the technical details of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 and URL matching.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">API Phases</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#order">Module Processing Order</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#encoding">URL Encoding and Decoding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Ruleset Processing</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#InternalAPI">API Phases</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#order">Module Processing Order</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#encoding">URL Encoding and Decoding</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#InternalRuleset">Ruleset Processing</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalAPI" id="InternalAPI">API Phases</a> <a title="Permanent link" href="#InternalAPI" class="permalink">&para;</a></h2>
+<h2 id="InternalAPI">API Phases <a title="Permanent link" href="#InternalAPI" class="permalink">&para;</a></h2>
 
     <p>The Apache HTTP Server handles requests in several phases. At
     each of these phases, one or more modules may be called upon to
@@ -86,9 +84,9 @@ and URL matching.</p>
     document for practical details on path stripping, RewriteBase, and
     how to avoid looping.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">Module Processing Order</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">Module Processing Order <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> both
     operate during the URL-to-filename translation phase, but
@@ -103,8 +101,13 @@ and URL matching.</p>
     the URL-path (or returns a redirect), <code>Redirect</code> never sees
     the request.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_module_order.png" alt="Side-by-side comparison of module processing order:           in server context, mod_rewrite runs first in the           URL-to-filename phase then mod_alias runs second; in           per-directory context, mod_alias runs first in the           URL-to-filename phase, then mod_rewrite runs later in the           Fixup phase"><br>
+      <dfn>Figure:</dfn> Module processing order reversal between server and per-directory context
+</p>
+
     <pre class="prettyprint lang-config"># In this configuration, the Redirect is never reached for /old
-# because the RewriteRule matches first — even though
+# because the RewriteRule matches first &mdash; even though
 # the Redirect appears earlier in the file.
 Redirect "/old" "http://example.com/new"
 RewriteRule "^/old" "/other" [L]</pre>
@@ -129,9 +132,9 @@ RewriteRule "^/old" "/other" [L]</pre>
     suffices, use <code>Redirect</code> and don't add rewrite rules
     that might interact with it.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="encoding" id="encoding">URL Encoding and Decoding</a> <a title="Permanent link" href="#encoding" class="permalink">&para;</a></h2>
+<h2 id="encoding">URL Encoding and Decoding <a title="Permanent link" href="#encoding" class="permalink">&para;</a></h2>
 
     <p>Apache httpd unescapes URL-encoded characters in the request URL-path before any
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern
@@ -143,7 +146,7 @@ RewriteRule "^/old" "/other" [L]</pre>
     <p>This means you cannot write a pattern that matches the literal
     URL-encoded form. If you need to distinguish
     <code>/horses%2Fponies</code> from <code>/horses/ponies</code>, use
-    <code>%{THE_REQUEST}</code> in a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> — it preserves the
+    <code>%{THE_REQUEST}</code> in a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> &mdash; it preserves the
     original request line exactly as the client sent it, before any
     decoding:</p>
 
@@ -156,24 +159,24 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
     resulting URL-path for output. Several flags control this behavior:</p>
 
     <ul>
-      <li><a href="flags.html#flag_b">[B]</a> — re-escape
+      <li><a href="flags.html#flag_b">[B]</a> &mdash; re-escape
       backreferences so that special characters captured from the
       decoded URL-path are not interpreted as delimiters in the
       substitution.</li>
 
-      <li><a href="flags.html#flag_bnp">[BNP]</a> — when [B] is
+      <li><a href="flags.html#flag_bnp">[BNP]</a> &mdash; when [B] is
       active, encode spaces as <code>%20</code> rather than
       <code>+</code> (appropriate for path components, not query
       strings).</li>
 
-      <li><a href="flags.html#flag_ne">[NE]</a> — suppress the
+      <li><a href="flags.html#flag_ne">[NE]</a> &mdash; suppress the
       default escaping of special characters in the substitution
       result, allowing literal <code>#</code>, <code>?</code>, and
       other characters to pass through unmodified on external
       redirects.</li>
     </ul>
 
-    <h3><a name="allowencodedslashes" id="allowencodedslashes">AllowEncodedSlashes</a></h3>
+    <h3 id="allowencodedslashes">AllowEncodedSlashes</h3>
     
 
     <p>By default, Apache returns 404 for any URL containing an encoded
@@ -181,11 +184,11 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
     this behavior:</p>
 
     <ul>
-      <li><code>Off</code> (default) — reject <code>%2F</code> with
+      <li><code>Off</code> (default) &mdash; reject <code>%2F</code> with
       404.</li>
-      <li><code>On</code> — allow <code>%2F</code> and decode it to
+      <li><code>On</code> &mdash; allow <code>%2F</code> and decode it to
       <code>/</code> before passing to handlers.</li>
-      <li><code>NoDecode</code> — allow <code>%2F</code> but keep it
+      <li><code>NoDecode</code> &mdash; allow <code>%2F</code> but keep it
       in encoded form, letting the backend application distinguish it
       from a real path separator.</li>
     </ul>
@@ -197,9 +200,9 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
 
     
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalRuleset" id="InternalRuleset">Ruleset Processing</a> <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
+<h2 id="InternalRuleset">Ruleset Processing <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
 
       <p>Now when <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is triggered in these two API phases, it
       reads the configured rulesets from its configuration
@@ -213,7 +216,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
       different.</p>
 
 <p class="figure">
-      <img src="../images/mod_rewrite_fig1.png" alt="Overview of per-request rewrite processing through           per-server and per-directory phases" /><br />
+      <img src="../images/mod_rewrite_fig1.png" alt="Overview of per-request rewrite processing through           per-server and per-directory phases"><br>
       <dfn>Figure 1:</dfn>The per-request rewrite process showing
       both per-server and per-directory rule processing phases
 </p>
@@ -228,7 +231,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
       first, and so the control flow is a little bit long-winded. See
       Figure 2 for more details.</p>
 <p class="figure">
-      <img src="../images/rewrite_process_uri.png" alt="Flow of RewriteRule and RewriteCond matching" /><br />
+      <img src="../images/rewrite_process_uri.png" alt="Flowchart showing per-rule control flow: for each rule,           check pattern against URL, evaluate RewriteCond conditions,           apply substitution if both pass, then check flags to decide           whether to stop or continue to the next rule"><br>
       <dfn>Figure 2:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>First the URL is matched against the
@@ -254,7 +257,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
       <em>Substitution</em>.</p>
 
 <p class="figure">
-      <img src="../images/mod_rewrite_fig2.png" alt="Flow of backreferences between RewriteRule and           RewriteCond directives" /><br />
+      <img src="../images/mod_rewrite_fig2.png" alt="Flow of backreferences between RewriteRule and           RewriteCond directives"><br>
       <dfn>Figure 3:</dfn>The flow of backreferences through a rule.
       RewriteRule Pattern is matched first; its captures ($1...$9)
       are available in all RewriteCond TestStrings. The last matched
@@ -265,15 +268,15 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/tech.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

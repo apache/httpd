@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_headers - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_headers</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -48,18 +46,18 @@
 </div>
 <div id="quickview"><h3>주제</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#order">처리 순서</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#early">이른(early) 처리와 늦은(late) 처리</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#order">처리 순서</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#early">이른(early) 처리와 늦은(late) 처리</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">예제</a></li>
 </ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#header">Header</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requestheader">RequestHeader</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_headers">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_headers">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">처리 순서</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">처리 순서 <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>가 제공하는 지시어는 서버설정의
     거의 모든 장소에서 사용할 수 있으며, <a href="../sections.html">설정 섹션</a>으로 감싸서 지시어의
@@ -69,15 +67,15 @@
     다음 두 지시어를 반대로 적으면 효과가 달라진다.</p>
 
     <div class="example"><p><code>
-      RequestHeader append MirrorID "mirror 12"<br />
+      RequestHeader append MirrorID "mirror 12"<br>
       RequestHeader unset MirrorID
     </code></p></div>
 
     <p>위와 같이 적으면 <code>MirrorID</code> 헤더가 나오지
     않는다. 반대로 적으면 MirrorID 헤더를 "mirror 12"로 설정한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="early" id="early">이른(early) 처리와 늦은(late) 처리</a> <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
+<h2 id="early">이른(early) 처리와 늦은(late) 처리 <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>를 요청 초기나 나중에 적용할
     수 있다. 보통은 내용생성자를 실행하기 직전에 요청 헤더를
     설정하고 응답을 네트웍에 쓸때 응답 헤더를 설정하는 늦은(late)
@@ -96,9 +94,9 @@
     의존할 수 없기때문에 <code>&lt;Directory&gt;</code>나
     <code>&lt;Location&gt;</code>같은 사용장소에서 사용할 수
     없다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">예제</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">예제 <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
@@ -130,7 +128,7 @@
         Joe에게 안녕
 
         <div class="example"><p><code>
-          Header add MyHeader "Hello Joe. It took %D microseconds \<br />
+          Header add MyHeader "Hello Joe. It took %D microseconds \<br>
           for Apache to serve this request."
         </code></p></div>
 
@@ -149,8 +147,8 @@
         <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> 모듈이 필요하다.
 
         <div class="example"><p><code>
-          SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
-          Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader<br />
+          SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br>
+          Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader<br>
        </code></p></div>
 
        <p>HTTP 요청에 <code>MyRequestHeader: value</code> 헤더가
@@ -162,8 +160,8 @@
       </li>
     </ol>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">지시어</a> <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="header"><span id="Header">Header</span> 지시어 <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>HTTP 응답 헤더를 구성한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
@@ -272,8 +270,8 @@
     설정하거나 덮어쓸 수 있다.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">지시어</a> <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="requestheader"><span id="RequestHeader">RequestHeader</span> 지시어 <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>HTTP 요청 헤더를 구성한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
@@ -339,12 +337,12 @@
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_headers.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

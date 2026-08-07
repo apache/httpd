@@ -1,55 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Problèmes liés au DNS avec le serveur HTTP Apache - Serveur HTTP Apache Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Probl&egrave;mes li&eacute;s au DNS avec le serveur HTTP Apache - Serveur HTTP Apache Version 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Problèmes liés au DNS avec le serveur HTTP Apache</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Probl&egrave;mes li&eacute;s au DNS avec le serveur HTTP Apache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/dns-caveats.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/dns-caveats.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Cette page pourrait se résumer ainsi : configurez le
-    serveur HTTP Apache de façon
-    à ce qu'il n'ait pas besoin de résolution DNS pour interpréter les
-    fichiers de configuration. Si httpd doit effectuer des résolutions
-    DNS pour interpréter les fichiers de configuration, votre serveur
-    pourra présenter des problèmes de fiabilité (en d'autres termes,
-    il est possible qu'il refuse de démarrer), ou d'attaques par déni ou
-    usurpation de service (y compris l'attribution de requêtes à un
+    <p>Cette page pourrait se r&eacute;sumer ainsi : configurez le
+    serveur HTTP Apache de fa&ccedil;on
+    &agrave; ce qu'il n'ait pas besoin de r&eacute;solution DNS pour interpr&eacute;ter les
+    fichiers de configuration. Si httpd doit effectuer des r&eacute;solutions
+    DNS pour interpr&eacute;ter les fichiers de configuration, votre serveur
+    pourra pr&eacute;senter des probl&egrave;mes de fiabilit&eacute; (en d'autres termes,
+    il est possible qu'il refuse de d&eacute;marrer), ou d'attaques par d&eacute;ni ou
+    usurpation de service (y compris l'attribution de requ&ecirc;tes &agrave; un
     serveur virtuel autre que le serveur virtuel voulu).</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">Un exemple simple</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#denial">Déni de service</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#main">L'adresse du "serveur principal"</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#tips">Conseils pour éviter ce genre de problème</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#example">Un exemple simple</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#denial">D&eacute;ni de service</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#main">L'adresse du "serveur principal"</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#tips">Conseils pour &eacute;viter ce genre de probl&egrave;me</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="example" id="example">Un exemple simple</a> <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
+<h2 id="example">Un exemple simple <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
     
 
     <pre class="prettyprint lang-config"># Ceci est un exemple de mauvaise configuration ; ne l'utilisez pas comme base
@@ -61,16 +59,16 @@
 
 
     <p>Pour fonctionner correctement, le serveur a absolument besoin de deux
-    informations à propos de chaque serveur virtuel : le nom du serveur
-    défini par la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>, et au moins une adresse IP à
-    laquelle le serveur va se rattacher et répondre. L'exemple ci-dessus
+    informations &agrave; propos de chaque serveur virtuel : le nom du serveur
+    d&eacute;fini par la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>, et au moins une adresse IP &agrave;
+    laquelle le serveur va se rattacher et r&eacute;pondre. L'exemple ci-dessus
     ne comporte pas d'adresse IP, si bien que httpd devra utiliser le
     DNS pour trouver l'adresse IP de <code>www.example.dom</code>. Si pour
-    une raison quelconque, le DNS n'est pas disponible au moment où
-    votre serveur interprète son fichier de configuration, ce serveur
+    une raison quelconque, le DNS n'est pas disponible au moment o&ugrave;
+    votre serveur interpr&egrave;te son fichier de configuration, ce serveur
     virtuel <strong>ne sera pas pris en compte dans la
     configuration</strong>. Il sera incapable de
-    répondre à toute requête pour ce serveur virtuel.</p>
+    r&eacute;pondre &agrave; toute requ&ecirc;te pour ce serveur virtuel.</p>
 
     <p>Supposons que l'adresse de <code>www.example.dom</code> soit
     192.0.2.1, et examinons cet extrait de configuration :</p>
@@ -85,16 +83,16 @@
 
     <p>Cette fois, httpd doit effectuer une recherche DNS inverse pour
     trouver le nom <code>ServerName</code> de ce serveur virtuel. Si
-    cette recherche inverse échoue, le serveur virtuel sera
-    partiellement désactivé. Si le serveur
-    virtuel est à base de nom, il sera en fait totalement désactivé,
-    mais s'il est à base d'adresse IP, il fonctionnera probablement.
-    Cependant, httpd échouera s'il doit générer une URL complète pour
+    cette recherche inverse &eacute;choue, le serveur virtuel sera
+    partiellement d&eacute;sactiv&eacute;. Si le serveur
+    virtuel est &agrave; base de nom, il sera en fait totalement d&eacute;sactiv&eacute;,
+    mais s'il est &agrave; base d'adresse IP, il fonctionnera probablement.
+    Cependant, httpd &eacute;chouera s'il doit g&eacute;n&eacute;rer une URL compl&egrave;te pour
     le serveur qui inclut ce nom de serveur (comme dans le cas d'une
     redirection).</p>
 
-    <p>Voici un extrait de configuration qui permet d'éviter ces deux
-    types de problèmes :</p>
+    <p>Voici un extrait de configuration qui permet d'&eacute;viter ces deux
+    types de probl&egrave;mes :</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.0.2.1&gt;
   ServerName www.example.dom
@@ -102,12 +100,12 @@
   DocumentRoot "/www/example"
 &lt;/VirtualHost&gt;</pre>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="denial" id="denial">Déni de service</a> <a title="Lien permanent" href="#denial" class="permalink">&para;</a></h2>
+<h2 id="denial">D&eacute;ni de service <a title="Lien permanent" href="#denial" class="permalink">&para;</a></h2>
     
 
-    <p>Considérons cet extrait de configuration :</p>
+    <p>Consid&eacute;rons cet extrait de configuration :</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost www.example1.dom&gt;
   ServerAdmin webgirl@example1.dom
@@ -119,62 +117,62 @@
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Supposons que vous ayez assigné 192.0.2.1 à
-    <code>www.example1.dom</code> et 192.0.2.2 à <code>www.example2.dom</code>. En
-    outre, supposons que <code>example1.dom</code> gère son propre DNS. Avec
+    <p>Supposons que vous ayez assign&eacute; 192.0.2.1 &agrave;
+    <code>www.example1.dom</code> et 192.0.2.2 &agrave; <code>www.example2.dom</code>. En
+    outre, supposons que <code>example1.dom</code> g&egrave;re son propre DNS. Avec
     cette configuration, <code>example1.dom</code> sera en mesure de
-    détourner tout trafic destiné à <code>example2.dom</code>. Pour y
-    parvenir, tout ce qu'ils ont à faire consiste à
-    assigner 192.0.2.2 à
-    <code>www.example1.dom</code>. Comme ils gèrent leur propre DNS, vous ne
-    pouvez pas les empêcher de faire pointer l'enregistrement
+    d&eacute;tourner tout trafic destin&eacute; &agrave; <code>example2.dom</code>. Pour y
+    parvenir, tout ce qu'ils ont &agrave; faire consiste &agrave;
+    assigner 192.0.2.2 &agrave;
+    <code>www.example1.dom</code>. Comme ils g&egrave;rent leur propre DNS, vous ne
+    pouvez pas les emp&ecirc;cher de faire pointer l'enregistrement
     <code>www.example1.dom</code> vers l'adresse qu'ils veulent.</p>
 
-    <p>Les requêtes à destination de 192.0.2.2 (y compris toutes celles
-    où l'utilisateur à tapé une URL de la forme
+    <p>Les requ&ecirc;tes &agrave; destination de 192.0.2.2 (y compris toutes celles
+    o&ugrave; l'utilisateur &agrave; tap&eacute; une URL de la forme
     <code>http://www.example2.dom/quelquepart</code>), seront toutes servies
     par le serveur virtuel <code>example1.dom</code>. Une meilleur
-    compréhension de la raison pour laquelle ceci peut se produire
-    nécessite une discussion plus approfondie à propos de la manière
-    dont httpd associe les requêtes entrantes aux différents serveurs
-    virtuels qui vont les servir. Un document de base décrivant ceci <a href="vhosts/details.html">est disponible</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    compr&eacute;hension de la raison pour laquelle ceci peut se produire
+    n&eacute;cessite une discussion plus approfondie &agrave; propos de la mani&egrave;re
+    dont httpd associe les requ&ecirc;tes entrantes aux diff&eacute;rents serveurs
+    virtuels qui vont les servir. Un document de base d&eacute;crivant ceci <a href="vhosts/details.html">est disponible</a>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="main" id="main">L'adresse du "serveur principal"</a> <a title="Lien permanent" href="#main" class="permalink">&para;</a></h2>
+<h2 id="main">L'adresse du "serveur principal" <a title="Lien permanent" href="#main" class="permalink">&para;</a></h2>
     
 
     <p><a href="vhosts/name-based.html">Le support des
-    serveurs virtuels à base de nom</a> oblige httpd à
-    connaître la/les adresse(s) IP de l'hôte sur
-    lequel <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'exécute. Pour obtenir cette
-    adresse, soit il utilise la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> globale (si elle est présente),
-    soit il fait appel à la fonction C <code>gethostname</code> (qui
-    doit renvoyer le même nom que la commande shell "hostname"). Il
+    serveurs virtuels &agrave; base de nom</a> oblige httpd &agrave;
+    conna&icirc;tre la/les adresse(s) IP de l'h&ocirc;te sur
+    lequel <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'ex&eacute;cute. Pour obtenir cette
+    adresse, soit il utilise la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> globale (si elle est pr&eacute;sente),
+    soit il fait appel &agrave; la fonction C <code>gethostname</code> (qui
+    doit renvoyer le m&ecirc;me nom que la commande shell "hostname"). Il
     effectue ensuite une recherche DNS sur cette adresse. Pour le
-    moment, il n'existe aucun moyen d'éviter cette recherche DNS.</p>
+    moment, il n'existe aucun moyen d'&eacute;viter cette recherche DNS.</p>
 
-    <p>Si vous craignez que cette recherche DNS échoue parce que votre
-    serveur DNS est arrêté, vous pouvez insérer le nom d'hôte dans le
-    fichier <code>/etc/hosts</code> (où il est probablement déjà
-    enregistré afin que la machine démarre correctement). Assurez-vous
-    ensuite que la machine est configurée pour utiliser
-    <code>/etc/hosts</code> dans le cas où la recherche DNS échoue.
-    Suivant le système d'exploitation que vous utilisez, vous y
-    parviendrez en éditant <code>/etc/resolv.conf</code>, ou
+    <p>Si vous craignez que cette recherche DNS &eacute;choue parce que votre
+    serveur DNS est arr&ecirc;t&eacute;, vous pouvez ins&eacute;rer le nom d'h&ocirc;te dans le
+    fichier <code>/etc/hosts</code> (o&ugrave; il est probablement d&eacute;j&agrave;
+    enregistr&eacute; afin que la machine d&eacute;marre correctement). Assurez-vous
+    ensuite que la machine est configur&eacute;e pour utiliser
+    <code>/etc/hosts</code> dans le cas o&ugrave; la recherche DNS &eacute;choue.
+    Suivant le syst&egrave;me d'exploitation que vous utilisez, vous y
+    parviendrez en &eacute;ditant <code>/etc/resolv.conf</code>, ou
     <code>/etc/nsswitch.conf</code>.</p>
 
     <p>Si votre serveur n'a aucune autre raison d'effectuer des
-    recherches DNS, vous pouvez définir la variable d'environnement
-    <code>HOSTRESORDER</code> à "local", et vous serez alors en mesure
-    d'exécuter httpd. Tout dépend du système d'exploitation et des
-    bibliothèques de résolution de noms que vous utilisez. Elle affecte
-    aussi les programmes CGI, à moins que vous n'utilisiez
-    <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> pour contrôler l'environnement. Il est
-    conseillé de consulter les pages de manuel ou les FAQs de votre
-    système d'exploitation.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    recherches DNS, vous pouvez d&eacute;finir la variable d'environnement
+    <code>HOSTRESORDER</code> &agrave; "local", et vous serez alors en mesure
+    d'ex&eacute;cuter httpd. Tout d&eacute;pend du syst&egrave;me d'exploitation et des
+    biblioth&egrave;ques de r&eacute;solution de noms que vous utilisez. Elle affecte
+    aussi les programmes CGI, &agrave; moins que vous n'utilisiez
+    <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> pour contr&ocirc;ler l'environnement. Il est
+    conseill&eacute; de consulter les pages de manuel ou les FAQs de votre
+    syst&egrave;me d'exploitation.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">Conseils pour éviter ce genre de problème</a> <a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
+<h2 id="tips">Conseils pour &eacute;viter ce genre de probl&egrave;me <a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
     
 
     <ul>
@@ -187,23 +185,23 @@
       </li>
 
       <li>
-        vérifiez que tous les serveurs virtuels possèdent un nom
+        v&eacute;rifiez que tous les serveurs virtuels poss&egrave;dent un nom
 	<code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>	explicite
       </li>
 
-      <li>créez un serveur virtuel <code>&lt;VirtualHost
-      _default_:*&gt;</code> qui n'a aucune page à servir</li>
+      <li>cr&eacute;ez un serveur virtuel <code>&lt;VirtualHost
+      _default_:*&gt;</code> qui n'a aucune page &agrave; servir</li>
     </ul>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/dns-caveats.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/dns-caveats.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

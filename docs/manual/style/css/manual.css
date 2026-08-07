@@ -1237,4 +1237,9 @@ h2:hover > .permalink {
         overflow-x: auto;
         max-width: 100%;
     }
+
+    /* Bug 70098: hide back-to-top arrows on narrow viewports */
+    div.top {
+        display: none;
+    }
 }

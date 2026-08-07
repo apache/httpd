@@ -1344,11 +1344,6 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
     const char *envvar = arg2;
     unsigned int flags = 0;
 
-    /* Use restricted ap_expr() parser in htaccess context. */
-    if (cmd->pool == cmd->temp_pool) {
-        flags |= AP_EXPR_FLAG_RESTRICTED;
-    }
-
     new = apr_array_push(dconf->env_fixups);
     new->cond = ap_expr_parse_cmd(cmd, arg1, flags, &err, NULL);
     if (err) {

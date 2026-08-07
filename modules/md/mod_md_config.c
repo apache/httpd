@@ -61,7 +61,6 @@ static md_mod_conf_t defmc = {
 #else
     MD_DEFAULT_BASE_DIR,
 #endif
-    NULL,                      /* proxy url for outgoing http */
     NULL,                      /* md_reg_t */
     NULL,                      /* md_ocsp_reg_t */
     80,                        /* local http: port */
@@ -77,13 +76,12 @@ static md_mod_conf_t defmc = {
     NULL,                      /* message cmd */
     NULL,                      /* env table */
     0,                         /* dry_run flag */
-    1,                         /* server_status_enabled */
+    0,                         /* server_status_enabled */
     1,                         /* certificate_status_enabled */
     &def_ocsp_keep_window,     /* default time to keep ocsp responses */
     &def_ocsp_renew_window,    /* default time to renew ocsp responses */
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
-    NULL,                      /* CA cert file to use */
     APR_TIME_C(0),             /* initial cert check delay */
     apr_time_from_sec(MD_SECS_PER_DAY/2), /* default time between cert checks */
     apr_time_from_sec(30),     /* minimum delay for retries */
@@ -127,6 +125,9 @@ static md_srv_conf_t defconf = {
     1,                         /* staple others */
     1,                         /* ACME ARI renewals */
     NULL,                      /* dns01_cmd */
+    NULL,                      /* proxy URL */
+    NULL,                      /* CA cert file to use */
+    NULL,                      /* CA cert file to use for proxy */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
     0,                         /* is_ssl, set during mod_ssl post_config */
@@ -185,6 +186,9 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->staple_others = DEF_VAL;
     sc->ari_renewals = DEF_VAL;
     sc->dns01_cmd = NULL;
+    sc->proxy_url = NULL;
+    sc->ca_certs = NULL;
+    sc->proxy_ca_certs = NULL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -209,6 +213,9 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->staple_others = from->staple_others;
     to->ari_renewals = from->ari_renewals;
     to->dns01_cmd = from->dns01_cmd;
+    to->proxy_url = from->proxy_url;
+    to->ca_certs = from->ca_certs;
+    to->proxy_ca_certs = from->proxy_ca_certs;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -236,6 +243,9 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ari_renewals != DEF_VAL) md->ari_renewals = from->ari_renewals;
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
     if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
+    if (from->proxy_url) md->proxy_url = from->proxy_url;
+    if (from->ca_certs) md->ca_certs = from->ca_certs;
+    if (from->proxy_ca_certs) md->proxy_ca_certs = from->proxy_ca_certs;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -285,6 +295,9 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
     nsc->ari_renewals = (add->ari_renewals != DEF_VAL)? add->ari_renewals : base->ari_renewals;
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
+    nsc->proxy_url = (add->proxy_url)? add->proxy_url : base->proxy_url;
+    nsc->ca_certs = (add->ca_certs)? add->ca_certs : base->ca_certs;
+    nsc->proxy_ca_certs = (add->proxy_ca_certs)? add->proxy_ca_certs : base->proxy_ca_certs;
     nsc->current = NULL;
     
     return nsc;
@@ -865,14 +878,20 @@ static const char *md_config_set_proxy(cmd_parms *cmd, void *arg, const char *va
     md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err;
 
-    if ((err = md_conf_check_location(cmd, MD_LOC_NOT_MD))) {
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
         return err;
     }
     md_util_abs_http_uri_check(cmd->pool, value, &err);
     if (err) {
         return err;
     }
-    sc->mc->proxy_url = value;
+
+    if (inside_md_section(cmd)) {
+        sc->proxy_url = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_PROXY_URL, value);
+    }
+
     (void)arg;
     return NULL;
 }
@@ -1240,12 +1259,41 @@ static const char *md_config_set_activation_delay(cmd_parms *cmd, void *mconfig,
     return NULL;
 }
 
-static const char *md_config_set_ca_certs(cmd_parms *cmd, void *dc, const char *path)
+static const char *md_config_set_ca_certs(cmd_parms *cmd, void *arg, const char *value)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
 
-    (void)dc;
-    sc->mc->ca_certs = path;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+
+    if (inside_md_section(cmd)) {
+        sc->ca_certs = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_CA_CERTS, value);
+    }
+
+    (void)arg;
+    return NULL;
+}
+
+static const char *md_config_set_proxy_ca_certs(cmd_parms *cmd, void *arg, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+
+    if (inside_md_section(cmd)) {
+        sc->proxy_ca_certs = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_PROXY_CA_CERTS, value);
+    }
+
+    (void)arg;
     return NULL;
 }
 
@@ -1387,6 +1435,8 @@ const command_rec md_cmds[] = {
                   "How long to delay activation of new certificates"),
     AP_INIT_TAKE1("MDCACertificateFile", md_config_set_ca_certs, NULL, RSRC_CONF,
                   "Set the CA file to use for connections"),
+    AP_INIT_TAKE1("MDHttpProxyCACertificateFile", md_config_set_proxy_ca_certs, NULL, RSRC_CONF,
+                  "Set the CA file to use for connections to the HTTP(S) proxy"),
     AP_INIT_TAKE12("MDExternalAccountBinding", md_config_set_eab, NULL, RSRC_CONF,
                   "Set the external account binding keyid and hmac values to use at CA"),
     AP_INIT_TAKE1("MDRetryDelay", md_config_set_min_delay, NULL, RSRC_CONF,
@@ -1471,8 +1521,6 @@ const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
             return sc->ca_proto? sc->ca_proto : defconf.ca_proto;
         case MD_CONFIG_BASE_DIR:
             return sc->mc->base_dir;
-        case MD_CONFIG_PROXY:
-            return sc->mc->proxy_url;
         case MD_CONFIG_CA_AGREEMENT:
             return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
         case MD_CONFIG_NOTIFY_CMD:

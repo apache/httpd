@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933854 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,145 +27,243 @@
   <title>Standards applicables</title>
 
   <summary>
-    <p>Cette page documente tous les standards applicables que suit le
-    serveur HTTP Apache, accompagnés d'une brève description.</p>
+    <p>Cette page documente les standards applicables que le serveur HTTP Apache
+    implémente ou suit, avec une brève description.</p>
 
     <p>Pour compléter les informations fournies ci-dessous, vous pouvez
     consulter les ressources suivantes :</p>
 
     <ul>
       <li>
-        <a href="https://www.skrb.org/ietf/http_errata.html">
-        https://www.skrb.org/ietf/http_errata.html</a> - Corrections de la
-	spécification HTTP/1.1
-      </li>
-      <li>
-        <a href="https://www.rfc-editor.org/errata.php">
-        https://www.rfc-editor.org/errata.php</a> - Corrections des RFCs
+        <a href="https://www.rfc-editor.org/errata.php">Corrections des RFCs</a>
+	— Corrections de RFCs publiées
       </li>
       <li>
         <a href="https://httpwg.org/specs/">
-        https://httpwg.org/specs/</a> - Une liste
-	précompilée des RFCs en rapport avec HTTP
+        Spécifications du groupe de travail HTTP</a> - Une liste
+	précompilée des RFCs et ébauches en rapport avec HTTP
       </li>
     </ul>
 
-    <note type="warning"><title>Avertissement</title>
-    <p>Ce document n'est pas encore finalisé.</p>
-    </note>
-
   </summary>
 
-  <section id="http_recommendations"><title>Recommandations HTTP</title>
+  <section id="http_recommendations"><title>HTTP</title>
 
     <p>Sans tenir compte des modules compilés et utilisés, Apache en
-    tant que serveur web de base respecte les recommandations IETF
+    tant que serveur web de base respecte les normes IETF
     suivantes :</p>
 
     <dl>
+      <dt><rfc>9110</rfc>
+      (Série de standards) — Sémantique de HTTP</dt>
+
+      <dd>Cette norme définit la sémantique partagée par toutes les versions de
+      HTTP : méthodes, codes d’état, champs d’en-tête et de fin de page,
+      négociation sur le contenu et métadonnées des messages. Elle rend
+      obsolètes les RFC 7231, 7232, 7233, 7235 et 7694.</dd>
+
+      <dt><rfc>9111</rfc>
+      (Série de standards) — Mise en cache HTTP</dt>
+
+      <dd>Cette norme définit les caches HTTP et les champs d’en-tête HTTP
+      associés qui contrôlent le comportement du cache ou indiquent des réponses
+      pouvant être mises en cache. Elle rend obsolète la RFC 7234.</dd>
+
+      <dt><rfc>9112</rfc>
+      (Série de standards) — HTTP/1.1</dt>
+
+      <dd>Cette norme définit la syntaxe des messages et la gestion des
+      connexions avec HTTP/1.1. Elle rend obsolète la RFC 7230.</dd>
+
+      <dt><rfc>9113</rfc>
+      (Série de standards) — HTTP/2</dt>
+
+      <dd>Cette norme définit et optimise l’expression de la sémantique de HTTP
+      en utilisant le cadrage binaire (binary framing) et des flux multiplexés
+      sur une seule connexion TCP. Elle rend obsolètes les RFC 7540 et 8740.</dd>
+
+      <dt><rfc>9114</rfc>
+      (Série de standards) — HTTP/3</dt>
+
+      <dd>Cette norme définit le mappage de la sémantique HTTP sur QUIC, tout en
+      fournissant des fonctionnalités similaires à HTTP/2 avec une latence
+      réduite.</dd>
+    
       <dt><rfc>1945</rfc>
-      (Informations)</dt>
+      (Informations) — HTTP/1.0</dt>
 
-      <dd>Le Protocole de Transfert Hypertexte (Hypertext Transfer
-      Protocol - HTTP) est un protocole de niveau application avec la
-      clarté et la vitesse nécessaires pour les systèmes d'informations
-      distribués, collaboratifs et hypermédia. Cette RFC documente le
-      protocole HTTP/1.0.</dd>
-
-      <dt><rfc>2616</rfc>
-      (Série de standards)</dt>
-
-      <dd>Le Protocole de Transfert Hypertexte (Hypertext Transfer
-      Protocol - HTTP) est un protocole de niveau application pour les
-      systèmes d'informations distribués, collaboratifs et hypermédia.
-      Cette RFC documente le protocole HTTP/1.1.</dd>
-
-      <dt><rfc>2396</rfc>
-      (Série de standards)</dt>
-
-      <dd>Un Identificateur de Ressource Uniforme (Uniform Resource
-      Identifier - URI) est une chaîne de caractères compacte permettant
-      d'identifier une ressource physique ou abstraite.</dd>
-
-      <dt><rfc>4346</rfc>
-      (Série de standards)</dt>
-
-      <dd>Le protocole TLS permet l'utilisation de communications
-      sécurisées sur l'Internet. Il fournit le chiffrement, et a été
-      conçu pour se prémunir contre l'interception, la modification et
-      la falsification de messages.</dd>
+      <dd>La spécification HTTP/1.0 originale. Conservée à titre de référence
+      historique ; httpd accepte encore les requêtes HTTP/1.0.</dd>
     </dl>
 
   </section>
 
-  <section id="html_recommendations"><title>Recommandations HTML</title>
-
-    <p>En ce qui concerne le langage HTML, Apache respecte les
-    recommandations IETF et W3C suivantes :</p>
+  <section id="uri"><title>URIs</title>
 
     <dl>
-      <dt><rfc>2854</rfc>
-      (Informations)</dt>
+      <dt><rfc>3986</rfc>
+      (Série de standards) — Uniform Resource Identifier (URI): Syntaxe
+      générique</dt>
 
-      <dd>Ce document résume l'historique du développement de HTML, et
-      définit le type MIME "text/html" en pointant les recommandations
-      W3C correspondantes.</dd>
+      <dd>La syntaxe générique et les règles de résolution des URIs. Cette norme
+      rend obsolète la RFC 2396.</dd>
 
-      <dt><a href="http://www.w3.org/TR/html401">Spécification HTML
-      4.01</a>
-      (<a
-      href="http://www.w3.org/MarkUp/html4-updates/errata">Corrections
-      Erreurs</a>)
-      </dt>
+      <dt><rfc>6570</rfc>
+      (Série de standards) — Modèle d’URI</dt>
 
-      <dd>Cette spécification définit le Langage à Balises HyperTexte
-      (HyperText Markup Language - HTML), le langage de publication du
-      World Wide Web. Elle définit HTML 4.01, qui est une sous-version
-      de HTML 4.</dd>
-
-      <dt><a href="http://www.w3.org/TR/REC-html32">Référence HTML
-      3.2</a></dt>
-
-      <dd>Le langage à Balises HyperTexte (HyperText Markup Language -
-      HTML) est un langage à balises simple permettant de créer des
-      documents hypertextes portables. Les documents HTML sont aussi des
-      documents SGML.</dd>
-
-      <dt><a href="http://www.w3.org/TR/xhtml11/">XHTML 1.1 -
-      XHTML sous forme de modules</a>
-      (<a href="http://www.w3.org/MarkUp/2009/xhtml11-2nd-edition-errata.html">Corrections
-      d'erreurs</a>)
-      </dt>
-
-      <dd>Cette recommandation définit un nouveau type de document XHTML
-      basé sur le cadre de développement des modules et les modules
-      définis dans la modularisation de XHTML.</dd>
-
-      <dt><a href="http://www.w3.org/TR/xhtml1">XHTML 1.0, le Langage à
-      Balises Hypertexte Extensible (Extensible HyperText Markup
-      Language) - Seconde édition</a>
-      (<a href="http://www.w3.org/2002/08/REC-xhtml1-20020801-errata/">Corrections
-      d'erreurs</a>)
-      </dt>
-
-      <dd>Cette spécification définit la seconde édition de XHTML 1.0,
-      une reformulation de HTML 4 en tant qu'application XML 1.0, ainsi
-      que trois DTDs correspondant à celles définies par HTML 4.</dd>
+      <dd>Cette norme définit une séquence compacte de caractères pour décrire
+      une gamme d’URIs à l’aide d’un développement de variable.</dd>
     </dl>
 
   </section>
 
-  <section id="authentication"><title>Authentification</title>
+  <section id="tls"><title>TLS/SSL</title>
 
-    <p>En ce qui concerne les différentes méthodes d'authentification,
-    Apache respecte les recommandations IETF suivantes :</p>
+    <p>Les normes suivantes s’appliquent lorsque <module>mod_ssl</module> est
+    activé :</p>
 
     <dl>
-      <dt><rfc>2617</rfc>
-      (Série de standards)</dt>
+      <dt><rfc>8446</rfc>
+      (Série de standards) — TLS 1.3</dt>
 
-      <dd>"HTTP/1.0", y compris la spécification d'un protocole
-      d'authentification et de contrôle d'accès basique.</dd>
+      <dd>La version actuelle du protocole TLS (Transport Layer Security)
+      assurant la confidentialité des communications sur l’Internet. Cette norme
+      rend obsolète la RFC 5246 (texte de la spécification de TLS 1.2).</dd>
+
+      <dt><rfc>5246</rfc>
+      (Série de standards) — TLS 1.2</dt>
+
+      <dd>La version précédente de TLS largement déployée. Encore prise en
+      charge par httpd pour une compatibilité avec les clients anciens.</dd>
+
+      <dt><rfc>6960</rfc>
+      (Série de standards) — OCSP</dt>
+
+      <dd>Le protocole OCSP (Online Certificate Status Protocol) utilisé pour
+      vérifier l’état de révocation des certificats en temps réel (l’agrafage
+      OCSP - OCSP stapling - à l’aide de la directive <directive
+      module="mod_ssl">SSLStaplingCache</directive>).</dd>
+
+      <dt><rfc>6066</rfc>
+      (Série de standards) — TLS Extensions</dt>
+
+      <dd>Cette norme définit les extensions de TLS, dont SNI (Server Name
+      Indication) qu’utilise httpd pour les serveurs virtuels à base de nom sur
+      TLS.</dd>
+    </dl>
+
+  </section>
+
+  <section id="authentication"><title>Authentication</title>     
+
+      <p>À propos des différentes méthodes d’authentification :</p>
+
+      <dl>
+      <dt><rfc>7617</rfc>
+      (Série de standards) — Le schéma d’authentification « basique » de HTTP</dt>
+
+      <dd>L’authentification basique de HTTP qui transmet les données
+      d’authentification sous la forme de paires identifiant utilisateur/mot de
+      passe encodées en Base64. Cette norme rend obsolète la RFC 2617 (la
+      portion basique de auth).</dd>
+
+      <dt><rfc>7616</rfc>
+      (Série de standards) — L’authentification de l’accès par condensés de HTTP</dt>
+
+      <dd>L’authentification par condensés de HTTP qui fournit un mécanisme de
+      question-réponse qui évite de transmettre le mot de passe en clair. Cette
+      norme rend obsolète la RFC 2617 (portion condensé de auth).</dd>
+    </dl>
+
+  </section>
+
+  <section id="content_negotiation"><title>Négociation de contenu et compression</title>
+
+    <dl>
+      <dt><rfc section="12">9110</rfc> - Négociation de contenu</dt>
+
+      <dd>La négociation de contenu proactive et réactive à l’aide des champs
+      d’en-tête Accept, Accept-Language, Accept-Encoding et Accept-Charset.</dd>
+
+      <dt><rfc>7932</rfc>
+      (Informations) — Brotli Compressed Data Format</dt>
+
+      <dd>Cette norme définit l’algorithme de compression Brotli pris en charge
+      par le module <module>mod_brotli</module>.</dd>
+    </dl>
+
+  </section>
+
+  <section id="proxy"><title>Mandat et redirection</title>  
+
+    <p>Quand <module>mod_proxy</module> est activé :</p>
+
+    <dl>
+      <dt><rfc>7239</rfc>
+      (Série de standards) — L’extension HTTP Forwarded</dt>
+
+      <dd>Cette norme définit le champ d’en-tête Forwarded pour le transport des
+      informations à propos de la face côté client des serveurs mandataires.</dd>
+
+      <dt><rfc>9209</rfc>
+      (Série de standards) — Le champ d’en-tête de réponse HTTP Proxy-Status</dt>
+
+      <dd>Cette norme définit un mécanisme permettant aux mandataires de
+      communiquer les détails de la gestion intermédiaire au client.</dd>
+
+      <dt><rfc>9220</rfc>
+      (Série de standards) — « Bootstrapping » des WebSockets avec HTTP/2</dt>
+
+      <dd>Cette norme définit un mécanisme permettant d’utiliser le protocole
+      WebSocket sur un seul flux HTTP/2.</dd>
+    </dl>
+
+  </section>
+
+  <section id="websocket"><title>WebSocket</title>
+
+    <dl>
+      <dt><rfc>6455</rfc>
+      (Série de standards) — The WebSocket Protocol</dt>
+
+      <dd>Cette norme définit le protocole WebSocket qui permet une
+      communication bidirectionnelle entre un client et un serveur sur une seule
+      connexion TCP. Il est pris en charge par le module
+      <module>mod_proxy_wstunnel</module>.</dd>
+    </dl>
+
+  </section>
+
+  <section id="cgi"><title>CGI</title>
+
+    <dl>
+      <dt><rfc>3875</rfc>
+      (Informations) — CGI (Common Gateway Interface) Version 1.1</dt>
+
+      <dd>Cette norme définit l’interface CGI qui permet d’exécuter des
+      programmes externes sur un serveur web. Implémenté par les modules
+      <module>mod_cgi</module> et <module>mod_cgid</module>.</dd>
+    </dl>
+
+  </section>
+
+  <section id="webdav"><title>WebDAV</title>
+
+    <p>Quand <module>mod_dav</module> est activé :</p>
+
+    <dl>
+      <dt><rfc>4918</rfc>
+      (Série de standards) — Extensions HTTP pour WebDav (Web Distributed
+      Authoring and Versioning)</dt>
+
+      <dd>Cette norme définit des extensions à HTTP pour les opérations de
+      création distribuée. Elle rend obsolète la RFC 2518.</dd>
+
+      <dt><rfc>3744</rfc>
+      (Série de standards) — Protocole de contrôle d’accès pour WebDAV (Web
+      Distributed Authoring and Versioning)</dt>
+
+      <dd>Cette norme définit des extensions de contrôle d’accès pour WebDAV.</dd>
 
     </dl>
 
@@ -175,11 +272,11 @@
   <section id="language_country_codes"><title>Codes de langages et de
   pays</title>
 
-    <p>Les liens suivants fournissent des informations à propos des
-    codes de langages et de pays aux normes ISO ou autres :</p>
+    <p>Les codes de langages et de pays utilisés dans la négociation de contenu
+    :</p>
 
     <dl>
-      <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
+      <dt><a href="https://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
 
       <dd>ISO 639 fournit deux jeux de codes de langages permettant de
       représenter les noms des langues ; le premier est
@@ -187,31 +284,25 @@
       présenté dans le lien ci-dessus), est un jeu de codes sur trois
       lettres (639-2).</dd>
 
-      <dt><a href="http://www.iso.org/iso/country_codes">
+      <dt><a href="https://www.iso.org/iso-3166-country-codes.html">
       ISO 3166-1</a></dt>
 
-      <dd>Ce document présente les noms de pays (les noms raccourcis
-      officiels en anglais) dans l'ordre alphabétique, tels qu'ils sont
-      présentés dans la norme ISO 3166-1 et les éléments de codes
-      correspondants de la norme ISO 3166-1-alpha-2.</dd>
+      <dd>Noms des pays et éléments de code correspondants à deux et trois
+      caractères.</dd>
 
-      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a> (Les
-      meilleurs pratiques courantes), <rfc>3066</rfc></dt>
+      <dt><rfc>5646</rfc>
+      (Meilleure pratique actuelle) — Symboles pour identifier les langues</dt>
 
-      <dd>Ce document décrit une balise de langue permettant de
-      spécifier la langue utilisée dans un objet contenant des
-      informations, la manière d'enregistrer des valeurs à utiliser dans
-      cette balise de langue, et une méthode pour comparer les balises
-      de langue de ce style.</dd>
+      <dd>Cette norme décrit la structure et l’enregistrement des symboles de
+      langue utilisés dans la négociation de contenu de HTTP (Accept-Language,
+      Content-Language). Elle rend obsolète la RFC 3066.</dd>
 
       <dt><rfc>3282</rfc>
       (Série de standards)</dt>
 
-      <dd>Ce document définit une en-tête "Content-language:" permettant
-      de spécifier la langue d'un élément possédant des en-têtes du
-      style RFC 822, comme les portions de corps MIME ou les documents
-      Web, et un en-tête "Accept-Language:" permettant de spécifier des
-      préférences en matière de langue.</dd>
+      <dd>Cette norme définit les champs d’en-tête Content-Language and
+      Accept-Language qui indiquent les préférences en matière de langue dans
+      les messages HTTP.</dd>
     </dl>
 
   </section>

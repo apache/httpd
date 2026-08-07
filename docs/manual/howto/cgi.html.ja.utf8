@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache Tutorial: CGI による動的コンテンツ - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: CGI による動的コンテンツ</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -36,17 +34,17 @@
             最近更新された内容を見るには英語版をご覧下さい。
         </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#writing">CGI プログラムを書く</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">しかし、まだ動かない !</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">裏で何が起こっているのか?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#libraries">CGI モジュール/ライブラリ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">更なる情報</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#intro">はじめに</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#writing">CGI プログラムを書く</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">しかし、まだ動かない !</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#behindscenes">裏で何が起こっているのか?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#libraries">CGI モジュール/ライブラリ</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moreinfo">更なる情報</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">はじめに</a> <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
+<h2 id="intro">はじめに <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
@@ -58,9 +56,9 @@
     コンテンツを置くための最も簡単で一般的な方法です。このドキュメントは、
     Apache ウェブサーバで CGI を設定し、
     CGI プログラムを書き始めるための入門書となるでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">CGI を許可するように Apache を設定する</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
+<h2 id="configuring">CGI を許可するように Apache を設定する <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>CGI プログラムを正しく動作させるには、CGI を許可するように
@@ -79,7 +77,7 @@
       LoadModule cgi_module modules/mod_cgi.so
     </code></p></div></div>
 
-    <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
+    <h3 id="scriptalias">ScriptAlias</h3>
       
 
       <p><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
@@ -123,7 +121,7 @@
       そうでなければ、Apache はエラーメッセージを返します。</p>
     
 
-    <h3><a name="nonscriptalias" id="nonscriptalias">ScriptAlias ディレクトリ外の CGI</a></h3>
+    <h3 id="nonscriptalias">ScriptAlias ディレクトリ外の CGI</h3>
       
 
       <p>CGI プログラムは、セキュリティ上の理由から 
@@ -145,7 +143,7 @@
       <code>ExecCGI</code> が指定されていなければなりません。</p>
     
 
-    <h3><a name="options" id="options">CGI の実行を可能にするために Options を明示的に使用する</a></h3>
+    <h3 id="options">CGI の実行を可能にするために Options を明示的に使用する</h3>
       
 
       <p>サーバのメインの設定ファイル中で <code class="directive"><a href="../mod/core.html#options">Options</a></code>
@@ -153,9 +151,9 @@
       CGI の実行を許可するように指定することができます:</p>
 
       <div class="example"><p><code>
-        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br />
+        &lt;Directory /usr/local/apache2/htdocs/somedir&gt;<br>
         <span class="indent">
-          Options +ExecCGI<br />
+          Options +ExecCGI<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
@@ -173,7 +171,7 @@
       </code></p></div>
     
 
-    <h3><a name="htaccess" id="htaccess">.htaccess ファイル</a></h3>
+    <h3 id="htaccess">.htaccess ファイル</h3>
       
 
       <p><a href="htaccess.html"><code>.htaccess</code> チュートリアル</a>
@@ -181,17 +179,17 @@
       使えるようにするかを説明しています。</p>
     
 
-    <h3><a name="userdir" id="userdir">User ディレクトリ</a></h3>
+    <h3 id="userdir">User ディレクトリ</h3>
       
 
       <p><code>.cgi</code> で終わるすべてのファイルに対して CGI プログラムの
       実行を許可するには、以下の設定を使用できます。</p>
 
       <div class="example"><p><code>
-      &lt;Directory /home/*/public_html&gt;<br />
+      &lt;Directory /home/*/public_html&gt;<br>
       <span class="indent">
-        Options +ExecCGI<br />
-        AddHandler cgi-script .cgi<br />
+        Options +ExecCGI<br>
+        AddHandler cgi-script .cgi<br>
       </span>
       &lt;/Directory&gt;
       </code></p></div>
@@ -201,18 +199,18 @@
       以下のようなものを使います。</p>
 
       <div class="example"><p><code>
-      &lt;Directory /home/*/public_html/cgi-bin&gt;<br />
+      &lt;Directory /home/*/public_html/cgi-bin&gt;<br>
       <span class="indent">
-        Options ExecCGI<br />
-        SetHandler cgi-script<br />
+        Options ExecCGI<br>
+        SetHandler cgi-script<br>
       </span>
       &lt;/Directory&gt;
       </code></p></div>
 
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">CGI プログラムを書く</a> <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
+<h2 id="writing">CGI プログラムを書く <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
     
 
     <p>「通常の」プログラミングと CGI
@@ -235,7 +233,7 @@
     <p>これら二点以外では、CGI プログラムを書くことは、
     あなたが書いている他のプログラムとよく似ているでしょう。</p>
 
-    <h3><a name="firstcgi" id="firstcgi">最初の CGI プログラム</a></h3>
+    <h3 id="firstcgi">最初の CGI プログラム</h3>
       
 
       <p>次に示すのは、ブラウザに 1 行印字する CGI
@@ -243,8 +241,8 @@
       というファイルに保存し、それを <code>cgi-bin</code>
       ディレクトリに置いてください。</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl<br />
-print "Content-type: text/html\n\n";<br />
+      <pre class="prettyprint lang-perl">#!/usr/bin/perl<br>
+print "Content-type: text/html\n\n";<br>
 print "Hello, World.";</pre>
 
 
@@ -272,9 +270,9 @@ print "Hello, World.";</pre>
       しかし、これがうまく動けば、
       他のどのようなものでも動かすことができるようになります。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">しかし、まだ動かない !</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">しかし、まだ動かない ! <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>ウェブから CGI プログラムへのアクセスを行なったとき、
@@ -311,7 +309,7 @@ print "Hello, World.";</pre>
       以下の各章でチェックしてみてください。</dd>
     </dl>
 
-    <h3><a name="permissions" id="permissions">ファイルのパーミッション</a></h3>
+    <h3 id="permissions">ファイルのパーミッション</h3>
       
 
       <p>サーバはあなたの権限で実行されていないのを忘れないように。
@@ -331,7 +329,7 @@ print "Hello, World.";</pre>
 
     
 
-    <h3><a name="pathinformation" id="pathinformation">パス情報と環境</a></h3>
+    <h3 id="pathinformation">パス情報と環境</h3>
       
 
       <p>コマンドラインからプログラムを実行するとき、
@@ -360,7 +358,7 @@ print "Hello, World.";</pre>
       <p>また、CGI プログラムが他の<a href="#env">環境変数</a>に依存している場合は、その環境変数が
       Apache から渡されるようにする必要があります。</p>
 
-    <h3><a name="syntaxerrors" id="syntaxerrors">プログラムエラー</a></h3>
+    <h3 id="syntaxerrors">プログラムエラー</h3>
       
 
       <p>CGI
@@ -371,7 +369,7 @@ print "Hello, World.";</pre>
       例えば、以下を実行してみてください:</p>
 
       <div class="example"><p><code>
-      cd /usr/local/apache2/cgi-bin<br />
+      cd /usr/local/apache2/cgi-bin<br>
       ./first.pl
       </code></p></div>
 
@@ -385,7 +383,7 @@ print "Hello, World.";</pre>
       上記の <a href="#writing">CGI プログラムを書く</a> を読んでください。</p>
     
 
-    <h3><a name="errorlogs" id="errorlogs">エラーログ</a></h3>
+    <h3 id="errorlogs">エラーログ</h3>
       
 
       <p>エラーログは友達です。
@@ -397,7 +395,7 @@ print "Hello, World.";</pre>
       迅速に解決されるということが分かるでしょう。</p>
     
 
-    <h3><a name="suexec" id="suexec">Suexec</a></h3>
+    <h3 id="suexec">Suexec</h3>
       
 
       <p><a href="../suexec.html">suexec</a> サポートプログラムは
@@ -420,9 +418,9 @@ print "Hello, World.";</pre>
       ログファイルの位置を調べ、そのログファイルを使ってポリシー違反を
       見つけてください。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">裏で何が起こっているのか?</a> <a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
+<h2 id="behindscenes">裏で何が起こっているのか? <a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
     
 
     <p>CGI プログラミングに習熟すると、
@@ -432,7 +430,7 @@ print "Hello, World.";</pre>
     を印字するプログラムを書くことはおおいに結構ですが、
     それは特に有益ではありません。</p>
 
-    <h3><a name="env" id="env">環境変数</a></h3>
+    <h3 id="env">環境変数</h3>
       
 
       <p>環境変数は、
@@ -471,7 +469,7 @@ foreach $key (keys %ENV) {
 
     
 
-    <h3><a name="stdin" id="stdin">STDIN と STDOUT</a></h3>
+    <h3 id="stdin">STDIN と STDOUT</h3>
       
 
       <p>サーバとクライアント間のもう一つの通信は、標準入力
@@ -509,9 +507,9 @@ foreach $key (keys %ENV) {
       幸いにも、そのデータ処理を助けるライブラリやモジュールが存在します。
       これらは、CGI プログラムの他の面でも同様に役に立ちます。</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">CGI モジュール/ライブラリ</a> <a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
+<h2 id="libraries">CGI モジュール/ライブラリ <a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
     
 
     <p>CGI プログラムを書くとき、面倒な仕事の大部分をしてくれる
@@ -526,9 +524,9 @@ foreach $key (keys %ENV) {
     <p>C で CGI プログラムを書いているなら、いろいろな
     オプションがあります。これらの内の一つは <a href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>
     で提供されている <code>CGIC</code> ライブラリです。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">更なる情報</a> <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
+<h2 id="moreinfo">更なる情報 <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
     <p>CGI に関する情報はウェブで数多く提供されています。CGI
@@ -560,13 +558,13 @@ foreach $key (keys %ENV) {
   </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

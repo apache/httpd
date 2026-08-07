@@ -101,6 +101,16 @@ In <code>.htaccess</code> context, the directory prefix is
 <code>products/widget</code> - no leading slash, no
 <code>/app/</code> prefix.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_path_stripping.png"
+          alt="Flowchart showing the path stripping, substitution,
+          and RewriteBase pipeline in per-directory context, with
+          three outcomes: relative path (RewriteBase prepended),
+          absolute path (used as-is), and absolute URI (external
+          redirect)" /><br />
+      <dfn>Figure:</dfn> Per-directory path stripping and RewriteBase pipeline
+</p>
+
 <p>This means you must write your patterns differently depending on
 where the rule lives:</p>
 
@@ -214,6 +224,14 @@ subtly different: "stop processing the ruleset <em>for this pass</em>."
 After the substitution is made, Apache re-processes the request from
 the top - including re-applying the <code>.htaccess</code> rules.
 This can lead to infinite loops.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_l_flag_looping.png"
+          alt="Flowchart showing how the [L] flag causes looping in
+          per-directory context by triggering a subrequest that
+          re-enters the ruleset" /><br />
+      <dfn>Figure:</dfn> Per-directory [L] flag looping behavior
+</p>
 
 <p>Consider this rule:</p>
 

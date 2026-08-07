@@ -1472,7 +1472,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd,
                                                    void *struct_ptr,
                                                    const char *arg)
 {
-    int offset = (int)(long)cmd->info;
+    int offset = (int)(apr_uintptr_t)cmd->info;
 
     *(const char **)((char *)struct_ptr + offset) = arg;
 
@@ -1485,7 +1485,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_int_slot(cmd_parms *cmd,
 {
     char *endptr;
     char *error_str = NULL;
-    int offset = (int)(long)cmd->info;
+    apr_size_t offset = (apr_size_t)cmd->info;
 
     *(int *)((char*)struct_ptr + offset) = strtol(arg, &endptr, 10);
 
@@ -1503,7 +1503,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
                                                          const char *arg_)
 {
     char *arg = apr_pstrdup(cmd->pool,arg_);
-    int offset = (int)(long)cmd->info;
+    apr_size_t offset = (apr_size_t)cmd->info;
 
     ap_str_tolower(arg);
     *(char **)((char *)struct_ptr + offset) = arg;
@@ -1514,7 +1514,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
 AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
                                                  void *struct_ptr_v, int arg)
 {
-    int offset = (int)(long)cmd->info;
+    apr_size_t offset = (apr_size_t)cmd->info;
     char *struct_ptr = (char *)struct_ptr_v;
 
     *(int *)(struct_ptr + offset) = arg ? 1 : 0;
@@ -1525,7 +1525,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
 AP_DECLARE_NONSTD(const char *) ap_set_flag_slot_char(cmd_parms *cmd,
                                                       void *struct_ptr_v, int arg)
 {
-    int offset = (int)(long)cmd->info;
+    apr_size_t offset = (apr_size_t)cmd->info;
     char *struct_ptr = (char *)struct_ptr_v;
 
     *(struct_ptr + offset) = arg ? 1 : 0;
@@ -1542,7 +1542,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
      * so the server can be moved or mirrored with less pain.
      */
     const char *path;
-    int offset = (int)(long)cmd->info;
+    int offset = (int)(apr_uintptr_t)cmd->info;
 
     path = ap_server_root_relative(cmd->pool, arg);
 

@@ -1,41 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_ssl_ct - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_ssl_ct</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_ssl_ct.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ssl_ct.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_ssl_ct.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Implementation of Certificate Transparency (RFC 6962)
 </td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ssl_ct_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ssl_ct.c</td></tr></table>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>ssl_ct_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_ssl_ct.c</td></tr></table>
 <h3>Summary</h3>
 
 
@@ -100,28 +98,28 @@ testing.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#server">Server processing overview</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Proxy processing overview</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logconf">Log configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#static">Storing SCTs in a form consumable by mod_ssl_ct</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging CT status in the access log</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#audit">Off-line audit for proxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#server">Server processing overview</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">Proxy processing overview</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logconf">Log configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#static">Storing SCTs in a form consumable by mod_ssl_ct</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logging">Logging CT status in the access log</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#audit">Off-line audit for proxy</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#ctauditstorage">CTAuditStorage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctlogclient">CTLogClient</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctlogconfigdb">CTLogConfigDB</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctmaxsctage">CTMaxSCTAge</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctproxyawareness">CTProxyAwareness</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctsctstorage">CTSCTStorage</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctserverhellosctlimit">CTServerHelloSCTLimit</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctstaticlogconfig">CTStaticLogConfig</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ctstaticscts">CTStaticSCTs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctauditstorage">CTAuditStorage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctlogclient">CTLogClient</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctlogconfigdb">CTLogConfigDB</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctmaxsctage">CTMaxSCTAge</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctproxyawareness">CTProxyAwareness</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctsctstorage">CTSCTStorage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctserverhellosctlimit">CTServerHelloSCTLimit</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctstaticlogconfig">CTStaticLogConfig</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ctstaticscts">CTStaticSCTs</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl_ct">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl_ct">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="server" id="server">Server processing overview</a> <a title="Permanent link" href="#server" class="permalink">&para;</a></h2>
+<h2 id="server">Server processing overview <a title="Permanent link" href="#server" class="permalink">&para;</a></h2>
   
 
   <p>Servers need to send SCTs to their clients.  SCTs in a certificate
@@ -145,9 +143,9 @@ testing.</p>
   indicates awareness in the ClientHello when that particular server certificate
   is used.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Proxy processing overview</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Proxy processing overview <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
   
 
   <p>The proxy indicates Certificate Transparency awareness in the ClientHello
@@ -179,9 +177,9 @@ testing.</p>
   the data.  This saves some processing time as well as disk space.  For typical
   reverse proxy setups, very little processing overhead will be required.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logconf" id="logconf">Log configuration</a> <a title="Permanent link" href="#logconf" class="permalink">&para;</a></h2>
+<h2 id="logconf">Log configuration <a title="Permanent link" href="#logconf" class="permalink">&para;</a></h2>
   
 
   <p>Servers and proxies use different information about logs for their processing.
@@ -212,7 +210,7 @@ testing.</p>
     <dt>public key of the log</dt>
     <dd>A proxy must have the public key of the log in order to check the
     signature in SCTs it receives which were obtained from the log.
-    <br />
+    <br>
     A server must have the public key of the log in order to submit certificates
     to it.</dd>
 
@@ -231,7 +229,7 @@ testing.</p>
     each server certificate in order to obtain an SCT for each log with a
     configured URL, except when the log is also marked as distrusted or the
     current time is not within any configured valid timestamp range.
-    <br />
+    <br>
     The log URL is also needed by off-line auditing of SCTs received by a
     proxy.</dd>
   </dl>
@@ -240,9 +238,9 @@ testing.</p>
   particular log.  Refer to the documentation for the <code class="directive"><a href="#ctstaticlogconfig">CTStaticLogConfig</a></code> directive and the
   <code class="program"><a href="../programs/ctlogconfig.html">ctlogconfig</a></code> command for more specific information.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static" id="static">Storing SCTs in a form consumable by mod_ssl_ct</a> <a title="Permanent link" href="#static" class="permalink">&para;</a></h2>
+<h2 id="static">Storing SCTs in a form consumable by mod_ssl_ct <a title="Permanent link" href="#static" class="permalink">&para;</a></h2>
   
 
   <p><code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> allows you to configure SCTs statically
@@ -253,9 +251,9 @@ testing.</p>
   format from data received from a log can be found in
   <a href="https://github.com/tomrittervg/ct-tools">Tom Ritter's ct-tools
   repository</a>.  Refer to <code>write-sct.py</code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging CT status in the access log</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Logging CT status in the access log <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
   
 
   <p>Proxy and server modes set the <code>SSL_CT_PROXY_STATUS</code> and
@@ -268,9 +266,9 @@ testing.</p>
 
   <p>These variables can be logged with the <code>%{<em>varname</em>}e</code>
   format of <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="audit" id="audit">Off-line audit for proxy</a> <a title="Permanent link" href="#audit" class="permalink">&para;</a></h2>
+<h2 id="audit">Off-line audit for proxy <a title="Permanent link" href="#audit" class="permalink">&para;</a></h2>
   
 
   <p>Experimental support for this is implemented in the <code>ctauditscts</code>
@@ -299,14 +297,14 @@ testing.</p>
   <p>The data saved for audit can also be used by other programs; refer to the
   <code>ctauditscts</code> source code for details on processing the data.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTAuditStorage" id="CTAuditStorage">CTAuditStorage</a> <a name="ctauditstorage" id="ctauditstorage">Directive</a> <a title="Permanent link" href="#ctauditstorage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctauditstorage"><span id="CTAuditStorage">CTAuditStorage</span> Directive <a title="Permanent link" href="#ctauditstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Existing directory where data for off-line audit will be stored</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTAuditStorage <em>directory</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>The <code class="directive">CTAuditStorage</code> directive sets the name of a
@@ -325,14 +323,14 @@ testing.</p>
   perform the audit.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTLogClient" id="CTLogClient">CTLogClient</a> <a name="ctlogclient" id="ctlogclient">Directive</a> <a title="Permanent link" href="#ctlogclient" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctlogclient"><span id="CTLogClient">CTLogClient</span> Directive <a title="Permanent link" href="#ctlogclient" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of certificate-transparency log client tool</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTLogClient <em>executable</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p><em>executable</em> is the full path to the log client tool, which is
@@ -349,14 +347,14 @@ testing.</p>
   SCTs or SCTs in certificate extensions will be provided to clients.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTLogConfigDB" id="CTLogConfigDB">CTLogConfigDB</a> <a name="ctlogconfigdb" id="ctlogconfigdb">Directive</a> <a title="Permanent link" href="#ctlogconfigdb" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctlogconfigdb"><span id="CTLogConfigDB">CTLogConfigDB</span> Directive <a title="Permanent link" href="#ctlogconfigdb" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Log configuration database supporting dynamic updates</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTLogConfigDB <em>filename</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>The <code class="directive">CTLogConfigDB</code> directive sets the name of a database
@@ -368,15 +366,15 @@ testing.</p>
   which manages the database.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTMaxSCTAge" id="CTMaxSCTAge">CTMaxSCTAge</a> <a name="ctmaxsctage" id="ctmaxsctage">Directive</a> <a title="Permanent link" href="#ctmaxsctage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctmaxsctage"><span id="CTMaxSCTAge">CTMaxSCTAge</span> Directive <a title="Permanent link" href="#ctmaxsctage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum age of SCT obtained from a log, before it will be
 refreshed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTMaxSCTAge <em>num-seconds</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>1 day</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>Server certificates with SCTs which are older than this maximum age will
@@ -386,15 +384,15 @@ refreshed</td></tr>
   as they become available.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTProxyAwareness" id="CTProxyAwareness">CTProxyAwareness</a> <a name="ctproxyawareness" id="ctproxyawareness">Directive</a> <a title="Permanent link" href="#ctproxyawareness" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctproxyawareness"><span id="CTProxyAwareness">CTProxyAwareness</span> Directive <a title="Permanent link" href="#ctproxyawareness" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Level of CT awareness and enforcement for a proxy
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTProxyAwareness <em>oblivious|aware|require</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>aware</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>This directive controls awareness and checks for valid SCTs for a
@@ -418,14 +416,14 @@ refreshed</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTSCTStorage" id="CTSCTStorage">CTSCTStorage</a> <a name="ctsctstorage" id="ctsctstorage">Directive</a> <a title="Permanent link" href="#ctsctstorage" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctsctstorage"><span id="CTSCTStorage">CTSCTStorage</span> Directive <a title="Permanent link" href="#ctsctstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Existing directory where SCTs are managed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTSCTStorage <em>directory</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>The <code class="directive">CTSCTStorage</code> directive sets the name of a
@@ -442,15 +440,15 @@ refreshed</td></tr>
   and other information used for managing SCTs.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTServerHelloSCTLimit" id="CTServerHelloSCTLimit">CTServerHelloSCTLimit</a> <a name="ctserverhellosctlimit" id="ctserverhellosctlimit">Directive</a> <a title="Permanent link" href="#ctserverhellosctlimit" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctserverhellosctlimit"><span id="CTServerHelloSCTLimit">CTServerHelloSCTLimit</span> Directive <a title="Permanent link" href="#ctserverhellosctlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limit on number of SCTs that can be returned in
 ServerHello</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTServerHelloSCTLimit <em>limit</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>100</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>This directive can be used to limit the number of SCTs which can be
@@ -464,8 +462,8 @@ ServerHello</td></tr>
   certificate extensions or in stapled OCSP responses.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTStaticLogConfig" id="CTStaticLogConfig">CTStaticLogConfig</a> <a name="ctstaticlogconfig" id="ctstaticlogconfig">Directive</a> <a title="Permanent link" href="#ctstaticlogconfig" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctstaticlogconfig"><span id="CTStaticLogConfig">CTStaticLogConfig</span> Directive <a title="Permanent link" href="#ctstaticlogconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Static configuration of information about a log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
@@ -473,7 +471,7 @@ ServerHello</td></tr>
 <em>log-URL|-</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>This directive is used to configure information about a particular log.
@@ -495,7 +493,7 @@ ServerHello</td></tr>
     <dd>This is the id of the log, which is the SHA-256 hash of the log's
     public key, provided in hexadecimal format.  This string is 64 characters
     in length.
-    <br />
+    <br>
     This field should be omitted when <em>public-key-file</em> is provided.</dd>
 
     <dt><em>public-key-file</em></dt>
@@ -512,11 +510,11 @@ ServerHello</td></tr>
     <dd>A timestamp is a time as expressed in the number of milliseconds since the
     epoch, ignoring leap seconds.  This is the form of time used in Signed Certificate
     Timestamps.  This must be provided as a decimal number.
-    <br />
+    <br>
     Specify <strong><code>-</code></strong> for one of the timestamps if it is unknown.
     For example, when configuring the minimum valid timestamp for a log which remains
     valid, specify <strong><code>-</code></strong> for <em>max-timestamp</em>.
-    <br />
+    <br>
     SCTs received from this log by the proxy are invalid if the timestamp
     is older than <em>min-timestamp</em> or newer than <em>max-timestamp</em>.</dd>
 
@@ -531,15 +529,15 @@ ServerHello</td></tr>
 about the fields which can be configured with this directive.</li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CTStaticSCTs" id="CTStaticSCTs">CTStaticSCTs</a> <a name="ctstaticscts" id="ctstaticscts">Directive</a> <a title="Permanent link" href="#ctstaticscts" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ctstaticscts"><span id="CTStaticSCTs">CTStaticSCTs</span> Directive <a title="Permanent link" href="#ctstaticscts" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Static configuration of one or more SCTs for a server certificate
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CTStaticSCTs <em>certificate-pem-file</em> <em>sct-directory</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl_ct</td></tr>
 </table>
   <p>This directive is used to statically define one or more SCTs corresponding
@@ -567,10 +565,10 @@ about the fields which can be configured with this directive.</li>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_ssl_ct.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ssl_ct.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_ssl_ct.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

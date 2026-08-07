@@ -1,0 +1,5 @@
+AuthMerging And
+<RequireAll>
+Require env allowed2
+Require env allowed3
+</RequireAll>

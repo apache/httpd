@@ -1,174 +1,172 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_logio - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_logio</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_logio.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_logio.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_logio.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_logio.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_logio.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des octets en entrée et en sortie pour
-chaque requête</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des octets en entr&eacute;e et en sortie pour
+chaque requ&ecirc;te</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>logio_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_logio.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>logio_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_logio.c</td></tr></table>
 <h3>Sommaire</h3>
 
 
-    <p>Ce module permet d'enregistrer le nombre d'octets reçus et
-    envoyés pour chaque requête. Ce nombre reflète le nombre réel
-    d'octets transmis sur le réseau, et prend en compte les en-têtes et
-    corps des requêtes et des réponses. Le décompte est effectué avant
-    SSL/TLS en entrée et après SSL/TLS en sortie, si bien que le
-    résultat reflètera toute modification introduite par le
+    <p>Ce module permet d'enregistrer le nombre d'octets re&ccedil;us et
+    envoy&eacute;s pour chaque requ&ecirc;te. Ce nombre refl&egrave;te le nombre r&eacute;el
+    d'octets transmis sur le r&eacute;seau, et prend en compte les en-t&ecirc;tes et
+    corps des requ&ecirc;tes et des r&eacute;ponses. Le d&eacute;compte est effectu&eacute; avant
+    SSL/TLS en entr&eacute;e et apr&egrave;s SSL/TLS en sortie, si bien que le
+    r&eacute;sultat refl&egrave;tera toute modification introduite par le
     chiffrement.</p>
 
     <p>Pour fonctionner, ce module requiert le chargement du module
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
 
     <div class="note">Lorsqu'on utilise les connexions persistantes avec SSL, le
-    supplément de trafic induit par la négociation SSL est enregistré
-    dans le décompte des octets transmis dans le cadre de la première
-    requête de la connexion. Lors d'une renégociation SSL au niveau d'un
-    répertoire, le décompte d'octets est associé à la
-    requête qui a déclenché la renégociation.</div>
+    suppl&eacute;ment de trafic induit par la n&eacute;gociation SSL est enregistr&eacute;
+    dans le d&eacute;compte des octets transmis dans le cadre de la premi&egrave;re
+    requ&ecirc;te de la connexion. Lors d'une ren&eacute;gociation SSL au niveau d'un
+    r&eacute;pertoire, le d&eacute;compte d'octets est associ&eacute; &agrave; la
+    requ&ecirc;te qui a d&eacute;clench&eacute; la ren&eacute;gociation.</div>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">Formats de journaux personnalisés</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#formats">Formats de journaux personnalis&eacute;s</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfb">LogIOTrackTTFB</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logiotrackttfu">LogIOTrackTTFU</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logiotrackttfb">LogIOTrackTTFB</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logiotrackttfu">LogIOTrackTTFU</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_logio">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_logio">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_logio">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_logio">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
 <li><a href="../logs.html">Les fichiers journaux
 d'Apache</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Formats de journaux personnalisés</a> <a title="Lien permanent" href="#formats" class="permalink">&para;</a></h2>
+<h2 id="formats">Formats de journaux personnalis&eacute;s <a title="Lien permanent" href="#formats" class="permalink">&para;</a></h2>
 
 
     <p>Ce module introduit trois nouvelles directives de journalisation.
-    Les caractéristiques de la requête en elle-même sont journalisées en
-    insérant des directives "<code>%</code>" dans la chaîne de format,
-    qui seront remplacées comme suit dans le fichier journal :</p>
+    Les caract&eacute;ristiques de la requ&ecirc;te en elle-m&ecirc;me sont journalis&eacute;es en
+    ins&eacute;rant des directives "<code>%</code>" dans la cha&icirc;ne de format,
+    qui seront remplac&eacute;es comme suit dans le fichier journal :</p>
 
-    <table class="bordered"><tr class="header"><th>Chaîne&nbsp;de&nbsp;Format</th>
+    <table class="bordered"><tr class="header"><th>Cha&icirc;ne&nbsp;de&nbsp;Format</th>
         <th>Description</th></tr>
 <tr><td><code>%I</code></td>
-        <td>Octets reçus, en-têtes et corps de requête inclus ; ne peut
-	pas être nul.</td></tr>
+        <td>Octets re&ccedil;us, en-t&ecirc;tes et corps de requ&ecirc;te inclus ; ne peut
+	pas &ecirc;tre nul.</td></tr>
 <tr class="odd"><td><code>%O</code></td>
-        <td>Octets envoyés, en-têtes inclus. Peut être égal à zéro dans de rares
-	cas ; par exemple lorsqu'une requête est interrompue avant l'envoi de la
-	réponse.</td></tr>
+        <td>Octets envoy&eacute;s, en-t&ecirc;tes inclus. Peut &ecirc;tre &eacute;gal &agrave; z&eacute;ro dans de rares
+	cas ; par exemple lorsqu'une requ&ecirc;te est interrompue avant l'envoi de la
+	r&eacute;ponse.</td></tr>
 <tr><td><code>%S</code></td>
-        <td>Nombre d'octets transmis en émission et réception y compris
-	la requête et les en-têtes ; cette valeur ne peut pas être
-	nulle, il s'agit de la combinaison de %I et %O.<br />
+        <td>Nombre d'octets transmis en &eacute;mission et r&eacute;ception y compris
+	la requ&ecirc;te et les en-t&ecirc;tes ; cette valeur ne peut pas &ecirc;tre
+	nulle, il s'agit de la combinaison de %I et %O.<br>
 	Disponible depuis la version 2.4.7 du serveur HTTP Apache.</td></tr>
 <tr class="odd"><td><code>%^FU</code></td>
-        <td>Délai en microsecondes entre l'arrivée de la requête et la lecture
-	du dernier octet du corps de la requête (upload terminé). Disponible
-	seulement si <code class="directive">LogIOTrackTTFU</code> est à ON.<br />
-	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.</td></tr>
+        <td>D&eacute;lai en microsecondes entre l'arriv&eacute;e de la requ&ecirc;te et la lecture
+	du dernier octet du corps de la requ&ecirc;te (upload termin&eacute;). Disponible
+	seulement si <code class="directive">LogIOTrackTTFU</code> est &agrave; ON.<br>
+	Disponible &agrave; partir de la version 2.4.34 du serveur HTTP Apache.</td></tr>
 <tr><td><code>%^FB</code></td>
-        <td>Délai en microsecondes entre l'arrivée de la requête et
-	l'écriture du premier octet des en-têtes de la réponse.
+        <td>D&eacute;lai en microsecondes entre l'arriv&eacute;e de la requ&ecirc;te et
+	l'&eacute;criture du premier octet des en-t&ecirc;tes de la r&eacute;ponse.
 	Disponible uniquement si la directive
-	<code class="directive">LogIOTrackTTFB</code> a été définie à ON.<br />
-	Disponible à partir de la version 2.4.13 du serveur HTTP Apache
+	<code class="directive">LogIOTrackTTFB</code> a &eacute;t&eacute; d&eacute;finie &agrave; ON.<br>
+	Disponible &agrave; partir de la version 2.4.13 du serveur HTTP Apache
         </td></tr>
 </table>
 
-    <p>En général, cette fonctionnalité s'utilise comme suit :</p>
+    <p>En g&eacute;n&eacute;ral, cette fonctionnalit&eacute; s'utilise comme suit :</p>
 
     <dl>
-      <dt>Format de journal d'entrées/sorties combiné :</dt>
+      <dt>Format de journal d'entr&eacute;es/sorties combin&eacute; :</dt>
       <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
       \"%{User-agent}i\" %I %O"</code></dd>
     </dl>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="logiotrackttfb" id="logiotrackttfb">Directive</a> <a name="LogIOTrackTTFB" id="LogIOTrackTTFB">LogIOTrackTTFB</a> <a title="Lien permanent" href="#logiotrackttfb" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="logiotrackttfb">Directive <span id="LogIOTrackTTFB">LogIOTrackTTFB</span> <a title="Lien permanent" href="#logiotrackttfb" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'enregistrer le délai avant le premier octet (TTFB = time
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'enregistrer le d&eacute;lai avant le premier octet (TTFB = time
 to first byte)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogIOTrackTTFB ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>LogIOTrackTTFB OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_logio</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.13 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.13 du serveur HTTP Apache</td></tr>
 </table>
-    <p>Cette directive permet de définir si ce module mesure le délai
-    entre la lecture de la requête et l'écriture du premier octet des
-    en-têtes de la réponse. La valeur obtenue peut être enregistrée dans
+    <p>Cette directive permet de d&eacute;finir si ce module mesure le d&eacute;lai
+    entre la lecture de la requ&ecirc;te et l'&eacute;criture du premier octet des
+    en-t&ecirc;tes de la r&eacute;ponse. La valeur obtenue peut &ecirc;tre enregistr&eacute;e dans
     le journal via le format <code>%^FB</code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="logiotrackttfu" id="logiotrackttfu">Directive</a> <a name="LogIOTrackTTFU" id="LogIOTrackTTFU">LogIOTrackTTFU</a> <a title="Lien permanent" href="#logiotrackttfu" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="logiotrackttfu">Directive <span id="LogIOTrackTTFU">LogIOTrackTTFU</span> <a title="Lien permanent" href="#logiotrackttfu" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la mesure du temps jusqu'à l'arrivée du dernier octet de la
-requête (TTFU = time to finish upload)</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la mesure du temps jusqu'&agrave; l'arriv&eacute;e du dernier octet de la
+requ&ecirc;te (TTFU = time to finish upload)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogIOTrackTTFU ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LogIOTrackTTFU OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>LogIOTrackTTFU OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_logio</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.34 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.34 du serveur HTTP Apache</td></tr>
 </table>
-    <p>Cette directive permet d'activer/désactiver la mesure du temps entre le
-    début de la lecture de la requête et la lecture du dernier octets du corps
-    de la requête (upload terminé). La valeur est enregistrée dans le journal
-    via la chaîne de formatage <code>%^FU</code>.</p>
+    <p>Cette directive permet d'activer/d&eacute;sactiver la mesure du temps entre le
+    d&eacute;but de la lecture de la requ&ecirc;te et la lecture du dernier octets du corps
+    de la requ&ecirc;te (upload termin&eacute;). La valeur est enregistr&eacute;e dans le journal
+    via la cha&icirc;ne de formatage <code>%^FU</code>.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_logio.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_logio.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_logio.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_logio.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_logio.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

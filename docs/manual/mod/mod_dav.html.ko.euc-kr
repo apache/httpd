@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_dav - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_dav</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_dav.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dav.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dav.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -51,17 +49,17 @@
 </div>
 <div id="quickview"><h3>주제</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">WebDAV 사용하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">보안 문제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#complex">복잡한 설정</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#example">WebDAV 사용하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">보안 문제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#complex">복잡한 설정</a></li>
 </ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#davbasepath">DavBasePath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#davhonormtimeheader">DavHonorMtimeHeader</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#davmsext">DavMSext</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dav">Dav</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#davbasepath">DavBasePath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#davhonormtimeheader">DavHonorMtimeHeader</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#davmintimeout">DavMinTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#davmsext">DavMSext</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dav">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dav">Report a bug</a></li></ul><h3>참고</h3>
 <ul class="seealso">
@@ -69,9 +67,9 @@
 <li><code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code></li>
 <li><a href="http://www.webdav.org">WebDAV 정보</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="example" id="example">WebDAV 사용하기</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+<h2 id="example">WebDAV 사용하기 <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 사용하려면 <code>httpd.conf</code>
     파일에 아래과 같이 추가한다:</p>
 
@@ -101,28 +99,28 @@
     지시어는 DAV 요청과 관계없다.</p>
 
     <div class="example"><h3>전체 예제</h3><p><code>
-      DavLockDB /usr/local/apache2/var/DavLock<br />
-      <br />
-       &lt;Location /foo&gt;<br />
+      DavLockDB /usr/local/apache2/var/DavLock<br>
+      <br>
+       &lt;Location /foo&gt;<br>
        <span class="indent">
-         Dav On<br />
-         <br />
-         AuthType Basic<br />
-         AuthName DAV<br />
-         AuthUserFile user.passwd<br />
-         <br />
-         &lt;LimitExcept GET OPTIONS&gt;<br />
+         Dav On<br>
+         <br>
+         AuthType Basic<br>
+         AuthName DAV<br>
+         AuthUserFile user.passwd<br>
+         <br>
+         &lt;LimitExcept GET OPTIONS&gt;<br>
          <span class="indent">
-           require user admin<br />
+           require user admin<br>
          </span>
-         &lt;/LimitExcept&gt;<br />
+         &lt;/LimitExcept&gt;<br>
        </span>
-       &lt;/Location&gt;<br />
+       &lt;/Location&gt;<br>
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">보안 문제</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">보안 문제 <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
     <p>DAV를 사용하면 원격 클라이언트가 서버의 파일을 조작할
     수 있기때문에, <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 사용하기 전에
@@ -155,9 +153,9 @@
     여러 큰 파일들로 디스크공간을 채우는 서비스거부 공격도 가능하다.
     아파치에서 이를 막을 직접적인 방법은 없다. 그러므로 신뢰하지않는
     사용자에게 DAV 접근을 허용하지 않도록하라.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="complex" id="complex">복잡한 설정</a> <a title="Permanent link" href="#complex" class="permalink">&para;</a></h2>
+<h2 id="complex">복잡한 설정 <a title="Permanent link" href="#complex" class="permalink">&para;</a></h2>
 
     <p>일반적인 질문중 하나는 (PHP 스크립트, CGI 스크립트 등)
     동적파일 작업을 위해 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>를 사용하는
@@ -168,12 +166,12 @@
     수 있다.</p>
 
 <div class="example"><p><code>
-Alias /phparea /home/gstein/php_files<br />
-Alias /php-source /home/gstein/php_files<br />
+Alias /phparea /home/gstein/php_files<br>
+Alias /php-source /home/gstein/php_files<br>
 &lt;Location /php-source&gt;
 <span class="indent">
-    DAV On<br />
-    ForceType text/plain<br />
+    DAV On<br>
+    ForceType text/plain<br>
 </span>
 &lt;/Location&gt;
 </code></p></div>
@@ -183,8 +181,8 @@ Alias /php-source /home/gstein/php_files<br />
     <code>http://example.com/php-source</code>로는 DAV 클라이언트에서
     스크립트를 수정할 수 있다.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">지시어</a> <a title="Permanent link" href="#dav" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="dav"><span id="Dav">Dav</span> 지시어 <a title="Permanent link" href="#dav" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>WebDAV HTTP 메써드를 시작한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Dav On|Off|<var>provider-name</var></code></td></tr>
@@ -197,9 +195,9 @@ Alias /php-source /home/gstein/php_files<br />
     <code class="directive">Dav</code> 지시어를 사용한다:</p>
 
     <div class="example"><p><code>
-      &lt;Location /foo&gt;<br />
+      &lt;Location /foo&gt;<br>
       <span class="indent">
-        Dav On<br />
+        Dav On<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -216,8 +214,8 @@ Alias /php-source /home/gstein/php_files<br />
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavBasePath" id="DavBasePath">DavBasePath</a> <a name="davbasepath" id="davbasepath">지시어</a> <a title="Permanent link" href="#davbasepath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="davbasepath"><span id="DavBasePath">DavBasePath</span> 지시어 <a title="Permanent link" href="#davbasepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Configure repository root path</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavBasePath <var>root-path</var></code></td></tr>
@@ -229,8 +227,8 @@ Alias /php-source /home/gstein/php_files<br />
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">지시어</a> <a title="Permanent link" href="#davdepthinfinity" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="davdepthinfinity"><span id="DavDepthInfinity">DavDepthInfinity</span> 지시어 <a title="Permanent link" href="#davdepthinfinity" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>PROPFIND의 Depth: Infinity 요청을 허가한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
@@ -245,8 +243,8 @@ Alias /php-source /home/gstein/php_files<br />
     때문에 기본적으로 허용하지 않는다.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavHonorMtimeHeader" id="DavHonorMtimeHeader">DavHonorMtimeHeader</a> <a name="davhonormtimeheader" id="davhonormtimeheader">지시어</a> <a title="Permanent link" href="#davhonormtimeheader" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="davhonormtimeheader"><span id="DavHonorMtimeHeader">DavHonorMtimeHeader</span> 지시어 <a title="Permanent link" href="#davhonormtimeheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Allow clients to set resource modification times via the
 X-OC-Mtime request header</td></tr>
@@ -258,8 +256,8 @@ X-OC-Mtime request header</td></tr>
 </table><p>The documentation for this directive has
             not been translated yet. Please have a look at the English
             version.</p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">지시어</a> <a title="Permanent link" href="#davmintimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="davmintimeout"><span id="DavMinTimeout">DavMinTimeout</span> 지시어 <a title="Permanent link" href="#davmintimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>서버가 DAV 자원에 대해 유지할 잠금의 최소시간</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavMinTimeout <var>seconds</var></code></td></tr>
@@ -280,16 +278,16 @@ X-OC-Mtime request header</td></tr>
     지연때문에 잠금을 잃게되는 경우를 줄일 수 있다.</p>
 
     <div class="example"><h3>예제</h3><p><code>
-      &lt;Location /MSWord&gt;<br />
+      &lt;Location /MSWord&gt;<br>
       <span class="indent">
-        DavMinTimeout 600<br />
+        DavMinTimeout 600<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DavMSext" id="DavMSext">DavMSext</a> <a name="davmsext" id="davmsext">지시어</a> <a title="Permanent link" href="#davmsext" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="davmsext"><span id="DavMSext">DavMSext</span> 지시어 <a title="Permanent link" href="#davmsext" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Enable support for Microsoft extensions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>DavMSext None | [+|-]WDV | All</code></td></tr>
@@ -303,12 +301,12 @@ X-OC-Mtime request header</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_dav.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dav.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_dav.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dav.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

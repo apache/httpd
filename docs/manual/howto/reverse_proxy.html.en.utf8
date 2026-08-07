@@ -1,77 +1,68 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Reverse Proxy Guide - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Reverse Proxy Guide</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/reverse_proxy.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
-    <p>In addition to being a "basic" web server, and providing static and
-    dynamic content to end-users, Apache httpd (as well as most other web
-    servers) can also act as a reverse proxy server, also-known-as a
-    "gateway" server.</p>
+    <p>Besides serving static and dynamic content directly, Apache httpd
+    can act as a reverse proxy server (sometimes called a gateway).</p>
 
-    <p>In such scenarios, httpd itself does not generate or host the data,
-    but rather the content is obtained by one or several backend servers,
-    which normally have no direct connection to the external network. As
-    httpd receives a request from a client, the request itself is <em>proxied</em>
-    to one of these backend servers, which then handles the request, generates
-    the content and then sends this content back to httpd, which then
-    generates the actual HTTP response back to the client.</p>
+    <p>In this mode, httpd does not generate the content itself. Instead,
+    it forwards each client request to one or more backend servers that
+    have no direct connection to the external network. The backend
+    processes the request and returns the content to httpd, which then
+    delivers the HTTP response to the client.</p>
 
-    <p>There are numerous reasons for such an implementation, but generally
-    the typical rationales are due to security, high-availability, load-balancing
-    and centralized authentication/authorization. It is critical in these
-    implementations that the layout, design and architecture of the backend
-    infrastructure (those servers which actually handle the requests) are
-    insulated and protected from the outside; as far as the client is concerned,
-    the reverse proxy server <em>is</em> the sole source of all content.</p>
+    <p>Common reasons include security, high availability, load balancing,
+    and centralized authentication. The backend infrastructure should be isolated from the external
+    network; as far as the client is concerned, the reverse proxy
+    <em>is</em> the sole source of all content.</p>
 
     <p>A typical implementation is below:</p>
-    <p class="centered"><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
+    <p class="centered"><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch"></p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Reverse Proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple">Simple reverse proxying</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cluster">Clusters and Balancers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">Balancer and BalancerMember configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#failover">Failover</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#manager">Balancer Manager</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#health-check">Dynamic Health Checks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#status">BalancerMember status flags</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">Reverse Proxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple">Simple reverse proxying</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cluster">Clusters and Balancers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">Balancer and BalancerMember configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#failover">Failover</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#manager">Balancer Manager</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#health-check">Dynamic Health Checks</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#status">BalancerMember status flags</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">Reverse Proxy</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">Reverse Proxy <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
   
   <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="simple" id="simple">Simple reverse proxying</a> <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
+<h2 id="simple">Simple reverse proxying <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -82,57 +73,54 @@
       to a single backend:
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"</pre>
-
+<div class="example"><pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"</pre>
+</div>
 
     <p>
-      To ensure that and <code>Location:</code> headers generated from
+      To ensure that <code>Location:</code> headers generated from
       the backend are modified to point to the reverse proxy, instead of
       back to itself, the <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
       directive is most often required:
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"
+<div class="example"><pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"
 ProxyPassReverse "/"  "http://www.example.com/"</pre>
-
+</div>
 
     <p>Only specific URIs can be proxied, as shown in this example:</p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/images"  "http://www.example.com/"
+<div class="example"><pre class="prettyprint lang-config">ProxyPass "/images"  "http://www.example.com/"
 ProxyPassReverse "/images"  "http://www.example.com/"</pre>
-
+</div>
 
     <p>In the above, any requests which start with the <code>/images</code>
-      path with be proxied to the specified backend, otherwise it will be handled
+      path will be proxied to the specified backend, otherwise it will be handled
       locally.
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cluster" id="cluster">Clusters and Balancers</a> <a title="Permanent link" href="#cluster" class="permalink">&para;</a></h2>
+<h2 id="cluster">Clusters and Balancers <a title="Permanent link" href="#cluster" class="permalink">&para;</a></h2>
     
 
     <p>
-      As useful as the above is, it still has the deficiencies that should
-      the (single) backend node go down, or become heavily loaded, that proxying
-      those requests provides no real advantage. What is needed is the ability
-      to define a set or group of backend servers which can handle such
-      requests and for the reverse proxy to load balance and failover among
-      them. This group is sometimes called a <em>cluster</em> but Apache httpd's
-      term is a <em>balancer</em>. One defines a balancer by leveraging the
+      The single-backend setup above has an obvious weakness: if that
+      node goes down or becomes overloaded, the proxied content is unavailable.
+      What you need is a group of backend servers that the reverse proxy can
+      load-balance and failover among. This group is sometimes called a <em>cluster</em>; Apache httpd's
+      term is a <em>balancer</em>. You define a balancer using the
       <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> and
-      <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> directives as
-      shown:
+      <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> directives:
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080
-    ProxySet lbmethod=bytraffic
+<div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080
+ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
 ProxyPass "/images/"  "balancer://myset/"
 ProxyPassReverse "/images/"  "balancer://myset/"</pre>
-
+</div>
 
     <p>
       The <code>balancer://</code> scheme is what tells httpd that we are creating
@@ -150,39 +138,37 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       </p>
    </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">Balancer and BalancerMember configuration</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">Balancer and BalancerMember configuration <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>
-      You can adjust numerous configuration details of the <em>balancers</em>
-      and the <em>workers</em> via the various parameters defined in
-      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. For example,
-      assuming we would want <code>http://www3.example.com:8080</code> to
-      handle 3x the traffic with a timeout of 1 second, we would adjust the
-      configuration as follows:
+      You can tune <em>balancers</em> and <em>workers</em> through
+      parameters on <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>.
+      For example, to have <code>http://www3.example.com:8080</code>
+      handle 3&times; the traffic with a 1-second timeout:
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    ProxySet lbmethod=bytraffic
+<div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
 ProxyPass "/images"  "balancer://myset/"
 ProxyPassReverse "/images"  "balancer://myset/"</pre>
+</div>
 
-
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="failover" id="failover">Failover</a> <a title="Permanent link" href="#failover" class="permalink">&para;</a></h2>
+<h2 id="failover">Failover <a title="Permanent link" href="#failover" class="permalink">&para;</a></h2>
     
 
     <p>
-      You can also fine-tune various failover scenarios, detailing which workers
-      and even which balancers should be accessed in such cases. For example, the
-      below setup implements three failover cases:
+      You can fine-tune failover scenarios, specifying which workers and
+      balancers handle traffic when others fail. The setup below
+      implements three failover cases:
     </p>
     <ol>
       <li>
@@ -205,56 +191,51 @@ ProxyPassReverse "/images"  "balancer://myset/"</pre>
       </li>
     </ol>
     <p>
-      Thus, it is possible to have one or more hot spares and hot standbys for
-      each load balancer set.
+      You can have one or more hot spares and hot standbys for each
+      load balancer set.
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    BalancerMember http://spare1.example.com:8080 status=+R
-    BalancerMember http://spare2.example.com:8080 status=+R
-    BalancerMember http://hstandby.example.com:8080 status=+H
-    BalancerMember http://bkup1.example.com:8080 lbset=1
-    BalancerMember http://bkup2.example.com:8080 lbset=1
-    ProxySet lbmethod=byrequests
+<div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+BalancerMember http://spare1.example.com:8080 status=+R
+BalancerMember http://spare2.example.com:8080 status=+R
+BalancerMember http://hstandby.example.com:8080 status=+H
+BalancerMember http://bkup1.example.com:8080 lbset=1
+BalancerMember http://bkup2.example.com:8080 lbset=1
+ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
 ProxyPass "/images/"  "balancer://myset/"
 ProxyPassReverse "/images/"  "balancer://myset/"</pre>
-
+</div>
 
     <p>
-      For failover, hot spares are used as replacements for unusable workers in
-      the same load balancer set. A worker is considered unusable if it is
-      draining, stopped, or otherwise in an error/failed state. Hot standbys are
-      used if all workers and spares in the load balancer set are
-      unavailable. Load balancer sets (with their respective hot spares and
-      standbys) are always tried in order from lowest to highest.
+      Hot spares replace unusable workers (draining, stopped, or in an
+      error state) within the same load balancer set. Hot standbys
+      activate only when all workers and spares in a set are unavailable.
+      Sets are tried in order from lowest to highest.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="manager" id="manager">Balancer Manager</a> <a title="Permanent link" href="#manager" class="permalink">&para;</a></h2>
+<h2 id="manager">Balancer Manager <a title="Permanent link" href="#manager" class="permalink">&para;</a></h2>
     
 
     <p>
-      One of the most unique and useful features of Apache httpd's reverse proxy is
-	  the embedded <em>balancer-manager</em> application. Similar to
-	  <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, <em>balancer-manager</em> displays
-	  the current working configuration and status of the enabled
-	  balancers and workers currently in use. However, not only does it
-	  display these parameters, it also allows for dynamic, runtime, on-the-fly
-	  reconfiguration of almost all of them, including adding new <em>BalancerMembers</em>
-	  (workers) to an existing balancer. To enable these capability, the following
-	  needs to be added to your configuration:
+      Apache httpd includes an embedded <em>balancer-manager</em>
+	  application. Like <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, it displays the
+	  current configuration and status of your balancers and workers.
+	  It also lets you reconfigure them at runtime&mdash;including adding
+	  new <em>BalancerMembers</em> to an existing balancer. To enable
+	  it, add the following to your configuration:
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Location "/balancer-manager"&gt;
-    SetHandler balancer-manager
-    Require host localhost
+<div class="example"><pre class="prettyprint lang-config">&lt;Location "/balancer-manager"&gt;
+SetHandler balancer-manager
+Require host localhost
 &lt;/Location&gt;</pre>
-
+</div>
 
     <div class="warning"><h3>Warning</h3>
       <p>Do not enable the <em>balancer-manager</em> until you have <a href="../mod/mod_proxy.html#access">secured your server</a>. In
@@ -263,46 +244,45 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
     </div>
 
     <p>
-      When the reverse proxy server is accessed at that url
-      (eg: <code>http://rproxy.example.com/balancer-manager/</code>, you will see a
-      page similar to the below:
+      When you access that URL
+      (e.g. <code>http://rproxy.example.com/balancer-manager/</code>), you
+      will see a page like this:
     </p>
-    <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page"></p>
 
     <p>
-      This form allows the devops admin to adjust various parameters, take
-      workers offline, change load balancing methods and add new works. For
-      example, clicking on the balancer itself, you will get the following page:
+      From here you can adjust parameters, take workers offline, change
+      load balancing methods, and add new workers. Clicking on the
+      balancer itself shows:
     </p>
-    <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page"></p>
 
     <p>
       Whereas clicking on a worker, displays this page:
     </p>
-    <p class="centered"><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man-w.png" alt="balancer-manager page"></p>
 
     <p>
-      To have these changes persist restarts of the reverse proxy, ensure that
-      <code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code> is enabled.
+      To persist these changes across restarts, enable
+      <code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code>.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="health-check" id="health-check">Dynamic Health Checks</a> <a title="Permanent link" href="#health-check" class="permalink">&para;</a></h2>
+<h2 id="health-check">Dynamic Health Checks <a title="Permanent link" href="#health-check" class="permalink">&para;</a></h2>
     
 
     <p>
-      Before httpd proxies a request to a worker, it can <em>"test"</em> if that worker
-      is available via setting the <code>ping</code> parameter for that worker using
-      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Oftentimes it is
-      more useful to check the health of the workers <em>out of band</em>, in a
-      dynamic fashion. This is achieved in Apache httpd by the
-      <code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> module.
+      Before proxying a request, httpd can test whether a worker is
+      available using the <code>ping</code> parameter in
+      <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Often it is
+      more useful to check worker health <em>out of band</em>.
+      <code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> provides this capability.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="status" id="status">BalancerMember status flags</a> <a title="Permanent link" href="#status" class="permalink">&para;</a></h2>
+<h2 id="status">BalancerMember status flags <a title="Permanent link" href="#status" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -335,11 +315,11 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/reverse_proxy.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

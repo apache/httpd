@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933071:1934233 (outdated) -->
+<!-- English Revision: 1934233 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -60,12 +60,11 @@ vous tourner vers <module>mod_rewrite</module>.</p>
 <seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
 <seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>
-<seealso><a href="access.html">Contrôle d'accès</a></seealso>
+<seealso><a href="htaccess.html">Réécritures par répertoire</a></seealso>
+<seealso><a href="flags.html">Drapeaux de RewriteRule</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
-<seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avancées</a></seealso>
-<!--<seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>-->
+<seealso><a href="tech.html">Détails techniques</a></seealso>
 
 <section id="redirect">
 <title>Redirection simple</title>
@@ -107,45 +106,36 @@ Redirect "/one/" "http://one.example.com/"
 <code>example.com</code> vers <code>www.example.com</code>, voir la
 méthode <a href="remapping.html#canonicalhost">Noms d'hôtes canoniques</a>.</p>
 
-<p>Pour rediriger les URLs <code>http</code> vers <code>https</code>,
-utilisez cette définition :</p>
+<p>Pour rediriger les URLs <code>http</code> vers <code>https</code>, une
+directive <directive module="mod_alias">Redirect</directive> dans un serveur
+virtuel HTTP dédié est l’approche la plus propre. Voir la recette <a
+href="remapping.html#https-redirect">Forcer HTTPS</a> pour la configuration
+recommandée et l’alternative de <module>mod_rewrite</module> pour l’utilisation
+des fichiers <code>.htaccess</code>.</p>
 
-<highlight language="config">
-&lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    Redirect "/" "https://www.example.com/"
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost *:443&gt;
-    ServerName www.example.com
-    # ... insérer ici la configuration SSL
-&lt;/VirtualHost&gt;
-</highlight>
-
-<p>L'utilisation de la directive <code>RewriteRule</code> pour accomplir
-cette tâche peut se justifier s'il existe d'autres directives
-<code>RewriteRule</code> dans la même portée. En effet, lorsque des
-directives <code>Redirect</code> et <code>RewriteRule</code> se trouvent
-dans la même portée, les directives <code>RewriteRule</code> sont
-exécutées en premier, sans tenir compte de leur ordre d'apparition dans
-le fichier de configuration.</p>
-
-<p>Dans le cas de la redirection <em>http-vers-https</em>, l'utilisation
-de règles <code>RewriteRule</code> se justifie si vous n'avez pas accès
-au fichier de configuration principal, et devez donc accomplir cette
-tâche au sein d'un fichier <code>.htaccess</code>.</p>
+    <note><title>Ordre de traitement</title>
+    <p>Si vous mélangez des directives <directive
+    module="mod_alias">Redirect</directive> et <directive
+    module="mod_rewrite">RewriteRule</directive> dans le même contexte, sachez
+    que leur ordre d’exécution dépend de l’emplacement où elles apparaissent.
+    Dans un contexte de serveur virtuel ou global, c’est
+    <module>mod_rewrite</module> qui agit en premier, alors que dans un contexte
+    de répertoire (fichiers <code>.htaccess</code>), c’est
+    <module>mod_alias</module>. Voir <a href="tech.html#order">Ordre de
+    traitement des modules</a> pour les détails.</p>
+    </note>
 
 </section>
 
 <section id="alias"><title>Alias d'URL</title>
-<p>La directive <directive module="mod_alias">Alias</directive> permet
-de mettre en correspondance un URI avec un répertoire, ce dernier étant
-en général situé en dehors de l'arborescence définie par la directive
-<directive module="core">DocumentRoot</directive>. Bien qu'il soit
-possible d'effectuer cette mise en correspondance avec
-<module>mod_rewrite</module>, il est préférable d'utiliser la directive
-<directive module="mod_alias">Alias</directive> pour des raisons de simplicité
-et de performances.</p>
+<p>La directive <directive module="mod_alias">Alias</directive> permet de mettre
+en correspondance un chemin d’URL avec un répertoire, ce dernier étant en
+général situé en dehors de l'arborescence définie par la directive <directive
+module="core">DocumentRoot</directive>. Bien qu'il soit possible d'effectuer
+cette mise en correspondance avec <module>mod_rewrite</module>, il est
+préférable d'utiliser la directive <directive
+module="mod_alias">Alias</directive> pour des raisons de simplicité et de
+performances.</p>
 
 <example><title>Utilisation de la directive Alias</title>
 <highlight language="config">
@@ -164,31 +154,6 @@ serveur principal ou de serveur virtuel.
 <p>En outre, vous pouvez arriver au même résultat avec les liens
 symboliques, pourvu que <code>Options FollowSymLinks</code> soit activé
 sur votre serveur.</p>
-</section>
-
-<section id="vhosts"><title>Hébergement virtuel</title>
-<p>Bien qu'il soit possible de gérer les <a href="vhosts.html">serveurs
-virtuels avec mod_rewrite</a>, il s'agit rarement de la bonne méthode.
-Il est pratiquement toujours préférable de créer des blocs
-<directive module="core" type="section">VirtualHost</directive> individuels.
-Dans l'éventualité où vous devez gérer
-un grand nombre de serveurs virtuels, vous devez vous tourner vers
-<module>mod_vhost_alias</module> pour créer ces serveurs
-automatiquement.</p>
-
-<p>Il est aussi possible d'utiliser des modules comme <module>mod_macro</module> pour
-créer un grand nombre de serveurs virtuels dynamiquement.</p>
-
-<p>L'utilisation de <module>mod_rewrite</module> pour la création de
-serveurs virtuels peut se révéler appropriée si votre service
-d'hébergement ne vous permet pas d'accéder aux fichiers de configuration
-du serveur, et que vous soyez par conséquent obligé de passer par les
-fichiers <code>.htaccess</code>.</p>
-
-<p>Voir le document <a href="vhosts.html">création de serveurs virtuels
-avec mod_rewrite</a> pour plus de détails sur la manière d'y parvenir si
-cela semble être tout de même la meilleure approche.</p>
-
 </section>
 
 <section id="proxy"><title>Mandat simple</title>
@@ -228,6 +193,25 @@ lorsque d'autres <code>RewriteRule</code>s se trouvent dans la même portée,
 car elles agissent en général avant les directives
 <code>ProxyPass</code>, et peuvent ainsi les court-circuiter.</p>
 
+<p><directive module="mod_rewrite">RewriteRule</directive> s’avère vraiment
+utile pour ne mandater les requêtes que si le contenu n’existe pas localement
+— par exemple, lors de la migration d’un serveur vers un autre :</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
+</highlight>
+
+<p>Dans cet exemple, les requêtes pour des ressources qui n’ont pas encore été
+migrées sont mandatées silencieusement vers l’ancien serveur. Lors de la
+migration du contenu, les fichiers locaux ont la priorité. N’oubliez pas de
+toujours inclure une directive <directive
+module="mod_proxy">ProxyPassReverse</directive> pour être sûr que toute
+redirection effectuée par le serveur dorsal est correctement transmise au
+client.</p>
+
 </section>
 
 <section id="setenv"><title>Test de variables d'environnement</title>
@@ -261,6 +245,345 @@ l'évaluation des expressions</a> pour une vue d'ensemble des types
 d'expressions que vous pouvez utiliser dans les sections <directive
 module="core" type="section">If</directive>,
 ainsi que dans certaines directives.</p>
+
+</section>
+
+<section id="fallback-resource"><title>Contrôleur frontal / Routage des
+ressources</title>
+
+<p>Une utilisation très courante de <module>mod_rewrite</module> consiste à
+router toutes les requêtes pour des ressources non existantes vers un seul
+script de contrôle frontal (par exemple <code>index.php</code>). Il s’agit de la
+base du routage dans le cadre de la plus grande partie du web moderne.</p>
+
+<p>L’approche typique avec <module>mod_rewrite</module> est :</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [L]
+</highlight>
+
+<p>Cette opération peut être effectuée beaucoup plus simplement avec la
+directive <directive module="mod_dir">FallbackResource</directive> :</p>
+
+<highlight language="config">
+FallbackResource /index.php
+</highlight>
+
+<p>La directive <directive module="mod_dir">FallbackResource</directive> fait la
+même chose — les requêtes pour des fichiers et répertoires existants sont
+traitées normalement, toutes les autres étant routées vers la ressource
+spécifiée — mais sans la surcharge de travail et la complexité du moteur de
+réécriture. Elle fonctionne dans les deux contextes de configuration globale du
+serveur et des fichiers <code>.htaccess</code>.</p>
+
+<p>Pour désactiver une <code>FallbackResource</code> définie dans un répertoire
+parent :</p>
+
+<highlight language="config">
+FallbackResource disabled
+</highlight>
+
+</section>
+
+<section id="ifexpr"><title>Configuration conditionnelle avec des
+expressions rationnelles</title>
+
+<p>Dans de nombreux cas, l’utilisation de <directive
+module="mod_rewrite">RewriteCond</directive> peut être remplacée par la
+directive <directive module="core" type="section">If</directive> qui prend en
+charge une <a href="../expr.html">syntaxe des expressions</a> riche et s’intègre
+parfaitement avec les autres directives de httpd.</p>
+
+<p>Redirection basée sur un élément de la chaîne de paramètres :</p>
+
+<highlight language="config">
+&lt;If "%{QUERY_STRING} =~ /lang=fr/"&gt;
+    Redirect "/welcome" "/bienvenue"
+&lt;/If&gt;
+</highlight>
+
+<p>Restriction d’accès en fonction de la méthode de la requête :</p>
+
+<highlight language="config">
+&lt;If "%{REQUEST_METHOD} IN {'DELETE', 'PUT', 'PATCH'}"&gt;
+    Require ip 10.0.0.0/8
+&lt;/If&gt;
+</highlight>
+
+<p>Blocage des requêtes qui ne comportent pas d’en-tête Host (clients
+HTTP/1.0) :</p>
+
+<highlight language="config">
+&lt;If "-z req('Host')"&gt;
+    Require all denied
+&lt;/If&gt;
+</highlight>
+
+<p>Voir la <a href="../expr.html">documentation sur l’évaluation des
+expressions</a> pour une description complète de la syntaxe disponible dans les
+blocs <directive module="core" type="section">If</directive>.</p>
+
+</section>
+
+<section id="blocked-inline-images">
+
+      <title>Blocage du référencement à chaud (Hotlinking) d'images</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+	  <p>Le référencement à chaud consiste pour les autres sites à inclure
+	  directement vos images dans leurs pages en utilisant votre bande
+	  passante pour servir des contenus pour le site de quelqu'un d'autre.
+	  Vous pouvez empêcher cela sans utiliser
+	  <module>mod_rewrite</module>.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+    <dd>
+      <p>Utilisez la directive <directive
+      module="mod_setenvif">SetEnvIf</directive> avec la directive <directive
+      module="mod_authz_core">Require</directive> :</p>
+
+      <highlight language="config">
+SetEnvIf Referer example\.com localreferer
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
+    Require env localreferer
+&lt;/FilesMatch&gt;
+      </highlight>
+    </dd>
+
+    <dt>Discussion :</dt>
+
+    <dd>
+      <p>Si vous avez besoin d’une logique plus complexe — comme servir une
+      autre image aux référenceurs à chaud au lieu de rejeter la requête — vous
+      aurez peut-être besoin de <module>mod_rewrite</module>. Les exemples
+      suivants s’appuient sur l’en-tête <code>HTTP_REFERER</code> qui est
+      facultatif et peut être usurpé. La condition <code>!^$</code> autorise les
+      requêtes qui ne comportent aucun en-tête Referer, de sorte que les
+      utilisateurs qui saisissent l’URL directement, ou dont les navigateurs
+      suppriment cet en-tête ne soient pas bloqués.</p>
+
+      <p>Rejeter purement et simplement la requête :</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$" "-"                [F,NC]
+</highlight>
+
+      <p>Servir une image alternative :</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com"      [NC]
+RewriteRule "\.(gif|jpg|png)$" "/images/go-away.png"   [R,NC]
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="blocking-of-robots">
+
+  <title>Blocage des robots</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Vous voulez bloquer les requêtes persistantes d’un robot particulier ou
+      d’un agent utilisateur qui ignore votre <code>/robots.txt</code>.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Utilisez la directive <directive
+      module="mod_setenvif">SetEnvIfNoCase</directive> avec la directive
+      <directive module="mod_authz_core">Require</directive> :</p>
+
+      <highlight language="config">
+SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+&lt;Location "/secret/files"&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
+&lt;/Location&gt;
+      </highlight>
+    </dd>
+
+    <dt>Discussion :</dt>
+
+    <dd>
+      <p>Toute technique qui s’appuie sur la chaîne <code>USER_AGENT</code> peut
+      être facilement contournée, car cette chaîne peut être modifiée par le
+      client. Si vous subissez une attaque soutenue, vous devez la traiter à un
+      niveau supérieur, par exemple au niveau de votre pare-feu.</p>
+
+      <p>Si vous devez combiner la recherche de correspondance par agent
+      utilisateur et par adresse IP, <module>mod_rewrite</module> peut être
+      utilisé en remplacement :</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
+RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
+RewriteRule "^/secret/files/"      "-"                   [F]
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="host-deny">
+
+  <title>Interdire des hôtes dans une liste de rejets</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous souhaitons établir une liste des hôtes auxquels nous voulons
+      interdire l’accès à notre serveur.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Pour un simple blocage basé sur l’adresse IP, utilisez la directive
+      <directive module="mod_authz_host">Require</directive> directement :</p>
+
+      <highlight language="config">
+&lt;Location "/"&gt;
+    Require all granted
+    Require not ip 193.102.180.41
+    Require not ip 192.76.162.40
+&lt;/Location&gt;
+      </highlight>
+    </dd>
+
+    <dt>Discussion :</dt>
+
+    <dd>
+      <p>Si vous avez besoin d’une liste d’interdiction dynamique basée sur un
+      fichier (plutôt que d’énumérer des adresses IP dans la configuration),
+      vous pouvez utiliser <module>mod_rewrite</module> et sa directive
+      <directive module="mod_rewrite">RewriteMap</directive> :</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    hosts-deny  "txt:/path/to/hosts.deny"
+RewriteCond   "${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}" "!=NOT-FOUND" [OR]
+RewriteCond   "${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule   "^"                                      "-"           [F]
+</highlight>
+
+      <p>Le fichier de mappage contient une entrée par ligne, avec une adresse
+      IP ou un nom d’hôte comme clé et une valeur factice (parce que la
+      directive <directive module="mod_rewrite">RewriteMap</directive> requiert
+      des paires clé/valeur) :</p>
+
+<example>
+##  hosts.deny<br />
+193.102.180.41 -<br />
+192.76.162.40  -<br />
+</example>
+
+      <p>La seconde directive <directive
+      module="mod_rewrite">RewriteCond</directive> présuppose que
+      <code>HostnameLookups</code> est activé. Dans le cas contraire,
+      supprimer-la, ainsi que le drapeau <code>[OR]</code> de la première
+      condition.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="vhosts"><title>Serveurs virtuels</title>
+<p>Bien qu’il soit possible de gérer les <a href="vhosts.html">serveurs virtuels
+avec mod_rewrite</a>, il s’agit rarement de la bonne méthode. Le bon choix
+consiste pratiquement toujours à créer des blocs <directive module="core"
+type="section">VirtualHost</directive> individuels. Si vous devez gérer un très
+grand nombre de serveurs virtuels, choisissez plutôt d’utiliser
+<module>mod_vhost_alias</module> pour créer ces hôtes automatiquement.</p>
+
+<p>Des modules tels que <module>mod_macro</module> permettent aussi de créer un
+grand nombre de serveurs virtuels dynamiquement.</p>
+
+<p>Utiliser <module>mod_rewrite</module> pour la création de serveurs virtuels
+peut convenir si vous utilisez un service d’hébergement qui ne vous permet pas
+d’accéder aux fichiers de configuration du serveur, et que vous soyez par
+conséquent contraint d’utiliser des fichiers <code>.htaccess</code>.</p>
+
+<p>Voir le document <a href="vhosts.html">les serveurs virtuels avec
+mod_rewrite</a> pour plus de détails sur la manière de procéder si cette
+approche vous semble encore être la bonne.</p>
+
+</section>
+
+<section id="load-balancing">
+
+  <title>Répartition de charge</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Nous souhaitons répartir la charge entre plusieurs serveurs dorsaux.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Utilisez le module <module>mod_proxy_balancer</module> qui fournit une
+      solution de répartition de charge flexible et totalement fonctionnelle. Il
+      prend en charge plusieurs algorithmes de répartition, la persistance de
+      session, les contrôles de bon fonctionnement et une configuration
+      dynamique avec le gestionnaire de répartition de charge (Balancer Manager)
+      — toutes choses impossibles avec l’approche de
+      <module>mod_rewrite</module>.</p>
+
+<highlight language="config">
+&lt;Proxy "balancer://mycluster"&gt;
+    BalancerMember "http://one.example.com"
+    BalancerMember "http://two.example.com"
+    BalancerMember "http://three.example.com"
+&lt;/Proxy&gt;
+ProxyPass        "/"  "balancer://mycluster/"
+ProxyPassReverse "/"  "balancer://mycluster/"
+</highlight>
+
+    </dd>
+
+    <dt>Discussion :</dt>
+    <dd>
+
+<p>Il est possible de mettre en œuvre une répartition de charge aléatoire
+rudimentaire en utilisant <module>mod_rewrite</module> et une directive
+<directive module="mod_rewrite">RewriteMap</directive> de type
+<code>rnd</code> :</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
+</highlight>
+
+<p><module>mod_proxy_balancer</module> est cependant beaucoup plus flexible et
+fonctionnel que tout ce que vous pourrez « bricoler » en utilisant
+<module>mod_rewrite</module>, et correspond à l’approche recommandée.</p>
+
+    </dd>
+  </dl>
 
 </section>
 

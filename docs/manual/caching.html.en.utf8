@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Caching Guide - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Caching Guide</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/caching.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./tr/caching.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./tr/caching.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>This document supplements the <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
@@ -35,16 +33,16 @@
     It describes how to use the Apache HTTP Server's caching features to accelerate web and
     proxy serving, while avoiding common problems and misconfigurations.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#http-caching">Three-state RFC2616 HTTP caching</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#examples">Cache Setup Examples</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#socache-caching">General Two-state Key/Value Shared Object Caching</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#file-caching">Specialized File Caching</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#security">Security Considerations</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#http-caching">Three-state RFC2616 HTTP caching</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#examples">Cache Setup Examples</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#socache-caching">General Two-state Key/Value Shared Object Caching</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#file-caching">Specialized File Caching</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#security">Security Considerations</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introduction <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
     <p>The Apache HTTP server offers a range of caching features that
@@ -95,9 +93,9 @@
     <a href="urlmapping.html">Mapping URLs to the Filesystem</a> and
     <a href="content-negotiation.html">Content negotiation</a>.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="http-caching" id="http-caching">Three-state RFC2616 HTTP caching</a> <a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
+<h2 id="http-caching">Three-state RFC2616 HTTP caching <a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -418,15 +416,15 @@ Vary: negotiate,accept-language,accept-charset
       to decide on which of many variants to return to the client.</p>
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Cache Setup Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Cache Setup Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="./mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li></ul></td></tr></table>
 
-    <h3><a name="disk" id="disk">Caching to Disk</a></h3>
+    <h3 id="disk">Caching to Disk</h3>
       
 
       <p>The <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> module relies on specific backend store
@@ -530,7 +528,7 @@ CacheDirLength 1</pre>
       server is running.</p>
 
       <p class="figure">
-      <img src="images/caching_fig1.gif" alt="" width="600" height="406" /><br />
+      <img src="images/caching_fig1.gif" alt="" width="600" height="406"><br>
       <a id="figure1" name="figure1"><dfn>Figure 1</dfn></a>: Typical
       cache growth / clean sequence.</p>
 
@@ -540,7 +538,7 @@ CacheDirLength 1</pre>
       leave enough "grow room" following a clean.</p>
     
 
-    <h3><a name="memcache" id="memcache">Caching to memcached</a></h3>
+    <h3 id="memcache">Caching to memcached</h3>
       
 
       <p>Using the <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code> module, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
@@ -576,9 +574,9 @@ CacheSocache dbm:/path/to/datafile</pre>
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">General Two-state Key/Value Shared Object Caching</a> <a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
+<h2 id="socache-caching">General Two-state Key/Value Shared Object Caching <a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -602,7 +600,7 @@ CacheSocache dbm:/path/to/datafile</pre>
     <dd>Shared memory based shared object cache.</dd>
     </dl>
 
-    <h3><a name="mod_authn_socache-caching" id="mod_authn_socache-caching">Caching Authentication Credentials</a></h3>
+    <h3 id="mod_authn_socache-caching">Caching Authentication Credentials</h3>
       
 
       <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li></ul></td></tr></table>
@@ -612,7 +610,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
     
 
-    <h3><a name="mod_ssl-caching" id="mod_ssl-caching">Caching SSL Sessions</a></h3>
+    <h3 id="mod_ssl-caching">Caching SSL Sessions</h3>
       
 
       <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
@@ -622,9 +620,9 @@ CacheSocache dbm:/path/to/datafile</pre>
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-caching" id="file-caching">Specialized File Caching</a> <a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
+<h2 id="file-caching">Specialized File Caching <a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -639,7 +637,7 @@ CacheSocache dbm:/path/to/datafile</pre>
     options can help on systems where access to static files is
     slow.</p>
 
-    <h3><a name="filehandle" id="filehandle">File-Handle Caching</a></h3>
+    <h3 id="filehandle">File-Handle Caching</h3>
       
 
       <p>The act of opening a file can itself be a source of delay, particularly
@@ -685,7 +683,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
     
 
-    <h3><a name="inmemory" id="inmemory">In-Memory Caching</a></h3>
+    <h3 id="inmemory">In-Memory Caching</h3>
       
 
       <p>Serving directly from system memory is universally the fastest method
@@ -768,9 +766,9 @@ sys     0m0.000s</pre></div>
       
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Security Considerations <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
 
     <h3>Authorization and Access Control</h3>
@@ -877,11 +875,11 @@ sys     0m0.000s</pre></div>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/caching.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./tr/caching.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./tr/caching.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

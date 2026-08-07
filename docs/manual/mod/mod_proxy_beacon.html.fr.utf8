@@ -1,0 +1,466 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_beacon - Serveur HTTP Apache Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_proxy_beacon</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_beacon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_beacon.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Inscription dynamique comme membre d&rsquo;un r&eacute;partiteur de charge o&ugrave;
+les serveurs dorsaux s&rsquo;annoncent eux-m&ecirc;mes au mandataire inverse &agrave; l&rsquo;aide de
+datagrammes UDP unicast</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>proxy_beacon_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_proxy_beacon.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.5 du serveur HTTP Apache</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module permet &agrave; des serveurs dorsaux de <em>s&rsquo;annoncer eux-m&ecirc;mes</em>
+    &agrave; un mandataire inverse frontal qui les ajoute alors en tant que membre
+    actif (worker) d&rsquo;un r&eacute;partiteur de charge de
+    <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.  Lorsqu&rsquo;un serveur dorsal cesse de
+    s&rsquo;annoncer, le mandataire l&rsquo;enl&egrave;ve de la rotation. Cela permet une gestion
+    autonome (inscriptions et maintenance) de la liste des membres du
+    r&eacute;partiteur sans avoir &agrave; &eacute;diter la configuration du mandataire ou piloter le
+    <code>balancer-manager</code> &agrave; la main.</p>
+
+    <p>La communication utilise des datagrammes pleinement <strong>unicast
+    UDP</strong> (pas de multicast qui est filtr&eacute; sur la plupart des r&eacute;seaux et
+    ne passe pas sur l&rsquo;Internet public). Les donn&eacute;es sont transmises du serveur
+    dorsal vers le mandataire&nbsp;:</p>
+
+    <ul>
+      <li>Le mandataire inverse se lie &agrave; un socket UDP et <em>re&ccedil;oit</em> les
+      donn&eacute;es sur une adresse fixe (<code class="directive">ProxyBeaconListen</code>).</li>
+      <li>Chaque serveur dorsal <em>envoie</em> p&eacute;riodiquement un court
+      datagramme d&rsquo;annonce au mandataire
+      (<code class="directive">ProxyBeaconAddress</code>), indiquant son propre URL
+      routable (<code class="directive">ProxyBeaconAdvertise</code>).</li>
+    </ul>
+
+    <p>Les datagrammes sont envoy&eacute;s en mode &laquo;&nbsp;fire-and-forget&nbsp;&raquo;&nbsp;: une annonce
+    perdue est r&eacute;cup&eacute;r&eacute;e par la prochaine annonce p&eacute;riodique, et le
+    r&eacute;ordonnancement est rejet&eacute; par une v&eacute;rification d&rsquo;horodatage par serveur
+    dorsal&nbsp;; aucune connexion, reconnection ou couche de cadrage n&rsquo;est donc
+    n&eacute;cessaire.</p>
+
+    <p>Au niveau du mandataire, la directive
+    <code class="directive">ProxyBeaconBalancer</code> nomme le r&eacute;partiteur de charge
+    auquel des serveurs dorsaux qui se sont annonc&eacute;s ont &eacute;t&eacute; ajout&eacute;s. Les
+    changements d&rsquo;appartenance s&rsquo;appliquent en utilisant le m&ecirc;me m&eacute;canisme
+    interne que l&rsquo;interface web <code>balancer-manager</code>&nbsp;; un serveur
+    dorsal ajout&eacute; de cette mani&egrave;re se comporte donc exactement comme un
+    <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> configur&eacute;
+    statiquement ou ajout&eacute; manuellement, et est visible et &eacute;ditable dans
+    <code>balancer-manager</code>.</p>
+
+    <p>Ce module n&eacute;cessite les services de <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> et
+    <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>. Le travail d&rsquo;arri&egrave;re-plan (&eacute;coute,
+    publication, ajout et suppression de membres) est effectu&eacute; par un seul
+    processus enfant de <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code>&nbsp;; il n&rsquo;est donc pas
+    disponible avec le comportement du MPM <code>prefork</code> o&ugrave; ce singleton
+    ne peut pas s&rsquo;ex&eacute;cuter.</p>
+
+<div class="warning"><h3>Authentification</h3>
+    <p>Tout h&ocirc;te qui peut atteindre le port de r&eacute;ception du mandataire peut
+    aussi annoncer un URL de serveur dorsal arbitraire et faire que le
+    mandataire envoie le trafic du client &agrave; ce dernier (et une adresse source
+    UDP est facile &agrave; usurper). La directive
+    <code class="directive">ProxyBeaconSecret</code> est par cons&eacute;quent
+    <strong>requise</strong>&nbsp;: elle doit &ecirc;tre d&eacute;finie avec la m&ecirc;me valeur sur le
+    mandataire et sur chaque serveur dorsal, et le serveur refusera de d&eacute;marrer
+    si elle est omise sur un des serveurs impliqu&eacute;s. Les annonces sont
+    authentifi&eacute;es avec un code d&rsquo;authentification de message avec cl&eacute; (MAC) et
+    un horodatage, et le mandataire rejette toute annonce qui n&rsquo;est pas sign&eacute;e
+    de mani&egrave;re valable ou qui est trop ancienne. Il n&rsquo;existe pas de mode non
+    autentifi&eacute;.</p>
+</div>
+
+<div class="note"><h3>Confidentialit&eacute;</h3>
+    <p>Les annonces sont authentifi&eacute;es mais non chiffr&eacute;es&nbsp;; la charge utile
+    comporte des m&eacute;tadonn&eacute;es op&eacute;rationnelles (URLs de serveur dorsal) non
+    chiffr&eacute;es. La confidentialit&eacute; du transport (par exemple DTLS)
+    n&rsquo;est actuellement pas prise en charge et fera l&rsquo;objet d&rsquo;une couche
+    s&eacute;par&eacute;e.</p>
+</div>
+
+</div>
+<div id="quickview"><h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Exemple d&rsquo;utilisation</a></li>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconaddress">ProxyBeaconAddress</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconadvertise">ProxyBeaconAdvertise</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconbalancer">ProxyBeaconBalancer</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconinterval">ProxyBeaconInterval</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconlisten">ProxyBeaconListen</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconmaxskew">ProxyBeaconMaxSkew</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconsecret">ProxyBeaconSecret</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeacontimeout">ProxyBeaconTimeout</a></li>
+</ul>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_beacon">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_beacon">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li>
+<li><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="examples">Exemple d&rsquo;utilisation <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+    
+
+    <p>L&rsquo;exemple suivant configure un r&eacute;partiteur de charge &agrave; enregistrement
+    autonome. Les serveurs dorsaux n&rsquo;ont pas besoin de se conna&icirc;tre entre eux et
+    le mandataire n&rsquo;a pas besoin d&rsquo;entr&eacute;es <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> pr&eacute;d&eacute;clar&eacute;es &mdash; seulement
+    un r&eacute;partiteur vide avec de la place pour grossir.</p>
+
+    <p>Sur le <strong>mandataire inverse</strong>&nbsp;:</p>
+    <pre class="prettyprint lang-config"># R&eacute;ception des annonces des serveurs dorsaux sur
+# l&rsquo;interface r&eacute;seau de cluster (UDP).
+ProxyBeaconListen 0.0.0.0:5555
+ProxyBeaconSecret    "une_grande_phrase_secr&egrave;te_partag&eacute;e_al&eacute;atoire_de_cluster"
+ProxyBeaconBalancer  cluster
+
+# Un serveur dorsal est &eacute;ject&eacute; de la rotation s&rsquo;il ne
+# s&rsquo;annonce pas pendant 30&nbsp;secondes.
+ProxyBeaconTimeout   30
+
+# Un r&eacute;partiteur initialement vide avec des emplacements
+# libres pour les membres dynamiques.
+&lt;Proxy balancer://cluster&gt;
+  ProxySet growth=16
+&lt;/Proxy&gt;
+ProxyPass        "/" "balancer://cluster/"
+ProxyPassReverse "/" "balancer://cluster/"</pre>
+
+
+    <p>Sur chaque <strong>serveur dorsal</strong>&nbsp;:</p>
+    <pre class="prettyprint lang-config"># Annoncer au mandataire cette adresse routable de serveur dorsal
+# toutes les 10&nbsp;secondes (UDP).
+ProxyBeaconAddress   proxy.example.com:5555
+ProxyBeaconAdvertise http://10.0.0.5:8080
+ProxyBeaconSecret    "une_grande_phrase_secr&egrave;te_partag&eacute;e_al&eacute;atoire_de_cluster"
+ProxyBeaconInterval  10</pre>
+
+
+    <p>Au d&eacute;marrage d&rsquo;un serveur dorsal, ce dernier commence &agrave; s&rsquo;annoncer. Le
+    mandataire v&eacute;rifie la validit&eacute; de chaque annonce &agrave; l&rsquo;aide de la phrase
+    secr&egrave;te, ajoute <code>http://10.0.0.5:8080</code> comme membre de
+    <code>balancer://cluster</code>, et l&rsquo;active. Si ce serveur dorsal arr&ecirc;te de
+    s&rsquo;annoncer pendant une dur&eacute;e sup&eacute;rieure &agrave; la valeur de la directive
+    <code class="directive">ProxyBeaconTimeout</code>, le mandataire le d&eacute;sactive (en
+    l&rsquo;enlevant de la rotation)&nbsp;; si le serveur dorsal s&rsquo;annonce &agrave; nouveau, il
+    est r&eacute;activ&eacute;.</p>
+
+    <div class="note">
+    <p>Un serveur dorsal ajout&eacute; &agrave; l&rsquo;ex&eacute;cution occupe un des emplacements
+    du r&eacute;partiteur pour la dur&eacute;e de vie du processus serveur&nbsp;; plut&ocirc;t que de le
+    supprimer lorsqu&rsquo;il arr&ecirc;te de s&rsquo;annoncer, il est d&eacute;sactiv&eacute;, suivant en cela
+    le comportement du <code>balancer-manager</code> (qui peut ajouter des
+    membres &agrave; l&rsquo;ex&eacute;cution, mais pas les supprimer). La taille du r&eacute;partiteur
+    <code>augmente</code> jusqu&rsquo;au nombre maximal de serveurs dorsaux que vous
+    souhaitez enregistrer.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconaddress">Directive <span id="ProxyBeaconAddress">ProxyBeaconAddress</span> <a title="Lien permanent" href="#proxybeaconaddress" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse du mandataire inverse &agrave; laquelle un serveur dorsal envoie
+ses annonces</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconAddress <em>address:port</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconAddress</code> marque un serveur
+    comme <em>&eacute;metteur</em> d&rsquo;annonces (un serveur dorsal). Ce dernier envoie
+    des datagrammes UDP &agrave; l&rsquo;adresse <code class="directive">ProxyBeaconListen</code> du
+    mandataire sous la forme <em>adresse:port</em>, par exemple
+    <code>proxy.example.com:5555</code> (un pr&eacute;fixe de protocole tel que
+    <code>tcp://</code> est accept&eacute;, mais ignor&eacute;). &Eacute;tant donn&eacute; que UDP est sans
+    connexion, un serveur dorsal peut &ecirc;tre d&eacute;marr&eacute; avant que le mandataire soit
+    disponible&nbsp;: les datagrammes seront simplement supprim&eacute;s et continueront &agrave;
+    &ecirc;tre envoy&eacute;s selon l&rsquo;intervalle sp&eacute;cifi&eacute;.</p>
+
+    <p>Utilisez la directive <code class="directive">ProxyBeaconAdvertise</code> pour
+    sp&eacute;cifier l&rsquo;URL routable qu&rsquo;annonce le serveur dorsal. Les
+    directives <code class="directive">ProxyBeaconListen</code> et
+    <code class="directive">ProxyBeaconAddress</code> sont mutuellement exclusives sur
+    un m&ecirc;me serveur.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconadvertise">Directive <span id="ProxyBeaconAdvertise">ProxyBeaconAdvertise</span> <a title="Lien permanent" href="#proxybeaconadvertise" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L&rsquo;URL routable qu&rsquo;annonce le serveur dorsal au mandataire inverse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconAdvertise <em>url</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconAdvertise</code> permet de
+    d&eacute;finir l&rsquo;adresse &agrave; laquelle le serveur dorsal peut &ecirc;tre atteint (par
+    exemple <code>http://10.0.0.5:8080</code>) et que le mandataire ajoutera en
+    tant que membre <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>.
+    Il doit s&rsquo;agir d&rsquo;un URL complet comme <code>scheme://host[:port]</code> que
+    le mandataire pourra atteindre &mdash; pas l&rsquo;adresse d&rsquo;&eacute;coute locale &mdash;
+    et qui sera valid&eacute; lors de l&rsquo;analyse de la configuration.</p>
+
+    <p>Cette directive est utilis&eacute;e sur un serveur dorsal avec la directive
+    <code class="directive">ProxyBeaconAddress</code>. Si elle est omise, le serveur
+    dorsal envoie quand-m&ecirc;me un signe de vie, mais pas d&rsquo;URL&nbsp;; le mandataire
+    journalise alors l&rsquo;annonce sans ajouter de membre.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconbalancer">Directive <span id="ProxyBeaconBalancer">ProxyBeaconBalancer</span> <a title="Lien permanent" href="#proxybeaconbalancer" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du r&eacute;partiteur de charge auquel les serveurs dorsaux
+annonc&eacute;s sont ajout&eacute;s</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconBalancer <em>name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconBalancer</code> permet de nommer
+    le r&eacute;partiteur, sur le mandataire inverse, dans lequel les serveurs dorsaux
+    annonc&eacute;s sont ins&eacute;r&eacute;s en tant que membres. Indiquez seulement le nom du
+    r&eacute;partiteur (par exemple <code>cluster</code> pour
+    <code>balancer://cluster</code>)&nbsp;; le pr&eacute;fixe <code>balancer://</code> est
+    accept&eacute; et supprim&eacute;.</p>
+
+    <p>Le r&eacute;partiteur nomm&eacute; doit exister et disposer d&rsquo;emplacements vides.
+    D&eacute;clarez-le dans un bloc <code class="directive"><a href="../mod/mod_proxy.html#<proxy>">&lt;Proxy&gt;</a></code> avec un param&egrave;tre
+    <code>growth</code> (ou utilisez la valeur de la directive <code class="directive"><a href="../mod/mod_proxy.html#balancergrowth">BalancerGrowth</a></code>) de fa&ccedil;on qu&rsquo;il y ait des
+    emplacements libres pour l&rsquo;ajout dynamique de membres. Cette directive est
+    utilis&eacute;e conjointement avec la directive
+    <code class="directive">ProxyBeaconListen</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconinterval">Directive <span id="ProxyBeaconInterval">ProxyBeaconInterval</span> <a title="Lien permanent" href="#proxybeaconinterval" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>P&eacute;riodicit&eacute; de l&rsquo;envoi d&rsquo;annonces par le serveur dorsal</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconInterval <em>interval</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ProxyBeaconInterval 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconInterval</code> permet de d&eacute;finir
+    la p&eacute;riodicit&eacute; &agrave; laquelle un serveur dorsal (un serveur
+    <code class="directive">ProxyBeaconAddress</code>) envoie ses annonces. Elle utilise
+    la syntaxe de la directive <a href="directive-dict.html#Syntax">time-interval</a> et sa valeur s&rsquo;exprime
+    par d&eacute;faut en secondes&nbsp;; sa valeur par d&eacute;faut est 5&nbsp;secondes.</p>
+
+    <p>L&rsquo;intervalle doit &ecirc;tre significativement plus petit que la valeur de la
+    directive <code class="directive">ProxyBeaconTimeout</code>, de fa&ccedil;on qu&rsquo;une perte
+    occasionnelle ou qu&rsquo;une annonce retard&eacute;e ne provoquent pas l&rsquo;&eacute;viction d&rsquo;un
+    serveur dorsal op&eacute;rationnel.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconlisten">Directive <span id="ProxyBeaconListen">ProxyBeaconListen</span> <a title="Lien permanent" href="#proxybeaconlisten" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse sur laquelle le mandataire inverse re&ccedil;oit les annonces des
+serveurs dorsaux</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconListen [<em>address</em>][:<em>port</em>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconListen</code> marque un serveur
+    comme <em>r&eacute;cepteur</em> &laquo;&nbsp;phare&nbsp;&raquo; (le mandataire inverse). Il lie un socket
+    UDP &agrave; l&rsquo;adresse sp&eacute;cifi&eacute;e, par exemple <code>0.0.0.0:5555</code> pour
+    effectuer la r&eacute;ception sur toutes les interfaces. Un pr&eacute;fixe de protocole
+    (tel que <code>tcp://</code>) est accept&eacute; et ignor&eacute;.</p>
+
+    <p>L&rsquo;adresse et le port sont facultatifs et, s&rsquo;ils sont omis, sont h&eacute;rit&eacute;s
+    de l&rsquo;adresse et du port de ce serveur (ses directives <code class="directive"><a href="../mod/core.html#listen">Listen</a></code> et <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>). Si aucun argument n&rsquo;est fourni,
+    l&rsquo;&eacute;couteur du &laquo;&nbsp;phare&nbsp;&raquo; lie les propres adresse et port du serveur&nbsp;; si
+    seule l&rsquo;adresse est donn&eacute;e, le port est h&eacute;rit&eacute;, et ainsi de suite. &Eacute;tant
+    donn&eacute; que UDP et TCP sont des espaces de port ind&eacute;pendants, lier le socket
+    du &laquo;&nbsp;phare&nbsp;&raquo; au port du serveur n&rsquo;entre <em>pas</em> en collision avec
+    l&rsquo;&eacute;couteur TCP du serveur &mdash; faisant que le canal du &laquo;&nbsp;phare&nbsp;&raquo; partage
+    le point de terminaison du service, qui identifie aussi le mandataire aupr&egrave;s
+    des serveurs dorsaux avec son adresse r&eacute;elle (comme l&rsquo;&eacute;couteur effectue ses
+    liens dans un processus enfant non privil&eacute;gi&eacute;, un port privil&eacute;gi&eacute; comme&nbsp;80
+    ou&nbsp;443 ne peut pas &ecirc;tre partag&eacute; de cette mani&egrave;re&nbsp;; n&rsquo;utilisez le port du
+    serveur que s&rsquo;il est non privil&eacute;gi&eacute;).</p>
+
+    <p>Les serveurs dorsaux envoient leurs annonces &agrave; l&rsquo;adresse sp&eacute;cifi&eacute;e par la
+    directive <code class="directive">ProxyBeaconAddress</code>. Cette derni&egrave;re doit
+    &ecirc;tre utilis&eacute;e conjointement avec la directive
+    <code class="directive">ProxyBeaconBalancer</code>&nbsp;; dans le cas contraire, les
+    annonces sont re&ccedil;ues et journalis&eacute;es, mais aucun membre n&rsquo;est ajout&eacute;. Les
+    directives <code class="directive">ProxyBeaconListen</code> et
+    <code class="directive">ProxyBeaconAddress</code> sont mutuellement exclusives sur
+    un m&ecirc;me serveur.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconmaxskew">Directive <span id="ProxyBeaconMaxSkew">ProxyBeaconMaxSkew</span> <a title="Lien permanent" href="#proxybeaconmaxskew" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Age maximal autoris&eacute; d&rsquo;une annonce sign&eacute;e</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconMaxSkew <em>interval</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconMaxSkew</code> permet de d&eacute;finir
+    la fen&ecirc;tre anti-r&eacute;&eacute;mission utilis&eacute;e lorsque la directive
+    <code class="directive">ProxyBeaconSecret</code> est configur&eacute;e&nbsp;: le mandataire
+    rejette toute annonce dont l&rsquo;horodatage sign&eacute; diff&egrave;re du temps actuel d&rsquo;une
+    valeur sup&eacute;rieure &agrave; celle de la directive
+    <code class="directive">ProxyBeaconMaxSkew</code>, et cela dans les deux directions.
+    Cette directive utilise la syntaxe de la directive <a href="directive-dict.html#Syntax">time-interval</a> et sa valeur s&rsquo;exprime
+    par d&eacute;faut en secondes.</p>
+
+    <p>Si elle n&rsquo;est pas d&eacute;finie, sa valeur par d&eacute;faut est de 30&nbsp;secondes. Une
+    fen&ecirc;tre plus large tol&egrave;re des &eacute;carts d&rsquo;horloge plus grands entre les h&ocirc;tes&nbsp;;
+    une fen&ecirc;tre plus petite restreint la tol&eacute;rance sur la v&eacute;rification de
+    fra&icirc;cheur. Notez que la v&eacute;rification de la croissance stricte des
+    horodatages d&rsquo;un m&ecirc;me serveur (voir la directive
+    <code class="directive">ProxyBeaconSecret</code>) bloque les r&eacute;&eacute;missions, quelle que
+    soit la valeur de cette fen&ecirc;tre. Cette directive est utilis&eacute;e au niveau du
+    mandataire.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconsecret">Directive <span id="ProxyBeaconSecret">ProxyBeaconSecret</span> <a title="Lien permanent" href="#proxybeaconsecret" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Phrase secr&egrave;te partag&eacute;e &agrave; l&rsquo;avance pour authentifier les annonces
+des serveurs dorsaux</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconSecret <em>secret</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconSecret</code> permet de d&eacute;finir
+    une phrase secr&egrave;te partag&eacute;e &agrave; l&rsquo;avance au sein de la grappe de serveurs.
+    Elle doit &ecirc;tre d&eacute;finie avec la <em>m&ecirc;me</em> valeur sur le mandataire
+    inverse et sur chaque serveur dorsal. Le serveur dorsal (l&rsquo;&eacute;metteur) signe
+    chaque annonce avec un message-authentication code (un SipHash MAC) avec
+    cl&eacute;, d&eacute;riv&eacute; de la phrase secr&egrave;te et avec un horodatage&nbsp;; le mandataire (le
+    r&eacute;cepteur) recalcule le MAC et v&eacute;rifie l&rsquo;horodatage, en rejetant toute
+    annonce falsifi&eacute;e, usurp&eacute;e ou r&eacute;envoy&eacute;e. Les messages r&eacute;envoy&eacute;s sont
+    intercept&eacute;s de deux mani&egrave;res&nbsp;: une fen&ecirc;tre de fra&icirc;cheur (directive
+    <code class="directive">ProxyBeaconMaxSkew</code>) rejette les horodatages anciens,
+    et une v&eacute;rification pour chaque serveur dorsal rejette toute annonce dont
+    l&rsquo;horodatage n&rsquo;avance pas strictement&nbsp;; ainsi, un message captur&eacute; et renvoy&eacute;
+    (par exemple pour emp&ecirc;cher l&rsquo;&eacute;viction d&rsquo;un serveur dorsal &eacute;teint) sera
+    rejet&eacute;.</p>
+
+    <p>Cette directive est requise sur chaque serveur impliqu&eacute; dans le canal du
+    mandataire phare &mdash; le mandataire
+    (<code class="directive">ProxyBeaconListen</code>) et chaque serveur dorsal
+    (<code class="directive">ProxyBeaconAddress</code>). Si elle est omise sur un de ces
+    serveurs, le serveur refusera de d&eacute;marrer&nbsp;; il n&rsquo;existe pas de mode non
+    authentifi&eacute;.</p>
+
+    <p>Toute annonce dont le MAC n&rsquo;est pas valable et r&eacute;cent sera rejet&eacute;e. Si
+    les phrases secr&egrave;tes du mandataire et d&rsquo;un serveur dorsal diff&egrave;rent, les
+    annonces de ce dernier seront rejet&eacute;es silencieusement (et journalis&eacute;es), ce
+    qui donne l&rsquo;impression que le serveur dorsal n&rsquo;a jamais atteint le
+    r&eacute;partiteur de charge.</p>
+
+    <p>&Eacute;tant donn&eacute; que la phrase secr&egrave;te est stock&eacute;e dans le fichier de
+    configuration, d&eacute;finissez les permissions de ce dernier comme s&rsquo;il
+    s&rsquo;agissait d&rsquo;une cl&eacute; priv&eacute;e.</p>
+
+    <div class="note"><h3>Synchronisation de l&rsquo;horloge</h3>
+    <p>La protection contre la r&eacute;&eacute;mission bas&eacute;e sur l&rsquo;horodatage compare le
+    moment de l&rsquo;annonce avec l&rsquo;horloge du mandataire&nbsp;; le mandataire et les
+    serveurs dorsaux doivent donc avoir des horloges correctement synchronis&eacute;es
+    (par exemple &agrave; l&rsquo;aide de NTP). Voir la directive
+    <code class="directive">ProxyBeaconMaxSkew</code>.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeacontimeout">Directive <span id="ProxyBeaconTimeout">ProxyBeaconTimeout</span> <a title="Lien permanent" href="#proxybeacontimeout" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&eacute;e maximale de l&rsquo;absence d&rsquo;annonce d&rsquo;un serveur dorsal au bout
+de laquelle le mandataire enl&egrave;ve ce dernier de la rotation</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBeaconTimeout <em>interval</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ProxyBeaconTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>La directive <code class="directive">ProxyBeaconTimeout</code> permet de d&eacute;finir
+    la dur&eacute;e maximale pendant laquelle le mandataire attendra une annonce en
+    provenance d&rsquo;un serveur dorsal avant de d&eacute;sactiver ce dernier (en l&rsquo;enlevant
+    de la rotation). Si ce serveur dorsal renvoie une annonce par la suite, il
+    est r&eacute;activ&eacute;. Cette directive utilise
+    la syntaxe de la directive <a href="directive-dict.html#Syntax">time-interval</a> et sa valeur s&rsquo;exprime
+    par d&eacute;faut en secondes.</p>
+
+    <p>La valeur par d&eacute;faut, <code>0</code>, d&eacute;sactive compl&egrave;tement l&rsquo;&eacute;viction&nbsp;:
+    les serveurs dorsaux sont ajout&eacute;s lorsqu&rsquo;ils s&rsquo;annoncent mais ne sont jamais
+    d&eacute;sactiv&eacute;s automatiquement. D&eacute;finissez cette directive &agrave; un multiple de
+    (quelques fois) la valeur de la directive
+    <code class="directive">ProxyBeaconInterval</code> du serveur dorsal pour mettre en
+    œuvre une maintenance autonome des adh&eacute;sions. Cette directive est d&eacute;finie
+    sur le mandataire.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_beacon.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_beacon.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

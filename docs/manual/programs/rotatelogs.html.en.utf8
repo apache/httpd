@@ -1,48 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>rotatelogs - Piped logging program to rotate Apache logs - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - Piped logging program to rotate Apache logs</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/programs/rotatelogs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
      <p><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> is a simple program for use in
      conjunction with Apache's piped logfile feature.  It supports
      rotation based on a time interval or maximum size of the log.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#portability">Portability</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Synopsis</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#portability">Portability</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Synopsis</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Synopsis <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
 
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
@@ -58,9 +56,9 @@
      <var>logfile</var>
      <var>rotationtime</var>|<var>filesize</var>(B|K|M|G)
      [ <var>offset</var> ]</code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Options <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
 <dl>
 
@@ -146,12 +144,12 @@ processed in real time by a further tool in the chain.</dd>
 log files at startup and during rotation.  With -n 3, the series of log 
 files opened would be "logfile", "logfile.1", "logfile.2", then overwriting 
 "logfile". 
-<br />
+<br>
 When this program first opens "logfile", the file will only be truncated if <code>-t</code> is also provided. Every subsequent rotation will
 always begin with truncation of the target file.  For size based rotation without <code>-t</code> and existing log files in place,
 this option may result in unintuitive behavior such as initial log entries being sent to "logfile.1", and entries in "logfile.1" not being preserved
 even if later "logfile.n" have not yet been used.
-<br />
+<br>
 Available in 2.4.5 and later.</dd>
 
 <dt><code><var>logfile</var></code></dt>
@@ -211,9 +209,9 @@ In most cases, <code>-l</code> should be used instead of specifying
 an offset.</dd>
 
 </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
 <div class="example"><pre class="prettyprint lang-config">CustomLog "|bin/rotatelogs /var/log/logfile 86400" common</pre>
 </div>
@@ -272,9 +270,9 @@ second of the month, <code>/var/log/logfile.02</code> is truncated and new entri
 will be added to the top. This example keeps approximately 1 months worth of 
 logs without external maintenance.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="portability" id="portability">Portability</a> <a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
+<h2 id="portability">Portability <a title="Permanent link" href="#portability" class="permalink">&para;</a></h2>
 
 <p>The following logfile format string substitutions should be
 supported by all <code>strftime(3)</code> implementations, see
@@ -311,12 +309,12 @@ extensions.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/rotatelogs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/rotatelogs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

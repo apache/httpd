@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>RewriteMap の使用 - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteMap の使用</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/rewritemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -51,18 +49,18 @@
 内容を理解することが重要です。</div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">はじめに</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#int">int: 内部関数</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#txt">txt: プレーンテキストマップ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rnd">rnd: ランダム化プレーンテキスト</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbm">dbm: DBM ハッシュファイル</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#prg">prg: 外部書き換えプログラム</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbd">dbd または fastdbd: SQL クエリ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#summary">まとめ</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">はじめに</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#int">int: 内部関数</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#txt">txt: プレーンテキストマップ</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rnd">rnd: ランダム化プレーンテキスト</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbm">dbm: DBM ハッシュファイル</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#prg">prg: 外部書き換えプログラム</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbd">dbd または fastdbd: SQL クエリ</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#summary">まとめ</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">はじめに</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">はじめに <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
    <p>
@@ -89,7 +87,7 @@
     <p class="indent">
       <strong>
         <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
-        <code>}</code> <br /> <code>${</code> <em>MapName</em> <code>:</code>
+        <code>}</code> <br> <code>${</code> <em>MapName</em> <code>:</code>
         <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
       </strong>
     </p>
@@ -130,9 +128,9 @@
 
 <p>以下のセクションでは、使用可能なさまざまな <em>MapType</em> を
 説明し、それぞれの例を示します。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="int" id="int">int: 内部関数</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+<h2 id="int">int: 内部関数 <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
     
 
     <p>MapType に <code>int</code> を使用すると、MapSource は利用可能な
@@ -144,13 +142,13 @@
     </p>
 
     <ul>
-      <li><strong>toupper</strong>:<br />
+      <li><strong>toupper</strong>:<br>
              キーをすべて大文字に変換します。</li>
-      <li><strong>tolower</strong>:<br />
+      <li><strong>tolower</strong>:<br>
              キーをすべて小文字に変換します。</li>
-      <li><strong>escape</strong>:<br />
+      <li><strong>escape</strong>:<br>
              キー内の特殊文字を 16 進エンコーディングに変換します。</li>
-      <li><strong>unescape</strong>:<br />
+      <li><strong>unescape</strong>:<br>
              キー内の 16 進エンコーディングを特殊文字に戻します。</li>
     </ul>
 
@@ -172,9 +170,9 @@ RewriteRule "(.*)" "${lc:$1}" [R]</pre>
     </p>
     </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="txt" id="txt">txt: プレーンテキストマップ</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+<h2 id="txt">txt: プレーンテキストマップ <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
     
 
     <p>MapType に <code>txt</code> を使用すると、MapSource はプレーンテキストの
@@ -185,9 +183,9 @@ RewriteRule "(.*)" "${lc:$1}" [R]</pre>
     <p>有効なテキスト書き換えマップファイルの構文は以下の通りです:</p>
 
     <div class="example"><p><code>
-      # コメント行<br />
-      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
-      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # コメント<br />
+      # コメント行<br>
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br>
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # コメント<br>
     </code></p></div>
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> が呼び出されると、
@@ -209,14 +207,14 @@ RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre
     以下が含まれます:</p>
 
     <div class="example"><h3>製品から ID へのマップ</h3><p><code>
-##<br />
-##  productmap.txt - 製品から ID へのマップファイル<br />
-##<br />
-<br />
-television 993<br />
-stereo     198<br />
-fishingrod 043<br />
-basketball 418<br />
+##<br>
+##  productmap.txt - 製品から ID へのマップファイル<br>
+##<br>
+<br>
+television 993<br>
+stereo     198<br>
+fishingrod 043<br>
+basketball 418<br>
 telephone  328
     </code></p></div>
 
@@ -243,9 +241,9 @@ telephone  328
     </p>
     </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rnd" id="rnd">rnd: ランダム化プレーンテキスト</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+<h2 id="rnd">rnd: ランダム化プレーンテキスト <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
     
 
     <p>MapType に <code>rnd</code> を使用すると、MapSource はプレーンテキストの
@@ -260,11 +258,11 @@ telephone  328
     送信されます。</p>
 
     <div class="example"><h3>書き換えマップファイル</h3><p><code>
-##<br />
-##  map.txt -- 書き換えマップ<br />
-##<br />
-<br />
-static   www1|www2|www3|www4<br />
+##<br>
+##  map.txt -- 書き換えマップ<br>
+##<br>
+<br>
+static   www1|www2|www3|www4<br>
 dynamic  www5|www6
     </code></p></div>
 <p><strong>設定ディレクティブ</strong></p>
@@ -289,9 +287,9 @@ RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]</pre>
 static   www1|www1|www2|www3|www4
     </code></p></div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbm" id="dbm">dbm: DBM ハッシュファイル</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+<h2 id="dbm">dbm: DBM ハッシュファイル <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
     
 
     <p>MapType に <code>dbm</code> を使用すると、MapSource はマッピングで
@@ -344,9 +342,9 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 </p>
 </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="prg" id="prg">prg: 外部書き換えプログラム</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+<h2 id="prg">prg: 外部書き換えプログラム <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
 
     <p>MapType に <code>prg</code> を使用すると、MapSource はマッピング動作を
     提供する実行可能プログラムへのファイルシステムパスです。これは
@@ -428,9 +426,9 @@ Python の例では、<code>print()</code> に <code>flush=True</code> を
 </ul>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbd" id="dbd">dbd または fastdbd: SQL クエリ</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+<h2 id="dbd">dbd または fastdbd: SQL クエリ <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
     
 
     <p>MapType に <code>dbd</code> または <code>fastdbd</code> を使用すると、
@@ -457,9 +455,9 @@ Python の例では、<code>print()</code> に <code>flush=True</code> を
     データベースドライバに渡されるため、データベースで必要な
     ルール (大文字小文字の区別など) に従う必要があります。</p></div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">まとめ</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+<h2 id="summary">まとめ <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
     
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブは
@@ -476,15 +474,15 @@ Python の例では、<code>print()</code> に <code>flush=True</code> を
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/rewritemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

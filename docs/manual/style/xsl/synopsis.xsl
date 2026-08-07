@@ -23,14 +23,14 @@
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+                  xmlns="">
 
 <!-- ==================================================================== -->
 <!-- <modulesynopsis>                                                     -->
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="modulesynopsis">
-<html xml:lang="{$doclang}" lang="{$doclang}">
+<html lang="{$doclang}">
     <xsl:call-template name="head" />&lf;
 
     <body>&lf;
@@ -372,12 +372,11 @@
         <!-- Directive heading gets both mixed case and lowercase      -->
         <!-- anchors, and includes lt/gt only for "section" directives -->
         <h2>
+            <xsl:attribute name="id"><xsl:value-of select="$lowername" /></xsl:attribute>
             <xsl:choose>
             <xsl:when test="$message
                             [@id='directive']/@before-name = 'yes'">
-                <a id="{$lowername}" name="{$lowername}">
-                    <xsl:value-of select="$message[@id='directive']" />
-                </a>
+                <xsl:value-of select="$message[@id='directive']" />
 
                 <xsl:choose>
                 <xsl:when test="$message
@@ -390,19 +389,19 @@
                 </xsl:otherwise>
                 </xsl:choose>
 
-                <a id="{$directivename}" name="{$directivename}">
+                <span id="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
-                </a>
+                </span>
             </xsl:when>
 
             <xsl:otherwise>
-                <a id="{$directivename}" name="{$directivename}">
+                <span id="{$directivename}">
                     <xsl:if test="@type='section'">&lt;</xsl:if>
                     <xsl:value-of select="name" />
                     <xsl:if test="@type='section'">&gt;</xsl:if>
-                </a>
+                </span>
 
                 <xsl:choose>
                 <xsl:when test="$message
@@ -415,9 +414,7 @@
                 </xsl:otherwise>
                 </xsl:choose>
 
-                <a id="{$lowername}" name="{$lowername}">
-                    <xsl:value-of select="$message[@id='directive']" />
-                </a>
+                <xsl:value-of select="$message[@id='directive']" />
             </xsl:otherwise>
             </xsl:choose>
         <xsl:text> </xsl:text>

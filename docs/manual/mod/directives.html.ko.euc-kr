@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>지시어 목록 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="directive-index"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">모듈</a></div><div id="preamble"><h1>지시어 목록</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -496,6 +494,7 @@
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdhttpproxycacertificatefile">MDHttpProxyCACertificateFile</a></li>
 <li><a href="mod_md.html#mdinitialdelay">MDInitialDelay</a></li>
 <li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
@@ -568,6 +567,7 @@
 <li><a href="mod_policy.html#policyvaryurl">PolicyVaryURL</a></li>
 <li><a href="mod_policy.html#policyversion">PolicyVersion</a></li>
 <li><a href="mod_policy.html#policyversionurl">PolicyVersionURL</a></li>
+<li><a href="motorz.html#pollersperchild">PollersPerChild</a></li>
 <li><a href="mod_privileges.html#privilegesmode">PrivilegesMode</a></li>
 <li><a href="core.html#protocol">Protocol</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
@@ -579,6 +579,14 @@
 <li><a href="mod_proxy.html#proxyasyncdelay">ProxyAsyncDelay</a></li>
 <li><a href="mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout</a></li>
 <li><a href="mod_proxy.html#proxybadheader">ProxyBadHeader</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconaddress">ProxyBeaconAddress</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconadvertise">ProxyBeaconAdvertise</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconbalancer">ProxyBeaconBalancer</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconinterval">ProxyBeaconInterval</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconlisten">ProxyBeaconListen</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconmaxskew">ProxyBeaconMaxSkew</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconsecret">ProxyBeaconSecret</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeacontimeout">ProxyBeaconTimeout</a></li>
 <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
@@ -781,6 +789,8 @@
 <li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
 <li><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></li>
+<li><a href="mod_ssl.html#sslproxystoreuri">SSLProxyStoreURI</a></li>
+<li><a href="mod_ssl.html#sslproxytrusturi">SSLProxyTrustURI</a></li>
 <li><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify</a></li>
 <li><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
 <li><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed</a></li>
@@ -802,7 +812,10 @@
 <li><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew</a></li>
 <li><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></li>
 <li><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></li>
+<li><a href="mod_ssl.html#sslstoreuri">SSLStoreURI</a></li>
 <li><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
+<li><a href="mod_ssl.html#ssltrustrequesturi">SSLTrustRequestURI</a></li>
+<li><a href="mod_ssl.html#ssltrusturi">SSLTrustURI</a></li>
 <li><a href="mod_ssl.html#sslusername">SSLUserName</a></li>
 <li><a href="mod_ssl.html#sslusestapling">SSLUseStapling</a></li>
 <li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>
@@ -853,15 +866,15 @@
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directives.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

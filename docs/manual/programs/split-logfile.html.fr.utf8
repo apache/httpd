@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -10,54 +8,54 @@
       -->
 <title>split-logfile - Eclatement des journaux en fonction des serveurs
 virtuels - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>split-logfile - Eclatement des journaux en fonction des serveurs
 virtuels</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/split-logfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/split-logfile.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/split-logfile.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>Ce script perl permet d'extraire un journal pour chaque serveur
-    virtuel Ã&nbsp; partir d'un journal d'accÃ¨s global du serveur web. Pour
+    virtuel &Atilde;&nbsp; partir d'un journal d'acc&Atilde;&uml;s global du serveur web. Pour
     que ce script fonctionne, le premier champ de chaque ligne du
-    journal global doit contenir l'identitÃ© du serveur virtuel ; ce
-    champ aura Ã©tÃ© ajoutÃ© Ã&nbsp; la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> via la variable
+    journal global doit contenir l'identit&Atilde;&copy; du serveur virtuel ; ce
+    champ aura &Atilde;&copy;t&Atilde;&copy; ajout&Atilde;&copy; &Atilde;&nbsp; la directive <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> via la variable
     "<code>%v</code>".
     </p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="split-logfile" id="split-logfile">Mode d'emploi</a> <a title="Lien permanent" href="#split-logfile" class="permalink">&para;</a></h2>
+<h2 id="split-logfile">Mode d'emploi <a title="Lien permanent" href="#split-logfile" class="permalink">&para;</a></h2>
 
-    <p>CrÃ©ation d'un fichier journal comportant l'identitÃ© du serveur
-    virtuel considÃ©rÃ© :</p>
+    <p>Cr&Atilde;&copy;ation d'un fichier journal comportant l'identit&Atilde;&copy; du serveur
+    virtuel consid&Atilde;&copy;r&Atilde;&copy; :</p>
 
     <pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined_plus_vhost
 CustomLog "logs/access_log" combined_plus_vhost</pre>
 
 
-    <p>Un fichier journal sera crÃ©Ã© dans le rÃ©pertoire Ã&nbsp; partir duquel
-    vous exÃ©cutez le script pour chaque serveur virtuel qui apparaÃ®t
-    dans le journal global. Ces fichiers journaux seront nommÃ©s Ã&nbsp; partir
-    du nom du serveur virtuel considÃ©rÃ©, avec l'extension
+    <p>Un fichier journal sera cr&Atilde;&copy;&Atilde;&copy; dans le r&Atilde;&copy;pertoire &Atilde;&nbsp; partir duquel
+    vous ex&Atilde;&copy;cutez le script pour chaque serveur virtuel qui appara&Atilde;&reg;t
+    dans le journal global. Ces fichiers journaux seront nomm&Atilde;&copy;s &Atilde;&nbsp; partir
+    du nom du serveur virtuel consid&Atilde;&copy;r&Atilde;&copy;, avec l'extension
     <code>.log</code>.</p>
 
-    <p>Le fichier journal global est lu depuis l'entrÃ©e standard stdin.
-    Les entrÃ©es de ce journal sont alors ajoutÃ©es au journal du serveur
+    <p>Le fichier journal global est lu depuis l'entr&Atilde;&copy;e standard stdin.
+    Les entr&Atilde;&copy;es de ce journal sont alors ajout&Atilde;&copy;es au journal du serveur
     virtuel correspondant.</p>
 
     <div class="example"><p><code>split-logfile &lt; access_log</code></p></div>
@@ -66,10 +64,10 @@ CustomLog "logs/access_log" combined_plus_vhost</pre>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/split-logfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/split-logfile.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/split-logfile.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

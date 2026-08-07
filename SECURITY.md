@@ -8,9 +8,9 @@ demonstrate how an attacker can violate the security model.
 ## Supported Versions
 
 Currently the only supported version is the latest patch release of the
-`2.4.x` stable branch. Vulnerabilities which exist *only* in
-unreleased branches (such as `trunk`) may be treated as normal bug
-reports.
+`2.4.x` stable branch.  Vulnerabilities which exist *only* in
+unreleased branches (such as `trunk`) should be reported as normal bug
+reports via <https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2>.
 
 ## Reporting Vulnerabilities
 
@@ -26,7 +26,7 @@ Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html)
 
 If an issue is reported against an aspect of the security model which
 is not documented here, it MUST be accompanied by a clear description
-of that aspect the model, showing why a trust boundary exists and how
+of that aspect of the model, showing why a trust boundary exists and how
 it is violated. It is helpful to use references to vulnerabilities
 previously disclosed by this project, the httpd documentation
 (see docs/manual), and to demonstrate common usage patterns.
@@ -36,10 +36,17 @@ Any security vulnerability SHOULD be reproducible:
 1. under a reasonable, supported configuration.
 2. without using third-party modules, or modules explicitly designed
   for debugging.
-3. under a standard build on a supported platform.
+3. using the *latest* released sources published via <https://httpd.apache.org/download.cgi#apache24>.
+4. under a standard build, on a supported platform.
 
 Issues which are reproducible only using instrumented builds (such as
 ASAN, or under valgrind) should be clearly explained as such.
+
+Issues which depend on a specially crafted server configuration MUST
+include references (such as public documentation) which show why that
+is a configuration that would arise naturally in common deployments.
+Special considerations also apply to any issues requiring `.htaccess`
+files, per the [Delegated Configuration](#delegated-configuration) section.
 
 ## Basic model
 
@@ -47,7 +54,7 @@ Processing of requests by remote untrusted users (HTTP clients) MUST
 NOT crash or prematurely terminate server processes, nor gain code
 execution privileges.  In the default configuration, timeouts are
 applied to most aspects of HTTP request handling such that a single
-client SHOULD NOT tie up a single processing thread or process
+idle client connection SHOULD NOT tie up a single processing thread or process
 indefinitely.
 
 It is the responsibility of the server administrator to tune and
@@ -74,7 +81,7 @@ configurable limits; e.g. LimitRequestFields limits the RAM
 consumption by HTTP headers, LimitXMLRequestBody limits the RAM
 consumption by parsing XML request documents.
 
-Example vulnerabilities which violated the model: CVE-2004-0942
+Example vulnerabilities which violated the model: CVE-2004-0942.
 
 ## Privilege separation on Unix platforms
 
@@ -100,18 +107,31 @@ model.
 Example vulnerabilities which violated the model: CVE-2007-3304,
 CVE-2012-0031.
 
-## Delegated Configuration 
+## Delegated Configuration
 
 Server configuration can be delegated to trusted local site authors by
-allowing use of .htaccess files in non-default configurations.  Local
-site authors are trusted to not attack the server with malformed or
-malicious .htaccess files (for example, files of excessive size).
+allowing use of .htaccess files in some configurations (see
+https://httpd.apache.org/docs/2.4/howto/htaccess.html).  Site authors
+gain a significant degree of control over, and access to, the server
+at run-time:
+
+* site authors are trusted to not attack the server with malformed or
+  malicious .htaccess files
+
+* site authors gain access to some data (such as files or the
+  environment) which is otherwise restricted.
+
+Examples of malicious `.htaccess` files include, but are not limited
+to:
+
+* configuration files of excessive size
+* configurations using deliberately constructed regular expressions
+  which are expensive to evaluate
 
 In configurations supporting in-process scripting language interpreters
-which are not sandboxed, such as `mod_lua` or `mod_php`, local site
-authors have equivalent privileges to the less-privileged server user.
-
-(### TODO something about AllowOverride)
+which are not sandboxed, such as `mod_lua` or `mod_php`,
+site authors have exactly equivalent privileges to the user which the
+server runs as.
 
 ## Dependent Services
 

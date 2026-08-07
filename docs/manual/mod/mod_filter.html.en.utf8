@@ -1,40 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_filter - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_filter</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_filter.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_filter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_filter.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Context-sensitive smart filter configuration module</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>filter_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_filter.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>filter_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_filter.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module enables smart, context-sensitive configuration of
@@ -51,26 +49,26 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#terms">Filter Declarations, Providers and Chains</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">Configuring the Chain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#errordocs">Filtering and Response Status</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#upgrade">Upgrading from Apache HTTP Server 2.2 Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol Handling</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#smart">Smart Filtering</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#terms">Filter Declarations, Providers and Chains</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">Configuring the Chain</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#errordocs">Filtering and Response Status</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#upgrade">Upgrading from Apache HTTP Server 2.2 Configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protocol">Protocol Handling</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterchain">FilterChain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterdeclare">FilterDeclare</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterprotocol">FilterProtocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filterprovider">FilterProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filtertrace">FilterTrace</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#filterchain">FilterChain</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#filterdeclare">FilterDeclare</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#filterprotocol">FilterProtocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#filterprovider">FilterProvider</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#filtertrace">FilterTrace</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_filter">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_filter">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="smart" id="smart">Smart Filtering</a> <a title="Permanent link" href="#smart" class="permalink">&para;</a></h2>
+<h2 id="smart">Smart Filtering <a title="Permanent link" href="#smart" class="permalink">&para;</a></h2>
     <p>In the traditional filtering model, filters are inserted unconditionally
     using <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> and family.
     Each filter then needs to determine whether to run, and there is little
@@ -82,11 +80,11 @@
     filters can be inserted based on complex boolean
     <a href="../expr.html">expressions</a> This generalises the limited
     flexibility offered by <code class="directive">AddOutputFilterByType</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="terms" id="terms">Filter Declarations, Providers and Chains</a> <a title="Permanent link" href="#terms" class="permalink">&para;</a></h2>
+<h2 id="terms">Filter Declarations, Providers and Chains <a title="Permanent link" href="#terms" class="permalink">&para;</a></h2>
     <p class="figure">
-    <img src="../images/mod_filter_old.gif" width="160" height="310" alt="[This image displays the traditional filter model]" /><br />
+    <img src="../images/mod_filter_old.gif" width="160" height="310" alt="[This image displays the traditional filter model]"><br>
     <dfn>Figure 1:</dfn> The traditional filter model</p>
 
     <p>In the traditional model, output filters are a simple chain
@@ -96,7 +94,7 @@
     the outcome of the handler.</p>
 
     <p class="figure">
-    <img src="../images/mod_filter_new.gif" width="423" height="331" alt="[This image shows the mod_filter model]" /><br />
+    <img src="../images/mod_filter_new.gif" width="423" height="331" alt="[This image shows the mod_filter model]"><br>
     <dfn>Figure 2:</dfn> The <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> model</p>
 
     <p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> works by introducing indirection into
@@ -112,9 +110,9 @@
     harness, each of which may have any number of providers.  A special
     case is that of a single provider with unconditional dispatch: this
     is equivalent to inserting the provider filter directly into the chain.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">Configuring the Chain</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">Configuring the Chain <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     <p>There are three stages to configuring a filter chain with
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>. For details of the directives, see below.</p>
 
@@ -144,18 +142,18 @@
     filters declared, offering the flexibility to insert filters at the
     beginning or end of the chain, remove a filter, or clear the chain.</dd>
 </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errordocs" id="errordocs">Filtering and Response Status</a> <a title="Permanent link" href="#errordocs" class="permalink">&para;</a></h2>
+<h2 id="errordocs">Filtering and Response Status <a title="Permanent link" href="#errordocs" class="permalink">&para;</a></h2>
     <p>mod_filter normally only runs filters on responses with
     HTTP status 200 (OK).  If you want to filter documents with
     other response statuses, you can set the <var>filter-errordocs</var>
     environment variable, and it will work on all responses
     regardless of status.  To refine this further, you can use
     expression conditions with <code class="directive">FilterProvider</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrade" id="upgrade">Upgrading from Apache HTTP Server 2.2 Configuration</a> <a title="Permanent link" href="#upgrade" class="permalink">&para;</a></h2>
+<h2 id="upgrade">Upgrading from Apache HTTP Server 2.2 Configuration <a title="Permanent link" href="#upgrade" class="permalink">&para;</a></h2>
     <p>The <code class="directive"><a href="#filterprovider">FilterProvider</a></code>
     directive has changed from httpd 2.2: the <var>match</var> and
     <var>dispatch</var> arguments are replaced with a single but
@@ -170,9 +168,9 @@
     are also supported.</p>
     <p>Note that the match no longer support substring matches.  They can be
     replaced by regular expression matches.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <dl>
     <dt>Server side Includes (SSI)</dt>
     <dd>A simple case replacing <code class="directive">AddOutputFilterByType</code>.
@@ -227,9 +225,9 @@ FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
 
     </dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Protocol Handling</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">Protocol Handling <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
     <p>Historically, each filter is responsible for ensuring that whatever
     changes it makes are correctly represented in the HTTP response headers,
     and that it does not run when it would make an illegal change.  This
@@ -269,8 +267,8 @@ FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
     as modules in common use are designed to work with 2.0.
     Modules using it should test it carefully.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a> <a title="Permanent link" href="#addoutputfilterbytype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="addoutputfilterbytype"><span id="AddOutputFilterByType">AddOutputFilterByType</span> Directive <a title="Permanent link" href="#addoutputfilterbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigns an output filter to a particular media-type</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
@@ -316,7 +314,7 @@ being moved to <code class="module"><a href="../mod/mod_filter.html">mod_filter<
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, or
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section)
-    will replace — not add to — any definitions inherited from a
+    will replace &mdash; not add to &mdash; any definitions inherited from a
     broader context. This is the same behavior as
     <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>.</p>
 
@@ -350,8 +348,8 @@ AddOutputFilterByType DEFLATE text/html text/plain
 <li><a href="../filter.html">filters</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterChain" id="FilterChain">FilterChain</a> <a name="filterchain" id="filterchain">Directive</a> <a title="Permanent link" href="#filterchain" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="filterchain"><span id="FilterChain">FilterChain</span> Directive <a title="Permanent link" href="#filterchain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the filter chain</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterChain [+=-@!]<var>smart-filter-name</var> <var>...</var></code></td></tr>
@@ -386,8 +384,8 @@ AddOutputFilterByType DEFLATE text/html text/plain
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterDeclare" id="FilterDeclare">FilterDeclare</a> <a name="filterdeclare" id="filterdeclare">Directive</a> <a title="Permanent link" href="#filterdeclare" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="filterdeclare"><span id="FilterDeclare">FilterDeclare</span> Directive <a title="Permanent link" href="#filterdeclare" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare a smart filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterDeclare <var>smart-filter-name</var> <var>[type]</var></code></td></tr>
@@ -410,8 +408,8 @@ AddOutputFilterByType DEFLATE text/html text/plain
     or <code>NETWORK</code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterProtocol" id="FilterProtocol">FilterProtocol</a> <a name="filterprotocol" id="filterprotocol">Directive</a> <a title="Permanent link" href="#filterprotocol" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="filterprotocol"><span id="FilterProtocol">FilterProtocol</span> Directive <a title="Permanent link" href="#filterprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Deal with correct HTTP protocol handling</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProtocol <var>smart-filter-name</var> [<var>provider-name</var>]
@@ -466,8 +464,8 @@ AddOutputFilterByType DEFLATE text/html text/plain
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterProvider" id="FilterProvider">FilterProvider</a> <a name="filterprovider" id="filterprovider">Directive</a> <a title="Permanent link" href="#filterprovider" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="filterprovider"><span id="FilterProvider">FilterProvider</span> Directive <a title="Permanent link" href="#filterprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Register a content filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FilterProvider <var>smart-filter-name</var> <var>provider-name</var>
@@ -498,8 +496,8 @@ for a complete reference and examples.</li>
 <li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilterTrace" id="FilterTrace">FilterTrace</a> <a name="filtertrace" id="filtertrace">Directive</a> <a title="Permanent link" href="#filtertrace" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="filtertrace"><span id="FilterTrace">FilterTrace</span> Directive <a title="Permanent link" href="#filtertrace" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
@@ -535,10 +533,10 @@ for a complete reference and examples.</li>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_filter.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_filter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_filter.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

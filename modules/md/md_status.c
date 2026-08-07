@@ -23,6 +23,8 @@
 #include <apr_time.h>
 #include <apr_date.h>
 
+#include <httpd.h>
+
 #include "md_json.h"
 #include "md.h"
 #include "md_acme.h"
@@ -326,7 +328,7 @@ apr_status_t md_status_get_json(md_json_t **pjson, apr_array_header_t *mds,
     int i;
     
     json = md_json_create(p);
-    md_json_sets(MOD_MD_VERSION, json, MD_KEY_VERSION, NULL);
+    md_json_sets(AP_SERVER_BASEREVISION, json, MD_KEY_VERSION, NULL);
     for (i = 0; i < mds->nelts; ++i) {
         md = APR_ARRAY_IDX(mds, i, const md_t *);
         status_get_md_json(&mdj, md, reg, ocsp, 0, p);

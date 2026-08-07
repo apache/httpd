@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148:1933739 (outdated) -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -198,9 +198,10 @@
     "install" à la ligne de commande du makefile va provoquer la
     construction d'une distribution complète sous forme d'un paquetage
     dans le sous-répertoire <code>DIST</code>. Vous pouvez simplement
-    installer Apache en copiant la distribution créée précédemment à la
+    installer Apache en copiant la distribution créée précédemment par les
+    makefiles à la
     racine d'un volume Netware (voir <a href="#comp">Compilation
-    d'Apache pour NetWare</a> ci-dessous).</p>
+    d'Apache httpd pour NetWare</a> ci-dessous).</p>
 
   </section>
 

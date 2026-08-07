@@ -1,90 +1,88 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Güvenlik İpuçları - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>G&uuml;venlik İpu&ccedil;ları - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Güvenlik İpuçları</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">&Ccedil;eşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>G&uuml;venlik İpu&ccedil;ları</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
-    ipuçları.  Öneriler kısmen Apache'ye özel kısmen de genel olacaktır.</p>
+    ipu&ccedil;ları.  &Ouml;neriler kısmen Apache'ye &ouml;zel kısmen de genel olacaktır.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Güncel Tutma</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dos">Hizmet Reddi (DoS) Saldırıları</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Sunucu Taraflı İçerik Yerleştirme</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI Genelinde</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi"><code>ScriptAlias</code>'sız CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi"><code>ScriptAlias</code>'lı CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Devingen içerikli kaynaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dynamicsec">Devingen içeriğin güvenliği</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Sistem Ayarlarının Korunması</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Sunucu dosyalarının öntanımlı olarak korunması</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Günlüklerin İzlenmesi</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#merging">Yapılandırma bölümlerinin birleştirilmesi</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#uptodate">G&uuml;ncel Tutma</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dos">Hizmet Reddi (DoS) Saldırıları</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssi">Sunucu Taraflı İ&ccedil;erik Yerleştirme</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi">CGI Genelinde</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#nsaliasedcgi"><code>ScriptAlias</code>'sız CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#saliasedcgi"><code>ScriptAlias</code>'lı CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dynamic">Devingen i&ccedil;erikli kaynaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dynamicsec">Devingen i&ccedil;eriğin g&uuml;venliği</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#systemsettings">Sistem Ayarlarının Korunması</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protectserverfiles">Sunucu dosyalarının &ouml;ntanımlı olarak korunması</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#watchyourlogs">G&uuml;nl&uuml;klerin İzlenmesi</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#merging">Yapılandırma b&ouml;l&uuml;mlerinin birleştirilmesi</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="uptodate" id="uptodate">Güncel Tutma</a> <a title="Permanent link" href="#uptodate" class="permalink">&para;</a></h2>
+<h2 id="uptodate">G&uuml;ncel Tutma <a title="Permanent link" href="#uptodate" class="permalink">&para;</a></h2>
 
-    <p>Apache HTTP Sunucusu iyi bir güvenlik sicilinin yanında güvenlik
-      konularıyla oldukça ilgili bir geliştirici topluluğuna sahiptir. Fakat,
-      bir yazılımın dağıtılmasının ardından küçük ya da büyük bazı sorunların
-      keşfedilmesi kaçınılmazdır. Bu sebeple, yazılım güncellemelerinden
-      haberdar olmak oldukça önem kazanır. HTTP sunucunuzu doğrudan
-      Apache'den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
-      ile ilgili bilgileri tam zamanında alabilmek için <a href="http://httpd.apache.org/lists.html#http-announce">Apache
-      HTTP Sunucusu Duyuru Listesi</a>ne mutlaka üye olmanızı öneririz.
-      Apache yazılımının üçüncü parti dağıtımlarını yapanların da buna benzer
+    <p>Apache HTTP Sunucusu iyi bir g&uuml;venlik sicilinin yanında g&uuml;venlik
+      konularıyla olduk&ccedil;a ilgili bir geliştirici topluluğuna sahiptir. Fakat,
+      bir yazılımın dağıtılmasının ardından k&uuml;&ccedil;&uuml;k ya da b&uuml;y&uuml;k bazı sorunların
+      keşfedilmesi ka&ccedil;ınılmazdır. Bu sebeple, yazılım g&uuml;ncellemelerinden
+      haberdar olmak olduk&ccedil;a &ouml;nem kazanır. HTTP sunucunuzu doğrudan
+      Apache'den temin ediyorsanız yeni s&uuml;r&uuml;mler ve g&uuml;venlik g&uuml;ncellemeleri
+      ile ilgili bilgileri tam zamanında alabilmek i&ccedil;in <a href="http://httpd.apache.org/lists.html#http-announce">Apache
+      HTTP Sunucusu Duyuru Listesi</a>ne mutlaka &uuml;ye olmanızı &ouml;neririz.
+      Apache yazılımının &uuml;&ccedil;&uuml;nc&uuml; parti dağıtımlarını yapanların da buna benzer
       hizmetleri vardır.</p>
 
-    <p>Şüphesiz, bir HTTP sunucusu, sunucu kodunda bir sorun olmasa da
+    <p>Ş&uuml;phesiz, bir HTTP sunucusu, sunucu kodunda bir sorun olmasa da
       tehlike altındadır. Eklenti kodları, CGI betikleri hatta işletim
-      sisteminden kaynaklanan sorunlar nedeniyle bu ortaya çıkabilir. Bu
-      bakımdan, sisteminizdeki tüm yazılımların sorunları ve güncellemeleri
+      sisteminden kaynaklanan sorunlar nedeniyle bu ortaya &ccedil;ıkabilir. Bu
+      bakımdan, sisteminizdeki t&uuml;m yazılımların sorunları ve g&uuml;ncellemeleri
       hakkında bilgi sahibi olmalısınız.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dos" id="dos">Hizmet Reddi (DoS) Saldırıları</a> <a title="Permanent link" href="#dos" class="permalink">&para;</a></h2>
+<h2 id="dos">Hizmet Reddi (DoS) Saldırıları <a title="Permanent link" href="#dos" class="permalink">&para;</a></h2>
     
 
-    <p>Tüm ağ sunucuları, istemcilerin sistem kaynaklarından yararlanmalarını
-      engellemeye çalışan hizmet reddi saldırılarına (HRS) maruz kalabilir.
-      Bu tür saldırıları tamamen engellemek mümkün değildir, fakat
-      yarattıkları sorunları azaltmak için bazı şeyler yapabilirsiniz.</p>
+    <p>T&uuml;m ağ sunucuları, istemcilerin sistem kaynaklarından yararlanmalarını
+      engellemeye &ccedil;alışan hizmet reddi saldırılarına (HRS) maruz kalabilir.
+      Bu t&uuml;r saldırıları tamamen engellemek m&uuml;mk&uuml;n değildir, fakat
+      yarattıkları sorunları azaltmak i&ccedil;in bazı şeyler yapabilirsiniz.</p>
 
-    <p>Çoğunlukla en etkili anti-HRS aracı bir güvenlik duvarı veya başka bir
-      işletim sistemi yapılandırmasıdır. Örneğin, çoğu güvenlik duvarı
+    <p>&Ccedil;oğunlukla en etkili anti-HRS aracı bir g&uuml;venlik duvarı veya başka bir
+      işletim sistemi yapılandırmasıdır. &Ouml;rneğin, &ccedil;oğu g&uuml;venlik duvarı
       herhangi bir IP adresinden aynı anda yapılan bağlantıların sayısına bir
-      sınırlama getirmek üzere yapılandırılabilir. Böylece basit saldırılar
+      sınırlama getirmek &uuml;zere yapılandırılabilir. B&ouml;ylece basit saldırılar
       engellenebilir. Ancak bunun dağıtık hizmet reddi saldırılarına (DHRS)
       karşı bir etkisi olmaz.</p>
 
@@ -93,246 +91,246 @@
 
     <ul>
       <li><code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code>
-        yönergesi bir istemcinin isteği göndermek için harcadığı zamanı
+        y&ouml;nergesi bir istemcinin isteği g&ouml;ndermek i&ccedil;in harcadığı zamanı
         sınırlamayı sağlar.</li>
 
-      <li>HRS'ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> yönergesinin değeri düşürülmelidir. Birkaç
-        saniye gibi mümkün olduğunca düşük bir ayar uygun olabilir. Ancak
+      <li>HRS'ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> y&ouml;nergesinin değeri d&uuml;ş&uuml;r&uuml;lmelidir. Birka&ccedil;
+        saniye gibi m&uuml;mk&uuml;n olduğunca d&uuml;ş&uuml;k bir ayar uygun olabilir. Ancak
         <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> başka işlemlerde de
-        kullanıldığından çok düşük değerler, örneğin, uzun süre çalışan CGI
-        betiklerinde sorunlar çıkmasına sebep olabilir.</li>
+        kullanıldığından &ccedil;ok d&uuml;ş&uuml;k değerler, &ouml;rneğin, uzun s&uuml;re &ccedil;alışan CGI
+        betiklerinde sorunlar &ccedil;ıkmasına sebep olabilir.</li>
 
-      <li>HRS'ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> yönergesinin değeri de düşürülebilir.
-        Hatta bazı siteler başarımı arttırmak amacıyla <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> yönergesi üzerinden kalıcı
+      <li>HRS'ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> y&ouml;nergesinin değeri de d&uuml;ş&uuml;r&uuml;lebilir.
+        Hatta bazı siteler başarımı arttırmak amacıyla <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> y&ouml;nergesi &uuml;zerinden kalıcı
         bağlantıları tamamen kapatabilirler.</li>
 
-      <li>Zaman aşımıyla ilgili yönergeler bakımından diğer modüller de
+      <li>Zaman aşımıyla ilgili y&ouml;nergeler bakımından diğer mod&uuml;ller de
         araştırılmalıdır.</li>
 
       <li><code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>,
       <code class="directive"><a href="../mod/core.html#limitrequestfields">LimitRequestFields</a></code>,
       <code class="directive"><a href="../mod/core.html#limitrequestfieldsize">LimitRequestFieldSize</a></code>,
       <code class="directive"><a href="../mod/core.html#limitrequestline">LimitRequestLine</a></code> ve
-      <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> yönergeleri,
-        istemci girdileri ile tetiklenen özkaynak tüketimini sınırlamak için
+      <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code> y&ouml;nergeleri,
+        istemci girdileri ile tetiklenen &ouml;zkaynak t&uuml;ketimini sınırlamak i&ccedil;in
         yapılandırılırken dikkatli olunmalıdır.</li>
 
       <li>İşletim sisteminiz desteklediği takdirde, işletim sisteminin isteği
-        işleyen kısmını yüksüz bırakmak için <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> yönergesinin etkin olmasını sağlamalısınız.
-        Bu, Apache HTTP Sunucusunda zaten öntanımlı olarak etkindir.
-        Yapacağınız şey işletim sistemi çekirdeğini buna göre yapılandırmak
+        işleyen kısmını y&uuml;ks&uuml;z bırakmak i&ccedil;in <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> y&ouml;nergesinin etkin olmasını sağlamalısınız.
+        Bu, Apache HTTP Sunucusunda zaten &ouml;ntanımlı olarak etkindir.
+        Yapacağınız şey işletim sistemi &ccedil;ekirdeğini buna g&ouml;re yapılandırmak
         olacaktır.</li>
 
-      <li>Sunucu tarafından özkaynakları tüketmeden aynı anda işlenebilecek
-        bağlantıların sayısını sınırlamak için <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesini kullanın. Ayrıca, <a href="perf-tuning.html">başarım arttırma belgesine</a> de
+      <li>Sunucu tarafından &ouml;zkaynakları t&uuml;ketmeden aynı anda işlenebilecek
+        bağlantıların sayısını sınırlamak i&ccedil;in <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> y&ouml;nergesini kullanın. Ayrıca, <a href="perf-tuning.html">başarım arttırma belgesine</a> de
         bakabilirsiniz.</li>
 
-      <li>HRS'lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
+      <li>HRS'lerin etkilerini azaltmak i&ccedil;in aynı andaki bağlantı sayısını
         arttırabilecek evreli <a href="../mpm.html">MPM</a>'lerden birini
         kullanmak iyi olabilir. Dahası, <code class="module"><a href="../mod/event.html">event</a></code> MPM'i
-        her bağlantıya yeni bir evre atanmaması için eşzamansız işlem yapar.
-        OpenSSL kütüphanesinin doğası nedeniyle
+        her bağlantıya yeni bir evre atanmaması i&ccedil;in eşzamansız işlem yapar.
+        OpenSSL k&uuml;t&uuml;phanesinin doğası nedeniyle
         <code class="module"><a href="../mod/event.html">event</a></code> MPM'i <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ve diğer girdi
-        süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
-        <code class="module"><a href="../mod/worker.html">worker</a></code> MPM'inin davranışına geri döner.</li>
+        s&uuml;zge&ccedil;leri ile hen&uuml;z uyumlu değildir. Bu durumlarda,
+        <code class="module"><a href="../mod/worker.html">worker</a></code> MPM'inin davranışına geri d&ouml;ner.</li>
 
       <li><a href="http://modules.apache.org/">http://modules.apache.org/</a>
         adresinde, belli istemci davranışlarını sınırlayacak ve HRS ile
-        ilgili sorunları azaltmaya yardımcı olacak üçüncü parti modüller
+        ilgili sorunları azaltmaya yardımcı olacak &uuml;&ccedil;&uuml;nc&uuml; parti mod&uuml;ller
         bulunabilir.</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverroot" id="serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a> <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
+<h2 id="serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
     
 
     <p>Normalde, Apache root kullanıcı tarafından başlatılır ve hizmetleri
-      sunarken <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> yönergesi
-      tarafından tanımlanan kullanıcının aidiyetinde çalışır. Root tarafından
-      çalıştırılan komutlarda olduğu gibi, root olmayan kullanıcıların
+      sunarken <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> y&ouml;nergesi
+      tarafından tanımlanan kullanıcının aidiyetinde &ccedil;alışır. Root tarafından
+      &ccedil;alıştırılan komutlarda olduğu gibi, root olmayan kullanıcıların
       yapacakları değişikliklerden korunmak konusunda da dikkatli
       olmalısınız. Dosyaların sadece root tarafından yazılabilir olmasını
-      sağlamak yeterli değildir, bu dizinler ve üst dizinler için de
-      yapılmalıdır. Örneğin, sunucu kök dizininin
+      sağlamak yeterli değildir, bu dizinler ve &uuml;st dizinler i&ccedil;in de
+      yapılmalıdır. &Ouml;rneğin, sunucu k&ouml;k dizininin
       <code>/usr/local/apache</code> olmasına karar verdiyseniz, bu dizini
-      root olarak şöyle oluşturmanız önerilir:</p>
+      root olarak ş&ouml;yle oluşturmanız &ouml;nerilir:</p>
 
     <div class="example"><p><code>
-      mkdir /usr/local/apache <br />
-      cd /usr/local/apache <br />
-      mkdir bin conf logs <br />
-      chown 0 . bin conf logs <br />
-      chgrp 0 . bin conf logs <br />
+      mkdir /usr/local/apache <br>
+      cd /usr/local/apache <br>
+      mkdir bin conf logs <br>
+      chown 0 . bin conf logs <br>
+      chgrp 0 . bin conf logs <br>
       chmod 755 . bin conf logs
     </code></p></div>
 
     <p><code>/</code>, <code>/usr</code>, <code>/usr/local</code>
       dizinlerinde sadece root tarafından değişiklik yapılabileceği kabul
-      edilir. <code class="program"><a href="../programs/httpd.html">httpd</a></code> çalıştırılabilirini kurarken de benzer
-      bir önlemin alındığından emin olmalısınız:</p>
+      edilir. <code class="program"><a href="../programs/httpd.html">httpd</a></code> &ccedil;alıştırılabilirini kurarken de benzer
+      bir &ouml;nlemin alındığından emin olmalısınız:</p>
 
     <div class="example"><p><code>
-      cp httpd /usr/local/apache/bin <br />
-      chown 0 /usr/local/apache/bin/httpd <br />
-      chgrp 0 /usr/local/apache/bin/httpd <br />
+      cp httpd /usr/local/apache/bin <br>
+      chown 0 /usr/local/apache/bin/httpd <br>
+      chgrp 0 /usr/local/apache/bin/httpd <br>
       chmod 511 /usr/local/apache/bin/httpd
     </code></p></div>
 
     <p>Diğer kullanıcıların değişiklik yapabileceği bir dizin olarak bir
       <code>htdocs</code> dizini oluşturabilirsiniz. Bu dizine root
-      tarafından çalıştırılabilecek dosyalar konulmamalı ve burada root
-      tarafından hiçbir dosya oluşturulmamalıdır.</p>
+      tarafından &ccedil;alıştırılabilecek dosyalar konulmamalı ve burada root
+      tarafından hi&ccedil;bir dosya oluşturulmamalıdır.</p>
 
-    <p>Diğer kullanıcılara root tarafından yazılabilen ve çalıştırılabilen
+    <p>Diğer kullanıcılara root tarafından yazılabilen ve &ccedil;alıştırılabilen
       dosyalarda değişiklik yapma hakkını tanırsanız, onlara root
-      kullanıcısını ele geçirilebilme hakkını da tanımış olursunuz. Örneğin,
-      biri <code class="program"><a href="../programs/httpd.html">httpd</a></code> çalıştırılabilirini zararlı bir programla
-      değiştirebilir ve o programı tekrar çalıştırdığınız sırada program
-      yapacağını yapmış olur. Günlükleri kaydettiğiniz dizin herkes
-      tarafından yazılabilen bir dizin olduğu takdirde, birileri bir günlük
+      kullanıcısını ele ge&ccedil;irilebilme hakkını da tanımış olursunuz. &Ouml;rneğin,
+      biri <code class="program"><a href="../programs/httpd.html">httpd</a></code> &ccedil;alıştırılabilirini zararlı bir programla
+      değiştirebilir ve o programı tekrar &ccedil;alıştırdığınız sırada program
+      yapacağını yapmış olur. G&uuml;nl&uuml;kleri kaydettiğiniz dizin herkes
+      tarafından yazılabilen bir dizin olduğu takdirde, birileri bir g&uuml;nl&uuml;k
       dosyasını bir sistem dosyasına sembolik bağ haline getirerek root
       kullanıcısının bu dosyaya ilgisiz şeyler yazmasına sebep olabilir.
-      Günlüklerin dosyaları herkes tarafından yazılabilir olduğu takdirde ise
+      G&uuml;nl&uuml;klerin dosyaları herkes tarafından yazılabilir olduğu takdirde ise
       birileri dosyaya yanıltıcı veriler girebilir.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Sunucu Taraflı İçerik Yerleştirme</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
+<h2 id="ssi">Sunucu Taraflı İ&ccedil;erik Yerleştirme <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
     
 
-    <p>SSI sayfaları bir sunucu yöneticisi açısından çeşitli olası risklere
+    <p>SSI sayfaları bir sunucu y&ouml;neticisi a&ccedil;ısından &ccedil;eşitli olası risklere
       kaynaklık edebilir.</p>
 
-    <p>İlk risk, sunucu yükündeki artış olasılığıdır. Tüm SSI sayfaları,  SSI
-      kodu içersin içermesin Apache tarafından çözümlenir. Bu küçük bir artış
-      gibi görünürse de bir paylaşımlı sunucu ortamında önemli bir yük haline
+    <p>İlk risk, sunucu y&uuml;k&uuml;ndeki artış olasılığıdır. T&uuml;m SSI sayfaları,  SSI
+      kodu i&ccedil;ersin i&ccedil;ermesin Apache tarafından &ccedil;&ouml;z&uuml;mlenir. Bu k&uuml;&ccedil;&uuml;k bir artış
+      gibi g&ouml;r&uuml;n&uuml;rse de bir paylaşımlı sunucu ortamında &ouml;nemli bir y&uuml;k haline
       gelebilir.</p>
 
     <p>SSI sayfaları, CGI betikleriyle ilgili riskleri de taşır. <code>exec
       cmd</code> elemanı kullanılarak bir SSI sayfasından herhangi bir CGI
       betiğini veya bir sistem programını Apache'nin aidiyetinde olduğu
-      kullanıcının yetkisiyle çalıştırmak mümkündür.</p>
+      kullanıcının yetkisiyle &ccedil;alıştırmak m&uuml;mk&uuml;nd&uuml;r.</p>
 
-    <p>SSI sayfalarının yararlı özelliklerinden yararlanırken güvenliğini de
+    <p>SSI sayfalarının yararlı &ouml;zelliklerinden yararlanırken g&uuml;venliğini de
       arttırmanın bazı yolları vardır.</p>
 
-    <p>Sunucu yöneticisi, bir başıbozuk SSI sayfasının sebep olabileceği
-      zararları bertaraf etmek için <a href="#cgi">CGI Genelinde</a>
-      bölümünde açıklandığı gibi <a href="../suexec.html">suexec</a>'i etkin
+    <p>Sunucu y&ouml;neticisi, bir başıbozuk SSI sayfasının sebep olabileceği
+      zararları bertaraf etmek i&ccedil;in <a href="#cgi">CGI Genelinde</a>
+      b&ouml;l&uuml;m&uuml;nde a&ccedil;ıklandığı gibi <a href="../suexec.html">suexec</a>'i etkin
       kılabilir.</p>
 
     <p>SSI sayfalarını <code>.html</code> veya <code>.htm</code>
-      uzantılarıyla etkinleştirmek tehlikeli olabilir. Bu özellikle
-      paylaşımlı ve yüksek trafikli bir sunucu ortamında önemlidir. SSI
+      uzantılarıyla etkinleştirmek tehlikeli olabilir. Bu &ouml;zellikle
+      paylaşımlı ve y&uuml;ksek trafikli bir sunucu ortamında &ouml;nemlidir. SSI
       sayfalarını normal sayfalardan farklı olarak <code>.shtml</code> gibi
-      bildik bir uzantıyla etkinleştirmek gerekir. Bu, sunucu yükünü asgari
-      düzeyde tutmaya ve risk yönetimini kolaylaştırmaya yarar.</p>
+      bildik bir uzantıyla etkinleştirmek gerekir. Bu, sunucu y&uuml;k&uuml;n&uuml; asgari
+      d&uuml;zeyde tutmaya ve risk y&ouml;netimini kolaylaştırmaya yarar.</p>
 
-    <p>Diğer bir çözüm de SSI sayfalarından betik ve program çalıştırmayı
+    <p>Diğer bir &ccedil;&ouml;z&uuml;m de SSI sayfalarından betik ve program &ccedil;alıştırmayı
       iptal etmektir. Bu, <code class="directive"><a href="../mod/core.html#options">Options</a></code>
-      yönergesine değer olarak <code>Includes</code> yerine
+      y&ouml;nergesine değer olarak <code>Includes</code> yerine
       <code>IncludesNOEXEC</code> vererek sağlanır. Ancak, eğer betiklerin
       bulunduğu dizinde <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
-      yönergesiyle CGI betiklerinin çalışması mümkün kılınmışsa,
+      y&ouml;nergesiyle CGI betiklerinin &ccedil;alışması m&uuml;mk&uuml;n kılınmışsa,
       kullanıcıların <code>&lt;--#include virtual="..." --&gt;</code> ile bu
-      betikleri  çalıştırabileceklerine dikkat ediniz.</p>
+      betikleri  &ccedil;alıştırabileceklerine dikkat ediniz.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI Genelinde</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
+<h2 id="cgi">CGI Genelinde <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
     
 
-    <p>Herşeyden önce ya CGI betiğini/programını yazanlara ya da kendinizin
-      CGI'deki güvenlik açıklarını (ister kasıtlı olsun ister tesadüfi)
-      yakalama becerinize güvenmek zorundasınız. CGI betikleri esasen
+    <p>Herşeyden &ouml;nce ya CGI betiğini/programını yazanlara ya da kendinizin
+      CGI'deki g&uuml;venlik a&ccedil;ıklarını (ister kasıtlı olsun ister tesad&uuml;fi)
+      yakalama becerinize g&uuml;venmek zorundasınız. CGI betikleri esasen
       sisteminizdeki komutları site kullanıcılarının izinleriyle
-      çalıştırırlar. Bu bakımdan dikkatle denenmedikleri takdirde oldukça
+      &ccedil;alıştırırlar. Bu bakımdan dikkatle denenmedikleri takdirde olduk&ccedil;a
       tehlikeli olabilirler.</p>
 
-    <p>CGI betiklerinin hepsi aynı kullanıcının aidiyetinde çalışırsa diğer
-      betiklerle aralarında çelişkilerin ortaya çıkması ister istemez
-      kaçınılmazdır. Örneğin A kullanıcısının B kullanıcısına garezi varsa
+    <p>CGI betiklerinin hepsi aynı kullanıcının aidiyetinde &ccedil;alışırsa diğer
+      betiklerle aralarında &ccedil;elişkilerin ortaya &ccedil;ıkması ister istemez
+      ka&ccedil;ınılmazdır. &Ouml;rneğin A kullanıcısının B kullanıcısına garezi varsa
       bir betik yazıp B'nin CGI veritabanını silebilir. Bu gibi durumların
-      ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
-      çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
+      ortaya &ccedil;ıkmaması i&ccedil;in betiklerin farklı kullanıcıların aidiyetlerinde
+      &ccedil;alışmasını sağlayan ve 1.2 s&uuml;r&uuml;m&uuml;nden beri Apache ile dağıtılan <a href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
       da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="nsaliasedcgi" id="nsaliasedcgi"><code>ScriptAlias</code>'sız CGI</a> <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
+<h2 id="nsaliasedcgi"><code>ScriptAlias</code>'sız CGI <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
     
 
-    <p>Kullanıcıların sitenin her yerinde CGI betiklerini çalıştırmalarına
-      izin vermek ancak şu koşullarda mümkün olabilir:</p>
+    <p>Kullanıcıların sitenin her yerinde CGI betiklerini &ccedil;alıştırmalarına
+      izin vermek ancak şu koşullarda m&uuml;mk&uuml;n olabilir:</p>
 
     <ul>
-      <li>Kullanıcılarınızın kasıtlı ya da kasıtsız sistemi saldırıya açık
-        hale getirecek betikler yazmayacaklarına tam güveniniz vardır.</li>
-      <li>Sitenizin güvenliği zaten o kadar kötüdür ki, bir delik daha
-        açılmasının mahzuru yoktur.</li>
+      <li>Kullanıcılarınızın kasıtlı ya da kasıtsız sistemi saldırıya a&ccedil;ık
+        hale getirecek betikler yazmayacaklarına tam g&uuml;veniniz vardır.</li>
+      <li>Sitenizin g&uuml;venliği zaten o kadar k&ouml;t&uuml;d&uuml;r ki, bir delik daha
+        a&ccedil;ılmasının mahzuru yoktur.</li>
       <li>Sitenizin sizden başka kullanıcısı yoktur ve sunucunuzu sizden
-        başka hiç kimsenin ziyaret etmesi mümkün değildir.</li>
+        başka hi&ccedil; kimsenin ziyaret etmesi m&uuml;mk&uuml;n değildir.</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="saliasedcgi" id="saliasedcgi"><code>ScriptAlias</code>'lı CGI</a> <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
+<h2 id="saliasedcgi"><code>ScriptAlias</code>'lı CGI <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
     
 
-    <p>CGI'yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
-      denetim imkanı sağlar. Bu kaçınılmaz olarak <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'sız CGI'den çok daha
-      güvenlidir, ancak bu dizinlere yazma hakkı olan kullanıcılarınız
-      güvenilir kişiler olması ve site yöneticisinin de olası güvenlik
-      açıklarına karşı CGI betiklerini ve programlarını denemeye istekli
+    <p>CGI'yi belli dizinlerle sınırlamak y&ouml;neticiye bu dizinlerde daha iyi
+      denetim imkanı sağlar. Bu ka&ccedil;ınılmaz olarak <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'sız CGI'den &ccedil;ok daha
+      g&uuml;venlidir, ancak bu dizinlere yazma hakkı olan kullanıcılarınız
+      g&uuml;venilir kişiler olması ve site y&ouml;neticisinin de olası g&uuml;venlik
+      a&ccedil;ıklarına karşı CGI betiklerini ve programlarını denemeye istekli
       olması şartıyla.</p>
 
-    <p>Çoğu site yöneticisi <code>ScriptAlias</code>'sız CGI yerine bu
-      yaklaşımı seçer.</p>
+    <p>&Ccedil;oğu site y&ouml;neticisi <code>ScriptAlias</code>'sız CGI yerine bu
+      yaklaşımı se&ccedil;er.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">Devingen içerikli kaynaklar</a> <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
+<h2 id="dynamic">Devingen i&ccedil;erikli kaynaklar <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
     
 
-    <p>Sunucunun bir parçası gibi çalışan, <code>mod_php</code>,
+    <p>Sunucunun bir par&ccedil;ası gibi &ccedil;alışan, <code>mod_php</code>,
       <code>mod_perl</code>, <code>mod_tcl</code> ve <code>mod_python</code>
-      gibi gömülü betik çalıştırma seçenekleri sunucuyu çalıştıran
-      kullanıcının aidiyetinde çalışırlar (<code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> yönergesine bakınız). Bu bakımdan bu betik
-      yorumlayıcılar tarafından çalıştırılan betikler, sunucu kullanıcısının
+      gibi g&ouml;m&uuml;l&uuml; betik &ccedil;alıştırma se&ccedil;enekleri sunucuyu &ccedil;alıştıran
+      kullanıcının aidiyetinde &ccedil;alışırlar (<code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> y&ouml;nergesine bakınız). Bu bakımdan bu betik
+      yorumlayıcılar tarafından &ccedil;alıştırılan betikler, sunucu kullanıcısının
       eriştiği herşeye erişebilirler. Bazı betik yorumlayıcıların getirdiği
-      bazı sınırlamalar varsa da bunlara pek güvenmemek, gerekli sınamaları
+      bazı sınırlamalar varsa da bunlara pek g&uuml;venmemek, gerekli sınamaları
       yine de yapmak gerekir.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamicsec" id="dynamicsec">Devingen içeriğin güvenliği</a> <a title="Permanent link" href="#dynamicsec" class="permalink">&para;</a></h2>
+<h2 id="dynamicsec">Devingen i&ccedil;eriğin g&uuml;venliği <a title="Permanent link" href="#dynamicsec" class="permalink">&para;</a></h2>
     
 
     <p><code>mod_php</code>, <code>mod_perl</code> veya
-      <code>mod_python</code> gibi devingen içeriği yapılandırırken
-      güvenlikle ilgili değerlendirmelerin çoğu <code>httpd</code>'nin
-      kapsamından çıkar ve bu modüllerin belgelerini incelemek ihtiyacı
-      duyarsınız. Örneğin, PHP çoğu zaman kapalı tutulan
-      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
-      Kip</a> ayarını etkin kılmanızı önerir. Daha fazla güvenlik için bir
-      diğer örnek bir PHP eklentisi olan
+      <code>mod_python</code> gibi devingen i&ccedil;eriği yapılandırırken
+      g&uuml;venlikle ilgili değerlendirmelerin &ccedil;oğu <code>httpd</code>'nin
+      kapsamından &ccedil;ıkar ve bu mod&uuml;llerin belgelerini incelemek ihtiyacı
+      duyarsınız. &Ouml;rneğin, PHP &ccedil;oğu zaman kapalı tutulan
+      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">G&uuml;venli
+      Kip</a> ayarını etkin kılmanızı &ouml;nerir. Daha fazla g&uuml;venlik i&ccedil;in bir
+      diğer &ouml;rnek bir PHP eklentisi olan
       <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
-      hakkında daha ayrıntılı bilgi için her projenin kendi belgelerine
+      hakkında daha ayrıntılı bilgi i&ccedil;in her projenin kendi belgelerine
       başvurun.</p>
 
     <p>Apache seviyesinde, <a href="http://modsecurity.org/">mod_security</a>
-      adı verilen modülü bir HTTP güvenlik duvarı gibi ele alabilir, devingen
-      içeriğin güvenliğini arttırmanıza yardımcı olmak üzere inceden inceye
+      adı verilen mod&uuml;l&uuml; bir HTTP g&uuml;venlik duvarı gibi ele alabilir, devingen
+      i&ccedil;eriğin g&uuml;venliğini arttırmanıza yardımcı olmak &uuml;zere inceden inceye
       yapılandırabilirsiniz.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="systemsettings" id="systemsettings">Sistem Ayarlarının Korunması</a> <a title="Permanent link" href="#systemsettings" class="permalink">&para;</a></h2>
+<h2 id="systemsettings">Sistem Ayarlarının Korunması <a title="Permanent link" href="#systemsettings" class="permalink">&para;</a></h2>
     
 
-    <p>Güvenliği gerçekten sıkı tutmak istiyorsanız, kullanıcılarınızın
-      yapılandırmanızdaki güvenlik ayarlarını geçersiz kılmak için
-      <code>.htaccess</code> dosyalarını kullanabilmelerinin de önüne
-      geçmelisiniz. Bunu yapmanın tek bir yolu vardır.</p>
+    <p>G&uuml;venliği ger&ccedil;ekten sıkı tutmak istiyorsanız, kullanıcılarınızın
+      yapılandırmanızdaki g&uuml;venlik ayarlarını ge&ccedil;ersiz kılmak i&ccedil;in
+      <code>.htaccess</code> dosyalarını kullanabilmelerinin de &ouml;n&uuml;ne
+      ge&ccedil;melisiniz. Bunu yapmanın tek bir yolu vardır.</p>
 
     <p>Sunucu yapılandırma dosyanıza şunu yerleştirin:</p>
 
@@ -344,21 +342,21 @@
       &lt;/Directory&gt;
     </code></p></div>
 
-    <p>Böylece, belli dizinlerde özellikle etkinleştirilmedikçe bütün
+    <p>B&ouml;ylece, belli dizinlerde &ouml;zellikle etkinleştirilmedik&ccedil;e b&uuml;t&uuml;n
       dizinlerde <code>.htaccess</code> dosyalarının kullanımını engellemiş
       olursunuz.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protectserverfiles" id="protectserverfiles">Sunucu dosyalarının öntanımlı olarak korunması</a> <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
+<h2 id="protectserverfiles">Sunucu dosyalarının &ouml;ntanımlı olarak korunması <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
     
 
-    <p>Apache'nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
-      erişim özelliğidir. Yani siz aksine bir şeyler yapmadıkça, sunucu normal
-      URL eşleme kurallarını kullanarak bir dosyayı bulabildiği sürece onu
+    <p>Apache'nin ister istemez yanlış anlaşılan y&ouml;nlerinden biri &ouml;ntanımlı
+      erişim &ouml;zelliğidir. Yani siz aksine bir şeyler yapmadık&ccedil;a, sunucu normal
+      URL eşleme kurallarını kullanarak bir dosyayı bulabildiği s&uuml;rece onu
       istemciye sunacaktır.</p>
 
-    <p>Örneğin, aşağıdaki durumu ele alalım:</p>
+    <p>&Ouml;rneğin, aşağıdaki durumu ele alalım:</p>
 
     <div class="example"><p><code>
       # cd /; ln -s / public_html
@@ -366,82 +364,82 @@
 
     <p>Ve, tarayıcınıza <code>http://localhost/~root/</code> yazın.</p>
 
-    <p>Böylece, istemcilerin tüm dosya sisteminizi gezmelerine izin vermiş
-      olursunuz. Bu işlemin sonuçlarının önünü almak için sunucu yapılandırma
+    <p>B&ouml;ylece, istemcilerin t&uuml;m dosya sisteminizi gezmelerine izin vermiş
+      olursunuz. Bu işlemin sonu&ccedil;larının &ouml;n&uuml;n&uuml; almak i&ccedil;in sunucu yapılandırma
       dosyanıza şunları yazın:</p>
 
     <div class="example"><p><code>
       &lt;Directory /&gt;
       <span class="indent">
-        Order Deny,Allow <br />
+        Order Deny,Allow <br>
         Deny from all
       </span>
       &lt;/Directory&gt;
     </code></p></div>
 
-    <p>Bu suretle, dosya sisteminize öntanımlı erişimi yasaklamış olursunuz.
-      Erişime izin vermek istediğiniz dizinler için uygun <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> bölümleri eklemeniz yeterli
-      olacaktır. Örnek:</p>
+    <p>Bu suretle, dosya sisteminize &ouml;ntanımlı erişimi yasaklamış olursunuz.
+      Erişime izin vermek istediğiniz dizinler i&ccedil;in uygun <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> b&ouml;l&uuml;mleri eklemeniz yeterli
+      olacaktır. &Ouml;rnek:</p>
 
     <div class="example"><p><code>
       &lt;Directory /usr/users/*/public_html&gt;
       <span class="indent">
-        Order Deny,Allow <br />
+        Order Deny,Allow <br>
         Allow from all
       </span>
-      &lt;/Directory&gt; <br />
+      &lt;/Directory&gt; <br>
       &lt;Directory /usr/local/httpd&gt;
       <span class="indent">
-        Order Deny,Allow <br />
+        Order Deny,Allow <br>
         Allow from all
       </span>
       &lt;/Directory&gt;
     </code></p></div>
 
-    <p><code class="directive"><a href="../mod/core.html#location">Location</a></code> ve <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> yönergelerinin etkileşimine de
-      özellikle önem vermelisiniz; örneğin <code>&lt;Directory /&gt;</code>
-      erişimi yasaklarken bir <code>&lt;Location /&gt;</code> yönergesi bunu
+    <p><code class="directive"><a href="../mod/core.html#location">Location</a></code> ve <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> y&ouml;nergelerinin etkileşimine de
+      &ouml;zellikle &ouml;nem vermelisiniz; &ouml;rneğin <code>&lt;Directory /&gt;</code>
+      erişimi yasaklarken bir <code>&lt;Location /&gt;</code> y&ouml;nergesi bunu
       ortadan kaldırabilir.</p>
 
-    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi de size
-      buna benzer bir oyun oynayabilir; yönergeye <code>./</code> atamasını
-      yaparsanız, root kullanıcısı söz konusu olduğunda yukarıda ilk örnekteki
+    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> y&ouml;nergesi de size
+      buna benzer bir oyun oynayabilir; y&ouml;nergeye <code>./</code> atamasını
+      yaparsanız, root kullanıcısı s&ouml;z konusu olduğunda yukarıda ilk &ouml;rnekteki
       durumla karşılaşırız. Sunucu yapılandırma dosyanızda aşağıdaki satırın
-      mutlaka bulunmasını öneririz:</p>
+      mutlaka bulunmasını &ouml;neririz:</p>
 
     <div class="example"><p><code>
       UserDir disabled root
     </code></p></div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="watchyourlogs" id="watchyourlogs">Günlüklerin İzlenmesi</a> <a title="Permanent link" href="#watchyourlogs" class="permalink">&para;</a></h2>
+<h2 id="watchyourlogs">G&uuml;nl&uuml;klerin İzlenmesi <a title="Permanent link" href="#watchyourlogs" class="permalink">&para;</a></h2>
     
 
-    <p>Sunucunuzda olup biteni günü gününe bilmek istiyorsanız <a href="../logs.html">günlük dosyalarına</a> bakmalısınız. Günlük dosyaları
-      sadece olup biteni raporlamakla kalmaz, sunucunuza ne tür saldırılar
-      yapıldığını ve güvenlik seviyenizin yeterli olup olmadığını anlamanızı da
+    <p>Sunucunuzda olup biteni g&uuml;n&uuml; g&uuml;n&uuml;ne bilmek istiyorsanız <a href="../logs.html">g&uuml;nl&uuml;k dosyalarına</a> bakmalısınız. G&uuml;nl&uuml;k dosyaları
+      sadece olup biteni raporlamakla kalmaz, sunucunuza ne t&uuml;r saldırılar
+      yapıldığını ve g&uuml;venlik seviyenizin yeterli olup olmadığını anlamanızı da
       sağlarlar.</p>
 
-    <p>Bazı örnekler:</p>
+    <p>Bazı &ouml;rnekler:</p>
 
     <div class="example"><p><code>
-      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br />
+      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br>
       grep "client denied" error_log | tail -n 10
     </code></p></div>
 
-    <p>İlk örnek, <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa Açığı</a>nı
-      istismar etmeyi deneyen saldırıların sayısını verirken ikinci örnek,
-      reddedilen son on istemciyi listeler; örnek:</p>
+    <p>İlk &ouml;rnek, <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat Source.JSP Bozuk İstek Bilgilerini İfşa A&ccedil;ığı</a>nı
+      istismar etmeyi deneyen saldırıların sayısını verirken ikinci &ouml;rnek,
+      reddedilen son on istemciyi listeler; &ouml;rnek:</p>
 
     <div class="example"><p><code>
       [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
       by server configuration: /usr/local/apache/htdocs/.htpasswd
     </code></p></div>
 
-    <p>Gördüğünüz gibi günlük dosyaları sadece ne olup bittiğini raporlar, bu
-      bakımdan eğer istemci <code>.htpasswd</code> dosyasına erişebiliyorsa <a href="../logs.html#accesslog">erişim günlüğünüzde</a> şuna benzer bir
-      kayıt görürsünüz:</p>
+    <p>G&ouml;rd&uuml;ğ&uuml;n&uuml;z gibi g&uuml;nl&uuml;k dosyaları sadece ne olup bittiğini raporlar, bu
+      bakımdan eğer istemci <code>.htpasswd</code> dosyasına erişebiliyorsa <a href="../logs.html#accesslog">erişim g&uuml;nl&uuml;ğ&uuml;n&uuml;zde</a> şuna benzer bir
+      kayıt g&ouml;r&uuml;rs&uuml;n&uuml;z:</p>
 
     <div class="example"><p><code>
       foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
@@ -453,37 +451,37 @@
     <div class="example"><p><code>
       &lt;Files ".ht*"&gt;
       <span class="indent">
-        Order allow,deny <br />
+        Order allow,deny <br>
         Deny from all
       </span>
       &lt;/Files&gt;
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">Yapılandırma bölümlerinin birleştirilmesi</a> <a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
+<h2 id="merging">Yapılandırma b&ouml;l&uuml;mlerinin birleştirilmesi <a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
 
     
 
-    <p>Yapılandırma bölümlerinin birleştirilmesi karmaşık bir işlem olup bazı
-      durumlarda yönergelere bağlıdır. Yönergeleri bir araya getirirken
+    <p>Yapılandırma b&ouml;l&uuml;mlerinin birleştirilmesi karmaşık bir işlem olup bazı
+      durumlarda y&ouml;nergelere bağlıdır. Y&ouml;nergeleri bir araya getirirken
       aralarındaki bağımlılıkları daima sınayın.</p>
 
-    <p><code class="directive">mod_access_compat</code> gibi henüz yönerge katıştırma
-      mantığını gerçeklememiş modüller için sonraki bölümlerdeki davranış, bu
-      modüllerin yönergelerini içerip içermemesine bağlıdır. Yapılandırmada
-      yönergelerin <em>yerleri değiştirildiğinde</em> fakat bir katıştırma
+    <p><code class="directive">mod_access_compat</code> gibi hen&uuml;z y&ouml;nerge katıştırma
+      mantığını ger&ccedil;eklememiş mod&uuml;ller i&ccedil;in sonraki b&ouml;l&uuml;mlerdeki davranış, bu
+      mod&uuml;llerin y&ouml;nergelerini i&ccedil;erip i&ccedil;ermemesine bağlıdır. Yapılandırmada
+      y&ouml;nergelerin <em>yerleri değiştirildiğinde</em> fakat bir katıştırma
       yapılmadığında, yapılandırma bir değişiklik yapılana kadar miras
       alınır.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

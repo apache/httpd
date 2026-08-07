@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_rewrite を使わない場合 - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite を使わない場合</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -62,15 +60,15 @@
 環境にいる場合は、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> に頼る必要があるかもしれません。</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">シンプルなリダイレクト</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#alias">URL エイリアス</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">バーチャルホスティング</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">シンプルなプロキシ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setenv">環境変数のテスト</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#redirect">シンプルなリダイレクト</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#alias">URL エイリアス</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhosts">バーチャルホスティング</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">シンプルなプロキシ</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenv">環境変数のテスト</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap の使用</a></li><li><a href="advanced.html">高度なテクニック</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">シンプルなリダイレクト</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">シンプルなリダイレクト <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> は、ある URL から別の URL へのリダイレクト手段を
@@ -129,9 +127,9 @@ URL を <code>http://one.example.com/</code> にリダイレクトする必要�
 アクセスできず、<code>.htaccess</code> ファイルでこのタスクを実行する必要がある
 場合は、<code>RewriteRule</code> の使用が適切です。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL エイリアス</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">URL エイリアス <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> ディレクティブは、
 URI からディレクトリ (通常は <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
 の外部のディレクトリ) へのマッピングを提供します。このマッピングを
@@ -151,9 +149,9 @@ URI からディレクトリ (通常は <code class="directive"><a href="../mod/
 
 <p>サーバで <code>Options FollowSymLinks</code> が有効になっている場合は、
 シンボリックリンクも同じことを実現する方法の一つです。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">バーチャルホスティング</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<h2 id="vhosts">バーチャルホスティング <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
 <p><a href="vhosts.html">mod_rewrite でバーチャルホスト</a>を
 処理することは可能ですが、適切な方法であることはめったにありません。
 個別の <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -173,9 +171,9 @@ URI からディレクトリ (通常は <code class="directive"><a href="../mod/
 するかの詳細については、<a href="vhosts.html">mod_rewrite による
 バーチャルホスト</a>ドキュメントを参照してください。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">シンプルなプロキシ</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">シンプルなプロキシ <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> は、書き換えた URI を
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 経由で渡すための <a href="flags.html#flag_p">[P]</a>
@@ -204,9 +202,9 @@ URI からディレクトリ (通常は <code class="directive"><a href="../mod/
 実現しようとしていることを横取りする可能性があり、代わりに
 <code>RewriteRule</code> を使用する必要がある場合があります。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">環境変数のテスト</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">環境変数のテスト <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は、特定の環境変数やリクエストヘッダの
 有無に基づいて特定のアクションを実行するために頻繁に使用されます。
@@ -236,15 +234,15 @@ URI からディレクトリ (通常は <code class="directive"><a href="../mod/
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

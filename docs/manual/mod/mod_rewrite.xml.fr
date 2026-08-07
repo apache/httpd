@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934137:1934605 (outdated) -->
+<!-- English Revision: 1936053 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,22 +46,28 @@ règles permettant de réécrire les URLs des requêtes
       <p><module>mod_rewrite</module> fournit une méthode souple et puissante
       pour manipuler les URLs en utilisant un nombre illimité de règles. Chaque
       règle peut être associée à un nombre illimité de conditions, afin de vous
-      permettre de réécrire les URLs en fonction de variables du serveur, de
-      variables d'environnement, de cookies, d'en-têtes HTTP, ou de repères
-      temporels.</p>
-      <p><module>mod_rewrite</module> agit sur la totalité de l'URL, ou de toute
-      partie de cette dernière, y compris PATH_INFO ou QUERY_STRING.</p>
-
+      permettre de réécrire les URLs en fonction de <a
+      href="#rewritecond">variables du serveur</a> (y compris les en-têtes
+      HTTP, les détails de la connexion et les horodatages), de
+      variables d'environnement ou d’autres propriétés de la requête. Les règles
+      peuvent agir sur le <a href="directive-dict.html#Syntax">chemin d’URL</a>
+      (y compris toute <a href="core.html#acceptpathinfo">information en fin de
+      nom de chemin</a>) et peut aussi modifier la <a
+      href="../expr.html#vars">chaîne de paramètres</a>.
+      </p>
+      
       <p>Une règle de réécriture peut être invoquée dans les fichiers de
       configuration globale du serveur ou dans un <glossary
-      ref="perdirectory">contexte de répertoire</glossary>. Le chemin généré par
-      une règle de réécriture peut inclure une chaîne de paramètres, ou peut
-      renvoyer vers un traitement secondaire interne, une redirection vers une
-      requête externe ou vers le mandataire interne.</p>
+      ref="perdirectory">contexte de répertoire</glossary>. La chaîne de
+      substitution d’une règle de réécriture peut comporter une chaîne de
+      paramètres et une règle peut renvoyer vers un traitement secondaire
+      interne, une redirection vers une requête externe ou vers le mandataire
+      interne.</p>
 
       <p>Vous trouverez plus de détails, discussions et exemples dans le <a
       href="../rewrite/">Guide détaillé sur mod_rewrite</a>.</p>
 </summary>
+<seealso><a href="rewrite/index.html">Guide de mod_rewrite</a></seealso>
 
 <section id="logging"><title>Journalisation</title>
 
@@ -91,7 +97,7 @@ LogLevel alert rewrite:trace3
       <module>mod_rewrite</module> vont probablement rechercher en vain les
       directives <code>RewriteLog</code> et <code>RewriteLogLevel</code>. Depuis
       la sortie de httpd 2.4, ces directives ont en effet été remplacées par une
-      configuration de la journalisation par module à l'aide de la directive
+      configuration de la journalisation par module à l’aide de la directive
       <directive module="core">LogLevel</directive>.  </p>
 
       <p>Pour extraire les traces spécifiques à
@@ -479,7 +485,7 @@ répertoire</description>
 	  une directive telle qu'<directive
 	  module="mod_alias">Alias</directive>).</li>
 	  <li>Le chemin de répertoire auquel la <directive
-	  module="mod_rewrite">RewriteRule</directive> s'applique, suffixé par
+	  module="mod_rewrite">RewriteRule</directive> s’applique, suffixé par
 	  la substitution relative est aussi valable en tant que chemin d'URL
 	  sur le serveur (ce qui est rare).</li>
 	  <li>A partir de la version 2.4.16 du serveur HTTP Apache,
@@ -499,7 +505,7 @@ répertoire</description>
 la réécriture soit effectuée
 </description>
 <syntax> RewriteCond
-      <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</syntax>
+      <em>TestString</em> [!]<em>CondPattern</em> [<em>flags</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -514,41 +520,69 @@ la réécriture soit effectuée
       <strong>et</strong> si l'URI correspond au modèle spécifié dans la
       règle.</p>
 
+      <p>Si <em>CondPattern</em> est préfixé par un <code>!</code>, la condition
+      ne sera évaluée à vrai que si <em>CondPattern</em> ne correspond pas.</p>
+
+      <!-- ============================================================ -->
+      <!-- TestString                                                   -->
+      <!-- ============================================================ -->
+
+      <p><a id="rewritecond-teststring" name="rewritecond-teststring"
+      ></a><strong>TestString</strong></p>
+
       <p><em>TestString</em> est une chaîne qui peut contenir les
       extensions suivantes en plus du texte simple :</p>
 
-      <ul>
-        <li>
-          <strong>références arrières de règle de réécriture</strong> :
-	  ce sont des références arrières de la forme
-	  <strong><code>$N</code></strong> (0 &lt;= N &lt;= 9). $1 à $9
-	  permettent d'accéder aux parties regroupées (entre
-	  parenthèses) du modèle, issues de la <code>RewriteRule</code>
-	  concernée par le jeu de conditions <code>RewriteCond</code>
-	  courant. $0 donne accès à l'ensemble de la chaîne
-	  correspondant au modèle.</li>
-        <li>
-          <strong>Références arrières de condition de réécriture
-	  </strong> : ce sont des références arrières de la forme
-	  <strong><code>%N</code></strong> (0 &lt;= N &lt;= 9). %1 à %9
-	  permettent d'accéder aux parties regroupées (entre
-	  parenthèses) du modèle, issues de la dernière
-	  condition <code>RewriteCond</code> satisfaite du jeu de conditions <code>RewriteCond</code>
-	  courant. %0 donne accès à l'ensemble de la chaîne
-	  correspondant au modèle.</li>
-        <li>
-          <strong>extensions de table de réécriture</strong> :
-	  ce sont des extensions de la forme <strong><code
-	  >${nomTable:clé|défaut}</code></strong>. Voir la <a
-	  >href="#mapfunc">documentation sur RewriteMap</a>
-	   pour plus de détails.
-        </li>
-        <li>
-          <strong>Variables du serveur</strong> :
-	  ce sont des variables de la forme
-	  <strong><code>%{</code> <em>NAME_OF_VARIABLE</em> <code>}</code></strong>,
-            où <em>NOM_DE_VARIABLE</em> peut contenir une chaîne issue
-	    de la liste suivante :
+     <!-- Backreferences -->
+
+      <p><a id="rewritecond-backreferences" name="rewritecond-backreferences"
+      ></a><strong>Références arrières</strong></p>
+
+      <dl>
+        <dt><strong><code>$N</code></strong> &mdash; Références arrières des
+	règles RewriteRule</dt>
+	<dd>Les références arrières de la forme <code>$N</code> (0 &lt;= N &lt;=
+	9). $1 à $9 permettent d'accéder aux parties regroupées (entre
+	parenthèses) du modèle, issues de la <code>RewriteRule</code> concernée
+	par le jeu de conditions <code>RewriteCond</code> courant. $0 donne
+	accès à l'ensemble de la chaîne correspondant au modèle.</dd>
+
+	<dt><strong><code>%N</code></strong> &mdash; Références arrières des
+	  conditions RewriteCond</dt>
+	<dd>Les références arrières de la forme <code>%N</code> (0 &lt;= N &lt;=
+	9). %1 à %9 permettent d'accéder aux parties regroupées (entre
+	parenthèses) du modèle, issues de la dernière condition
+	<code>RewriteCond</code> satisfaite du jeu de conditions
+	<code>RewriteCond</code> courant. %0 donne accès à l'ensemble de la
+	chaîne correspondant au modèle.</dd>
+
+      </dl>
+
+      <note>Les références arrières ne sont définies que si le motif correspond.
+      Si le motif est préfixé de <code>!</code>, aucune référence arrière
+      ne sera donc définie. Voir le document <a
+      href="../rewrite/tech.html#InternalRuleset">La manière dont le jeu de
+      règles est appliqué</a> pour plus de détails à propos de l’ordre dans
+      lequel les motifs sont mis en correspondance et les références arrières
+      définies.</note>
+
+      <!-- RewriteMap Expansions -->
+
+      <p><a id="rewritecond-mapexpansions" name="rewritecond-mapexpansions"
+      ></a><strong>Développement des mappages RewriteMap</strong></p>
+
+      <p>Ce sont des développements de la forme
+      <strong><code>${mapname:key|default}</code></strong>. Voir la <a
+      href="#mapfunc">documentation de RewriteMap</a> pour plus de détails.</p>
+
+      <!-- Server and CGI Variables -->
+
+      <p><a id="rewritecond-servervars"
+      name="rewritecond-servervars"></a><strong>Le serveur et les variables CGI</strong></p>
+
+      <p>Ce sont des variables de la forme <strong><code>%{</code>
+      <em>NAME_OF_VARIABLE</em> <code>}</code></strong> où
+      <em>NAME_OF_VARIABLE</em> peut être une des chaînes de la liste suivante :</p>        
 
           <table>
           <columnspec><column width=".3"/><column width=".3"/>
@@ -574,7 +608,7 @@ la réécriture soit effectuée
 		 CONTEXT_PREFIX<br />
                  CONTEXT_DOCUMENT_ROOT<br />
                  IPV6<br />
-                 PATH_INFO<br />
+                 <glossary ref="pathinfo">PATH_INFO</glossary><br />
                  QUERY_STRING<br />
                  REMOTE_ADDR<br />
                  REMOTE_HOST<br />
@@ -636,13 +670,36 @@ la réécriture soit effectuée
 		sont documentées dans la <a
 		href="../expr.html#vars">documentation des expressions</a>, dans
 		la <a href="../env.html">documentation des variables
-		d'environnement</a> ou dans la spécification de
+		d’environnement</a> ou dans la spécification de
 		CGI (<rfc>3875</rfc>).</p>
 
 		<p>SERVER_NAME et SERVER_PORT dépendent respectivement
 		des valeurs des directives <directive
 		module="core">UseCanonicalName</directive> et <directive
 		module="core">UseCanonicalPhysicalPort</directive>.</p>
+
+		<p>Les variables SCRIPT_FILENAME et REQUEST_FILENAME contiennent
+		la même valeur — la valeur du champ <code>filename</code> de la
+		structure interne <code>request_rec</code> du serveur HTTP
+		Apache. Le premier nom est plus connu en tant que nom de
+		variable CGI alors que le second est la contrepartie appropriée
+		de REQUEST_URI (qui contient la valeur du champ <code>uri</code>
+		de la structure <code>request_rec</code>).</p>
+
+                <p>Si une substitution se produit et que la réécriture continue,
+		la valeur des deux variables sera mise à jour en conséquence.</p>
+
+		<p>Si elles sont utilisées dans un contexte global au serveur
+		(c’est-à-dire avant que la requête ne soit mise en parallèle
+		avec le système de fichiers), SCRIPT_FILENAME et
+		REQUEST_FILENAME ne peuvent pas contenir le chemin complet du
+		système de fichiers local, car le chemin est inconnu à ce
+		stade du traitement. Dans ce cas, les deux variables
+		contiendront initialement la valeur de REQUEST_URI. Pour obtenir
+		le chemin complet du système de fichiers local correspondant à
+		la requête, Utilisez une projection vers l’avant à base d’URL
+		<code>%{LA-U:REQUEST_FILENAME}</code> pour déterminer la valeur
+		finale de REQUEST_FILENAME.</p>
 
 		<p>Parmi les variables
 		spécifiques à <module>mod_rewrite</module>, ou trouve les suivantes :</p>
@@ -718,8 +775,8 @@ la réécriture soit effectuée
 		  recoder, passez-la à la <a href="#mapfunc">fonction de
 		  mappage</a> "escape".
 		  Notez que cette variable de serveur est distincte de la
-		  variable d'environnement CGI de même nom : dans un contexte
-		  CGI, <code>REQUEST_URI</code> contient l'URI original complet
+		  variable d’environnement CGI de même nom : dans un contexte
+		  CGI, <code>REQUEST_URI</code> contient l’URI original complet
 		  de la requête, y compris la chaîne de paramètres. Voir la
 		  directive <directive module="core">CGIVar</directive> pour les
 		  détails.
@@ -735,71 +792,38 @@ la réécriture soit effectuée
 		  différence de la plupart des variables suivantes.</dd>
                 </dl>
 
-        </li>
-      </ul>
+      <!-- Prefixed Variable Lookups -->
 
-      <p>Si la <em>chaîne_de_test</em> contient la valeur spéciale
-      <code>expr</code>, <em>expression_de_comparaison</em> sera traité
-      en tant qu'expression rationnelle de type <a
-      href="../expr.html">ap_expr</a>. Si des en-têtes HTTP sont
-      référencés dans l'expression rationnelle, et si le drapeau
-      <code>novary</code> n'est pas activé, ils seront ajoutés à
-      l'en-tête Vary.</p>
+      <p><a id="rewritecond-prefixed" name="rewritecond-prefixed"
+      ></a><strong>Consultation de variables préfixées</strong></p>
+      
+      <p>En plus des variables de serveur ci-avant, la syntaxe
+      <code>%{<em>PREFIX</em>:<em>name</em>}</code> permet d’accéder à des
+      ressources supplémentaires :</p>
 
-      <p>Autres points à connaître ::</p>
-      <ol>
-        <li>
-        <p>Les variables <code>SCRIPT_FILENAME</code> et
-	<code>REQUEST_FILENAME</code> contiennent toutes deux la valeur
-	du champ <code>filename</code> de la
-	structure interne <code>request_rec</code>du serveur HTTP Apache.
-	Le premier nom correspond au nom de variable bien connu CGI,
-	alors que le second est l'équivalent de REQUEST_URI (qui
-	contient la valeur du champ <code>uri</code> de
-	<code>request_rec</code>).</p>
-        <p>Si une substitution intervient et si la réécriture se
-	poursuit, la valeur des deux variables sera mise à jour en
-	conséquence.</p>
-        <p>Dans le contexte du serveur principal (c'est à dire avant que
-	la requête ne soit mise en correspondance avec le système de
-	fichiers), SCRIPT_FILENAME et REQUEST_FILENAME  ne peuvent pas
-	contenir le chemin entier dans le système de fichiers local car
-	ce chemin b'est pas connu à ce stade du traitement. Dans ce cas,
-	les deux variables contiendront la valeur de REQUEST_URI. Pour
-	obtenir le chemin complet de la requête dans le système de
-	fichiers local dans le contexte du serveur principal, utilisez une
-	référence avant à base d'URL
-	<code>%{LA-U:REQUEST_FILENAME}</code> pour déterminer la valeur
-	finale de REQUEST_FILENAME.</p></li>
-
-
-        <li>
-	<code>%{ENV:<em>variable</em>}</code>, où <em>variable</em> peut
-	correspondre à une variable d'environnement quelconque.</li>
-	<li>
-        <code>%{ENV:variable}</code> est aussi disponible, où
-	<em>variable</em> peut correspondre à toute variable
-	d'environnement. Peut être consulté via des structures internes
+      <dl>
+        <dt><strong><code>%{ENV:variable}</code></strong></dt>
+        <dd>Où <em>variable</em> peut correspondre à n’importe quelle variable
+	d’environnement. Peut être consulté via des structures internes
 	d'Apache httpd et (si on ne les trouve pas ici) via la fonction
 	<code>getenv()</code> à partir du processus du serveur Apache
-	httpd.</li>
+	httpd.</dd>
 
-        <li>Que <module>mod_ssl</module> soit chargé ou non, on peut
-	utiliser <code>%{SSL:variable}</code>, où <em>variable</em>
-	peut être remplacé par le nom d'une
-	<a href="mod_ssl.html#envvars">variable
-	d'environnement SSL</a> . Si <module>mod_ssl</module> n'est pas
-	chargé, cette variable contiendra toujours une chaîne vide.
+        <dt><strong><code>%{SSL:variable}</code></strong></dt>
+        <dd>Où <em>variable</em> est le nom d’une <a
+	href="mod_ssl.html#envvars">variable d’environnement SSL</a>. Cette
+	variable peut être utilisée que <module>mod_ssl</module> soit chargé ou
+	non, mais elle sera toujours développée en une chaîne vide si
+	<module>mod_ssl</module> n’est pas chargé.	 
 	Exemple : <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> pourra
 	contenir la valeur <code>128</code>. Ces variables sont
 	disponibles même si l'option <code>StdEnvVars</code> de la
 	directive <directive module="mod_ssl">SSLOptions</directive> n'a
-	pas été définie.</li>
+	pas été définie.</dd>
 
-	<li>
-        On peut utiliser <code>%{HTTP:en-tête}</code>, où
-	<em>en-tête</em> peut correspondre à tout nom d'en-tête MIME
-	HTTP, pour extraire la valeur d'un en-tête envoyé dans la
+	<dt><strong><code>%{HTTP:header}</code></strong></dt>
+        <dd>Où <em>header</em> peut correspondre à n’importe quel nom d’en-tête
+	MIME HTTP. Cette variable peut toujours être utilisée pour obtenir la valeur d'un en-tête envoyé dans la
 	requête HTTP. Par exemple, <code>%{HTTP:Proxy-Connection}</code>
 	contiendra la valeur de l'en-tête HTTP
 	"<code>Proxy-Connection:</code>".
@@ -813,105 +837,134 @@ la réécriture soit effectuée
 	logique de cout-circuit si le drapeau
 	'<strong><code>ornext|OR</code></strong>' est utilisé, et que de
 	ce fait, certaines d'entre elles ne seront pas évaluées.</p>
-	</li>
+	</dd>
+      </dl>
 
-        <li>A des fins de référence avant, on peut utiliser,
-	<a id="LA-U" name="LA-U"><code>%{LA-U:variable}</code></a>, qui
-	permet d'effectuer une sous-requête interne à base d'URL, afin
-	de déterminer la valeur finale de <em>variable</em>. Ceci permet
-	d'accéder à la valeur d'une variable pour la réécriture inconnue
-	à ce stade du traitement, mais qui sera définie au
-	cours d'une phase ultérieure.
-	<p>Par exemple, pour effectuer une réécriture dépendant de la
-	variable <code>REMOTE_USER</code> dans le contexte du serveur
-	principal (fichier <code>httpd.conf</code>), vous devez utiliser
-	<code>%{LA-U:REMOTE_USER}</code> - cette variable est définie
-	par la phase d'autorisation qui intervient <em>après</em> la
-	phase de traduction d'URL (pendant laquelle <module>mod_rewrite</module>
-	opère).</p>
-	<p>Par contre, comme <module>mod_rewrite</module> implémente son
-	<glossary ref="perdirectory">contexte de répertoire</glossary> (fichier
-	<code>.htaccess</code>) via la phase Fixup de l'API, et comme la phase
-	d'autorisation intervient <em>avant</em> cette dernière, vous pouvez
-	vous contenter d'utiliser <code>%{REMOTE_USER}</code> dans ce
-	contexte.</p></li>
+     <!-- Look-ahead Sub-requests -->
 
-        <li>
-        <code>%{LA-F:variable}</code> peut être utilisée pour effectuer
-	une sous-requête interne (basée sur le nom de fichier), afin de
-	déterminer la valeur finale de <em>variable</em>. La plupart du
-	temps, elle est identique à LA-U (voir ci-dessus).</li>
-      </ol>
+      <p><a id="rewritecond-lookahead" name="rewritecond-lookahead"
+      ></a><strong>Sous-requêtes de projection vers l’avant</strong></p>
+
+      <p>Ces formes génèrent une sous-requête interne pour déterminer la valeur
+      finale d’une variable qui n’est pas encore disponible à ce stade du
+      traitement :</p>
+
+      <dl>
+        <dt><a id="LA-U" name="LA-U"><strong><code>%{LA-U:variable}</code></strong></a></dt>
+	<dd>Génère une sous-requête interne (à base d’URL) pour déterminer la
+	valeur finale de <em>variable</em>. Ceci permet d'accéder à la valeur
+	d'une variable pour la réécriture inconnue à ce stade du traitement,
+	mais qui sera définie au cours d'une phase ultérieure.  
+	<p>Par exemple, pour effectuer une réécriture dépendant de la variable
+	<code>REMOTE_USER</code> dans le contexte du serveur principal (fichier
+	<code>httpd.conf</code>), vous devez utiliser
+	<code>%{LA-U:REMOTE_USER}</code> - cette variable est définie par la
+	phase d'autorisation qui intervient <em>après</em> la phase de
+	traduction d'URL (pendant laquelle <module>mod_rewrite</module>
+	opère).</p> 
+	<p>Par contre, comme <module>mod_rewrite</module> implémente
+	son <glossary ref="perdirectory">contexte de répertoire</glossary>
+	(fichier <code>.htaccess</code>) via la phase Fixup de l'API, et comme
+	la phase d'autorisation intervient <em>avant</em> cette dernière, vous
+	pouvez vous contenter d'utiliser <code>%{REMOTE_USER}</code> dans ce
+	contexte.</p></dd>
+
+        <dt><strong><code>%{LA-F:variable}</code></strong></dt>
+        <dd>Génère une sous-requête interne (à base de nom de fichier) pour
+	déterminer la valeur finale de la <em>variable</em>. Identique la
+	plupart du temps à LA-U ci-dessus.</dd>
+      </dl>
+
+      <!-- Expression Syntax -->
+
+      <p><a id="rewritecond-expr"
+      name="rewritecond-expr"></a><strong>Syntaxe des expressions</strong></p>
+
+      <p>Si la chaîne <em>TestString</em> contient la valeur spéciale
+      <code>expr</code>, le motif <em>CondPattern</em> sera traité comme une
+      expression <a href="../expr.html">ap_expr</a>. Les en-têtes HTTP
+      référencés dans l’expression seront ajoutés à l’en-tête Vary si le drapeau
+      <code>novary</code> n’a pas été spécifié.</p>
+
+      <!-- ============================================================ -->
+      <!-- CondPattern                                                   -->
+      <!-- ============================================================ -->
+
+      <p><a id="rewritecond-condpattern" name="rewritecond-condpattern"
+      ></a><strong>CondPattern</strong></p>
 
 
-      <p><em>expression_de_comparaison</em> est une expression
+      <p><em>CondPattern</em> est une expression
       rationnelle qui est appliquée à l'instance actuelle de
-      <em>chaîne_de_test</em>. <em>chaîne_de_test</em> est d'abord
+      <em>TestString</em>. <em>TestString</em> est d'abord
       évaluée, puis comparée à
-      l'<em>expression_de_comparaison</em>.</p>
+      l'<em>CondPattern</em>.</p>
 
-      <p><em>expression_de_comparaison</em> est en général une
+      <p><em>CondPattern</em> est en général une
       <glossary ref="regex">expression rationnelle</glossary>, mais vous
       disposez des syntaxes supplémentaires suivantes pour effectuer
-      d'autres tests utiles sur <em>chaîne_de_test</em> :
+      d'autres tests utiles sur <em>TestString</em> :
       </p>
 
-      <ol>
-        <li>Vous pouvez préfixer l'expression avec un caractère
+      <!-- Negation -->
+
+      <p>Vous pouvez préfixer l'expression avec un caractère
 	'<code>!</code>' (point d'exclamation) pour inverser le résultat
 	de la condition, quelle que soit l'<em>expression de
-	comparaison</em> utilisée.</li>
+	comparaison</em> utilisée.</p>
 
-        <li>Vous pouvez effectuer des comparaisons lexicographiques de
-	chaînes	:
+      <!-- String Comparisons -->  
 
-         <dl>
+      <p><a id="rewritecond-stringcomp" name="rewritecond-stringcomp"
+      ></a><strong>Comparaisons de chaînes</strong></p>
+
+      <dl>   
             <dt><strong>&lt;expression</strong></dt>
 	    <dd>inférieur au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne_de_test</em>. La condition est satisfaite si
-	    <em>chaîne_de_test</em> est inférieure au sens
+	    <em>TestString</em>. La condition est satisfaite si
+	    <em>TestString</em> est inférieure au sens
 	    lexicographique à l'<em>expression</em>.</dd>
 
             <dt><strong>&gt;expression</strong></dt>
 	    <dd>supérieur au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne_de_test</em>. La condition est satisfaite si
-	    <em>chaîne_de_test</em> est supérieure au sens
+	    <em>TestString</em>. La condition est satisfaite si
+	    <em>TestString</em> est supérieure au sens
 	    lexicographique à l'<em>expression</em>.</dd>
 
             <dt><strong>=expression</strong></dt>
 	    <dd>égal au sens lexicographique<br />
 	    Traite l'<em>expression</em> comme une chaîne de
 	    caractères et la compare lexicographiquement à
-	    <em>chaîne_de_test</em>. La condition est satisfaite si
-	    <em>chaîne_de_test</em> est égale au sens
+	    <em>TestString</em>. La condition est satisfaite si
+	    <em>TestString</em> est égale au sens
 	    lexicographique à l'<em>expression</em> (les deux chaînes
 	    sont exactement identiques, caractère pour caractère). Si
 	    <em>expression</em> est <code>""</code> (deux guillemets),
-	    <em>chaîne_de_test</em> est comparée à la
+	    <em>TestString</em> est comparée à la
 	    chaîne vide.</dd>
 
 	    <dt><strong>&lt;=expression de comparaison</strong></dt>
 	    <dd>inférieur ou égal à au sens lexicographique<br />
-            Considère l'<em>expression_de_comparaison</em> comme une
+            Considère la <em>CondPattern</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
-	    la <em>chaîne_de_test</em>. Vrai si <em>chaîne_de_test</em>
-	    précède lexicographiquement <em>expression_de_comparaison</em>, ou est
-	    égale à <em>expression_de_comparaison</em> (les deux chaînes
+	    la <em>TestString</em>. Vrai si <em>TestString</em>
+	    précède lexicographiquement <em>CondPattern</em>, ou est
+	    égale à <em>CondPattern</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</dd>
 
             <dt><strong>&gt;=expression de comparaison</strong></dt>
 	    <dd>supérieur ou égal à au sens lexicographique<br />
-            Considère l'<em>expression_de_comparaison</em> comme une
+            Considère la <em>CondPattern</em> comme une
 	    chaîne de caractères et la compare au sens lexicographique à
-	    la <em>chaîne_de_test</em>. Vrai si <em>chaîne_de_test</em>
-	    suit lexicographiquement <em>expression_de_comparaison</em>, ou est
-	    égale à <em>expression_de_comparaison</em> (les deux chaînes
+	    la <em>TestString</em>. Vrai si <em>TestString</em>
+	    suit lexicographiquement <em>CondPattern</em>, ou est
+	    égale à <em>CondPattern</em> (les deux chaînes
 	    sont identiques, caractère pour caractère).</dd>
-        </dl>
+      </dl>
 	<note><title>Note</title>
         L'opérateur de comparaison de chaînes fait partie des arguments de la
 	<em>CondPattern</em> et doit par conséquent se trouver entre les
@@ -922,53 +975,54 @@ RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"
         </highlight>
         </note>
 
-	</li>
+<!-- Integer Comparisons -->
+ 
+      <p><a id="rewritecond-intcomp" name="rewritecond-intcomp"
+      ></a><strong>Comparaisons d’entiers</strong></p>
 
-        <li>
-          Vous pouvez effectuer des comparaisons d'entiers :
-          <dl>
+      <dl>
 
             <dt><strong>-eq</strong></dt>
 	    <dd>est numériquement égal à<br />
-            La <em>chaîne_de_test</em> est considérée comme un entier,
+            <em>TestString</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
 	    comparaison</em>. Vrai si les deux expressions sont
 	    numériquement égales.</dd>
 
             <dt><strong>-ge</strong></dt>
 	    <dd>est numériquement supérieur ou égal à<br />
-            La <em>chaîne_de_test</em> est considérée comme un entier,
+            <em>TestString</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    comparaison</em>. Vrai si <em>TestString</em> est
 	    numériquement supérieure ou égale à
-	    <em>expression_de_comparaison</em>.</dd>
+	    <em>CondPattern</em>.</dd>
 
              <dt><strong>-gt</strong></dt>
 	     <dd>est numériquement supérieur à<br />
-            La <em>chaîne_de_test</em> est considérée comme un entier,
+             <em>TestString</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    comparaison</em>. Vrai si <em>TestString</em> est
 	    numériquement
-	    supérieure à <em>expression_de_comparaison</em>.</dd>
+	    supérieure à <em>CondPattern</em>.</dd>
 
             <dt><strong>-le</strong></dt>
 	    <dd>est numériquement inférieur ou égal à<br />
-            La <em>chaîne_de_test</em> est considérée comme un entier,
+            <em>TestString</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    comparaison</em>. Vrai si <em>TestString</em> est
 	    numériquement
-	    inférieure ou égale à <em>expression_de_comparaison</em>.
+	    inférieure ou égale à <em>CondPattern</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</dd>
 
              <dt><strong>-lt</strong></dt>
 	     <dd>est numériquement inférieur à<br />
-            La <em>chaîne_de_test</em> est considérée comme un entier,
+            <em>TestString</em> est considérée comme un entier,
 	    et est comparée numériquement à l'<em>expression de
-	    comparaison</em>. Vrai si <em>chaîne_de_test</em> est
+	    comparaison</em>. Vrai si <em>TestString</em> est
 	    numériquement
-	    inférieure à <em>expression_de_comparaison</em>.
+	    inférieure à <em>CondPattern</em>.
 	    Attention à la confusion avec le drapeau <strong>-l</strong>
 	    en utilisant la variante the <strong>-L</strong> ou
 	    <strong>-h</strong>.</dd>
@@ -980,39 +1034,43 @@ RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"
 	     si les deux éléments comparés sont numériquement différents.
 	     Equivalent à <code>!-eq</code>.</dd>	    
 
-           </dl>
-        </li>
+      </dl>
+        
+      <!-- File Attribute Tests -->
 
-        <li>Vous pouvez effectuer différents tests sur les attributs de
-	fichier :
-          <dl>
-
+      <p><a id="rewritecond-fileattr" name="rewritecond-fileattr"
+      ></a><strong>Tests des attributs de fichier</strong></p>
+ 
+      <dl>
             <dt><strong>-d</strong></dt>
 	    <dd>est un <strong>r</strong>épertoire<br />
-	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
+	    Traite <em>TestString</em> comme un chemin et vérifie
 	    s'il existe ou pas, et s'il s'agit d'un répertoire.</dd>
 
             <dt><strong>-f</strong></dt>
 	    <dd>est un <strong>f</strong>ichier régulier<br />
-	    Traite <em>chaîne_de_test</em> comme un chemin et vérifie
-	    s'il existe ou pas, et s'il s'agit d'un fichier régulier.</dd>
+	    Traite <em>TestString</em> comme un chemin et vérifie
+	    s'il existe ou pas, et s'il s'agit d'un fichier régulier.
+	    </dd>
 
             <dt><strong>-F</strong></dt>
 	    <dd>test de l'existence d'un fichier via une sous-requête<br />
-	    Vérifie si <em>chaîne_de_test</em> est un fichier valide,
+	    Vérifie si <em>TestString</em> est un fichier valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
 	    utiliser avec précautions car les performances du serveur
-	    peuvent s'en trouver affectées !</dd>
+	    peuvent s'en trouver affectées !
+	    </dd>
 
 	    <dt><strong>-h</strong></dt>
 	    <dd>est un lien symbolique, selon la convention bash<br />
-            Voir <strong>-l</strong>.</dd>
+            Voir <strong>-l</strong>.
+	    </dd>
 
             <dt><strong>-l</strong></dt>
 	    <dd>est un <strong>l</strong>ien symbolique<br />
-            Considère la <em>chaîne_de_test</em> comme un chemin et
+            Considère la <em>TestString</em> comme un chemin et
 	    vérifie son existence et si elle est un lien symbolique. On
 	    peut aussi utiliser la convention bash <strong>-L</strong>
 	    ou <strong>-h</strong> lorsqu'il y a risque de confusion
@@ -1024,14 +1082,14 @@ RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"
 
             <dt><strong>-s</strong></dt>
 	    <dd>est un fichier régulier d'une certaine taille<br />
-            Considère la <em>chaîne_de_test</em> comme un chemin et
+            Considère la <em>TestString</em> comme un chemin et
 	    vérifie son existence et si elle est un fichier régulier
 	    d'une taille supérieure à zéro.</dd>
 
             <dt><strong>-U</strong></dt>
 	    <dd><p>test de l'existence d'une
 	    URL via une sous-requête<br />
-	    Vérifie si <em>chaîne_de_test</em> est une URL valide,
+	    Vérifie si <em>TestString</em> est une URL valide,
 	    accessible à travers tous les contrôles d'accès du serveur
 	    actuellement configurés pour ce chemin. C'est une
 	    sous-requête interne qui effectue cette vérification - à
@@ -1046,24 +1104,26 @@ RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"
 
 	  <dt><strong>-x</strong></dt>
 	  <dd>a l'attribut d'exécution positionné<br />
-            Considère la <em>chaîne_de_test</em> comme un chemin et
+            Considère la <em>TestString</em> comme un chemin et
 	    vérifie son existence et si elle a son attribut d'exécution
 	    positionné. Ce positionnement est déterminé en fonction de
 	    l'OS sous-jacent.</dd>
 
-	    </dl>
+      </dl>
 
-	    Par exemple:
+	    <p>Par exemple :</p>
 
         <highlight language="config">
 RewriteCond /var/www/%{REQUEST_URI} !-f
 RewriteRule ^(.+) /other/archive/$1 [R]
         </highlight>
 
-        </li>
+      <!-- Expression Evaluation in CondPattern -->
 
-	<li>
-           <p>Si la <em>chaîne_de_test</em> contient la valeur spéciale
+      <p><a id="rewritecond-expr-pattern" name="rewritecond-expr-pattern"
+      ></a><strong>Évaluation des expressions</strong></p>
+
+           <p>Si <em>TestString</em> contient la valeur spéciale
 	   <code>expr</code>, la <em>chaîne de comparaison</em> sera
 	   traitée en tant qu'expression rationnelle de type <a
 	   href="../expr.html">ap_expr</a>.</p>
@@ -1079,31 +1139,35 @@ RewriteRule ^(.+) /other/archive/$1 [R]
            RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
            RewriteRule "^/images" "-" [F]
            </highlight>
-        </li>
-    </ol>
 
+      <!-- ============================================================ -->
+      <!-- Flags                                                         -->
+      <!-- ============================================================ -->
+
+      <p><a id="rewritecond-flags" name="rewritecond-flags"
+      ></a><strong>Drapeaux</strong></p>
 	<p>Vous pouvez aussi définir certains drapeaux pour
-	l'<em>expression_de_comparaison</em> en ajoutant ces
-	<strong><code>[</code><em>drapeaux</em><code>]</code></strong>
+	la <em>CondPattern</em> en ajoutant ces
+	<strong><code>[</code><em>flags</em><code>]</code></strong>
 	comme troisième argument de la directive
-	<directive>RewriteCond</directive>, où <em>drapeaux</em> est un
+	<directive>RewriteCond</directive>, où <em>flags</em> est un
 	sous-ensemble séparé par des virgules des drapeaux suivants :</p>
 
-      <ul>
-        <li>'<strong><code>nocase|NC</code></strong>'
-	(<strong>n</strong>o <strong>c</strong>ase)<br />
+     <dl>
+        <dt>'<strong><code>nocase|NC</code></strong>'</dt>
+        <dd>(<strong>n</strong>o <strong>c</strong>ase)<br />
 	Rend le test insensible à la casse - il n'est pas fait de
 	distinction entre majuscules et minuscules, à la fois dans le
-	développement de <em>chaîne_de_test</em> et dans
-	<em>expression_de_comparaison</em>. Ce drapeau n'est pris en
-	compte que lors d'une comparaison entre <em>chaîne_de_test</em>
-	et <em>expression_de_comparaison</em>. Il ne l'est pas pour les
+	développement de <em>TestString</em> et dans
+	<em>CondPattern</em>. Ce drapeau n'est pris en
+	compte que lors d'une comparaison entre <em>TestString</em>
+	et <em>CondPattern</em>. Il ne l'est pas pour les
 	vérification par sous-requêtes ou sur le système de
-	fichiers.</li>
+	fichiers.
+	</dd>
 
-        <li>
-          '<strong><code>ornext|OR</code></strong>'
-	  (<strong>ou</strong> condition suivante)<br />
+        <dt>'<strong><code>ornext|OR</code></strong>'</dt>
+        <dd>(<strong>or</strong> condition suivante)<br />
 	  Permet de chaîner les conditions de règles avec un OU au
 	  lieu du AND implicite. Exemple typique :
 
@@ -1116,10 +1180,10 @@ RewriteRule ...règles concernant tous ces hôtes...
 
           Sans ce drapeau, les paires
 	  condition/règle devraient être écrites trois fois.
-        </li>
+        </dd>
 
-        <li>'<strong><code>novary|NV</code></strong>'
-	(<strong>n</strong>o <strong>v</strong>ary)<br />
+        <dt>'<strong><code>novary|NV</code></strong>'</dt>
+        <dd>(<strong>n</strong>o <strong>v</strong>ary)<br />
 	Si la condition contient un en-tête HTTP, ce drapeau empêche
 	ce dernier d'être ajouté à l'en-tête Vary de la réponse. <br />
 	L'utilisation de ce drapeau peut provoquer une mise en cache
@@ -1127,11 +1191,15 @@ RewriteRule ...règles concernant tous ces hôtes...
 	varie avec la valeur de l'en-tête considéré. Ce drapeau ne
 	devrait donc être utilisé que si l'on maîtrise parfaitement le
 	fonctionnement de l'en-tête Vary.
-        </li>
-      </ul>
+        </dd>
+      </dl>
       
+      <!-- ============================================================ -->
+      <!-- Example                                                       -->
+      <!-- ============================================================ -->
 
-      <p><strong>Exemple :</strong></p>
+      <p><a id="rewritecond-examples" name="rewritecond-examples"
+      ></a><strong>Exemple</strong></p>
 
        <p>Pour réécrire la page d'accueil d'un site en fonction de
        l'en-tête ``<code>User-Agent:</code>'' de la requête, vous
@@ -1168,7 +1236,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
 <name>RewriteRule</name>
 <description>Définit les règles pour le moteur de réécriture</description>
 <syntax>RewriteRule
-      <em>Modèle</em> <em>Substitution</em> [<em>drapeaux</em>]</syntax>
+      [!]<em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -1182,11 +1250,14 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
       les règles seront appliquées au cours du processus de
       réécriture.</p>
 
-      <p><a id="patterns" name="patterns"><em>Modèle</em></a> est une <a
+      <p><a id="patterns" name="patterns"><em>Pattern</em></a> est une <a
       id="regexp" name="regexp"><glossary ref="regex">expression
       rationnelle</glossary></a>. Ce avec quoi ce modèle est comparé dépend de
       l'endroit où la directive <directive>RewriteRule</directive> est
       définie.</p>
+
+      <p>Si le motif est précédé d’un <code>!</code>, la substitution ne sera
+      effectuée que si le <em>pattern</em> ne correspond pas.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">Qu'est-ce qui est comparé ?</a></title>
 
@@ -1201,17 +1272,17 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
       <li><p>Dans un <glossary ref="perdirectory">contexte de
       répertoire</glossary> (sections <directive
       module="core">Directory</directive> et fichiers .htaccess), le
-      <em>Modèle</em> est comparé avec une partie de chemin ; par exemple une
+      <em>Pattern</em> est comparé avec une partie de chemin ; par exemple une
       requête pour "/app1/index.html" entraînera une comparaison avec
       "app1/index.html" ou "index.html" selon le chemin de répertoire où la
       directive <directive>RewriteRule</directive> est définie.</p>
 
-      <p>Le chemin de répertoire auquel la règle s'applique est supprimé du
+      <p>Le chemin de répertoire auquel la règle s’applique est supprimé du
       chemin correspondant du système de fichiers avant comparaison (jusqu'au
       slash final compris).  En conséquence de cette suppression, les règles
       définies dans ce contexte n'effectuent des comparaisons qu'avec la portion
       du chemin du système de fichiers "en dessous" du chemin de répertoire
-      auquel la règle s'applique.</p>
+      auquel la règle s’applique.</p>
 
       <p>Le chemin correspondant actuel du système de fichiers est déterminé par
       des directives telles que <directive module="core">DocumentRoot</directive> et
@@ -1306,36 +1377,17 @@ dernière.</li>
 </example>
 </note>
 
-	<p>Pour quelques conseils à propos des <glossary
-	ref="regex">expressions rationnelles</glossary>, voir le
-	document <a
-	href="../rewrite/intro.html#regex">Introduction à
-	mod_rewrite</a>.</p>
+      <p>Pour des informations à propos des <glossary ref="regex">expressions
+      rationnelles</glossary>, y compris l’utilisation du préfixe <code>!</code>
+      pour inverser un motif, voir la section <a
+      href="../rewrite/intro.html#regex">Expressions rationnelles</a> de
+      l’introduction à mod_rewrite.</p>
 
-      <p>Dans <module>mod_rewrite</module>, on peut aussi utiliser le caractère
-      NOT ('<code>!</code>') comme préfixe de modèle. Ceci vous permet
-      d'inverser la signification d'un modèle, soit pour dire
-      ``<em>si l'URL considérée ne correspond <strong>PAS</strong> à
-      ce modèle</em>''. Le caractère NON peut donc être utilisé à
-      titre exceptionnel, lorsqu'il est plus simple d'effectuer une
-      comparaison avec le modèle inversé, ou dans la dernière règle
-      par défaut.</p>
-
-<note><title>Note</title>
-Si vous utilisez le caractère NON pour inverser la signification d'un
-modèle, vous ne pouvez pas inclure de parties génériques groupées dans
-le modèle. Ceci est dû au fait que, lorsque le modèle ne correspond
-pas (autrement dit, sa négation correspond), les groupes sont vides.
-Ainsi, si vous utilisez des modèles inversés, vous ne pouvez
-pas vous référer aux groupes par <code>$N</code> dans la chaîne de
-substitution !
-</note>
-
-      <p>Dans une règle de réécriture,
-      <a id="rhs" name="rhs"><em>Substitution</em></a> est la chaîne
-      de caractères qui remplace le chemin de l'URL original qui
-      correspondait au <em>Modèle</em>. <em>Substitution</em> peut
-      être :</p>
+      <p>Dans une règle de réécriture, <a id="rhs"
+      name="rhs"><em>Substitution</em></a> est la chaîne de caractères qui
+      remplace le chemin de l'URL (voir <a href="#what_is_matched">"Qu’est-ce
+      qui est comparé ?"</a> ci-avant) lorsque les conditions de la règle sont
+      satisfaites. <em>Substitution</em> peut être :</p>
 
       <dl>
 
@@ -1343,7 +1395,7 @@ substitution !
 
 	<dd>Il indique alors la localisation dans le système de fichiers de la
 	ressource qui doit être envoyée au client. Une substitution commençant
-	par <code>/</code> n'est traitée comme un chemin du système de fichiers
+	par <code>/</code> n’est traitée comme un chemin du système de fichiers
 	que dans un contexte de serveur virtuel ou de serveur global, et
 	seulement si le premier composant du chemin existe dans le système de
 	fichiers. Dans un <glossary ref="perdirectory">contexte de
@@ -1356,7 +1408,7 @@ substitution !
 	doit être servie. Dans un contexte de serveur virtuel ou de serveur
 	global, si le premier composant du chemin existe à la racine du système
 	de fichiers, la substitution est traitée comme un chemin du système de
-	fichiers. Par exemple, <code>/www/file.html</code> est un chemin d'URL,
+	fichiers. Par exemple, <code>/www/file.html</code> est un chemin d’URL,
 	sauf si un répertoire nommé <code>www</code> existe à la racine du
 	système de fichiers. Si vous désirez que d'autres directives de
 	correspondance d'URL (comme la directive <directive
@@ -1390,25 +1442,25 @@ substitution !
       <note><title>Comment sont interprétées les substitutions de chemin</title>
       <p>En fonction du contexte et si elle commence ou non par un slash, une
       substitution sera traitée comme un chemin du système de fichiers ou comme
-      un chemin d'URL :</p>
+      un chemin d’URL :</p>
       <ul>
         <li><strong>Commence par un <code>/</code>, contexte de serveur virtuel
 	ou de serveur global :</strong>
         Traitée comme un chemin du système de fichiers si le premier composant du
-	chemin existe sur disque ; sinon, traitée comme un chemin d'URL.</li>
+	chemin existe sur disque ; sinon, traitée comme un chemin d’URL.</li>
         <li><strong>Commence par un <code>/</code>, <glossary
 	ref="perdirectory">contexte de répertoire</glossary> :</strong>
-        Toujours traitée comme un chemin d'URL. Pas de vérification sur le
+        Toujours traitée comme un chemin d’URL. Pas de vérification sur le
 	système de fichiers.</li>
         <li><strong>Ne commence pas par un <code>/</code> (chemin relatif), contexte de serveur virtuel
-	ou de serveur global :</strong> Traitée comme un chemin d'URL relatif à
-	l'URI de la requête actuelle.</li>
+	ou de serveur global :</strong> Traitée comme un chemin d’URL relatif à
+	l’URI de la requête actuelle.</li>
 	<li><strong>Ne commence pas par un <code>/</code> (chemin relatif),
 	<glossary ref="perdirectory">contexte de
-	répertoire</glossary> :</strong> Traitée comme un chemin d'URL relatif
+	répertoire</glossary> :</strong> Traitée comme un chemin d’URL relatif
 	au chemin de répertoire auquel la directive <directive
 	module="core">Directory</directive> ou le fichier <code>.htaccess</code>
-	s'appliquent. Voir <directive>RewriteBase</directive> pour le contrôle
+	s’appliquent. Voir <directive>RewriteBase</directive> pour le contrôle
 	du préfixe ajouté aux substitutions relatives.</li>
       </ul>
       </note>
@@ -1427,7 +1479,7 @@ substitution !
 	condition d'une règle (<code>%{VARNAME}</code>)</li>
 
         <li>des appels de
-	<a href="#mapfunc">fonctions de comparaison</a>
+	<a href="#mapfunc">fonctions de mappage</a>
 	(<code>${nom correspondance:clé|défaut}</code>)</li>
       </ol>
 
@@ -1480,10 +1532,10 @@ substitution !
       <p>En outre, vous pouvez spécifier des <a name="rewriteflags"
       id="rewriteflags">actions</a> spéciales à effectuer en ajoutant
       des
-      <strong><code>[</code><em>drapeaux</em><code>]</code></strong>
+      <strong><code>[</code><em>flags</em><code>]</code></strong>
       comme troisième argument de la directive
       <directive>RewriteRule</directive>. Séparés par des virgules au sein d'une
-      liste encadrée par des crochets, les <em>drapeaux</em> peuvent
+      liste encadrée par des crochets, les <em>flags</em> peuvent
       être choisis dans la table suivante. Vous trouverez plus de
       détails, et des exemples pour chaque drapeau dans le <a
       href="../rewrite/flags.html">document à propos des drapeaux de
@@ -1667,7 +1719,7 @@ substitution !
     </tr>
     <tr>
         <td>UnsafeAllow3F</td>
-        <td>Autorise les substitutions à partir d'URL potentiellement non
+        <td>Autorise les substitutions à partir d’URL potentiellement non
 	fiables.
         <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">détails ...</a></em>
         </td>
@@ -1675,7 +1727,7 @@ substitution !
     <tr>
         <td>UnsafePrefixStat</td>
         <td>Autorise les substitutions potentiellement non fiables à partir
-	d'une variable de tête ou d'une référence arrière vers un chemin du
+	d’une variable de tête ou d’une référence arrière vers un chemin du
 	système de fichiers.
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em><br />
         <since>2.5.1</since>

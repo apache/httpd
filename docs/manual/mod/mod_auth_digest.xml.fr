@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933502:1934457 (outdated) -->
+<!-- English Revision: 1934457 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -198,49 +198,34 @@ serveur (nonce)</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthDigestNonceFormat</name>
-<description>Détermine la manière dont le nombre à valeur unique du
-serveur (nonce) est généré</description>
-<syntax>AuthDigestNonceFormat <var>format</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<name>AuthDigestNcCheck</name>
+<description>Active ou désactive la vérification du compteur d'envois du
+nombre à valeur unique (nonce) par le client</description>
+<syntax>AuthDigestNcCheck On|Off</syntax>
+<default>AuthDigestNcCheck Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <note>Non encore implémenté.</note>
-    <!-- La directive AuthDigestNonceFormat permet de déterminer la
-    manière dont le nombre à valeur unique du serveur (nonce) est
-    généré. -->
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthDigestNcCheck</name>
-<description>Active ou désactive la vérification du nombre d'envois du
-nombre à valeur unique (nonce) par le serveur</description>
-<syntax>AuthDigestNcCheck On|Off</syntax>
-<default>AuthDigestNcCheck Off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <note>
-      Non encore implémenté.
-    </note>
-    <!--
     <p>La directive AuthDigestNcCheck permet d'activer ou de désactiver
-    la vérification du nombre d'envois du nombre à valeur unique (nonce)
-    par le serveur.</p>
+    la vérification du compteur d'envois du nombre à valeur unique (nonce)
+    par le client. Le compteur d'envois est un compteur séquentiel que le client
+    incrémente à chaque requête en utilisant le même nombre à valeur unique.
+    Cette vérification permet de détecter les attaques par rejeu.</p>
 
-    <p>Bien que la définition de cette directive à On soit recommandée
-    du point de vue de la sécurité, elle a des conséquences importantes sur
-    les performances du serveur.  Pour vérifier le nombre d'envois du nonce,
-    *toutes* les requêtes (du moins toutes celles qui possèdent un
-    en-tête d'autorisation, qu'elles requièrent ou non une
-    authentification à base de condensé) doivent être sérialisées au
-    travers d'une section critique. Si le serveur traite un grand nombre
-    de requêtes qui possèdent un en-tête d'autorisation, l'impact sur
-    les performances pourra se montrer sensible.</p>
-     -->
+    <p>Cette fonctionnalité nécessite la prise en charge de la mémoire partagée
+    sur la plateforme. Si cette directive est définie à <code>On</code> alors
+    que la mémoire partagée n’est pas disponible, le serveur renverra une erreur
+    au démarrage.</p>
+
+    <p>Bien qu’il soit recommandé de le faire du point de vue de la sécurité,
+    activer cette directive a des implications en matière de performance :
+    toutes les requêtes comportant un en-tête
+    <code>Authorization</code> doivent être sérialisées au sein d’une section
+    critique pour comparer de manière sure les valeurs du compteur d’envois du
+    nombre à valeur unique. Sur les serveurs à fort trafic, cela peut ne pas être
+    négligeable.</p>
 </usage>
 </directivesynopsis>
 

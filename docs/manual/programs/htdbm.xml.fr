@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933136:1934521 (outdated) -->
+<!-- English Revision: 1934521 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -360,6 +360,20 @@ passe</title>
 
     <p>Les noms d'utilisateurs ont une taille limitée à <code>255</code>
     octets et ne doivent pas contenir de caractère <code>:</code>.</p>
+</section>
+
+<section id="files"><title>Fichiers</title>
+
+<p>Le chemin du fichier de mots de passe DBM est spécifié en tant qu’argument de la ligne de
+commande et peut correspondre à n’importe quel emplacement du système de
+fichiers.</p>
+
+<dl>
+<dt><var>nom-fichier</var></dt>
+<dd>Le fichier au format DBM contenant les noms d’utilisateur et les mots de
+passe.</dd>
+</dl>
+
 </section>
 
 </manualpage>

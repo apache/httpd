@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- $LastChangedRevision: 1752104 $ -->
-<!-- English Revision: 1752104:1933830 (outdated) -->
+<!-- English Revision: 1933830 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- $LastChangedRevision: 2017021901 $ -->
 

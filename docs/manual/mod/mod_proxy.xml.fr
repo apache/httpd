@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934245:1934456 (outdated) -->
+<!-- English Revision: 1935589 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -580,7 +580,8 @@ mandatées</description>
 <usage>
     <p>Les directives situées dans une section <directive
     type="section">Proxy</directive> ne s'appliquent qu'au contenu
-    mandaté concerné. Les jokers de style shell sont autorisés.</p>
+    mandaté concerné en utilisant une simple recherche de correspondance entre
+    une chaîne et l’URL. Les jokers de style shell sont aussi autorisés.</p>
 
     <p>Par exemple, les lignes suivantes n'autoriseront à accéder à un
     contenu via votre serveur mandataire que les hôtes appartenant à
@@ -823,6 +824,13 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080
     d'authentification. La variable d'environnement <a
     href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> n'est plus prise en
     compte si cet argument est utilisé.</p>
+
+    <note><title>Résolution DNS et mandataires directs</title>
+    <p>Lorsqu’un mandataire direct (distant) est configuré, la résolution DNS du
+    nom d’hôte originel/dorsal n’est effectuée que sur le mandataire direct.
+    Toute règle <directive module="mod_proxy">ProxyBlock</directive> qui
+    restreint l’accès à des adresses IP spécifiques doit être définie sur le
+    mandataire direct.</p></note>
 </usage>
 </directivesynopsis>
 
@@ -2647,6 +2655,82 @@ sortantes</description>
     serveur d'arrière-plan.</p>
 
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyAsyncDelay</name>
+<description>Durée de sondage synchrone avant de passer le contrôle d’une
+connexion au MPM pour un traitement asynchrone</description>
+<syntax>ProxyAsyncDelay <var>time</var>[s]</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Lorsqu’un MPM gérant les évènements est utilisé, cette directive active
+    la gestion asynchrone des connexions de mandataire. Après avoir envoyé la
+    requête au serveur dorsal, le thread de travail du mandataire attend une
+    réponse pendant la durée spécifiée par cette directive. Si le serveur dorsal
+    répond pendant ce laps de temps, la réponse est traitée de manière synchrone
+    par le même thread. Dans le cas contraire, le contrôle de la connexion est
+    passé à la boucle d’attente d’évènement asynchrone du MPM, libérant de ce
+    fait le thread de travail qui pourra alors servir d’autres requêtes.</p>
+
+    <p>Si cette directive est définie à <code>0</code>, le contrôle de la
+    connexion est immédiatement transmis à la boucle d’attente d’évènement. Si
+    elle est définie à <code>-1</code>, le traitement asynchrone est totalement
+    désactivé (toutes les connexions de mandataire restent synchrones).</p>
+
+    <p>Cette directive n’a d’effet que si le MPM prend en charge l’attente
+    de réponse (polling) — par exemple, <module>event</module>).</p>
+
+    <note><title>Quand utiliser cette directive</title>
+    <p>La gestion asynchrone des mandataires est particulièrement utile pour les
+    serveurs dorsaux lents ou les réponses en flux continu (streaming) de longue
+    durée, où le fait de bloquer un thread de travail en attente de données
+    limiterait la concurrence. Pour les serveurs dorsaux rapides qui répondent
+    dans la milliseconde, l’approche synchrone est plus efficace.</p>
+    </note>
+</usage>
+
+<seealso><directive module="mod_proxy">ProxyAsyncIdleTimeout</directive></seealso>
+<seealso><directive module="mod_proxy">ProxyTimeout</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyAsyncIdleTimeout</name>
+<description>Délai d’inactivité pour les connexions asynchrones de mandataire</description>
+<syntax>ProxyAsyncIdleTimeout <var>time</var>[s]</syntax>
+<default>La valeur de la directive <directive module="mod_proxy">ProxyTimeout</directive></default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5 du serveur HTTP Apache</compatibility>
+
+<usage>
+    <p>Une fois le contrôle de la connexion de mandataire transmis à la boucle
+    d’attente d’évènement asynchrone du MPM (voir la directive <directive
+    module="mod_proxy">ProxyAsyncDelay</directive>), cette directive définit la
+    durée maximale pendant laquelle la connexion peut rester inactive (aucune
+    donnée reçu du serveur dorsal) avant d’être fermée.</p>
+
+    <p>Si elle n’est pas explicitement définie, elle prend pour valeur celle du
+    paramètre <code>timeout</code> du thread de travail (si défini via
+    <directive module="mod_proxy">ProxyPass</directive> ou <directive
+    module="mod_proxy">ProxySet</directive>), celle de <directive
+    module="mod_proxy">ProxyTimeout</directive> ou en dernier recours celle de
+    la directive <directive module="core">Timeout</directive> du serveur.</p>
+
+    <p>Cette directive n’a d’effet que si la directive <directive
+    module="mod_proxy">ProxyAsyncDelay</directive> est aussi définie pour
+    activer la gestion asynchrone.</p>
+</usage>
+
+<seealso><directive module="mod_proxy">ProxyAsyncDelay</directive></seealso>
+<seealso><directive module="mod_proxy">ProxyTimeout</directive></seealso>
 </directivesynopsis>
 
 </modulesynopsis>

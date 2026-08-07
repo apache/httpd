@@ -1,97 +1,95 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>httxt2dbm - RewriteMap ile kullanmak için DBM dosyaları üretir - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>httxt2dbm - RewriteMap ile kullanmak i&ccedil;in DBM dosyaları &uuml;retir - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>httxt2dbm - RewriteMap ile kullanmak için DBM dosyaları üretir</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>httxt2dbm - RewriteMap ile kullanmak i&ccedil;in DBM dosyaları &uuml;retir</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/httxt2dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httxt2dbm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/httxt2dbm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/programs/httxt2dbm.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/httxt2dbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
-    <p><code><strong>httxt2dbm</strong></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ile kullanmak için düz metin
-    dosyalardan DBM dosyaları üretir.</p>
+    <p><code><strong>httxt2dbm</strong></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ile kullanmak i&ccedil;in d&uuml;z metin
+    dosyalardan DBM dosyaları &uuml;retir.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Örnekler</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Se&ccedil;enekler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">&Ouml;rnekler</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Kullanım <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>httxt2dbm</strong>
     [ -<strong>v</strong> ]
-    [ -<strong>f</strong> <var>DBM_türü</var> ]
+    [ -<strong>f</strong> <var>DBM_t&uuml;r&uuml;</var> ]
     -<strong>i</strong> <var>kaynak_metin</var>
-    -<strong>o</strong> <var>çıktı_DBM</var>
+    -<strong>o</strong> <var>&ccedil;ıktı_DBM</var>
     </code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Se&ccedil;enekler <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code><strong>-v</strong></code></dt>
-    <dd>Çıktı daha ayrıntılı olur.</dd>
+    <dd>&Ccedil;ıktı daha ayrıntılı olur.</dd>
 
-    <dt><code><strong>-f</strong> <var>DBM_türü</var></code></dt>
-    <dd>Çıktı için kullanılacak DBM türü belirtilir. Belirtilmediği takdirde
-    <a class="glossarylink" href="../glossary.html#apr" title="sözlüğe bakınız">APR</a> öntanımlısı kullanılır. Belirtilebilecek DBM
-    türleri:
-    GDBM dosyalar için <code>GDBM</code>,
-    SDBM dosyalar için <code>SDBM</code>,
-    Berkeley DB dosyalar için <code>DB</code>,
-    NDBM dosyalar için <code>NDBM</code>,
-    öntanımlı DBM türü için <code>default</code>
+    <dt><code><strong>-f</strong> <var>DBM_t&uuml;r&uuml;</var></code></dt>
+    <dd>&Ccedil;ıktı i&ccedil;in kullanılacak DBM t&uuml;r&uuml; belirtilir. Belirtilmediği takdirde
+    <a class="glossarylink" href="../glossary.html#apr" title="s&ouml;zl&uuml;ğe bakınız">APR</a> &ouml;ntanımlısı kullanılır. Belirtilebilecek DBM
+    t&uuml;rleri:
+    GDBM dosyalar i&ccedil;in <code>GDBM</code>,
+    SDBM dosyalar i&ccedil;in <code>SDBM</code>,
+    Berkeley DB dosyalar i&ccedil;in <code>DB</code>,
+    NDBM dosyalar i&ccedil;in <code>NDBM</code>,
+    &ouml;ntanımlı DBM t&uuml;r&uuml; i&ccedil;in <code>default</code>
     </dd>
 
     <dt><code><strong>-i</strong> <var>kaynak_metin</var></code></dt>
-    <dd>DBM dosyasının üretiminde kullanılacak girdi dosyası belirtilir. Bu
-    dosya, her satırda bir kayıt bulunmak üzere her satırı şöyle biçemlenmiş
+    <dd>DBM dosyasının &uuml;retiminde kullanılacak girdi dosyası belirtilir. Bu
+    dosya, her satırda bir kayıt bulunmak &uuml;zere her satırı ş&ouml;yle bi&ccedil;emlenmiş
     olmalıdır:
     <code>anahtar değer</code>.
-    Bu dosyanın biçemi ve manası ile ilgili ayrıntılar için <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesinin açıklamasına
+    Bu dosyanın bi&ccedil;emi ve manası ile ilgili ayrıntılar i&ccedil;in <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> y&ouml;nergesinin a&ccedil;ıklamasına
     bakınız.
     </dd>
 
-    <dt><code><strong>-o</strong>  <var>çıktı_DBM</var></code></dt>
-    <dd>Çıktılanacak DBM dosyasının ismi belirtilir.</dd>
+    <dt><code><strong>-o</strong>  <var>&ccedil;ıktı_DBM</var></code></dt>
+    <dd>&Ccedil;ıktılanacak DBM dosyasının ismi belirtilir.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Örnekler</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">&Ouml;rnekler <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <div class="example"><p><code>
-      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
-      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
+      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br>
+      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br>
     </code></p></div>
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/httxt2dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httxt2dbm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/httxt2dbm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/programs/httxt2dbm.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/httxt2dbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

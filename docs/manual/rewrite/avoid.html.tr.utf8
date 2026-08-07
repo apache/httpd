@@ -1,115 +1,113 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_rewrite Ne Zaman Kullanılmamalı - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>mod_rewrite Ne Zaman Kullanılmamalı - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite Ne Zaman Kullanılmamalı</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite Ne Zaman Kullanılmamalı</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
 
 <p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> hakkındaki belki de en önemli kavramlardan
-birini açıklar: ne zaman kullanılmaması gerektiğini.</p>
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> hakkındaki belki de en &ouml;nemli kavramlardan
+birini a&ccedil;ıklar: ne zaman kullanılmaması gerektiğini.</p>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, diğer alternatiflerin yetersiz kaldığı
-durumlarda son çare olarak düşünülmelidir. Daha basit alternatifler
+durumlarda son &ccedil;are olarak d&uuml;ş&uuml;n&uuml;lmelidir. Daha basit alternatifler
 varken kullanılması, kafa karıştırıcı, kırılgan ve bakımı zor
-yapılandırmalara yol açar. Hangi alternatiflerin mevcut olduğunu
-anlamak, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> konusunda uzmanlaşmanın çok
-önemli bir adımıdır.</p>
+yapılandırmalara yol a&ccedil;ar. Hangi alternatiflerin mevcut olduğunu
+anlamak, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> konusunda uzmanlaşmanın &ccedil;ok
+&ouml;nemli bir adımıdır.</p>
 
-<p>Bu örneklerin birçoğunun sizin sunucu yapılandırmanızda değişiklik
-yapılmadan çalışmayacağını unutmayın; bu nedenle örnekleri
+<p>Bu &ouml;rneklerin bir&ccedil;oğunun sizin sunucu yapılandırmanızda değişiklik
+yapılmadan &ccedil;alışmayacağını unutmayın; bu nedenle &ouml;rnekleri
 yapılandırmanıza kopyalayıp yapıştırmak yerine anlamanız
-önemlidir.</p>
+&ouml;nemlidir.</p>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün doğru araç olduğu en yaygın
-durum, en iyi çözümün sunucu yapılandırma dosyalarına erişim
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n doğru ara&ccedil; olduğu en yaygın
+durum, en iyi &ccedil;&ouml;z&uuml;m&uuml;n sunucu yapılandırma dosyalarına erişim
 gerektirdiği ancak bu erişime sahip olmadığınız durumdur. Bazı
-yapılandırma yönergeleri yalnızca sunucu yapılandırma dosyasında
+yapılandırma y&ouml;nergeleri yalnızca sunucu yapılandırma dosyasında
 kullanılabilir. Bu nedenle, yalnızca .htaccess dosyalarıyla
-çalışabileceğiniz bir barındırma ortamındaysanız,
+&ccedil;alışabileceğiniz bir barındırma ortamındaysanız,
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanmanız gerekebilir.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Basit Yönlendirme</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#alias">URL Takma Adlandırma</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Sanal Konak Oluşturma</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Basit Vekil Kullanımı</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setenv">Ortam Değişkeni Sınaması</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#redirect">Basit Y&ouml;nlendirme</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#alias">URL Takma Adlandırma</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhosts">Sanal Konak Oluşturma</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">Basit Vekil Kullanımı</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenv">Ortam Değişkeni Sınaması</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Basit Yönlendirme</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">Basit Y&ouml;nlendirme <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
-<p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>, bir URL'yi başka birine yönlendirme
+<p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>, bir URL'yi başka birine y&ouml;nlendirme
 aracı sağlayan <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> ve
-<code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> yönergelerini
-sunar. Bir URL'nin veya bir URL sınıfının başka bir yere bu tür basit
-yönlendirmesi, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-yerine bu yönergeler kullanılarak gerçekleştirilmelidir.
-<code>RedirectMatch</code>, yönlendirme kriterlerinize düzenli ifade
+<code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> y&ouml;nergelerini
+sunar. Bir URL'nin veya bir URL sınıfının başka bir yere bu t&uuml;r basit
+y&ouml;nlendirmesi, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+yerine bu y&ouml;nergeler kullanılarak ger&ccedil;ekleştirilmelidir.
+<code>RedirectMatch</code>, y&ouml;nlendirme kriterlerinize d&uuml;zenli ifade
 eklemenize olanak tanır ve <code>RewriteRule</code> kullanmanın
-avantajlarının birçoğunu sağlar.</p>
+avantajlarının bir&ccedil;oğunu sağlar.</p>
 
-<p><code>RewriteRule</code> için yaygın bir kullanım, URL'lerin tüm bir
-sınıfını yönlendirmektir. Örneğin, <code>/one</code> dizinindeki tüm
-URL'ler <code>http://one.example.com/</code> adresine yönlendirilmeli
-veya belki tüm <code>http</code> istekleri <code>https</code>'ye
-yönlendirilmelidir.</p>
+<p><code>RewriteRule</code> i&ccedil;in yaygın bir kullanım, URL'lerin t&uuml;m bir
+sınıfını y&ouml;nlendirmektir. &Ouml;rneğin, <code>/one</code> dizinindeki t&uuml;m
+URL'ler <code>http://one.example.com/</code> adresine y&ouml;nlendirilmeli
+veya belki t&uuml;m <code>http</code> istekleri <code>https</code>'ye
+y&ouml;nlendirilmelidir.</p>
 
-<p>Bu durumlar <code>Redirect</code> yönergesiyle daha iyi ele alınır.
-<code>Redirect</code> yönergesinin yol bilgisini koruduğunu
-unutmayın. Yani, <code>/one</code> URL'si için bir yönlendirme,
+<p>Bu durumlar <code>Redirect</code> y&ouml;nergesiyle daha iyi ele alınır.
+<code>Redirect</code> y&ouml;nergesinin yol bilgisini koruduğunu
+unutmayın. Yani, <code>/one</code> URL'si i&ccedil;in bir y&ouml;nlendirme,
 <code>/one/two.html</code> ve <code>/one/three/four.html</code>
-gibi altındaki tüm URL'leri de yönlendirecektir.</p>
+gibi altındaki t&uuml;m URL'leri de y&ouml;nlendirecektir.</p>
 
 <p><code>/one</code> altındaki URL'leri
-<code>http://one.example.com</code> adresine yönlendirmek için
+<code>http://one.example.com</code> adresine y&ouml;nlendirmek i&ccedil;in
 şunları yapın:</p>
 
 <pre class="prettyprint lang-config">Redirect "/one/" "http://one.example.com/"</pre>
 
 
-<p>Bir konak adını başka birine yönlendirmek için, örneğin
-<code>example.com</code>'u <code>www.example.com</code>'a yönlendirmek
-için <a href="remapping.html#canonicalhost">Kurallı Konak Adları</a>
+<p>Bir konak adını başka birine y&ouml;nlendirmek i&ccedil;in, &ouml;rneğin
+<code>example.com</code>'u <code>www.example.com</code>'a y&ouml;nlendirmek
+i&ccedil;in <a href="remapping.html#canonicalhost">Kurallı Konak Adları</a>
 tarifine bakın.</p>
 
-<p><code>http</code> URL'lerini <code>https</code>'ye yönlendirmek
-için şunları yapın:</p>
+<p><code>http</code> URL'lerini <code>https</code>'ye y&ouml;nlendirmek
+i&ccedil;in şunları yapın:</p>
 
 <pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
     ServerName www.example.com
@@ -122,105 +120,105 @@ için şunları yapın:</p>
 &lt;/VirtualHost&gt;</pre>
 
 
-<p><code>RewriteRule</code> kullanarak bu görevi gerçekleştirmek, aynı
-kapsamda başka <code>RewriteRule</code> yönergeleri varsa uygun
-olabilir. Çünkü aynı kapsamda <code>Redirect</code> ve
-<code>RewriteRule</code> yönergeleri olduğunda,
-<code>RewriteRule</code> yönergeleri yapılandırma dosyasındaki sıraya
-bakılmaksızın önce çalışacaktır.</p>
+<p><code>RewriteRule</code> kullanarak bu g&ouml;revi ger&ccedil;ekleştirmek, aynı
+kapsamda başka <code>RewriteRule</code> y&ouml;nergeleri varsa uygun
+olabilir. &Ccedil;&uuml;nk&uuml; aynı kapsamda <code>Redirect</code> ve
+<code>RewriteRule</code> y&ouml;nergeleri olduğunda,
+<code>RewriteRule</code> y&ouml;nergeleri yapılandırma dosyasındaki sıraya
+bakılmaksızın &ouml;nce &ccedil;alışacaktır.</p>
 
-<p><em>http-to-https</em> yönlendirmesi durumunda, ana sunucu
-yapılandırma dosyasına erişiminiz yoksa ve bu görevi bunun yerine bir
-<code>.htaccess</code> dosyasında gerçekleştirmek zorundaysanız,
+<p><em>http-to-https</em> y&ouml;nlendirmesi durumunda, ana sunucu
+yapılandırma dosyasına erişiminiz yoksa ve bu g&ouml;revi bunun yerine bir
+<code>.htaccess</code> dosyasında ger&ccedil;ekleştirmek zorundaysanız,
 <code>RewriteRule</code> kullanımı uygun olacaktır.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL Takma Adlandırma</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
-<p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> yönergesi, bir
+<h2 id="alias">URL Takma Adlandırma <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> y&ouml;nergesi, bir
 URI'den bir dizine - genellikle <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> dışındaki bir dizine - eşleme
-sağlar. Bu eşlemeyi <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ile gerçekleştirmek
-mümkün olsa da, basitlik ve performans nedeniyle <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> tercih edilen yöntemdir.</p>
+sağlar. Bu eşlemeyi <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ile ger&ccedil;ekleştirmek
+m&uuml;mk&uuml;n olsa da, basitlik ve performans nedeniyle <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> tercih edilen y&ouml;ntemdir.</p>
 
 <div class="example"><h3>Alias Kullanımı</h3><pre class="prettyprint lang-config">Alias "/cats" "/var/www/virtualhosts/felines/htdocs"</pre>
 </div>
 
 <p>
-Bu eşlemeyi gerçekleştirmek için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+Bu eşlemeyi ger&ccedil;ekleştirmek i&ccedil;in <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 kullanımı, sunucu yapılandırma dosyalarına erişiminiz olmadığında
 uygun olabilir. Alias yalnızca sunucu veya sanal konak bağlamında
 kullanılabilir, <code>.htaccess</code> dosyasında kullanılamaz.
 </p>
 
 <p>Sunucunuzda <code>Options FollowSymLinks</code> etkinse, sembolik
-bağlantılar aynı şeyi gerçekleştirmenin başka bir yolu olabilir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+bağlantılar aynı şeyi ger&ccedil;ekleştirmenin başka bir yolu olabilir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">Sanal Konak Oluşturma</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
-<p><a href="vhosts.html">mod_rewrite ile sanal konakları</a> yönetmek
-mümkün olsa da, nadiren doğru yoldur. Ayrı ayrı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blokları
-oluşturmak neredeyse her zaman doğru yaklaşımdır. Çok sayıda sanal
+<h2 id="vhosts">Sanal Konak Oluşturma <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<p><a href="vhosts.html">mod_rewrite ile sanal konakları</a> y&ouml;netmek
+m&uuml;mk&uuml;n olsa da, nadiren doğru yoldur. Ayrı ayrı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blokları
+oluşturmak neredeyse her zaman doğru yaklaşımdır. &Ccedil;ok sayıda sanal
 konağınız olması durumunda, bu konakları otomatik olarak oluşturmak
-için <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> kullanmayı düşünün.</p>
+i&ccedil;in <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> kullanmayı d&uuml;ş&uuml;n&uuml;n.</p>
 
-<p><code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> gibi modüller de çok sayıda sanal konağı
-devingen olarak oluşturmak için yararlıdır.</p>
+<p><code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code> gibi mod&uuml;ller de &ccedil;ok sayıda sanal konağı
+devingen olarak oluşturmak i&ccedil;in yararlıdır.</p>
 
-<p>Sanal konak oluşturma için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanımı,
+<p>Sanal konak oluşturma i&ccedil;in <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanımı,
 sunucu yapılandırma dosyalarına erişim sağlamayan bir barındırma
 hizmeti kullanıyorsanız ve yapılandırmayı <code>.htaccess</code>
 dosyaları kullanarak yapmak zorundaysanız uygun olabilir.</p>
 
-<p>Yine de doğru yaklaşım gibi görünüyorsa, bunu nasıl
-gerçekleştirebileceğiniz hakkında daha fazla ayrıntı için <a href="vhosts.html">mod_rewrite ile sanal konaklar</a> belgesine
+<p>Yine de doğru yaklaşım gibi g&ouml;r&uuml;n&uuml;yorsa, bunu nasıl
+ger&ccedil;ekleştirebileceğiniz hakkında daha fazla ayrıntı i&ccedil;in <a href="vhosts.html">mod_rewrite ile sanal konaklar</a> belgesine
 bakın.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Basit Vekil Kullanımı</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Basit Vekil Kullanımı <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, yeniden
-yazılmış URI'leri <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> üzerinden geçirmek için
+yazılmış URI'leri <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> &uuml;zerinden ge&ccedil;irmek i&ccedil;in
 <a href="flags.html#flag_p">[P]</a> bayrağını sağlar.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]</pre>
 
 
-<p>Ancak birçok durumda, yukarıdaki örnekte gösterildiği gibi gerçek
-bir kalıp eşleştirmesine gerek olmadığında, <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> yönergesi daha iyi bir
-seçimdir. Buradaki örnek şöyle ifade edilebilir:</p>
+<p>Ancak bir&ccedil;ok durumda, yukarıdaki &ouml;rnekte g&ouml;sterildiği gibi ger&ccedil;ek
+bir kalıp eşleştirmesine gerek olmadığında, <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> y&ouml;nergesi daha iyi bir
+se&ccedil;imdir. Buradaki &ouml;rnek ş&ouml;yle ifade edilebilir:</p>
 
 <pre class="prettyprint lang-config">ProxyPass "/images/" "http://imageserver.local/images/"</pre>
 
 
 <p>İster <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 ister <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> kullanın,
-arka uç sunucu tarafından verilen yönlendirmeleri yakalamak için yine de
-<code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> yönergesini
+arka u&ccedil; sunucu tarafından verilen y&ouml;nlendirmeleri yakalamak i&ccedil;in yine de
+<code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> y&ouml;nergesini
 kullanmanız gerekeceğini unutmayın:</p>
 
 <pre class="prettyprint lang-config">ProxyPassReverse "/images/" "http://imageserver.local/images/"</pre>
 
 
 <p>Aynı kapsamda diğer <code>RewriteRule</code>'lar etkinse,
-<code>RewriteRule</code> kullanmanız gerekebilir; çünkü
-<code>RewriteRule</code> genellikle <code>ProxyPass</code>'tan önce
-etki eder ve yapmaya çalıştığınız şeyi geçersiz kılabilir.</p>
+<code>RewriteRule</code> kullanmanız gerekebilir; &ccedil;&uuml;nk&uuml;
+<code>RewriteRule</code> genellikle <code>ProxyPass</code>'tan &ouml;nce
+etki eder ve yapmaya &ccedil;alıştığınız şeyi ge&ccedil;ersiz kılabilir.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">Ortam Değişkeni Sınaması</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">Ortam Değişkeni Sınaması <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, belirli bir ortam değişkeninin veya
 istek başlığının varlığına veya yokluğuna bağlı olarak belirli bir
-eylem yapmak için sıklıkla kullanılır. Bu, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> yönergesi kullanılarak daha verimli bir
+eylem yapmak i&ccedil;in sıklıkla kullanılır. Bu, <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> y&ouml;nergesi kullanılarak daha verimli bir
 şekilde yapılabilir.</p>
 
-<p>Örneğin, <code class="directive">RewriteRule</code> kullanılarak
+<p>&Ouml;rneğin, <code class="directive">RewriteRule</code> kullanılarak
 <code>www.example.com</code> gibi kurallı bir konak adının
-zorlanmasının yaygın senaryosunu ele alalım. Bu, burada gösterildiği
+zorlanmasının yaygın senaryosunu ele alalım. Bu, burada g&ouml;sterildiği
 gibi <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
-yönergesi kullanılarak yapılabilir:</p>
+y&ouml;nergesi kullanılarak yapılabilir:</p>
 
 <pre class="prettyprint lang-config">&lt;If "req('Host') != 'www.example.com'"&gt;
     Redirect "/" "http://www.example.com/"
@@ -228,27 +226,27 @@ yönergesi kullanılarak yapılabilir:</p>
 
 
 <p>Bu teknik, herhangi bir istek başlığına, yanıt başlığına veya ortam
-değişkenine dayalı eylemler yapmak için kullanılabilir ve birçok yaygın
-senaryoda <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> yerine geçer.</p>
+değişkenine dayalı eylemler yapmak i&ccedil;in kullanılabilir ve bir&ccedil;ok yaygın
+senaryoda <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> yerine ge&ccedil;er.</p>
 
-<p>Özellikle <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
-bölümlerinde ve belirli diğer yönergelerde kullanabileceğiniz ifade
-türlerine genel bir bakış için <a href="../expr.html">ifade
+<p>&Ouml;zellikle <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
+b&ouml;l&uuml;mlerinde ve belirli diğer y&ouml;nergelerde kullanabileceğiniz ifade
+t&uuml;rlerine genel bir bakış i&ccedil;in <a href="../expr.html">ifade
 değerlendirme belgelerine</a> bakın.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -23,6 +23,8 @@
 #include <apr_hash.h>
 #include <apr_uri.h>
 
+#include <httpd.h>
+
 #include "md.h"
 #include "md_crypt.h"
 #include "md_json.h"
@@ -32,7 +34,6 @@
 #include "md_store.h"
 #include "md_result.h"
 #include "md_util.h"
-#include "md_version.h"
 
 #include "md_acme.h"
 #include "md_acme_acct.h"
@@ -74,10 +75,10 @@ static acme_problem_status_t Problems[] = {
 static apr_status_t problem_status_get(const char *type) {
     size_t i;
 
-    if (strstr(type, "urn:ietf:params:") == type) {
+    if (ap_strstr_c(type, "urn:ietf:params:") == type) {
         type += strlen("urn:ietf:params:");
     }
-    else if (strstr(type, "urn:") == type) {
+    else if (ap_strstr_c(type, "urn:") == type) {
         type += strlen("urn:");
     }
      
@@ -93,10 +94,10 @@ int md_acme_problem_is_input_related(const char *problem) {
     size_t i;
 
     if (!problem) return 0;
-    if (strstr(problem, "urn:ietf:params:") == problem) {
+    if (ap_strstr_c(problem, "urn:ietf:params:") == problem) {
         problem += strlen("urn:ietf:params:");
     }
-    else if (strstr(problem, "urn:") == problem) {
+    else if (ap_strstr_c(problem, "urn:") == problem) {
         problem += strlen("urn:");
     }
 
@@ -205,12 +206,12 @@ static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t
     }
     
     switch (res->status) {
-        case 400:
+        case HTTP_BAD_REQUEST:
             return APR_EINVAL;
-        case 401: /* sectigo returns this instead of 403 */
-        case 403:
+        case HTTP_UNAUTHORIZED: /* sectigo returns this instead of 403 */
+        case HTTP_FORBIDDEN:
             return APR_EACCES;
-        case 404:
+        case HTTP_NOT_FOUND:
             return APR_ENOENT;
         default:
             md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, 0, req->p,
@@ -282,7 +283,7 @@ static apr_status_t on_response(const md_http_response_t *res, void *data)
     req_update_nonce(req->acme, res->headers);
     
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, rv, req->p, "response: %d", res->status);
-    if (res->status >= 200 && res->status < 300) {
+    if (ap_is_HTTP_SUCCESS(res->status)) {
         int processed = 0;
         
         if (req->on_json) {
@@ -622,7 +623,8 @@ apr_status_t md_acme_POST_new_account(md_acme_t *acme,
 /* ACME setup */
 
 apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
-                            const char *proxy_url, const char *ca_file)
+                            const char *proxy_url, const char *ca_file,
+                            const char *proxy_ca_file)
 {
     md_acme_t *acme;
     const char *err = NULL;
@@ -644,10 +646,11 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     acme->url = url;
     acme->p = p;
     acme->user_agent = apr_psprintf(p, "%s mod_md/%s", 
-                                    base_product, MOD_MD_VERSION);
-    acme->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
-    acme->max_retries = 99;
+                                    base_product, AP_SERVER_BASEREVISION);
+    acme->proxy_url = apr_pstrdup(p, proxy_url);
+    acme->max_retries = 9;
     acme->ca_file = ca_file;
+    acme->proxy_ca_file = proxy_ca_file;
 
     if (APR_SUCCESS != (rv = apr_uri_parse(p, url, &uri_parsed))) {
         md_log_perror(MD_LOG_MARK, MD_LOG_ERR, rv, p, "parsing ACME uri: %s", url);
@@ -687,7 +690,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
     const char *s;
     
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, req->pool, "directory lookup response: %d", res->status);
-    if (res->status == 503) {
+    if (res->status == HTTP_SERVICE_UNAVAILABLE) {
         md_result_printf(result, APR_EAGAIN,
             "The ACME server at <%s> reports that Service is Unavailable (503). This "
             "may happen during maintenance for short periods of time.", acme->url); 
@@ -695,7 +698,7 @@ static apr_status_t update_directory(const md_http_response_t *res, void *data)
         rv = result->status;
         goto leave;
     }
-    else if (res->status < 200 || res->status >= 300) {
+    else if (res->status < HTTP_OK || res->status >= HTTP_MULTIPLE_CHOICES) {
         md_result_printf(result, APR_EAGAIN,
             "The ACME server at <%s> responded with HTTP status %d. This "
             "is unusual. Please verify that the URL is correct and that you can indeed "
@@ -800,6 +803,7 @@ apr_status_t md_acme_setup(md_acme_t *acme, md_result_t *result)
     md_http_set_connect_timeout_default(acme->http, apr_time_from_sec(30));
     md_http_set_stalling_default(acme->http, 10, apr_time_from_sec(30));
     md_http_set_ca_file(acme->http, acme->ca_file);
+    md_http_set_proxy_ca_file(acme->http, acme->proxy_ca_file);
     
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, acme->p, "get directory from %s", acme->url);
     

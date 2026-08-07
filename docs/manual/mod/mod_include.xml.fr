@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933179:1934245 (outdated) -->
+<!-- English Revision: 1934245 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -87,11 +87,11 @@ AddOutputFilter INCLUDES .shtml
 <section id="pathinfo">
     <title>PATH_INFO et SSI</title>
 
-    <p>Les fichiers traités dans le cadre des SSI n'acceptent plus par
-    défaut les requêtes avec <code>PATH_INFO</code> (les informations
-    relatives au chemin en fin de requête). La directive <directive
-    module="core">AcceptPathInfo</directive> permet de configurer le
-    serveur de façon à ce qu'il accepte ce genre de requête.</p>
+    <p>Les fichiers traités dans le cadre des SSI n'acceptent plus par défaut
+    les requêtes avec <glossary ref="pathinfo">PATH_INFO</glossary> (les
+    informations relatives au chemin en fin de requête). La directive <directive
+    module="core">AcceptPathInfo</directive> permet de configurer le serveur de
+    façon à ce qu'il accepte ce genre de requête.</p>
 </section> <!-- /pathinfo -->
 
 <section id="elements"><title>Eléments disponibles</title>

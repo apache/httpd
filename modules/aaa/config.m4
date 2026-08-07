@@ -81,9 +81,9 @@ APACHE_MODULE(auth_bearer, bearer authentication, , , yes)
 APACHE_MODULE(auth_form, form authentication, , , most)
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   APR_CHECK_APR_DEFINE(APR_HAS_RANDOM)
-  if test $ac_cv_define_APR_HAS_RANDOM = "no"; then
-    echo "You need APR random support to use mod_auth_digest."
-    echo "Look at APR configure options --with-egd and --with-devrandom."
+  APR_CHECK_APR_DEFINE(APR_HAS_SHARED_MEMORY)
+  if test "${ac_cv_define_APR_HAS_RANDOM}X${ac_cv_define_APR_HAS_SHARED_MEMORY}" != "yesXyes"; then
+    AC_MSG_NOTICE([mod_auth_digest requires APR with random and shared memory support])
     enable_auth_digest="no"
   fi
 ])

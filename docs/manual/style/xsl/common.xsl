@@ -26,7 +26,7 @@
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+                  xmlns="">
 
 <!--                                                                      -->
 <!-- Please, don't hard-code output strings! Use the language             -->
@@ -106,8 +106,6 @@
 <xsl:template name="head">
 <head>
     &lf;
-    <meta http-equiv="Content-Type"
-          content="text/html; charset={$output-encoding}" />&lf;
     <meta name="viewport" content="width=device-width, initial-scale=1" />&lf;
     <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>
@@ -175,7 +173,7 @@
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
     <link href="{$path}/style/css/prettify.css" type="text/css" rel="stylesheet" />&lf;
-    <script type="text/javascript" src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
+    <script src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.png" />
@@ -419,7 +417,7 @@
 
 </div> <!-- /footer -->
 
-<script type="text/javascript">
+<script>
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
@@ -519,9 +517,8 @@ if (qv) {
     <h2>
         <xsl:choose>
         <xsl:when test="@id">
-          <a id="{@id}" name="{@id}">
-              <xsl:apply-templates select="title" mode="print" />
-          </a>
+          <xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+          <xsl:apply-templates select="title" mode="print" />
           <xsl:text> </xsl:text>
           <a class="permalink" href="#{@id}" title="{$message[@id='permalink']}">&para;</a>
         </xsl:when>
@@ -547,9 +544,8 @@ if (qv) {
 <h3>
     <xsl:choose>
     <xsl:when test="@id">
-        <a id="{@id}" name="{@id}">
-            <xsl:apply-templates select="title" mode="print" />
-        </a>
+        <xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+        <xsl:apply-templates select="title" mode="print" />
     </xsl:when>
 
     <xsl:otherwise>

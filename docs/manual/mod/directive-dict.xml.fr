@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1799456:1934449 (outdated) -->
+<!-- English Revision: 1934449 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,11 +67,11 @@
 
       <dt><em>chemin-URL</em></dt>
 
-      <dd>La partie de l'<em>url</em> qui suit le protocole et le nom
-      d'hôte comme dans <code>/chemin/vers/fichier.html</code>. Le
-      <em>chemin-URL</em> représente la ressource vue depuis le web, et est
-      différente de la représentation de cette même ressource vue depuis le
-      système de fichiers.</dd>
+      <dd>La partie de l'URL qui suit le protocole, le nom d'hôte et un port
+      optionnel, et précède la chaîne de paramètres — par exemple,
+      <code>/path/to/file.html</code>. <em>chemin-URL</em> représente la
+      ressource vue depuis le web, et est différente de la représentation de
+      cette même ressource vue depuis le système de fichiers.</dd>
 
       <dt><em>chemin-fichier</em></dt>
 

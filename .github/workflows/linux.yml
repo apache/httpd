@@ -7,6 +7,7 @@ on:
       - 'docs/**'
       - STATUS
       - CHANGES
+      - README*
       - '**.md'
       - changes-entries/*
     tags:
@@ -17,14 +18,22 @@ on:
       - 'docs/**'
       - STATUS
       - CHANGES
+      - README*
       - '**.md'
       - changes-entries/*
+
+permissions:
+  contents: read
 
 env:
   MARGS: "-j2"
   CFLAGS: "-g"
   # This will need updating as the ubuntu-latest image changes:
   PHP_FPM: "/usr/sbin/php-fpm8.3"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -89,6 +98,26 @@ jobs:
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
+          - name: APR 1.7.6, APR-util 1.6.3, LDAP
+            config: --enable-mods-shared=reallyall
+            pkgs: ldap-utils
+            env: |
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.3
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_LDAP=1
+              TEST_ARGS="-defines LDAP"
+              TESTS="t/modules/"
+          # -------------------------------------------------------------------------
+          - name: APR 1.7.x, APR-util 1.6.x
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.6.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
             env: |
@@ -96,6 +125,25 @@ jobs:
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: APR 1.7.x, APR-util 1.7.x, LDAP
+            config: --enable-mods-shared=reallyall
+            pkgs: ldap-utils
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_LDAP=1
+              TEST_ARGS="-defines LDAP"
+              TESTS="t/modules/"
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: APR trunk thread debugging
+            config: --enable-mods-shared=reallyall --with-mpm=event
+            env: |
+              APR_VERSION=trunk
+              APR_CONFIG="--with-crypto --enable-thread-debug"
           # -------------------------------------------------------------------------
           - name: Pool-debug
             config: --enable-mods-shared=reallyall
@@ -164,38 +212,6 @@ jobs:
             env: |
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
-          # -------------------------------------------------------------------------
-          - name: APR 1.7.6, APR-util 1.6.3, LDAP
-            config: --enable-mods-shared=reallyall
-            pkgs: ldap-utils
-            env: |
-              APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_MALLOC=1
-              TEST_LDAP=1
-              TEST_ARGS="-defines LDAP"
-              TESTS="t/modules/"
-          # -------------------------------------------------------------------------
-          - name: APR 1.7.x, APR-util 1.7.x, LDAP
-            config: --enable-mods-shared=reallyall
-            pkgs: ldap-utils
-            env: |
-              APR_VERSION=1.7.x
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_MALLOC=1
-              TEST_LDAP=1
-              TEST_ARGS="-defines LDAP"
-              TESTS="t/modules/"
-              CLEAR_CACHE=1
-          # -------------------------------------------------------------------------
-          ### TODO: if: *condition_not_24x
-          - name: APR trunk thread debugging
-            config: --enable-mods-shared=reallyall --with-mpm=event
-            env: |
-              APR_VERSION=trunk
-              APR_CONFIG="--with-crypto --enable-thread-debug"
           # -------------------------------------------------------------------------
           - name: UBSan
             notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
@@ -281,7 +297,7 @@ jobs:
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.0.18
+              TEST_OPENSSL3=3.0.21
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
@@ -291,7 +307,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.4.4
+              TEST_OPENSSL3=3.4.6
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
@@ -300,7 +316,7 @@ jobs:
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.4.4
+              TEST_OPENSSL3=3.4.6
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
@@ -311,7 +327,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.5.5
+              TEST_OPENSSL3=3.5.7
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
@@ -322,7 +338,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=4.0.0
+              TEST_OPENSSL3=4.0.1
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
@@ -344,9 +360,6 @@ jobs:
         echo "${{ matrix.env }}" >> $GITHUB_ENV
         echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
            | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
-    # https://github.com/actions/runner-images/issues/9491#issuecomment-1989718917
-    - name: Workaround ASAN issue in Ubuntu 22.04
-      run: sudo sysctl vm.mmap_rnd_bits=28
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites
@@ -375,7 +388,7 @@ jobs:
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: config.log-${{ env.JOBID }}
@@ -383,7 +396,7 @@ jobs:
           /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: error_log-${{ env.JOBID }}

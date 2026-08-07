@@ -1,0 +1,2 @@
+  *) mod_ssl: Fix compatibility with OpenSSL < 1.1.
+     [Craig Lorentzen <crlorent amazon.com>]

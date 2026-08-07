@@ -53,7 +53,7 @@
 
 typedef struct attrib_info {
     char *name;
-    int   offset;
+    apr_size_t offset;
 } attrib_info;
 
 /* Information to which an extension can be mapped
@@ -267,7 +267,7 @@ static const char *add_extension_info(cmd_parms *cmd, void *m_,
 {
     mime_dir_config *m=m_;
     extension_info *exinfo;
-    int offset = (int) (long) cmd->info;
+    apr_size_t offset = (apr_size_t) cmd->info;
     char *key = apr_pstrdup(cmd->temp_pool, ext);
     char *value = apr_pstrdup(cmd->pool, value_);
     ap_str_tolower(value);
@@ -322,7 +322,7 @@ static const char *remove_extension_info(cmd_parms *cmd, void *m_,
     suffix = (attrib_info *)apr_array_push(m->remove_mappings);
     suffix->name = apr_pstrdup(cmd->pool, ext);
     ap_str_tolower(suffix->name);
-    suffix->offset = (int) (long) cmd->info;
+    suffix->offset = (apr_size_t) cmd->info;
     return NULL;
 }
 

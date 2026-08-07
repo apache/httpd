@@ -1,39 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>core - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache コア機能</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -44,109 +42,109 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#acceptfilter">AcceptFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#allowoverridelist">AllowOverrideList</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#asyncfilter">AsyncFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgipassauth">CGIPassAuth</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgivar">CGIVar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#defaultstatedir">DefaultStateDir</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#define">Define</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#else">&lt;Else&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#elseif">&lt;ElseIf&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#error">Error</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#errorlogformat">ErrorLogFormat</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#gprofdir">GprofDir</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifdirective">&lt;IfDirective&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#iffile">&lt;IfFile&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ifsection">&lt;IfSection&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#includeoptional">IncludeOptional</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitrequestbody">LimitRequestBody</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfields">LimitRequestFields</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitrequestline">LimitRequestLine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitxmlrequestbody">LimitXMLRequestBody</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logleveloverride">LogLevelOverride</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxrangereversals">MaxRangeReversals</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#maxranges">MaxRanges</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mergeslashes">MergeSlashes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mergetrailers">MergeTrailers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protocol">Protocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protocols">Protocols</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#readbuffersize">ReadBufferSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverpath">ServerPath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverroot">ServerRoot</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serversignature">ServerSignature</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#servertokens">ServerTokens</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#stricthostcheck">StrictHostCheck</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#unclist">UNCList</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#acceptfilter">AcceptFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#accessfilename">AccessFileName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#allowoverride">AllowOverride</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#allowoverridelist">AllowOverrideList</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#asyncfilter">AsyncFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgimapextension">CGIMapExtension</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgipassauth">CGIPassAuth</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgivar">CGIVar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#defaultruntimedir">DefaultRuntimeDir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#defaultstatedir">DefaultStateDir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#defaulttype">DefaultType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#define">Define</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#directory">&lt;Directory&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#documentroot">DocumentRoot</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#else">&lt;Else&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#elseif">&lt;ElseIf&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enablemmap">EnableMMAP</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enablesendfile">EnableSendfile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#error">Error</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#errordocument">ErrorDocument</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#errorlog">ErrorLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#errorlogformat">ErrorLogFormat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#extendedstatus">ExtendedStatus</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#fileetag">FileETag</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#files">&lt;Files&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flushmaxpipelined">FlushMaxPipelined</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flushmaxthreshold">FlushMaxThreshold</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#forcetype">ForceType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#gprofdir">GprofDir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#hostnamelookups">HostnameLookups</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#httpprotocoloptions">HttpProtocolOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#if">&lt;If&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ifdirective">&lt;IfDirective&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#iffile">&lt;IfFile&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ifsection">&lt;IfSection&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#include">Include</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#includeoptional">IncludeOptional</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#keepalive">KeepAlive</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limit">&lt;Limit&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitrequestbody">LimitRequestBody</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitrequestfields">LimitRequestFields</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitrequestline">LimitRequestLine</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitxmlrequestbody">LimitXMLRequestBody</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#location">&lt;Location&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#loglevel">LogLevel</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logleveloverride">LogLevelOverride</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#maxrangeoverlaps">MaxRangeOverlaps</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#maxrangereversals">MaxRangeReversals</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#maxranges">MaxRanges</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mergeslashes">MergeSlashes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mergetrailers">MergeTrailers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mutex">Mutex</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#namevirtualhost">NameVirtualHost</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protocol">Protocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protocols">Protocols</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protocolshonororder">ProtocolsHonorOrder</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#qualifyredirecturl">QualifyRedirectURL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#readbuffersize">ReadBufferSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#regexdefaultoptions">RegexDefaultOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#registerhttpmethod">RegisterHttpMethod</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rlimitcpu">RLimitCPU</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rlimitmem">RLimitMEM</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rlimitnproc">RLimitNPROC</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#seerequesttail">SeeRequestTail</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serveradmin">ServerAdmin</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serveralias">ServerAlias</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#servername">ServerName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serverpath">ServerPath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serverroot">ServerRoot</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serversignature">ServerSignature</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#servertokens">ServerTokens</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sethandler">SetHandler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setinputfilter">SetInputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setoutputfilter">SetOutputFilter</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#stricthostcheck">StrictHostCheck</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#timeout">TimeOut</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#unclist">UNCList</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#undefine">UnDefine</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#usecanonicalname">UseCanonicalName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#warning">Warning</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Report a bug</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">ディレクティブ</a> <a title="Permanent link" href="#acceptfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="acceptfilter"><span id="AcceptFilter">AcceptFilter</span> ディレクティブ <a title="Permanent link" href="#acceptfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>プロトコルを Listen しているソケットの最適化を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AcceptFilter <var>protocol</var> <var>accept_filter</var></code></td></tr>
@@ -165,7 +163,7 @@
 
     <p>FreeBSD のデフォルト値は :</p>
     <div class="example"><p><code>
-        AcceptFilter http httpready <br />
+        AcceptFilter http httpready <br>
         AcceptFilter https dataready
     </code></p></div>
     
@@ -177,7 +175,7 @@
 
     <p>Linux でのデフォルト値は :</p>
     <div class="example"><p><code>
-        AcceptFilter http data <br />
+        AcceptFilter http data <br>
         AcceptFilter https data
     </code></p></div>
 
@@ -194,8 +192,8 @@
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">ディレクティブ</a> <a title="Permanent link" href="#acceptpathinfo" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="acceptpathinfo"><span id="AcceptPathInfo">AcceptPathInfo</span> ディレクティブ <a title="Permanent link" href="#acceptpathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>後に続くパス名情報を受け付けるリソースの指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AcceptPathInfo On|Off|Default</code></td></tr>
@@ -247,18 +245,18 @@
     次のような設定を使います。</p>
 
     <div class="example"><p><code>
-      &lt;Files "mypaths.shtml"&gt;<br />
+      &lt;Files "mypaths.shtml"&gt;<br>
       <span class="indent">
-        Options +Includes<br />
-        SetOutputFilter INCLUDES<br />
-        AcceptPathInfo On<br />
+        Options +Includes<br>
+        SetOutputFilter INCLUDES<br>
+        AcceptPathInfo On<br>
       </span>
       &lt;/Files&gt;
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">ディレクティブ</a> <a title="Permanent link" href="#accessfilename" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="accessfilename"><span id="AccessFileName">AccessFileName</span> ディレクティブ <a title="Permanent link" href="#accessfilename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>分散設定ファイルの名前</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AccessFileName <var>filename</var> [<var>filename</var>] ...</code></td></tr>
@@ -284,9 +282,9 @@
     ディレクティブを読み込みます。</p>
 
     <div class="example"><p><code>
-      &lt;Directory /&gt;<br />
+      &lt;Directory /&gt;<br>
       <span class="indent">
-        AllowOverride None<br />
+        AllowOverride None<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -298,8 +296,8 @@
 <li><a href="../howto/htaccess.html">.htaccess ファイル</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">ディレクティブ</a> <a title="Permanent link" href="#adddefaultcharset" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="adddefaultcharset"><span id="AddDefaultCharset">AddDefaultCharset</span> ディレクティブ <a title="Permanent link" href="#adddefaultcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>レスポンスのコンテントタイプが <code>text/plain</code> あるいは
 <code>text/html</code> の場合に追加するデフォルトの charset パラメータ</td></tr>
@@ -346,8 +344,8 @@
 <li><code class="directive"><a href="../mod/mod_mime.html#addcharset">AddCharset</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">ディレクティブ</a> <a title="Permanent link" href="#allowencodedslashes" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="allowencodedslashes"><span id="AllowEncodedSlashes">AllowEncodedSlashes</span> ディレクティブ <a title="Permanent link" href="#allowencodedslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>URL 中の符号化されたパス分離文字が先に伝えられるのを許可するかどうかを
 決定する</td></tr>
@@ -380,8 +378,8 @@
 <li><code class="directive"><a href="#acceptpathinfo">AcceptPathInfo</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">ディレクティブ</a> <a title="Permanent link" href="#allowoverride" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="allowoverride"><span id="AllowOverride">AllowOverride</span> ディレクティブ <a title="Permanent link" href="#allowoverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>.htaccess</code> で許可されるディレクティブの種類</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AllowOverride All|None|<var>directive-type</var> 
@@ -481,8 +479,8 @@
 <li><a href="../howto/htaccess.html">.htaccess ファイル</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">ディレクティブ</a> <a title="Permanent link" href="#allowoverridelist" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="allowoverridelist"><span id="AllowOverrideList">AllowOverrideList</span> ディレクティブ <a title="Permanent link" href="#allowoverridelist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Individual directives that are allowed in
 <code>.htaccess</code> files</td></tr>
@@ -502,8 +500,8 @@
 <li><a href="../howto/htaccess.html">.htaccess Files</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a name="asyncfilter" id="asyncfilter">ディレクティブ</a> <a title="Permanent link" href="#asyncfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="asyncfilter"><span id="AsyncFilter">AsyncFilter</span> ディレクティブ <a title="Permanent link" href="#asyncfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Set the minimum filter type eligible for asynchronous handling</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AsyncFilter request|connection|network</code></td></tr>
@@ -515,8 +513,8 @@
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">ディレクティブ</a> <a title="Permanent link" href="#cgimapextension" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="cgimapextension"><span id="CGIMapExtension">CGIMapExtension</span> ディレクティブ <a title="Permanent link" href="#cgimapextension" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのインタープリタの位置を調べるための手法</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CGIMapExtension <var>cgi-path</var> <var>.extension</var></code></td></tr>
@@ -533,8 +531,8 @@
     渡されます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a name="cgipassauth" id="cgipassauth">ディレクティブ</a> <a title="Permanent link" href="#cgipassauth" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="cgipassauth"><span id="CGIPassAuth">CGIPassAuth</span> ディレクティブ <a title="Permanent link" href="#cgipassauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Enables passing HTTP authorization headers to scripts as CGI
 variables</td></tr>
@@ -548,8 +546,8 @@ variables</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">ディレクティブ</a> <a title="Permanent link" href="#cgivar" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="cgivar"><span id="CGIVar">CGIVar</span> ディレクティブ <a title="Permanent link" href="#cgivar" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls how some CGI variables are set</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
@@ -561,8 +559,8 @@ variables</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">ディレクティブ</a> <a title="Permanent link" href="#defaultruntimedir" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="defaultruntimedir"><span id="DefaultRuntimeDir">DefaultRuntimeDir</span> ディレクティブ <a title="Permanent link" href="#defaultruntimedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Base directory for the server run-time files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultRuntimeDir <var>directory-path</var></code></td></tr>
@@ -580,8 +578,8 @@ variables</td></tr>
     permissions on the <code class="directive">ServerRoot</code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultStateDir" id="DefaultStateDir">DefaultStateDir</a> <a name="defaultstatedir" id="defaultstatedir">ディレクティブ</a> <a title="Permanent link" href="#defaultstatedir" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="defaultstatedir"><span id="DefaultStateDir">DefaultStateDir</span> ディレクティブ <a title="Permanent link" href="#defaultstatedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Base directory for the persistent state files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
@@ -599,8 +597,8 @@ variables</td></tr>
     permissions on the <code class="directive"><a href="#serverroot">ServerRoot</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">ディレクティブ</a> <a title="Permanent link" href="#defaulttype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="defaulttype"><span id="DefaultType">DefaultType</span> ディレクティブ <a title="Permanent link" href="#defaulttype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</td></tr>
@@ -643,8 +641,8 @@ variables</td></tr>
     このデフォルトは上書きされます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">ディレクティブ</a> <a title="Permanent link" href="#define" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="define"><span id="Define">Define</span> ディレクティブ <a title="Permanent link" href="#define" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>変数の存在を宣言する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Define <var>parameter-name</var></code></td></tr>
@@ -660,8 +658,8 @@ variables</td></tr>
     セクションを切り替えることができます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">ディレクティブ</a> <a title="Permanent link" href="#directory" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="directory"><span id="Directory">&lt;Directory&gt;</span> ディレクティブ <a title="Permanent link" href="#directory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>指定のファイルシステムのディレクトリとサブディレクトリとのみに
 適用されるディレクティブを囲む</td></tr>
@@ -688,9 +686,9 @@ variables</td></tr>
     例:</p>
 
     <div class="example"><p><code>
-      &lt;Directory /usr/local/httpd/htdocs&gt;<br />
+      &lt;Directory /usr/local/httpd/htdocs&gt;<br>
       <span class="indent">
-        Options Indexes FollowSymLinks<br />
+        Options Indexes FollowSymLinks<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -721,15 +719,15 @@ variables</td></tr>
     例えば、</p>
 
     <div class="example"><p><code>
-      &lt;Directory /&gt;<br />
+      &lt;Directory /&gt;<br>
       <span class="indent">
-        AllowOverride None<br />
+        AllowOverride None<br>
       </span>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /home/&gt;<br />
+      &lt;/Directory&gt;<br>
+      <br>
+      &lt;Directory /home/&gt;<br>
       <span class="indent">
-        AllowOverride FileInfo<br />
+        AllowOverride FileInfo<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -755,9 +753,9 @@ variables</td></tr>
     例えば、以下のような場合に</p>
 
     <div class="example"><p><code>
-      &lt;Directory ~ abc$&gt;<br />
+      &lt;Directory ~ abc$&gt;<br>
       <span class="indent">
-        # ... directives here ...<br />
+        # ... directives here ...<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -773,10 +771,10 @@ variables</td></tr>
     これは以下のようにして変更することが推奨されています。</strong></p>
 
     <div class="example"><p><code>
-      &lt;Directory /&gt;<br />
+      &lt;Directory /&gt;<br>
       <span class="indent">
-        Order Deny,Allow<br />
-        Deny from All<br />
+        Order Deny,Allow<br>
+        Deny from All<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -800,8 +798,8 @@ variables</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">ディレクティブ</a> <a title="Permanent link" href="#directorymatch" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="directorymatch"><span id="DirectoryMatch">&lt;DirectoryMatch&gt;</span> ディレクティブ <a title="Permanent link" href="#directorymatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>正規表現にマッチするファイルシステムのディレクトリと
 サブディレクトリとのみに適用されるディレクティブを囲む</td></tr>
@@ -833,8 +831,8 @@ variables</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">ディレクティブ</a> <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="documentroot"><span id="DocumentRoot">DocumentRoot</span> ディレクティブ <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ウェブから見えるメインのドキュメントツリーになる
 ディレクトリ</td></tr>
@@ -871,8 +869,8 @@ variables</td></tr>
 マップする</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">ディレクティブ</a> <a title="Permanent link" href="#else" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="else"><span id="Else">&lt;Else&gt;</span> ディレクティブ <a title="Permanent link" href="#else" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Contains directives that apply only if the condition of a
 previous <code class="directive"><a href="#if">&lt;If&gt;</a></code> or
@@ -898,8 +896,8 @@ satisfied by a request at runtime</td></tr>
     <code class="directive">&lt;Else&gt;</code> are applied last.</li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">ディレクティブ</a> <a title="Permanent link" href="#elseif" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="elseif"><span id="ElseIf">&lt;ElseIf&gt;</span> ディレクティブ <a title="Permanent link" href="#elseif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Contains directives that apply only if a condition is satisfied
 by a request at runtime while the condition of a previous
@@ -928,8 +926,8 @@ for a complete reference and more examples.</li>
     <code class="directive">&lt;Else&gt;</code> are applied last.</li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">ディレクティブ</a> <a title="Permanent link" href="#enablemmap" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="enablemmap"><span id="EnableMMAP">EnableMMAP</span> ディレクティブ <a title="Permanent link" href="#enablemmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>配送中にファイルを読み込むためにメモリマッピングを
 使うかどうか</td></tr>
@@ -980,8 +978,8 @@ for a complete reference and more examples.</li>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">ディレクティブ</a> <a title="Permanent link" href="#enablesendfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="enablesendfile"><span id="EnableSendfile">EnableSendfile</span> ディレクティブ <a title="Permanent link" href="#enablesendfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルのクライアントへの配送時にカーネルの sendfile サポートを
 使うかどうか</td></tr>
@@ -1041,8 +1039,8 @@ for a complete reference and more examples.</li>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">ディレクティブ</a> <a title="Permanent link" href="#error" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="error"><span id="Error">Error</span> ディレクティブ <a title="Permanent link" href="#error" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Abort configuration parsing with a custom error message</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Error <var>message</var></code></td></tr>
@@ -1054,8 +1052,8 @@ for a complete reference and more examples.</li>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">ディレクティブ</a> <a title="Permanent link" href="#errordocument" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="errordocument"><span id="ErrorDocument">ErrorDocument</span> ディレクティブ <a title="Permanent link" href="#errordocument" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>エラーが発生したときにサーバがクライアントに送るもの</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ErrorDocument <var>error-code document</var></code></td></tr>
@@ -1090,9 +1088,9 @@ for a complete reference and more examples.</li>
     例:</p>
 
     <div class="example"><p><code>
-      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br />
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
-      ErrorDocument 401 /subscription_info.html<br />
+      ErrorDocument 500 http://foo.example.com/cgi-bin/tester<br>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br>
+      ErrorDocument 401 /subscription_info.html<br>
       ErrorDocument 403 "Sorry can't allow you access today"
     </code></p></div>
 
@@ -1104,10 +1102,10 @@ for a complete reference and more examples.</li>
     戻すことができます。</p>
 
     <div class="example"><p><code>
-      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
-      &lt;Directory /web/docs&gt;<br />
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br><br>
+      &lt;Directory /web/docs&gt;<br>
       <span class="indent">
-        ErrorDocument 404 default<br />
+        ErrorDocument 404 default<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -1153,8 +1151,8 @@ for a complete reference and more examples.</li>
 エラー応答のドキュメンテーション</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">ディレクティブ</a> <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="errorlog"><span id="ErrorLog">ErrorLog</span> ディレクティブ <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがエラーをログ収集する場所</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</code></td></tr>
@@ -1209,8 +1207,8 @@ for a complete reference and more examples.</li>
 <li><a href="../logs.html">Apache ログファイル</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">ディレクティブ</a> <a title="Permanent link" href="#errorlogformat" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="errorlogformat"><span id="ErrorLogFormat">ErrorLogFormat</span> ディレクティブ <a title="Permanent link" href="#errorlogformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Format specification for error log entries</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> ErrorLogFormat [connection|request] <var>format</var></code></td></tr>
@@ -1226,8 +1224,8 @@ for a complete reference and more examples.</li>
 <li><a href="../logs.html">Apache HTTP Server Log Files</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">ディレクティブ</a> <a title="Permanent link" href="#extendedstatus" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="extendedstatus"><span id="ExtendedStatus">ExtendedStatus</span> ディレクティブ <a title="Permanent link" href="#extendedstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Keep track of extended status information for each
 request</td></tr>
@@ -1239,8 +1237,8 @@ request</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">ディレクティブ</a> <a title="Permanent link" href="#fileetag" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="fileetag"><span id="FileETag">FileETag</span> ディレクティブ <a title="Permanent link" href="#fileetag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ETag HTTP 応答ヘッダを作成するために使用される
 ファイルの属性</td></tr>
@@ -1300,8 +1298,8 @@ request</td></tr>
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">ディレクティブ</a> <a title="Permanent link" href="#files" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="files"><span id="Files">&lt;Files&gt;</span> ディレクティブ <a title="Permanent link" href="#files" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>マッチするファイル名に適用されるディレクティブを囲む</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</code></td></tr>
@@ -1356,8 +1354,8 @@ request</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">ディレクティブ</a> <a title="Permanent link" href="#filesmatch" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="filesmatch"><span id="FilesMatch">&lt;FilesMatch&gt;</span> ディレクティブ <a title="Permanent link" href="#filesmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>正規表現にマッチするファイル名に適用される
 ディレクティブを囲む</td></tr>
@@ -1386,8 +1384,8 @@ request</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a name="flushmaxpipelined" id="flushmaxpipelined">ディレクティブ</a> <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="flushmaxpipelined"><span id="FlushMaxPipelined">FlushMaxPipelined</span> ディレクティブ <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of pipelined responses above which they are flushed
 to the network</td></tr>
@@ -1400,8 +1398,8 @@ to the network</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a name="flushmaxthreshold" id="flushmaxthreshold">ディレクティブ</a> <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="flushmaxthreshold"><span id="FlushMaxThreshold">FlushMaxThreshold</span> ディレクティブ <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Threshold above which pending data are flushed to the
 network</td></tr>
@@ -1414,8 +1412,8 @@ network</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">ディレクティブ</a> <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="forcetype"><span id="ForceType">ForceType</span> ディレクティブ <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>すべてのマッチするファイルが指定の MIME コンテントタイプで
 送られるようにする</td></tr>
@@ -1448,24 +1446,24 @@ network</td></tr>
     設定を無効にできます:</p>
 
     <div class="example"><p><code>
-      # force all files to be image/gif:<br />
-      &lt;Location /images&gt;<br />
+      # force all files to be image/gif:<br>
+      &lt;Location /images&gt;<br>
         <span class="indent">
-          ForceType image/gif<br />
+          ForceType image/gif<br>
         </span>
-      &lt;/Location&gt;<br />
-      <br />
-      # but normal mime-type associations here:<br />
-      &lt;Location /images/mixed&gt;<br />
+      &lt;/Location&gt;<br>
+      <br>
+      # but normal mime-type associations here:<br>
+      &lt;Location /images/mixed&gt;<br>
       <span class="indent">
-        ForceType None<br />
+        ForceType None<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">ディレクティブ</a> <a title="Permanent link" href="#gprofdir" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="gprofdir"><span id="GprofDir">GprofDir</span> ディレクティブ <a title="Permanent link" href="#gprofdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Directory to write gmon.out profiling data to.  </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
@@ -1475,8 +1473,8 @@ network</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">ディレクティブ</a> <a title="Permanent link" href="#hostnamelookups" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="hostnamelookups"><span id="HostnameLookups">HostnameLookups</span> ディレクティブ <a title="Permanent link" href="#hostnamelookups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントの IP アドレスの DNS ルックアップを
 有効にする</td></tr>
@@ -1519,8 +1517,8 @@ network</td></tr>
     ルックアップすることが可能です。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">ディレクティブ</a> <a title="Permanent link" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="httpprotocoloptions"><span id="HttpProtocolOptions">HttpProtocolOptions</span> ディレクティブ <a title="Permanent link" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
@@ -1533,8 +1531,8 @@ network</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">ディレクティブ</a> <a title="Permanent link" href="#if" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="if"><span id="If">&lt;If&gt;</span> ディレクティブ <a title="Permanent link" href="#if" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>実行時、リクエストが条件を満たした場合にのみ適用される
 ディレクティブを包含する</td></tr>
@@ -1566,8 +1564,8 @@ network</td></tr>
     と同じ処理順と用法になっています。</li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">ディレクティブ</a> <a title="Permanent link" href="#ifdefine" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ifdefine"><span id="IfDefine">&lt;IfDefine&gt;</span> ディレクティブ <a title="Permanent link" href="#ifdefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>起動時にテストが真であるときのみに処理されるディレクティブを
 囲む</td></tr>
@@ -1613,24 +1611,24 @@ network</td></tr>
     例:</p>
 
     <div class="example"><p><code>
-      httpd -DReverseProxy -DUseCache -DMemCache ...<br />
-      <br />
-      # httpd.conf<br />
-      &lt;IfDefine ReverseProxy&gt;<br />
+      httpd -DReverseProxy -DUseCache -DMemCache ...<br>
+      <br>
+      # httpd.conf<br>
+      &lt;IfDefine ReverseProxy&gt;<br>
       <span class="indent">
-        LoadModule proxy_module   modules/mod_proxy.so<br />
-        LoadModule proxy_http_module   modules/mod_proxy_http.so<br />
-        &lt;IfDefine UseCache&gt;<br />
+        LoadModule proxy_module   modules/mod_proxy.so<br>
+        LoadModule proxy_http_module   modules/mod_proxy_http.so<br>
+        &lt;IfDefine UseCache&gt;<br>
         <span class="indent">
-          LoadModule cache_module   modules/mod_cache.so<br />
-          &lt;IfDefine MemCache&gt;<br />
+          LoadModule cache_module   modules/mod_cache.so<br>
+          &lt;IfDefine MemCache&gt;<br>
           <span class="indent">
-            LoadModule mem_cache_module   modules/mod_mem_cache.so<br />
+            LoadModule mem_cache_module   modules/mod_mem_cache.so<br>
       </span>
-          &lt;/IfDefine&gt;<br />
-          &lt;IfDefine !MemCache&gt;<br />
+          &lt;/IfDefine&gt;<br>
+          &lt;IfDefine !MemCache&gt;<br>
           <span class="indent">
-            LoadModule cache_disk_module   modules/mod_cache_disk.so<br />
+            LoadModule cache_disk_module   modules/mod_cache_disk.so<br>
           </span>
       &lt;/IfDefine&gt;
         </span>
@@ -1640,8 +1638,8 @@ network</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">ディレクティブ</a> <a title="Permanent link" href="#ifdirective" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ifdirective"><span id="IfDirective">&lt;IfDirective&gt;</span> ディレクティブ <a title="Permanent link" href="#ifdirective" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific directive</td></tr>
@@ -1659,8 +1657,8 @@ presence or absence of a specific directive</td></tr>
 <li><code class="directive"><a href="#ifsection">&lt;IfSection&gt;</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">ディレクティブ</a> <a title="Permanent link" href="#iffile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="iffile"><span id="IfFile">&lt;IfFile&gt;</span> ディレクティブ <a title="Permanent link" href="#iffile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Encloses directives that will be processed only
 if file exists at startup</td></tr>
@@ -1674,8 +1672,8 @@ if file exists at startup</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">ディレクティブ</a> <a title="Permanent link" href="#ifmodule" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ifmodule"><span id="IfModule">&lt;IfModule&gt;</span> ディレクティブ <a title="Permanent link" href="#ifmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>モジュールの存在するかしないかに応じて処理される
 ディレクティブを囲む</td></tr>
@@ -1733,8 +1731,8 @@ if file exists at startup</td></tr>
     入れる必要はありません。</div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">ディレクティブ</a> <a title="Permanent link" href="#ifsection" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ifsection"><span id="IfSection">&lt;IfSection&gt;</span> ディレクティブ <a title="Permanent link" href="#ifsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific section directive</td></tr>
@@ -1752,8 +1750,8 @@ presence or absence of a specific section directive</td></tr>
 <li><code class="directive"><a href="#ifdirective">&lt;IfDirective&gt;</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">ディレクティブ</a> <a title="Permanent link" href="#include" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="include"><span id="Include">Include</span> ディレクティブ <a title="Permanent link" href="#include" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバ設定ファイル中から他の設定ファイルを取り込む</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Include <var>file-path</var>|<var>directory-path</var></code></td></tr>
@@ -1781,14 +1779,14 @@ presence or absence of a specific section directive</td></tr>
     <p>例:</p>
 
     <div class="example"><p><code>
-      Include /usr/local/apache2/conf/ssl.conf<br />
+      Include /usr/local/apache2/conf/ssl.conf<br>
       Include /usr/local/apache2/conf/vhosts/*.conf
     </code></p></div>
 
      <p><code class="directive"><a href="#serverroot">ServerRoot</a></code> からの相対パスの場合は:</p>
 
     <div class="example"><p><code>
-      Include conf/ssl.conf<br />
+      Include conf/ssl.conf<br>
       Include conf/vhosts/*.conf
     </code></p></div>
 
@@ -1797,8 +1795,8 @@ presence or absence of a specific section directive</td></tr>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">ディレクティブ</a> <a title="Permanent link" href="#includeoptional" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="includeoptional"><span id="IncludeOptional">IncludeOptional</span> ディレクティブ <a title="Permanent link" href="#includeoptional" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Includes other configuration files from within
 the server configuration files</td></tr>
@@ -1816,8 +1814,8 @@ the server configuration files</td></tr>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">ディレクティブ</a> <a title="Permanent link" href="#keepalive" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="keepalive"><span id="KeepAlive">KeepAlive</span> ディレクティブ <a title="Permanent link" href="#keepalive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>HTTP の持続的な接続を有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>KeepAlive On|Off</code></td></tr>
@@ -1856,8 +1854,8 @@ the server configuration files</td></tr>
 <li><code class="directive"><a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">ディレクティブ</a> <a title="Permanent link" href="#keepalivetimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="keepalivetimeout"><span id="KeepAliveTimeout">KeepAliveTimeout</span> ディレクティブ <a title="Permanent link" href="#keepalivetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>持続的な接続で次のリクエストが来るまでサーバが待つ時間</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>KeepAliveTimeout <var>seconds</var></code></td></tr>
@@ -1882,8 +1880,8 @@ the server configuration files</td></tr>
     その他の値は無視されます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">ディレクティブ</a> <a title="Permanent link" href="#limit" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limit"><span id="Limit">&lt;Limit&gt;</span> ディレクティブ <a title="Permanent link" href="#limit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>囲いの中にあるアクセス制御の適用を特定の HTTP メソッドのみに
 制限する</td></tr>
@@ -1909,9 +1907,9 @@ the server configuration files</td></tr>
     それ以外のメソッドについては制限しません:</p>
 
     <div class="example"><p><code>
-      &lt;Limit POST PUT DELETE&gt;<br />
+      &lt;Limit POST PUT DELETE&gt;<br>
       <span class="indent">
-        Require valid-user<br />
+        Require valid-user<br>
       </span>
       &lt;/Limit&gt;
     </code></p></div>
@@ -1936,8 +1934,8 @@ the server configuration files</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">ディレクティブ</a> <a title="Permanent link" href="#limitexcept" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitexcept"><span id="LimitExcept">&lt;LimitExcept&gt;</span> ディレクティブ <a title="Permanent link" href="#limitexcept" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>指定されたもの以外の HTTP メソッドにアクセス制御を
 制限する</td></tr>
@@ -1961,17 +1959,17 @@ the server configuration files</td></tr>
     <p>例:</p>
 
     <div class="example"><p><code>
-      &lt;LimitExcept POST GET&gt;<br />
+      &lt;LimitExcept POST GET&gt;<br>
       <span class="indent">
-        Require valid-user<br />
+        Require valid-user<br>
       </span>
       &lt;/LimitExcept&gt;
     </code></p></div>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">ディレクティブ</a> <a title="Permanent link" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitinternalrecursion"><span id="LimitInternalRecursion">LimitInternalRecursion</span> ディレクティブ <a title="Permanent link" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>内部リダイレクトと入れ子になったサブリクエストの最大数を決定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LimitInternalRecursion <var>number</var> [<var>number</var>]</code></td></tr>
@@ -2004,8 +2002,8 @@ the server configuration files</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">ディレクティブ</a> <a title="Permanent link" href="#limitrequestbody" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitrequestbody"><span id="LimitRequestBody">LimitRequestBody</span> ディレクティブ <a title="Permanent link" href="#limitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントから送られる HTTP リクエストのボディの
 総量を制限する</td></tr>
@@ -2049,8 +2047,8 @@ the server configuration files</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">ディレクティブ</a> <a title="Permanent link" href="#limitrequestfields" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitrequestfields"><span id="LimitRequestFields">LimitRequestFields</span> ディレクティブ <a title="Permanent link" href="#limitrequestfields" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントからの HTTP リクエストのヘッダフィールドの数を
 制限する</td></tr>
@@ -2092,8 +2090,8 @@ the server configuration files</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">ディレクティブ</a> <a title="Permanent link" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitrequestfieldsize"><span id="LimitRequestFieldSize">LimitRequestFieldSize</span> ディレクティブ <a title="Permanent link" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントからの HTTP リクエストのヘッダの
 サイズを制限する</td></tr>
@@ -2132,8 +2130,8 @@ the server configuration files</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">ディレクティブ</a> <a title="Permanent link" href="#limitrequestline" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitrequestline"><span id="LimitRequestLine">LimitRequestLine</span> ディレクティブ <a title="Permanent link" href="#limitrequestline" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントからの HTTP リクエスト行のサイズを制限する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LimitRequestLine <var>bytes</var></code></td></tr>
@@ -2166,8 +2164,8 @@ the server configuration files</td></tr>
     <div class="note">通常はデフォルトから変更する必要はありません。</div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">ディレクティブ</a> <a title="Permanent link" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="limitxmlrequestbody"><span id="LimitXMLRequestBody">LimitXMLRequestBody</span> ディレクティブ <a title="Permanent link" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>XML 形式のリクエストのボディのサイズを制限する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LimitXMLRequestBody <var>bytes</var></code></td></tr>
@@ -2188,8 +2186,8 @@ the server configuration files</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">ディレクティブ</a> <a title="Permanent link" href="#location" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="location"><span id="Location">&lt;Location&gt;</span> ディレクティブ <a title="Permanent link" href="#location" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>囲んだディレクティブをマッチする URL のみに適用</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>&lt;Location
@@ -2258,12 +2256,12 @@ the server configuration files</td></tr>
     次のようにすれば良いでしょう。</p>
 
     <div class="example"><p><code>
-      &lt;Location /status&gt;<br />
+      &lt;Location /status&gt;<br>
       <span class="indent">
-        SetHandler server-status<br />
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from .example.com<br />
+        SetHandler server-status<br>
+        Order Deny,Allow<br>
+        Deny from all<br>
+        Allow from .example.com<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -2303,8 +2301,8 @@ the server configuration files</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">ディレクティブ</a> <a title="Permanent link" href="#locationmatch" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="locationmatch"><span id="LocationMatch">&lt;LocationMatch&gt;</span> ディレクティブ <a title="Permanent link" href="#locationmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>囲んだディレクティブを正規表現にマッチする URL のみに
 適用</td></tr>
@@ -2334,8 +2332,8 @@ the server configuration files</td></tr>
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">ディレクティブ</a> <a title="Permanent link" href="#loglevel" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="loglevel"><span id="LogLevel">LogLevel</span> ディレクティブ <a title="Permanent link" href="#loglevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ErrorLog の冗長性を制御する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogLevel <var>level</var></code></td></tr>
@@ -2451,8 +2449,8 @@ the server configuration files</td></tr>
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">ディレクティブ</a> <a title="Permanent link" href="#logleveloverride" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="logleveloverride"><span id="LogLevelOverride">LogLevelOverride</span> ディレクティブ <a title="Permanent link" href="#logleveloverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
@@ -2470,8 +2468,8 @@ the server configuration files</td></tr>
 <li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">ディレクティブ</a> <a title="Permanent link" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="maxkeepaliverequests"><span id="MaxKeepAliveRequests">MaxKeepAliveRequests</span> ディレクティブ <a title="Permanent link" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>持続的な接続上で許可されるリクエストの数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxKeepAliveRequests <var>number</var></code></td></tr>
@@ -2494,8 +2492,8 @@ the server configuration files</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a name="maxrangeoverlaps" id="maxrangeoverlaps">ディレクティブ</a> <a title="Permanent link" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="maxrangeoverlaps"><span id="MaxRangeOverlaps">MaxRangeOverlaps</span> ディレクティブ <a title="Permanent link" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Number of overlapping ranges (eg: <code>100-200,150-300</code>) allowed before returning the complete
         resource </td></tr>
@@ -2508,8 +2506,8 @@ the server configuration files</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a name="maxrangereversals" id="maxrangereversals">ディレクティブ</a> <a title="Permanent link" href="#maxrangereversals" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="maxrangereversals"><span id="MaxRangeReversals">MaxRangeReversals</span> ディレクティブ <a title="Permanent link" href="#maxrangereversals" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Number of range reversals (eg: <code>100-200,50-70</code>) allowed before returning the complete
         resource </td></tr>
@@ -2522,8 +2520,8 @@ the server configuration files</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">ディレクティブ</a> <a title="Permanent link" href="#maxranges" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="maxranges"><span id="MaxRanges">MaxRanges</span> ディレクティブ <a title="Permanent link" href="#maxranges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Number of ranges allowed before returning the complete
 resource </td></tr>
@@ -2536,8 +2534,8 @@ resource </td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MergeSlashes" id="MergeSlashes">MergeSlashes</a> <a name="mergeslashes" id="mergeslashes">ディレクティブ</a> <a title="Permanent link" href="#mergeslashes" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mergeslashes"><span id="MergeSlashes">MergeSlashes</span> ディレクティブ <a title="Permanent link" href="#mergeslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether the server merges consecutive slashes in URLs.
 </td></tr>
@@ -2550,8 +2548,8 @@ resource </td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">ディレクティブ</a> <a title="Permanent link" href="#mergetrailers" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mergetrailers"><span id="MergeTrailers">MergeTrailers</span> ディレクティブ <a title="Permanent link" href="#mergetrailers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Determines whether trailers are merged into headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MergeTrailers [on|off]</code></td></tr>
@@ -2563,8 +2561,8 @@ resource </td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">ディレクティブ</a> <a title="Permanent link" href="#mutex" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mutex"><span id="Mutex">Mutex</span> ディレクティブ <a title="Permanent link" href="#mutex" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Configures mutex mechanism and lock file directory for all
 or specified mutexes</td></tr>
@@ -2577,8 +2575,8 @@ or specified mutexes</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">ディレクティブ</a> <a title="Permanent link" href="#namevirtualhost" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="namevirtualhost"><span id="NameVirtualHost">NameVirtualHost</span> ディレクティブ <a title="Permanent link" href="#namevirtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>名前ベースのバーチャルホストのための IP アドレスを指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>NameVirtualHost <var>addr</var>[:<var>port</var>]</code></td></tr>
@@ -2642,10 +2640,10 @@ or specified mutexes</td></tr>
       合っている必要があることに注意してください。</p>
 
       <div class="example"><p><code>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
-        # ...<br />
-        &lt;/VirtualHost&gt;<br />
+        NameVirtualHost 1.2.3.4<br>
+        &lt;VirtualHost 1.2.3.4&gt;<br>
+        # ...<br>
+        &lt;/VirtualHost&gt;<br>
       </code></p></div>
     </div>
 
@@ -2656,8 +2654,8 @@ or specified mutexes</td></tr>
 </a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">ディレクティブ</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="options"><span id="Options">Options</span> ディレクティブ <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリに対して使用可能な機能を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Options
@@ -2764,15 +2762,15 @@ or specified mutexes</td></tr>
     <p>例えば、<code>+</code> や <code>-</code> を利用しない場合は:</p>
 
     <div class="example"><p><code>
-      &lt;Directory /web/docs&gt;<br />
+      &lt;Directory /web/docs&gt;<br>
       <span class="indent">
-        Options Indexes FollowSymLinks<br />
+        Options Indexes FollowSymLinks<br>
       </span>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
+      &lt;/Directory&gt;<br>
+      <br>
+      &lt;Directory /web/docs/spec&gt;<br>
       <span class="indent">
-        Options Includes<br />
+        Options Includes<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -2782,15 +2780,15 @@ or specified mutexes</td></tr>
     しかし、2 番目の <code class="directive">Options</code> で <code>+</code> や <code>-</code> を利用してみると:</p>
  
     <div class="example"><p><code>
-      &lt;Directory /web/docs&gt;<br />
+      &lt;Directory /web/docs&gt;<br>
       <span class="indent">
-        Options Indexes FollowSymLinks<br />
+        Options Indexes FollowSymLinks<br>
       </span>
-      &lt;/Directory&gt;<br />
-      <br />
-      &lt;Directory /web/docs/spec&gt;<br />
+      &lt;/Directory&gt;<br>
+      <br>
+      &lt;Directory /web/docs/spec&gt;<br>
       <span class="indent">
-        Options +Includes -Indexes<br />
+        Options +Includes -Indexes<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -2808,8 +2806,8 @@ or specified mutexes</td></tr>
     なります。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">ディレクティブ</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="protocol"><span id="Protocol">Protocol</span> ディレクティブ <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Protocol for a listening socket</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Protocol <var>protocol</var></code></td></tr>
@@ -2825,8 +2823,8 @@ or specified mutexes</td></tr>
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Protocols" id="Protocols">Protocols</a> <a name="protocols" id="protocols">ディレクティブ</a> <a title="Permanent link" href="#protocols" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="protocols"><span id="Protocols">Protocols</span> ディレクティブ <a title="Permanent link" href="#protocols" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Protocols available for a server/virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Protocols <var>protocol</var> ...</code></td></tr>
@@ -2842,8 +2840,8 @@ or specified mutexes</td></tr>
 <li><code class="directive"><a href="#protocolshonororder">ProtocolsHonorOrder</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a name="protocolshonororder" id="protocolshonororder">ディレクティブ</a> <a title="Permanent link" href="#protocolshonororder" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="protocolshonororder"><span id="ProtocolsHonorOrder">ProtocolsHonorOrder</span> ディレクティブ <a title="Permanent link" href="#protocolshonororder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Determines if order of Protocols determines precedence during negotiation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
@@ -2859,8 +2857,8 @@ or specified mutexes</td></tr>
 <li><code class="directive"><a href="#protocols">Protocols</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">ディレクティブ</a> <a title="Permanent link" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="qualifyredirecturl"><span id="QualifyRedirectURL">QualifyRedirectURL</span> ディレクティブ <a title="Permanent link" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
@@ -2875,8 +2873,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a name="readbuffersize" id="readbuffersize">ディレクティブ</a> <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="readbuffersize"><span id="ReadBufferSize">ReadBufferSize</span> ディレクティブ <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Size of the buffers used to read data</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
@@ -2888,8 +2886,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">ディレクティブ</a> <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="regexdefaultoptions"><span id="RegexDefaultOptions">RegexDefaultOptions</span> ディレクティブ <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Allow to configure global/default options for regexes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
@@ -2901,8 +2899,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">ディレクティブ</a> <a title="Permanent link" href="#registerhttpmethod" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="registerhttpmethod"><span id="RegisterHttpMethod">RegisterHttpMethod</span> ディレクティブ <a title="Permanent link" href="#registerhttpmethod" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Register non-standard HTTP methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
@@ -2918,8 +2916,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 <li><code class="directive"><a href="../mod/mod_allowmethods.html#allowmethods">AllowMethods</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">ディレクティブ</a> <a title="Permanent link" href="#rlimitcpu" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rlimitcpu"><span id="RLimitCPU">RLimitCPU</span> ディレクティブ <a title="Permanent link" href="#rlimitcpu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Apache の子プロセスから起動されたプロセスの CPU 消費量を
 制限する</td></tr>
@@ -2953,8 +2951,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 <li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">ディレクティブ</a> <a title="Permanent link" href="#rlimitmem" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rlimitmem"><span id="RLimitMEM">RLimitMEM</span> ディレクティブ <a title="Permanent link" href="#rlimitmem" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Apache の子プロセスから起動されたプロセスのメモリ消費量を
 制限する</td></tr>
@@ -2987,8 +2985,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 <li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">ディレクティブ</a> <a title="Permanent link" href="#rlimitnproc" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rlimitnproc"><span id="RLimitNPROC">RLimitNPROC</span> ディレクティブ <a title="Permanent link" href="#rlimitnproc" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Apache の子プロセスから起動されたプロセスが起動するプロセスの
 数を制限する</td></tr>
@@ -3030,8 +3028,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 <li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">ディレクティブ</a> <a title="Permanent link" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="scriptinterpretersource"><span id="ScriptInterpreterSource">ScriptInterpreterSource</span> ディレクティブ <a title="Permanent link" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのインタープリタの位置を調べるための手法</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptInterpreterSource Registry|Registry-Strict|Script</code></td></tr>
@@ -3091,8 +3089,8 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
     実行を防ぐことができます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">ディレクティブ</a> <a title="Permanent link" href="#seerequesttail" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="seerequesttail"><span id="SeeRequestTail">SeeRequestTail</span> ディレクティブ <a title="Permanent link" href="#seerequesttail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
@@ -3105,8 +3103,8 @@ of a request or the last 63, assuming the request itself is greater than
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">ディレクティブ</a> <a title="Permanent link" href="#serveradmin" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="serveradmin"><span id="ServerAdmin">ServerAdmin</span> ディレクティブ <a title="Permanent link" href="#serveradmin" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがクライアントに送るエラーメッセージに含める電子メールの
 アドレス</td></tr>
@@ -3139,8 +3137,8 @@ of a request or the last 63, assuming the request itself is greater than
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">ディレクティブ</a> <a title="Permanent link" href="#serveralias" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="serveralias"><span id="ServerAlias">ServerAlias</span> ディレクティブ <a title="Permanent link" href="#serveralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストを名前ベースのバーチャルホストにマッチさせているときに
 使用されるホストの別名</td></tr>
@@ -3155,10 +3153,10 @@ of a request or the last 63, assuming the request itself is greater than
     ワイルドカードを使うこともできます。</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost *&gt;<br />
-      ServerName server.domain.com<br />
-      ServerAlias server server2.domain.com server2<br />
-      # ...<br />
+      &lt;VirtualHost *&gt;<br>
+      ServerName server.domain.com<br>
+      ServerAlias server server2.domain.com server2<br>
+      # ...<br>
       &lt;/VirtualHost&gt;
     </code></p></div>
 
@@ -3167,8 +3165,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><a href="../vhosts/">Apache バーチャルホスト説明書</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">ディレクティブ</a> <a title="Permanent link" href="#servername" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="servername"><span id="ServerName">ServerName</span> ディレクティブ <a title="Permanent link" href="#servername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが自分自身を示すときに使うホスト名とポート</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</code></td></tr>
@@ -3226,8 +3224,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="#serveralias">ServerAlias</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">ディレクティブ</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="serverpath"><span id="ServerPath">ServerPath</span> ディレクティブ <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>非互換のブラウザが名前ベースのバーチャルホストにアクセスしたときの
 ための互換用 URL パス名</td></tr>
@@ -3244,8 +3242,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><a href="../vhosts/">Apache バーチャルホスト説明書</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">ディレクティブ</a> <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="serverroot"><span id="ServerRoot">ServerRoot</span> ディレクティブ <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>インストールされたサーバのベースディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerRoot <var>directory-path</var></code></td></tr>
@@ -3274,8 +3272,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive">ServerRoot</code> の権限を適切に設定する方法は<a href="../misc/security_tips.html#serverroot">セキュリティのこつ</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">ディレクティブ</a> <a title="Permanent link" href="#serversignature" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="serversignature"><span id="ServerSignature">ServerSignature</span> ディレクティブ <a title="Permanent link" href="#serversignature" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが生成するドキュメントのフッタを設定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerSignature On|Off|EMail</code></td></tr>
@@ -3309,8 +3307,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="#servertokens">ServerTokens</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">ディレクティブ</a> <a title="Permanent link" href="#servertokens" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="servertokens"><span id="ServerTokens">ServerTokens</span> ディレクティブ <a title="Permanent link" href="#servertokens" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>Server</code> HTTP 応答ヘッダを設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
@@ -3367,8 +3365,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">ディレクティブ</a> <a title="Permanent link" href="#sethandler" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="sethandler"><span id="SetHandler">SetHandler</span> ディレクティブ <a title="Permanent link" href="#sethandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>マッチするファイルがハンドラで処理されるようにする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SetHandler <var>handler-name</var>|None</code></td></tr>
@@ -3396,9 +3394,9 @@ of a request or the last 63, assuming the request itself is greater than
     <code>httpd.conf</code> に記述します:</p>
 
     <div class="example"><p><code>
-      &lt;Location /status&gt;<br />
+      &lt;Location /status&gt;<br>
       <span class="indent">
-        SetHandler server-status<br />
+        SetHandler server-status<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -3418,8 +3416,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">ディレクティブ</a> <a title="Permanent link" href="#setinputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="setinputfilter"><span id="SetInputFilter">SetInputFilter</span> ディレクティブ <a title="Permanent link" href="#setinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントのリクエストや POST の入力を処理するフィルタを設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SetInputFilter <var>filter</var>[;<var>filter</var>...]</code></td></tr>
@@ -3443,8 +3441,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><a href="../filter.html">フィルタ</a>説明書</li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">ディレクティブ</a> <a title="Permanent link" href="#setoutputfilter" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="setoutputfilter"><span id="SetOutputFilter">SetOutputFilter</span> ディレクティブ <a title="Permanent link" href="#setoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバの応答を処理するフィルタを設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SetOutputFilter <var>filter</var>[;<var>filter</var>...]</code></td></tr>
@@ -3463,9 +3461,9 @@ of a request or the last 63, assuming the request itself is greater than
     ファイルを SSI で処理します。</p>
 
     <div class="example"><p><code>
-      &lt;Directory /www/data/&gt;<br />
+      &lt;Directory /www/data/&gt;<br>
       <span class="indent">
-        SetOutputFilter INCLUDES<br />
+        SetOutputFilter INCLUDES<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -3478,8 +3476,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><a href="../filter.html">フィルタ</a>説明書</li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a> <a name="stricthostcheck" id="stricthostcheck">ディレクティブ</a> <a title="Permanent link" href="#stricthostcheck" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="stricthostcheck"><span id="StrictHostCheck">StrictHostCheck</span> ディレクティブ <a title="Permanent link" href="#stricthostcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls whether the server requires the requested hostname be
              listed enumerated in the virtual host handling the request
@@ -3493,8 +3491,8 @@ of a request or the last 63, assuming the request itself is greater than
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">ディレクティブ</a> <a title="Permanent link" href="#timeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="timeout"><span id="TimeOut">TimeOut</span> ディレクティブ <a title="Permanent link" href="#timeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>各イベントについて、リクエストを失敗させるまでにサーバが
 待つ時間を設定</td></tr>
@@ -3529,8 +3527,8 @@ of a request or the last 63, assuming the request itself is greater than
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">ディレクティブ</a> <a title="Permanent link" href="#traceenable" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="traceenable"><span id="TraceEnable">TraceEnable</span> ディレクティブ <a title="Permanent link" href="#traceenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
 </td></tr>
@@ -3561,8 +3559,8 @@ of a request or the last 63, assuming the request itself is greater than
     proxy サーバとしては、リクエストボディのサイズは 64k に制限されません。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UNCList" id="UNCList">UNCList</a> <a name="unclist" id="unclist">ディレクティブ</a> <a title="Permanent link" href="#unclist" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="unclist"><span id="UNCList">UNCList</span> ディレクティブ <a title="Permanent link" href="#unclist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Controls what UNC host names can be accessed by the server
 </td></tr>
@@ -3575,8 +3573,8 @@ of a request or the last 63, assuming the request itself is greater than
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">ディレクティブ</a> <a title="Permanent link" href="#undefine" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="undefine"><span id="UnDefine">UnDefine</span> ディレクティブ <a title="Permanent link" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Undefine the existence of a variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UnDefine <var>parameter-name</var></code></td></tr>
@@ -3591,8 +3589,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="#ifdefine">IfDefine</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">ディレクティブ</a> <a title="Permanent link" href="#usecanonicalname" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="usecanonicalname"><span id="UseCanonicalName">UseCanonicalName</span> ディレクティブ <a title="Permanent link" href="#usecanonicalname" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが自分自身の名前とポートを決定する方法を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>UseCanonicalName On|Off|Dns</code></td></tr>
@@ -3654,8 +3652,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">ディレクティブ</a> <a title="Permanent link" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="usecanonicalphysicalport"><span id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</span> ディレクティブ <a title="Permanent link" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>自分自身の名前とポート番号を解決する方法を設定する
 </td></tr>
@@ -3673,7 +3671,7 @@ of a request or the last 63, assuming the request itself is greater than
     使用せず、設定された情報を元にポート番号を決めます。</p>
 
     <div class="note"><h3>注意</h3>
-    <p>物理ポートが使われる場合の順番は次のようになっています:<br /><br />
+    <p>物理ポートが使われる場合の順番は次のようになっています:<br><br>
      <code>UseCanonicalName On</code></p>
      <ul>
       <li><code>ServerName</code> で指定されているポート番号</li>
@@ -3700,8 +3698,8 @@ of a request or the last 63, assuming the request itself is greater than
 <li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">ディレクティブ</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="virtualhost"><span id="VirtualHost">&lt;VirtualHost&gt;</span> ディレクティブ <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のホスト名や IP アドレスのみに適用されるディレクティブを
 囲む</td></tr>
@@ -3736,13 +3734,13 @@ of a request or the last 63, assuming the request itself is greater than
     </ul>
 
     <div class="example"><h3>例</h3><p><code>
-      &lt;VirtualHost 10.1.2.3&gt;<br />
+      &lt;VirtualHost 10.1.2.3&gt;<br>
       <span class="indent">
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
+        ServerAdmin webmaster@host.example.com<br>
+        DocumentRoot /www/docs/host.example.com<br>
+        ServerName host.example.com<br>
+        ErrorLog logs/host.example.com-error_log<br>
+        TransferLog logs/host.example.com-access_log<br>
       </span>
       &lt;/VirtualHost&gt;
     </code></p></div>
@@ -3751,13 +3749,13 @@ of a request or the last 63, assuming the request itself is greater than
     角括弧で括って指定する必要があります。次は IPv6 の例です:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br>
       <span class="indent">
-        ServerAdmin webmaster@host.example.com<br />
-        DocumentRoot /www/docs/host.example.com<br />
-        ServerName host.example.com<br />
-        ErrorLog logs/host.example.com-error_log<br />
-        TransferLog logs/host.example.com-access_log<br />
+        ServerAdmin webmaster@host.example.com<br>
+        DocumentRoot /www/docs/host.example.com<br>
+        ServerName host.example.com<br>
+        ErrorLog logs/host.example.com-error_log<br>
+        TransferLog logs/host.example.com-access_log<br>
       </span>
       &lt;/VirtualHost&gt;
     </code></p></div>
@@ -3819,8 +3817,8 @@ of a request or the last 63, assuming the request itself is greater than
     &lt;Directory&gt;, &lt;Location&gt;, &lt;Files&gt; セクションの動作法</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">ディレクティブ</a> <a title="Permanent link" href="#warning" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="warning"><span id="Warning">Warning</span> ディレクティブ <a title="Permanent link" href="#warning" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Warning <var>message</var></code></td></tr>
@@ -3836,13 +3834,13 @@ of a request or the last 63, assuming the request itself is greater than
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

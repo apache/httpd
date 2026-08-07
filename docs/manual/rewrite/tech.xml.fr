@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934122:1934612 (outdated) -->
+<!-- English Revision: 1935430 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -78,51 +78,196 @@ correspondance</a></seealso>
     s'exécute au cours de la phase Fixup.</p>
 
     <p>Dans tous ces cas, <module>mod_rewrite</module> réécrit le
-    <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
+    <code>REQUEST_URI</code> soit vers un nouvel URL, soit vers un
     nom de fichier.</p>
 
     <p>Dans un <glossary ref="perdirectory">contexte de répertoire</glossary>,
-    les règles sont appliquées durant la phase "Fixup" après que l'URL a été
-    traduite en nom de fichier. Cela modifie ce à quoi correspond le motif et la
+    les règles sont appliquées durant la phase "Fixup" après que l’URL a été
+    traduit en nom de fichier. Cela modifie ce à quoi correspond le motif et la
     manière dont les substitutions sont gérées. Voir le document <a
     href="htaccess.html#path-stripping">Réécritures en fonction du
     répertoire</a> pour des détails pratiques à propos de la suppression du
-    chemin, de RewriteBase et de la manière d'éviter un bouclage.</p>
+    chemin, de RewriteBase et de la manière d’éviter un bouclage.</p>
 
 </section>
 
+<section id="order"><title>Module Processing Order</title>
+
+    <p><module>mod_rewrite</module> et <module>mod_alias</module> agissent tous
+    les deux au cours de la phase de traduction de l’URL en nom de fichier, mais
+    <module>mod_rewrite</module> opère en premier, quel que soit l’ordre
+    d’apparition des directives dans le fichier de configuration. Ce
+    comportement est déterminé par la priorité des points d’accroche
+    qu’enregistre chaque module, pas par l’ordre du code source.</p>
+
+    <p>La conséquence pratique : lorsque des directives <directive
+    module="mod_rewrite">RewriteRule</directive> et <directive
+    module="mod_alias">Redirect</directive> (ou <directive
+    module="mod_alias">RedirectMatch</directive>) sont présentent simultanément
+    dans le même contexte de serveur virtuel ou global au serveur, les règles de
+    réécriture sont évaluées en premier. Si une règle <code>RewriteRule</code>
+    correspond et réécrit le chemin d’URL (ou renvoie une redirection),
+    <code>Redirect</code> ne verra jamais la requête.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_module_order.png"
+	  alt="Comparaison côte-à-côte des ordres d’opération des modules : dans
+	  un contexte global au serveur, mod_rewrite opère en premier lors de la
+	  phase de traduction du chemin d’URL en nom de fichier, mod_alias
+	  opèrant en second ; dans un contexte de répertoire, mod_alias opère en
+	  premier lors de la phase de traduction du chemin d’URL en nom de
+	  fichier, mod_rewrite opérant plus tard lors de la phase de
+	  correction" /><br />
+      <dfn>Figure :</dfn> Inversion de l’ordre d’opération des modules entre les
+      contextes global au serveur et de répertoire
+</p>
+
+    <highlight language="config">
+# Dans cette configuration, le Redirect n’est jamais atteint pour /old,
+# car la règle RewriteRule s’applique en premier — même si
+# Redirect apparaît plus tôt dans le fichier.
+Redirect "/old" "http://example.com/new"
+RewriteRule "^/old" "/other" [L]
+</highlight>
+
+    <note><title>Le contexte de répertoire inverse l’ordre</title>
+    <p>Dans un <glossary ref="perdirectory">contexte de répertoire</glossary>,
+    la situation est différente. Les directives de <module>mod_alias</module>
+    comme <code>Redirect</code> s’appliquent encore dans la phase de traduction
+    de l’URL en nom de fichier, mais les directives de
+    <module>mod_rewrite</module> s’appliquent plus tard, lors de la phase de
+    correction. Cela signifie que dans un contexte de répertoire,
+    <code>Redirect</code> est évaluée <em>avant</em> l’application des
+    règles <code>RewriteRule</code>.</p>
+    </note>
+
+    <p>Du fait de l’incohérence entre les contextes, mélanger des directives de
+    <module>mod_rewrite</module> et de <module>mod_alias</module> dans la même
+    portée est une source courante de confusion. Un conseil simple : choisissez
+    un module pour une tâche donnée. Si vous avez besoin de conditions de
+    réécritures ou de comparaison de motif, utilisez exclusivement
+    <code>RewriteRule</code>. Si une simple redirection de préfixe suffit,
+    utilisez la directive <code>Redirect</code> et n’ajoutez pas de règles de
+    réécritures qui pourraient interagir avec elle.</p>
+
+</section>
+
+<section id="encoding"><title>Encodage et décodage des URLs</title>
+
+    <p>Apache httpd supprime l’échappement des caractères encodés pour l’URL
+    dans le chemin d’URL de la requête avant que toute comparaison de motif de
+    directive <directive module="mod_rewrite">RewriteRule</directive> ne soit
+    effectuée. Une requête pour <code>/my%20page/cats%3Fdogs</code> est décodée
+    en <code>/my page/cats?dogs</code>, et c’est à cette chaîne décodée qu’est
+    comparé le motif de la directive <code>RewriteRule</code>.</p>
+
+    <p>Cela signifie que vous ne pouvez pas écrire un motif correspondant à la
+    forme littérale de l’URL encodé. Si vous devez distinguer
+    <code>/horses%2Fponies</code> de <code>/horses/ponies</code>, utilisez la
+    variable <code>%{THE_REQUEST}</code> dans une directive <directive
+    module="mod_rewrite">RewriteCond</directive> — cette variable conserve la
+    requête originelle telle qu’elle a été envoyée par le client, avant tout
+    décodage :</p>
+
+<highlight language="config">
+# Ne correspond qu’au caractère encodé littéral %2F, 
+# pas au séparateur de chemin réel
+RewriteCond "%{THE_REQUEST}" "/horses%2F"
+RewriteRule "^/horses/ponies$" "/special-handler" [L]
+</highlight>
+
+    <p>Après la substitution, <module>mod_rewrite</module> réencode le chemin
+    d’URL résultant en sortie. Plusieurs drapeaux permettent de contrôler ce
+    comportement :</p>
+
+    <ul>
+      <li><a href="flags.html#flag_b">[B]</a> : rétablit l’échappement des
+      références arrières de façon que les caractères spéciaux capturés dans le
+      chemin d’URL décodé ne soient pas interprétés comme des délimiteurs dans
+      la substitution.</li>
+
+      <li><a href="flags.html#flag_bnp">[BNP]</a> : si [B] est actif, ce drapeau
+      encode les espaces en <code>%20</code> au lieu de <code>+</code> (convient
+      pour les éléments du chemin, pas pour la chaîne de paramètres).</li>
+
+      <li><a href="flags.html#flag_ne">[NE]</a> : ce drapeau supprime
+      l’échappement par défaut des caractères spéciaux dans le résultat de la
+      substitution, permettant la transmission sans modification des littéraux
+      <code>#</code>, <code>?</code> et d’autres caractères lors des
+      redirections externes.</li>
+    </ul>
+
+    <section id="allowencodedslashes">
+    <title>Directive AllowEncodedSlashes</title>
+
+    <p>Par défaut, httpd renvoie un code 404 pour tout URL contenant une barre
+    oblique encodée (<code>%2F</code>). La directive  <directive
+    module="core">AllowEncodedSlashes</directive> permet de modifier ce
+    comportement :</p>
+
+    <ul>
+      <li><code>Off</code> (valeur par défaut) : rejette <code>%2F</code> avec
+      un code 404.</li>
+      <li><code>On</code> : autorise <code>%2F</code> et le décode en
+      <code>/</code> avant de le transmettre aux gestionnaires.</li>
+      <li><code>NoDecode</code> : autorise <code>%2F</code>, mais le conserve
+      sous sa forme encodée de façon que l’application dorsale le distingue d’un
+      séparateur de chemin réel.</li>
+    </ul>
+
+    <p>Lorsqu’on utilise le drapeau <a href="flags.html#flag_b">[B]</a> avec des
+    URLs qui peuvent contenir des barres obliques encodées, il est en général
+    nécessaire d’utiliser <code>AllowEncodedSlashes NoDecode</code> pour éviter
+    que httpd ne rejette le résultat réencodé.</p>
+
+    </section>
+
+</section>
+
+
 <section id="InternalRuleset"><title>Traitement du jeu de règles</title>
 
-      <p>Maintenant, quand <module>mod_rewrite</module> se lance dans ces deux phases de
-      l'API, il lit le jeu de règles configurées depuis la structure
-      contenant sa configuration (qui a été elle-même créée soit au
-      démarrage d'Apache pour le contexte du serveur, soit lors du
-      parcours des répertoires par le noyau d'Apache pour le contexte de
-      répertoire). Puis le moteur de réécriture est démarré avec le jeu
-      de règles contenu (une ou plusieurs règles associées à leurs
-      conditions). En lui-même, le mode opératoire du moteur de
-      réécriture d'URLs est exactement le même dans les deux contextes
-      de configuration. Seul le traitement du résultat final diffère.</p>
+      <p>Maintenant, quand <module>mod_rewrite</module> se lance dans ces deux
+      phases de l'API, il lit le jeu de règles configuré depuis la structure
+      contenant sa configuration (qui a été elle-même créée soit au démarrage
+      d'Apache httpd pour le contexte du serveur, soit lors du parcours des
+      répertoires par le noyau d'Apache httpd pour le contexte de répertoire).
+      Puis le moteur de réécriture est démarré avec le jeu de règles contenu
+      (une ou plusieurs règles associées à leurs conditions). En lui-même, le
+      mode opératoire du moteur de réécriture d'URLs est exactement le même dans
+      les deux contextes de configuration. Seul le traitement du résultat final
+      diffère.</p>
 
-      <p>L'ordre dans lequel les règles sont définies est important car
-      le moteur de réécriture les traite selon une chronologie
-      particulière (et pas très évidente). Le principe est le suivant :
-      le moteur de réécriture traite les règles (les directives <directive
-      module="mod_rewrite">RewriteRule</directive>) les unes
-      à la suite des autres, et lorsqu'une règle s'applique, il parcourt
-      les éventuelles conditions (directives
-      <code>RewriteCond</code>directives) associées.
-      Pour des raisons historiques, les
-      conditions précèdent les règles, si bien que le déroulement du
-      contrôle est un peu compliqué. Voir la figure 1 pour plus de
-      détails.</p>
+<p class="figure">
+      <img src="../images/mod_rewrite_fig1.png"
+          alt="Survol du processus de réécriture par requête lors des phases par
+	  serveur et par répertoire" /><br />
+      <dfn>Figure 1 :</dfn>Le processus de réécriture par requête montrant les
+      deux phases du traitement des règles (par serveur et par répertoire)
+</p>
+
+      <p>L'ordre dans lequel les règles sont définies est important car le
+      moteur de réécriture les traite selon une chronologie particulière (et pas
+      très évidente). Le principe est le suivant : le moteur de réécriture
+      traite les règles (les directives <directive
+      module="mod_rewrite">RewriteRule</directive>) les unes à la suite des
+      autres, et lorsqu'une règle s'applique, il parcourt les éventuelles
+      conditions (directives <code>RewriteCond</code>directives) associées.
+      Pour des raisons historiques, les conditions précèdent les règles, si bien
+      que le déroulement du contrôle est un peu compliqué. Voir la figure 2 pour
+      plus de détails.</p>
 <p class="figure">
       <img src="../images/rewrite_process_uri.png"
-          alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
-      <dfn>Figure 1:</dfn>Déroulement du contrôle à travers le jeu de
-      règles de réécriture
+	  alt="Organigramme montrant le flux de contrôle par règle : pour chaque
+	  règle, comparaison du motif avec l’URL, évaluation des conditions
+	  RewriteCond, application de la substitution si les deux opérations
+	  précédentes ont réussi, puis consultation des drapeaux pour déterminer
+	  si l’on doit arrêter le traitement ou continuer avec la règle
+	  suivante" /><br />
+      <dfn>Figure 2 :</dfn>Le flux de contrôle en parcourant le jeu de règles de
+      réécriture
 </p>
-      <p>L'URL est tout d'abord comparée au
+      <p>L'URL est tout d'abord comparé au
       <em>Modèle</em> de chaque règle. Lorsqu'une règle ne s'applique
       pas, <module>mod_rewrite</module> stoppe immédiatement le traitement de cette règle
       et passe à la règle suivante. Si l'URL correspond au
@@ -147,7 +292,17 @@ correspondance</a></seealso>
       satisfaites, le traitement de la règle en cours se poursuit avec
       le remplacement de l'URL par la chaîne de <em>Substitution</em>.</p>
 
-</section>
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.png"
+          alt="Flux des références arrières entre les directives RewriteRule et
+	  RewriteCond" /><br />
+      <dfn>Figure 3 :</dfn>Le flux des références arrières dans une règle
+      Tout d’abord, le motif de la règle RewriteRule est comparé ; ses captures
+      ($1...$9) sont disponibles dans toutes les chaînes de test des conditions
+      RewriteCond. Les dernières captures du motif de la condition qui
+      correspondent (%1...%9) sont disponibles dans la substitution.
+</p>
 
+</section>
 
 </manualpage>

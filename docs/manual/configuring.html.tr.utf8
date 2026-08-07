@@ -1,212 +1,210 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Yapılandırma Dosyaları - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Yapılandırma Dosyaları - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Yapılandırma Dosyaları</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">S&uuml;r&uuml;m 2.5</a></div><div id="page-content"><div id="preamble"><h1>Yapılandırma Dosyaları</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
 <p>Bu belgede Apache HTTP Sunucusunu yapılandırmakta kullanılan dosyalar
-açıklanmıştır.</p>
+a&ccedil;ıklanmıştır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Ana Yapılandırma Dosyaları</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#syntax">Yapılandırma Dosyalarının Sözdizimi</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#modules">Modüller</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#scope">Yönergelerin Etki Alanı</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#htaccess">.htaccess Dosyaları</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#main">Ana Yapılandırma Dosyaları</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#syntax">Yapılandırma Dosyalarının S&ouml;zdizimi</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#modules">Mod&uuml;ller</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#scope">Y&ouml;nergelerin Etki Alanı</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#htaccess">.htaccess Dosyaları</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="main" id="main">Ana Yapılandırma Dosyaları</a> <a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
+<h2 id="main">Ana Yapılandırma Dosyaları <a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
     
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
-    <p>Apache HTTP Sunucusu düz metin yapılandırma dosyalarına <a href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır.
+    <p>Apache HTTP Sunucusu d&uuml;z metin yapılandırma dosyalarına <a href="mod/directives.html">y&ouml;nergeler</a> yerleştirilerek yapılandırılır.
     Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>'tur.
-    Bu dosyanın yeri derleme sırasında belirlenir, ancak çalıştırma
-    sırasında <code>-f</code> komut satırı seçeneği ile başka bir yer
+    Bu dosyanın yeri derleme sırasında belirlenir, ancak &ccedil;alıştırma
+    sırasında <code>-f</code> komut satırı se&ccedil;eneği ile başka bir yer
     belirtilebilir. Ayrıca, <code class="directive"><a href="./mod/core.html#include">Include</a></code>
-    yönergesi kullanılarak başka yapılandırma dosyaları da eklenebilir
+    y&ouml;nergesi kullanılarak başka yapılandırma dosyaları da eklenebilir
     ve bu dosyaların isimleri belirtilirken dosya ismi şablonları
-    kullanılabilir. Bu dosyaların içine de ana yapılandırma dosyasında
-    olduğu gibi her türlü yönerge yerleştirilebilir. Ana yapılandırma
+    kullanılabilir. Bu dosyaların i&ccedil;ine de ana yapılandırma dosyasında
+    olduğu gibi her t&uuml;rl&uuml; y&ouml;nerge yerleştirilebilir. Ana yapılandırma
     dosyalarındaki değişiklikler httpd tarafından sadece başlatma veya
     yeniden başlatma sırasında etkin kılınır.</p>
 
-    <p>Sunucu ayrıca MIME belge türlerini içeren bir dosya daha okur;
-    dosya ismi öntanımlı olarak <code>mime.types</code> olup <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code> yönergesi ile başka bir dosya
+    <p>Sunucu ayrıca MIME belge t&uuml;rlerini i&ccedil;eren bir dosya daha okur;
+    dosya ismi &ouml;ntanımlı olarak <code>mime.types</code> olup <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code> y&ouml;nergesi ile başka bir dosya
     belirtilebilir.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="syntax" id="syntax">Yapılandırma Dosyalarının Sözdizimi</a> <a title="Permanent link" href="#syntax" class="permalink">&para;</a></h2>
+<h2 id="syntax">Yapılandırma Dosyalarının S&ouml;zdizimi <a title="Permanent link" href="#syntax" class="permalink">&para;</a></h2>
     
 
-    <p>httpd yapılandırma dosyalarının her satırında sadece bir yönerge
-    bulunur ve bir yönergenin birden fazla satıra yayılması daha iyi
+    <p>httpd yapılandırma dosyalarının her satırında sadece bir y&ouml;nerge
+    bulunur ve bir y&ouml;nergenin birden fazla satıra yayılması daha iyi
     olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın
-    son karakteri "\" (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
+    son karakteri "\" (tersb&ouml;l&uuml;) olmalı, satırsonu karakteri ile bu tersb&ouml;l&uuml;
     karakteri arasında başka karakter bulunmamalıdır.</p>
 
-    <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
-    duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı
-    değildir. Diyez ("#") karakteri ile başlayan satırlar açıklama olarak
-    ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırların
-    ardına  açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar
-    ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için
-    yönergelerin girintilenebilmesi olanağını verir.</p>
+    <p>Yapılandırma dosyalarındaki y&ouml;nergelerin isimleri harf b&uuml;y&uuml;kl&uuml;ğ&uuml;ne
+    duyarlı olduğu halde arg&uuml;manları genellikle harf b&uuml;y&uuml;kl&uuml;ğ&uuml;ne duyarlı
+    değildir. Diyez ("#") karakteri ile başlayan satırlar a&ccedil;ıklama olarak
+    ele alınır ve yok sayılırlar. Yapılandırma y&ouml;nergesi i&ccedil;eren satırların
+    ardına  a&ccedil;ıklama yerleştirilemez. Y&ouml;nerge isminden &ouml;nce yer alan boşluklar
+    ve boş satırlar yok sayılır; bu &ouml;zellik, okunabilirliği sağlamak i&ccedil;in
+    y&ouml;nergelerin girintilenebilmesi olanağını verir.</p>
 
 
     <p><code class="directive"><a href="./mod/core.html#define">Define</a></code> ile veya kabuğun ortam
     değişkenleri ile tanımlanmış değişkenlerin değerleri, yapılandırma
-    dosyasının satırlarında <code>${VAR}</code> sözdizimi ile kullanılabilir.
-    "VAR" geçerli bir değişkenin adı olduğu takdirde, bu değişkenin değeri
+    dosyasının satırlarında <code>${VAR}</code> s&ouml;zdizimi ile kullanılabilir.
+    "VAR" ge&ccedil;erli bir değişkenin adı olduğu takdirde, bu değişkenin değeri
     yapılandırma dosyasının bu noktasında yerine konacak ve orada zaten
     değişken yerine değeri varmış gibi işlem kaldığı yerden devam edecektir.
     <code class="directive"><a href="./mod/core.html#define">Define</a></code> ile tanımlanmış değişkenler
-    kabuğun ortam değişkenlerinden önceliklidir. "VAR" diye bir değişken yoksa
-    <code>${VAR}</code> içindeki karakterler değişmeden kalır ve günlüğe bir
-    uyarı çıktılanır. <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
-    sözdizimi ile olası bir karışıklığı önlemek için, değişken isimleri iki
-    nokta imini (":") içeremez.</p>
+    kabuğun ortam değişkenlerinden &ouml;nceliklidir. "VAR" diye bir değişken yoksa
+    <code>${VAR}</code> i&ccedil;indeki karakterler değişmeden kalır ve g&uuml;nl&uuml;ğe bir
+    uyarı &ccedil;ıktılanır. <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    s&ouml;zdizimi ile olası bir karışıklığı &ouml;nlemek i&ccedil;in, değişken isimleri iki
+    nokta imini (":") i&ccedil;eremez.</p>
 
-    <p>Kabuğun ortam değişkenlerinin, sadece, sunucu başlatılmadan önce
+    <p>Kabuğun ortam değişkenlerinin, sadece, sunucu başlatılmadan &ouml;nce
     tanımlanmış değerleri kullanılabilir.  Yapılandırma dosyasının kendisinde
-    tanımlanmış ortam değişkenleri (örneğin,
+    tanımlanmış ortam değişkenleri (&ouml;rneğin,
     <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code> ile), yapılandırma
-    dosyasındaki işlemlerde çok daha sonra yer alır.</p>
+    dosyasındaki işlemlerde &ccedil;ok daha sonra yer alır.</p>
 
     <p>Yapılandırma dosyasındaki bir satırın uzunluğu, değişken ikamesi
     yapıldıkta, devam satırları eklenditen sonra en fazla 16MiB olabilir. <a href="configuring.xml#htaccess">.htaccess dosyalarında</a> azami uzunluk
     8190 karakterdir.</p>
 
-    <p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya
-    <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı
-    sözdizimi hatalarına karşı sınayabilirsiniz.</p>
+    <p>Sunucuyu başlatmadan &ouml;nce <code>apachectl configtest</code> ile veya
+    <code>-t</code> komut satırı se&ccedil;eneği ile yapılandırma dosyalarınızı
+    s&ouml;zdizimi hatalarına karşı sınayabilirsiniz.</p>
 
     <p>Eşleşmeyen <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
-    ve <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> bölümleri
-    kaldırılmış, tüm açıklamalar, çözümlenmiş ortam değişkenleri ve içerilmiş
-    tüm dosyalar dahil yapılandırmanın bir dökümünü almak için
-    <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>'nun <code>-DDUMP_CONFIG</code> seçeneğini
+    ve <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> b&ouml;l&uuml;mleri
+    kaldırılmış, t&uuml;m a&ccedil;ıklamalar, &ccedil;&ouml;z&uuml;mlenmiş ortam değişkenleri ve i&ccedil;erilmiş
+    t&uuml;m dosyalar dahil yapılandırmanın bir d&ouml;k&uuml;m&uuml;n&uuml; almak i&ccedil;in
+    <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>'nun <code>-DDUMP_CONFIG</code> se&ccedil;eneğini
     kullanabilirsiniz.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="modules" id="modules">Modüller</a> <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
+<h2 id="modules">Mod&uuml;ller <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>httpd modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
-    temel işlevselliği içermesi demektir. Ek özellikler, httpd'ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
+    <p>httpd mod&uuml;ler yapıda bir sunucudur. Bu, &ccedil;ekirdek sunucunun sadece en
+    temel işlevselliği i&ccedil;ermesi demektir. Ek &ouml;zellikler, httpd'ye <a href="mod/">mod&uuml;ller</a> halinde y&uuml;klenebilir. &Ouml;ntanımlı olarak, derleme
     sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir
-    modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
-    yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller
+    mod&uuml;l k&uuml;mesi i&ccedil;ermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
+    y&uuml;klenen</a> mod&uuml;lleri kullanmak &uuml;zere yapılandırılarak derlenirse mod&uuml;ller
     ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#loadmodule">
-    LoadModule</a></code> yönergesi kullanılarak yüklenebilir. Aksi takdirde,
-    ek modülleri yükleyebilmek veya kaldırabilmek için httpd'nin yeniden
-    derlenmesi gerekir. Yapılandırma yönergeleri belli bir modülün varlığına
+    LoadModule</a></code> y&ouml;nergesi kullanılarak y&uuml;klenebilir. Aksi takdirde,
+    ek mod&uuml;lleri y&uuml;kleyebilmek veya kaldırabilmek i&ccedil;in httpd'nin yeniden
+    derlenmesi gerekir. Yapılandırma y&ouml;nergeleri belli bir mod&uuml;l&uuml;n varlığına
     dayalı olarak bir <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
-    bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir. Ancak,
-    <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> yönergeleri
-    gerekli değildir, önemli bir modülün yokluğu gibi durumlarda
+    bloku i&ccedil;ine alınmak suretiyle sunucuya koşullu olarak eklenebilir. Ancak,
+    <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> y&ouml;nergeleri
+    gerekli değildir, &ouml;nemli bir mod&uuml;l&uuml;n yokluğu gibi durumlarda
     maskelenebilir.</p>
 
-    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için
-    <code>-l</code> komut satırı seçeneğini kullanabilirsiniz. Ayrıca,
-    <code>-M</code> komut satırı seçeneği ile hangi modüllerin devingen olarak
-    yüklendiğini görebilirsiniz.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    <p>Sunucunun i&ccedil;inde derlenmiş mod&uuml;llerin listesini g&ouml;rmek i&ccedil;in
+    <code>-l</code> komut satırı se&ccedil;eneğini kullanabilirsiniz. Ayrıca,
+    <code>-M</code> komut satırı se&ccedil;eneği ile hangi mod&uuml;llerin devingen olarak
+    y&uuml;klendiğini g&ouml;rebilirsiniz.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="scope" id="scope">Yönergelerin Etki Alanı</a> <a title="Permanent link" href="#scope" class="permalink">&para;</a></h2>
+<h2 id="scope">Y&ouml;nergelerin Etki Alanı <a title="Permanent link" href="#scope" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-    <p>Ana yapılandırma dosyasına yerleştirilen yönergeler sunucunun tamamına
-    uygulanır. Yapılandırmanızı sunucunun belli bir parçası için değiştirmek
-    isterseniz yönergelerinizi <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> bölümleri içine yerleştirerek etki
-    alanlarını değiştirebilirsiniz. Bu bölümler yönergelerin etkilediği
+    <p>Ana yapılandırma dosyasına yerleştirilen y&ouml;nergeler sunucunun tamamına
+    uygulanır. Yapılandırmanızı sunucunun belli bir par&ccedil;ası i&ccedil;in değiştirmek
+    isterseniz y&ouml;nergelerinizi <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> b&ouml;l&uuml;mleri i&ccedil;ine yerleştirerek etki
+    alanlarını değiştirebilirsiniz. Bu b&ouml;l&uuml;mler y&ouml;nergelerin etkilediği
     alanları dosya sistemininin belli yerleri veya belli URL'lerle sınırlar.
-    Yerine göre daha hassas ayarlamalar yapmak için bu bölgeler iç içe de
+    Yerine g&ouml;re daha hassas ayarlamalar yapmak i&ccedil;in bu b&ouml;lgeler i&ccedil; i&ccedil;e de
     kullanılabilir.</p>
 
-    <p>httpd, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
-    Buna <a href="vhosts/">Sanal Konaklık</a> adı verilir. Yönergelerin etki
+    <p>httpd, &ccedil;ok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
+    Buna <a href="vhosts/">Sanal Konaklık</a> adı verilir. Y&ouml;nergelerin etki
     alanları ayrıca <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    bölümleri içine konarak da değiştirilebilir. Böylece belli bir siteye gelen
+    b&ouml;l&uuml;mleri i&ccedil;ine konarak da değiştirilebilir. B&ouml;ylece belli bir siteye gelen
     isteklere farklı bir uygulama yapılabilir.</p>
 
-    <p>Yönergelerin çoğu bu bölümlere yerleştirilebilirse de bazı yönergelerin
-    bazı bağlamlarda bir etkisi olmaz. Örneğin, süreç oluşturmayı denetleyen
-    yönergeler sadece ana sunucu bağlamına yerleştirilebilir. Hangi yönergenin
-    hangi bağlama yerleştirilebileceğini bulmak için yönergenin <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. Bu konuda daha
-    ayrıntılı bilgi edinmek için: <a href="sections.html">Directory, Location ve
-    Files Bölümleri Nasıl Çalışır</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    <p>Y&ouml;nergelerin &ccedil;oğu bu b&ouml;l&uuml;mlere yerleştirilebilirse de bazı y&ouml;nergelerin
+    bazı bağlamlarda bir etkisi olmaz. &Ouml;rneğin, s&uuml;re&ccedil; oluşturmayı denetleyen
+    y&ouml;nergeler sadece ana sunucu bağlamına yerleştirilebilir. Hangi y&ouml;nergenin
+    hangi bağlama yerleştirilebileceğini bulmak i&ccedil;in y&ouml;nergenin <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. Bu konuda daha
+    ayrıntılı bilgi edinmek i&ccedil;in: <a href="sections.html">Directory, Location ve
+    Files B&ouml;l&uuml;mleri Nasıl &Ccedil;alışır</a>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess Dosyaları</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">.htaccess Dosyaları <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
-    <p>httpd yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel
-    dosyalar yerleştirilmesine izin verir. Bu özel dosyalar normalde
-    <code>.htaccess</code> dosyaları olmakla birlikte <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> yönergesi kullanılarak rasgele bir isim
-    belirtilebilir. <code>.htaccess</code> dosyalarına yerleştirilen yönergeler
+    <p>httpd yapılandırma sorumluluğunu dağıtmak i&ccedil;in site ağa&ccedil;ları i&ccedil;ine &ouml;zel
+    dosyalar yerleştirilmesine izin verir. Bu &ouml;zel dosyalar normalde
+    <code>.htaccess</code> dosyaları olmakla birlikte <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> y&ouml;nergesi kullanılarak rasgele bir isim
+    belirtilebilir. <code>.htaccess</code> dosyalarına yerleştirilen y&ouml;nergeler
     sadece dosyanın bulunduğu dizine ve alt dizinlerine uygulanır.
-    <code>.htaccess</code> dosyalarında da ana yapılandırma dosyalarında geçerli
-    sözdizimi kullanılır. <code>.htaccess</code> dosyaları her istek gelişinde
+    <code>.htaccess</code> dosyalarında da ana yapılandırma dosyalarında ge&ccedil;erli
+    s&ouml;zdizimi kullanılır. <code>.htaccess</code> dosyaları her istek gelişinde
     yeniden okunduğundan bu dosyalarda yapılan değişiklikler hemen etkisini
-    gösterir.</p>
+    g&ouml;sterir.</p>
 
-    <p><code>.htaccess</code> dosyalarına hangi yönergelerin
-    yerleştirilebileceğini bulmak için yönerge <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız.
-    Sunucunun yöneticisi <code>.htaccess</code> dosyalarına hangi yönergelerin
+    <p><code>.htaccess</code> dosyalarına hangi y&ouml;nergelerin
+    yerleştirilebileceğini bulmak i&ccedil;in y&ouml;nerge <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız.
+    Sunucunun y&ouml;neticisi <code>.htaccess</code> dosyalarına hangi y&ouml;nergelerin
     yerleştirilebileceğini ana yapılandırma dosyalarında
-    <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> yönergesini kullanarak
+    <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> y&ouml;nergesini kullanarak
     belirleyebilir.</p>
 
     <p><code>.htaccess</code> dosyaları hakkında daha ayrıntılı bilgi edinmek
-    için <a href="howto/htaccess.html">.htaccess öğreticisi</a>ne bakabilirsiniz.</p>
+    i&ccedil;in <a href="howto/htaccess.html">.htaccess &ouml;ğreticisi</a>ne bakabilirsiniz.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

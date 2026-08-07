@@ -890,7 +890,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             }
             else {
                 apr_bucket *e;
-                f->r->status_line = "500 Internal Server Error";
+                f->r->status_line = ap_get_status_line(HTTP_INTERNAL_SERVER_ERROR);
 
                 apr_brigade_cleanup(bb);
                 e = ap_bucket_error_create(HTTP_INTERNAL_SERVER_ERROR,

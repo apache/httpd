@@ -1,40 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_authz_core - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_authz_core</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authz_core.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authz_core.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Core Authorization</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authz_core_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_core.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>authz_core_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_authz_core.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTPD 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -50,24 +48,24 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#logic">Authorization Containers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzresults">Authorization Result States</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logic">Authorization Containers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authzresults">Authorization Result States</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requiredirectives">The Require Directives</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authmerging">AuthMerging</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requireall">&lt;RequireAll&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requireany">&lt;RequireAny&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requirenone">&lt;RequireNone&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authmerging">AuthMerging</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authzsendforbiddenonfailure">AuthzSendForbiddenOnFailure</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#require">Require</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requireall">&lt;RequireAll&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requireany">&lt;RequireAny&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requirenone">&lt;RequireNone&gt;</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_core">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logic" id="logic">Authorization Containers</a> <a title="Permanent link" href="#logic" class="permalink">&para;</a></h2>
+<h2 id="logic">Authorization Containers <a title="Permanent link" href="#logic" class="permalink">&para;</a></h2>
 
     <p>The authorization container directives
     <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
@@ -108,9 +106,9 @@
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authzresults" id="authzresults">Authorization Result States</a> <a title="Permanent link" href="#authzresults" class="permalink">&para;</a></h2>
+<h2 id="authzresults">Authorization Result States <a title="Permanent link" href="#authzresults" class="permalink">&para;</a></h2>
 
     <p>Each authorization provider returns one of three possible results
     when evaluating a <code class="directive"><a href="#require">Require</a></code>
@@ -156,15 +154,15 @@
     result remains neutral. A negated directive can therefore never
     independently authorize a request.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a> <a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2 id="requiredirectives">The Require Directives <a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
 
   <p><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides some generic authorization
   providers which can be used with the
   <code class="directive"><a href="#require">Require</a></code> directive.</p>
 
-  <h3><a name="reqenv" id="reqenv">Require env</a></h3>
+  <h3 id="reqenv">Require env</h3>
 
     <p>The <code>env</code> provider allows access to the server
     to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Require
@@ -200,7 +198,7 @@
 
   
 
-  <h3><a name="reqall" id="reqall">Require all</a></h3>
+  <h3 id="reqall">Require all</h3>
 
     <p>The <code>all</code> provider mimics the functionality that
     was previously provided by the 'Allow from all' and 'Deny from all'
@@ -216,7 +214,7 @@
 
   
 
-  <h3><a name="reqmethod" id="reqmethod">Require method</a></h3>
+  <h3 id="reqmethod">Require method</h3>
 
     <p>The <code>method</code> provider allows using the HTTP method in
     authorization decisions. The GET and HEAD methods are treated as
@@ -234,14 +232,14 @@
     methods:</p>
 
     <pre class="prettyprint lang-config">&lt;RequireAny&gt;
-     Require method GET POST OPTIONS
-     Require valid-user
+    &nbsp;Require method GET POST OPTIONS
+    &nbsp;Require valid-user
 &lt;/RequireAny&gt;</pre>
 
 
   
 
-  <h3><a name="reqexpr" id="reqexpr">Require expr</a></h3>
+  <h3 id="reqexpr">Require expr</h3>
 
   <p>The <code>expr</code> provider allows basing authorization
   decisions on arbitrary expressions.</p>
@@ -270,9 +268,9 @@
   
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authzalias" id="authzalias">Creating Authorization Provider Aliases</a> <a title="Permanent link" href="#authzalias" class="permalink">&para;</a></h2>
+<h2 id="authzalias">Creating Authorization Provider Aliases <a title="Permanent link" href="#authzalias" class="permalink">&para;</a></h2>
 
     <p>Extended authorization providers can be created within the configuration
     file and assigned an alias name.  The alias providers can then be referenced
@@ -282,7 +280,7 @@
     authorization provider to be referenced by multiple locations.
     </p>
 
-    <h3><a name="example" id="example">Example</a></h3>
+    <h3 id="example">Example</h3>
         <p>The example below creates two different ldap authorization provider
         aliases based on the ldap-group authorization provider.  This example
         allows a single authorization location to check group membership within
@@ -316,8 +314,8 @@ Alias "/secure" "/webpages/secure"
     
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthMerging" id="AuthMerging">AuthMerging</a> <a name="authmerging" id="authmerging">Directive</a> <a title="Permanent link" href="#authmerging" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="authmerging"><span id="AuthMerging">AuthMerging</span> Directive <a title="Permanent link" href="#authmerging" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls the manner in which each configuration section's
 authorization logic is combined with that of preceding configuration
@@ -383,8 +381,8 @@ sections.</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a> <a name="authzprovideralias" id="authzprovideralias">Directive</a> <a title="Permanent link" href="#authzprovideralias" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="authzprovideralias"><span id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</span> Directive <a title="Permanent link" href="#authzprovideralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
 extension of a base authorization provider and referenced by the specified
@@ -419,8 +417,8 @@ alias</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a> <a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure">Directive</a> <a title="Permanent link" href="#authzsendforbiddenonfailure" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="authzsendforbiddenonfailure"><span id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</span> Directive <a title="Permanent link" href="#authzsendforbiddenonfailure" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Send '403 FORBIDDEN' instead of '401 UNAUTHORIZED' if
 authentication succeeds but authorization fails
@@ -447,8 +445,8 @@ authentication succeeds but authorization fails
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a> <a title="Permanent link" href="#require" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="require"><span id="Require">Require</span> Directive <a title="Permanent link" href="#require" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tests whether an authenticated user is authorized by
 an authorization provider.</td></tr>
@@ -593,8 +591,8 @@ Require group admin</pre>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a> <a name="requireall" id="requireall">Directive</a> <a title="Permanent link" href="#requireall" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="requireall"><span id="RequireAll">&lt;RequireAll&gt;</span> Directive <a title="Permanent link" href="#requireall" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which none
 must fail and at least one must succeed for the enclosing directive to
@@ -627,8 +625,8 @@ succeed.</td></tr>
     and Access Control</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a> <a name="requireany" id="requireany">Directive</a> <a title="Permanent link" href="#requireany" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="requireany"><span id="RequireAny">&lt;RequireAny&gt;</span> Directive <a title="Permanent link" href="#requireany" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which one
 must succeed for the enclosing directive to succeed.</td></tr>
@@ -667,8 +665,8 @@ must succeed for the enclosing directive to succeed.</td></tr>
     and Access Control</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a> <a name="requirenone" id="requirenone">Directive</a> <a title="Permanent link" href="#requirenone" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="requirenone"><span id="RequireNone">&lt;RequireNone&gt;</span> Directive <a title="Permanent link" href="#requirenone" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives of which none
 must succeed for the enclosing directive to not fail.</td></tr>
@@ -713,10 +711,10 @@ must succeed for the enclosing directive to not fail.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authz_core.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authz_core.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

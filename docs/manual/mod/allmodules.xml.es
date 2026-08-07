@@ -88,6 +88,7 @@
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_proxy_ajp.xml</modulefile>
   <modulefile>mod_proxy_balancer.xml</modulefile>
+  <modulefile>mod_proxy_beacon.xml</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_express.xml</modulefile>
   <modulefile>mod_proxy_fcgi.xml</modulefile>
@@ -138,6 +139,7 @@
   <modulefile>mod_xml2enc.xml</modulefile>
   <modulefile>mpm_common.xml</modulefile>
   <modulefile>event.xml.es</modulefile>
+  <modulefile>motorz.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>prefork.xml</modulefile>

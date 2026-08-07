@@ -1,160 +1,158 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache HTTPd'nin başlatılması - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Apache HTTPd'nin başlatılması - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTPd'nin başlatılması</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">S&uuml;r&uuml;m 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTPd'nin başlatılması</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/invoking.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p>Apache normal olarak, Windows NT, 2000 ve XP'de bir hizmet olarak,
-      Windows 9x ve ME'de ise bir konsol uygulaması olarak çalışır. Ayrıntılı
-      bilgi için <a href="platform/windows.html#winsvc">Apache HTTPd'nin bir
-      hizmet olarak çalıştırılması</a> ve <a href="platform/windows.html#wincons">Apache HTTPd'nin bir konsol
-      uygulaması olarak çalıştırılması</a> bölümlerine bakınız.</p>
+      Windows 9x ve ME'de ise bir konsol uygulaması olarak &ccedil;alışır. Ayrıntılı
+      bilgi i&ccedil;in <a href="platform/windows.html#winsvc">Apache HTTPd'nin bir
+      hizmet olarak &ccedil;alıştırılması</a> ve <a href="platform/windows.html#wincons">Apache HTTPd'nin bir konsol
+      uygulaması olarak &ccedil;alıştırılması</a> b&ouml;l&uuml;mlerine bakınız.</p>
 
-    <p>Unix'te ise artalanda isteklere yanıt vermek için sürekli çalışan bir
-      artalan sürecidir. Bu belgede <code class="program"><a href="./programs/httpd.html">httpd</a></code>'nin nasıl
-      çalıştırılacağı açıklanmaktadır.</p>
+    <p>Unix'te ise artalanda isteklere yanıt vermek i&ccedil;in s&uuml;rekli &ccedil;alışan bir
+      artalan s&uuml;recidir. Bu belgede <code class="program"><a href="./programs/httpd.html">httpd</a></code>'nin nasıl
+      &ccedil;alıştırılacağı a&ccedil;ıklanmaktadır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Apache Nasıl Başlatılır?</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errors">Başlatma Sırasındaki Hatalar</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#boot">Sistem Açılışında Başlatma</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#info">Ek Bilgiler</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#startup">Apache Nasıl Başlatılır?</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#errors">Başlatma Sırasındaki Hatalar</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#boot">Sistem A&ccedil;ılışında Başlatma</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#info">Ek Bilgiler</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="stopping.html">Durdurma ve Yeniden Başlatma</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Apache Nasıl Başlatılır?</a> <a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
+<h2 id="startup">Apache Nasıl Başlatılır? <a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
 
-    <p>Yapılandırma dosyasında <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi ile öntanımlı olan port
-      80 (veya 1024'ten küçük herhangi bir port) belirtilmişse Apache HTTP
-      Sunucusunu başlatmak için root yetkileri gerekecektir. Sunucu başlatılıp
-      günlük dosyalarını açmak gibi bazı ön hazırlık etkinliklerinde
+    <p>Yapılandırma dosyasında <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi ile &ouml;ntanımlı olan port
+      80 (veya 1024'ten k&uuml;&ccedil;&uuml;k herhangi bir port) belirtilmişse Apache HTTP
+      Sunucusunu başlatmak i&ccedil;in root yetkileri gerekecektir. Sunucu başlatılıp
+      g&uuml;nl&uuml;k dosyalarını a&ccedil;mak gibi bazı &ouml;n hazırlık etkinliklerinde
       bulunduktan sonra istemcilerden gelen istekleri dinlemek ve yanıt vermek
-      için çeşitli <em>çocuk</em> süreçler başlatır. Ana
-      <code class="program"><a href="./programs/httpd.html">httpd</a></code> süreci root kullanıcısının aidiyetinde
-      çalışmasını sürdürürken çocuk süreçler daha az yetkili bir kullanıcının
-      aidiyetinde çalışır. Bu işlem seçilen <a href="mpm.html">Çok Süreçlilik
-      Modülü</a> tarafından denetlenir.</p>
+      i&ccedil;in &ccedil;eşitli <em>&ccedil;ocuk</em> s&uuml;re&ccedil;ler başlatır. Ana
+      <code class="program"><a href="./programs/httpd.html">httpd</a></code> s&uuml;reci root kullanıcısının aidiyetinde
+      &ccedil;alışmasını s&uuml;rd&uuml;r&uuml;rken &ccedil;ocuk s&uuml;re&ccedil;ler daha az yetkili bir kullanıcının
+      aidiyetinde &ccedil;alışır. Bu işlem se&ccedil;ilen <a href="mpm.html">&Ccedil;ok S&uuml;re&ccedil;lilik
+      Mod&uuml;l&uuml;</a> tarafından denetlenir.</p>
 
-    <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>'yi çalıştırmak için önerilen yöntem
+    <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>'yi &ccedil;alıştırmak i&ccedil;in &ouml;nerilen y&ouml;ntem
       <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiğini kullanmaktır. Bu betik,
       <code class="program"><a href="./programs/httpd.html">httpd</a></code>'nin bazı işletim sistemlerinde işlevini
-      gerektiği gibi yerine getirebilmesi için gereken belli ortam
-      değişkenlerini ayarlar ve <code class="program"><a href="./programs/httpd.html">httpd</a></code>'yi çalıştırır.
-      <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, komut satırı argümanlarını
+      gerektiği gibi yerine getirebilmesi i&ccedil;in gereken belli ortam
+      değişkenlerini ayarlar ve <code class="program"><a href="./programs/httpd.html">httpd</a></code>'yi &ccedil;alıştırır.
+      <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, komut satırı arg&uuml;manlarını
       <code class="program"><a href="./programs/httpd.html">httpd</a></code>'ye aktarabildiğinden gerekli
-      <code class="program"><a href="./programs/httpd.html">httpd</a></code> seçenekleri <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>
-      betiğine komut satırı seçenekleri olarak belirtilebilir. Ayrıca,
-      <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiğinin içeriğini doğrudan düzenlemek
-      suretiyle betiğin başlangıç satırlarındaki <code>HTTPD</code>
-      değişkenine <code class="program"><a href="./programs/httpd.html">httpd</a></code> çalıştırılabilir dosyasının doğru
+      <code class="program"><a href="./programs/httpd.html">httpd</a></code> se&ccedil;enekleri <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>
+      betiğine komut satırı se&ccedil;enekleri olarak belirtilebilir. Ayrıca,
+      <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiğinin i&ccedil;eriğini doğrudan d&uuml;zenlemek
+      suretiyle betiğin başlangı&ccedil; satırlarındaki <code>HTTPD</code>
+      değişkenine <code class="program"><a href="./programs/httpd.html">httpd</a></code> &ccedil;alıştırılabilir dosyasının doğru
       yerini ve <em>daima</em> mevcut olmasını istediğiniz komut satırı
-      seçeneklerini belirtebilirsiniz.</p>
+      se&ccedil;eneklerini belirtebilirsiniz.</p>
 
-    <p><code>httpd</code> çalıştırıldığında yaptığı ilk şey <a href="configuring.html">yapılandırma dosyası</a>
+    <p><code>httpd</code> &ccedil;alıştırıldığında yaptığı ilk şey <a href="configuring.html">yapılandırma dosyası</a>
       <code>httpd.conf</code>'u bulup okumaktır. Bu dosyanın yeri derleme
-      sırasında belirtilmekteyse de <code>-f</code> komut satırı seçeneği
-      kullanılarak çalıştırma sırasında belirtmek de mümkündür:</p>
+      sırasında belirtilmekteyse de <code>-f</code> komut satırı se&ccedil;eneği
+      kullanılarak &ccedil;alıştırma sırasında belirtmek de m&uuml;mk&uuml;nd&uuml;r:</p>
 
     <div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache2/conf/httpd.conf</code></p></div>
 
-    <p>Başlatma sırasında herşey yolunda giderse sunucu kendini uçbirimden
-      ayıracak ve hemen ardından uçbirim, komut istemine düşecektir. Bu,
-      sunucunun etkin ve çalışmakta olduğunu gösterir. Artık tarayıcınızı
+    <p>Başlatma sırasında herşey yolunda giderse sunucu kendini u&ccedil;birimden
+      ayıracak ve hemen ardından u&ccedil;birim, komut istemine d&uuml;şecektir. Bu,
+      sunucunun etkin ve &ccedil;alışmakta olduğunu g&ouml;sterir. Artık tarayıcınızı
       kullanarak sunucuya bağlanabilir ve <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> dizinindeki deneme sayfasını
-      görebilirsiniz.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+      g&ouml;rebilirsiniz.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">Başlatma Sırasındaki Hatalar</a> <a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
+<h2 id="errors">Başlatma Sırasındaki Hatalar <a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
 
-    <p>Apache başlatma sırasında ölümcül bir sorunla karşılaşacak olursa
-      çıkmadan önce sorunu açıklayan bir iletiyi konsola veya <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> yönergesi ile belirtilen hata
-      günlüğüne yazacaktır. En çok karşılaşılan hata iletilerinden biri
+    <p>Apache başlatma sırasında &ouml;l&uuml;mc&uuml;l bir sorunla karşılaşacak olursa
+      &ccedil;ıkmadan &ouml;nce sorunu a&ccedil;ıklayan bir iletiyi konsola veya <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> y&ouml;nergesi ile belirtilen hata
+      g&uuml;nl&uuml;ğ&uuml;ne yazacaktır. En &ccedil;ok karşılaşılan hata iletilerinden biri
       "<code>Unable to bind to Port ...</code>" dizgesidir. Bu iletiye
       genellikle şu iki durumdan biri sebep olur:</p>
 
     <ul>
-      <li>Sunucunun, root yetkileri gerektiren bir portu kullanmak üzere root
-        kullanıcısı tarafından çalıştırılmamış olması.</li>
+      <li>Sunucunun, root yetkileri gerektiren bir portu kullanmak &uuml;zere root
+        kullanıcısı tarafından &ccedil;alıştırılmamış olması.</li>
 
       <li>Aynı portu kullanan başka bir Apache Sunucusunun veya başka bir HTTP
-        sunucusunun zaten çalışmakta oluşu.</li>
+        sunucusunun zaten &ccedil;alışmakta oluşu.</li>
     </ul>
 
-    <p>Bu ve diğer sorun çözme talimatları için Apache <a href="http://wiki.apache.org/httpd/FAQ">SSS</a>'sini inceleyiniz.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    <p>Bu ve diğer sorun &ccedil;&ouml;zme talimatları i&ccedil;in Apache <a href="http://wiki.apache.org/httpd/FAQ">SSS</a>'sini inceleyiniz.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">Sistem Açılışında Başlatma</a> <a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
+<h2 id="boot">Sistem A&ccedil;ılışında Başlatma <a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
 
-    <p>Sunucunuzun sistem yeniden başlatıldıktan sonra çalışmasına devam
+    <p>Sunucunuzun sistem yeniden başlatıldıktan sonra &ccedil;alışmasına devam
       etmesini istiyorsanız sistem başlatma betiklerinize (genellikle ya
       <code>rc.local</code> dosyasıdır ya da bir <code>rc.N</code> dizininde
-      bir dosyadır) <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiği için bir çağrı
+      bir dosyadır) <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiği i&ccedil;in bir &ccedil;ağrı
       eklemelisiniz. Bu, Apache sunucunuzu root yetkileriyle başlatacaktır.
-      Bunu yapmadan önce sunucunuzun güvenlik ve erişim kısıtlamaları
+      Bunu yapmadan &ouml;nce sunucunuzun g&uuml;venlik ve erişim kısıtlamaları
       bakımından gerektiği gibi yapılandırıldığından emin olunuz.</p>
 
     <p><code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiği, bir standart SysV init betiği gibi
       davranacak şekilde tasarlanmıştır. <code>start</code>,
-      <code>restart</code> ve <code>stop</code> argümanlarını kabul edebilir
-      ve bunları <code class="program"><a href="./programs/httpd.html">httpd</a></code>'ye uygun sinyallere dönüştürebilir.
-      Bu bakımdan, çoğunlukla uygun init dizinlerinden birine
-      <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiği için basitçe bir bağ
-      yerleştirebilirsiniz. Fakat bunu yapmadan önce betiğin sisteminizin
+      <code>restart</code> ve <code>stop</code> arg&uuml;manlarını kabul edebilir
+      ve bunları <code class="program"><a href="./programs/httpd.html">httpd</a></code>'ye uygun sinyallere d&ouml;n&uuml;şt&uuml;rebilir.
+      Bu bakımdan, &ccedil;oğunlukla uygun init dizinlerinden birine
+      <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiği i&ccedil;in basit&ccedil;e bir bağ
+      yerleştirebilirsiniz. Fakat bunu yapmadan &ouml;nce betiğin sisteminizin
       gereklerini yerine getirdiğinden emin olunuz.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="info" id="info">Ek Bilgiler</a> <a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
+<h2 id="info">Ek Bilgiler <a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
 
     <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>, <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> ve sunucuyla
-      gelen diğer destek programlarının komut satırı seçenekleri hakkında ek
+      gelen diğer destek programlarının komut satırı se&ccedil;enekleri hakkında ek
       bilgi  <a href="programs/">Sunucu ve Destek Programları</a> sayfasında
-      bulunabilir. Ayrıca, Apache dağıtımında bulunan tüm <a href="mod/">modüller</a> ve bunlarla sağlanan <a href="mod/directives.html">yönergeler</a> hakkında da belgeler
+      bulunabilir. Ayrıca, Apache dağıtımında bulunan t&uuml;m <a href="mod/">mod&uuml;ller</a> ve bunlarla sağlanan <a href="mod/directives.html">y&ouml;nergeler</a> hakkında da belgeler
       vardır.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/invoking.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

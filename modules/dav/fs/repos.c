@@ -22,6 +22,7 @@
 #include "apr_file_io.h"
 #include "apr_strings.h"
 #include "apr_buckets.h"
+#include "apr_lib.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>             /* for getpid() */
@@ -708,8 +709,8 @@ static dav_error * dav_fs_get_resource(
 {
     dav_resource_private *ctx;
     dav_resource *resource;
-    char *s;
-    char *filename;
+    char *s, *parent;
+    const char *filename, *dirname;
     apr_size_t len;
 
     /* ### optimize this into a single allocation! */
@@ -743,6 +744,30 @@ static dav_error * dav_fs_get_resource(
     if (len > 1 && s[len - 1] == '/') {
         s[len - 1] = '\0';
     }
+
+    /* Deny any access to, or within, the state directory. */
+    filename = apr_filepath_name_get(s);
+    parent = ap_make_dirstr_parent(r->pool, s);
+    /* Strip the trailing slash and extract the leaf directory name. */
+    len = strlen(parent);
+    if (len > 1 && parent[len - 1] == '/') {
+        parent[len - 1] = '\0';
+    }
+    dirname = apr_filepath_name_get(parent);
+#ifdef CASE_BLIND_FILESYSTEM
+    if (ap_cstr_casecmp(filename, DAV_FS_STATE_DIR) == 0
+        || ap_cstr_casecmp(dirname, DAV_FS_STATE_DIR) == 0) {
+#else
+    if (strcmp(filename, DAV_FS_STATE_DIR) == 0
+        || strcmp(dirname, DAV_FS_STATE_DIR) == 0) {
+#endif
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "access to " DAV_FS_STATE_DIR " state directory "
+                      "denied for %s", r->filename);
+        return dav_new_error(r->pool, HTTP_FORBIDDEN, 0, 0,
+                             "Access to the state directory denied.");
+    }
+
     ctx->pathname = s;
 
     /* Create resource descriptor */

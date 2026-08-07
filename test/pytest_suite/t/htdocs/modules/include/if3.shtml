@@ -1,0 +1,21 @@
+<!--#if expr="\"1\" = \"1\""-->
+pass
+<!--#elif expr="\"1\" = \"2\""-->
+fail
+<!--#else -->
+fail
+<!--#endif -->
+<!--#if expr="\"1\" = \"2\""-->
+fail
+<!--#elif expr="\"3\" = \"3\""-->
+pass
+<!--#else -->
+fail
+<!--#endif -->
+<!--#if expr="\"1\" = \"2\""-->
+fail
+<!--#elif expr="\"1\" = \"3\""-->
+fail
+<!--#else -->
+pass
+<!--#endif -->

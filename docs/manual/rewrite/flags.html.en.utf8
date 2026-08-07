@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>RewriteRule Flags - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteRule Flags</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -39,39 +37,40 @@
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive,
 providing detailed explanations and examples.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (escape backreferences)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_bctls">BCTLS</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_bne">BNE</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_e">E|env</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_end">END</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_f">F|forbidden</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_g">G|gone</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_h">H|handler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_l">L|last</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_n">N|next</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_nc">NC|nocase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_ne">NE|noescape</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_ns">NS|nosubreq</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_p">P|proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_pt">PT|passthrough</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsa">QSA|qsappend</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsd">QSD|qsdiscard</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsl">QSL|qslast</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_r">R|redirect</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_s">S|skip</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_t">T|type</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_quickref">Flag Quick Reference</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_b">B (escape backreferences)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_bnp">BNP|backrefnoplus (don't escape space to +)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_bctls">BCTLS</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_bne">BNE</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_c">C|chain</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_co">CO|cookie</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_dpi">DPI|discardpath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_e">E|env</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_end">END</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_f">F|forbidden</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_g">G|gone</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_h">H|handler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_l">L|last</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_n">N|next</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_nc">NC|nocase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_ne">NE|noescape</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_ns">NS|nosubreq</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_p">P|proxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_pt">PT|passthrough</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_qsa">QSA|qsappend</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_qsd">QSD|qsdiscard</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_qsl">QSL|qslast</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_r">R|redirect</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_s">S|skip</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_t">T|type</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_unc">UNC</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introduction <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>A <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> can have
 its behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
@@ -93,9 +92,139 @@ have no effect in <a class="glossarylink" href="../glossary.html#perdirectory" t
 
 <p>Presented here are each of the available flags, along with an example
 of how you might use them.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (escape backreferences)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<h2 id="flag_quickref">Flag Quick Reference <a title="Permanent link" href="#flag_quickref" class="permalink">&para;</a></h2>
+
+<p>Flags can be combined: <code>[R=301,L]</code>, <code>[P,QSA]</code>,
+<code>[E=VAR:val,L]</code>. This table groups them by purpose, ordered
+by how commonly each is used.</p>
+
+<table class="bordered"><tr class="header">
+  <th>Flag</th>
+  <th>Purpose</th>
+  <th>Effect</th>
+  <th>Common combos</th>
+</tr>
+<tr><td colspan="4"><em><strong>Flow Control</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_l">[L]</a></td>
+  <td>Last rule</td>
+  <td>Stop processing rules (this pass)</td>
+  <td>[R=301,L]  [F]  [G]</td>
+</tr>
+<tr>
+  <td><a href="#flag_end">[END]</a></td>
+  <td>Full stop</td>
+  <td>Stop all rewrite processing (no re-entry in .htaccess)</td>
+  <td>[R=301,END]</td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_s">[S=N]</a></td>
+  <td>Skip</td>
+  <td>Skip next N rules (if/else logic)</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_n">[N]</a></td>
+  <td>Next (loop)</td>
+  <td>Restart ruleset from the top (caution: loop risk)</td>
+  <td></td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_c">[C]</a></td>
+  <td>Chain</td>
+  <td>Tie rule to the next; if this fails, skip chained rules</td>
+  <td></td>
+</tr>
+<tr><td colspan="4"><em><strong>Redirection and Proxying</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_r">[R=code]</a></td>
+  <td>Redirect</td>
+  <td>External redirect (default 302). Consider Redirect/RedirectMatch for simple cases</td>
+  <td>[R=301,L]  [R=302,L]</td>
+</tr>
+<tr>
+  <td><a href="#flag_p">[P]</a></td>
+  <td>Proxy</td>
+  <td>Reverse proxy to target (requires <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>)</td>
+  <td>[P,QSA]</td>
+</tr>
+<tr class="odd"><td colspan="4"><em><strong>Access Control</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_f">[F]</a></td>
+  <td>Forbidden</td>
+  <td>Return 403 (implies [L])</td>
+  <td></td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_g">[G]</a></td>
+  <td>Gone</td>
+  <td>Return 410 (implies [L])</td>
+  <td></td>
+</tr>
+<tr><td colspan="4"><em><strong>URL / Query String</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_qsa">[QSA]</a></td>
+  <td>Query string append</td>
+  <td>Append original query string to substitution</td>
+  <td>[QSA,L]  [P,QSA]</td>
+</tr>
+<tr>
+  <td><a href="#flag_qsd">[QSD]</a></td>
+  <td>Query string discard</td>
+  <td>Drop original query string entirely</td>
+  <td>[R=301,QSD,L]</td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_b">[B]</a></td>
+  <td>Escape backrefs</td>
+  <td>Re-encode special chars in backreferences</td>
+  <td>[B,PT]</td>
+</tr>
+<tr>
+  <td><a href="#flag_ne">[NE]</a></td>
+  <td>No escape</td>
+  <td>Don't escape special chars in output (pass #, ? through)</td>
+  <td>[R=301,NE,L]</td>
+</tr>
+<tr class="odd"><td colspan="4"><em><strong>Metadata and Handlers</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_e">[E]</a></td>
+  <td>Set env var</td>
+  <td>Set an environment variable</td>
+  <td>[E=VAR:val,L]</td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_t">[T]</a></td>
+  <td>MIME type</td>
+  <td>Force content type</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_h">[H]</a></td>
+  <td>Handler</td>
+  <td>Force a content handler</td>
+  <td></td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_pt">[PT]</a></td>
+  <td>Pass through</td>
+  <td>Pass result to next handler (needed with Alias/ScriptAlias)</td>
+  <td>[PT,L]</td>
+</tr>
+<tr><td colspan="4"><em><strong>Cookie</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_co">[CO]</a></td>
+  <td>Set cookie</td>
+  <td>Set an HTTP cookie on the response</td>
+  <td>[CO=name:val:.domain,R=302,L]</td>
+</tr>
+</table>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="flag_b">B (escape backreferences) <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
 characters before applying the transformation.</p>
 
@@ -150,9 +279,9 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 
 <p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
 a full explanation of how Apache decodes URIs before pattern matching.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (don't escape space to +)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
+<h2 id="flag_bnp">BNP|backrefnoplus (don't escape space to +) <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>The [BNP] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape the space character
 in a backreference to %20 rather than '+'. Useful when the backreference
 will be used in the path component rather than the query string.</p>
@@ -167,9 +296,9 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 
 <p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
 background on how encoding is handled in the rewrite pipeline.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<h2 id="flag_bctls">BCTLS <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>The [BCTLS] flag is similar to the [B] flag, but only escapes
 control characters and the space character. This is the same set of
 characters rejected when they are copied into the query string unencoded.
@@ -181,9 +310,9 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 <p>This flag is available in version 2.4.57 and later.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<h2 id="flag_bne">BNE <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>The list of characters in [BNE=...] are treated as exclusions to the
 characters of the [B] or [BCTLS] flags. The listed characters will not be
 escaped.
@@ -194,9 +323,9 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
 
 <p>This flag is available in version 2.4.57 and later.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
+<h2 id="flag_c">C|chain <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
 <p>The [C] or [chain] flag indicates that the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is chained to the next
 rule. That is, if the rule matches, then it is processed as usual and
 control moves on to the next rule. However, if it does not match, then
@@ -204,7 +333,7 @@ the next rule, and any other rules that are chained together, are
 skipped.</p>
 
 <pre class="prettyprint lang-config"># Rewrite legacy product URLs to the new catalog app,
-# and add a tracking parameter — but only for the rewritten ones.
+# and add a tracking parameter &mdash; but only for the rewritten ones.
 RewriteRule "^/products/([0-9]+)$" "/catalog/item/$1" [C]
 RewriteRule "^/catalog/(.*)$" "/catalog/$1?via=legacy" [QSA]</pre>
 
@@ -213,9 +342,9 @@ RewriteRule "^/catalog/(.*)$" "/catalog/$1?via=legacy" [QSA]</pre>
 that arrive at <code>/catalog/</code> directly. The chain ensures the
 second rule is only applied when the first rule matched.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
+<h2 id="flag_co">CO|cookie <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
 particular <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 matches. The argument consists of three required fields and five optional
@@ -227,6 +356,13 @@ follows:</p>
 <div class="example"><p><code>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </code></p></div>
+
+<div class="warning">
+<h3>Security Warning</h3>
+<p>Exercise care when constructing the argument from backreferences or other
+variable expansion.  If any part of the argument is derived from user input,
+a malicious request may include delimeters or other unexpected values.</p>
+</div>
 
 <p>If a literal ':' character is needed in any of the cookie fields, an 
 alternate syntax is available.  To opt-in to the alternate syntax, the cookie 
@@ -296,9 +432,9 @@ called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
 in the <code>.example.com</code> domain. It is set to expire in 1440
 minutes (24 hours) and is returned for all URIs.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
+<h2 id="flag_dpi">DPI|discardpath <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>The DPI flag causes the <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a>
 that was appended to the rewritten
 <a class="glossarylink" href="../glossary.html#urlpath" title="see glossary">URL-path</a> to be discarded.</p>
@@ -340,9 +476,9 @@ RewriteRule "^script\.php(.*)$" "/new-app/handler$1" [DPI]</pre>
 substitution result (<code>/new-app/handler</code>) is passed to
 subsequent rules or the final request.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
+<h2 id="flag_e">E|env <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
 <p>With the [E], or [env] flag, you can set the value of an environment
 variable. Note that some environment variables may be set after the rule
 is run, thus unsetting what you have set. See <a href="../env.html">the
@@ -417,8 +553,8 @@ cookie.</p>
     <div class="note"><h3>REDIRECT_ prefix after internal redirects</h3>
     <p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
     a successful substitution triggers an internal redirect. When this
-    happens, all environment variables set during the previous pass —
-    including those created with <code>[E=VAR:VAL]</code> — are renamed
+    happens, all environment variables set during the previous pass &mdash;
+    including those created with <code>[E=VAR:VAL]</code> &mdash; are renamed
     with a <code>REDIRECT_</code> prefix. A variable you set as
     <code>rewritten</code> becomes <code>REDIRECT_rewritten</code> in
     the redirected request.</p>
@@ -439,9 +575,9 @@ RewriteRule "^/ponies/(.*)" "-" [E=seen_redirect:1,L]</pre>
     <a href="../env.html#redirect-vars">REDIRECT_ variables</a> for
     the complete description of this mechanism.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
+<h2 id="flag_end">END <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
 processing from occurring in
@@ -468,9 +604,9 @@ redirects.</p>
 discussion for a detailed explanation of why [L] behaves differently
 in per-directory context, and when [END] is the right choice.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
+<h2 id="flag_f">F|forbidden <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
 <p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
 the <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> directive, this
@@ -489,9 +625,9 @@ another URL-path, if you're going to forbid the request.</p>
 <p>When using [F], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
+<h2 id="flag_g">G|gone <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
 <p>The [G] flag forces the server to return a 410 Gone status with the
 response. This indicates that a resource used to be available, but is no
 longer available.</p>
@@ -505,9 +641,9 @@ rewrite target when using the [G] flag:</p>
 <p>When using [G], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
+<h2 id="flag_h">H|handler <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
 <p>Forces the resulting request to be handled with the specified
 handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
@@ -533,9 +669,9 @@ match any request that starts with <code>/source/</code> followed by 1 or
 n characters followed by <code>.phps</code> literally. The backreference
 $1 referrers to the captured match within parenthesis of the regular
 expression.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
+<h2 id="flag_l">L|last <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
 <p>The [L] flag causes <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to stop processing
 the rule set. In most contexts, this means that if the rule matches, no
 further rules will be processed. This corresponds to the
@@ -545,7 +681,7 @@ immediately without considering further rules.</p>
 
 <p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context,
 [L] stops the current pass through the ruleset, but the rewritten
-request may be re-processed from the top — which can cause loops.
+request may be re-processed from the top &mdash; which can cause loops.
 Use the <a href="#flag_end">[END]</a> flag to prevent this, or see
 the <a href="htaccess.html#loops">Per-directory Rewrites</a> document
 for a full discussion of the issue and alternative solutions.</p>
@@ -559,9 +695,9 @@ is already for <code>index.php</code>, the <code class="directive"><a href="../m
 RewriteCond "%{REQUEST_URI}" !=/index.php
 RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
+<h2 id="flag_n">N|next <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 The [N] flag causes the ruleset to start over again from the top, using
 the result of the ruleset so far as a starting point. Use
@@ -589,9 +725,9 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
+<h2 id="flag_nc">NC|nocase <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>Use of the [NC] flag causes the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be matched in a
 case-insensitive manner. That is, it doesn't care whether letters appear
 as upper-case or lower-case in the matched URL-path.</p>
@@ -603,9 +739,9 @@ example.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
+<h2 id="flag_ne">NE|noescape <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>By default, when a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 results in an external redirect, any characters in the output that are
 not in the following safe set will be converted to their hexcode
@@ -640,9 +776,9 @@ then result in a 404 Not Found error condition.
 <p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
 the full picture of how Apache encodes and decodes URIs during
 rewriting.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
+<h2 id="flag_ns">NS|nosubreq <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>Use of the [NS] flag prevents the rule from being used on
 subrequests. For example, a page which is included using an SSI (Server
 Side Include) is a subrequest, and you may want to avoid rewrites
@@ -672,9 +808,9 @@ RewriteCond "%{REQUEST_FILENAME}" !-d
 RewriteRule "^(.*)$" "/app/index.php?page=$1" [NS,L]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
+<h2 id="flag_p">P|proxy <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
 <p>Use of the [P] flag causes the request to be handled by
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, and handled via a proxy request. For
 example, if you wanted all image requests to be handled by a back-end
@@ -726,9 +862,9 @@ will be used automatically.</p>
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> must be enabled in order
 to use this flag.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
+<h2 id="flag_pt">PT|passthrough <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 The target (or substitution string) in a RewriteRule is assumed to be a
@@ -766,9 +902,9 @@ contexts such as
 or in <code>.htaccess</code> files. The only way to circumvent that
 is to rewrite to <code>-</code>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
+<h2 id="flag_qsa">QSA|qsappend <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 When the replacement URL contains a query string, the default behavior
 of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to discard
@@ -787,9 +923,9 @@ flag, that same request will be mapped to
 <code>/page.php?page=123</code> - that is, the existing query string
 will be discarded.
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
+<h2 id="flag_qsd">QSD|qsdiscard <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 When the requested URL contains a query string, and the target URL does
 not, the default behavior of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to copy that query
@@ -815,9 +951,9 @@ URL.
 RewriteRule "^/search" "/find" [QSD,R=301,L]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
+<h2 id="flag_qsl">QSL|qslast <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 By default, the first (left-most) question mark in the substitution
 delimits the path from the query string.  Using the [QSL] flag instructs
@@ -845,9 +981,9 @@ mark in the value.</p>
 
 <p> This flag is available in version 2.4.19 and later.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
+<h2 id="flag_r">R|redirect <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.
 If a fully-qualified URL is specified (that is, including
@@ -898,9 +1034,9 @@ same intent.</p>
 RewriteRule "^/docs/(.*)$" "http://docs.example.com/$1" [R=301,L]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
+<h2 id="flag_s">S|skip <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
 <p>The [S] flag is used to skip rules that you don't want to run. The
 syntax of the skip flag is [S=<em>N</em>], where <em>N</em> signifies
 the number of rules to skip (provided the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">
@@ -948,9 +1084,9 @@ RewriteRule ".?"                  "-" [S=3]
 <p>It is probably easier to accomplish this kind of configuration using
 the <code class="directive">&lt;If&gt;</code>, <code class="directive">&lt;ElseIf&gt;</code>, and <code class="directive">&lt;Else&gt;</code> directives instead.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
+<h2 id="flag_t">T|type <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
 <p>Sets the MIME type with which the resulting response will be
 sent. This has the same effect as the <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> directive.</p>
 
@@ -982,9 +1118,9 @@ otherwise the MIME-type set with this flag is lost due to an internal
 re-processing (including subsequent rounds of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing).
 The <code>L</code> flag can be useful in this context to end the
 <em>current</em> round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p> Setting this flag is required to allow a rewrite to continue If the
     HTTP request being written has an encoded question mark, '%3f', and the
     rewritten result has a '?' in the substitution.  This protects from a malicious
@@ -1008,9 +1144,9 @@ substitution target. Prefer restructuring URLs to avoid encoded question
 marks where possible.
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p> Setting this flag is required in server-scoped substitutions
     start with a variable or backreference and resolve to a filesystem path.
     These substitutions are not prefixed with the document root.
@@ -1035,9 +1171,9 @@ to escape the document root. Use this flag only after confirming that
 the substitution is adequately constrained.
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+<h2 id="flag_unc">UNC <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
     <p> Setting this flag prevents the merging of multiple leading slashes,
     as used in Windows UNC paths.  The flag is not necessary when the rules
     substitution starts with multiple literal slashes.</p>
@@ -1061,15 +1197,15 @@ no flag is needed.</p>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

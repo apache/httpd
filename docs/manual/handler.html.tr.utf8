@@ -1,166 +1,164 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache Eylemcilerinin Kullanımı - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Apache Eylemcilerinin Kullanımı - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache Eylemcilerinin Kullanımı</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">S&uuml;r&uuml;m 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache Eylemcilerinin Kullanımı</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/handler.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/handler.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/handler.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/handler.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/handler.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
-    <p>Bu belgede Apache Eylemcilerinin kullanımı açıklanmıştır.</p>
+    <p>Bu belgede Apache Eylemcilerinin kullanımı a&ccedil;ıklanmıştır.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">Eylemci Nedir?</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#examples">Örnekler</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programmer">Yazılım Geliştirenler İçin</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#definition">Eylemci Nedir?</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#examples">&Ouml;rnekler</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programmer">Yazılım Geliştirenler İ&ccedil;in</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="definition" id="definition">Eylemci Nedir?</a> <a title="Permanent link" href="#definition" class="permalink">&para;</a></h2>
+<h2 id="definition">Eylemci Nedir? <a title="Permanent link" href="#definition" class="permalink">&para;</a></h2>
     
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
 
-    <p>Bir <em>eylemci</em> bir dosya çağrıldığında uygulanacak eylemin Apache
-      dahilindeki gösterimidir. Genellikle dosyaların kendi türüne bağlı
-      olarak örtük eylemcileri vardır. Normalde tüm dosyalar basitçe sunucu
-      tarafından sunulurlar, fakat bazı dosya türleri normalden farklı şekilde
+    <p>Bir <em>eylemci</em> bir dosya &ccedil;ağrıldığında uygulanacak eylemin Apache
+      dahilindeki g&ouml;sterimidir. Genellikle dosyaların kendi t&uuml;r&uuml;ne bağlı
+      olarak &ouml;rt&uuml;k eylemcileri vardır. Normalde t&uuml;m dosyalar basit&ccedil;e sunucu
+      tarafından sunulurlar, fakat bazı dosya t&uuml;rleri normalden farklı şekilde
       ele alınırlar.</p>
 
-    <p>Eylemciler, dosya türünden bağımsız olarak dosyanın bulunduğu yere veya
-      dosya ismi uzantısına göre de yapılandırılabilirler. Gerek, zarif bir
-      çözüm oluşuyla gerekse, hem dosya türünü hem de bir dosya ile ilişkili
-      bir eylemciyi mümkün kılması sebebiyle bunun getirisi daha yüksektir.
-      (Ayrıca, <a href="mod/mod_mime.html#multipleext">çok uzantılı
+    <p>Eylemciler, dosya t&uuml;r&uuml;nden bağımsız olarak dosyanın bulunduğu yere veya
+      dosya ismi uzantısına g&ouml;re de yapılandırılabilirler. Gerek, zarif bir
+      &ccedil;&ouml;z&uuml;m oluşuyla gerekse, hem dosya t&uuml;r&uuml;n&uuml; hem de bir dosya ile ilişkili
+      bir eylemciyi m&uuml;mk&uuml;n kılması sebebiyle bunun getirisi daha y&uuml;ksektir.
+      (Ayrıca, <a href="mod/mod_mime.html#multipleext">&ccedil;ok uzantılı
       dosyalara</a> da bakınız.)</p>
 
-    <p>Eylemciler sunucu içinde derlenebileceği gibi bir modül olarak ya da
-      <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code> yönergesi ile de
+    <p>Eylemciler sunucu i&ccedil;inde derlenebileceği gibi bir mod&uuml;l olarak ya da
+      <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code> y&ouml;nergesi ile de
       sunucuya dahil edilebilirler. Standart dağıtımda bulunan yerleşik
       eylemciler şunlardır:</p>
 
     <ul>
-      <li><strong>default-handler</strong>: Dosyayı, öntanımlı olarak durağan
-        içeriği işlemekte kullanılan <code>default_handler()</code> işlevini
-        kullanarak gönderir. (<code class="module"><a href="./mod/core.html">core</a></code>)</li>
+      <li><strong>default-handler</strong>: Dosyayı, &ouml;ntanımlı olarak durağan
+        i&ccedil;eriği işlemekte kullanılan <code>default_handler()</code> işlevini
+        kullanarak g&ouml;nderir. (<code class="module"><a href="./mod/core.html">core</a></code>)</li>
 
       <li><strong>send-as-is</strong>: Dosyayı HTTP başlıklarıyla olduğu gibi
-        gönderir. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
+        g&ouml;nderir. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
 
       <li><strong>cgi-script</strong>: Dosyayı bir CGI betiği olarak ele alır.
         (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
 
       <li><strong>imap-file</strong>: Dosyayı bir resim eşleme kuralları
-        dosyası olarak çözümler. (<code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
+        dosyası olarak &ccedil;&ouml;z&uuml;mler. (<code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
 
       <li><strong>server-info</strong>: Sunucunun yapılandırma bilgisini
-        döndürür. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
+        d&ouml;nd&uuml;r&uuml;r. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
 
-      <li><strong>server-status</strong>: Sunucunun durum raporunu döndürür.
+      <li><strong>server-status</strong>: Sunucunun durum raporunu d&ouml;nd&uuml;r&uuml;r.
         (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
 
-      <li><strong>type-map</strong>: Dosyayı içerik uzlaşımı için bir tür
-        eşlem dosyası olarak çözümler. (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
+      <li><strong>type-map</strong>: Dosyayı i&ccedil;erik uzlaşımı i&ccedil;in bir t&uuml;r
+        eşlem dosyası olarak &ccedil;&ouml;z&uuml;mler. (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Örnekler</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">&Ouml;rnekler <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     
 
-    <h3><a name="example1" id="example1">Bir CGI betiği kullanarak durağan içeriğin değiştirilmesi</a></h3>
+    <h3 id="example1">Bir CGI betiği kullanarak durağan i&ccedil;eriğin değiştirilmesi</h3>
       
 
-      <p>Aşağıdaki yönergeler sayesinde, <code>html</code> uzantılı dosyalar
-        için yapılan istekler <code>footer.pl</code> CGI betiğininin
-        çalıştırılmasına sebep olacaktır.</p>
+      <p>Aşağıdaki y&ouml;nergeler sayesinde, <code>html</code> uzantılı dosyalar
+        i&ccedil;in yapılan istekler <code>footer.pl</code> CGI betiğininin
+        &ccedil;alıştırılmasına sebep olacaktır.</p>
 
       <div class="example"><p><code>
-        Action add-footer /cgi-bin/footer.pl<br />
+        Action add-footer /cgi-bin/footer.pl<br>
         AddHandler add-footer .html
       </code></p></div>
 
-      <p>Bu yapılandırmayla, istenen belgenin özgün haliyle mi (yeri
+      <p>Bu yapılandırmayla, istenen belgenin &ouml;zg&uuml;n haliyle mi (yeri
         <code>PATH_TRANSLATED</code> ortam değişkenindedir) yoksa istenen
-        değişiklikler veya eklemeler yapıldıktan sonra mı gönderileceğinden
+        değişiklikler veya eklemeler yapıldıktan sonra mı g&ouml;nderileceğinden
         CGI betiği sorumlu olacaktır.</p>
 
     
-    <h3><a name="example2" id="example2">HTTP başlıklı dosyalar</a></h3>
+    <h3 id="example2">HTTP başlıklı dosyalar</h3>
       
 
-      <p>Aşağıdaki yönergeler kendi HTTP başlıklarını içeren dosyalar için
+      <p>Aşağıdaki y&ouml;nergeler kendi HTTP başlıklarını i&ccedil;eren dosyalar i&ccedil;in
         kullanılan <code>send-as-is</code> eylemcisini etkinleştirmek amacıyla
-        kullanılmıştır. <code>/siteler/htdocs/asis/</code> dizinindeki tüm
+        kullanılmıştır. <code>/siteler/htdocs/asis/</code> dizinindeki t&uuml;m
         dosyalar dosya ismi uzantılarına bakılmaksızın <code>send-as-is</code>
         eylemcisi tarafından işleme sokulacaktır.</p>
 
       <div class="example"><p><code>
-        &lt;Directory /siteler/htdocs/asis&gt;<br />
+        &lt;Directory /siteler/htdocs/asis&gt;<br>
         <span class="indent">SetHandler send-as-is</span>
         &lt;/Directory&gt;
       </code></p></div>
 
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="programmer" id="programmer">Yazılım Geliştirenler İçin</a> <a title="Permanent link" href="#programmer" class="permalink">&para;</a></h2>
+<h2 id="programmer">Yazılım Geliştirenler İ&ccedil;in <a title="Permanent link" href="#programmer" class="permalink">&para;</a></h2>
     
 
-    <p>Eylemci özellikleri gerçeklenirken kullanılmak üzere <a href="developer/API.html">Apache API</a>'ye bir ekleme yapılmıştır.
-      Özellikle de, <code>request_rec</code> yapısına yeni bir kayıt
+    <p>Eylemci &ouml;zellikleri ger&ccedil;eklenirken kullanılmak &uuml;zere <a href="developer/API.html">Apache API</a>'ye bir ekleme yapılmıştır.
+      &Ouml;zellikle de, <code>request_rec</code> yapısına yeni bir kayıt
       eklenmiştir:</p>
 
     <div class="example"><p><code>
       char *handler
     </code></p></div>
 
-    <p>Modülünüzün bir eylemciyi devreye sokmasını isterseniz, tek yapacağınız
-      isteğin <code>invoke_handler</code> aşamasının hemen öncesinde
+    <p>Mod&uuml;l&uuml;n&uuml;z&uuml;n bir eylemciyi devreye sokmasını isterseniz, tek yapacağınız
+      isteğin <code>invoke_handler</code> aşamasının hemen &ouml;ncesinde
       <code>r-&gt;handler</code> alanına eylemcinin ismini atamak olacaktır.
-      Eylemciler daha önce de bahsedildiği gibi bir içerik türü yerine bir
-      eylemci ismi kullanılarak gerçeklenirler. Çok gerekli olmamakla
-      birlikte, eylemciler için kullanılan adlandırma uzlaşımları gereğince,
-      ismi oluşturan sözcükler, ortam türü isim alanını ihlal etmemek amacıyla
-      bölü imleri ile değil tire imleri ile ayrılırlar.</p>
+      Eylemciler daha &ouml;nce de bahsedildiği gibi bir i&ccedil;erik t&uuml;r&uuml; yerine bir
+      eylemci ismi kullanılarak ger&ccedil;eklenirler. &Ccedil;ok gerekli olmamakla
+      birlikte, eylemciler i&ccedil;in kullanılan adlandırma uzlaşımları gereğince,
+      ismi oluşturan s&ouml;zc&uuml;kler, ortam t&uuml;r&uuml; isim alanını ihlal etmemek amacıyla
+      b&ouml;l&uuml; imleri ile değil tire imleri ile ayrılırlar.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./en/handler.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/handler.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/handler.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/handler.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/handler.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/handler.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

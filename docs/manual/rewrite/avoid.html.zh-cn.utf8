@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn" xml:lang="zh-cn"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="zh-cn"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>何时不使用 mod_rewrite - Apache HTTP 服务器 版本 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP 服务器版本 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="https://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>何时不使用 mod_rewrite</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>可用语言: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
@@ -39,7 +37,7 @@
 
 <p>本文档是 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了关于
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 最重要的概念之一——
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 最重要的概念之一&mdash;&mdash;
 即何时应避免使用它。</p>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 应被视为最后的手段，
@@ -57,15 +55,15 @@
 你可能需要借助 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>。</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">简单重定向</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#alias">URL 别名</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">虚拟主机</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">简单代理</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setenv">环境变量测试</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#redirect">简单重定向</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#alias">URL 别名</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhosts">虚拟主机</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">简单代理</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenv">环境变量测试</a></li>
 </ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">简单重定向</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">简单重定向 <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> 提供了 <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> 和 <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> 指令，
@@ -121,11 +119,11 @@
 而被迫在 <code>.htaccess</code> 文件中执行此任务时，
 使用 <code>RewriteRule</code> 是合适的。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL 别名</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">URL 别名 <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
-指令提供了从 URI 到目录的映射——通常是
+指令提供了从 URI 到目录的映射&mdash;&mdash;通常是
 <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> 之外的目录。
 虽然可以使用 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 执行此映射，
 但出于简便性和性能原因，<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
@@ -142,9 +140,9 @@
 
 <p>如果你的服务器启用了 <code>Options FollowSymLinks</code>，
 符号链接将是实现同样目标的另一种方式。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">虚拟主机</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<h2 id="vhosts">虚拟主机 <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
 <p>虽然可以<a href="vhosts.html">使用 mod_rewrite 处理虚拟主机</a>，
 但这很少是正确的方式。创建单独的
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -160,9 +158,9 @@
 <p>请参阅<a href="vhosts.html">使用 mod_rewrite 的虚拟主机</a>文档，
 了解如何实现此目的（如果这仍然看起来是正确的方法）。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">简单代理</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">简单代理 <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 提供了 <a href="flags.html#flag_p">[P]</a> 标志，用于将重写后的 URI 通过
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 传递。</p>
@@ -192,9 +190,9 @@
 因为 <code>RewriteRule</code> 通常会在 <code>ProxyPass</code>
 之前生效，可能会抢先处理你要完成的操作。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">环境变量测试</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">环境变量测试 <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 经常用于根据特定环境变量或请求头
 是否存在来执行特定操作。使用
@@ -223,15 +221,15 @@
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

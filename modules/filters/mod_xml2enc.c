@@ -164,6 +164,7 @@ static void fix_skipto(request_rec* r, xml2ctx* ctx)
                         apr_bucket_delete(b);
                     }
                     ctx->bytes -= (p-ctx->buf);
+                    ctx->bblen -= (p-ctx->buf);
                     ctx->buf = p ;
                     found = 1;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01428)
@@ -604,6 +605,7 @@ static void xml2enc_hooks(apr_pool_t* pool)
                                   AP_REG_EXTENDED|AP_REG_ICASE) ;
     seek_charset = ap_pregcomp(pool, "charset=([A-Za-z0-9_-]+)",
                                AP_REG_EXTENDED|AP_REG_ICASE) ;
+    ap_assert(seek_meta_ctype && seek_charset);
 }
 static const char* set_alias(cmd_parms* cmd, void* CFG,
                              const char* charset, const char* alias)

@@ -29,7 +29,7 @@
  * Open Issues:
  *   - qop=auth-int (when streams and trailer support available)
  *   - nonce-format configurability
- *   - Proxy-Authorization-Info header is set by this module, but is
+ *   - Proxy-Authentication-Info header is set by this module, but is
  *     currently ignored by mod_proxy (needs patch to mod_proxy)
  *   - The source of the secret should be run-time directive (with server
  *     scope: RSRC_CONF)
@@ -56,6 +56,7 @@
 #include "apr_errno.h"
 #include "apr_global_mutex.h"
 #include "apr_strings.h"
+#include "apr_atomic.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -83,13 +84,10 @@
 /* struct to hold the configuration info */
 
 typedef struct digest_config_struct {
-    const char  *dir_name;
     authn_provider_list *providers;
-    apr_array_header_t *qop_list;
-    apr_sha1_ctx_t  nonce_ctx;
     apr_time_t    nonce_lifetime;
     int          check_nc;
-    const char  *algorithm;
+    const char  *algorithm; /* currently a constant (MD5). */
     char        *uri_list;
 } digest_config_rec;
 
@@ -176,12 +174,10 @@ static unsigned char *secret;
 
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
-static unsigned long  *opaque_cntr;
-static apr_time_t     *otn_counter;     /* one-time-nonce counter */
+static volatile apr_uint32_t *opaque_counter;
+static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
-static apr_global_mutex_t *opaque_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
-static const char     *opaque_mutex_type = "authdigest-opaque";
 static const char     *client_shm_filename;
 
 #define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
@@ -218,11 +214,6 @@ static apr_status_t cleanup_tables(void *not_used)
         client_lock = NULL;
     }
 
-    if (opaque_lock) {
-        apr_global_mutex_destroy(opaque_lock);
-        opaque_lock = NULL;
-    }
-
     client_list = NULL;
 
     return APR_SUCCESS;
@@ -257,8 +248,6 @@ static apr_status_t rmm_free(apr_rmm_t *rmm, void *alloc)
     return apr_rmm_free(rmm, offset);
 }
 
-#if APR_HAS_SHARED_MEMORY
-
 static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 {
     unsigned long idx;
@@ -271,7 +260,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_shm = NULL;
     client_rmm = NULL;
     client_lock = NULL;
-    opaque_lock = NULL;
     client_list = NULL;
 
     /*
@@ -333,20 +321,12 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* setup opaque */
 
-    opaque_cntr = rmm_malloc(client_rmm, sizeof(*opaque_cntr));
-    if (opaque_cntr == NULL) {
+    opaque_counter = rmm_malloc(client_rmm, sizeof *opaque_counter);
+    if (opaque_counter == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
     }
-    *opaque_cntr = 1UL;
-
-    sts = ap_global_mutex_create(&opaque_lock, NULL, opaque_mutex_type, NULL,
-                                 s, ctx, 0);
-    if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
-        return !OK;
-    }
-
+    *opaque_counter = 1;
 
     /* setup one-time-nonce counter */
 
@@ -363,17 +343,18 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     return OK;
 }
 
-#endif /* APR_HAS_SHARED_MEMORY */
-
 static int pre_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     apr_status_t rv;
     void *retained;
 
-    rv = ap_mutex_register(pconf, client_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
-    if (rv != APR_SUCCESS)
+    if (!APR_HAS_SHARED_MEMORY) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10590)
+                     "mod_auth_digest cannot be used on platforms without shared memory support");
         return !OK;
-    rv = ap_mutex_register(pconf, opaque_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+    }
+
+    rv = ap_mutex_register(pconf, client_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS)
         return !OK;
 
@@ -406,7 +387,6 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
-#if APR_HAS_SHARED_MEMORY
     /* Note: this stuff is currently fixed for the lifetime of the server,
      * i.e. even across restarts. This means that A) any shmem-size
      * configuration changes are ignored, and B) certain optimizations,
@@ -417,20 +397,12 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
      * last child dies. Therefore we can never clean up the old stuff,
      * creating a creeping memory leak.
      */
-    if (initialize_tables(s, p) != OK) {
-        return !OK;
-    }
-#endif  /* APR_HAS_SHARED_MEMORY */
-    return OK;
+    return initialize_tables(s, p);
 }
 
 static void initialize_child(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
-
-    if (!client_shm) {
-        return;
-    }
 
     /* Get access to rmm in child */
     sts = apr_rmm_attach(&client_rmm,
@@ -449,13 +421,6 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return;
     }
-    sts = apr_global_mutex_child_init(&opaque_lock,
-                                      apr_global_mutex_lockfile(opaque_lock),
-                                      p);
-    if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
-        return;
-    }
 }
 
 /*
@@ -464,51 +429,12 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
 
 static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 {
-    digest_config_rec *conf;
+    digest_config_rec *conf = apr_pcalloc(p, sizeof *conf);
 
-    if (dir == NULL) {
-        return NULL;
-    }
-
-    conf = (digest_config_rec *) apr_pcalloc(p, sizeof(digest_config_rec));
-    if (conf) {
-        conf->qop_list       = apr_array_make(p, 2, sizeof(char *));
-        conf->nonce_lifetime = DFLT_NONCE_LIFE;
-        conf->dir_name       = apr_pstrdup(p, dir);
-        conf->algorithm      = DFLT_ALGORITHM;
-    }
+    conf->nonce_lifetime = DFLT_NONCE_LIFE;
+    conf->algorithm      = DFLT_ALGORITHM;
 
     return conf;
-}
-
-
-/*
- * The realm is no longer precomputed because it may be an expression, which
- * makes this hooking of AuthName quite weird.
- */
-static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
-{
-    digest_config_rec *conf = (digest_config_rec *) config;
-#ifdef AP_DEBUG
-    int i;
-
-    /* check that we got random numbers */
-    for (i = 0; i < SECRET_LEN; i++) {
-        if (secret[i] != 0)
-            break;
-    }
-    ap_assert(i < SECRET_LEN);
-#endif
-
-    /* we precompute the part of the nonce hash that is constant (well,
-     * the host:port would be too, but that varies for .htaccess files
-     * and directives outside a virtual host section)
-     */
-    apr_sha1_init(&conf->nonce_ctx);
-    apr_sha1_update_binary(&conf->nonce_ctx, secret, SECRET_LEN);
-
-
-    return DECLINE_CMD;
 }
 
 static const char *add_authn_provider(cmd_parms *cmd, void *config,
@@ -558,22 +484,9 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
 
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
-    digest_config_rec *conf = (digest_config_rec *) config;
-
-    if (!ap_cstr_casecmp(op, "none")) {
-        apr_array_clear(conf->qop_list);
-        *(const char **)apr_array_push(conf->qop_list) = "none";
-        return NULL;
+    if (ap_cstr_casecmp(op, "auth")) {
+        return "AuthDigestQop is deprecated: only 'auth' is supported";
     }
-
-    if (!ap_cstr_casecmp(op, "auth-int")) {
-        return "AuthDigestQop auth-int is not implemented";
-    }
-    else if (ap_cstr_casecmp(op, "auth")) {
-        return apr_pstrcat(cmd->pool, "Unrecognized qop: ", op, NULL);
-    }
-
-    *(const char **)apr_array_push(conf->qop_list) = op;
 
     return NULL;
 }
@@ -597,29 +510,17 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
 
 static const char *set_nc_check(cmd_parms *cmd, void *config, int flag)
 {
-#if !APR_HAS_SHARED_MEMORY
-    if (flag) {
-        return "AuthDigestNcCheck: ERROR: nonce-count checking "
-                     "is not supported on platforms without shared-memory "
-                     "support";
-    }
-#endif
-
     ((digest_config_rec *) config)->check_nc = flag;
     return NULL;
 }
 
 static const char *set_algorithm(cmd_parms *cmd, void *config, const char *alg)
 {
-    if (!ap_cstr_casecmp(alg, "MD5-sess")) {
-        return "AuthDigestAlgorithm: ERROR: algorithm `MD5-sess' "
-                "is not implemented";
-    }
-    else if (ap_cstr_casecmp(alg, "MD5")) {
-        return apr_pstrcat(cmd->pool, "Invalid algorithm in AuthDigestAlgorithm: ", alg, NULL);
+    if (ap_cstr_casecmp(alg, "MD5")) {
+        return apr_pstrcat(cmd->pool, "Unsupported algorithm in AuthDigestAlgorithm: ", alg, NULL);
     }
 
-    ((digest_config_rec *) config)->algorithm = alg;
+    /* conf->algorithm remains the constant, "MD5". */
     return NULL;
 }
 
@@ -679,8 +580,6 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
 
 static const command_rec digest_cmds[] =
 {
-    AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG,
-     "The authentication realm (e.g. \"Members Only\")"),
     AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, OR_AUTHCFG,
                      "specify the auth providers for a directory or location"),
     AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG,
@@ -760,8 +659,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     int bucket;
     client_entry *entry, *prev = NULL;
 
-
-    if (!key || !client_shm)  return NULL;
+    if (!key)  return NULL;
 
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
@@ -857,8 +755,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     int bucket;
     client_entry *entry;
 
-
-    if (!key || !client_shm) {
+    if (!key) {
         return NULL;
     }
 
@@ -1021,7 +918,13 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
     }
 
     if (resp->opaque) {
-        resp->opaque_num = (unsigned long) strtol(resp->opaque, NULL, 16);
+        char *endptr;
+        long num;
+
+        errno = 0;
+        num = strtol(resp->opaque, &endptr, 16);
+        if (errno == 0 && *endptr == '\0' && num > 0)
+            resp->opaque_num = (unsigned long)num;
     }
 
     resp->auth_hdr_sts = VALID;
@@ -1076,14 +979,8 @@ static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, con
     unsigned char sha1[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t ctx;
 
-    memcpy(&ctx, &conf->nonce_ctx, sizeof(ctx));
-    /*
-    apr_sha1_update_binary(&ctx, (const unsigned char *) server->server_hostname,
-                         strlen(server->server_hostname));
-    apr_sha1_update_binary(&ctx, (const unsigned char *) &server->port,
-                         sizeof(server->port));
-     */
-
+    apr_sha1_init(&ctx);
+    apr_sha1_update_binary(&ctx, secret, SECRET_LEN);
     apr_sha1_update_binary(&ctx, (const unsigned char *) realm, strlen(realm));
 
     apr_sha1_update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
@@ -1110,15 +1007,8 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
     if (conf->nonce_lifetime != 0) {
         t.time = now;
     }
-    else if (otn_counter) {
-        /* this counter is not synch'd, because it doesn't really matter
-         * if it counts exactly.
-         */
-        t.time = (*otn_counter)++;
-    }
     else {
-        /* XXX: WHAT IS THIS CONSTANT? */
-        t.time = 42;
+        t.time = apr_atomic_inc32(otn_counter);
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
@@ -1137,16 +1027,8 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
  */
 static client_entry *gen_client(const request_rec *r)
 {
-    unsigned long op;
+    apr_uint32_t op = apr_atomic_inc32(opaque_counter);
     client_entry new_entry = { 0, NULL, 0, "" }, *entry;
-
-    if (!opaque_cntr) {
-        return NULL;
-    }
-
-    apr_global_mutex_lock(opaque_lock);
-    op = (*opaque_cntr)++;
-    apr_global_mutex_unlock(opaque_lock);
 
     if (!(entry = add_client(op, &new_entry, r->server))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
@@ -1179,18 +1061,7 @@ static void note_digest_auth_failure(request_rec *r,
     const char   *qop, *opaque, *opaque_param, *domain, *nonce;
 
     /* Setup qop */
-    if (apr_is_empty_array(conf->qop_list)) {
-        qop = ", qop=\"auth\"";
-    }
-    else if (!ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")) {
-        qop = "";
-    }
-    else {
-        qop = apr_pstrcat(r->pool, ", qop=\"",
-                                   apr_array_pstrcat(r->pool, conf->qop_list, ','),
-                                   "\"",
-                                   NULL);
-    }
+    qop = ", qop=\"auth\"";
 
     /* Setup opaque */
 
@@ -1369,27 +1240,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
     const char *snc = resp->nonce_count;
     char *endptr;
 
-    if (conf->check_nc && !client_shm) {
-        /* Shouldn't happen, but just in case... */
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01771)
-                      "cannot check nonce count without shared memory");
-        return OK;
-    }
-
-    if (!conf->check_nc || !client_shm) {
-        return OK;
-    }
-
-    if (!apr_is_empty_array(conf->qop_list) &&
-        !ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")) {
-        /* qop is none, client must not send a nonce count */
-        if (snc != NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01772)
-                          "invalid nc %s received - no nonce count allowed when qop=none",
-                          snc);
-            return !OK;
-        }
-        /* qop is none, cannot check nonce count */
+    if (!conf->check_nc) {
         return OK;
     }
 
@@ -1472,19 +1323,6 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 }
 
 /* The actual MD5 code... whee */
-
-/* RFC-2069 */
-static const char *old_digest(const request_rec *r,
-                              const digest_header_rec *resp)
-{
-    const char *ha2;
-
-    ha2 = ap_md5(r->pool, (unsigned char *)apr_pstrcat(r->pool, resp->method, ":",
-                                                       resp->uri, NULL));
-    return ap_md5(r->pool,
-                  (unsigned char *)apr_pstrcat(r->pool, resp->ha1, ":",
-                                               resp->nonce, ":", ha2, NULL));
-}
 
 /* RFC-2617 */
 static const char *new_digest(const request_rec *r,
@@ -1758,39 +1596,18 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (resp->message_qop == NULL) {
-        /* old (rfc-2069) style digest */
-        if (!ap_memeq_timingsafe(old_digest(r, resp), resp->digest, MD5_DIGEST_LEN)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01792)
-                          "user %s: password mismatch: %s", r->user,
-                          r->uri);
-            note_digest_auth_failure(r, conf, resp, 0);
-            return HTTP_UNAUTHORIZED;
-        }
+    if (resp->message_qop == NULL
+        || ap_cstr_casecmp(resp->message_qop, "auth")) {
+        /* RFC 2069-style Digest is no longer supported. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10560)
+                      "invalid or missing qop value '%s', RFC 2069 is "
+                      "no longer supported: %s", resp->message_qop, r->uri);
+        note_digest_auth_failure(r, conf, resp, 0);
+        return HTTP_UNAUTHORIZED;
     }
     else {
-        const char *exp_digest;
-        int match = 0, idx;
-        const char **tmp = (const char **)(conf->qop_list->elts);
-        for (idx = 0; idx < conf->qop_list->nelts; idx++) {
-            if (!ap_cstr_casecmp(*tmp, resp->message_qop)) {
-                match = 1;
-                break;
-            }
-            ++tmp;
-        }
-
-        if (!match
-            && !(apr_is_empty_array(conf->qop_list)
-                 && !ap_cstr_casecmp(resp->message_qop, "auth"))) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01793)
-                          "invalid qop `%s' received: %s",
-                          resp->message_qop, r->uri);
-            note_digest_auth_failure(r, conf, resp, 0);
-            return HTTP_UNAUTHORIZED;
-        }
-
-        exp_digest = new_digest(r, resp);
+        /* RFC 2617 (or 7616)-style Digest hash calculation. */
+        const char *exp_digest = new_digest(r, resp);
         if (!exp_digest) {
             /* we failed to allocate a client struct */
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -1818,10 +1635,7 @@ static int authenticate_digest_user(request_rec *r)
     return OK;
 }
 
-/*
- * Authorization-Info header code
- */
-
+/* Authentication-Info header code. */
 static int add_auth_info(request_rec *r)
 {
     const digest_config_rec *conf =
@@ -1836,11 +1650,14 @@ static int add_auth_info(request_rec *r)
         return OK;
     }
 
-    /* 2069-style entity-digest is not supported (it's too hard, and
-     * there are no clients which support 2069 but not 2617). */
+    /* Don't add Authentication-Info for 401/407 responses. */
+    if (apr_table_get(r->err_headers_out,
+                      (r->proxyreq == PROXYREQ_PROXY)
+                      ? "Proxy-Authenticate" : "WWW-Authenticate")) {
+        return OK;
+    }
 
-    /* setup nextnonce
-     */
+    /* Set up nextnonce for one-time-nonces and expiring-nonce cases. */
     if (conf->nonce_lifetime > 0) {
         /* send nextnonce if current nonce will expire in less than 30 secs */
         if ((r->request_time - resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
@@ -1861,15 +1678,7 @@ static int add_auth_info(request_rec *r)
     /* else nonce never expires, hence no nextnonce */
 
 
-    /* do rfc-2069 digest
-     */
-    if (!apr_is_empty_array(conf->qop_list) &&
-        !ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")
-        && resp->message_qop == NULL) {
-        /* use only RFC-2069 format */
-        ai = nextnonce;
-    }
-    else {
+    {
         const char *resp_dig, *ha1, *a2, *ha2;
 
         /* calculate rspauth attribute

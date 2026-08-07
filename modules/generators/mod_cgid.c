@@ -192,6 +192,8 @@ typedef struct {
 } cgid_rlimit_t;
 #endif
 
+#define ENV_COUNT_MAX (256)
+
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
     unsigned long conn_id; /* connection id; daemon uses this as a hash value
@@ -201,7 +203,7 @@ typedef struct {
     pid_t ppid;            /* sanity check for config problems leading to
                             * wrong cgid socket use
                             */
-    int env_count;
+    unsigned env_count;
     ap_unix_identity_t ugid;
     apr_size_t filename_len;
     apr_size_t argv0_len;
@@ -342,7 +344,7 @@ static apr_status_t close_unix_socket(void *thefd)
 {
     int fd = (int)((long)thefd);
 
-    return close(fd);
+    return close(fd) < 0 ? errno : APR_SUCCESS;
 }
 
 /* Read from the socket dealing with incomplete messages and signals.
@@ -431,13 +433,18 @@ static apr_status_t sock_read(int fd, void *vbuf, size_t buf_size)
 static apr_status_t sock_write(int fd, const void *buf, size_t buf_size)
 {
     int rc;
+    const char *b = buf;
+    size_t written = 0;
 
     do {
-        rc = write(fd, buf, buf_size);
-    } while (rc < 0 && errno == EINTR);
-    if (rc < 0) {
-        return errno;
-    }
+        do {
+            rc = write(fd, b + written, buf_size - written);
+        } while (rc < 0 && errno == EINTR);
+        if (rc < 0) {
+            return errno;
+        }
+        written += rc;
+    } while (written < buf_size);
 
     return APR_SUCCESS;
 }
@@ -513,6 +520,11 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     if (stat != APR_SUCCESS) {
         return stat;
     }
+
+    if (req->loglevel > APLOG_TRACE8) {
+        return APR_EINVAL;
+    }
+
     r->server->log.level = req->loglevel;
     if (req->req_type == GETPID_REQ) {
         /* no more data sent for this request */
@@ -520,17 +532,18 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
 
     /* Sanity check the structure received. */
-    if (req->env_count < 0 || req->uri_len == 0
-        || req->filename_len > APR_PATH_MAX || req->filename_len == 0
-        || req->argv0_len > APR_PATH_MAX || req->argv0_len == 0
-        || req->loglevel > APLOG_TRACE8) {
+    if (req->env_count > ENV_COUNT_MAX
+        || req->filename_len == 0 || req->filename_len > APR_PATH_MAX
+        || req->argv0_len == 0 || req->argv0_len > APR_PATH_MAX
+        || req->uri_len == 0 || req->uri_len > APR_PATH_MAX
+        || req->args_len > APR_PATH_MAX) {
         return APR_EINVAL;
     }
-    
+
     /* handle module indexes and such */
     rconf = (void **)ap_create_request_config(r->pool);
 
-    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module));
+    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof *temp_core);
     rconf[AP_CORE_MODULE_INDEX] = (void *)temp_core;
     r->request_config = (ap_conf_vector_t *)rconf;
     ap_set_module_config(r->request_config, &cgid_module, (void *)&req->ugid);
@@ -559,6 +572,9 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
 
         if ((stat = sock_read(fd, &curlen, sizeof(curlen))) != APR_SUCCESS) {
             return stat;
+        }
+        if (curlen > APR_PATH_MAX) {
+            return APR_EINVAL;
         }
         environ[i] = apr_pcalloc(r->pool, curlen + 1);
         if ((stat = sock_read(fd, environ[i], curlen)) != APR_SUCCESS) {
@@ -862,7 +878,7 @@ static int cgid_server(void *data)
             errfileno = STDERR_FILENO;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, main_server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, main_server,
                           "using passed fd %d as stderr", errfileno);
             /* Limit the received fd lifetime to pool lifetime */
             apr_pool_cleanup_register(ptrans, (void *)((long)errfileno),
@@ -1067,7 +1083,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             return DECLINED;
         }
         if (strlen(tmp_sockname) > sizeof(server_addr->sun_path) - 1) {
-            tmp_sockname[sizeof(server_addr->sun_path)] = '\0';
+            tmp_sockname[sizeof(server_addr->sun_path) - 1] = '\0';
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_server, APLOGNO(01254)
                         "The length of the ScriptSock path exceeds maximum, "
                         "truncating to %s", tmp_sockname);
@@ -1728,8 +1744,8 @@ static void add_ssi_vars(request_rec *r)
     }
 }
 
-static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
-                       apr_bucket_brigade *bb, const char *command)
+static apr_status_t include_cmd(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb, const char *command)
 {
     char **env;
     int sd;
@@ -1747,30 +1763,29 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     env = ap_create_environment(r->pool, r->subprocess_env);
 
     if ((retval = connect_to_daemon(&sd, r, conf)) != OK) {
-        return retval;
+        return APR_EGENERAL;
     }
 
-    send_req(sd, NULL, r, command, env, SSI_REQ);
+    rv = send_req(sd, NULL, r, command, env, SSI_REQ);
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                      "could not send request to cgi daemon (for SSI)");
+        return rv;
+    }
 
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
     info->conf = conf;
     info->r = r;
     rv = get_cgi_pid(r, conf, &(info->pid));
-    if (APR_SUCCESS == rv) {             
-        /* for this type of request, the script is invoked through an
-         * intermediate shell process...  cleanup_script is only able
-         * to knock out the shell process, not the actual script
-         */
-        apr_pool_cleanup_register(r->pool, info,
-                                  cleanup_script,
-                                  apr_pool_cleanup_null);
-    }
-    else { 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi PID (for SSI)");
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi daemon PID (for SSI)");
+        return rv;
     }
 
-    apr_pool_cleanup_register(r->pool, info,
-                              cleanup_script,
+    /* For this type of request, the script is invoked through an
+     * intermediate shell process...  cleanup_script is only able to
+     * knock out the shell process, not the actual script. */
+    apr_pool_cleanup_register(r->pool, info, cleanup_script,
                               apr_pool_cleanup_null);
 
     /* We are putting the socket discriptor into an apr_file_t so that we can

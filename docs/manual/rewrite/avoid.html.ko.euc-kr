@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_rewrite瑜&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533;吏&#65533; 留&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; 寃쎌&#65533;&#65533; - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite瑜&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533;吏&#65533; 留&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; 寃쎌&#65533;&#65533;</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
@@ -39,7 +37,7 @@
 
 
 <p>&#65533;&#65533; 臾몄&#65533;&#65533;&#65533;&#65533; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-<a href="../mod/mod_rewrite.html">李몄“ 臾몄&#65533;&#65533;</a>瑜&#65533; 蹂댁땐&#65533;⑸&#65533;&#65533;&#65533;&#65533;.
+<a href="../mod/mod_rewrite.html">李몄&ldquo; 臾몄&#65533;&#65533;</a>瑜&#65533; 蹂댁땐&#65533;⑸&#65533;&#65533;&#65533;&#65533;.
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; 媛&#65533;&#65533;&#65533; 以&#65533;&#65533;&#65533;&#65533;&#65533; 媛&#65533;&#65533;&#65533; 以&#65533; &#65533;&#65533;&#65533;&#65533;,
 利&#65533; &#65533;ъ&#65533;⑹&#65533;&#65533; &#65533;쇳&#65533;댁&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;瑜&#65533; &#65533;ㅻ&#65533;&#65533;⑸&#65533;&#65533;&#65533;&#65533;.</p>
 
@@ -62,15 +60,15 @@
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; &#65533;&#65533;議댄&#65533;댁&#65533;&#65533; &#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;듬&#65533;&#65533;&#65533;&#65533;.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">&#65533;⑥&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#alias">URL 蹂&#65533;移&#65533; 吏&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy">&#65533;⑥&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setenv">&#65533;&#65533;寃&#65533; 蹂&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;ㅽ&#65533;&#65533;</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#redirect">&#65533;⑥&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#alias">URL 蹂&#65533;移&#65533; 吏&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#vhosts">媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy">&#65533;⑥&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenv">&#65533;&#65533;寃&#65533; 蹂&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;ㅽ&#65533;&#65533;</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">紐⑤&#65533;&#65533; 臾몄&#65533;&#65533;</a></li><li><a href="intro.html">mod_rewrite &#65533;&#65533;媛&#65533;</a></li><li><a href="remapping.html">由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;怨&#65533; &#65533;щℓ&#65533;&#65533;</a></li><li><a href="access.html">&#65533;&#65533;洹&#65533; &#65533;&#65533;&#65533;&#65533;</a></li><li><a href="vhosts.html">媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a></li><li><a href="proxy.html">&#65533;&#65533;濡&#65533;&#65533;&#65533;</a></li><li><a href="rewritemap.html">RewriteMap &#65533;ъ&#65533;⑺&#65533;&#65533;湲&#65533;</a></li><li><a href="advanced.html">怨&#65533;湲&#65533; 湲곗&#65533;&#65533;</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">&#65533;⑥&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">&#65533;⑥&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>&#65533;&#65533; <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>&#65533;&#65533; <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> 吏&#65533;&#65533;&#65533;&#65533;대&#65533;&#65533; &#65533;&#65533;怨듯&#65533;&#65533;硫&#65533;,
@@ -104,7 +102,7 @@ URL&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;명&#65533;⑸
 <p>&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;몃&#65533;&#65533;&#65533; &#65533;ㅻⅨ 寃&#65533;&#65533;쇰&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;명&#65533;&#65533;&#65533;ㅻ㈃, &#65533;&#65533;瑜&#65533; &#65533;ㅼ&#65533;&#65533;
 <code>example.com</code>&#65533;&#65533; <code>www.example.com</code>&#65533;쇰&#65533;,
 <a href="remapping.html#canonicalhost">&#65533;&#65533;洹&#65533; &#65533;몄&#65533;ㅽ&#65533;몃&#65533;</a>
-&#65533;&#65533;&#65533;&#65533;&#65533;쇰&#65533;&#65533; 李몄“&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
+&#65533;&#65533;&#65533;&#65533;&#65533;쇰&#65533;&#65533; 李몄&ldquo;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
 
 <p><code>http</code> URL&#65533;&#65533; <code>https</code>濡&#65533;
 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;명&#65533;&#65533;&#65533;ㅻ㈃ &#65533;ㅼ&#65533;&#65533;怨&#65533; 媛&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;:</p>
@@ -132,9 +130,9 @@ URL&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;명&#65533;⑸
 &#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;댁&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; 寃쎌&#65533;&#65533; <code>RewriteRule</code> &#65533;ъ&#65533;⑹&#65533;&#65533;
 &#65533;&#65533;&#65533;&#65533;&#65533;⑸&#65533;&#65533;&#65533;&#65533;.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL 蹂&#65533;移&#65533; 吏&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">URL 蹂&#65533;移&#65533; 吏&#65533;&#65533;&#65533; <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> 吏&#65533;&#65533;&#65533;&#65533;대&#65533;&#65533;
 URI&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由щ&#65533;&#65533;&#65533; 留ㅽ&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;怨듯&#65533;&#65533;硫&#65533;, 蹂댄&#65533;&#65533;
 <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> &#65533;몃&#65533;&#65533;&#65533;
@@ -156,9 +154,9 @@ Alias&#65533;&#65533; &#65533;&#65533;踰&#65533; &#65533;&#65533;&#65533;&#65533
 <p>&#65533;&#65533;踰&#65533;&#65533;&#65533;&#65533;&#65533; <code>Options FollowSymLinks</code>媛&#65533; &#65533;&#65533;&#65533;깊&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;
 &#65533;&#65533;&#65533;ㅻ㈃ &#65533;щ낵由&#65533; 留&#65533;&#65533;щ&#65533;&#65533; 媛&#65533;&#65533;&#65533; 寃&#65533;&#65533;&#65533; &#65533;ъ&#65533;깊&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; &#65533;ㅻⅨ 諛⑸&#65533;&#65533;&#65533;
 &#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;듬&#65533;&#65533;&#65533;&#65533;.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<h2 id="vhosts">媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533; <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
 <p><a href="vhosts.html">mod_rewrite濡&#65533; 媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a>瑜&#65533;
 泥&#65533;由ы&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;吏&#65533;留&#65533;, &#65533;щ&#65533;瑜&#65533; 諛⑸&#65533;&#65533;&#65533; 嫄곗&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;. 媛&#65533;蹂&#65533;
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -178,11 +176,11 @@ Alias&#65533;&#65533; &#65533;&#65533;踰&#65533; &#65533;&#65533;&#65533;&#65533
 <p>&#65533;닿&#65533;&#65533;&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533; &#65533;щ&#65533;瑜&#65533; &#65533;&#65533;洹&#65533; 諛⑸&#65533;&#65533;쇰&#65533; 蹂댁&#65533;몃&#65533;ㅻ㈃ &#65533;대&#65533;&#65533; &#65533;대&#65533;산&#65533;
 &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;&#65533;吏&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;명&#65533;&#65533; &#65533;댁&#65533;⑹&#65533;&#65533;
 <a href="vhosts.html">mod_rewrite濡&#65533; 媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a> 臾몄&#65533;&#65533;瑜&#65533;
-李몄“&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
+李몄&ldquo;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">&#65533;⑥&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">&#65533;⑥&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>&#65533;&#65533;
 &#65533;ъ&#65533;&#65533;&#65533;깅&#65533;&#65533; URI瑜&#65533; <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>瑜&#65533; &#65533;듯&#65533;&#65533; &#65533;&#65533;&#65533;ы&#65533;&#65533;湲&#65533; &#65533;&#65533;&#65533;&#65533;
@@ -213,9 +211,9 @@ Alias&#65533;&#65533; &#65533;&#65533;踰&#65533; &#65533;&#65533;&#65533;&#65533
 &#65533;&#65533;&#65533;⑸&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;ㅻ&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;&#65533; 寃쎌&#65533;&#65533;
 <code>RewriteRule</code>&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;⑺&#65533;댁&#65533;&#65533; &#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;듬&#65533;&#65533;&#65533;&#65533;.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">&#65533;&#65533;寃&#65533; 蹂&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;ㅽ&#65533;&#65533;</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">&#65533;&#65533;寃&#65533; 蹂&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;ㅽ&#65533;&#65533; <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; &#65533;뱀&#65533;&#65533; &#65533;&#65533;寃&#65533; 蹂&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;泥&#65533;
 &#65533;ㅻ&#65533;&#65533;&#65533;&#65533; 議댁&#65533;&#65533; &#65533;щ&#65533;&#65533;&#65533; &#65533;곕&#65533;&#65533; &#65533;뱀&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;二&#65533;
@@ -240,21 +238,21 @@ Alias&#65533;&#65533; &#65533;&#65533;踰&#65533; &#65533;&#65533;&#65533;&#65533
 <p><code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> &#65533;뱀&#65533;&#65533;怨&#65533;
 &#65533;뱀&#65533;&#65533; &#65533;ㅻⅨ 吏&#65533;&#65533;&#65533;&#65533;댁&#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;
 媛&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;뱁&#65533;&#65533; <a href="../expr.html">&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;媛&#65533;
-臾몄&#65533;&#65533;</a>瑜&#65533; 李몄“&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
+臾몄&#65533;&#65533;</a>瑜&#65533; 李몄&ldquo;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../de/rewrite/avoid.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/avoid.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/avoid.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/avoid.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/avoid.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/avoid.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

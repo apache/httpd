@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673656:1933506 (outdated) -->
+<!-- English Revision: 1933506 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,9 +32,7 @@
 <compatibility>Disponible depuis la version 2.3 du serveur HTTP Apache</compatibility>
 
 <summary>
-    <p>Ce module permet de convertir une réponse en <a
-    href="http://tools.ietf.org/html/rfc2397">URL de type données
-    RFC2397</a>.
+    <p>Ce module permet de convertir une réponse en <rfc>2397</rfc> (URL de type données.
     </p>
 
     <p>Les URLs de type données peuvent être incluses en ligne dans les

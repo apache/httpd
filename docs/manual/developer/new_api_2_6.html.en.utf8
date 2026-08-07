@@ -1,29 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>API Changes in Apache HTTP Server 2.6 since 2.4 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>API Changes in Apache HTTP Server 2.6 since 2.4</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/new_api_2_6.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -51,20 +49,20 @@
      reference documentation, and can be used to generate a browsable
      HTML reference with <code>make docs</code>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#api_changes">Changed APIs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#upgrading">Specific information on upgrading modules from 2.4</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#api_changes">Changed APIs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#upgrading">Specific information on upgrading modules from 2.4</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="api_changes" id="api_changes">Changed APIs</a> <a title="Permanent link" href="#api_changes" class="permalink">&para;</a></h2>
+<h2 id="api_changes">Changed APIs <a title="Permanent link" href="#api_changes" class="permalink">&para;</a></h2>
   
 
-  <h3><a name="ap_fill_me_in" id="ap_fill_me_in">ap_fill_me_in (NEW!)</a></h3>
+  <h3 id="ap_fill_me_in">ap_fill_me_in (NEW!)</h3>
     
     <p>Introduces a new API to fill me in.</p>
   
 
-  <h3><a name="http_request" id="http_request">http_request (changed)</a></h3>
+  <h3 id="http_request">http_request (changed)</h3>
     
     <ul>
       <li>New autht_provider API</li>
@@ -75,22 +73,22 @@
     </ul>
   
 
-  <h3><a name="mod_auth" id="mod_auth">mod_auth (changed)</a></h3>
+  <h3 id="mod_auth">mod_auth (changed)</h3>
     
     <p>Adds an additional provider framework for autht - token authentication.</p>
   
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Specific information on upgrading modules from 2.4</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Specific information on upgrading modules from 2.4 <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
   
 
-  <h3><a name="upgrading_fillmein" id="upgrading_fillmein">Fill me in</a></h3>
+  <h3 id="upgrading_fillmein">Fill me in</h3>
     
     <p>In order to take advantage of fill me in.</p>
   
 
-  <h3><a name="upgrading_byfunction" id="upgrading_byfunction">If your module uses these existing APIs...</a></h3>
+  <h3 id="upgrading_byfunction">If your module uses these existing APIs...</h3>
     
 
     <dl>
@@ -101,7 +99,7 @@
     </dl>
   
 
-  <h3><a name="upgrading_byfeature" id="upgrading_byfeature">If your module interfaces with this feature...</a></h3>
+  <h3 id="upgrading_byfeature">If your module interfaces with this feature...</h3>
     
     <dl>
       <dt>fillmin</dt>
@@ -110,7 +108,7 @@
     </dl>
   
 
-  <h3><a name="upgrading_newfeatures" id="upgrading_newfeatures">Does your module...</a></h3>
+  <h3 id="upgrading_newfeatures">Does your module...</h3>
     
     <dl>
     <dt>Fill me in</dt>
@@ -123,8 +121,8 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/new_api_2_6.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

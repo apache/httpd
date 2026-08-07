@@ -168,11 +168,13 @@ class TestInvalidHeaders:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/")
-        opt = []
-        for i in range(21):
-            opt += ["-H", "x{0}: 1".format(i)]
-        r = env.curl_get(url, options=opt)
-        assert 431 == r.response["status"]
+
+        for desc, opts in [
+            ("regular", [v for i in range(21) for v in ("-H", f"x{i}: 1")]),
+            ("cookie",  [v for i in range(21) for v in ("-H", f"cookie: c{i}=v{i}")]),
+        ]:
+            r = env.curl_get(url, options=opts)
+            assert r.response["status"] == 431, f"{desc} header failed"
         conf = H2Conf(env)
         conf.add("""
             LimitRequestFields 0

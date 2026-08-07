@@ -94,6 +94,8 @@
         <message id="extension" letter="E">Extension</message>
         <message id="experimental" letter="X">Experimental</message>
         <message id="external" letter="T">External</message>
+        <message id="deprecated" letter="D">Deprecated</message>
+
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">server config</message>

@@ -1,75 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_brotli - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_brotli</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_brotli.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_brotli.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_brotli.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Compression du contenu via Brotli avant sa livraison au client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>brotli_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_brotli.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>brotli_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_brotli.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.26 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Le module <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> fournit le filtre en sortie
     <code>BROTLI_COMPRESS</code> qui permet de compresser un contenu avant sa
-    livraison au client en utilisant la bibliothèque brotli. Ce filtre est
-    implémenté en utilisant la bibliothèque Brotli que l'on peut trouver à <a href="https://github.com/google/brotli">https://github.com/google/brotli</a>.</p>
+    livraison au client en utilisant la biblioth&egrave;que brotli. Ce filtre est
+    impl&eacute;ment&eacute; en utilisant la biblioth&egrave;que Brotli que l'on peut trouver &agrave; <a href="https://github.com/google/brotli">https://github.com/google/brotli</a>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Exemples de configurations</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation de la compression</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Interaction avec les serveurs mandataires</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#precompressed">Servir un contenu pré-compressé</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#recommended">Exemples de configurations</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enable">Activation de la compression</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxies">Interaction avec les serveurs mandataires</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#precompressed">Servir un contenu pr&eacute;-compress&eacute;</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#brotlialteretag">BrotliAlterETag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#brotlicompressionquality">BrotliCompressionQuality</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#brotlicompressionwindow">BrotliCompressionWindow</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#brotlifilternote">BrotliFilterNote</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#brotlialteretag">BrotliAlterETag</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#brotlicompressionmaxinputblock">BrotliCompressionMaxInputBlock</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#brotlicompressionquality">BrotliCompressionQuality</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#brotlicompressionwindow">BrotliCompressionWindow</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#brotlifilternote">BrotliFilterNote</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_brotli">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_brotli">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_brotli">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_brotli">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Filters</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">Exemples de configurations</a> <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
+<h2 id="recommended">Exemples de configurations <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
-        <p>Certaines applications web sont vulnérables à une attaque de type vol
-	d'informations lorsqu'une connexion TLS transmet des données
-	compressées. Pour plus d'informations, étudiez en détail la famille
+        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque de type vol
+	d'informations lorsqu'une connexion TLS transmet des donn&eacute;es
+	compress&eacute;es. Pour plus d'informations, &eacute;tudiez en d&eacute;tail la famille
 	d'attaques "BREACH".</p>
     </div>
     <p>Voici une configuration simple qui compresse des types de contenus
@@ -78,29 +74,29 @@
     <div class="example"><h3>Compression de certains types seulement</h3><pre class="prettyprint lang-config">AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript</pre>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la compression</a> <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Activation de la compression <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
-        <p>Certaines applications web sont vulnérables à une attaque de type vol
-	d'informations lorsqu'une connexion TLS transmet des données
-	compressées. Pour plus d'informations, étudiez en détail la famille
+        <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque de type vol
+	d'informations lorsqu'une connexion TLS transmet des donn&eacute;es
+	compress&eacute;es. Pour plus d'informations, &eacute;tudiez en d&eacute;tail la famille
 	d'attaques "BREACH".</p>
     </div>
 
-    <h3><a name="output" id="output">Compression en sortie</a></h3>
-      <p>La compression est implémentée par le <a href="../filter.html">filtre</a> <code>BROTLI_COMPRESS</code>. La
+    <h3 id="output">Compression en sortie</h3>
+      <p>La compression est impl&eacute;ment&eacute;e par le <a href="../filter.html">filtre</a> <code>BROTLI_COMPRESS</code>. La
       directive suivante active la compression pour les documents correspondant
-      au conteneur dans lequel elle est placée :</p>
+      au conteneur dans lequel elle est plac&eacute;e :</p>
 
       <pre class="prettyprint lang-config">SetOutputFilter BROTLI_COMPRESS
 SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
 
 
-      <p>Si vous voulez restreindre la compression à certains types MIME
+      <p>Si vous voulez restreindre la compression &agrave; certains types MIME
       particuliers, vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. Dans l'exemple
       suivant, l'activation de la compression est restreinte aux fichiers html
-      de la documentation d'Apache :</p>
+      de la documentation d'Apache httpd&nbsp;:</p>
 
       <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
     AddOutputFilterByType BROTLI_COMPRESS text/html
@@ -108,67 +104,67 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
 
 
       <div class="note"><h3>Note</h3>
-        Le filtre <code>BROTLI_COMPRESS</code> est toujours inséré après les
-	filtres RESOURCE comme PHP ou SSI. Il n'affecte jamais les sous-requêtes
+        Le filtre <code>BROTLI_COMPRESS</code> est toujours ins&eacute;r&eacute; apr&egrave;s les
+	filtres RESOURCE comme PHP ou SSI. Il n'affecte jamais les sous-requ&ecirc;tes
 	internes.
       </div>
       <div class="note"><h3>Note</h3>
-        Définie via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, la variable
-	d'environnement <code>no-brotli</code> permet de désactiver la
-	compression brotli pour une requête particulière, et ceci même si elle
-	est supportée par le client.
+        D&eacute;finie via <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code>, la variable
+	d'environnement <code>no-brotli</code> permet de d&eacute;sactiver la
+	compression brotli pour une requ&ecirc;te particuli&egrave;re, et ceci m&ecirc;me si elle
+	est support&eacute;e par le client.
       </div>
 
     
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">Interaction avec les serveurs mandataires</a> <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
+<h2 id="proxies">Interaction avec les serveurs mandataires <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
 
-    <p>Le module <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> envoie un en-tête de réponse HTTP
+    <p>Le module <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> envoie un en-t&ecirc;te de r&eacute;ponse HTTP
     <code>Vary:Accept-Encoding</code> pour indiquer aux mandataires qu'une
-    réponse mise en cache ne doit être envoyée qu'aux clients qui envoient
-    l'en-tête de requête <code>Accept-Encoding</code> approprié. Ceci permet
-    d'éviter d'envoyer du contenu compressé à un client qui ne sera pas en
-    mesure de le décompresser.</p>
+    r&eacute;ponse mise en cache ne doit &ecirc;tre envoy&eacute;e qu'aux clients qui envoient
+    l'en-t&ecirc;te de requ&ecirc;te <code>Accept-Encoding</code> appropri&eacute;. Ceci permet
+    d'&eacute;viter d'envoyer du contenu compress&eacute; &agrave; un client qui ne sera pas en
+    mesure de le d&eacute;compresser.</p>
 
-    <p>Si vous utilisez des exclusions spéciales dépendant, par exemple, de
-    l'en-tête <code>User-Agent</code>, vous devez faire un ajout manuel à
-    l'en-tête <code>Vary</code> afin d'informer les mandataires des restrictions
-    supplémentaires. Par exemple, dans une configuration typique où l'addition
-    du filtre <code>BROTLI_COMPRESS</code> dépend de l'en-tête <code>User-Agent</code>,
+    <p>Si vous utilisez des exclusions sp&eacute;ciales d&eacute;pendant, par exemple, de
+    l'en-t&ecirc;te <code>User-Agent</code>, vous devez faire un ajout manuel &agrave;
+    l'en-t&ecirc;te <code>Vary</code> afin d'informer les mandataires des restrictions
+    suppl&eacute;mentaires. Par exemple, dans une configuration typique o&ugrave; l'addition
+    du filtre <code>BROTLI_COMPRESS</code> d&eacute;pend de l'en-t&ecirc;te <code>User-Agent</code>,
     vous devez ajouter :</p>
 
     <pre class="prettyprint lang-config">Header append Vary User-Agent</pre>
 
 
-    <p>Si votre décision d'utiliser la compression ou non dépend d'autres
-    informations que le contenu d'en-têtes de requêtes (par exemple la version
-    HTTP), vous devez affecter la valeur <code>*</code> à l'en-tête
-    <code>Vary</code>. Ceci permet d'éviter que des mandataires qui le
-    supportent n'effectuent une mise en cache intégrale.</p>
+    <p>Si votre d&eacute;cision d'utiliser la compression ou non d&eacute;pend d'autres
+    informations que le contenu d'en-t&ecirc;tes de requ&ecirc;tes (par exemple la version
+    HTTP), vous devez affecter la valeur <code>*</code> &agrave; l'en-t&ecirc;te
+    <code>Vary</code>. Ceci permet d'&eacute;viter que des mandataires qui le
+    supportent n'effectuent une mise en cache int&eacute;grale.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">Header set Vary *</pre>
 </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="precompressed" id="precompressed">Servir un contenu pré-compressé</a> <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
+<h2 id="precompressed">Servir un contenu pr&eacute;-compress&eacute; <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
 
-    <p>comme <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> compresse systématiquement un contenu
-    pour chaque requête le concernant, il est possible d'obtenir un gain en
-    performance en pré-compressant le contenu et en disant à mod_brotli de le
+    <p>comme <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> compresse syst&eacute;matiquement un contenu
+    pour chaque requ&ecirc;te le concernant, il est possible d'obtenir un gain en
+    performance en pr&eacute;-compressant le contenu et en disant &agrave; mod_brotli de le
     servir sans le recompresser. Pour cela, vous pouvez utiliser une
     configuration du style :</p>
 
     <pre class="prettyprint lang-config">&lt;IfModule mod_headers.c&gt;
-    # Sert des fichiers CSS et JS compressés par brotli, s'ils existent
+    # Sert des fichiers CSS et JS compress&eacute;s par brotli, s'ils existent
     # et si le client supporte brotli.
     RewriteEngine On
     RewriteCond "%{HTTP:Accept-encoding}" "br"
     RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
     RewriteRule "^(.*)\.(js|css)"              "$1.$2.br" [QSA]
 
-    # Sert des types de contenu corrects, et évite la double compression.
+    # Sert des types de contenu corrects, et &eacute;vite la double compression.
     RewriteRule "\.css\.br$" "-" [T=text/css,E=no-brotli:1,E=no-gzip:1]
     RewriteRule "\.js\.br$"  "-" [T=text/javascript,E=no-brotli:1,E=no-gzip:1]
 
@@ -176,113 +172,145 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
       # Sert un type d'encodage correct.
       Header append Content-Encoding br
 
-      # Force les mandataires à mettre en cache séparément les fichiers css/js
-      # compressés ou non par brotli.
+      # Force les mandataires &agrave; mettre en cache s&eacute;par&eacute;ment les fichiers css/js
+      # compress&eacute;s ou non par brotli.
       Header append Vary Accept-Encoding
     &lt;/FilesMatch&gt;
 &lt;/IfModule&gt;</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlialteretag" id="brotlialteretag">Directive</a> <a name="BrotliAlterETag" id="BrotliAlterETag">BrotliAlterETag</a> <a title="Lien permanent" href="#brotlialteretag" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="brotlialteretag">Directive <span id="BrotliAlterETag">BrotliAlterETag</span> <a title="Lien permanent" href="#brotlialteretag" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-tête de réponse ETag doit être modifié au cours de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-t&ecirc;te de r&eacute;ponse ETag doit &ecirc;tre modifi&eacute; au cours de la
 compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliAlterETag AddSuffix|NoChange|Remove</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BrotliAlterETag AddSuffix</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>BrotliAlterETag AddSuffix</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliAlterETag</code> permet d'indiquer
-    comment l'en-tête ETag doit être modifié lorsqu'une réponse est compressée.</p>
+    comment l'en-t&ecirc;te ETag doit &ecirc;tre modifi&eacute; lorsqu'une r&eacute;ponse est compress&eacute;e.</p>
     <dl>
     <dt>AddSuffix</dt>
-    <dd><p>Ajoute la méthode de compression à la fin de l'en-tête ETag, ce qui
-    implique que les représentations compressées et non compressées possèderont
-    des en-têtes ETag uniques. C'est le comportement par défaut depuis la
+    <dd><p>Ajoute la m&eacute;thode de compression &agrave; la fin de l'en-t&ecirc;te ETag, ce qui
+    implique que les repr&eacute;sentations compress&eacute;es et non compress&eacute;es poss&egrave;deront
+    des en-t&ecirc;tes ETag uniques. C'est le comportement par d&eacute;faut depuis la
     version 2.4.0 avec un autre module de compression dynamique,
-    mod-deflate. Ce paramètre permet d'éviter l'envoi de messages
-    "HTTP Not Modified" (304) en réponse aux requêtes conditionnelles pour des
-    contenus compressés.</p></dd>
+    mod-deflate. Ce param&egrave;tre permet d'&eacute;viter l'envoi de messages
+    "HTTP Not Modified" (304) en r&eacute;ponse aux requ&ecirc;tes conditionnelles pour des
+    contenus compress&eacute;s.</p></dd>
     <dt>NoChange</dt>
-    <dd><p>Ne modifie pas l'en-tête ETag d'une réponse compressée. C'était le
-    comportement par défaut avant la version 2.4.0 avec un autre module de
-    compression dynamique, mod-deflate. Ce paramètre ne respecte pas la
-    propriété HTTP/1.1 selon laquelle toutes les représentations d'une même
-    ressource ont des en-têtes ETag uniques.</p></dd>
+    <dd><p>Ne modifie pas l'en-t&ecirc;te ETag d'une r&eacute;ponse compress&eacute;e. C'&eacute;tait le
+    comportement par d&eacute;faut avant la version 2.4.0 avec un autre module de
+    compression dynamique, mod-deflate. Ce param&egrave;tre ne respecte pas la
+    propri&eacute;t&eacute; HTTP/1.1 selon laquelle toutes les repr&eacute;sentations d'une m&ecirc;me
+    ressource ont des en-t&ecirc;tes ETag uniques.</p></dd>
     <dt>Remove</dt>
-    <dd><p>Supprime l'en-tête ETag des réponses compressées, ce qui rend
-    impossibles certaines requêtes conditionnelles, mais évite les inconvénients
-    des options précédentes.</p></dd>
+    <dd><p>Supprime l'en-t&ecirc;te ETag des r&eacute;ponses compress&eacute;es, ce qui rend
+    impossibles certaines requ&ecirc;tes conditionnelles, mais &eacute;vite les inconv&eacute;nients
+    des options pr&eacute;c&eacute;dentes.</p></dd>
     </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlicompressionmaxinputblock" id="brotlicompressionmaxinputblock">Directive</a> <a name="BrotliCompressionMaxInputBlock" id="BrotliCompressionMaxInputBlock">BrotliCompressionMaxInputBlock</a> <a title="Lien permanent" href="#brotlicompressionmaxinputblock" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="brotlicompressionmaxinputblock">Directive <span id="BrotliCompressionMaxInputBlock">BrotliCompressionMaxInputBlock</span> <a title="Lien permanent" href="#brotlicompressionmaxinputblock" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du bloc de données en entrée</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du bloc de donn&eacute;es en entr&eacute;e</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliCompressionMaxInputBlock <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>(automatic)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>(automatic)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliCompressionMaxInputBlock</code> permet
-    de spécifier la taille maximale du bloc de données en entrée entre 16 et 24,
-    sachant que plus cette taille sera grande, plus grande sera la quantité de
-    mémoire consommée.</p>
+    de sp&eacute;cifier la taille maximale du bloc de donn&eacute;es en entr&eacute;e sous la forme
+    de 2&nbsp;&eacute;lev&eacute; &agrave; une puissance &eacute;gale &agrave; <var>value</var>. Cette derni&egrave;re doit
+    &ecirc;tre comprise entre&nbsp;16 et&nbsp;24, ce qui repr&eacute;sente des blocs de 64&nbsp;Ko &agrave; 16&nbsp;Mo.
+    Des blocs de taille plus grande peuvent am&eacute;liorer la compression, mais
+    n&eacute;cessitent davantage de m&eacute;moire. Lorsque cette directive n&rsquo;est pas d&eacute;finie,
+    la taille de bloc est automatiquement calcul&eacute;e en fonction de la valeur de
+    qualit&eacute; d&eacute;finie.
+    </p>
+
+    <div class="example"><h3>Blocs en entr&eacute;e de taille d&eacute;finie &agrave; 1&nbsp;Mo</h3><pre class="prettyprint lang-config"># 2^20 = blocs de 1&nbsp;Mo
+BrotliCompressionMaxInputBlock 20</pre>
+</div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlicompressionquality" id="brotlicompressionquality">Directive</a> <a name="BrotliCompressionQuality" id="BrotliCompressionQuality">BrotliCompressionQuality</a> <a title="Lien permanent" href="#brotlicompressionquality" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="brotlicompressionquality">Directive <span id="BrotliCompressionQuality">BrotliCompressionQuality</span> <a title="Lien permanent" href="#brotlicompressionquality" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Qualité de la compression</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Qualit&eacute; de la compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliCompressionQuality <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BrotliCompressionQuality 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>BrotliCompressionQuality 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliCompressionQuality</code> permet de
-    spécifier la qualité de la compression (une valeur entre 0 et
-    11). Les valeurs les plus hautes correspondent à une compression de
-    meilleure qualité mais plus lente.
+    sp&eacute;cifier la qualit&eacute; de la compression (une valeur entre 0 et
+    11). Les valeurs les plus hautes correspondent &agrave; une compression de
+    meilleure qualit&eacute; mais plus lente. La valeur par d&eacute;faut&nbsp;5 est un bon
+    compromis pour du contenu dynamique.
   </p>
 
+  <div class="example"><h3>Compression rapide pour du contenu dynamique</h3><pre class="prettyprint lang-config"># La valeur de qualit&eacute;&nbsp;4 est &agrave; peu pr&egrave;s &eacute;quivalente &agrave; gzip niveau&nbsp;6
+BrotliCompressionQuality 4</pre>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlicompressionwindow" id="brotlicompressionwindow">Directive</a> <a name="BrotliCompressionWindow" id="BrotliCompressionWindow">BrotliCompressionWindow</a> <a title="Lien permanent" href="#brotlicompressionwindow" class="permalink">&para;</a></h2>
+
+    <div class="example"><h3>Compression maximale pour les ressources statiques</h3><pre class="prettyprint lang-config"># Meilleur taux de compression mais tr&egrave;s lent &mdash;&nbsp;ne convient qu&rsquo;&agrave; la mise en
+# cache
+BrotliCompressionQuality 11</pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="brotlicompressionwindow">Directive <span id="BrotliCompressionWindow">BrotliCompressionWindow</span> <a title="Lien permanent" href="#brotlicompressionwindow" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fenêtre de compression glissante brotli</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fen&ecirc;tre de compression glissante brotli</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliCompressionWindow <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BrotliCompressionWindow 18</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>BrotliCompressionWindow 18</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliCompressionWindow</code> permet de
-    spécifier la taille de la fenêtre de compression glissante brotli (une
-    valeur comprise entre 10 et 24). Une taille de fenêtre plus grande peut
-    améliorer la qualité de la compression mais consomme d'avantage de mémoire.</p>
+    sp&eacute;cifier la taille de la fen&ecirc;tre de compression glissante brotli (une
+    valeur comprise entre 10 et 24, repr&eacute;sentant une fen&ecirc;tre de
+    2^<var>value</var> octets. Par exemple, 18&nbsp;(la valeur par d&eacute;faut) donne une
+    fen&ecirc;tre de 256&nbsp;Ko, alors que&nbsp;24 en donne une de 16&nbsp;Mo. Une taille de fen&ecirc;tre
+    plus grande peut am&eacute;liorer la qualit&eacute; de la compression mais consomme
+    d'avantage de m&eacute;moire.</p>
+
+    <div class="example"><h3>Fen&ecirc;tre mod&eacute;r&eacute;e pour une utilisation raisonnable de m&eacute;moire</h3><pre class="prettyprint lang-config"># fen&ecirc;tre de 1&nbsp;Mo (2^20&nbsp;octets)
+BrotliCompressionWindow 20</pre>
+</div>
+
+    <div class="example"><h3>Fen&ecirc;tre maximale pour la meilleure compression</h3><pre class="prettyprint lang-config"># fen&ecirc;tre de 16&nbsp;Mo (2^24&nbsp;octets) &mdash;&nbsp;n&eacute;cessite une quantit&eacute; de m&eacute;moire
+# significative pour chaque connexion
+BrotliCompressionWindow 24</pre>
+</div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="brotlifilternote" id="brotlifilternote">Directive</a> <a name="BrotliFilterNote" id="BrotliFilterNote">BrotliFilterNote</a> <a title="Lien permanent" href="#brotlifilternote" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="brotlifilternote">Directive <span id="BrotliFilterNote">BrotliFilterNote</span> <a title="Lien permanent" href="#brotlifilternote" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression dans une note à des fins de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression dans une note &agrave; des fins de
 journalisation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliFilterNote</code> permet d'indiquer
-    qu'une note à propos du taux de compression doit être attachée à la
-    requête. L'argument <var>notename</var> permet de spécifier le nom de la
-    note. Vous pouvez utiliser cette note à des fins de statistiques en ajoutant
-    l'information correspondante à votre <a href="../logs.html#accesslog">access
+    qu'une note &agrave; propos du taux de compression doit &ecirc;tre attach&eacute;e &agrave; la
+    requ&ecirc;te. L'argument <var>notename</var> permet de sp&eacute;cifier le nom de la
+    note. Vous pouvez utiliser cette note &agrave; des fins de statistiques en ajoutant
+    l'information correspondante &agrave; votre <a href="../logs.html#accesslog">access
     log</a>.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">BrotliFilterNote ratio
@@ -291,15 +319,15 @@ LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' brotli
 CustomLog "logs/brotli_log" brotli</pre>
 </div>
 
-    <p>Si vous souhaitez que l'information enregistrée dans vos journaux soit
+    <p>Si vous souhaitez que l'information enregistr&eacute;e dans vos journaux soit
     plus pertinente, vous pouvez renseigner l'argument optionnel <var>type</var>
-    afin de spécifier le type de données à enregistrer dans la note à
+    afin de sp&eacute;cifier le type de donn&eacute;es &agrave; enregistrer dans la note &agrave;
     journaliser. L'argument <var>type</var> accepte les valeurs suivantes :</p>
 
     <dl>
       <dt><code>Input</code></dt>
       <dd>Enregistre dans la note le nombre d'octets contenus dans le flux
-      d'entrée du filtre.</dd>
+      d'entr&eacute;e du filtre.</dd>
 
       <dt><code>Output</code></dt>
       <dd>Enregistre dans la note le nombre d'octets contenus dans le flux
@@ -307,13 +335,13 @@ CustomLog "logs/brotli_log" brotli</pre>
 
       <dt><code>Ratio</code></dt>
       <dd>Enregistre dans la note le taux de compression (<code>output/input *
-      100</code>). Il s'agit de l'option par défaut si l'argument
+      100</code>). Il s'agit de l'option par d&eacute;faut si l'argument
       <var>type</var> est omis.</dd>
     </dl>
 
-    <p>Vous pouvez alors configurer vos journaux de la manière suivante :</p>
+    <p>Vous pouvez alors configurer vos journaux de la mani&egrave;re suivante :</p>
 
-    <div class="example"><h3>Journalisation spécifique</h3><pre class="prettyprint lang-config">BrotliFilterNote Input instream
+    <div class="example"><h3>Journalisation sp&eacute;cifique</h3><pre class="prettyprint lang-config">BrotliFilterNote Input instream
 BrotliFilterNote Output outstream
 BrotliFilterNote Ratio ratio
 
@@ -329,10 +357,10 @@ CustomLog "logs/brotli_log" brotli</pre>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_brotli.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_brotli.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_brotli.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

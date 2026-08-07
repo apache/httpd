@@ -91,7 +91,20 @@ typedef struct h2_session {
     struct h2_push_diary *push_diary; /* remember pushes, avoid duplicates */
     
     struct h2_stream_monitor *monitor;/* monitor callbacks for streams */
-    unsigned int open_streams;      /* number of streams processing */
+    unsigned int open_streams;      /* number of streams processing.
+                                     * c1-thread only: written via
+                                     * h2_mplx_c1_stream_cleanup() on H2_SS_CLEANUP
+                                     * and read throughout h2_session_process(),
+                                     * all on the c1 connection thread. An async
+                                     * MPM (e.g. motorz) re-dispatches c1 to a
+                                     * fresh worker between events -- successive,
+                                     * never concurrent -- so no atomics/volatile
+                                     * are needed; the MPM pollset handoff
+                                     * establishes the happens-before. Decrements
+                                     * to 0 only after each stream's c2 has
+                                     * finished and flushed; the graceful-GOAWAY
+                                     * drain in h2_session_process() relies on
+                                     * this (see h2_session_ev_remote_goaway). */
 
     unsigned int streams_done;      /* number of http/2 streams handled */
     unsigned int responses_submitted; /* number of http/2 responses submitted */

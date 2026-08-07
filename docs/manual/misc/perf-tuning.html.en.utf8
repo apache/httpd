@@ -1,34 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache Performance Tuning - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Performance Tuning</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-tuning.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -49,14 +47,14 @@
     the administrator to trade functionality for speed.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">Hardware and Operating System Issues</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#runtime">Run-Time Configuration Issues</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#compiletime">Compile-Time Configuration Issues</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#trace">Appendix: Detailed Analysis of a Trace</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#hardware">Hardware and Operating System Issues</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#runtime">Run-Time Configuration Issues</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#compiletime">Compile-Time Configuration Issues</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#trace">Appendix: Detailed Analysis of a Trace</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hardware" id="hardware">Hardware and Operating System Issues</a> <a title="Permanent link" href="#hardware" class="permalink">&para;</a></h2>
+<h2 id="hardware">Hardware and Operating System Issues <a title="Permanent link" href="#hardware" class="permalink">&para;</a></h2>
 
     
 
@@ -100,15 +98,15 @@
       </li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="runtime" id="runtime">Run-Time Configuration Issues</a> <a title="Permanent link" href="#runtime" class="permalink">&para;</a></h2>
+<h2 id="runtime">Run-Time Configuration Issues <a title="Permanent link" href="#runtime" class="permalink">&para;</a></h2>
 
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
 
-    <h3><a name="dns" id="dns">HostnameLookups and other DNS considerations</a></h3>
+    <h3 id="dns">HostnameLookups and other DNS considerations</h3>
 
       
 
@@ -153,7 +151,7 @@
 
     
 
-    <h3><a name="symlinks" id="symlinks">FollowSymLinks and SymLinksIfOwnerMatch</a></h3>
+    <h3 id="symlinks">FollowSymLinks and SymLinksIfOwnerMatch</h3>
 
       
 
@@ -198,7 +196,7 @@
 
     
 
-    <h3><a name="htaccess" id="htaccess">AllowOverride</a></h3>
+    <h3 id="htaccess">AllowOverride</h3>
 
       
 
@@ -223,7 +221,7 @@
 
     
 
-    <h3><a name="negotiation" id="negotiation">Negotiation</a></h3>
+    <h3 id="negotiation">Negotiation</h3>
 
       
 
@@ -326,7 +324,7 @@
 
     
 
-    <h3><a name="process" id="process">Recycle child processes</a></h3>
+    <h3 id="process">Recycle child processes</h3>
 
     
 
@@ -352,9 +350,9 @@
     between network bandwidth and server resources.</p>
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compiletime" id="compiletime">Compile-Time Configuration Issues</a> <a title="Permanent link" href="#compiletime" class="permalink">&para;</a></h2>
+<h2 id="compiletime">Compile-Time Configuration Issues <a title="Permanent link" href="#compiletime" class="permalink">&para;</a></h2>
 
     
 
@@ -402,7 +400,7 @@
 
     
 
-    <h3><a name="modules" id="modules">Modules</a></h3>
+    <h3 id="modules">Modules</h3>
 
         
 
@@ -451,7 +449,7 @@
       the <code>--enable-nonportable-atomics</code> option:</p>
 
       <div class="example"><p><code>
-        ./buildconf<br />
+        ./buildconf<br>
         ./configure --with-mpm=worker --enable-nonportable-atomics=yes
       </code></p></div>
 
@@ -460,7 +458,7 @@
 
       <ul>
 
-        <li>Solaris on SPARC<br />
+        <li>Solaris on SPARC<br>
             By default, APR uses mutex-based atomics on Solaris/SPARC.
             If you configure with <code>--enable-nonportable-atomics</code>,
             however, APR generates code that uses a SPARC v8plus opcode for
@@ -471,7 +469,7 @@
             chips.
         </li>
 
-        <li>Linux on x86<br />
+        <li>Linux on x86<br>
             By default, APR uses mutex-based atomics on Linux.  If you
             configure with <code>--enable-nonportable-atomics</code>,
             however, APR generates code that uses a 486 opcode for fast
@@ -793,9 +791,9 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="trace" id="trace">Appendix: Detailed Analysis of a Trace</a> <a title="Permanent link" href="#trace" class="permalink">&para;</a></h2>
+<h2 id="trace">Appendix: Detailed Analysis of a Trace <a title="Permanent link" href="#trace" class="permalink">&para;</a></h2>
 
     
 
@@ -928,12 +926,12 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-tuning.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

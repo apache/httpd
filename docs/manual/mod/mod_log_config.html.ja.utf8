@@ -1,38 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_log_config - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_log_config</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -62,23 +60,23 @@
 </div>
 <div id="quickview"><h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#formats">カスタムログ書式</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">セキュリティに関して</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#formats">カスタムログ書式</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">セキュリティに関して</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#globallog">GlobalLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#bufferedlogs">BufferedLogs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#customlog">CustomLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#globallog">GlobalLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logformat">LogFormat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#transferlog">TransferLog</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Report a bug</a></li></ul><h3>参照</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Apache ログファイル</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">カスタムログ書式</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
+<h2 id="formats">カスタムログ書式 <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
     <p><code class="directive"><a href="#logformat">LogFormat</a></code> ディレクティブと
     <code class="directive"><a href="#customlog">CustomLog</a></code>
@@ -209,7 +207,7 @@
         これを使用するためには <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> が必要</td></tr>
 </table>
 
-    <h3><a name="modifiers" id="modifiers">修飾子</a></h3>
+    <h3 id="modifiers">修飾子</h3>
 
       <p>特定の要素は "%" の直後に HTTP ステータスコードをカンマ区切りで
       指定することで、表示を制限することができます。例えば 
@@ -233,7 +231,7 @@
 
     
 
-    <h3><a name="format-notes" id="format-notes">その他注意点</a></h3>
+    <h3 id="format-notes">その他注意点</h3>
 
       <p>セキュリティ上の理由により 2.0.46 より、
       <code>%r</code>, <code>%i</code>, <code>%o</code> に入っている、
@@ -255,7 +253,7 @@
 
     
 
-    <h3><a name="examples" id="examples">例</a></h3>
+    <h3 id="examples">例</h3>
 
       <p>よく使われるフォーマット文字列は:</p>
 
@@ -277,15 +275,15 @@
         <dd><code>"%{User-agent}i"</code></dd>
       </dl>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">セキュリティに関して</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">セキュリティに関して <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>ログファイルが保存されているディレクトリがサーバを起動した以外のユーザで
     書き込み可能なときにセキュリティの問題が発生する理由の詳細は<a href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>
     を参照してください。</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">ディレクティブ</a> <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="bufferedlogs"><span id="BufferedLogs">BufferedLogs</span> ディレクティブ <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディスクに書き出す前にメモリにログエントリをバッファする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
@@ -309,8 +307,8 @@
     使用する際は注意してください。</div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">ディレクティブ</a> <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="customlog"><span id="CustomLog">CustomLog</span> ディレクティブ <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルの名前と書式を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CustomLog  <var>file</var>|<var>pipe</var>
@@ -360,11 +358,11 @@
     <p>例えば、以下の二つのディレクティブ群は全く同じ効果をもたらします:</p>
 
     <div class="example"><p><code>
-      # CustomLog with format nickname<br />
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
-      CustomLog logs/access_log common<br />
-      <br />
-      # CustomLog with explicit format string<br />
+      # CustomLog with format nickname<br>
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br>
+      CustomLog logs/access_log common<br>
+      <br>
+      # CustomLog with explicit format string<br>
       CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
     </code></p></div>
 
@@ -382,8 +380,8 @@
     以下のものを使うことができます:</p>
     
     <div class="example"><p><code>
-      SetEnvIf Request_URI \.gif$ gif-image<br />
-      CustomLog gif-requests.log common env=gif-image<br />
+      SetEnvIf Request_URI \.gif$ gif-image<br>
+      CustomLog gif-requests.log common env=gif-image<br>
       CustomLog nongif-requests.log common env=!gif-image
     </code></p></div>
 
@@ -391,13 +389,13 @@
     次のようにします:</p>
 
     <div class="example"><p><code>
-    SetEnvIf Referer example\.com localreferer<br />
+    SetEnvIf Referer example\.com localreferer<br>
     CustomLog referer.log referer env=!localreferer
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">ディレクティブ</a> <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="globallog"><span id="GlobalLog">GlobalLog</span> ディレクティブ <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -411,8 +409,8 @@ expr=<var>expression</var>]</code></td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">ディレクティブ</a> <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="logformat"><span id="LogFormat">LogFormat</span> ディレクティブ <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルで使用する書式を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LogFormat <var>format</var>|<var>nickname</var>
@@ -454,8 +452,8 @@ expr=<var>expression</var>]</code></td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">ディレクティブ</a> <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="transferlog"><span id="TransferLog">TransferLog</span> ディレクティブ <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ログファイルの位置を指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TransferLog <var>file</var>|<var>pipe</var></code></td></tr>
@@ -473,7 +471,7 @@ expr=<var>expression</var>]</code></td></tr>
     が使われます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
+      LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br>
       TransferLog logs/access_log
     </code></p></div>
 
@@ -481,13 +479,13 @@ expr=<var>expression</var>]</code></td></tr>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

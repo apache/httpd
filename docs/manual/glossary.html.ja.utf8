@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>用語 - Apache HTTP サーバ バージョン 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>用語</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -42,14 +40,14 @@
     ウェブサーバ全般で一般的な用語をいくつか定義しています。
     それぞれの概念の、より詳細な情報はリンク先にあります。</p>
   </div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="definitions" id="definitions">定義</a> <a title="Permanent link" href="#definitions" class="permalink">&para;</a></h2>
+<h2 id="definitions">定義 <a title="Permanent link" href="#definitions" class="permalink">&para;</a></h2>
 
   <dl>
     <dt><a name="accesscontrol" id="accesscontrol">アクセス制御</a></dt>
     <dd>ネットワーク認可領域へのアクセスを制限します。Apache においては、
-    普通はアクセスの制限は <em>URL</em> に対するものとなります。<br />
+    普通はアクセスの制限は <em>URL</em> に対するものとなります。<br>
     参照: <a href="howto/auth.html">認証、承認、アクセス制御</a>
     </dd>
     
@@ -62,7 +60,7 @@
         eXtension Tool</a> <a name="apxs" id="apxs">(apxs)</a></dt>
     <dd><a class="glossarylink" href="./glossary.html#module" title="用語集を参照">モジュール</a> ソースを
     動的共有オブジェクト (<a class="glossarylink" href="./glossary.html#dso" title="用語集を参照">DSO</a>) にコンパイルし、
-    Apache Web サーバにインストールする手助けをする perl スクリプト。<br />
+    Apache Web サーバにインストールする手助けをする perl スクリプト。<br>
       参照: マニュアルページ: <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     </dd>
 
@@ -70,14 +68,14 @@
     <dd>サーバ<span class="transnote">(<em>訳注:</em> Apache HTTP Server)</span>と OS の
       間の基本的なインターフェースの多くを提供する<span class="transnote">(<em>訳注:</em> 
       OS の差を吸収する)</span>ライブラリのセット。 APR は 独立した
-      プロジェクトとして Apache HTTP Server と平行して開発が行われています。<br />
+      プロジェクトとして Apache HTTP Server と平行して開発が行われています。<br>
       参照: <a href="http://apr.apache.org/">Apache Portable Runtime
       プロジェクト</a>
     </dd>
 
     <dt><a name="authentication" id="authentication">認証</a></dt>
     <dd>サーバ、クライアント、ユーザといったネットワークエンティティの
-    身元の特定。<br />
+    身元の特定。<br>
       参照: <a href="howto/auth.html">認証、承認、アクセス制御</a>
     </dd>
 
@@ -87,7 +85,7 @@
     (issuer と呼ばれる) <a class="glossarylink" href="./glossary.html#certificationauthority" title="用語集を参照">認証局</a> の署名、所有者の
     <a class="glossarylink" href="./glossary.html#publickey" title="用語集を参照">公開鍵</a> と、CA による署名という
     X.509 の情報が含まれます。ネットワークエンティティはそれらの署名を
-    CA 証明書を使って検証します。<br />
+    CA 証明書を使って検証します。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -97,7 +95,7 @@
     <dd><a class="glossarylink" href="./glossary.html#certificationauthority" title="用語集を参照">認証局</a> に提出
     する未署名の <a class="glossarylink" href="./glossary.html#certificate" title="用語集を参照">証明書</a>。
     認証局は CA <em>証明書</em> の <a class="glossarylink" href="./glossary.html#privatekey" title="用語集を参照">秘密鍵</a> で署名します。
-    一旦 CSR に署名がなされると、それは本物の証明書になります。<br />
+    一旦 CSR に署名がなされると、それは本物の証明書になります。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -107,18 +105,18 @@
     <dd>安全な方法で認証を行なったネットワークエンティティの証明書を
     署名するための信頼できる第三者機関。他のネットワークエンティティは
     証明書の保持者が CA に認証されたかを署名を検証することで調べることが
-    できます。<br />
+    できます。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
     <dt><a name="cipher" id="cipher">Cipher</a></dt>
-    <dd>データ暗号化のためのアルゴリズム。例えば DES, IDEA, RC4 など。<br />
+    <dd>データ暗号化のためのアルゴリズム。例えば DES, IDEA, RC4 など。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
     <dt><a name="ciphertext" id="ciphertext">暗号文</a></dt>
     <dd><a class="glossarylink" href="./glossary.html#plaintext" title="用語集を参照">平文</a> が
-    <a class="glossarylink" href="./glossary.html#cipher" title="用語集を参照">Cipher</a> をかけられた結果。<br />
+    <a class="glossarylink" href="./glossary.html#cipher" title="用語集を参照">Cipher</a> をかけられた結果。<br>
     参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -128,7 +126,7 @@
     ウェブサーバと外部プログラム間のインタフェースの標準仕様。
     インタフェースは元々 <a href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> により定義
     されていましたが
-    <a href="http://cgi-spec.golux.com/">RFC プロジェクト</a> も存在します。<br />
+    <a href="http://cgi-spec.golux.com/">RFC プロジェクト</a> も存在します。<br>
       参照: <a href="howto/cgi.html">CGI による動的コンテンツ</a>
     </dd>
 
@@ -137,7 +135,7 @@
 
     <dt><a name="configurationfile" id="configurationfile">設定ファイル</a></dt>
     <dd>Apache の設定を制御する <a class="glossarylink" href="./glossary.html#directive" title="用語集を参照">ディレクティブ</a>
-    の書かれたテキストファイル。<br />
+    の書かれたテキストファイル。<br>
       参照: <a href="configuring.html">設定ファイル</a>
     </dd>
 
@@ -149,7 +147,7 @@
     
     <dt><a name="context" id="context">コンテキスト</a></dt>
     <dd><a class="glossarylink" href="./glossary.html#configurationfile" title="用語集を参照">設定ファイル</a> 中で、
-    特定の種類の <a class="glossarylink" href="./glossary.html#directive" title="用語集を参照">ディレクティブ</a> が許可されている場所。<br />
+    特定の種類の <a class="glossarylink" href="./glossary.html#directive" title="用語集を参照">ディレクティブ</a> が許可されている場所。<br>
       参照: <a href="mod/directive-dict.html#Context">Apache のディレクティブの
     説明に使われている用語</a>
     </dd>
@@ -161,14 +159,14 @@
     それを自身の <em>秘密鍵</em> で暗号化することで署名を作成します。
     CA の公開鍵でのみその署名を復号することができますので、それにより
     <em>証明書</em> を保有するネットワークエンティティを CA が認証した
-    ことを検証できます。<br />
+    ことを検証できます。<br>
     参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
     
     <dt><a name="directive" id="directive">ディレクティブ</a></dt>
     <dd>Apache のいろいろな振る舞いを制御する設定コマンド。ディレクティブは
     <a class="glossarylink" href="./glossary.html#configurationfile" title="用語集を参照">設定ファイル</a> に
-    書かれます。<br />
+    書かれます。<br>
     参照: <a href="mod/directives.html">ディレクティブ索引</a>
     </dd>
 
@@ -176,7 +174,7 @@
     共有オブジェクト</a> <span class="transnote">(<em>訳注:</em> Dynamic
         Shared Object)</span> <a name="dso" id="dso">(DSO)</a></dt>
     <dd>必要に応じて読み込むことが可能な、Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> とは
-      別にコンパイルされた <a class="glossarylink" href="./glossary.html#module" title="用語集を参照">モジュール</a><br />
+      別にコンパイルされた <a class="glossarylink" href="./glossary.html#module" title="用語集を参照">モジュール</a><br>
       参照: <a href="dso.html">動的共有オブジェクトサポート</a>
     </dd>
 
@@ -185,7 +183,7 @@
     <dd>情報を保管したり、プログラム間の通信をするために使われる、
     オペレーティングシステムのシェルにより管理されている名前付きの変数。
     Apache も環境変数と呼ばれる内部変数を持っていますが、こちらは
-    シェル環境ではなく、Apache の内部構造体に保持されています。<br />
+    シェル環境ではなく、Apache の内部構造体に保持されています。<br>
       参照: <a href="env.html">Apache の環境変数</a>
     </dd>
 
@@ -195,7 +193,7 @@
     <span class="transnote">(<em>訳注:</em> 輸出管理規則)</span> に従うために暗号の強度 (とセキュリティ)
     を削減すること。輸出強度削減された暗号ソフトウェアは小さいキーに
     制限され、通常総当たり攻撃で復号できてしまう <em>暗号文</em> を生成する
-    ことになります。<br />
+    ことになります。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -205,7 +203,7 @@
     出力フィルタはサーバにある文書をクライアントに送る前に処理します。
     例えば、<code>INCLUDES</code> 出力フィルタは
     <a class="glossarylink" href="./glossary.html#ssi" title="用語集を参照">Server Side Includes</a> の文書を
-    処理します。<br />
+    処理します。<br>
       参照: <a href="filter.html">フィルタ</a>
     </dd>
 
@@ -223,7 +221,7 @@
     います。普通はすべてのファイルがサーバにより送られますが、別に
     扱われる <span class="transnote">(<em>訳注:</em> handle)</span> ファイルの種類も存在します。
     例えば <code>cgi-script</code> はファイルが
-    <a class="glossarylink" href="./glossary.html#cgi" title="用語集を参照">CGI</a> として処理されるように指定します。<br />
+    <a class="glossarylink" href="./glossary.html#cgi" title="用語集を参照">CGI</a> として処理されるように指定します。<br>
       参照: <a href="handler.html">Apache のハンドラの使用</a>
     </dd>
 
@@ -241,7 +239,7 @@
     <a class="glossarylink" href="./glossary.html#directive" title="用語集を参照">ディレクティブ</a> を適用する
     <a class="glossarylink" href="./glossary.html#configurationfile" title="用語集を参照">設定ファイル</a>。
     名前とは裏腹に、このファイルにはアクセス制御ディレクティブだけでなく、
-    ほとんどどんな種類のディレクティブでも書くことができます。<br />
+    ほとんどどんな種類のディレクティブでも書くことができます。<br>
       参照: <a href="configuring.html">設定ファイル</a>
     </dd>
 
@@ -250,7 +248,7 @@
     ファイル</a>。デフォルトの場所は
     <code>/usr/local/apache2/conf/httpd.conf</code>
     ですが、実行時やコンパイル時の設定により違う場所に移動されて
-    いるかもしれません。<br />
+    いるかもしれません。<br>
       参照: <a href="configuring.html">設定ファイル</a>
     </dd>
 
@@ -263,7 +261,7 @@
     <dt><a name="https" id="https">HTTPS</a></dt>
     <dd>The HyperText Transfer Protocol (Secure),
     World Wide Web での暗号化された標準の通信機構。これは実際は
-    単に <a class="glossarylink" href="./glossary.html#ssl" title="用語集を参照">SSL</a> 上での HTTP です。<br />
+    単に <a class="glossarylink" href="./glossary.html#ssl" title="用語集を参照">SSL</a> 上での HTTP です。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd> 
 
@@ -275,7 +273,7 @@
     
     <dt><a name="messagedigest" id="messagedigest">メッセージダイジェスト</a></dt>
     <dd>メッセージのハッシュで、メッセージの内容が転送時に変更されていないことの検証に
-    使える。<br />
+    使える。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -286,7 +284,7 @@
     主タイプと副タイプからなります。例えば、<code>text/html</code>,
     <code>image/gif</code>,  <code>application/octet-stream</code> など
     があります。HTTP では、MIME タイプは <code>Content-Type</code>
-    <a class="glossarylink" href="./glossary.html#header" title="用語集を参照">ヘッダ</a> で送信されます。<br />
+    <a class="glossarylink" href="./glossary.html#header" title="用語集を参照">ヘッダ</a> で送信されます。<br>
     参照: <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
 
@@ -299,7 +297,7 @@
     呼ばれます。デフォルトで含まれているモジュールは<dfn>base モジュール</dfn>
     と呼ばれます。Apache HTTP サーバの <a class="glossarylink" href="./glossary.html#tarball" title="用語集を参照">tarball</a>
     の一部としては配られていない Apache 用のモジュールがあります。
-    それらは <dfn>サードパーティモジュール</dfn> と呼ばれます。<br />
+    それらは <dfn>サードパーティモジュール</dfn> と呼ばれます。<br>
       参照: <a href="mod/">モジュール索引</a>
     </dd>
 
@@ -313,13 +311,13 @@
     少し変更する必要さえあるかもしれません。</dd>
 
     <dt><a name="openssl" id="openssl">OpenSSL</a></dt>
-    <dd>SSL/TLS 用のオープンソースツールキット<br />
+    <dd>SSL/TLS 用のオープンソースツールキット<br>
       参照 <a href="http://www.openssl.org/">http://www.openssl.org/</a>#
     </dd>
 
     <dt><a name="passphrase" id="passphrase">パスフレーズ</a></dt>
     <dd>秘密鍵のファイルを保護するための語句。権限の無いユーザが
-    暗号化するのを防ぎます。通常は単に <a class="glossarylink" href="./glossary.html#cipher" title="用語集を参照">Cipher</a> の秘密の暗号用と復号用のキーです。<br />
+    暗号化するのを防ぎます。通常は単に <a class="glossarylink" href="./glossary.html#cipher" title="用語集を参照">Cipher</a> の秘密の暗号用と復号用のキーです。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -329,7 +327,7 @@
     <dt><a name="privatekey" id="privatekey">秘密鍵</a></dt>
     <dd>受け取るメッセージの復号と送出するメッセージの署名に使われる、
     <a class="glossarylink" href="./glossary.html#publickeycryptography" title="用語集を参照">公開鍵暗号</a> の
-    秘密鍵。<br />
+    秘密鍵。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
     
@@ -339,20 +337,20 @@
     サーバからの応答をクライアントに返します。複数のクライアントが同じ
     コンテンツを要求する場合は、毎回元のサーバにリクエストを送る代わり
     プロキシはキャッシュからコンテンツを送り、応答時間を短縮することが
-    できます。<br />
+    できます。<br>
       参照: <a href="mod/mod_proxy.html">mod_proxy</a>
     </dd>
 
     <dt><a name="publickey" id="publickey">公開鍵</a></dt>
     <dd>所有者に向けられたメッセージの暗号化と所有者による署名の復号に使われる、
     <a class="glossarylink" href="./glossary.html#publickeycryptography" title="用語集を参照">公開鍵暗号</a>システムに
-    おける公けにされている鍵。<br />
+    おける公けにされている鍵。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
     <dt><a name="publickeycryptography" id="publickeycryptography">公開鍵暗号</a></dt>
     <dd>ある鍵を暗号に使い、別の鍵を復号に使う非対称暗号システムについての研究や
-    その応用を指す。対応する鍵はキーペアと呼ばれます。非対称暗号とも呼ばれます。<br />
+    その応用を指す。対応する鍵はキーペアと呼ばれます。非対称暗号とも呼ばれます。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd> 
 
@@ -381,13 +379,13 @@
     <dd>Netscape Communications Corporation により
     TCP/IP ネットワーク上で一般の通信の認証と暗号用に作られたプロトコル。
     最もよく使われているものは <em>HTTPS</em> つまり SSL 上での
-    HyperText Transfer Protocol (HTTP) です。<br />
+    HyperText Transfer Protocol (HTTP) です。<br>
     参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd> 
 
     <dt><a name="serversideincludes" id="serversideincludes">Server Side
       Includes</a> <a name="ssi" id="ssi">(SSI)</a></dt>
-    <dd>HTML ファイル中に処理ディレクティブを埋め込む技術の一つ。<br />
+    <dd>HTML ファイル中に処理ディレクティブを埋め込む技術の一つ。<br>
     参照: <a href="howto/ssi.html">Server Side Includes 入門</a>
     </dd>
   
@@ -410,7 +408,7 @@
         Layer Security</a> <a name="tls" id="tls">(TLS)</a></dt>
     <dd>TCP/IP ネットワーク上での一般通信の認証と暗号化用に
       Internet Engineering Task Force (IETF) により作成された SSL の
-      後継プロトコル。TLS バージョン 1 は SSL バージョン 3 とほぼ同じです。<br />
+      後継プロトコル。TLS バージョン 1 は SSL バージョン 3 とほぼ同じです。<br>
         参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
 
@@ -438,13 +436,13 @@
       <em>IP バーチャルホスト</em> は IP アドレスを使ってウェブサイトを
       区別します。また <em>名前ベースのバーチャルホスト</em> は
       ホストの名前だけを使って区別するので、同じ IP アドレス上での多くのサイトを
-      ホストできます。<br />
+      ホストできます。<br>
       参照: <a href="vhosts/">Apache バーチャルホストの文書</a>
     </dd>
 
     <dt><a name="x.509" id="x.509">X.509</a></dt>
     <dd>SSL/TLS 認証に使われている International
-      Telecommunication Union (ITU-T) により推奨されている認証証明書の形式。<br />
+      Telecommunication Union (ITU-T) により推奨されている認証証明書の形式。<br>
       参照: <a href="ssl/">SSL/TLS 暗号化</a>
     </dd>
   </dl>
@@ -452,14 +450,14 @@
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Performance Scaling - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Performance Scaling</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-scaling.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
@@ -58,21 +56,21 @@
         </p>
 
     </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#monitoring-your-server">Monitoring Your Server
+<li><img alt="" src="../images/down.gif"> <a href="#monitoring-your-server">Monitoring Your Server
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring-for-performance">Configuring for Performance
+<li><img alt="" src="../images/down.gif"> <a href="#configuring-for-performance">Configuring for Performance
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#caching-content">Caching Content
+<li><img alt="" src="../images/down.gif"> <a href="#caching-content">Caching Content
         </a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#further-considerations">Further Considerations
+<li><img alt="" src="../images/down.gif"> <a href="#further-considerations">Further Considerations
         </a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
-        </a> <a title="Permanent link" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
+<h2 id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
+         <a title="Permanent link" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
         
         <p>The session will focus on easily accessible configuration and tuning
             options for Apache httpd 2.2 and 2.4 as well as monitoring tools.
@@ -85,10 +83,10 @@
             some familiarity with the Apache httpd configuration file.
         </p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="monitoring-your-server" id="monitoring-your-server">Monitoring Your Server
-        </a> <a title="Permanent link" href="#monitoring-your-server" class="permalink">&para;</a></h2>
+<h2 id="monitoring-your-server">Monitoring Your Server
+         <a title="Permanent link" href="#monitoring-your-server" class="permalink">&para;</a></h2>
         
         <p>The first task when sizing or performance-tuning your server is to
             find out how your system is currently performing. By monitoring
@@ -98,8 +96,8 @@
         </p>
 
 
-        <h3><a name="monitoring-tools" id="monitoring-tools">Monitoring Tools
-            </a></h3>
+        <h3 id="monitoring-tools">Monitoring Tools
+            </h3>
             
 
 
@@ -289,8 +287,8 @@ Swap:       3903784      12540  3891244</pre></div>
 
             
         
-        <h3><a name="web-server-log-files" id="web-server-log-files">Web Server Log Files
-            </a></h3>
+        <h3 id="web-server-log-files">Web Server Log Files
+            </h3>
             
             <p>Monitoring and analyzing the log files httpd writes is one of
                 the most effective ways to keep track of your server health and
@@ -594,10 +592,10 @@ Swap:       3903784      12540  3891244</pre></div>
 
 
                 <div class="example"><p><code>
-                    APACHE=/usr/local/apache2<br />
-                    HTTPD=$APACHE/bin/httpd<br />
+                    APACHE=/usr/local/apache2<br>
+                    HTTPD=$APACHE/bin/httpd<br>
                     mv $APACHE/logs/access_log
-                    $APACHE/logarchive/access_log-`date +%F`<br />
+                    $APACHE/logarchive/access_log-`date +%F`<br>
                     $HTTPD -k graceful
                 </code></p></div>
 
@@ -688,8 +686,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-        <h3><a name="generating-a-test-load" id="generating-a-test-load">Generating A Test Load
-            </a></h3>
+        <h3 id="generating-a-test-load">Generating A Test Load
+            </h3>
             
             <p>It is useful to generate a test load to monitor system
                 performance under realistic operating circumstances. Besides
@@ -732,15 +730,15 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
 
         
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring-for-performance" id="configuring-for-performance">Configuring for Performance
-        </a> <a title="Permanent link" href="#configuring-for-performance" class="permalink">&para;</a></h2>
+<h2 id="configuring-for-performance">Configuring for Performance
+         <a title="Permanent link" href="#configuring-for-performance" class="permalink">&para;</a></h2>
         
 
 
-        <h3><a name="apache-configuration" id="apache-configuration">Httpd Configuration
-            </a></h3>
+        <h3 id="apache-configuration">Httpd Configuration
+            </h3>
             
             <p>The httpd 2.2 server is by default a pre-forking web server.
                 When the server starts, the parent process spawns a number of
@@ -832,9 +830,9 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </p>
 
                 <div class="example"><p><code>
-                    total RAM - RAM for OS - RAM for external programs<br />
+                    total RAM - RAM for OS - RAM for external programs<br>
                     MaxClients =
-                    -------------------------------------------------------<br />
+                    -------------------------------------------------------<br>
                     RAM per httpd process
                 </code></p></div>
 
@@ -993,8 +991,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-        <h3><a name="tuning-the-operating-system" id="tuning-the-operating-system">Tuning the Operating System
-            </a></h3>
+        <h3 id="tuning-the-operating-system">Tuning the Operating System
+            </h3>
             
             <p>People often look for the 'magic tune-up' that will
                 make their system perform four times as fast by tweaking just
@@ -1160,7 +1158,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </p>
 
                 <div class="example"><p><code>
-                    set rlim_fd_max=65536<br />
+                    set rlim_fd_max=65536<br>
                     set rlim_fd_cur=2048
                 </code></p></div>
 
@@ -1211,10 +1209,10 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching-content" id="caching-content">Caching Content
-        </a> <a title="Permanent link" href="#caching-content" class="permalink">&para;</a></h2>
+<h2 id="caching-content">Caching Content
+         <a title="Permanent link" href="#caching-content" class="permalink">&para;</a></h2>
         
         <p>Requests for dynamically generated content usually take
             significantly more resources than requests for static content.
@@ -1233,8 +1231,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         </p>
 
 
-        <h3><a name="making-popular-pages-static" id="making-popular-pages-static">Making Popular Pages Static
-            </a></h3>
+        <h3 id="making-popular-pages-static">Making Popular Pages Static
+            </h3>
             
             <p>By pre-rendering the response pages for the most popular queries
                 in your application, you can gain a significant performance
@@ -1333,8 +1331,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-        <h3><a name="caching-content-with-mod_cache" id="caching-content-with-mod_cache">Caching Content With mod_cache
-            </a></h3>
+        <h3 id="caching-content-with-mod_cache">Caching Content With mod_cache
+            </h3>
             
             <p>The mod_cache module provides intelligent caching of HTTP
                 responses: it is aware of the expiration timing and content
@@ -1436,10 +1434,10 @@ CacheMaxExpire 21600</pre>
 
             
         
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="further-considerations" id="further-considerations">Further Considerations
-        </a> <a title="Permanent link" href="#further-considerations" class="permalink">&para;</a></h2>
+<h2 id="further-considerations">Further Considerations
+         <a title="Permanent link" href="#further-considerations" class="permalink">&para;</a></h2>
         
         <p>Armed with the knowledge of how to tune a system to deliver the
             desired the performance, we will soon discover that <em>one</em>
@@ -1450,11 +1448,11 @@ CacheMaxExpire 21600</pre>
     </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-scaling.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_rewrite瑜&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;怨&#65533; &#65533;щℓ&#65533;&#65533; - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite瑜&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;怨&#65533; &#65533;щℓ&#65533;&#65533;</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../de/rewrite/remapping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/remapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/remapping.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
@@ -39,7 +37,7 @@
 
 
 <p>&#65533;&#65533; 臾몄&#65533;&#65533;&#65533;&#65533; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-<a href="../mod/mod_rewrite.html">李몄“ 臾몄&#65533;&#65533;</a>瑜&#65533; 蹂댁땐&#65533;⑸&#65533;&#65533;&#65533;&#65533;.
+<a href="../mod/mod_rewrite.html">李몄&ldquo; 臾몄&#65533;&#65533;</a>瑜&#65533; 蹂댁땐&#65533;⑸&#65533;&#65533;&#65533;&#65533;.
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>瑜&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;泥&#65533;&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;명&#65533;&#65533;怨&#65533;
 &#65533;щℓ&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; 諛⑸&#65533;&#65533;&#65533; &#65533;ㅻ&#65533;&#65533;⑸&#65533;&#65533;&#65533;&#65533;. &#65533;ш린&#65533;&#65533;&#65533;&#65533;
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; &#65533;쇰&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;媛&#65533; 留&#65533;&#65533;&#65533;
@@ -51,22 +49,22 @@
 &#65533;ㅼ&#65533;&#65533;&#65533;&#65533; 遺&#65533;&#65533;щ&#65533;ｊ린蹂대&#65533;ㅻ&#65533;&#65533; &#65533;댄&#65533;댄&#65533;&#65533;&#65533;&#65533; 寃&#65533;&#65533;&#65533; 以&#65533;&#65533;&#65533;&#65533;⑸&#65533;&#65533;&#65533;&#65533;.</div>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; (&#65533;대&#65533;)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533; (&#65533;몃&#65533;)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">&#65533;ㅻⅨ &#65533;&#65533;踰&#65533;濡&#65533; &#65533;대&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;쇰&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;μ&#65533;&#65533; 蹂&#65533;寃쎌&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;명&#65533;&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">&#65533;&#65533;洹&#65533; &#65533;몄&#65533;ㅽ&#65533;몃&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">&#65533;щ&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由ъ&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;댁&#65533; 寃&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">吏&#65533;由ъ&#65533;&#65533;&#65533;쇰&#65533; 遺&#65533;&#65533;곕&#65533;&#65533; &#65533;&#65533;踰&#65533;濡&#65533;&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">&#65533;&#65533;洹&#65533; URL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">&#65533;대&#65533;&#65533;&#65533;&#65533; <code>DocumentRoot</code></a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#fallback-resource">&#65533;&#65533;泥&#65533; &#65533;&#65533;&#65533;&#65533;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewrite-query">荑쇰━ 臾몄&#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533;</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#old-to-new">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; (&#65533;대&#65533;)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#old-to-new-extern">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533; (&#65533;몃&#65533;)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#movehomedirs">&#65533;ㅻⅨ &#65533;&#65533;踰&#65533;濡&#65533; &#65533;대&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#static-to-dynamic">&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;쇰&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#backward-compatibility">&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;μ&#65533;&#65533; 蹂&#65533;寃쎌&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;명&#65533;&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#canonicalhost">&#65533;&#65533;洹&#65533; &#65533;몄&#65533;ㅽ&#65533;몃&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multipledirs">&#65533;щ&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由ъ&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;댁&#65533; 寃&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#archive-access-multiplexer">吏&#65533;由ъ&#65533;&#65533;&#65533;쇰&#65533; 遺&#65533;&#65533;곕&#65533;&#65533; &#65533;&#65533;踰&#65533;濡&#65533;&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#canonicalurl">&#65533;&#65533;洹&#65533; URL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moveddocroot">&#65533;대&#65533;&#65533;&#65533;&#65533; <code>DocumentRoot</code></a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#fallback-resource">&#65533;&#65533;泥&#65533; &#65533;&#65533;&#65533;&#65533;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewrite-query">荑쇰━ 臾몄&#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533;</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">紐⑤&#65533;&#65533; 臾몄&#65533;&#65533;</a></li><li><a href="intro.html">mod_rewrite &#65533;&#65533;媛&#65533;</a></li><li><a href="access.html">&#65533;&#65533;洹&#65533; &#65533;&#65533;&#65533;&#65533;</a></li><li><a href="vhosts.html">媛&#65533;&#65533;&#65533; &#65533;몄&#65533;ㅽ&#65533;&#65533;</a></li><li><a href="proxy.html">&#65533;&#65533;濡&#65533;&#65533;&#65533;</a></li><li><a href="rewritemap.html">RewriteMap &#65533;ъ&#65533;⑺&#65533;&#65533;湲&#65533;</a></li><li><a href="advanced.html">怨&#65533;湲&#65533; 湲곗&#65533;&#65533;</a></li><li><a href="avoid.html">mod_rewrite瑜&#65533; &#65533;ъ&#65533;⑺&#65533;&#65533;吏&#65533; 留&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; 寃쎌&#65533;&#65533;</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="old-to-new" id="old-to-new">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; (&#65533;대&#65533;)</a> <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
+<h2 id="old-to-new">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; (&#65533;대&#65533;) <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
 
   
 
@@ -94,9 +92,9 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="old-to-new-extern" id="old-to-new-extern">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533; (&#65533;몃&#65533;)</a> <a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
+<h2 id="old-to-new-extern">&#65533;댁&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;濡&#65533;&#65533;&#65533; 寃&#65533;&#65533;쇰&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533; (&#65533;몃&#65533;) <a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
 
   
 
@@ -137,9 +135,9 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="movehomedirs" id="movehomedirs">&#65533;ㅻⅨ &#65533;&#65533;踰&#65533;濡&#65533; &#65533;대&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
+<h2 id="movehomedirs">&#65533;ㅻⅨ &#65533;&#65533;踰&#65533;濡&#65533; &#65533;대&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
 
   
 
@@ -175,9 +173,9 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static-to-dynamic" id="static-to-dynamic">&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;쇰&#65533;</a> <a title="Permanent link" href="#static-to-dynamic" class="permalink">&para;</a></h2>
+<h2 id="static-to-dynamic">&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;쇰&#65533; <a title="Permanent link" href="#static-to-dynamic" class="permalink">&para;</a></h2>
 
   
 
@@ -206,9 +204,9 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="backward-compatibility" id="backward-compatibility">&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;μ&#65533;&#65533; 蹂&#65533;寃쎌&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;명&#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
+<h2 id="backward-compatibility">&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;μ&#65533;&#65533; 蹂&#65533;寃쎌&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;명&#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
 
   
 
@@ -265,9 +263,9 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="canonicalhost" id="canonicalhost">&#65533;&#65533;洹&#65533; &#65533;몄&#65533;ㅽ&#65533;몃&#65533;</a> <a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
+<h2 id="canonicalhost">&#65533;&#65533;洹&#65533; &#65533;몄&#65533;ㅽ&#65533;몃&#65533; <a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
 
 
 
@@ -356,9 +354,9 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
         </dd>
       </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multipledirs" id="multipledirs">&#65533;щ&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由ъ&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;댁&#65533; 寃&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
+<h2 id="multipledirs">&#65533;щ&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由ъ&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;댁&#65533; 寃&#65533;&#65533;&#65533; <a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
 
   
 
@@ -368,7 +366,7 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
     <dd>
       <p>&#65533;뱀&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;щ&#65533;&#65533; &#65533;&#65533;移&#65533; 以&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; 議댁&#65533;ы&#65533;&#65533; &#65533;&#65533; &#65533;&#65533;&#65533;쇰ŉ,
       &#65533;&#65533;泥&#65533; &#65533;&#65533; &#65533;대&#65533;&#65533; &#65533;&#65533;移&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; 李얘&#65533;&#65533;&#65533; &#65533;⑸&#65533;&#65533;&#65533;&#65533;. &#65533;&#65533;留&#65533;&#65533;&#65533;
-      理&#65533;洹쇱&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由&#65533; 援ъ“瑜&#65533; &#65533;ы&#65533;명&#65533;&#65533;&#65533;&#65533; 肄&#65533;&#65533;&#65533;痢&#65533;瑜&#65533; &#65533;щ&#65533;&#65533;
+      理&#65533;洹쇱&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;由&#65533; 援ъ&ldquo;瑜&#65533; &#65533;ы&#65533;명&#65533;&#65533;&#65533;&#65533; 肄&#65533;&#65533;&#65533;痢&#65533;瑜&#65533; &#65533;щ&#65533;&#65533;
       &#65533;&#65533;移&#65533;濡&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; 寃&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.</p>
     </dd>
 
@@ -398,9 +396,9 @@ RewriteRule "^"     "-"                                          [PT]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">吏&#65533;由ъ&#65533;&#65533;&#65533;쇰&#65533; 遺&#65533;&#65533;곕&#65533;&#65533; &#65533;&#65533;踰&#65533;濡&#65533;&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#archive-access-multiplexer" class="permalink">&para;</a></h2>
+<h2 id="archive-access-multiplexer">吏&#65533;由ъ&#65533;&#65533;&#65533;쇰&#65533; 遺&#65533;&#65533;곕&#65533;&#65533; &#65533;&#65533;踰&#65533;濡&#65533;&#65533;&#65533; 由щ&#65533;ㅼ&#65533;대&#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#archive-access-multiplexer" class="permalink">&para;</a></h2>
 
   
 
@@ -429,11 +427,11 @@ RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.exam
 
 
 <div class="example"><p><code>
-##  map.mirrors -- 硫&#65533;&#65533;고&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; 留&#65533;<br />
-<br />
-de        http://www.example.de/<br />
-uk        http://www.example.uk/<br />
-com       http://www.example.com/<br />
+##  map.mirrors -- 硫&#65533;&#65533;고&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; 留&#65533;<br>
+<br>
+de        http://www.example.de/<br>
+uk        http://www.example.uk/<br>
+com       http://www.example.com/<br>
 ##EOF##
 </code></p></div>
     </dd>
@@ -453,9 +451,9 @@ com       http://www.example.com/<br />
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="canonicalurl" id="canonicalurl">&#65533;&#65533;洹&#65533; URL</a> <a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
+<h2 id="canonicalurl">&#65533;&#65533;洹&#65533; URL <a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
 
 
 
@@ -494,9 +492,9 @@ com       http://www.example.com/<br />
      </dd>
       </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moveddocroot" id="moveddocroot">&#65533;대&#65533;&#65533;&#65533;&#65533; <code>DocumentRoot</code></a> <a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
+<h2 id="moveddocroot">&#65533;대&#65533;&#65533;&#65533;&#65533; <code>DocumentRoot</code> <a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
 
   
 
@@ -540,9 +538,9 @@ RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]</pre>
 </dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="fallback-resource" id="fallback-resource">&#65533;&#65533;泥&#65533; &#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
+<h2 id="fallback-resource">&#65533;&#65533;泥&#65533; &#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
 
 
 <dl>
@@ -587,9 +585,9 @@ css &#65533;&#65533;&#65533;쇨낵 媛&#65533;&#65533;&#65533; 湲곗〈 &#65533;&#655
 
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite-query" id="rewrite-query">荑쇰━ 臾몄&#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
+<h2 id="rewrite-query">荑쇰━ 臾몄&#65533;&#65533;&#65533;&#65533; &#65533;ъ&#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
 
 
 <dl>
@@ -599,7 +597,7 @@ URL&#65533;&#65533; &#65533;ㅻⅨ 援ъ&#65533;&#65533; &#65533;&#65533;&#65533;&#
 
 <dt>&#65533;닿껐梨&#65533;:</dt>
 <dd>
-<p>&#65533;&#65533; &#65533;뱀&#65533;&#65533;&#65533;&#65533; 留&#65533;&#65533;&#65533; &#65533;닿껐梨&#65533;&#65533;&#65533; &#65533;쇱&#65533;&#65533;&#65533; 媛&#65533;&#65533;&#65533; %2 &#65533;&#65533;李몄“&#65533;&#65533;
+<p>&#65533;&#65533; &#65533;뱀&#65533;&#65533;&#65533;&#65533; 留&#65533;&#65533;&#65533; &#65533;닿껐梨&#65533;&#65533;&#65533; &#65533;쇱&#65533;&#65533;&#65533; 媛&#65533;&#65533;&#65533; %2 &#65533;&#65533;李몄&ldquo;&#65533;&#65533;
 &#65533;④린&#65533;&#65533; &#65533;&#65533;&#65533;쇳&#65533;&#65533; 議곌굔&#65533;&#65533; &#65533;ъ&#65533;⑺&#65533;⑸&#65533;&#65533;&#65533;&#65533;. %1&#65533;&#65533; 荑쇰━ 臾몄&#65533;&#65533;&#65533;댁&#65533;&#65533;
 &#65533;&#65533;&#65533;&#65533;(愿&#65533;&#65533;&#65533; &#65533;ㅺ&#65533;吏&#65533;)&#65533;닿&#65533;, %3&#65533;&#65533; &#65533;&#65533;癒몄&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;. &#65533;&#65533; 議곌굔&#65533;&#65533;
 &#65533;&#65533;&#65533;곗&#65533;깆&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; 洹몃━怨&#65533; 移&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;댁&#65533;
@@ -647,15 +645,15 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../de/rewrite/remapping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/remapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/remapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/remapping.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

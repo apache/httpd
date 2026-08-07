@@ -1,0 +1,1584 @@
+##
+## FileETag test config
+##
+<Directory @SERVERROOT@/htdocs/apache/etags>
+    AllowOverride All
+    Order Deny,Allow
+#    Satisfy Any
+</Directory>
+
+##
+## Options override test config
+##
+<Directory @SERVERROOT@/htdocs/apache/htaccess/override>
+    AllowOverride All
+    Options -Includes
+</Directory>
+
+##
+## AcceptPathInfo test config
+##
+<IfDefine APACHE2>
+    <Directory @SERVERROOT@/htdocs/apache/acceptpathinfo>
+        # default is AcceptPathInfo default
+        Order Deny,Allow
+        Allow from all
+        <IfModule @CGI_MODULE@>
+            AddHandler cgi-script .sh
+            Options +ExecCGI +Includes +Indexes
+        </IfModule>
+        <IfModule mod_include.c>
+            DirectoryIndex index.shtml
+            AddOutputFilter INCLUDES shtml
+        </IfModule>
+    </Directory>
+    <Directory @SERVERROOT@/htdocs/apache/acceptpathinfo/on>
+        AcceptPathInfo on
+    </Directory>
+    <Directory @SERVERROOT@/htdocs/apache/acceptpathinfo/off>
+        AcceptPathInfo off
+    </Directory>
+</IfDefine>
+
+##
+## mod_php4/mod_php5 test config
+##
+
+<IfModule @PHP_MODULE@>
+    AddType application/x-httpd-php .php
+    AddType application/x-httpd-php-source .phps
+</IfModule>
+
+<IfDefine APACHE2>
+    <IfModule sapi_apache2.c>
+        AddType application/x-httpd-php .php
+        AddType application/x-httpd-php-source .phps
+    </IfModule>
+</IfDefine>
+
+<IfModule @PHP_MODULE@>
+    # t/htdocs/php/arg.php et al require argc/argv in _SERVER
+    <Directory @SERVERROOT@/htdocs/php>
+       php_admin_flag "register_argc_argv" 1
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/php/multiviews>
+        Options MultiViews
+    </Directory>
+
+</IfModule>
+
+##
+## mod_expires test config
+##
+
+<IfModule mod_expires.c>
+    <Directory @SERVERROOT@/htdocs/modules/expires>
+        ExpiresActive On
+        ExpiresDefault "modification plus \
+                        10 years 6 months 2 weeks \
+                        3 days 12 hours 30 minutes 19 seconds"
+        ExpiresByType text/plain M60
+        ExpiresByType image/gif A120
+        ExpiresByType image/jpeg A86400
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/modules/expires/htaccess>
+        AllowOverride All
+    </Directory>
+</IfModule>
+
+##
+## mod_negotiation test config
+##
+
+<IfModule mod_mime.c>
+    AddLanguage en .en
+    AddLanguage fr .fr
+    AddLanguage de .de
+    AddLanguage fu .fu
+    AddLanguage zh-TW .zh-TW
+    AddHandler type-map .var
+</IfModule>
+
+<IfModule mod_negotiation.c>
+    <IfDefine APACHE1>
+        CacheNegotiatedDocs
+    </IfDefine>
+
+    <IfDefine APACHE2>
+        CacheNegotiatedDocs On
+    </IfDefine>
+
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/en>
+        Options +MultiViews
+        LanguagePriority en fr de fu zh-TW
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/de>
+        Options +MultiViews
+        LanguagePriority de en fr fu zh-TW
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/fr>
+        Options +MultiViews
+        LanguagePriority fr en de fu zh-TW
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/fu>
+        Options +MultiViews
+        LanguagePriority fu fr en de zh-TW
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/zh-TW>
+        Options +MultiViews
+        LanguagePriority zh-TW fr fu en de 
+    </Directory>
+
+   <IfDefine APACHE2>
+       <IfModule @CGI_MODULE@>
+            <Directory @SERVERROOT@/htdocs/modules/negotiation/query>
+              Options +MultiViews +ExecCGI
+              MultiviewsMatch any
+              AddHandler cgi-script .pl
+           </Directory>
+       </IfModule>
+   </IfDefine>
+
+</IfModule>
+
+##
+## mod_rewrite test config
+##
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    <IfVersion < 2.3.6>
+        RewriteLog @SERVERROOT@/logs/rewrite_log
+        RewriteLogLevel 9
+    </IfVersion>
+    <IfVersion >= 2.3.6>
+        LogLevel rewrite:trace8
+    </IfVersion>
+
+    <IfDefine !APACHE1>
+        <IfVersion < 2.3.4>
+            RewriteLock @SERVERROOT@/logs/rewrite_lock
+        </IfVersion>
+        <IfVersion >= 2.3.4>
+            # mutex created automatically
+            # config needed only if file-based mutexes are used and
+            # default lock file dir is inappropriate
+            # Mutex file:/path/to/lockdir rewrite-map
+        </IfVersion>
+    </IfDefine>
+    <IfDefine APACHE1>
+        RewriteLock @SERVERROOT@/logs/rewrite_lock
+    </IfDefine>        
+    RewriteMap numbers-txt txt:@SERVERROOT@/htdocs/modules/rewrite/numbers.txt
+    RewriteMap numbers-rnd rnd:@SERVERROOT@/htdocs/modules/rewrite/numbers.rnd
+    #RewriteMap numbers-dbm dbm:@SERVERROOT@/htdocs/modules/rewrite/numbers.dbm
+    RewriteMap numbers-prg prg:@SERVERROOT@/htdocs/modules/rewrite/numbers.pl
+    RewriteMap lower int:tolower
+
+    <Directory @SERVERROOT@/htdocs/modules/rewrite>
+        RewriteEngine On
+        <IfVersion >= 2.5.0>
+            RewriteOptions inherit LongURLOptimization
+        </IfVersion>
+        <IfVersion < 2.5.0>
+            RewriteOptions inherit
+        </IfVersion>
+
+        RewriteRule ^forbidden$ - [F]
+        RewriteRule ^gone$ - [G]
+        RewriteRule ^perm$ - [R=permanent]
+        RewriteRule ^temp$ - [R]
+        RewriteRule ^test\.blah$ - [T=text/html]
+
+        ## config for testing >=< conditions
+        RewriteCond %{HTTP_ACCEPT} =lucky13
+        RewriteRule ^$ lucky13.html [L]
+
+        RewriteCond %{HTTP_ACCEPT} >6
+        RewriteRule ^$ big.html [L]
+
+        RewriteCond %{HTTP_ACCEPT} <1
+        RewriteRule ^$ zero.html [L]
+
+        ## config for testing rewrite maps
+        RewriteCond %{HTTP_ACCEPT} ^(TXT|RND|DBM|PRG)$
+        RewriteRule ^([1-6])$ - [C,E=MAPTYPE:${lower:%1}]
+        RewriteCond %{ENV:MAPTYPE} =txt
+        RewriteRule ^([1-6])$ ${numbers-txt:$1}.html [S=3]
+        RewriteCond %{ENV:MAPTYPE} =rnd
+        RewriteRule ^([1-6])$ ${numbers-rnd:$1}.html [S=2]
+        RewriteCond %{ENV:MAPTYPE} =dbm
+        RewriteRule ^([1-6])$ ${numbers-dbm:$1}.html [S=1]
+        RewriteCond %{ENV:MAPTYPE} =prg
+        RewriteRule ^([1-6])$ ${numbers-prg:$1}.html [L]
+
+        ## Proxy pass-through
+        RewriteRule ^proxy.html$ http://@SERVERNAME@:@PORT@/modules/rewrite/lucky13.html [L,P]
+
+        ## Query-string append
+        RewriteRule ^qsa.html$ @SERVERROOT@/htdocs/modules/cgi/env.pl?foo=bar [QSA,L]
+
+        ## Proxy and QSA
+        RewriteRule ^proxy-qsa.html$ http://@SERVERNAME@:@PORT@/modules/cgi/env.pl?foo=bar [QSA,L,P]
+
+        ## Redirect, directory context
+        RewriteRule ^redirect-dir.html$ http://@SERVERNAME@:@PORT@/foobar.html [L,R=301]
+
+        # PR 58231: Vary header not added to the response if the RewriteCond/Rule
+        # combination is in a directory context.
+        # Vary:Host header must not also be returned in any case.
+        RewriteCond %{HTTP_HOST} directory-domain
+        RewriteRule vary3.html vary4.html [L]
+
+        RewriteCond %{HTTP_USER_AGENT} directory-agent
+        RewriteRule vary3.html vary4.html [L]
+
+        RewriteCond %{HTTP:Accept} directory-accept [OR]
+        RewriteCond %{HTTP_REFERER} directory-referer
+        RewriteRule vary3.html vary4.html [L]
+    </Directory>
+
+    # PR 58231: Vary:Host header mistakenly added to the response
+    RewriteCond %{HTTP_HOST} test1
+    RewriteRule /modules/rewrite/vary1.html /modules/rewrite/vary2.html [L]
+
+    RewriteCond %{HTTP:Host} test2
+    RewriteRule /modules/rewrite/vary1.html /modules/rewrite/vary2.html [L]
+
+
+    ### Proxy pass-through to env.pl
+    RewriteRule ^/modules/rewrite/proxy2/(.*)$ http://@SERVERNAME@:@PORT@/modules/cgi/$1 [L,P]
+
+    ### Pass-through conditional on QUERY_STRING
+    RewriteCond %{QUERY_STRING} horse=trigger
+    RewriteRule ^/modules/rewrite/proxy3/(.*)$ http://@SERVERNAME@:@PORT@/modules/cgi/$1 [L,P]
+
+    ### Redirect, server context
+    RewriteRule ^/modules/rewrite/redirect.html$ http://@SERVERNAME@:@PORT@/foobar.html [L,R=301]
+
+    RewriteRule ^/modules/rewrite/cookie/$ - [CO=NAME3:VAL:localhost:86400:/0:secure:httponly]
+    RewriteRule ^/modules/rewrite/cookie/0 - [CO=NAME3:VAL:localhost:86400:/0:secure:httponly:0]
+    RewriteRule ^/modules/rewrite/cookie/false - [CO=NAME3:VAL:localhost:86400:/0:secure:httponly:false]
+    RewriteRule ^/modules/rewrite/cookie/lax - [CO=NAME3:VAL:localhost:86400:/0:secure:httponly:lax]
+    RewriteRule ^/modules/rewrite/cookie/none - [CO=NAME3:VAL:localhost:86400:/0:secure:httponly:none]
+    RewriteRule ^/modules/rewrite/cookie/foo - [CO=NAME3:VAL:localhost:86400:/0:secure:httponly:foo]
+
+    RewriteRule ^/modules/rewrite/escaping/local/(.*) /?$1
+    RewriteRule ^/modules/rewrite/escaping/local_b/(.*) /?$1 [B]
+    RewriteRule ^/modules/rewrite/escaping/local_b_justslash/(.*) /?$1 [B=/]
+
+    RewriteRule ^/modules/rewrite/escaping/qsd-like/(.*) /$1? [R]
+    RewriteRule ^/modules/rewrite/escaping/qsd-like-plus-qsa/(.*) /$1? [R,QSA]
+    # For the following rule, UnsafeAllow3F is needed from 2.4.60 to 2.4.62 only
+    <IfVersion < 2.4.60>
+    RewriteRule ^/modules/rewrite/escaping/qsd-like-plus-qsa-qsl/(.*) /$1? [R,QSA,QSL]
+    </IfVersion>
+    <IfVersion >= 2.4.60>
+    <IfVersion > 2.4.62>
+    RewriteRule ^/modules/rewrite/escaping/qsd-like-plus-qsa-qsl/(.*) /$1? [R,QSA,QSL]
+    </IfVersion>
+    <IfVersion <= 2.4.62>
+    RewriteRule ^/modules/rewrite/escaping/qsd-like-plus-qsa-qsl/(.*) /$1? [R,QSA,QSL,UnsafeAllow3F]
+    </IfVersion>
+    </IfVersion>
+
+    <IfVersion >= 2.4.57>
+      RewriteRule ^/modules/rewrite/escaping/local_bctls/(.*) /?$1 [BCTLS]
+      RewriteRule ^/modules/rewrite/escaping/local_bctls_andslash/(.*) /?$1 [B=/,BCTLS]
+      RewriteRule ^/modules/rewrite/escaping/local_bctls_nospace/(.*) /?$1 "[BCTLS,BNE= ?]"
+      RewriteRule ^/modules/rewrite/escaping/local_b_noslash/(.*) /?$1 [B,BNE=/]
+    </IfVersion>
+    RewriteRule ^/modules/rewrite/escaping/redir/(.*) http://@SERVERNAME@:@PORT@/?$1 [R]
+    RewriteRule ^/modules/rewrite/escaping/redir_ne/(.*) http://@SERVERNAME@:@PORT@/?$1 [R,NE]
+    RewriteRule ^/modules/rewrite/escaping/proxy/(.*) http://@SERVERNAME@:@PORT@/?$1 [P]
+    RewriteRule ^/modules/rewrite/escaping/proxy_ne/(.*) http://@SERVERNAME@:@PORT@/?$1 [P,NE]
+    <LocationMatch ^/modules/rewrite/escaping/fixups/>
+      RewriteRule local/(.*) /?$1
+      RewriteRule redir/(.*) http://@SERVERNAME@:@PORT@/?$1 [R]
+      RewriteRule redir_ne/(.*) http://@SERVERNAME@:@PORT@/?$1 [R,NE]
+      RewriteRule proxy/(.*) http://@SERVERNAME@:@PORT@/?$1 [P]
+      RewriteRule proxy_ne/(.*) http://@SERVERNAME@:@PORT@/?$1 [P,NE]
+    </LocationMatch>
+
+
+   RewriteCond expr false
+   RewriteRule ^/modules/rewrite/expr/notgone/false$ - [G]
+
+   RewriteCond expr !true
+   RewriteRule ^/modules/rewrite/expr/notgone/nottrue$ - [G]
+
+   RewriteCond expr true
+   RewriteRule ^/modules/rewrite/expr/shouldredir/true$ /dummy [R=303]
+
+   RewriteCond expr !false
+   RewriteRule ^/modules/rewrite/expr/shouldredir/notfalse$ /dummy [R=303]
+
+   <Location /modules/rewrite/>
+      Header always set rewritten-query "expr=%{QUERY_STRING}"
+   </Location>
+
+   <VirtualHost rewrite_prefix_stat>
+      # This can go beyond the default LimitRequestLine of 128 depending on ServerRoot
+      LimitRequestLine 1024
+      # If the prefix stat fails, it would become docroot-relative and 404. Note the at-serverroot is a literal in the generated httpd.conf
+      RewriteRule ^/modules/rewrite/prefixstat/index.html @SERVERROOT@/htdocs/index.html
+      RewriteRule ^/modules/rewrite/prefixstat/query/index.html %{QUERY_STRING}
+      <IfVersion >= 2.4.60>
+        RewriteRule ^/modules/rewrite/prefixstat/query-optin/index.html %{QUERY_STRING} [UnsafePrefixStat]
+      </IfVersion>
+   </VirtualHost>
+
+    RewriteRule ^/modules/rewrite/badquery/literal /modules/rewrite/badquery/literal?theval [PT]
+    RewriteRule ^/modules/rewrite/badquery/literal /modules/rewrite/badquery/literal?theval [PT]
+
+    # Should fail if the capture has %3f
+    RewriteRule ^/modules/rewrite/badquery/backref/(.*)$ /modules/rewrite/badquery/backref$1 [PT]
+    RewriteRule ^/modules/rewrite/badquery/backref-map/(.*)$ /modules/rewrite/badquery/backref${lower:$1} [PT]
+    # Non opt-in safe substitutions from from PR69197
+    RewriteRule ^/modules/rewrite/badquery/backref-qsa/(.*)$ /modules/rewrite/badquery/backref?query=$1 [QSA,PT]
+    RewriteRule ^/modules/rewrite/badquery/backref-qsalike/(.*)$ /modules/rewrite/badquery/backref?query=$1&%{QUERY_STRING} [PT]
+    RewriteRule ^/modules/rewrite/badquery/backref-noqsa/(.*)$ /modules/rewrite/badquery/backref?query=$1 [PT]
+    RewriteRule ^/modules/rewrite/badquery/backref-noqsa-map/(.*)$ /modules/rewrite/badquery/backref?query=${lower:$1} [PT]
+    RewriteRule ^/modules/rewrite/badquery/backref-qslast/(.*)/(.*)$ /modules/rewrite/badquery/backref$2?query=$1 [QSL,PT]
+    <IfVersion >= 2.4.60>
+      RewriteRule ^/modules/rewrite/badquery/backref-optin/(.*)$ /modules/rewrite/badquery/backref$1 [PT,UnsafeAllow3F]
+    </IfVersion>
+
+
+   <VirtualHost cve_2011_3368_rewrite>
+      DocumentRoot @SERVERROOT@/htdocs/modules/proxy
+      RewriteEngine On
+      RewriteRule (.*) http://localhost$1 [P]
+   </VirtualHost>
+
+   # PR60478: pathological rewrite expansion
+   <IfVersion >= 2.4>
+   <Location /modules/rewrite/pr60478-rewrite-loop>
+      # This pair of RewriteRules will loop but should eventually 500 once we
+      # reach LimitRequestLine * 2 bytes. (In this case, @limitrequestline@ * 2 = @limitrequestlinex2@.)
+      RewriteRule ^(.*)X(.*)$ $1x$2
+      # Don't run the test machine out of memory on failure, just stop the loop
+      RewriteCond expr "util_strlen(%{REQUEST_FILENAME}) -le @limitrequestlinex2@"
+      RewriteRule X - [N]
+   </Location>
+   </IfVersion>
+
+</IfModule>
+
+
+<IfModule mod_proxy.c>
+   <VirtualHost proxy_http_reverse>
+      DocumentRoot @SERVERROOT@/htdocs/modules/proxy
+      ProxyPass /reverse/notproxy/ !
+      ProxyPass /reverse/ http://@SERVERNAME@:@PORT@/
+      ProxyPassReverse /reverse/ http://@SERVERNAME@:@PORT@/
+      ProxyPassMatch ^/reverse-match/(.*)$ http://@SERVERNAME@:@PORT@/$1
+      ProxyPassMatch ^/reverse-slash(/.*)?$ http://@SERVERNAME@:@PORT@$1
+      ProxyPassReverseCookieDomain local remote
+      ProxyPassReverseCookiePath /local /remote
+      <IfVersion >= 2.4.7>
+        ProxyPass /uds/ unix:/tmp/test-ptf.sock|http:
+      </IfVersion>
+      <Location /reverse/locproxy/>
+         ProxyPass http://@SERVERNAME@:@PORT@/
+      </Location>
+      <IfModule mod_setenvif.c>
+          SetEnvIf Request_URI "^/reverse/locproxy/index.html$" no-proxy
+      </IfModule>
+   </VirtualHost>
+
+   <VirtualHost proxy_http_nofwd>
+      <IfVersion >= 2.3.10>
+         ProxyAddHeaders off
+      </IfVersion>
+      ProxyPass /reverse/ http://@SERVERNAME@:@PORT@/
+
+      <Proxy "*">
+         # Noop config to trigger merging bug.
+         Require all granted
+      </Proxy>
+    </VirtualHost>
+
+   <IfVersion >= 2.2.5>
+      <VirtualHost cve_2011_3368>
+         DocumentRoot @SERVERROOT@/htdocs/modules/proxy
+         ProxyPassMatch (.*) http://@SERVERNAME@$1
+      </VirtualHost>
+   </IfVersion>
+</IfModule>
+  
+##
+## @ACCESS_MODULE@ test config
+##
+
+<IfModule @ACCESS_MODULE@>
+    <Directory @SERVERROOT@/htdocs/modules/access/htaccess>
+        AllowOverride Limit
+    </Directory>
+</IfModule>
+
+##
+## mod_cgi test config
+##
+
+<IfModule @CGI_MODULE@>
+    AddHandler cgi-script .sh
+    AddHandler cgi-script .pl
+    ScriptLog @SERVERROOT@/logs/mod_cgi.log
+    ScriptLogLength 51200
+    ScriptLogBuffer 256
+
+    <IfModule mod_env.c>
+        SetEnv GATEWAY?INTERFACE "dummy/1.0"
+        SetEnv HTTP?host "localhost"
+    </ifModule>
+
+    <Directory @SERVERROOT@/htdocs/modules/cgi>
+        Options +ExecCGI
+
+        <IfDefine APACHE2>
+            <Files acceptpathinfoon.sh>
+                AcceptPathInfo on
+            </Files>
+            <Files acceptpathinfooff.sh>
+                AcceptPathInfo off
+            </Files>
+            <Files acceptpathinfodefault.sh>
+                AcceptPathInfo default
+            </Files>
+        </IfDefine>
+    </Directory>
+        
+</IfModule>
+
+##
+## mod_alias test config
+##
+
+<IfModule mod_alias.c>
+    Alias /alias @SERVERROOT@/htdocs/modules/alias
+    Alias /bogu /bogus/path/to/nothing
+
+    AliasMatch /ali([0-9]) @SERVERROOT@/htdocs/modules/alias/$1.html
+
+    Redirect permanent /perm http://@SERVERNAME@:@PORT@/alias
+    Redirect temp /temp http://@SERVERNAME@:@PORT@/alias
+    Redirect seeother /seeother http://@SERVERNAME@:@PORT@/alias
+    Redirect gone /gone
+    Redirect 403 /forbid
+
+    RedirectMatch permanent /p([0-9]) http://@SERVERNAME@:@PORT@/alias/$1.html
+    RedirectMatch temp /t([0-9]) http://@SERVERNAME@:@PORT@/alias/$1.html
+    RedirectMatch seeother /s([0-9]) http://@SERVERNAME@:@PORT@/alias/$1.html
+    RedirectMatch gone /g([0-9])
+    RedirectMatch 403 /f([0-9])
+
+    RedirectTemp /temp2 http://@SERVERNAME@:@PORT@/alias/index.html
+    RedirectPermanent /perm2 http://@SERVERNAME@:@PORT@/alias/index.html
+
+    Redirect permanent /modules/alias/redirect-me http://@SERVERNAME@:@PORT@/modules/alias/5.html
+
+    ScriptAlias /cgi @SERVERROOT@/htdocs/modules/alias
+    ScriptAliasMatch /aliascgi-(.*) @SERVERROOT@/htdocs/modules/alias/$1
+
+    <IfDefine APACHE2>
+        <IfVersion >= 2.4.19>
+            <LocationMatch /expr/ali(?<number>[0-9])>
+                Alias @SERVERROOT@/htdocs/modules/alias/%{env:MATCH_NUMBER}.html
+            </LocationMatch>
+            <LocationMatch /expr/aliascgi-(?<suffix>.*)>
+                ScriptAlias @SERVERROOT@/htdocs/modules/alias/%{env:MATCH_SUFFIX}
+            </LocationMatch>
+            <LocationMatch /expr/p(?<number>[0-9])>
+                Redirect permanent http://@SERVERNAME@:@PORT@/alias/%{env:MATCH_NUMBER}.html
+            </LocationMatch>
+            <LocationMatch /expr/t(?<number>[0-9])>
+                Redirect temp http://@SERVERNAME@:@PORT@/alias/%{env:MATCH_NUMBER}.html
+            </LocationMatch>
+            <LocationMatch /expr/s(?<number>[0-9])>
+                Redirect seeother http://@SERVERNAME@:@PORT@/alias/%{env:MATCH_NUMBER}.html
+            </LocationMatch>
+            <LocationMatch /expr/g([0-9])>
+                Redirect gone
+            </LocationMatch>
+            <LocationMatch /expr/f([0-9])>
+                Redirect 403
+            </LocationMatch>
+        </IfVersion>
+    </IfDefine>
+</IfModule>
+
+
+<IfVersion >= 2.5.1>
+    <Location /redirect_relative/default>
+        Redirect /out-default
+    </Location>
+    <Location /redirect_relative/on>
+        RedirectRelative ON
+        Redirect /out-on
+    </Location>
+    <Location /redirect_relative/off>
+        RedirectRelative OFF
+        Redirect /out-off
+    </Location>
+    <Location /redirect_relative/off/fail>
+        Redirect fail-to-construct-url
+    </Location>
+</IfVersion>
+
+Alias /manual @inherit_documentroot@/manual
+<Location /manual>
+    Order deny,allow
+    Deny from all
+    Allow from @servername@
+</Location>
+
+##
+## mod_asis test config
+##
+
+<IfModule mod_asis.c>
+    <Directory @SERVERROOT@/htdocs/modules/asis>
+       AddHandler send-as-is asis
+    </Directory>
+</IfModule>
+
+##
+## mod_headers test config
+##
+
+<IfModule mod_headers.c>
+    <Directory @SERVERROOT@/htdocs/modules/headers/htaccess>
+        AllowOverride All
+    </Directory>
+
+    <Directory @SERVERROOT@/htdocs/modules/headers/ssl>
+        AllowOverride All
+    </Directory>
+
+    <VirtualHost mod_headers>
+        <Location /manual>
+            Header add mod_headers_foo bar
+        </Location>
+    </VirtualHost>
+
+    # Should match anything mapped to disk
+    <DirectoryMatch ^>
+      Header append DMMATCH1 1
+    </DirectoryMatch>
+</IfModule>
+
+##
+## mod_dir test config
+##
+
+<IfModule mod_dir.c>
+    <Directory @SERVERROOT@/htdocs/modules/dir/htaccess>
+        DirectorySlash OFF
+    </Directory>
+  <IfVersion >= 2.5.1>
+    <Directory @SERVERROOT@/htdocs/modules/dir/htaccess/sub>
+        DirectorySlash NotFound
+    </Directory>
+  </IfVersion>
+    <Directory @SERVERROOT@/htdocs/modules/dir/htaccess>
+        AllowOverride Indexes
+    </Directory>
+    <Directory @SERVERROOT@/htdocs/modules/dir/fallback>
+       <IfModule mod_negotiation.c>
+         Options +MultiViews
+       </IfModule>
+       <IfModule mod_mime.c>
+         AddType server-status .magictype
+       </IfModule>
+       DirectoryIndex fallback.magictype
+      # FallBackResource /modules/dir/fallback/fallback.magictype
+    </Directory>
+</IfModule>
+
+##
+## mod_env test config
+##
+
+<IfModule mod_env.c>
+    PassEnv APACHE_TEST_HOSTNAME
+    SetEnv ENV_TEST "mod_env test environment variable"
+    SetEnv ENV_TEST_EMPTY
+    UnsetEnv UNSET
+
+    PassEnv APACHE_TEST_HOSTTYPE
+    UnsetEnv APACHE_TEST_HOSTTYPE
+
+    SetEnv NOT_HERE "this will not be here"
+    UnsetEnv NOT_HERE
+
+    <Directory @SERVERROOT@/htdocs/modules/env>
+        Options +Includes
+    </Directory>
+</IfModule>
+
+##
+## mod_setenvif test config
+##
+
+<IfModule mod_setenvif.c>
+    <Directory @SERVERROOT@/htdocs/modules/setenvif/htaccess>
+        Options +Includes
+        AllowOverride All
+    </Directory>
+</IfModule>
+
+##
+## mod_dav test config
+##
+
+<IfModule mod_dav.c>
+    <IfVersion < 2.5.1>
+      DAVLockDB @SERVERROOT@/logs/davlock.db
+    </IfVersion>
+
+    <Directory @SERVERROOT@/htdocs/modules/dav>
+        DAV On
+    </Directory>
+</IfModule>
+
+##
+## mod_autoindex test config
+##
+
+<IfModule mod_autoindex.c>
+    <Directory @SERVERROOT@/htdocs/modules/autoindex/htaccess>
+        Options +Indexes
+        AllowOverride Indexes
+    </Directory>
+    <Directory @SERVERROOT@/htdocs/modules/autoindex2>
+        Options +Indexes
+        AllowOverride  All
+    </Directory>
+</IfModule>
+
+##
+## LimitRequest* directive testing
+##
+
+LimitRequestLine      @limitrequestline@
+LimitRequestFieldSize 1024
+LimitRequestFields    32
+<Directory @SERVERROOT@/htdocs/apache/limits>
+    LimitRequestBody  65536
+</Directory>
+
+##
+## mod_echo test config
+##
+
+<IfModule mod_echo.c>
+    <VirtualHost mod_echo>
+        ProtocolEcho On
+    </VirtualHost>
+
+    <IfModule @ssl_module@>
+        <VirtualHost mod_echo_ssl>
+            ProtocolEcho On
+            SSLEngine On
+        </VirtualHost>
+    </IfModule>
+</IfModule>
+
+##
+## mod_deflate test config
+## 
+<IfDefine APACHE2>
+    <IfModule mod_deflate.c>
+        <Directory @SERVERROOT@/htdocs/modules/deflate>
+            SetOutputFilter DEFLATE
+        </Directory> 
+
+        <Directory @SERVERROOT@/htdocs/modules/deflate/ssi>
+            Options +Includes
+            DirectoryIndex default.html
+            AddOutputFilter INCLUDES shtml
+            SetOutputFilter DEFLATE
+        </Directory> 
+
+        <IfModule mod_bucketeer.c>
+            <Directory @SERVERROOT@/htdocs/modules/deflate/bucketeer>
+                SetOutputFilter BUCKETEER;DEFLATE
+            </Directory> 
+        </IfModule>
+
+
+        <Location /modules/cgi/not-modified.pl>
+            SetOutputFilter DEFLATE
+        </Location> 
+
+        <Location /modules/deflate/echo_post>
+            SetInputFilter DEFLATE
+            SetHandler echo_post
+        </Location>
+    </IfModule>
+</IfDefine>
+
+### pr17629.t
+<IfModule mod_case_filter.c>
+    <Location /modules/cgi/redirect.pl>
+        SetOutputFilter CASEFILTER
+    </Location> 
+</IfModule>
+
+
+##
+## Test config for security issues
+##
+<Directory @SERVERROOT@/htdocs/security>
+    Options +Includes
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+
+    # for CVE-2005-3352 test:
+    AddHandler imap-file map
+</Directory>
+
+<Directory @SERVERROOT@/htdocs/security/CAN-2004-0811>
+    Options +Indexes
+</Directory>
+
+<Directory @SERVERROOT@/htdocs/security/CAN-2004-0811/sub>
+    Satisfy Any
+</Directory>
+
+##
+## Digest test config
+##
+<IfDefine APACHE2>
+    <IfModule mod_auth_digest.c>
+        Alias /digest @DocumentRoot@
+        <Location /digest>
+            Require valid-user
+            AuthType Digest
+            AuthName realm1
+            # 2.0
+            <IfModule mod_auth.c>
+                AuthDigestFile @ServerRoot@/realm1
+            </IfModule>
+            # 2.1
+            <IfModule mod_authn_file.c>
+                AuthUserFile realm1
+            </IfModule>
+       </Location>
+       SetEnvIf X-Browser "MSIE" AuthDigestEnableQueryStringHack=On
+    </IfModule>
+</IfDefine>
+
+##
+## authz_core test config: authz by user or by env (modules/aaa.t)
+##
+<IfDefine APACHE2>
+    <IfModule mod_authz_core.c>
+    <IfModule mod_authn_core.c>
+    <IfModule mod_authn_file.c>
+    <IfModule mod_authz_host.c>
+        <IfModule mod_auth_digest.c>
+            Alias /authz/digest @DocumentRoot@
+            <Location /authz/digest>
+                <RequireAny>
+                    Require valid-user
+                    Require env allowed
+                </RequireAny>
+                AuthType Digest
+                AuthName realm2
+                AuthUserFile realm2
+           </Location>
+        </IfModule>
+        <IfModule mod_auth_basic.c>
+            Alias /authz/basic @DocumentRoot@
+            <Location /authz/basic>
+                <RequireAny>
+                    Require valid-user
+                    Require env allowed
+                </RequireAny>
+                AuthType Basic
+                AuthName basic1
+                AuthUserFile basic1
+           </Location>
+        </IfModule>
+        <IfVersion >= 2.3.11>
+          <IfModule mod_auth_basic.c>
+            Alias /authz/fail/401 @DocumentRoot@
+            Alias /authz/fail/403 @DocumentRoot@
+            <Location /authz/fail>
+                Require user foo
+                AuthType Basic
+                AuthName basic1
+                AuthUserFile basic1
+           </Location>
+           <Location /authz/fail/403>
+                AuthzSendForbiddenOnFailure On
+           </Location>
+          </IfModule>
+        </IfVersion>
+        <IfModule mod_auth_form.c>
+        <IfModule mod_session_cookie.c>
+            Alias /authz/form @DocumentRoot@
+            <Location /authz/form>
+                AuthFormLoginRequiredLocation http://@SERVERNAME@:@PORT@/authz/login.html
+                AuthFormLoginSuccessLocation  http://@SERVERNAME@:@PORT@/authz/form/
+                AuthFormProvider file
+                AuthType Form
+                AuthUserFile form1
+                AuthName form1
+                Session On
+                SessionCookieName session path=/
+                <RequireAny>
+                    Require valid-user
+                    Require env allowed
+                </RequireAny>
+            </Location>
+            <Location /authz/form/dologin.html>
+                SetHandler form-login-handler
+                Require all granted
+            </Location>
+        </IfModule>
+        </IfModule>
+       SetEnvIf X-Allowed "yes" allowed
+    </IfModule>
+    </IfModule>
+    </IfModule>
+    </IfModule>
+</IfDefine>
+
+##
+## authz_core test config: authz merging (modules/authz_core.t)
+##
+<IfDefine APACHE2>
+    <IfModule mod_authz_core.c>
+    <IfModule mod_authn_core.c>
+    <IfModule mod_authz_host.c>
+       <Directory @DocumentRoot@/authz_core/>
+          AllowOverride all
+       </Directory>
+
+       SetEnvIf X-Allowed1 "yes" allowed1
+       SetEnvIf X-Allowed2 "yes" allowed2
+       SetEnvIf X-Allowed3 "yes" allowed3
+       SetEnvIf X-Allowed4 "yes" allowed4
+    </IfModule>
+    </IfModule>
+    </IfModule>
+</IfDefine>
+
+##
+## Configuration for t/modules/ldap.t.
+##
+<IfDefine LDAP>
+  Alias /modules/ldap/simple @DocumentRoot@
+  Alias /modules/ldap/group @DocumentRoot@
+  Alias /modules/ldap/refer @DocumentRoot@
+
+  # Simple user lookup
+  <Location /modules/ldap/simple>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-simple@httpd.apache.org
+     AuthBasicProvider ldap
+     Require valid-user
+  </Location>
+  # Static group configuration
+  <Location /modules/ldap/group>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-group@httpd.apache.org
+     AuthBasicProvider ldap
+     Require ldap-group cn=Group One,dc=example,dc=com
+  </Location>
+  # Referral configuration -- the second user is only found if
+  # httpd follows the referral.
+  <Location /modules/ldap/refer>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-refer@httpd.apache.org
+     AuthBasicProvider ldap
+     Require ldap-group cn=Subgroup,ou=dept,dc=example,dc=com
+  </Location>
+</IfDefine>
+
+##
+## ErrorDocument handling
+## create it's own virtual host so it doesn't interfere
+## with other tests for 404 messages
+## 
+<VirtualHost _default_:error_document>
+    ErrorDocument 404 "per-server 404
+                                                                                                                             
+    <Location /redefine>
+        ErrorDocument 404 "per-dir 404
+    </Location>
+                                                                                                                             
+    <Location /inherit>
+        # nothing here
+    </Location>
+
+    <Location /bounce>
+        ErrorDocument 404 /modules/expires/expire.html
+    </Location>
+
+    <Location /restore>
+        # special "default" value = restore canned error response
+        ErrorDocument 404 default
+    </Location>
+
+    <Directory @DocumentRoot@/apache>
+         ErrorDocument 404 "testing merge
+    </Directory>
+                                                                                                                             
+    <Directory @DocumentRoot@/apache/etag>
+         # 404 should be inherited from /apache
+         ErrorDocument 500 "hmph
+    </Directory>
+
+    TraceEnable off
+    ErrorDocument 405 /i/dont/exist
+
+</VirtualHost>
+
+<Directory @DocumentRoot@/modules/filter/byterange/pr61860>
+    Header always set TestDuplicateHeader  "shouldnotbeduplicated"
+</Directory>
+
+<IfModule mod_bucketeer.c>
+   <Directory @DocumentRoot@/apache/chunked>
+       SetOutputFilter BUCKETEER
+   </Directory>
+</IfModule>
+
+<IfModule mod_status.c>
+   ExtendedStatus On
+</IfModule>
+
+<IfModule mod_filter.c>
+   <IfModule mod_case_filter.c>
+      <Location /modules/cgi/xother.pl>
+        FilterDeclare xother CONTENT_SET
+        <IfVersion >= 2.3.9>
+          FilterProvider xother CASEFILTER "resp('X-Foo') == 'bar'"
+        </IfVersion>
+        <IfVersion < 2.3.0>
+          FilterProvider xother CASEFILTER resp=X-Foo bar
+        </IfVersion>
+        FilterChain xother
+      </Location>
+   </IfModule>
+
+   <Directory @SERVERROOT@/htdocs/modules/filter/pr49328>
+       Options +Includes
+       AddType text/html .shtml
+       AddOutputFilter INCLUDES .shtml
+
+       <IfModule mod_deflate.c>
+         FilterDeclare pr49328 CONTENT_SET
+         <IfVersion < 2.3.0> 
+            FilterProvider pr49328 DEFLATE resp=Content-Type $text/
+         </IfVersion>
+         <IfVersion >= 2.3.0>
+           <IfVersion < 2.3.9>
+              FilterProvider pr49328 DEFLATE "$content-type = /text\//"
+           </IfVersion>
+         </IfVersion>
+         <IfVersion >= 2.3.9>
+            FilterProvider pr49328 DEFLATE "%{CONTENT_TYPE} =~ m!text/!"
+         </IfVersion>
+         FilterChain pr49328
+       </IfModule>
+   </Directory>
+   <Directory @SERVERROOT@/htdocs/modules/filter/bytype>
+      <IfModule mod_deflate.c>
+        AddOutputFilterByType DEFLATE application/xml
+        AddOutputFilterByType DEFLATE text/xml
+        AddOutputFilterByType DEFLATE text/css
+      </IfModule>
+      <IfModule mod_case_filter.c>
+        AddOutputFilterByType CASEFILTER application/xml
+        AddOutputFilterByType CASEFILTER text/xml
+        AddOutputFilterByType CASEFILTER text/plain
+      </IfModule>
+   </Directory>
+</IfModule>
+
+##
+## mod_dumpio configuration
+##
+<IfModule mod_dumpio.c>
+	DumpIOInput on
+	DumpIOOutput on
+	LogLevel dumpio:trace7
+</IfModule>
+
+##
+## LogLevel configuration
+##
+<IfDefine APACHE2>
+   <IfVersion >= 2.3.6>
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/core_crit>
+         LogLevel info core:crit
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/core_info>
+         LogLevel crit core:info
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/crit>
+         LogLevel crit
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/crit/core_info>
+         LogLevel core:info
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/crit/core_info/crit>
+         LogLevel crit
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/info>
+         LogLevel info
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/info/core_crit>
+         LogLevel core:crit
+      </Directory>         
+      <Directory @SERVERROOT@/htdocs/apache/loglevel/info/core_crit/info>
+         LogLevel info
+      </Directory>         
+   </IfVersion>
+</IfDefine>
+
+<Directory @SERVERROOT@/htdocs/apache/cfg_getline/>
+    AllowOverride All
+    AddType text/html .shtml
+    AddOutputFilter INCLUDES .shtml
+    Options +Includes
+</Directory>
+
+<Directory @SERVERROOT@/htdocs/modules/substitute/>
+    AllowOverride All
+</Directory>
+
+##
+## expression parser test config
+##
+
+<IfVersion >= 2.3.9>
+    <Directory @SERVERROOT@/htdocs/apache/expr/>
+        AllowOverride All
+        <IfModule mod_log_debug.c>
+	  AllowOverrideList LogMessage
+        </IfModule>
+    </Directory>
+</IfVersion>
+
+<IfDefine APACHE2>
+  <IfVersion >= 2.3.11>
+    <IfModule mod_headers.c>
+    <IfModule mod_proxy.c>
+       ProxyPass /if_sec/proxy/ http://@SERVERNAME@:@PORT@/
+
+       # Directory context
+       <Directory @SERVERROOT@/htdocs/if_sec/dir/>
+         <If "-n %{REQ:In-If1}">
+           Header merge Out-Trace dir1
+             <If "-n %{REQ:In-If11}">
+               Header merge Out-Trace nested11
+               <If "-n %{REQ:In-If111}">
+                 Header merge Out-Trace nested111
+               </If>
+               <Elseif "-n %{REQ:In-If112}">
+                 Header merge Out-Trace nested112
+               </Elseif>
+               <Else>
+                 Header merge Out-Trace nested113
+               </Else>
+             </If>
+         </If>
+         <If "-n %{REQ:In-If2}">
+           Header merge Out-Trace dir2
+         </If>
+         <Files *.txt>
+           <If "-n %{REQ:In-If1}">
+             Header merge Out-Trace dir_files1
+           </If>
+         </Files>
+       </Directory>
+
+       # Location context
+       <Location /if_sec/proxy/>
+         <If "-n %{REQ:In-If1}">
+           Header merge Out-Trace locp1
+         </If>
+         <If "-n %{REQ:In-If2}">
+           Header merge Out-Trace locp2
+         </If>
+       </Location>
+       <Location /if_sec/loc/>
+         <If "-n %{REQ:In-If1}">
+           Header merge Out-Trace loc1
+           <If "-n %{REQ:In-If11}">
+             Header merge Out-Trace nested11
+             <If "-n %{REQ:In-If111}">
+               Header merge Out-Trace nested111
+             </If>
+             <Elseif "-n %{REQ:In-If112}">
+               Header merge Out-Trace nested112
+             </Elseif>
+             <Else>
+               Header merge Out-Trace nested113
+             </Else>
+           </If>
+         </If>
+         <If "-n %{REQ:In-If2}">
+           Header merge Out-Trace loc2
+         </If>
+       </Location>
+
+       # Files context
+       <Files *.if_test>
+         <If "-n %{REQ:In-If2}">
+           Header merge Out-Trace files2
+           <If "-n %{REQ:In-If11}">
+             Header merge Out-Trace nested11
+             <If "-n %{REQ:In-If111}">
+               Header merge Out-Trace nested111
+             </If>
+             <Elseif "-n %{REQ:In-If112}">
+               Header merge Out-Trace nested112
+             </Elseif>
+             <Else>
+               Header merge Out-Trace nested113
+             </Else>
+           </If>
+         </If>
+       </Files>
+
+       # Global context
+       <If "-n %{REQ:In-If1}">
+         Header merge Out-Trace global1
+         <If "-n %{REQ:In-If11}">
+           Header merge Out-Trace nested11
+           <If "-n %{REQ:In-If111}">
+             Header merge Out-Trace nested111
+           </If>
+           <Elseif "-n %{REQ:In-If112}">
+             Header merge Out-Trace nested112
+           </Elseif>
+           <Else>
+             Header merge Out-Trace nested113
+           </Else>
+         </If>
+       </If>
+    </IfModule>
+    </IfModule>
+  </IfVersion>
+</IfDefine>
+
+<IfDefine APACHE2>
+  <IfVersion >= 2.3.15>
+    <IfModule mod_alias.c>
+      AliasMatch /maxranges/([^/])+/ @SERVERROOT@/htdocs/apache/chunked/byteranges.txt
+      <Location /maxranges/none/>
+        MaxRanges none
+      </Location>
+      <Location /maxranges/default-explicit/>
+        MaxRanges default
+      </Location>
+      <Location /maxranges/1/>
+        MaxRanges 1
+      </Location>
+      <Location /maxranges/2/>
+        MaxRanges 2
+      </Location>
+      <Location /maxranges/1/merge/none/>
+        MaxRanges none
+      </Location>
+      <Location /maxranges/unlimited/>
+        MaxRanges unlimited
+      </Location>
+    </IfModule>
+  </IfVersion>
+  <IfVersion >= 2.2.21>
+    <IfModule mod_alias.c>
+      AliasMatch /maxranges/([^/])+/ @SERVERROOT@/htdocs/apache/chunked/byteranges.txt
+      <Location /maxranges/none/>
+        MaxRanges none
+      </Location>
+      <Location /maxranges/default-explicit/>
+        MaxRanges default
+      </Location>
+      <Location /maxranges/1/>
+        MaxRanges 1
+      </Location>
+      <Location /maxranges/2/>
+        MaxRanges 2
+      </Location>
+      <Location /maxranges/1/merge/none/>
+        MaxRanges none
+      </Location>
+      <Location /maxranges/unlimited/>
+        MaxRanges unlimited
+      </Location>
+    </IfModule>
+  </IfVersion>
+
+</IfDefine>
+
+<IfModule mod_lua.c>
+   AddHandler lua-script .lua 
+   LuaHookTranslateName @SERVERROOT@/htdocs/modules/lua/translate.lua translate_name
+   <Location /modules/lua/translate-inherit-after>
+     LuaHookTranslateName @SERVERROOT@/htdocs/modules/lua/translate.lua translate_name2
+     LuaInherit parent-last
+   </Location>
+   <Location /modules/lua/translate-inherit-before>
+     LuaHookTranslateName @SERVERROOT@/htdocs/modules/lua/translate.lua translate_name2
+     LuaInherit parent-first
+   </Location>
+   <Location /modules/lua/translate-inherit-default-before>
+     LuaHookTranslateName @SERVERROOT@/htdocs/modules/lua/translate.lua translate_name2
+     # default: LuaInherit parent-first
+   </Location>
+
+   # Filtering tests
+   LuaOutputFilter LUA_OUTPUT @SERVERROOT@/htdocs/modules/lua/filters.lua output_filter
+   Alias /modules/lua/filtered @DocumentRoot@
+   <Location /modules/lua/filtered/>
+      SetOutputFilter LUA_OUTPUT
+   </Location>
+   
+</IfModule>
+
+# 
+# Strict HTTP mode test config
+#
+<IfDefine APACHE2>
+  <IfVersion >= 2.2.32>
+    <Directory @SERVERROOT@/htdocs/apache/http_strict>
+      Options +ExecCGI
+      AddHandler cgi-script .pl
+    </Directory>
+    <VirtualHost _default_:http_unsafe>
+      DocumentRoot @SERVERROOT@/htdocs/
+      HttpProtocolOptions Unsafe Allow0.9
+      <IfModule mod_headers.c>
+        <Location /regression-header>
+          # Use two examples to ensure multiple bad headers are caught
+          # Note the vertical tab (^K or 0x0B) embedded in the header value
+          Header always set X-Bad "verticaltab"
+          Header always set X?Bad "badly named header"
+        </Location>
+      </IfModule>
+   </VirtualHost>
+   <VirtualHost _default_:http_strict>
+      DocumentRoot @SERVERROOT@/htdocs/
+      HttpProtocolOptions Strict Require1.0 RegisteredMethods
+      <IfModule mod_headers.c>
+        <Location /regression-header>
+          # Use two examples to ensure multiple bad headers are caught
+          # Note the vertical tab (^K or 0x0B) embedded in the header value
+          Header always set X-Bad "verticaltab"
+          Header always set X?Bad "badly named header"
+        </Location>
+      </IfModule>
+   </VirtualHost>
+  </IfVersion>
+</IfDefine>
+
+#
+# mod_brotli test config
+#
+<IfDefine APACHE2>
+  <IfModule mod_alias.c>
+    <IfModule mod_brotli.c>
+        # Reuse existing data for mod_deflate
+        Alias /only_brotli @SERVERROOT@/htdocs/modules/deflate
+        <Location /only_brotli>
+          SetOutputFilter BROTLI_COMPRESS
+        </Location>
+
+        <IfModule mod_deflate.c>
+          Alias /brotli_and_deflate @SERVERROOT@/htdocs/modules/deflate
+          <Location /brotli_and_deflate>
+            SetOutputFilter BROTLI_COMPRESS;DEFLATE
+          </Location>
+        </IfModule>
+    </IfModule>
+  </IfModule>
+</IfDefine>
+
+#
+# <IfFile> test config (see t/apache/iffile.t)
+#
+<IfDefine APACHE2>
+  <IfVersion >= 2.4.34>
+  <IfModule mod_headers.c>
+
+    <Location /apache/iffile>
+      # First, the IfFiles that should succeed.
+      <IfFile htdocs/apache/iffile/document>
+        Header merge X-Out success1
+      </IfFile>
+      <IfFile !htdocs/apache/iffile/doesnotexist>
+        Header merge X-Out success2
+      </IfFile>
+      <IfFile htdocs/apache/iffile>
+        Header merge X-Out success3
+      </IfFile>
+      <IfFile @SERVERROOT@/htdocs/apache/iffile/document>
+        Header merge X-Out success4
+      </IfFile>
+      <IfFile "htdocs/apache/iffile/document">
+        Header merge X-Out success5
+      </IfFile>
+      # Followed by the IfFiles that should fail.
+      <IfFile !htdocs/apache/iffile/document>
+        Header merge X-Out fail1
+      </IfFile>
+      <IfFile htdocs/apache/iffile/doesnotexist>
+        Header merge X-Out fail2
+      </IfFile>
+      <IfFile !htdocs/apache/iffile>
+        Header merge X-Out fail3
+      </IfFile>
+      <IfFile !@SERVERROOT@/htdocs/apache/iffile/document>
+        Header merge X-Out fail4
+      </IfFile>
+      <IfFile !"htdocs/apache/iffile/document">
+        Header merge X-Out fail5
+      </IfFile>
+    </Location>
+
+  </IfModule>
+  </IfVersion>
+</IfDefine>
+
+
+#
+# t/modules/ext_filter.t test config
+#
+<IfDefine APACHE2>
+  <IfModule mod_ext_filter.c>
+    ExtFilterDefine foo-to-bar mode=output cmd="@SERVERROOT@/htdocs/modules/ext_filter/eval-cmd.pl s,foo,bar,g"
+    ExtFilterDefine ifoo-to-bar mode=input cmd="@SERVERROOT@/htdocs/modules/ext_filter/eval-cmd.pl s,foo,bar,g"
+    ExtFilterDefine sleepy-cat-out mode=output cmd=@SERVERROOT@/htdocs/modules/ext_filter/sleepycat.pl
+    ExtFilterDefine sleepy-cat-in mode=input cmd=@SERVERROOT@/htdocs/modules/ext_filter/sleepycat.pl
+    AliasMatch /apache/extfilter/[^/]+/(.*) @DocumentRoot@/$1
+
+    <Location /apache/extfilter/out-foo>
+       SetOutputFilter foo-to-bar
+    </Location>
+
+    <Location /apache/extfilter/out-slow>
+       SetOutputFilter sleepy-cat-out
+    </Location>
+
+    <Location /apache/extfilter/in-foo>
+       SetInputFilter ifoo-to-bar
+    </Location>
+
+    <Location /apache/extfilter/out-limit>
+       SetOutputFilter foo-to-bar
+       LimitRequestBody 6
+    </Location>
+
+</IfModule>
+</IfDefine>
+
+##
+## mod_ssl_ct configuration
+##
+<IfModule mod_ssl_ct.c>
+  # If mod_ssl_ct is loaded, CTSCTStorage is needed to pass the configtest.
+  CTSCTStorage .
+</IfModule>
+
+##
+## mod_remote_ip configuration
+##
+<IfModule mod_remoteip.c>
+   <VirtualHost remote_ip>
+      DocumentRoot @SERVERROOT@/htdocs/modules/remoteip
+      <IfVersion >= 2.4.30>
+        RemoteIPProxyProtocol On
+      </IfVersion>
+   </VirtualHost>
+</IfModule>
+
+
+<IfModule mod_ratelimit.c>
+   AliasMatch ^/apache/ratelimit/autoindex/$ @SERVERROOT@/htdocs/
+   AliasMatch ^/apache/ratelimit/$ @SERVERROOT@/htdocs/index.html
+   <Location /apache/ratelimit/>
+       Options +Indexes
+       SetOutputFilter RATE_LIMIT
+       <IfModule mod_env.c>
+           SetEnv rate-limit 1024
+           SetEnv rate-initial-burst 512
+       </IfModule>
+   </Location>
+   <Location /apache/ratelimit/chunk>
+      SetHandler random_chunk
+   </Location>
+</IfModule>
+
+<IfModule mod_reflector.c>
+   <Location /apache/reflector_nodeflate/>
+       SetHandler reflector
+       # Do not set any filter
+       ReflectorHeader header2reflect
+       ReflectorHeader header2update header2updateUpdated
+   </Location>
+   <Location /apache/reflector_deflate/>
+       SetHandler reflector
+       SetOutputFilter DEFLATE
+       ReflectorHeader header2reflect
+       ReflectorHeader header2update header2updateUpdated
+   </Location>
+</IfModule>
+
+<IfModule mod_allowmethods.c>
+    <Directory @SERVERROOT@/htdocs/modules/allowmethods>
+        Options +Indexes
+    </Directory>
+    <IfVersion >= 2.5.1>
+        <Directory @SERVERROOT@/htdocs/modules/allowmethods/NoPost>
+            AllowMethods -POST
+        </Directory>
+    </IfVersion>
+    <Directory @SERVERROOT@/htdocs/modules/allowmethods/Get>
+        AllowMethods GET
+    </Directory>
+    <IfVersion >= 2.5.1>
+        <Directory @SERVERROOT@/htdocs/modules/allowmethods/Get/post>
+            AllowMethods +POST
+        </Directory>
+        <Directory @SERVERROOT@/htdocs/modules/allowmethods/Get/none>
+            AllowMethods -GET
+        </Directory>
+    </IfVersion>
+    <Directory @SERVERROOT@/htdocs/modules/allowmethods/Head>
+        AllowMethods HEAD
+    </Directory>
+    <Directory @SERVERROOT@/htdocs/modules/allowmethods/Post>
+        AllowMethods POST
+    </Directory>
+    <Directory @SERVERROOT@/htdocs/modules/allowmethods/Post/reset>
+        AllowMethods reset
+    </Directory>
+</IfModule>
+
+<IfModule mod_buffer.c>
+   <IfModule mod_reflector.c>
+      <Location /apache/buffer_in/>
+          SetHandler reflector
+          SetInputFilter BUFFER
+      </Location>
+      <Location /apache/buffer_out/>
+          SetHandler reflector
+          SetOutputFilter BUFFER
+      </Location>
+      <Location /apache/buffer_in_out/>
+          SetHandler reflector
+          SetInputFilter BUFFER
+          SetOutputFilter BUFFER
+      </Location>
+   </IfModule>
+</IfModule>
+
+<IfModule mod_data.c>
+   <Directory @SERVERROOT@/htdocs/modules/data/>
+      SetOutputFilter DATA
+   </Directory>
+</IfModule>
+
+<IfModule mod_usertrack.c>
+   <Directory @SERVERROOT@/htdocs/modules/usertrack/>
+      CookieTracking on
+      CookieName usertrack_test
+      CookieExpires "60 seconds"
+   </Directory>
+</IfModule>
+
+<IfModule mod_session_cookie.c>
+    <Directory @SERVERROOT@/htdocs/modules/session_cookie>
+        Session On
+        SessionCookieName thisisatest path=/
+        SessionMaxAge 1
+    </Directory>
+</IfModule>
+
+<IfModule mod_speling.c>
+   <Directory @SERVERROOT@/htdocs/modules/speling/nocase/>
+      CheckSpelling on
+   </Directory>
+   <Directory @SERVERROOT@/htdocs/modules/speling/caseonly/>
+      CheckSpelling on
+      CheckCaseOnly on
+   </Directory>
+</IfModule>
+
+<IfModule mod_actions.c>
+   ScriptAlias /cgi_mod_actions @SERVERROOT@/htdocs/modules/cgi
+   <Location /mod_actions>
+    	SetHandler my-handler
+	Action my-handler "/cgi_mod_actions/perl_echo.pl" virtual
+   </Location>
+
+   <Directory @SERVERROOT@/htdocs/modules/actions/action>
+   	AddHandler my-file-type1 .xyz1
+	Action my-file-type1 "/cgi_mod_actions/perl_echo.pl"
+   	AddHandler my-file-type2 .xyz2
+	Action my-file-type2 "/cgi_mod_actions/perl_echo.pl" virtual
+   </Directory>
+
+   <Directory @SERVERROOT@/htdocs/modules/actions/script>
+   	Script GET  "/cgi_mod_actions/perl_echo.pl"  
+   	Script POST "/cgi_mod_actions/perl_post.pl"  
+   </Directory>
+</IfModule>
+
+<IfModule mod_heartbeat.c>
+	<IfModule mod_heartmonitor.c>
+		HeartbeatListen 239.0.0.1:27999
+		HeartbeatAddress 239.0.0.1:27999
+	</IfModule>
+</IfModule>
+
+#
+# t/modules/sed.t test config
+#
+<IfModule mod_sed.c>
+  AliasMatch /apache/sed/[^/]+/(.*) @DocumentRoot@/$1
+
+  <Location /apache/sed-echo>
+    SetHandler echo_post
+    SetInputFilter sed 
+  </Location>
+
+  <Location /apache/sed/>
+    AddOutputFilter sed .html
+  </Location>
+
+  <Location /apache/sed/out-foo>
+      OutputSed "s/foo/bar/g"
+  </Location>
+  <Location /apache/sed-echo/input>
+      InputSed "s/foo/bar/g"
+  </Location>
+  <Location /apache/sed-echo/out-foo-grow>
+    SetOutputFilter sed
+    OutputSed "s/foo/barbarbarbar/g"
+  </Location>
+</IfModule>

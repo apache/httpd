@@ -1,72 +1,70 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>log_server_status - Enregistrement pÃ©riodique de l'Ã©tat du serveur - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>log_server_status - Enregistrement p&Atilde;&copy;riodique de l'&Atilde;&copy;tat du serveur - Serveur HTTP Apache Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>log_server_status - Enregistrement pÃ©riodique de l'Ã©tat du serveur</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>log_server_status - Enregistrement p&Atilde;&copy;riodique de l'&Atilde;&copy;tat du serveur</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/log_server_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/log_server_status.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/log_server_status.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
-    <p>Ce script perl a Ã©tÃ© conÃ§u pour Ãªtre exÃ©cutÃ© Ã&nbsp; intervalles
-    rÃ©guliers via un dÃ©clencheur de type cron. Il se connecte au serveur
-    pour en extraire des informations quant Ã&nbsp; son Ã©tat. Il formate ces
+    <p>Ce script perl a &Atilde;&copy;t&Atilde;&copy; con&Atilde;&sect;u pour &Atilde;&ordf;tre ex&Atilde;&copy;cut&Atilde;&copy; &Atilde;&nbsp; intervalles
+    r&Atilde;&copy;guliers via un d&Atilde;&copy;clencheur de type cron. Il se connecte au serveur
+    pour en extraire des informations quant &Atilde;&nbsp; son &Atilde;&copy;tat. Il formate ces
     informations sous la forme d'une seule ligne qu'il enregistre dans
-    un fichier. Vous devez Ã©diter la valeur des variables en tÃªte de
-    script afin de dÃ©finir le chemin du fichier de sortie. Pour que ce
+    un fichier. Vous devez &Atilde;&copy;diter la valeur des variables en t&Atilde;&ordf;te de
+    script afin de d&Atilde;&copy;finir le chemin du fichier de sortie. Pour que ce
     script puisse fonctionner, <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> doit au
-    prÃ©alable Ãªtre chargÃ© et configurÃ©.</p>
+    pr&Atilde;&copy;alable &Atilde;&ordf;tre charg&Atilde;&copy; et configur&Atilde;&copy;.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Mode d'emploi</a> <a title="Lien permanent" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">Mode d'emploi <a title="Lien permanent" href="#configure" class="permalink">&para;</a></h2>
 
 <p>Le script contient les sections suivantes :</p>
 
 <pre class="prettyprint lang-perl">my $wherelog = "/usr/local/apache2/logs/";  # Le fichier de sortie sera
 					# du style "/usr/local/apache2/logs/19960312"
 my $server   = "localhost";        # Nom du serveur, par exemple "www.foo.com"
-my $port     = "80";               # Port d'Ã©coute du serveur
-my $request = "/server-status/?auto";    # RequÃªte Ã  soumettre</pre>
+my $port     = "80";               # Port d'&Atilde;&copy;coute du serveur
+my $request = "/server-status/?auto";    # Requ&Atilde;&ordf;te &Atilde;&nbsp; soumettre</pre>
 
 
 <p>Ces variables doivent contenir des valeurs correctes, et le
-gestionnaire <code>/server-status</code> doit Ãªtre configurÃ© pour le
-rÃ©pertoire considÃ©rÃ©. En outre, l'utilisateur qui exÃ©cute le script doit
-avoir les droits d'Ã©criture sur le chemin du fichier de sortie.</p>
+gestionnaire <code>/server-status</code> doit &Atilde;&ordf;tre configur&Atilde;&copy; pour le
+r&Atilde;&copy;pertoire consid&Atilde;&copy;r&Atilde;&copy;. En outre, l'utilisateur qui ex&Atilde;&copy;cute le script doit
+avoir les droits d'&Atilde;&copy;criture sur le chemin du fichier de sortie.</p>
 
-<p>L'exÃ©cution pÃ©riodique du script via cron permet d'obtenir un jeu de
-rapports d'Ã©tat qui pourra Ãªtre utilisÃ© Ã&nbsp; des fins d'analyse
+<p>L'ex&Atilde;&copy;cution p&Atilde;&copy;riodique du script via cron permet d'obtenir un jeu de
+rapports d'&Atilde;&copy;tat qui pourra &Atilde;&ordf;tre utilis&Atilde;&copy; &Atilde;&nbsp; des fins d'analyse
 statistique.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/log_server_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/log_server_status.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/log_server_status.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Override Class Index for .htaccess - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="override-index">
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a></div>
 
 <div id="page-content"><div id="preamble"><h1>Override Class Index for .htaccess</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/overrides.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>
@@ -78,16 +76,16 @@
   </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#override-all">All</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#override-authconfig">AuthConfig</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#override-fileinfo">FileInfo</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#override-indexes">Indexes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#override-limit">Limit</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#override-options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#override-all">All</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#override-authconfig">AuthConfig</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#override-fileinfo">FileInfo</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#override-indexes">Indexes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#override-limit">Limit</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#override-options">Options</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 </ul></div>
-<div id="override-list"><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-all">All</a></h2>
+<div id="override-list"><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-all">All</a></h2>
     <p>
       The following directives are allowed in any .htaccess file, as long as
       overrides are enabled in the server configuration.
@@ -228,7 +226,7 @@ displayed</td></tr>
 can be <a href="#sniffing">automatically detected</a></td></tr>
 <tr class="odd"><td><a href="mod_xml2enc.html#xml2startparse">xml2StartParse</a></td><td class="module"><a href="mod_xml2enc.html">mod_xml2enc</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Advise the parser to skip leading junk.</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-authconfig">AuthConfig</a></h2>
+</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-authconfig">AuthConfig</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
       <code>AllowOverride AuthConfig</code> is in effect. They give .htaccess
@@ -498,14 +496,16 @@ boolean expression is true</td></tr>
 <tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
 <tr><td colspan="2" class="descr">Deny access when SSL is not used for the
 HTTP request</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Variable name to determine user name</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Type of Client Certificate verification</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Maximum depth of CA Certificates in Client
+<tr class="odd"><td><a href="mod_ssl.html#ssltrusturi">SSLTrustURI</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Server CA certificate store for Client Authentication</td></tr>
+<tr><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Variable name to determine user name</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Type of Client Certificate verification</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Maximum depth of CA Certificates in Client
 Certificate verification</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-fileinfo">FileInfo</a></h2>
+</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-fileinfo">FileInfo</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
       <code>AllowOverride FileInfo</code> is in effect. They give .htaccess
@@ -728,7 +728,7 @@ server</td></tr>
 <tr><td colspan="2" class="descr">Set the maximum line size</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv</a></td><td class="module"><a href="mod_env.html">mod_env</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Removes variables from the environment</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-indexes">Indexes</a></h2>
+</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-indexes">Indexes</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
       <code>AllowOverride Indexes</code> is in effect. They allow .htaccess
@@ -817,7 +817,7 @@ meta information</td></tr>
 <tr><td><a href="mod_autoindex.html#readmename">ReadmeName</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
 <tr><td colspan="2" class="descr">Name of the file that will be inserted at the end
 of the index listing</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-limit">Limit</a></h2>
+</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-limit">Limit</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
       <code>AllowOverride Limit</code> is in effect. This extremely narrow
@@ -847,7 +847,7 @@ evaluated.</td></tr>
 server.</td></tr>
 <tr class="odd"><td><a href="mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Enable compatibility mode for conditional expressions.</td></tr>
-</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-options">Options</a></h2>
+</table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-options">Options</a></h2>
     <p>
       The following directives are allowed in .htaccess files when
       <code>AllowOverride Options</code> is in effect. They give .htaccess
@@ -884,10 +884,10 @@ directory</td></tr>
 set</td></tr>
 </table></div></div></div><div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/overrides.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/overrides.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

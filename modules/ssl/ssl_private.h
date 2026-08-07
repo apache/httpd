@@ -290,8 +290,9 @@
 #define EVP_PKEY_up_ref(pk)        (CRYPTO_add(&(pk)->references, +1, CRYPTO_LOCK_EVP_PKEY))
 #define ASN1_STRING_get0_data(x)   ((x)->data)
 #define ASN1_STRING_length(x)      ((int)(x)->length)
-#define X509_get0_before(x)        X509_get_before(x)
-#define X509_get0_after(x)         X509_get_after(x)
+#define X509_get0_serialNumber(x) X509_get_serialNumber(x)
+#define X509_get0_notBefore(x)        X509_get_notBefore(x)
+#define X509_get0_notAfter(x)         X509_get_notAfter(x)
 #else
 void init_bio_methods(void);
 void free_bio_methods(void);
@@ -754,19 +755,23 @@ typedef struct {
  * a given vhost */
 typedef struct {
     /* Lists of configured certs and keys for this server */
+    apr_array_header_t *uris;
     apr_array_header_t *cert_files;
     apr_array_header_t *key_files;
 
     /** Certificates which specify the set of CA names which should be
      * sent in the CertificateRequest message: */
+    apr_array_header_t *trust_request_uris;
     const char  *ca_name_path;
     const char  *ca_name_file;
-    
+
     /* TLS service for this server is suspended */
     int service_unavailable;
 } modssl_pk_server_t;
 
 typedef struct {
+    /* Lists of configured certs and keys for this proxy */
+    apr_array_header_t *uris;
     /** proxy can have any number of cert/key pairs */
     const char  *cert_file;
     const char  *cert_path;
@@ -783,6 +788,7 @@ typedef struct {
 /** stuff related to authentication that can also be per-dir */
 typedef struct {
     /** known/trusted CAs */
+    apr_array_header_t *trust_uris;
     const char  *ca_cert_path;
     const char  *ca_cert_file;
 
@@ -821,6 +827,9 @@ typedef struct {
 typedef struct {
     SSLSrvConfigRec *sc; /** pointer back to server config */
     SSL_CTX *ssl_ctx;
+#if MODSSL_HAVE_OPENSSL_STORE
+    OSSL_LIB_CTX *libctx;
+#endif
 
     /** we are one or the other */
     modssl_pk_server_t *pks;
@@ -890,6 +899,24 @@ typedef struct {
     BOOL ssl_check_peer_name;
     BOOL ssl_check_peer_expire;
 } modssl_ctx_t;
+
+
+typedef struct {
+	modssl_ctx_t* mctx;
+
+	STACK_OF(X509) *cert_list;
+	STACK_OF(EVP_PKEY) *key_list;
+	STACK_OF(X509) *ca_list;
+
+	unsigned int num_certs;
+	unsigned int num_ca_certs;
+	unsigned int num_intermediate_certs;
+	unsigned int num_leaf_certs;
+	unsigned int num_server_certs;
+	unsigned int num_client_certs;
+	unsigned int num_keys;
+
+} modssl_ctx_uri_t;
 
 struct SSLSrvConfigRec {
     SSLModConfigRec *mc;
@@ -962,11 +989,14 @@ const char  *ssl_cmd_SSLEngine(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLECHKeyDir(cmd_parms *cmd, void *dcfg, const char *arg);
 #endif
 const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *, const char *);
+const char  *ssl_cmd_SSLStoreURI(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLTrustURI(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLTrustRequestURI(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCADNRequestPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCADNRequestFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCARevocationPath(cmd_parms *, void *, const char *);
@@ -995,11 +1025,13 @@ const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCipherSuite(cmd_parms *, void *, const char *, const char *);
 const char  *ssl_cmd_SSLProxyVerify(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyVerifyDepth(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyTrustURI(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyCARevocationCheck(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyStoreURI(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateChainFile(cmd_parms *, void *, const char *);
@@ -1045,7 +1077,7 @@ int          ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
                                            apr_pool_t *ptemp, server_rec *s,
                                            ap_conf_vector_t *section_config);
 STACK_OF(X509_NAME)
-            *ssl_init_FindCAList(server_rec *, apr_pool_t *, const char *, const char *);
+            *ssl_init_FindCAList(server_rec *, apr_pool_t *, const char *, const char *, apr_array_header_t *, modssl_ctx_t *);
 void         ssl_init_Child(apr_pool_t *, server_rec *);
 apr_status_t ssl_init_ModuleKill(void *data);
 
@@ -1179,6 +1211,12 @@ apr_status_t modssl_load_engine_keypair(server_rec *s,
                                         const char *vhostid,
                                         const char *certid, const char *keyid,
                                         X509 **pubkey, EVP_PKEY **privkey);
+
+UI_METHOD *modssl_get_passphrase_ui(apr_pool_t *p);
+void *modssl_get_passphrase_cb(server_rec *s, apr_pool_t *p,
+                               const char *vhostid,
+                               const char *uri);
+
 
 /**  Diffie-Hellman Parameter Support  */
 #if OPENSSL_VERSION_NUMBER < 0x30000000L

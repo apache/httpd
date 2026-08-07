@@ -33,7 +33,6 @@
 #include "md_result.h"
 #include "md_store.h"
 #include "md_util.h"
-#include "md_version.h"
 
 #include "md_acme.h"
 #include "md_acme_acct.h"

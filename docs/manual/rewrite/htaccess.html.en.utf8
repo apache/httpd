@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Per-directory Rewrites - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Per-directory Rewrites</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/htaccess.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/htaccess.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/htaccess.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/htaccess.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -48,20 +46,20 @@ processes rules in per-directory context, see the
 <a href="tech.html#InternalAPI">Technical Details</a> document.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#prerequisites">Prerequisites: AllowOverride</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#path-stripping">What URL does the rule see?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">When you need RewriteBase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#loops">The [L] flag and looping</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap-restriction">RewriteMap cannot be
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#prerequisites">Prerequisites: AllowOverride</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#path-stripping">What URL does the rule see?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritebase">When you need RewriteBase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#loops">The [L] flag and looping</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritemap-restriction">RewriteMap cannot be
 declared in .htaccess</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#context-restrictions">Which contexts support rewrite rules?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#inheritance">Rule inheritance with RewriteOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#debugging">Debugging .htaccess rewrite rules</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#caching">Browser caching of 301 redirects</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#context-restrictions">Which contexts support rewrite rules?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#inheritance">Rule inheritance with RewriteOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#debugging">Debugging .htaccess rewrite rules</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#caching">Browser caching of 301 redirects</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="tech.html">Technical details</a></li><li><a href="../mod/mod_rewrite.html#what_is_matched">What is matched?</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="prerequisites" id="prerequisites">Prerequisites: AllowOverride</a> <a title="Permanent link" href="#prerequisites" class="permalink">&para;</a></h2>
+<h2 id="prerequisites">Prerequisites: AllowOverride <a title="Permanent link" href="#prerequisites" class="permalink">&para;</a></h2>
 
 <p>Before <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives in a
 <code>.htaccess</code> file will be processed at all, the server
@@ -96,9 +94,9 @@ ability to circumvent directory restrictions
 <p>This restriction applies to both <code>.htaccess</code> files and
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="path-stripping" id="path-stripping">What URL does the rule see?</a> <a title="Permanent link" href="#path-stripping" class="permalink">&para;</a></h2>
+<h2 id="path-stripping">What URL does the rule see? <a title="Permanent link" href="#path-stripping" class="permalink">&para;</a></h2>
 
 <p>In server or virtualhost context, the
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern is
@@ -111,6 +109,11 @@ In <code>.htaccess</code> context, the directory prefix is
 <code>/app/products/widget</code>, the RewriteRule sees only
 <code>products/widget</code> - no leading slash, no
 <code>/app/</code> prefix.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_path_stripping.png" alt="Flowchart showing the path stripping, substitution,           and RewriteBase pipeline in per-directory context, with           three outcomes: relative path (RewriteBase prepended),           absolute path (used as-is), and absolute URI (external           redirect)"><br>
+      <dfn>Figure:</dfn> Per-directory path stripping and RewriteBase pipeline
+</p>
 
 <p>This means you must write your patterns differently depending on
 where the rule lives:</p>
@@ -139,7 +142,7 @@ a new internal subrequest with the rewritten URL, restarting request
 processing from the top. If the substitution is a relative path,
 the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive
 determines what URL-path prefix is prepended. This subrequest
-mechanism is also why rules can loop — see
+mechanism is also why rules can loop &mdash; see
 <a href="#loops">below</a>.</p>
 
 
@@ -163,9 +166,9 @@ URL-path (including the directory prefix), use
 RewriteRule "^.*$" "-" [F]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritebase" id="rewritebase">When you need RewriteBase</a> <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
+<h2 id="rewritebase">When you need RewriteBase <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
 
 <p>When <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> makes a substitution in
 <code>.htaccess</code> context, it needs to turn the relative result
@@ -213,9 +216,9 @@ would prepend the filesystem path rather than the URL path.</p>
 <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> has no effect
 - it only applies to relative substitutions.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="loops" id="loops">The [L] flag and looping</a> <a title="Permanent link" href="#loops" class="permalink">&para;</a></h2>
+<h2 id="loops">The [L] flag and looping <a title="Permanent link" href="#loops" class="permalink">&para;</a></h2>
 
 <p>In server context, the <code>[L]</code> flag means "stop processing
 the ruleset." In <code>.htaccess</code> context, it means something
@@ -223,6 +226,11 @@ subtly different: "stop processing the ruleset <em>for this pass</em>."
 After the substitution is made, Apache re-processes the request from
 the top - including re-applying the <code>.htaccess</code> rules.
 This can lead to infinite loops.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_l_flag_looping.png" alt="Flowchart showing how the [L] flag causes looping in           per-directory context by triggering a subrequest that           re-enters the ruleset"><br>
+      <dfn>Figure:</dfn> Per-directory [L] flag looping behavior
+</p>
 
 <p>Consider this rule:</p>
 
@@ -276,10 +284,10 @@ request line as sent by the client, which is not modified by
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Checking it prevents the rule from
 matching rewritten URLs.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap-restriction" id="rewritemap-restriction">RewriteMap cannot be
-declared in .htaccess</a> <a title="Permanent link" href="#rewritemap-restriction" class="permalink">&para;</a></h2>
+<h2 id="rewritemap-restriction">RewriteMap cannot be
+declared in .htaccess <a title="Permanent link" href="#rewritemap-restriction" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
 can only be declared in server or virtualhost context - not in
@@ -302,9 +310,9 @@ parsed on every request, and map initialization (especially for
 <code>dbm:</code>, <code>dbd:</code>, and <code>prg:</code> map types)
 would be prohibitively expensive to repeat each time.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="context-restrictions" id="context-restrictions">Which contexts support rewrite rules?</a> <a title="Permanent link" href="#context-restrictions" class="permalink">&para;</a></h2>
+<h2 id="context-restrictions">Which contexts support rewrite rules? <a title="Permanent link" href="#context-restrictions" class="permalink">&para;</a></h2>
 
 <p>Rewrite rules are supported in
 <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>
@@ -326,20 +334,20 @@ behavior</h3>
 inside a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, or
 <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> block
-— even inside a
+&mdash; even inside a
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> in the
-main server config — silently switches to
+main server config &mdash; silently switches to
 <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a> behavior.
 This means the leading slash is stripped from the URL before pattern
 matching, substitutions trigger an internal redirect (with loop risk),
 and the <a href="../rewrite/flags.html#flag_l">[L]</a> flag no longer
-truly stops processing — use
+truly stops processing &mdash; use
 <a href="../rewrite/flags.html#flag_end">[END]</a> instead.</p>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="inheritance" id="inheritance">Rule inheritance with RewriteOptions</a> <a title="Permanent link" href="#inheritance" class="permalink">&para;</a></h2>
+<h2 id="inheritance">Rule inheritance with RewriteOptions <a title="Permanent link" href="#inheritance" class="permalink">&para;</a></h2>
 
 <p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rules are <strong>not
 inherited</strong> by subdirectories. If you define rules in
@@ -384,9 +392,9 @@ applying the child's <code>RewriteBase</code> to all inherited rules.
 Available since Apache 2.4.26.</dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="debugging" id="debugging">Debugging .htaccess rewrite rules</a> <a title="Permanent link" href="#debugging" class="permalink">&para;</a></h2>
+<h2 id="debugging">Debugging .htaccess rewrite rules <a title="Permanent link" href="#debugging" class="permalink">&para;</a></h2>
 
 <p>When <code>.htaccess</code> rules are not doing what you expect,
 the rewrite log is your most important tool. Enable it at the
@@ -405,9 +413,9 @@ visible in these log entries.</p>
 production. It generates a large volume of output and will affect
 performance.</div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">Browser caching of 301 redirects</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
+<h2 id="caching">Browser caching of 301 redirects <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
 <p>When you issue a <code>301 Moved Permanently</code> redirect
 (via <code>[R=301]</code> or <code class="directive"><a href="../mod/mod_alias.html#redirect permanent">Redirect permanent</a></code>), the browser is allowed to cache
@@ -432,15 +440,15 @@ first.</div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/htaccess.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/htaccess.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/htaccess.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/htaccess.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

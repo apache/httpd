@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -10,34 +8,34 @@
       -->
 <title>ctlogconfig, l'utilitaire de configuration du service de
 transparence des certificats - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>ctlogconfig, l'utilitaire de configuration du service de
 transparence des certificats</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/ctlogconfig.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/ctlogconfig.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/ctlogconfig.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
-    <p><code>ctlogconfig</code> est un utilitaire permettant de crÃ©er et
-    maintenir une base de donnÃ©es pour la configuration du service de
+    <p><code>ctlogconfig</code> est un utilitaire permettant de cr&Atilde;&copy;er et
+    maintenir une base de donn&Atilde;&copy;es pour la configuration du service de
     transparence des certificats utilisable par le module
-    <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> ; nous nous rÃ©fÃ©rerons Ã&nbsp; ce service
+    <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> ; nous nous r&Atilde;&copy;f&Atilde;&copy;rerons &Atilde;&nbsp; ce service
     sous le terme "log" dans la suite de cette documentation.</p>
 
-    <p>Avant d'aller plus loin, et si ce n'est dÃ©jÃ&nbsp; fait, veuillez
+    <p>Avant d'aller plus loin, et si ce n'est d&Atilde;&copy;j&Atilde;&nbsp; fait, veuillez
     consulter le document <a href="../mod/mod_ssl_ct.html#logconf">Configuration des logs</a>
     dans la documentation du module <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code>.</p>
 
@@ -45,13 +43,13 @@ transparence des certificats</h1>
     ci-dessous</a> pour une utilisation typique.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Exemples et dÃ©finitions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#subcommands">Commandes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Exemples et d&Atilde;&copy;finitions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#subcommands">Commandes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Exemples</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Exemples et dÃ©finitions</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Exemples et d&Atilde;&copy;finitions <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
   
   <p><code>
     <strong>ctlogconfig</strong> <em>/path/to/db</em> <strong>dump</strong>
@@ -92,102 +90,102 @@ transparence des certificats</h1>
 
   <dl>
     <dt><em>log-id</em></dt>
-    <dd>Il s'agit de l'identifiant du log qui est gÃ©nÃ©rÃ© en effectuant
-    un hash SHA-256 au format hexadÃ©cimal de la clÃ© publique du log.
-    La taille de cette chaÃ®ne est de 64 caractÃ¨res. </dd>
+    <dd>Il s'agit de l'identifiant du log qui est g&Atilde;&copy;n&Atilde;&copy;r&Atilde;&copy; en effectuant
+    un hash SHA-256 au format hexad&Atilde;&copy;cimal de la cl&Atilde;&copy; publique du log.
+    La taille de cette cha&Atilde;&reg;ne est de 64 caract&Atilde;&uml;res. </dd>
 
     <dt><em>record-id</em></dt>
-    <dd>Il s'agit du numÃ©ro d'enregistrement dans la base de donnÃ©es,
+    <dd>Il s'agit du num&Atilde;&copy;ro d'enregistrement dans la base de donn&Atilde;&copy;es,
     tel qu'il s'affiche avec la sous-commande <strong>dump</strong>,
-    prÃ©fixÃ© par le caractÃ¨re <strong>#</strong>. Par exemple,
-    <strong>#4</strong> renvoie au quatriÃ¨me enregistrement de la base
-    de donnÃ©es (utilisez le mÃ©canisme d'Ã©chappement du shell si
-    nÃ©cessaire).</dd>
+    pr&Atilde;&copy;fix&Atilde;&copy; par le caract&Atilde;&uml;re <strong>#</strong>. Par exemple,
+    <strong>#4</strong> renvoie au quatri&Atilde;&uml;me enregistrement de la base
+    de donn&Atilde;&copy;es (utilisez le m&Atilde;&copy;canisme d'&Atilde;&copy;chappement du shell si
+    n&Atilde;&copy;cessaire).</dd>
 
     <dt><em>/path/to/public-key.pem</em></dt>
-    <dd>Il s'agit du chemin vers le fichier contenant la clÃ© publique du
-    log au format PEM. En effet, la clÃ© publique n'est pas stockÃ©e dans la base de
-    donnÃ©es, et le fichier ne peut donc pas Ãªtre supprimÃ© jusqu'Ã&nbsp; ce que
-    la donnÃ©e qui y fait rÃ©fÃ©rence dans la base de donnÃ©es soit
-    supprimÃ©e ou modifiÃ©e.</dd>
+    <dd>Il s'agit du chemin vers le fichier contenant la cl&Atilde;&copy; publique du
+    log au format PEM. En effet, la cl&Atilde;&copy; publique n'est pas stock&Atilde;&copy;e dans la base de
+    donn&Atilde;&copy;es, et le fichier ne peut donc pas &Atilde;&ordf;tre supprim&Atilde;&copy; jusqu'&Atilde;&nbsp; ce que
+    la donn&Atilde;&copy;e qui y fait r&Atilde;&copy;f&Atilde;&copy;rence dans la base de donn&Atilde;&copy;es soit
+    supprim&Atilde;&copy;e ou modifi&Atilde;&copy;e.</dd>
 
     <dt><em>min-timestamp</em>, <em>max-timestamp</em></dt>
-    <dd>Un repÃ¨re de temps (timestamp) est un temps exprimÃ© en
+    <dd>Un rep&Atilde;&uml;re de temps (timestamp) est un temps exprim&Atilde;&copy; en
     millisecondes depuis le temps epoch, sans tenir compte des secondes
-    sautÃ©es. C'est le format de temps utilisÃ© dans les SCTs. Le repÃ¨re
-    de temps doit Ãªtre fourni sous la forme d'un nombre dÃ©cimal.
-    <br />
-    SpÃ©cifiez <strong><code>-</code></strong> pour un des repÃ¨res de
-    temps s'il n'est pas connu. Par exemple, lorsque vous dÃ©finissez le
-    repÃ¨re de temps minimum valide pour un log qui reste valide,
-    spÃ©cifiez <strong><code>-</code></strong> pour
+    saut&Atilde;&copy;es. C'est le format de temps utilis&Atilde;&copy; dans les SCTs. Le rep&Atilde;&uml;re
+    de temps doit &Atilde;&ordf;tre fourni sous la forme d'un nombre d&Atilde;&copy;cimal.
+    <br>
+    Sp&Atilde;&copy;cifiez <strong><code>-</code></strong> pour un des rep&Atilde;&uml;res de
+    temps s'il n'est pas connu. Par exemple, lorsque vous d&Atilde;&copy;finissez le
+    rep&Atilde;&uml;re de temps minimum valide pour un log qui reste valide,
+    sp&Atilde;&copy;cifiez <strong><code>-</code></strong> pour
     <em>max-timestamp</em>.
-    <br />
-    Les SCTs reÃ§u par le mandataire depuis ce log seront invalides si le
-    repÃ¨re de temps est plus ancien que <em>min-timestamp</em> ou plus
-    rÃ©cent que <em>max-timestamp</em>.</dd>
+    <br>
+    Les SCTs re&Atilde;&sect;u par le mandataire depuis ce log seront invalides si le
+    rep&Atilde;&uml;re de temps est plus ancien que <em>min-timestamp</em> ou plus
+    r&Atilde;&copy;cent que <em>max-timestamp</em>.</dd>
 
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="subcommands" id="subcommands">Commandes</a> <a title="Lien permanent" href="#subcommands" class="permalink">&para;</a></h2>
+<h2 id="subcommands">Commandes <a title="Lien permanent" href="#subcommands" class="permalink">&para;</a></h2>
   
   <dl>
     <dt>dump</dt>
-    <dd>Affiche les Ã©lÃ©ments de configuration de la base de donnÃ©es.
+    <dd>Affiche les &Atilde;&copy;l&Atilde;&copy;ments de configuration de la base de donn&Atilde;&copy;es.
     L'identifiant des enregistrements que cette commande affiche peut
-    servir de rÃ©fÃ©rence pour les enregistrements devant Ãªtre affectÃ©s
+    servir de r&Atilde;&copy;f&Atilde;&copy;rence pour les enregistrements devant &Atilde;&ordf;tre affect&Atilde;&copy;s
     par les autres commandes.</dd>
 
     <dt>configure-public-key</dt>
-    <dd>Ajoute une clÃ© publique pour un log de la base de donnÃ©es ou
-    modifie la clÃ© publique d'un log existant. La clÃ© publique d'un log
+    <dd>Ajoute une cl&Atilde;&copy; publique pour un log de la base de donn&Atilde;&copy;es ou
+    modifie la cl&Atilde;&copy; publique d'un log existant. La cl&Atilde;&copy; publique d'un log
     permet de valider la signature des SCTs (Signed certificate
-    Timestamp) reÃ§us par un mandataire depuis un serveur d'arriÃ¨re-plan
-    (La base de donnÃ©es sera crÃ©Ã©e si elle n'existe pas encore).</dd>
+    Timestamp) re&Atilde;&sect;us par un mandataire depuis un serveur d'arri&Atilde;&uml;re-plan
+    (La base de donn&Atilde;&copy;es sera cr&Atilde;&copy;&Atilde;&copy;e si elle n'existe pas encore).</dd>
 
     <dt>configure-url</dt>
-    <dd>Ajoute une URL pour un log de la base de donnÃ©es ou modifie
+    <dd>Ajoute une URL pour un log de la base de donn&Atilde;&copy;es ou modifie
     l'URL d'un log existant. L'URL d'un log permet de soumettre des
-    certificats de serveur Ã&nbsp; ce dernier afin d'obtenir des SCTs qui
-    pourront Ãªtre envoyÃ©s aux clients (La base de donnÃ©es sera crÃ©Ã©e si
+    certificats de serveur &Atilde;&nbsp; ce dernier afin d'obtenir des SCTs qui
+    pourront &Atilde;&ordf;tre envoy&Atilde;&copy;s aux clients (La base de donn&Atilde;&copy;es sera cr&Atilde;&copy;&Atilde;&copy;e si
     elle n'existe pas encore).</dd>
 
     <dt>valid-time-range</dt>
-    <dd>Cette commande permet de dÃ©finir le temps de validation minimum
-    et/ou maximum pour un log. Les SCTs en provenance du log possÃ©dant
-    un repÃ¨re de temps en dehors de la plage dÃ©finie seront rejetÃ©s.
-    Utilisez <code>-</code> pour un temps non dÃ©fini (La base de donnÃ©es
-    sera crÃ©Ã©e si elle n'existe pas encore).</dd>
+    <dd>Cette commande permet de d&Atilde;&copy;finir le temps de validation minimum
+    et/ou maximum pour un log. Les SCTs en provenance du log poss&Atilde;&copy;dant
+    un rep&Atilde;&uml;re de temps en dehors de la plage d&Atilde;&copy;finie seront rejet&Atilde;&copy;s.
+    Utilisez <code>-</code> pour un temps non d&Atilde;&copy;fini (La base de donn&Atilde;&copy;es
+    sera cr&Atilde;&copy;&Atilde;&copy;e si elle n'existe pas encore).</dd>
 
     <dt>trust</dt>
     <dd>Marque un log comme digne de confiance, ce qui est la situation
-    par dÃ©faut. Cette command permet de marquer un log comme digne de
-    confiance, alors que ce n'Ã©tait pas le cas auparavant (La base de
-    donnÃ©es sera crÃ©Ã©e si elle n'existe pas encore).</dd>
+    par d&Atilde;&copy;faut. Cette command permet de marquer un log comme digne de
+    confiance, alors que ce n'&Atilde;&copy;tait pas le cas auparavant (La base de
+    donn&Atilde;&copy;es sera cr&Atilde;&copy;&Atilde;&copy;e si elle n'existe pas encore).</dd>
 
     <dt>distrust</dt>
     <dd>Marque un log comme non digne de confiance (La base de
-    donnÃ©es sera crÃ©Ã©e si elle n'existe pas encore).</dd>
+    donn&Atilde;&copy;es sera cr&Atilde;&copy;&Atilde;&copy;e si elle n'existe pas encore).</dd>
 
     <dt>forget</dt>
-    <dd>Supprime de la base de donnÃ©es les informations relatives
-    Ã&nbsp; un log.</dd>
+    <dd>Supprime de la base de donn&Atilde;&copy;es les informations relatives
+    &Atilde;&nbsp; un log.</dd>
   </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
   
 
   <p>Soit une instance de httpd Apache qui fonctionne en tant que
   serveur TLS et mandataire. Le serveur TLS doit obtenir des SCTs de la
   part de certains logs connus afin de pouvoir les transmettre aux
   clients, et le mandataire doit pouvoir valider la signature des SCTs
-  en provenance des serveurs d'arriÃ¨re-plan.</p>
+  en provenance des serveurs d'arri&Atilde;&uml;re-plan.</p>
 
-  <p>Nous allons tout d'abord dÃ©finir les URLs des logs oÃ¹ les
-  certificats sont enregistrÃ©s :</p>
+  <p>Nous allons tout d'abord d&Atilde;&copy;finir les URLs des logs o&Atilde;&sup1; les
+  certificats sont enregistr&Atilde;&copy;s :</p>
 
   <div class="example"><pre class="prettyprint lang-sh">$ ctlogconfig /path/to/conf/log-config configure-url http://log1.example.com/
 $ ctlogconfig /path/to/conf/log-config configure-url http://log2.example.com/
@@ -207,10 +205,10 @@ Log entry:
   Time range     : -INF to +INF</pre>
 </div>
 
-  <p>Nous pouvons maintenant attribuer une clÃ© publique Ã&nbsp; un log oÃ¹ le
-  certificat de notre seul serveur d'arriÃ¨re-plan est publiÃ©. Dans notre
+  <p>Nous pouvons maintenant attribuer une cl&Atilde;&copy; publique &Atilde;&nbsp; un log o&Atilde;&sup1; le
+  certificat de notre seul serveur d'arri&Atilde;&uml;re-plan est publi&Atilde;&copy;. Dans notre
   cas, il s'agit du log dont l'URL est http://log2.example.com/, et qui
-  a dÃ©jÃ&nbsp; Ã©tÃ© configurÃ©.</p>
+  a d&Atilde;&copy;j&Atilde;&nbsp; &Atilde;&copy;t&Atilde;&copy; configur&Atilde;&copy;.</p>
 
   <div class="example"><pre class="prettyprint lang-sh">$ ctlogconfig /path/to/conf/log-config configure-public-key \#2 /path/to/conf/log2-pub.pem
 $ ctlogconfig /path/to/conf/log-config dump
@@ -231,10 +229,10 @@ Log entry:
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/ctlogconfig.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/ctlogconfig.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/programs/ctlogconfig.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

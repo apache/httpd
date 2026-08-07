@@ -1,0 +1,4 @@
+<!--#echo var="QUERY_STRING" -->
+<!--#include virtual="if1.shtml?$QUERY_STRING" -->
+<!--#include virtual="inc-two.shtml" -->
+<!--#echo var="QUERY_STRING" -->

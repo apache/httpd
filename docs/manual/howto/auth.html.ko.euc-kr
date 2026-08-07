@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -10,29 +8,29 @@
       -->
 <title>인증(Authentication), 권한부여(Authorization),
 접근제어(Access Control) - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>인증(Authentication), 권한부여(Authorization),
 접근제어(Access Control)</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -41,31 +39,31 @@
     확인하는 절차이다. 권한부여(authorization)는 가고 싶은 곳으로
     가도록 혹은 원하는 정보를 얻도록 허용하는 과정이다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">관련 모듈과 지시어</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#introduction">소개</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">기본 지식</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">기본적인 설정하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">여러명을 들여보내기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">발생할 수 있는 문제점</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#whatotherneatstuffcanido">다른 방법도 가능한가?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">더 많은 정보</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">관련 모듈과 지시어</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#introduction">소개</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#theprerequisites">기본 지식</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#gettingitworking">기본적인 설정하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#lettingmorethanonepersonin">여러명을 들여보내기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#possibleproblems">발생할 수 있는 문제점</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#whatotherneatstuffcanido">다른 방법도 가능한가?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moreinformation">더 많은 정보</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">관련 모듈과 지시어</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">관련 모듈과 지시어 <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">소개</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">소개 <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     <p>당신의 웹사이트에 있는 정보가 소수의 사람들만의 비밀이거나
     이들만을 위한 정보라면, 이 글에서 설명하는 기법을 사용하여
     당신이 보길 원하는 사람만 페이지를 보도록 할 수 있다.</p>
 
     <p>이 글은 웹사이트의 일부를 보호하기위해 많은 사람들이
     사용하는 "표준적인" 방법을 다룬다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">기본 지식</a> <a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
+<h2 id="theprerequisites">기본 지식 <a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>이 글에서 다루는 지시어는 서버의 주설정파일(일반적으로
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
     섹션)이나 디렉토리별 설정파일(<code>.htaccess</code> 파일)에서
@@ -90,9 +88,9 @@
     <p>그리고 보호할 파일이 어디있는지 알기위해 서버의 디렉토리
     구조에 대해 조금 알아야한다. 이 일은 어렵지않고, 적당한
     때에 자세히 설명할 것이다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">기본적인 설정하기</a> <a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
+<h2 id="gettingitworking">기본적인 설정하기 <a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>이제 서버의 디렉토리를 암호로 보호하는 기본적인 방법을
     설명한다.</p>
 
@@ -115,9 +113,9 @@
     암호를 다시 입력하라고 요청한다.</p>
 
     <div class="example"><p><code>
-      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
-      New password: mypassword<br />
-      Re-type new password: mypassword<br />
+      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br>
+      New password: mypassword<br>
+      Re-type new password: mypassword<br>
       Adding password for user rbowen
     </code></p></div>
 
@@ -138,9 +136,9 @@
     한다.</p>
 
     <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Restricted Files"<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      AuthType Basic<br>
+      AuthName "Restricted Files"<br>
+      AuthUserFile /usr/local/apache/passwd/passwords<br>
       Require user rbowen
     </code></p></div>
 
@@ -183,9 +181,9 @@
     지시어는 서버의 특정 영역에 접근할 수 있는 사용자를 지정하여
     권한부여를 한다. 다음 절은 <code>require</code> 지시어를
     사용하는 다양한 방법을 설명한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">여러명을 들여보내기</a> <a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
+<h2 id="lettingmorethanonepersonin">여러명을 들여보내기 <a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     <p>위의 지시어는 디렉토리로 (사용자명이 <code>rbowen</code>인)
     한 사람만을 들여보낸다. 대부분의 경우 여러 사람을 들여보내고
     싶을 것이다. 이제 <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>을
@@ -214,10 +212,10 @@
     <p>이제 <code>.htaccess</code> 파일을 다음과 같이 수정한다.</p>
 
     <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "By Invitation Only"<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      AuthGroupFile /usr/local/apache/passwd/groups<br />
+      AuthType Basic<br>
+      AuthName "By Invitation Only"<br>
+      AuthUserFile /usr/local/apache/passwd/passwords<br>
+      AuthGroupFile /usr/local/apache/passwd/groups<br>
       Require group GroupName
     </code></p></div>
 
@@ -239,9 +237,9 @@
     그룹파일)가 아닌 파일 한개(암호파일)만 검사하면 된다는 것이
     장점이다. 그러나 여러 암호파일을 관리해야 하고, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> 지시어에
     정확한 암호파일을 지정해야 하는 것은 단점이다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">발생할 수 있는 문제점</a> <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
+<h2 id="possibleproblems">발생할 수 있는 문제점 <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Basic 인증 방식은 서버에서 문서를 요청할 때마다 사용자명과
     암호를 확인한다. 심지어 같은 페이지를 새로 고침할 때도 페이지와
     (그림이 암호로 보호하는 디렉토리에 있는 경우) 페이지에 있는
@@ -254,9 +252,9 @@
     한계가 있다. 이 한계는 사용하는 서버의 성능에 따라 다르지만,
     항목이 수백개가 넘는다면 느려진다고 생각하고 다른 인증 방법을
     고려해야 한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatotherneatstuffcanido" id="whatotherneatstuffcanido">다른 방법도 가능한가?</a> <a title="Permanent link" href="#whatotherneatstuffcanido" class="permalink">&para;</a></h2>
+<h2 id="whatotherneatstuffcanido">다른 방법도 가능한가? <a title="Permanent link" href="#whatotherneatstuffcanido" class="permalink">&para;</a></h2>
     <p>사용자명과 암호를 사용한 인증이 다가 아니다. 종종 접속한
     장소와 같은 다른 정보를 가지고 사용자를 들여보내고 싶을
     때가 있다.</p>
@@ -297,8 +295,8 @@
     사용한다.</p>
 
     <div class="example"><p><code>
-      Deny from <var>192.101.205</var><br />
-      Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
+      Deny from <var>192.101.205</var><br>
+      Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br>
       Deny from ke
     </code></p></div>
 
@@ -307,8 +305,8 @@
     사용하여 실제로 원하는 대상을 막을 수 있다.</p>
 
     <div class="example"><p><code>
-      Order deny,allow<br />
-      Deny from all<br />
+      Order deny,allow<br>
+      Deny from all<br>
       Allow from <var>dev.example.com</var>
     </code></p></div>
 
@@ -316,23 +314,23 @@
     지시어만 사용하면, 해당 호스트의 사용자를 허용하고 거기에
     추가로 모든 사람을 허용하므로 원하는 결과를 얻지 못한다.
     당신은 특정 사람<em>만</em> 허용하길 원한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">더 많은 정보</a> <a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2 id="moreinformation">더 많은 정보 <a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>과
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> 문서에 접근제어가 동작하는
     방법에 대한 더 많은 정보가 있다.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

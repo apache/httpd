@@ -64,6 +64,9 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , most, , proxy)
 APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , , most, , [proxy,watchdog])
 
+proxy_beacon_objs="mod_proxy_beacon.lo"
+APACHE_MODULE(proxy_beacon, [reverse-proxy UDP member announcement; backends self-register as balancer members. Requires --enable-proxy, --enable-proxy-balancer and --enable-watchdog.], $proxy_beacon_objs, , no, , [proxy,watchdog,proxy_balancer])
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current -I\$(top_srcdir)/modules/http2])
 
 APACHE_MODPATH_FINISH

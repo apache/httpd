@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>보안 팁 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>보안 팁</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -37,20 +35,20 @@
     <p>웹서버를 운영할때 도움이 될 보안 관련 힌트와 팁이다.
     어떤 것은 일반적이고, 어떤 것은 아파치에만 해당하는 것이다.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">최신판으로 유지하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverroot">ServerRoot 디렉토리 권한</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">일반적인 CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">ScriptAlias하지 않은 CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">ScriptAlias한 CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dynamic">동적 내용을 생성하는 다른 방법</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">시스템 설정 보호하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">기본적으로 서버에 있는 파일 보호하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">로그 살펴보기</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#uptodate">최신판으로 유지하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serverroot">ServerRoot 디렉토리 권한</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssi">Server Side Includes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi">일반적인 CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#nsaliasedcgi">ScriptAlias하지 않은 CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#saliasedcgi">ScriptAlias한 CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dynamic">동적 내용을 생성하는 다른 방법</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#systemsettings">시스템 설정 보호하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protectserverfiles">기본적으로 서버에 있는 파일 보호하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#watchyourlogs">로그 살펴보기</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="uptodate" id="uptodate">최신판으로 유지하기</a> <a title="Permanent link" href="#uptodate" class="permalink">&para;</a></h2>
+<h2 id="uptodate">최신판으로 유지하기 <a title="Permanent link" href="#uptodate" class="permalink">&para;</a></h2>
 
     <p>아파치 웹서버는 안전과 보안 문제에 관심이 많은 개발자
     공동체로 유명하다. 그러나 크건 작건 발표후 발견되는 문제들을
@@ -66,9 +64,9 @@
     문제로 공격을 당하는 경우가 많다. 그러므로 항상 주의하며
     시스템의 모든 소프트웨어를 업데이트해야 한다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverroot" id="serverroot">ServerRoot 디렉토리 권한</a> <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
+<h2 id="serverroot">ServerRoot 디렉토리 권한 <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
   
     
     
@@ -82,11 +80,11 @@
     제안한다:</p>
     
     <div class="example"><p><code>
-      mkdir /usr/local/apache <br />
-      cd /usr/local/apache <br />
-      mkdir bin conf logs <br />
-      chown 0 . bin conf logs <br />
-      chgrp 0 . bin conf logs <br />
+      mkdir /usr/local/apache <br>
+      cd /usr/local/apache <br>
+      mkdir bin conf logs <br>
+      chown 0 . bin conf logs <br>
+      chgrp 0 . bin conf logs <br>
       chmod 755 . bin conf logs
     </code></p></div>
     
@@ -94,9 +92,9 @@
     httpd 실행파일을 설치할때 다음과 같이 보호해야 한다:</p>
     
     <div class="example"><p><code>
-      cp httpd /usr/local/apache/bin <br />
-      chown 0 /usr/local/apache/bin/httpd <br />
-      chgrp 0 /usr/local/apache/bin/httpd <br />
+      cp httpd /usr/local/apache/bin <br>
+      chown 0 /usr/local/apache/bin/httpd <br>
+      chgrp 0 /usr/local/apache/bin/httpd <br>
       chmod 511 /usr/local/apache/bin/httpd
     </code></p></div>
     
@@ -113,9 +111,9 @@
     있다. 로그파일이 (root가 아닌 사용자에게) 쓰기가능하다면
     누군가 로그에 이상한 자료를 기록할 수 있다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
+<h2 id="ssi">Server Side Includes <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
   
     
     
@@ -152,9 +150,9 @@
     지정한 디렉토리에 있다면 &lt;--#include virtual="..." --&gt;를
     사용하여 CGI 스크립트를 실행할 수 있음을 주의하라.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">일반적인 CGI</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
+<h2 id="cgi">일반적인 CGI <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
   
     
     
@@ -173,9 +171,9 @@
     다른 사용자로 실행하는 방법중 하나다. 다른 대중적인 방법에는
     <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>이 있다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="nsaliasedcgi" id="nsaliasedcgi">ScriptAlias하지 않은 CGI</a> <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
+<h2 id="nsaliasedcgi">ScriptAlias하지 않은 CGI <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
   
     
     
@@ -190,9 +188,9 @@
       <li>사용자가 없고, 아마 아무도 서버를 방문하지않는 경우.</li>
     </ul>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="saliasedcgi" id="saliasedcgi">ScriptAlias한 CGI</a> <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
+<h2 id="saliasedcgi">ScriptAlias한 CGI <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
   
     
     
@@ -205,9 +203,9 @@
     <p>대부분의 사이트는 scriptalias하지 않은 CGI 방식 대신
     이 방식을 사용한다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">동적 내용을 생성하는 다른 방법</a> <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
+<h2 id="dynamic">동적 내용을 생성하는 다른 방법 <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
 
   
 
@@ -218,9 +216,9 @@
   접근할 수 있는 모든 것에 접근할 수 있다. 어떤 스크립트 엔진은
   어느정도 제한을 하지만, 안전하다고 가정하지 않는 것이 좋다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="systemsettings" id="systemsettings">시스템 설정 보호하기</a> <a title="Permanent link" href="#systemsettings" class="permalink">&para;</a></h2>
+<h2 id="systemsettings">시스템 설정 보호하기 <a title="Permanent link" href="#systemsettings" class="permalink">&para;</a></h2>
   
     
     
@@ -232,17 +230,17 @@
     <p>서버 설정파일에 다음을 추가한다</p>
     
     <div class="example"><p><code>
-      &lt;Directory /&gt; <br />
-        AllowOverride None <br />
+      &lt;Directory /&gt; <br>
+        AllowOverride None <br>
       &lt;/Directory&gt;
     </code></p></div>
     
     <p>그러면 사용가능하도록 명시적으로 허용한 디렉토리를 제외하고는
     <code>.htaccess</code> 파일을 사용할 수 없다.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protectserverfiles" id="protectserverfiles">기본적으로 서버에 있는 파일 보호하기</a> <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
+<h2 id="protectserverfiles">기본적으로 서버에 있는 파일 보호하기 <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
   
     
     
@@ -254,7 +252,7 @@
     <p>예를 들어, 아래와 같은 경우:</p>
     
     <div class="example"><p><code>
-      # cd /; ln -s / public_html <br />
+      # cd /; ln -s / public_html <br>
       <code>http://localhost/~root/</code> 에 접근한다
     </code></p></div>
     
@@ -262,9 +260,9 @@
     이를 막기위해 서버설정에서 다음과 같은 조치를 한다:</p>
     
     <div class="example"><p><code>
-      &lt;Directory /&gt; <br />
-      Order Deny,Allow <br />
-      Deny from all <br />
+      &lt;Directory /&gt; <br>
+      Order Deny,Allow <br>
+      Deny from all <br>
       &lt;/Directory&gt;
     </code></p></div>
     
@@ -272,13 +270,13 @@
     원하는 영역에 접근할 수 있도록 다음과 같은 <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> 블록을 추가한다.</p>
     
     <div class="example"><p><code>
-      &lt;Directory /usr/users/*/public_html&gt; <br />
-        Order Deny,Allow <br />
-        Allow from all <br />
-      &lt;/Directory&gt; <br />
-      &lt;Directory /usr/local/httpd&gt; <br />
-        Order Deny,Allow <br />
-        Allow from all <br />
+      &lt;Directory /usr/users/*/public_html&gt; <br>
+        Order Deny,Allow <br>
+        Allow from all <br>
+      &lt;/Directory&gt; <br>
+      &lt;Directory /usr/local/httpd&gt; <br>
+        Order Deny,Allow <br>
+        Allow from all <br>
       &lt;/Directory&gt;
     </code></p></div>
     
@@ -297,9 +295,9 @@
       UserDir disabled root
     </code></p></div>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="watchyourlogs" id="watchyourlogs">로그 살펴보기</a> <a title="Permanent link" href="#watchyourlogs" class="permalink">&para;</a></h2>
+<h2 id="watchyourlogs">로그 살펴보기 <a title="Permanent link" href="#watchyourlogs" class="permalink">&para;</a></h2>
   
     
     
@@ -310,7 +308,7 @@
     <p>여러가지 예:</p>
     
     <div class="example"><p><code>
-      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br />
+      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br>
       grep "client denied" error_log | tail -n 10
     </code></p></div>
     
@@ -337,22 +335,22 @@
     것이다:</p>
     
     <div class="example"><p><code>
-      &lt;Files ".ht*"&gt; <br />
-        Order allow,deny <br />
-        Deny from all <br />
+      &lt;Files ".ht*"&gt; <br>
+        Order allow,deny <br>
+        Deny from all <br>
       &lt;Files&gt;
     </code></p></div>
     
   </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

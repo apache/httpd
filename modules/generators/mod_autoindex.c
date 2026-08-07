@@ -462,8 +462,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
             else {
                 int width = atoi(&w[10]);
 
-                if (width && (width < 5)) {
-                    return "NameWidth value must be greater than 5";
+                if (width < 5) {
+                    return "NameWidth value must be at least 5";
                 }
                 d_cfg->name_width = width;
                 d_cfg->name_adjust = K_NOADJUST;

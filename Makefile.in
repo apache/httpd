@@ -34,7 +34,7 @@ DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	build/pkg/pkginfo build/config_vars.sh bsd_converted
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
-PHONY_TARGETS := check check-conf check-dirs check-include unittest-objdir
+PHONY_TARGETS := check check-conf check-dirs check-include check-pytest check-all-pytest unittest-objdir
 
 TESTS =
 TEST_CONFIG =
@@ -494,6 +494,9 @@ check/modules/stamp: build/config_vars.mk
 
 check-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stamp
 	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(PYTEST3) $(PYTEST_DIRS)
+
+check-all-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stamp
+	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(SHELL) $(top_srcdir)/test/run-all-tests.sh --apxs "$(top_builddir)/check/bin/apxs"
 
 # Runs all configured/available test targets.
 check: $(CHECK_TARGETS)

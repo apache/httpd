@@ -1,0 +1,136 @@
+#!@pythonbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# logresolve.py -- Python port of the historical Perl logresolve.pl.
+#
+# usage: logresolve.py <infile >outfile
+#
+# input = Apache/NCSA/.. logfile with IP numbers at start of lines
+# output = same logfile with IP addresses resolved to hostnames where
+#  name lookups succeeded.
+#
+# this differs from the C based 'logresolve' in that this script
+# resolves a number (CHILDREN) of addresses concurrently and sets a
+# short timeout (TIMEOUT) for each lookup in order to keep things moving
+# quickly.
+#
+# The original Perl version forked CHILDREN subprocesses and exchanged
+# IPs/hostnames over Unix sockets, with a per-lookup alarm(TIMEOUT).
+# This Python port reproduces the *semantics* without the fork/socket
+# IPC machinery: a concurrent.futures.ThreadPoolExecutor with
+# max_workers=CHILDREN performs up to CHILDREN reverse lookups in
+# parallel, and the per-lookup timeout is enforced via
+# socket.setdefaulttimeout(TIMEOUT) (socket.gethostbyaddr() honours the
+# process default socket timeout; it has no timeout argument of its own).
+#
+# Results are cached in a dict so each unique IP is resolved only once,
+# and output lines are emitted in the exact same order as the input
+# (logfiles must stay in order).
+#
+# Concurrency / timeout / order-preservation:
+#   * Concurrency: ThreadPoolExecutor(max_workers=CHILDREN). Each unique
+#     IP is submitted exactly once; the cache dict guards against
+#     resolving the same IP twice.
+#   * Timeout: socket.setdefaulttimeout(TIMEOUT) bounds each DNS lookup.
+#     As a belt-and-braces measure the worker also bounds itself via
+#     future.result(timeout=...) when collecting results.
+#   * Order: we buffer all input lines (remembering each line's leading
+#     IP), resolve the unique IPs concurrently, then walk the buffered
+#     lines in their original order substituting the cached hostname.
+
+import socket
+import sys
+from concurrent.futures import ThreadPoolExecutor
+
+CHILDREN = 40
+TIMEOUT = 5
+
+
+def nslookup(ip):
+    """Reverse-resolve an IP to a hostname.
+
+    Equivalent to the Perl gethostbyaddr(gethostbyname($ip), AF_INET).
+    Returns the resolved hostname, or the original IP on any failure or
+    timeout (matching the Perl behaviour of leaving the IP as-is).
+    """
+    try:
+        hostname = socket.gethostbyaddr(ip)[0]
+    except Exception:
+        return ip
+    return hostname if hostname else ip
+
+
+def main():
+    # Bound every DNS lookup to TIMEOUT seconds. socket.gethostbyaddr()
+    # has no timeout argument, so we rely on the process-wide default
+    # socket timeout, which it honours.
+    socket.setdefaulttimeout(TIMEOUT)
+
+    # Read the whole logfile, buffering each line and the IP that starts
+    # it.  Order is preserved by replaying this buffer at the end.
+    lines = []          # list of (ip, rest, had_space); rest keeps its newline
+    unique_ips = []     # unique IPs in first-seen order (for stable submit)
+    seen = set()
+
+    for line in sys.stdin:
+        # split on the FIRST space only; a line with no space is all IP.
+        parts = line.split(' ', 1)
+        if len(parts) > 1:
+            ip = parts[0]
+            rest = parts[1]
+            had_space = True
+        else:
+            # No space: the whole line is the IP. Strip the trailing
+            # newline so it resolves cleanly, but remember the line
+            # ending so we can reproduce it verbatim on output.
+            stripped = line.rstrip('\n')
+            ip = stripped
+            rest = line[len(stripped):]
+            had_space = False
+        lines.append((ip, rest, had_space))
+        if ip not in seen:
+            seen.add(ip)
+            unique_ips.append(ip)
+
+    # Resolve all unique IPs concurrently, up to CHILDREN at a time.
+    cache = {}
+    if unique_ips:
+        with ThreadPoolExecutor(max_workers=CHILDREN) as pool:
+            futures = {ip: pool.submit(nslookup, ip) for ip in unique_ips}
+            for ip, fut in futures.items():
+                try:
+                    cache[ip] = fut.result(timeout=TIMEOUT + 1)
+                except Exception:
+                    # On timeout/failure leave the IP unchanged.
+                    cache[ip] = ip
+
+    # Emit lines in the original input order, substituting hostnames.
+    out = sys.stdout
+    for ip, rest, had_space in lines:
+        host = cache.get(ip, ip)
+        if had_space:
+            out.write("%s %s" % (host, rest))
+        else:
+            # No space in the original line: emit host then the original
+            # line ending (rest is "\n", "" with EOF no-newline, etc.).
+            out.write(host)
+            if rest:
+                out.write(rest)
+
+
+if __name__ == "__main__":
+    main()

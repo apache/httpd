@@ -46,7 +46,7 @@ class MDConf(HttpdConf):
                 "    ProxyRequests On",
                 "    ProxyVia On",
                 "    # be totally open",
-                "    AllowCONNECT 0-56535",
+                "    AllowCONNECT 0-65535",
                 "    <Proxy *>",
                 "       # No require or other restrictions, this is just a test server",
                 "    </Proxy>",

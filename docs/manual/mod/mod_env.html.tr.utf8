@@ -1,60 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_env - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>mod_env - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Modüller</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Mod&uuml;ller</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Modülü mod_env</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div id="preamble"><h1>Apache Mod&uuml;l&uuml; mod_env</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_env.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_env.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_env.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_env.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_env.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere müdahale
-etmek için kullanılır.</td></tr>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">A&ccedil;ıklama:</a></th><td>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere m&uuml;dahale
+etmek i&ccedil;in kullanılır.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>env_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_env.c</td></tr></table>
-<h3>Özet</h3>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Mod&uuml;l&nbsp;Betimleyici:</a></th><td>env_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak&nbsp;Dosyası:</a></th><td>mod_env.c</td></tr></table>
+<h3>&Ouml;zet</h3>
 
-    <p>Bu modül Apache HTTP Sunucusunun çeşitli modülleri tarafınan kullanılan
-      dahili ortam değişkenlerime müdahale etmeyi mümkün kılar. bu değişkenler
+    <p>Bu mod&uuml;l Apache HTTP Sunucusunun &ccedil;eşitli mod&uuml;lleri tarafınan kullanılan
+      dahili ortam değişkenlerime m&uuml;dahale etmeyi m&uuml;mk&uuml;n kılar. bu değişkenler
       ayrıca, CGI betiklerine yerel ortam değişkenleri olarak sunulur ve SSI
       sayfalarında da kullanılabilir. Ortam değişkenleri
-      <code class="program"><a href="../programs/httpd.html">httpd</a></code> süreci başlatılırken kabuktan aktarılabilir.
+      <code class="program"><a href="../programs/httpd.html">httpd</a></code> s&uuml;reci başlatılırken kabuktan aktarılabilir.
       Bundan başka, yapılandırma
-      sürecinde tanımlı veya tanımsız yapılabilirler.</p>
+      s&uuml;recinde tanımlı veya tanımsız yapılabilirler.</p>
 </div>
-<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<div id="quickview"><h3 class="directives">Y&ouml;nergeler</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#passenv">PassEnv</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setenv">SetEnv</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#unsetenv">UnsetEnv</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#passenv">PassEnv</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenv">SetEnv</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#unsetenv">UnsetEnv</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_env">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_env">Report a bug</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
@@ -62,50 +60,50 @@ etmek için kullanılır.</td></tr>
 <li><code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li>
 </ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Yönergesi</a> <a title="Permanent link" href="#passenv" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="passenv"><span id="PassEnv">PassEnv</span> Y&ouml;nergesi <a title="Permanent link" href="#passenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini kabuktan aktarır.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
+<tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Ortam değişkenlerini kabuktan aktarır.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Ge&ccedil;ersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_env</td></tr>
 </table>
-    <p>Dahili ortam değişkenleri olarak kullanılmak üzere sistem ortam
-      değişkenlerini içeri aktarmak için kullanılır. Bunlar daha sonra Apache
-      HTTP Sunucusunun modüllerinden kullanılabilir, CGI betiklerine ve SSI
-      sayfalarında aktarılabilir. Değerler <code class="program"><a href="../programs/httpd.html">httpd</a></code> süreci
+    <p>Dahili ortam değişkenleri olarak kullanılmak &uuml;zere sistem ortam
+      değişkenlerini i&ccedil;eri aktarmak i&ccedil;in kullanılır. Bunlar daha sonra Apache
+      HTTP Sunucusunun mod&uuml;llerinden kullanılabilir, CGI betiklerine ve SSI
+      sayfalarında aktarılabilir. Değerler <code class="program"><a href="../programs/httpd.html">httpd</a></code> s&uuml;reci
       başlatılırken kabuğun işletim sistemi ortamından gelir.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
+    <div class="example"><h3>&Ouml;rnek</h3><p><code>
       PassEnv LD_LIBRARY_PATH
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Yönergesi</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="setenv"><span id="SetEnv">SetEnv</span> Y&ouml;nergesi <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini tanımlar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnv <var>ortam-değişkeni</var> <var>değer</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Ortam değişkenlerini tanımlar.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>SetEnv <var>ortam-değişkeni</var> <var>değer</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Ge&ccedil;ersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_env</td></tr>
 </table>
     <p>CGI betiklerine ve SSI sayfalarına aktarılmak ve Apache HTTP Sunucusu
-      modüllerinde kullanılmak üzere bir dahili ortam değişkeni tanımlanmasını
+      mod&uuml;llerinde kullanılmak &uuml;zere bir dahili ortam değişkeni tanımlanmasını
       sağlar.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
+    <div class="example"><h3>&Ouml;rnek</h3><p><code>
       SetEnv SPECIAL_PATH /foo/bin
     </code></p></div>
 
-    <div class="note"><p>Bu yönerge tarafından atanan dahili ortam değişkenleri, en başta
+    <div class="note"><p>Bu y&ouml;nerge tarafından atanan dahili ortam değişkenleri, en başta
       işleme sokulan, ereşem denetimi, URI-dosya ismi eşleştirmesi gibi istek
-      işleme yönergelerinden sonra işleme sokulur. Eğer atadığınız ortam değişkeni,
-      bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesindeki
+      işleme y&ouml;nergelerinden sonra işleme sokulur. Eğer atadığınız ortam değişkeni,
+      bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesindeki
       gibi erken işlem aşamalarına girdi sağlıyorsa, bu durumda ortam değişkenini
      <code class="directive"><a href="../mod/mod_setenvif.html#setenvif"> SetEnvIf</a></code> ile atamalısınız.</p>
     </div>
@@ -116,21 +114,21 @@ etmek için kullanılır.</td></tr>
 <li><a href="../env.html">Environment Variables</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Yönergesi</a> <a title="Permanent link" href="#unsetenv" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="unsetenv"><span id="UnsetEnv">UnsetEnv</span> Y&ouml;nergesi <a title="Permanent link" href="#unsetenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortamdaki değişkenleri tanımsız hale getirir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
+<tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Ortamdaki değişkenleri tanımsız hale getirir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Override">Ge&ccedil;ersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_env</td></tr>
 </table>
-    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak üzere bir
+    <p>CGI betiklerine ve SSI sayfalarına bir daha aktarılmamak &uuml;zere bir
       dahili ortam değişkenini siler.</p>
 
-    <div class="example"><h3>Örnek</h3><p><code>
+    <div class="example"><h3>&Ouml;rnek</h3><p><code>
       UnsetEnv LD_LIBRARY_PATH
     </code></p></div>
 
@@ -138,13 +136,13 @@ etmek için kullanılır.</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_env.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_env.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_env.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_env.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_env.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_env.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

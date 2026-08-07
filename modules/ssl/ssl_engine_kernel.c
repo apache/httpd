@@ -29,6 +29,7 @@
                                   time I was too famous.''
                                             -- Unknown                */
 #include "ssl_private.h"
+#include "httpd.h"
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include "scoreboard.h"
@@ -2238,7 +2239,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
 cleanup:
     if (our_data && cert) X509_free(cert);
     if (our_data && key) EVP_PKEY_free(key);
-    return APR_SUCCESS;
+    return rv;
 }
   
 /*

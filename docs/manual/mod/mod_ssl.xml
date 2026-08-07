@@ -1168,6 +1168,89 @@ effect.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLStoreURI</name>
+<description>Server certificate and key store</description>
+<syntax>SSLStoreURI <var>uri</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</compatibility>
+
+<usage>
+<p>
+This directive points to a certificate store containing certificates,
+intermediate certificates, and private keys, represented by a URI.
+</p>
+<p>
+If no scheme is specified, the path will default to a <var>file:</var>
+URI, pointing at PEM encoded data, or a PKCS12 file. Other schemes
+include, but are not limited to, <var>pkcs11:</var> for smartcards and
+HSMs, <var>cng:</var> for the Windows certificate store, and
+<var>handle:</var> for TPMs. On Windows, where a file path is also a
+valid URI, the <var>file:</var> scheme must be used.
+</p>
+<p>
+The directive can be specified multiple times with tightly scoped
+URIs to target specific certificates and keys, or could be specified
+with a general URI like <var>pkcs11:</var> that considers all possible
+certificates and keys. Certificates, intermediate certificates, and keys
+can be defined in any order.
+</p>
+<p>Certificates and keys are processed as follows.
+</p>
+<ul>
+<li>Leaf certificates that do not have the purpose <var>Server Authentication</var>
+are skipped.</li>
+<li>Remaining leaf certificates are checked whether the
+<directive module="core">ServerName</directive> and all
+<directive module="core">ServerAlias</directive> directives match the
+hostname or IP address of the certificate, and if no match is found they
+are skipped.</li>
+<li>Intermediate certificates are considered for building certificate
+chains on a best effort basis.</li>
+<li>Keys are matched up with leaf certificates, any certificate
+without a private key is skipped.</li>
+<li>Leaf certificates with private keys are sorted oldest to newest and
+passed on for configuration.</li>
+<li>The most recently issued certificate and key pair for each algorithm
+type (RSA, ECDSA, etc) will be used for each virtual host.</li>
+<li>The server will report back to you how many certificates of each type
+were found to help you if no certificates match.</li>
+</ul>
+
+<p>If the private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
+
+<example><title>Example</title>
+<highlight language="config">
+# Example using a PEM-encoded file.
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Example using a PKCS12 file.
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.p12"
+# Example use of a certificate and private key from a PKCS#11 token:
+SSLStoreURI "pkcs11:token=My%20Token%20Name;id=45"
+</highlight>
+</example>
+
+<p>These URIs are read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The URI is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
+<note type="warning"><title>Using SSLCertificateFile and SSLStoreURI
+together</title>
+<p>
+You can use both SSLCertificateFile and SSLStoreURI together, however
+there is no overlap between the mechanisms. A certificate defined by
+SSLCertificateFile will not be matched with a key from SSLStoreURI.
+</p>
+</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLCACertificatePath</name>
 <description>Directory of PEM-encoded CA Certificates for
 Client Auth</description>
@@ -1233,6 +1316,47 @@ effect.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLTrustURI</name>
+<description>Server CA certificate store for Client Authentication</description>
+<syntax>SSLTrustURI <var>uri</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<override>AuthConfig</override>
+<compatibility>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</compatibility>
+
+<usage>
+<p>
+This directive sets URIs where you can assemble the Certificates of Certification
+Authorities (CA) whose <em>clients</em> you deal with. These are used for Client
+Authentication. This can be used alternatively and/or additionally to
+<directive module="mod_ssl">SSLCACertificateFile</directive>
+or <directive module="mod_ssl">SSLCACertificatePath</directive>.</p>
+<example><title>Example</title>
+<highlight language="config">
+# trust certs in a PEM encoded certificate bundle
+SSLTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
+# trust all certs in a typical Linux machine
+SSLTrustURI "pkcs11:token=System%20Trust"
+# trust all certs in the Windows trust store
+SSLTrustURI "org.openssl.winstore:"
+</highlight>
+</example>
+
+<p>
+This directive will also read in Certificate Revocation Lists (CRL) of
+Certification Authorities (CAs) whose clients you deal with. These are used
+to revoke the client certificate on Client Authentication.</p>
+
+<p>This URI is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The URI is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLCADNRequestFile</name>
 <description>File of concatenated PEM-encoded CA Certificates
 for defining acceptable CA names</description>
@@ -1247,22 +1371,25 @@ in the SSL handshake.  These CA names can be used by the client to
 select an appropriate client certificate out of those it has
 available.</p>
 
-<p>If neither of the directives <directive
-module="mod_ssl">SSLCADNRequestPath</directive> or <directive
-module="mod_ssl">SSLCADNRequestFile</directive> are given, then the
+<p>If none of the directives <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
+module="mod_ssl">SSLCADNRequestPath</directive>, or <directive
+module="mod_ssl">SSLTrustRequestURI</directive> are given, then the
 set of acceptable CA names sent to the client is the names of all the
 CA certificates given by the <directive
-module="mod_ssl">SSLCACertificateFile</directive> and <directive
-module="mod_ssl">SSLCACertificatePath</directive> directives; in other
+module="mod_ssl">SSLCACertificateFile</directive>, <directive
+module="mod_ssl">SSLCACertificatePath</directive>, and <directive
+module="mod_ssl">SSLTrustURI</directive> directives; in other
 words, the names of the CAs which will actually be used to verify the
 client certificate.</p>
 
 <p>In some circumstances, it is useful to be able to send a set of
 acceptable CA names which differs from the actual CAs used to verify
 the client certificate - for example, if the client certificates are
-signed by intermediate CAs.  In such cases, <directive
-module="mod_ssl">SSLCADNRequestPath</directive> and/or <directive
-module="mod_ssl">SSLCADNRequestFile</directive> can be used; the
+signed by intermediate CAs. In such cases, <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
+module="mod_ssl">SSLCADNRequestPath</directive>, and/or <directive
+module="mod_ssl">SSLTrustRequestURI</directive> can be used; the
 acceptable CA names are then taken from the complete set of
 certificates in the directory and/or file specified by this pair of
 directives.</p>
@@ -1317,6 +1444,70 @@ is still running as <code>root</code> (before privilege dropping), so they
 may be owned by and readable only by <code>root</code>. The files are not
 re-read during normal operation; a server restart is required for changes
 to take effect.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLTrustRequestURI</name>
+<description>certificate store of CA Certificates for defining
+acceptable CA names</description>
+<syntax>SSLTrustRequestURI <var>uri</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>When a client certificate is requested by mod_ssl, a list of
+<em>acceptable Certificate Authority names</em> is sent to the client
+in the SSL handshake.  These CA names can be used by the client to
+select an appropriate client certificate out of those it has
+available.</p>
+
+<p>If none of the directives <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
+module="mod_ssl">SSLCADNRequestPath</directive>, or <directive
+module="mod_ssl">SSLTrustRequestURI</directive> are given, then the
+set of acceptable CA names sent to the client is the names of all the
+CA certificates given by the <directive
+module="mod_ssl">SSLCACertificateFile</directive>, <directive
+module="mod_ssl">SSLCACertificatePath</directive>, and <directive
+module="mod_ssl">SSLTrustURI</directive> directives; in other
+words, the names of the CAs which will actually be used to verify the
+client certificate.</p>
+
+<p>In some circumstances, it is useful to be able to send a set of
+acceptable CA names which differs from the actual CAs used to verify
+the client certificate - for example, if the client certificates are
+signed by intermediate CAs. In such cases, <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
+module="mod_ssl">SSLCADNRequestPath</directive>, and/or <directive
+module="mod_ssl">SSLTrustRequestURI</directive> can be used; the
+acceptable CA names are then taken from the complete set of
+certificates in the directory and/or file specified by this pair of
+directives.</p>
+
+<p><directive module="mod_ssl">SSLTrustRequestURI</directive> must
+specify an <em>all-in-one</em> certificate store uri containing a
+set of CA certificates.</p>
+
+<example><title>Example</title>
+<highlight language="config">
+SSLTrustRequestURI "file:///usr/local/apache2/conf/ca-names.crt"
+</highlight>
+</example>
+
+<p>A <var>file:</var> URI pointing at a file of PEM encoded certificates
+can be used instead of <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, and a <var>file:</var>
+URI pointing at a directory of PEM encoded certificates can be used
+instead of <directive
+module="mod_ssl">SSLCADNRequestPath</directive>.
+</p>
+
+<p>This store is read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The uri is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
 </usage>
 </directivesynopsis>
 
@@ -2163,6 +2354,102 @@ SSLProxyMachineCertificateChainFile "/usr/local/apache2/conf/ssl.crt/proxyCA.pem
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLProxyStoreURI</name>
+<description>Proxy certificate and key stores</description>
+<syntax>SSLProxyStoreURI <var>uri</var></syntax>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<compatibility>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</compatibility>
+
+<usage>
+<p>
+This directive points to a certificate store containing certificates,
+intermediate certificates, and private keys, represented by a URI,
+to be used when authenticating to another proxy server.
+</p>
+<p>
+If no scheme is specified, the path will default to a <var>file:</var>
+URI, pointing at PEM encoded data, or a PKCS12 file. Other schemes
+include, but are not limited to, <var>pkcs11:</var> for smartcards and
+HSMs, <var>cng:</var> for the Windows certificate store, and
+<var>handle:</var> for TPMs. On Windows, where a file path is also a
+valid URI, the <var>file:</var> scheme must be used.
+</p>
+<p>
+The directive can be specified multiple times with tightly scoped
+URIs to target specific certificates and keys, or could be specified
+with a general URI like <var>pkcs11:</var> that considers all possible
+certificates and keys. Certificates, intermediate certificates, and keys
+can be defined in any order.
+</p>
+<p>Proxy certificates and keys are processed as follows.
+</p>
+<ul>
+<li>Leaf certificates that do not have the purpose <var>Client Authentication</var>
+are skipped.</li>
+<li>Intermediate certificates are considered for building certificate
+chains on a best effort basis.</li>
+<li>Keys are matched up with leaf certificates, any certificate
+without a private key is skipped.</li>
+<li>Leaf certificates with private keys are sorted newest to oldest and
+are considered during each SSL handshake with a proxy.</li>
+<li>The proxy will report back to you how many certificates of each type
+were found to help you if no certificates match.</li>
+</ul>
+
+<p>If the private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
+
+<example><title>Example</title>
+<highlight language="config">
+# Example using a PEM-encoded file.
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.pem"
+# Example using a PKCS12 file.
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.p12"
+# Example use of a certificate and private key from a PKCS#11 token:
+SSLProxyStoreURI "pkcs11:token=My%20Token%20Name;id=45"
+</highlight>
+</example>
+
+<p>These URIs are read at server startup, while the server is still running
+as <code>root</code> (before privilege dropping), so it may be owned by
+and readable only by <code>root</code>. The URI is not re-read during
+normal operation; a server restart is required for changes to take
+effect.</p>
+
+<p>When challenged to provide a client certificate by a remote server,
+the server should provide a list of <em>acceptable certificate
+authority names</em> in the challenge.  If such a list is <em>not</em>
+provided, <module>mod_ssl</module> will use the most recently
+issued client certificate and key.  If a list of CA names
+<em>is</em> provided, <module>mod_ssl</module> will iterate through
+that list, and attempt to find a configured client certificate which
+was issued either directly by that CA, or indirectly via any number of
+intermediate CA certificates.
+</p>
+
+<p>If the list of CA names <em>is</em> provided by the remote server,
+and <em>no</em> matching client certificate can be found, no client
+certificate will be provided by <module>mod_ssl</module>, which will
+likely fail the SSL/TLS handshake (depending on the remote server
+configuration).</p>
+
+<note type="warning"><title>Using SSLProxyMachineCertificateFile and
+SSLProxyStoreURI together</title>
+<p>
+You can use both SSLProxyMachineCertificateFile and
+SSLProxyStoreURI together, however there is
+no overlap between the mechanisms. A certificate defined by
+SSLProxyMachineCertificateFile will not be matched with a
+key from SSLProxyStoreURI.
+</p>
+</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLProxyVerify</name>
 <description>Type of remote server Certificate verification</description>
 <syntax>SSLProxyVerify <var>level</var></syntax>
@@ -2466,6 +2753,36 @@ preference. This can be used alternatively and/or additionally to
 SSLProxyCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
 </highlight>
 </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyTrustURI</name>
+<description>Proxy CA certificate store for Remote Server Auth</description>
+<syntax>SSLProxyTrustURI <var>uri</var></syntax>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<compatibility>Available in httpd 2.5.1 and later, when linked with
+OpenSSL v3 or later.</compatibility>
+
+<usage>
+<p>
+This directive sets URIs where you can assemble the
+Certificates of Certification Authorities (CA) whose <em>remote servers</em> you deal
+with. These are used for Remote Server Authentication. This can be used alternatively
+and/or additionally to
+<directive module="mod_ssl">SSLProxyCACertificateFile</directive> and
+<directive module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
+<example><title>Example</title>
+<highlight language="config">
+SSLProxyTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
+</highlight>
+</example>
+<p>
+This directive will also process Certificate Revocation Lists (CRL) of Certification
+Authorities (CAs) whose remote servers you deal with, if they fall within scope.
+These are used to revoke the remote server certificate on Remote Server Authentication.
+</p>
 </usage>
 </directivesynopsis>
 

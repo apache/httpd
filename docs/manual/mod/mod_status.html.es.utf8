@@ -1,113 +1,111 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="es"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_status - Servidor HTTP Apache Versión 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>mod_status - Servidor HTTP Apache Versi&oacute;n 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
+<p class="apache">Versi&oacute;n 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Módulos</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaci&oacute;n</a> &gt; <a href="../">Versi&oacute;n 2.5</a> &gt; <a href="./">M&oacute;dulos</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Módulo Apache mod_status</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div id="preamble"><h1>M&oacute;dulo Apache mod_status</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_status.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_status.html" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
+<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
+            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
+            documentaci&oacute;n para comprobar si se han producido cambios
             recientemente.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Provee información de la actividad y rendimiento del 
+<table class="module"><tr><th><a href="module-dict.html#Description">Descripci&oacute;n:</a></th><td>Provee informaci&oacute;n de la actividad y rendimiento del 
   servidor</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de Módulos:</a></th><td>status_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichero de Código Fuente:</a></th><td>mod_status.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de M&oacute;dulos:</a></th><td>status_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichero de C&oacute;digo Fuente:</a></th><td>mod_status.c</td></tr></table>
 <h3>Resumen de contenidos</h3>
 
-    <p>El módulo de Estado permite a un administrador averiguar lo bien que está
-    rindiendo su servidor. Se presenta una página HTML que da las estadísticas
-    actuales del servidor en una forma fácilmente legible. Si es necesario
-    se puede hacer que ésta página se refresque automáticamente (con un navegador
-    compatible). También hay otra página que da una sencilla lista legible por 
-    máquina del estado actual del servidor.</p>
+    <p>El m&oacute;dulo de Estado permite a un administrador averiguar lo bien que est&aacute;
+    rindiendo su servidor. Se presenta una p&aacute;gina HTML que da las estad&iacute;sticas
+    actuales del servidor en una forma f&aacute;cilmente legible. Si es necesario
+    se puede hacer que &eacute;sta p&aacute;gina se refresque autom&aacute;ticamente (con un navegador
+    compatible). Tambi&eacute;n hay otra p&aacute;gina que da una sencilla lista legible por 
+    m&aacute;quina del estado actual del servidor.</p>
 
     <p>Los detalles que se dan son:</p>
 
     <ul>
-      <li>El número de worker sirviendo peticiones</li>
+      <li>El n&uacute;mero de worker sirviendo peticiones</li>
 
-      <li>El número de worker desocupado</li>
+      <li>El n&uacute;mero de worker desocupado</li>
 
-      <li>El estado de cada worker, el número de peticiones que ese worker ha
-      realizado y el número total de bytes servido por el worker (*)</li>
+      <li>El estado de cada worker, el n&uacute;mero de peticiones que ese worker ha
+      realizado y el n&uacute;mero total de bytes servido por el worker (*)</li>
 
-      <li>Un número total de accesos y recuento de bytes servidos (*)</li>
+      <li>Un n&uacute;mero total de accesos y recuento de bytes servidos (*)</li>
 
       <li>La hora a la que el servidor ha sido arrancado/reiniciado y el tiempo
       que se ha estado ejecutando</li>
 
-      <li>Medias indicando el número de peticiones por segundo, el número de bytes
-      servido por segundo y la media de bytes por petición (*)</li>
+      <li>Medias indicando el n&uacute;mero de peticiones por segundo, el n&uacute;mero de bytes
+      servido por segundo y la media de bytes por petici&oacute;n (*)</li>
 
       <li>El porcentaje actual de CPU usado por cada worker y en total por todos
       los workers al completo (*)</li>
 
-      <li>Los hosts actuales y peticiones que se están procesando en el momento
+      <li>Los hosts actuales y peticiones que se est&aacute;n procesando en el momento
        (*)</li>
     </ul>
 
-    <p>Las líneas marcadas con "(*)" solo están disponibles si
-    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> está configurado a
-    <code>On</code>.  En la versión 2.3.6, cargar mod_status pondrá
+    <p>Las l&iacute;neas marcadas con "(*)" solo est&aacute;n disponibles si
+    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> est&aacute; configurado a
+    <code>On</code>.  En la versi&oacute;n 2.3.6, cargar mod_status pondr&aacute;
     <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> en On por defecto.</p>
 
     <div class="note">
-      <strong>Debería tenerse en cuenta que si se carga 
-      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> en el servidor, su handler estará disponible
-      en <em>todos</em> los ficheros de configuración, incluidos ficheros
+      <strong>Deber&iacute;a tenerse en cuenta que si se carga 
+      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> en el servidor, su handler estar&aacute; disponible
+      en <em>todos</em> los ficheros de configuraci&oacute;n, incluidos ficheros
       <em>de</em>-directorio (<em>p. ej.</em>, <code>.htaccess</code>). Esto puede tener ramificaciones relacionadas con la seguridad en su sitio web.</strong>
     </div>
 
 </div>
 <div id="quickview"><h3>Temas</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Activando el Soporte de Estado</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Actualizaciones Automáticas</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Fichero de Estado legible por máquina</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Usando server-status para identificar problemas</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enable">Activando el Soporte de Estado</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#autoupdate">Actualizaciones Autom&aacute;ticas</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#machinereadable">Fichero de Estado legible por m&aacute;quina</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">Usando server-status para identificar problemas</a></li>
 </ul><h3 class="directives">Directivas</h3>
-<p>Este módulo no suministra ninguna
+<p>Este m&oacute;dulo no suministra ninguna
             directiva.</p>
-<h3>Lista de comprobación de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Reportar un error</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Lista de comprobaci&oacute;n de errores corregidos</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd historial de cambios</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Problemas Conocidos</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Reportar un error</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activando el Soporte de Estado</a> <a title="Enlace permanente" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Activando el Soporte de Estado <a title="Enlace permanente" href="#enable" class="permalink">&para;</a></h2>
     
 
-    <p>Para activar los reportes de estado para navegadores tán solo desde el 
-    dominio example.com añada este código en su fichero de configuración 
+    <p>Para activar los reportes de estado para navegadores t&aacute;n solo desde el 
+    dominio example.com a&ntilde;ada este c&oacute;digo en su fichero de configuraci&oacute;n 
     <code>httpd.conf</code></p>
 <pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
     SetHandler server-status
@@ -115,75 +113,75 @@
 &lt;/Location&gt;</pre>
 
 
-    <p>Ahora puede acceder a estadísticas del servidor usando un navegador web
-    para acceder a la página
+    <p>Ahora puede acceder a estad&iacute;sticas del servidor usando un navegador web
+    para acceder a la p&aacute;gina
     <code>http://your.server.name/server-status</code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="autoupdate" id="autoupdate">Actualizaciones Automáticas</a> <a title="Enlace permanente" href="#autoupdate" class="permalink">&para;</a></h2>
+<h2 id="autoupdate">Actualizaciones Autom&aacute;ticas <a title="Enlace permanente" href="#autoupdate" class="permalink">&para;</a></h2>
 
     
-    <p>Puede hacer que la página de estado se actualice automáticamente si tiene
-    un navegador que soporte "refresh". Acceda a la página
+    <p>Puede hacer que la p&aacute;gina de estado se actualice autom&aacute;ticamente si tiene
+    un navegador que soporte "refresh". Acceda a la p&aacute;gina
     <code>http://your.server.name/server-status?refresh=N</code> para refrescar
-    la página cada N segundos.</p>
+    la p&aacute;gina cada N segundos.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="machinereadable" id="machinereadable">Fichero de Estado legible por máquina</a> <a title="Enlace permanente" href="#machinereadable" class="permalink">&para;</a></h2>
+<h2 id="machinereadable">Fichero de Estado legible por m&aacute;quina <a title="Enlace permanente" href="#machinereadable" class="permalink">&para;</a></h2>
 
     
-    <p>Una versión legible por máquina del fichero de estado está disponible
-    accediendo a la página 
-    <code>http://your.server.name/server-status?auto</code>. Esto es útil cuando
-    la solicitud de estado se lanza automáticamente, vea el programa Perl 
-    <code>log_server_status</code>, que encontrará en el directorio 
-    <code>/support</code> de su instalación del Servidor Apache HTTP.</p>
+    <p>Una versi&oacute;n legible por m&aacute;quina del fichero de estado est&aacute; disponible
+    accediendo a la p&aacute;gina 
+    <code>http://your.server.name/server-status?auto</code>. Esto es &uacute;til cuando
+    la solicitud de estado se lanza autom&aacute;ticamente, vea el programa Perl 
+    <code>log_server_status</code>, que encontrar&aacute; en el directorio 
+    <code>/support</code> de su instalaci&oacute;n del Servidor Apache HTTP.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Usando server-status para identificar problemas</a> <a title="Enlace permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">Usando server-status para identificar problemas <a title="Enlace permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
-    <p>La página <code>server-status</code> puede usarse como un lugar donde
-    empezar a identificar problemas en una situación en la que su servidor está
-    consumiento todos los recursos disponibles (CPU o memoria), y ustéd desea
-    identificar qué peticiones o clientes están causando el problema.</p>
+    <p>La p&aacute;gina <code>server-status</code> puede usarse como un lugar donde
+    empezar a identificar problemas en una situaci&oacute;n en la que su servidor est&aacute;
+    consumiento todos los recursos disponibles (CPU o memoria), y ust&eacute;d desea
+    identificar qu&eacute; peticiones o clientes est&aacute;n causando el problema.</p>
 
-    <p>Primero, asegúrese de que tiene <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> configurado a on, de manera que 
-    puede ver toda la información de la petición y el cliente para cada proceso
+    <p>Primero, aseg&uacute;rese de que tiene <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> configurado a on, de manera que 
+    puede ver toda la informaci&oacute;n de la petici&oacute;n y el cliente para cada proceso
     o hilo.</p>
 
     <p>Ahora mire en la lista de procesos (usando <code>top</code>, o utilidad
-    similar para ver procesos) para identificar los procesos específicos
+    similar para ver procesos) para identificar los procesos espec&iacute;ficos
     que son los principales culpables. Ordene la salida de <code>top</code> por
-    uso de CPU, o de memoria, dependiendo del problema que esté intentando 
+    uso de CPU, o de memoria, dependiendo del problema que est&eacute; intentando 
     ubicar.</p>
 
-    <p>Recargue la página <code>server-status</code>, y busque esos ids de
-    proceso, y podrá ver qué petición se está sirviendo por ese proceso y para
-    qué cliente. Las peticiones son pasajeras, así que puede que necesite
+    <p>Recargue la p&aacute;gina <code>server-status</code>, y busque esos ids de
+    proceso, y podr&aacute; ver qu&eacute; petici&oacute;n se est&aacute; sirviendo por ese proceso y para
+    qu&eacute; cliente. Las peticiones son pasajeras, as&iacute; que puede que necesite
     intentarlo varias veces antes de que lo cace en el acto, por decirlo de 
     alguna manera.</p>
 
-    <p>Este proceso <em>debería</em> darle alguna idea de qué cliente, o qué
-    tipo de petición, son los principales responsables para sus problemas de
-    carga. A menudo identificará una aplicación web en particular que puede 
-    estar comportándose como no es debido, o un cliente en particular que está
+    <p>Este proceso <em>deber&iacute;a</em> darle alguna idea de qu&eacute; cliente, o qu&eacute;
+    tipo de petici&oacute;n, son los principales responsables para sus problemas de
+    carga. A menudo identificar&aacute; una aplicaci&oacute;n web en particular que puede 
+    estar comport&aacute;ndose como no es debido, o un cliente en particular que est&aacute;
     atacando su sitio web.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_status.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_status.html" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
