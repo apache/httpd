@@ -250,6 +250,18 @@ def framework(request: pytest.FixtureRequest):
         )
         fpm_mgr.start()
 
+    # Record the error_log size right before this session's httpd starts.
+    # error_log is opened in append mode and t_logs/ is not cleaned between
+    # invocations, so it can carry entries from earlier, unrelated test runs
+    # (possibly hours/days old, with different pids). Tests that need "since
+    # this server session started" (as opposed to "since this individual
+    # test started") must scope their log reads to this offset, not to
+    # position 0 -- see test_proxy_beacon.py.
+    error_log = Path(config.vars["t_logs"]) / "error_log"
+    config.vars["session_log_start"] = str(
+        error_log.stat().st_size if error_log.exists() else 0
+    )
+
     server = HttpdServer(config)
     server.start()
     try:
