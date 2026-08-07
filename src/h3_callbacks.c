@@ -33,14 +33,14 @@
 
 #include <nghttp3/nghttp3.h>
 
-#include "quic/h3q_stream.h"
-
 #include "h3.h"
 #include "h3_callbacks.h"
 #include "h3_check.h"
 #include "h3_config.h"
+#include "h3_os.h"
 #include "h3_session.h"
 #include "mod_http3.h"
+#include "quic/h3q_stream.h"
 
 static int set_pseudo(h3_stream* stream, h3_session* session, int32_t token, nghttp3_vec* value)
 {
@@ -96,7 +96,7 @@ int on_begin_headers(nghttp3_conn* conn, int64_t stream_id, void* user_data, voi
     return 0;
 }
 
-int on_recv_header(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* user_data, void* stream_user_data)
+int on_recv_header(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t flags H3_UNUSED, void* user_data, void* stream_user_data)
 {
     h3_stream* stream = stream_user_data;
     h3_session* session = user_data;
@@ -118,7 +118,7 @@ int on_recv_header(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int32_t token,
     return 0;
 }
 
-int on_end_headers(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int fin, void* /*user_data*/, void* stream_user_data)
+int on_end_headers(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, int fin, void* user_data H3_UNUSED, void* stream_user_data)
 {
     h3_stream* stream = stream_user_data;
     if (stream && stream->is_bidi)
@@ -133,7 +133,7 @@ int on_end_headers(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int fin, void*
     return 0;
 }
 
-int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data, size_t datalen, void* /*user_data*/, void* stream_user_data)
+int on_recv_data(nghttp3_conn* conn H3_UNUSED, int64_t stream_id, const uint8_t* data, size_t datalen, void* user_data H3_UNUSED, void* stream_user_data)
 {
     h3_stream* stream = stream_user_data;
     if (!stream || !stream->is_bidi || !data || datalen == 0)
@@ -190,7 +190,7 @@ int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen
     return 0;
 }
 
-int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
+int on_stop_sending(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, uint64_t app_error_code H3_UNUSED, void* user_data, void* stream_user_data)
 {
     /* Send STOP_SENDING by freeing the stream object. */
     h3_session* session = user_data;
@@ -211,7 +211,7 @@ int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*ap
     return 0;
 }
 
-int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_error_code, void* /*user_data*/, void* stream_user_data)
+int on_reset_stream(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, uint64_t app_error_code, void* user_data H3_UNUSED, void* stream_user_data)
 {
     h3_stream* stream = stream_user_data;
     if (stream)
@@ -223,7 +223,7 @@ int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_
     return 0;
 }
 
-int on_stream_close(nghttp3_conn* /*conn*/, int64_t /* stream_id */, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
+int on_stream_close(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, uint64_t app_error_code H3_UNUSED, void* user_data, void* stream_user_data)
 {
     h3_session* session = user_data;
     CHECK(session);

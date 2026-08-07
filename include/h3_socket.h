@@ -43,4 +43,41 @@ apr_status_t h3_socket_open(apr_port_t port, apr_pool_t* pool, int* out_fd);
  */
 void h3_socket_close(int fd);
 
+/**
+ * A way to interrupt the event thread's poll from another thread.
+ *
+ * Both ends are loopback UDP sockets rather than a pipe, because the reader
+ * is polled in the same call as the QUIC socket and Windows can only poll
+ * sockets. One implementation then serves both platforms.
+ */
+typedef struct h3_wakeup
+{
+    apr_socket_t* reader;
+    apr_socket_t* writer;
+    int reader_fd; /**< The reader's OS-level fd, for the poll set. */
+} h3_wakeup;
+
+/**
+ * Create a wakeup pair bound to loopback. Both sockets are non-blocking, so
+ * signalling never stalls a worker and draining never stalls the event thread.
+ * @param pool Pool owning both sockets.
+ * @param w    Out: the initialized pair; zeroed on failure.
+ * @return APR_SUCCESS or an APR error code.
+ */
+apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w);
+
+/**
+ * Wake the event thread. Safe from any thread, and safe to call when the
+ * pair was never created. A send that would block is dropped: a wakeup
+ * already in flight achieves the same thing.
+ * @param w The pair to signal; NULL or uncreated is ignored.
+ */
+void h3_wakeup_signal(h3_wakeup* w);
+
+/**
+ * Discard everything queued on the reader, after poll reports it readable.
+ * @param w The pair to drain; NULL or uncreated is ignored.
+ */
+void h3_wakeup_drain(h3_wakeup* w);
+
 #endif /* H3_SOCKET_H */

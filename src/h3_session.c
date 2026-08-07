@@ -31,17 +31,17 @@
 
 #include <nghttp3/nghttp3.h>
 
-#include "quic/h3q_conn.h"
-#include "quic/h3q_stream.h"
-
 #include "h3.h"
 #include "h3_callbacks.h"
 #include "h3_check.h"
 #include "h3_config.h"
 #include "h3_io.h"
+#include "h3_os.h"
 #include "h3_session.h"
 #include "h3_stream.h"
 #include "mod_http3.h"
+#include "quic/h3q_conn.h"
+#include "quic/h3q_stream.h"
 
 struct h3_response_chunk
 {
@@ -53,11 +53,9 @@ struct h3_response_chunk
 
 static void wake_event_thread(void)
 {
-    if (child_h3_io && child_h3_io->wakeup_pipe[1])
+    if (child_h3_io)
     {
-        char wake = '1';
-        apr_size_t len = 1;
-        (void)apr_file_write(child_h3_io->wakeup_pipe[1], &wake, &len);
+        h3_wakeup_signal(&child_h3_io->wakeup);
     }
 }
 
@@ -361,7 +359,7 @@ void h3_stream_response_cleanup_locked(h3_stream* stream)
     stream->response_buffered = 0;
 }
 
-nghttp3_ssize h3_session_read_data(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, nghttp3_vec* vec, size_t veccnt, uint32_t* pflags, void* /*user_data*/, void* stream_user_data)
+nghttp3_ssize h3_session_read_data(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, nghttp3_vec* vec, size_t veccnt, uint32_t* pflags, void* user_data H3_UNUSED, void* stream_user_data)
 {
     h3_stream* stream = (h3_stream*)stream_user_data;
     if (!stream || !vec || veccnt == 0 || !pflags)

@@ -41,6 +41,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread started");
     int work_pending = 0;
+    int listener_failed = 0;
     while (io->thread_running || io->active_sessions->nelts > 0)
     {
         if (!work_pending)
@@ -48,9 +49,20 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             wait_for_event(io);
         }
         work_pending = 0;
-        if (h3q_engine_pump(io->qengine))
+        int pumped = h3q_engine_pump(io->qengine);
+        if (pumped < 0)
         {
-            work_pending = 1;
+            /* Latched: this loop runs continuously. */
+            if (!listener_failed)
+            {
+                listener_failed = 1;
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC listener event processing failed; no further datagrams will be handled");
+            }
+        }
+        else
+        {
+            listener_failed = 0;
+            work_pending = pumped;
         }
 
         if (io->thread_running)
@@ -78,7 +90,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             progress_pending_handshakes(io);
         }
 
-        for (int i = 0; i < io->active_sessions->nelts; )
+        for (int i = 0; i < io->active_sessions->nelts;)
         {
             h3_session* session = ((h3_session**)io->active_sessions->elts)[i];
             if (service_session_pass(io, session))

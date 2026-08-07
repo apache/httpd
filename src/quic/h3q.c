@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-#include <netinet/in.h>
-
 #include <stdlib.h>
 #include <string.h>
 
@@ -25,6 +23,7 @@
 #include <openssl/ssl.h>
 
 #include "h3_check.h"
+#include "h3_os.h"
 #include "quic/detail/h3q_addr.h"
 #include "quic/detail/h3q_tls.h"
 #include "quic/h3q.h"
@@ -54,11 +53,14 @@ h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size
         h3q_engine_destroy(engine);
         return NULL;
     }
-    BIO_meth_set_ctrl(bm, h3q_peer_addr_bio_ctrl);
-    BIO_meth_set_sendmmsg(bm, h3q_peer_addr_bio_sendmmsg);
-    BIO_meth_set_recvmmsg(bm, h3q_peer_addr_bio_recvmmsg);
-    BIO_meth_set_destroy(bm, h3q_peer_addr_bio_destroy);
     engine->peer_addr_bio_method = bm;
+    /* An unset handler installs fine and then drops every datagram. */
+    if (!BIO_meth_set_ctrl(bm, h3q_peer_addr_bio_ctrl) || !BIO_meth_set_sendmmsg(bm, h3q_peer_addr_bio_sendmmsg) || !BIO_meth_set_recvmmsg(bm, h3q_peer_addr_bio_recvmmsg) || !BIO_meth_set_destroy(bm, h3q_peer_addr_bio_destroy))
+    {
+        h3q_tls_error(err, errlen, "installing the peer address BIO handlers failed");
+        h3q_engine_destroy(engine);
+        return NULL;
+    }
 
     engine->current_peer_addr = BIO_ADDR_new();
     engine->peer_addr_ex_index = SSL_get_ex_new_index(0, NULL, NULL, NULL, h3q_peer_addr_ex_free);
@@ -144,12 +146,15 @@ int h3q_engine_pump(h3q_engine* engine)
         return 0;
     }
     int work = 0;
-    SSL_handle_events(engine->ssl_listener);
+    if (SSL_handle_events(engine->ssl_listener) != 1)
+    {
+        return -1;
+    }
     while (engine->peer_rx_head)
     {
         if (SSL_handle_events(engine->ssl_listener) != 1)
         {
-            break;
+            return -1;
         }
         work = 1;
     }
@@ -178,8 +183,7 @@ void h3q_engine_want(h3q_engine* engine, int* want_read, int* want_write, int* t
             *timeout_ms = (int)ms;
         }
     }
-    /* Never hand back a zero: a timer that reports as already due would turn the
-     * caller's wait into a busy loop if pumping does not advance it. */
+    /* A zero would spin the caller's wait when a timer reports as due. */
     if (*timeout_ms < 1)
     {
         *timeout_ms = 1;
@@ -198,10 +202,11 @@ h3q_conn* h3q_engine_accept_conn(h3q_engine* engine)
 
 int h3q_engine_peer_addr(h3q_engine* engine, h3q_conn* conn, struct sockaddr_storage* addr, socklen_t* addr_len)
 {
-    CHECK(engine);
-    CHECK(conn);
-    CHECK(addr);
-    CHECK(addr_len);
+    /* Report it: losing a client address is not worth aborting the child. */
+    if (!engine || !conn || !addr || !addr_len)
+    {
+        return 0;
+    }
     if (engine->peer_addr_ex_index < 0)
     {
         return 0;

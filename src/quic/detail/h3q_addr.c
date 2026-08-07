@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-#include <netinet/in.h>
-
 #include <string.h>
 
 #include <openssl/bio.h>
 #include <openssl/crypto.h>
 #include <openssl/ssl.h>
 
+#include "h3_os.h"
 #include "quic/detail/h3q_addr.h"
 
 struct h3q_datagram
@@ -201,12 +200,12 @@ int h3q_peer_addr_bio_destroy(BIO* bio)
     return 1;
 }
 
-void h3q_peer_addr_ex_free(void* /*parent*/, void* ptr, CRYPTO_EX_DATA* /*ad*/, int /*idx*/, long /*argl*/, void* /*argp*/)
+void h3q_peer_addr_ex_free(void* parent H3_UNUSED, void* ptr, CRYPTO_EX_DATA* ad H3_UNUSED, int idx H3_UNUSED, long argl H3_UNUSED, void* argp H3_UNUSED)
 {
     BIO_ADDR_free(ptr);
 }
 
-int h3q_new_pending_conn_cb(SSL_CTX* /*ctx*/, SSL* conn, void* arg)
+int h3q_new_pending_conn_cb(SSL_CTX* ctx H3_UNUSED, SSL* conn, void* arg)
 {
     h3q_engine* engine = arg;
     if (!engine || engine->peer_addr_ex_index < 0 || BIO_ADDR_family(engine->current_peer_addr) == AF_UNSPEC)

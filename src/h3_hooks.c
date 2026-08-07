@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-#include "h3_config.h"
 #include <httpd.h>
 
 #include <http_config.h>
@@ -35,9 +34,11 @@
 
 #include "h3.h"
 #include "h3_check.h"
+#include "h3_config.h"
 #include "h3_filter.h"
 #include "h3_hooks.h"
 #include "h3_io.h"
+#include "h3_os.h"
 #include "h3_session.h"
 #include "mod_http3.h"
 
@@ -104,7 +105,7 @@ int h3_hook_post_read_request(request_rec* r)
     return OK;
 }
 
-void h3_hook_pre_read_request(request_rec* /*r*/, conn_rec* /*c*/)
+void h3_hook_pre_read_request(request_rec* r H3_UNUSED, conn_rec* c H3_UNUSED)
 {
 }
 

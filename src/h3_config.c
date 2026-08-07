@@ -29,11 +29,11 @@
 #include <apr_strings.h>
 
 #include <stdint.h>
-#include <unistd.h>
 
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_config.h"
+#include "h3_os.h"
 #include "mod_http3.h"
 
 apr_port_t get_server_port(const server_rec* s)
@@ -48,7 +48,7 @@ apr_port_t get_server_port(const server_rec* s)
     return 0;
 }
 
-void* h3_create_server_config(apr_pool_t* p, server_rec* /*s*/)
+void* h3_create_server_config(apr_pool_t* p, server_rec* s H3_UNUSED)
 {
     return apr_pcalloc(p, sizeof(h3_server_conf));
 }
@@ -95,17 +95,17 @@ static const char* set_string(cmd_parms* cmd, const char* arg, const char* field
     return NULL;
 }
 
-static const char* set_h3_cert_path(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_cert_path(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     return set_string(cmd, arg, (const char*)offsetof(h3_server_conf, h3_cert_path));
 }
 
-static const char* set_h3_key_path(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_key_path(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     return set_string(cmd, arg, (const char*)offsetof(h3_server_conf, h3_key_path));
 }
 
-static const char* set_h3_port(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_port(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -131,7 +131,7 @@ static const char* set_h3_port(cmd_parms* cmd, void* /*dummy*/, const char* arg)
     return NULL;
 }
 
-static const char* set_h3_max_concurrent_streams(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_max_concurrent_streams(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -157,7 +157,7 @@ static const char* set_h3_max_concurrent_streams(cmd_parms* cmd, void* /*dummy*/
     return NULL;
 }
 
-static const char* set_h3_max_connections(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_max_connections(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -183,7 +183,7 @@ static const char* set_h3_max_connections(cmd_parms* cmd, void* /*dummy*/, const
     return NULL;
 }
 
-static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -209,7 +209,7 @@ static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* /*dummy*/, co
     return NULL;
 }
 
-static const char* set_h3_max_request_body_size(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_max_request_body_size(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -235,7 +235,7 @@ static const char* set_h3_max_request_body_size(cmd_parms* cmd, void* /*dummy*/,
     return NULL;
 }
 
-static const char* set_h3_max_response_body_size(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_max_response_body_size(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -261,7 +261,7 @@ static const char* set_h3_max_response_body_size(cmd_parms* cmd, void* /*dummy*/
     return NULL;
 }
 
-static const char* set_h3_handshake_timeout(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_handshake_timeout(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -287,7 +287,7 @@ static const char* set_h3_handshake_timeout(cmd_parms* cmd, void* /*dummy*/, con
     return NULL;
 }
 
-static const char* set_h3_idle_timeout(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_idle_timeout(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -313,7 +313,7 @@ static const char* set_h3_idle_timeout(cmd_parms* cmd, void* /*dummy*/, const ch
     return NULL;
 }
 
-static const char* set_h3_alt_svc(cmd_parms* cmd, void* /*dummy*/, int flag)
+static const char* set_h3_alt_svc(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
 {
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
     CHECK(conf);
@@ -321,7 +321,7 @@ static const char* set_h3_alt_svc(cmd_parms* cmd, void* /*dummy*/, int flag)
     return NULL;
 }
 
-static const char* set_h3_address_validation(cmd_parms* cmd, void* /*dummy*/, int flag)
+static const char* set_h3_address_validation(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
 {
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
     CHECK(conf);
@@ -329,7 +329,7 @@ static const char* set_h3_address_validation(cmd_parms* cmd, void* /*dummy*/, in
     return NULL;
 }
 
-static const char* set_h3_alt_svc_max_age(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+static const char* set_h3_alt_svc_max_age(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
 {
     if (!arg || !*arg)
     {
@@ -355,7 +355,7 @@ static const char* set_h3_alt_svc_max_age(cmd_parms* cmd, void* /*dummy*/, const
     return NULL;
 }
 
-int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, server_rec* s)
+int h3_post_config(apr_pool_t* p H3_UNUSED, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp, server_rec* s)
 {
     CHECK(ptemp);
     CHECK(s);
@@ -445,13 +445,13 @@ int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, s
     return OK;
 }
 
-void* h3_create_dir_config(apr_pool_t* p, char* /*dir*/)
+void* h3_create_dir_config(apr_pool_t* p, char* dir H3_UNUSED)
 {
     CHECK(p);
     return apr_pcalloc(p, 1);
 }
 
-void* h3_merge_dir_config(apr_pool_t* /*p*/, void* base, void* /*add*/)
+void* h3_merge_dir_config(apr_pool_t* p H3_UNUSED, void* base, void* add H3_UNUSED)
 {
     CHECK(base);
     return base;

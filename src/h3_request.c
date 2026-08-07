@@ -30,20 +30,19 @@
 #include <apr_strings.h>
 #include <apr_thread_pool.h>
 
-#include <netdb.h>
 #include <stdlib.h>
 
 #include <nghttp3/nghttp3.h>
-
-#include "quic/h3q.h"
 
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_filter.h"
 #include "h3_io.h"
+#include "h3_os.h"
 #include "h3_request.h"
 #include "h3_session.h"
 #include "mod_http3.h"
+#include "quic/h3q.h"
 
 static volatile apr_uint32_t h3_conn_id_seq = 0;
 
@@ -173,11 +172,9 @@ static size_t build_response_nva(nghttp3_nv* nva, size_t nva_cap, request_rec* r
 
 static void wake_event_thread(void)
 {
-    if (child_h3_io && child_h3_io->wakeup_pipe[1])
+    if (child_h3_io)
     {
-        char wake = '1';
-        apr_size_t len = 1;
-        (void)apr_file_write(child_h3_io->wakeup_pipe[1], &wake, &len);
+        h3_wakeup_signal(&child_h3_io->wakeup);
     }
 }
 

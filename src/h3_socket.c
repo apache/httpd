@@ -17,17 +17,11 @@
  */
 
 #include <apr_portable.h>
-#include <unistd.h>
 
-#if defined(_WIN32)
-    #include <winsock2.h>
-    #define H3_STATUS_IS_EADDRINUSE(s) ((s) == APR_FROM_OS_ERROR(WSAEADDRINUSE))
-#else
-    #include <errno.h>
-    #define H3_STATUS_IS_EADDRINUSE(s) ((s) == APR_FROM_OS_ERROR(EADDRINUSE))
-#endif
+#include <string.h>
 
 #include "h3_check.h"
+#include "h3_os.h"
 #include "h3_socket.h"
 
 apr_status_t h3_socket_open(apr_port_t port, apr_pool_t* pool, int* out_fd)
@@ -54,7 +48,7 @@ apr_status_t h3_socket_open(apr_port_t port, apr_pool_t* pool, int* out_fd)
     if (rv != APR_SUCCESS)
     {
         apr_socket_close(sock);
-        if (H3_STATUS_IS_EADDRINUSE(rv))
+        if (h3_socket_os_is_eaddrinuse(rv))
         {
             ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, pool, "bind(%d) skipped (port already owned)", (int)port);
             return APR_EAGAIN;
@@ -85,10 +79,85 @@ void h3_socket_close(int fd)
 {
     if (fd >= 0)
     {
-#if defined(_WIN32)
-        closesocket(fd);
-#else
-        close(fd);
-#endif
+        h3_socket_os_close(fd);
+    }
+}
+
+apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w)
+{
+    CHECK(pool);
+    CHECK(w);
+    memset(w, 0, sizeof(*w));
+    w->reader_fd = -1;
+
+    apr_sockaddr_t* loopback = NULL;
+    apr_status_t rv = apr_sockaddr_info_get(&loopback, "127.0.0.1", APR_INET, 0, 0, pool);
+    if (rv != APR_SUCCESS)
+    {
+        return rv;
+    }
+    if ((rv = apr_socket_create(&w->reader, APR_INET, SOCK_DGRAM, APR_PROTO_UDP, pool)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+    if ((rv = apr_socket_bind(w->reader, loopback)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+
+    /* Ask the reader which port the bind landed on, then aim the writer at it. */
+    apr_sockaddr_t* bound = NULL;
+    if ((rv = apr_socket_addr_get(&bound, APR_LOCAL, w->reader)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+    if ((rv = apr_socket_create(&w->writer, APR_INET, SOCK_DGRAM, APR_PROTO_UDP, pool)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+    if ((rv = apr_socket_connect(w->writer, bound)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+
+    if ((rv = apr_socket_timeout_set(w->reader, 0)) != APR_SUCCESS || (rv = apr_socket_timeout_set(w->writer, 0)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+
+    apr_os_sock_t os_sock;
+    if ((rv = apr_os_sock_get(&os_sock, w->reader)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+    w->reader_fd = (int)os_sock;
+    return APR_SUCCESS;
+}
+
+void h3_wakeup_signal(h3_wakeup* w)
+{
+    if (!w || !w->writer)
+    {
+        return;
+    }
+    char byte = '1';
+    apr_size_t len = 1;
+    (void)apr_socket_send(w->writer, &byte, &len);
+}
+
+void h3_wakeup_drain(h3_wakeup* w)
+{
+    if (!w || !w->reader)
+    {
+        return;
+    }
+    char buf[64];
+    for (;;)
+    {
+        apr_size_t len = sizeof(buf);
+        if (apr_socket_recv(w->reader, buf, &len) != APR_SUCCESS || len == 0)
+        {
+            return;
+        }
     }
 }

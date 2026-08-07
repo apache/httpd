@@ -38,6 +38,7 @@
 #include "h3_check.h"
 #include "h3_config.h"
 #include "h3_filter.h"
+#include "h3_os.h"
 #include "h3_request.h"
 #include "h3_session.h"
 #include "mod_http3.h"
@@ -47,7 +48,7 @@ ap_filter_rec_t* h3_net_out_filter_handle;
 ap_filter_rec_t* h3_proto_out_filter_handle;
 ap_filter_rec_t* h3_proto_in_filter_handle;
 
-apr_status_t h3_filter_out(ap_filter_t* /*f*/, apr_bucket_brigade* bb)
+apr_status_t h3_filter_out(ap_filter_t* f H3_UNUSED, apr_bucket_brigade* bb)
 {
     CHECK(bb);
     apr_brigade_cleanup(bb);
@@ -78,7 +79,7 @@ apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_
 }
 
 /* Serve request body. */
-static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e /*block*/, apr_off_t readbytes)
+static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block H3_UNUSED, apr_off_t readbytes)
 {
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "serve_request_body started, h3s=%p", (void*)h3s);
     apr_bucket_alloc_t* ba = f->c->bucket_alloc;

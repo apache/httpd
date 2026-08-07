@@ -25,12 +25,11 @@
 #include <apr_thread_proc.h>
 #include <apr_time.h>
 
-#include <unistd.h>
-
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_config.h"
 #include "h3_io.h"
+#include "h3_os.h"
 #include "h3_server.h"
 #include "h3_socket.h"
 #include "mod_http3.h"
@@ -46,7 +45,7 @@ struct port_acquire_args
     h3_server_conf* conf;
 };
 
-static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* /*thread*/, void* data)
+static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUSED, void* data)
 {
     struct port_acquire_args* args = data;
     while (!child_stopping)
@@ -138,7 +137,7 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     }
 }
 
-void h3_c1_child_stopping(apr_pool_t* /*p*/, int graceful)
+void h3_c1_child_stopping(apr_pool_t* p H3_UNUSED, int graceful)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "mod_http3: child stopping (graceful=%d)", graceful);
     child_stopping = 1;

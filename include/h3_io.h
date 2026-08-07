@@ -30,6 +30,7 @@
 #include <apr_thread_proc.h>
 
 #include "h3_config.h"
+#include "h3_socket.h"
 #include "quic/h3q.h"
 
 /// Optional MPM hooks; crash at runtime if unsupported.
@@ -52,7 +53,7 @@ typedef struct h3_io_t
     volatile apr_uint64_t total_bytes_read;
     volatile apr_uint64_t total_bytes_written;
     volatile int thread_running;
-    apr_file_t* wakeup_pipe[2];
+    h3_wakeup wakeup;
 
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_removed) * note_conn_removed;

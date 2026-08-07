@@ -31,10 +31,11 @@
 #include "h3_config.h"
 #include "h3_filter.h"
 #include "h3_hooks.h"
+#include "h3_os.h"
 #include "h3_server.h"
 #include "mod_http3.h"
 
-static void register_hooks(apr_pool_t* /*p*/)
+static void register_hooks(apr_pool_t* p H3_UNUSED)
 {
     ap_hook_handler(h3_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 

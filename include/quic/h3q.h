@@ -19,10 +19,10 @@
 #ifndef H3Q_H
 #define H3Q_H
 
-#include <sys/socket.h>
-
 #include <stddef.h>
 #include <stdint.h>
+
+#include "h3_os.h"
 
 typedef struct h3q_engine h3q_engine;
 typedef struct h3q_conn h3q_conn;
@@ -60,7 +60,8 @@ void h3q_engine_destroy(h3q_engine* engine);
 /**
  * Drive one round of listener work: read datagrams, run timers, send.
  * @param engine Engine to pump; NULL reports no work.
- * @return 1 if work was done and another pass may be useful, 0 otherwise.
+ * @return 1 if work was done and another pass may be useful, 0 if idle, and
+ *         -1 if the listener stopped processing events.
  */
 int h3q_engine_pump(h3q_engine* engine);
 

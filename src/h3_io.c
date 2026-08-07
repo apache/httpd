@@ -29,20 +29,15 @@
 #include <apr_thread_proc.h>
 
 #include <errno.h>
-#include <poll.h>
-#include <unistd.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "quic/h3q.h"
-#include "quic/h3q_conn.h"
-#include "quic/h3q_stream.h"
-
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_io.h"
+#include "h3_os.h"
 #include "h3_request.h"
 #include "h3_session.h"
 #include "h3_socket.h"
@@ -50,6 +45,9 @@
 #include "h3_threads.h"
 #include "h3_version.h"
 #include "mod_http3.h"
+#include "quic/h3q.h"
+#include "quic/h3q_conn.h"
+#include "quic/h3q_stream.h"
 
 h3_io_t* child_h3_io = NULL;
 
@@ -66,12 +64,7 @@ static void teardown(h3_io_t* io)
     if (io->event_thread)
     {
         io->thread_running = 0;
-        if (io->wakeup_pipe[1])
-        {
-            char wake = '1';
-            apr_size_t len = 1;
-            (void)apr_file_write(io->wakeup_pipe[1], &wake, &len);
-        }
+        h3_wakeup_signal(&io->wakeup);
         apr_status_t status;
         apr_thread_join(&status, io->event_thread);
         io->event_thread = NULL;
@@ -104,13 +97,7 @@ static void teardown(h3_io_t* io)
         h3_socket_close(io->udp_fd);
         io->udp_fd = -1;
     }
-    if (io->wakeup_pipe[0])
-    {
-        apr_file_close(io->wakeup_pipe[0]);
-        apr_file_close(io->wakeup_pipe[1]);
-        io->wakeup_pipe[0] = NULL;
-        io->wakeup_pipe[1] = NULL;
-    }
+    /* Both wakeup sockets belong to the child pool and close with it. */
 }
 
 apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_conf* conf, int udp_fd)
@@ -124,9 +111,9 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->udp_fd = udp_fd;
     io->active_sessions = apr_array_make(pchild, 8, sizeof(h3_session*));
     io->pending_handshakes = apr_array_make(pchild, 4, sizeof(h3_pending_handshake));
-    if (apr_file_pipe_create_ex(&io->wakeup_pipe[0], &io->wakeup_pipe[1], APR_FULL_NONBLOCK, pchild) != APR_SUCCESS)
+    if (h3_wakeup_create(pchild, &io->wakeup) != APR_SUCCESS)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_file_pipe_create_ex failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_wakeup_create failed");
         return APR_EGENERAL;
     }
     if (apr_thread_pool_create(&io->h3_worker_pool, 16, 64, pchild) != APR_SUCCESS)
@@ -196,12 +183,10 @@ void wait_for_event(h3_io_t* io)
     h3q_engine_want(io->qengine, &want_read, &want_write, &timeout_ms);
 
     struct pollfd pfds[2] = {{.fd = io->udp_fd, .events = 0}, {.fd = -1, .events = POLLIN}};
-    nfds_t npfds = 1;
-    if (io->wakeup_pipe[0])
+    h3_nfds_t npfds = 1;
+    if (io->wakeup.reader_fd >= 0)
     {
-        apr_os_file_t wakeup_fd = -1;
-        apr_os_file_get(&wakeup_fd, io->wakeup_pipe[0]);
-        pfds[1].fd = wakeup_fd;
+        pfds[1].fd = io->wakeup.reader_fd;
         npfds = 2;
     }
 
@@ -218,16 +203,14 @@ void wait_for_event(h3_io_t* io)
         pfds[0].events = POLLIN; /* force POLLIN to avoid missing UDP packets */
     }
 
-    if (poll(pfds, npfds, timeout_ms) < 0 && errno == EINTR)
+    if (h3_poll(pfds, npfds, timeout_ms) < 0 && errno == EINTR)
     {
         return;
     }
 
     if (npfds == 2 && (pfds[1].revents & POLLIN))
     {
-        char buf[64];
-        apr_size_t len = sizeof(buf);
-        (void)apr_file_read(io->wakeup_pipe[0], buf, &len);
+        h3_wakeup_drain(&io->wakeup);
     }
 }
 

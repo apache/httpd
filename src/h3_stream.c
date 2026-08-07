@@ -166,9 +166,7 @@ h3_stream* track_stream(h3_session* session, int64_t sid, h3q_stream* qstream)
     h3s->qstream = qstream;
     h3s->is_bidi = H3_SID_IS_BIDI(sid);
     h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
-    h3s->response_buffer_limit = conf && conf->h3_stream_buffer_size
-        ? (size_t)conf->h3_stream_buffer_size
-        : (size_t)H3_STREAM_BUFFER_SIZE_DEFAULT;
+    h3s->response_buffer_limit = conf && conf->h3_stream_buffer_size ? (size_t)conf->h3_stream_buffer_size : (size_t)H3_STREAM_BUFFER_SIZE_DEFAULT;
     if (apr_thread_cond_create(&h3s->response_cond, stream_pool) != APR_SUCCESS)
     {
         apr_pool_destroy(stream_pool);

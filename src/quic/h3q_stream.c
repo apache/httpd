@@ -75,11 +75,16 @@ int h3q_stream_read(h3q_stream* st, unsigned char* buf, size_t read_size, size_t
     SSL* ssl = (SSL*)st;
     *fin = 0;
     int rv = SSL_read_ex(ssl, buf, read_size, nread);
+    if (rv == 1 && *nread > 0)
+    {
+        return 1;
+    }
+    /* A successful read of nothing, or a clean zero-return, is the end. */
     if (rv == 1 || SSL_get_error(ssl, rv) == SSL_ERROR_ZERO_RETURN)
     {
         *fin = 1;
     }
-    return (rv == 1 && *nread > 0);
+    return 0;
 }
 
 void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_finished)
