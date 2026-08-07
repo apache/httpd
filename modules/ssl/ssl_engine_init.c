@@ -1531,7 +1531,6 @@ static apr_status_t ssl_init_ctx_crl(server_rec *s,
     unsigned long crlflags = 0;
     char *cfgp = mctx->pkp ? "SSLProxy" : "SSL";
     int crl_check_mode;
-    apr_status_t rv;
 
     ap_assert(store != NULL); /* safe to assume always non-NULL? */
 
