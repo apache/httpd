@@ -15,11 +15,28 @@ t/conf/*.conf
 t/conf/ssl/*.pl
 t/conf/ssl/*.conf
 t/conf/ssl/ca
+t/conf/cacheroot/
 t/logs/
+t/state/
 
 # Generated test scripts
 t/htdocs/**/*.pl
+
+# Generated .htaccess files
+t/htdocs/apache/cfg_getline/.htaccess
+t/htdocs/apache/expr/.htaccess
+t/htdocs/authz_core/a/.htaccess
+t/htdocs/authz_core/a/b/.htaccess
+t/htdocs/authz_core/a/b/c/.htaccess
 t/htdocs/modules/access/htaccess/.htaccess
+t/htdocs/modules/autoindex/htaccess/.htaccess
+t/htdocs/modules/autoindex2/
+t/htdocs/modules/dir/htaccess/.htaccess
+t/htdocs/modules/expires/htaccess/.htaccess
+t/htdocs/modules/headers/htaccess/.htaccess
+t/htdocs/modules/setenvif/htaccess/.htaccess
+t/htdocs/modules/substitute/.htaccess
+t/htdocs/modules/substitute/test.txt
 
 # Logs
 t/php-fpm/log/
