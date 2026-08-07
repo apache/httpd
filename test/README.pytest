@@ -35,6 +35,50 @@ also raises the error log level of the tested modules.
 > pytest -vvv -k test_h2_004_01
 run the specific test with mod_http2 at log level TRACE2.
 
+There is an option to archive the results across different
+modules and httpd versions. The archiving will preserve
+error_log and access_log (cumulative for all tests in the module),
+and save a separate config file for each test case.
+> pytest test/modules/core --archive=/path/to/archive
+
+If you don't provide any specific module, pytest will execute all of them
+and add a new folder per module to the existing structure.
+> pytest --archive=/path/to/archive
+
+Always use --archive=<path> (with =, not a space) to avoid pytest rootdir issues.
+
+The archive folder is named after the httpd version and the git commit hash
+so results from different code versions are kept separate.
+Running the same module again with the same commit updates its folder in place.
+
+What gets archived:
+- error_log and access_log for the module run
+- per-test configs: test.conf snapshot after each test
+- module config: modules.conf
+- shared configs and infrastructure in _shared/ to avoid duplication
+
+Example archive structure with 2 httpd versions:
+    ├── /path/to/archive
+    │   ├── 2.4.65-a3f8c1d
+    │   │   ├── _shared
+    │   │   │   ├── conf
+    │   │   │   │   ├── httpd.conf
+    │   │   │   │   ├── mime.types
+    │   │   │   │   └── stop.conf
+    │   │   │   ├── ca
+    │   │   ├── core
+    │   │   │   ├── conf
+    │   │   │   │   ├── modules.conf
+    │   │   │   │   ├── test_core_001_01.conf
+    │   │   │   └── logs
+    │   │   │       ├── error_log
+    │   │   │       └── access_log
+    │   │   ├── http1
+    │   │   └── http2
+    │   └── 2.4.66-b7d2e4f
+    │        ├── _shared
+    │        └── core
+
 By default, test cases will configure httpd with mpm_event. You
 can change that with the invocation:
 > MPM=worker pytest test/modules/http2

@@ -99,8 +99,10 @@ class HttpdTestSetup:
     def _make_dirs(self):
         if not os.path.exists(self.env.gen_dir):
             os.makedirs(self.env.gen_dir)
-        if not os.path.exists(self.env.server_logs_dir):
-            os.makedirs(self.env.server_logs_dir)
+        # wipe logs from any previous module run to avoid stale files in the archive
+        if os.path.isdir(self.env.server_logs_dir):
+            shutil.rmtree(self.env.server_logs_dir)
+        os.makedirs(self.env.server_logs_dir)
 
     def _make_conf(self):
         # remove anything from another run/test suite
@@ -224,6 +226,9 @@ class HttpdTestSetup:
 class HttpdTestEnv:
 
     LIBEXEC_DIR = None
+    # entries shared across all modules, archived once in _shared
+    SHARED_SERVER_ENTRIES = {'ca', 'ca1', 'ca2', 'md', 'acme-ca.pem',
+                             'eab.json'}
 
     @staticmethod
     def has_tool(name: str) -> bool:
@@ -359,6 +364,81 @@ class HttpdTestEnv:
         assert (len(errors), len(warnings)) == (0, 0),\
                 f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
                 "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+
+    # combines httpd version & revision to identify the archive folder
+    def _archive_version(self):
+        if not hasattr(self, '_cached_archive_version'):
+            version = self.get_httpd_version()
+            r = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
+                               capture_output=True, text=True,
+                               cwd=self._our_dir)
+            if r.returncode == 0:
+                version = f"{version}-{r.stdout.strip()}"
+            else:
+                r = subprocess.run(['svn', 'info', '--show-item', 'revision'],
+                                   capture_output=True, text=True,
+                                   cwd=self._our_dir)
+
+                if r.returncode == 0:
+                    version = f"{version}-r{r.stdout.strip()}"
+            self._cached_archive_version = version
+        return self._cached_archive_version
+
+    def archive_logs(self, package_name, archive_dir):
+        version = self._archive_version()
+        dest = os.path.join(archive_dir, version, package_name)
+        os.makedirs(dest, exist_ok=True)
+
+        # merge into existing dest to preserve per-test confs
+        shutil.copytree(self._server_dir, dest, ignore=self.ignore_files,
+                        dirs_exist_ok=True)
+
+        shared_dest = os.path.join(archive_dir, version, '_shared')
+
+        if os.path.isdir(shared_dest):
+            shutil.rmtree(shared_dest)
+        os.makedirs(shared_dest)
+
+        for entry in self.SHARED_SERVER_ENTRIES:
+            src = os.path.join(self._server_dir, entry)
+            entry_dest = os.path.join(shared_dest, entry)
+            if os.path.isdir(src):
+                shutil.copytree(src, entry_dest)
+            elif os.path.isfile(src):
+                shutil.copy2(src, entry_dest)
+
+        shared_conf_dest = os.path.join(shared_dest, 'conf')
+        os.makedirs(shared_conf_dest)
+
+        # copy them once
+        for f in ['httpd.conf', 'mime.types', 'stop.conf']:
+            src = os.path.join(self._server_conf_dir, f)
+            if os.path.isfile(src):
+                shutil.copy2(src, shared_conf_dest)
+
+    def archive_test_conf(self, test_name, package_name, archive_dir):
+        version = self._archive_version()
+        dest = os.path.join(archive_dir, version, package_name, 'conf')
+        if not os.path.isdir(dest):
+            os.makedirs(dest)
+        test_conf = os.path.join(self._server_conf_dir, 'test.conf')
+        if os.path.isfile(test_conf):
+            safe_name = test_name.replace('/', '_').replace('\\', '_')
+            dest_file = os.path.join(dest, f"{safe_name}.conf")
+            shutil.copy(test_conf, dest_file)
+
+    # return files to ignore
+    def ignore_files(self, d, entries):
+        ignored = [e for e in entries if
+                   e.endswith('.sock') or e in self.SHARED_SERVER_ENTRIES]
+        # shared confs goes to _shared
+        # test.conf is captured per-test
+        if os.path.basename(d) == 'conf':
+            ignored += ['httpd.conf', 'mime.types', 'stop.conf', 'test.conf']
+        # htdocs are static test fixtures not useful in the archive
+        if os.path.basename(d) == os.path.basename(self._server_dir):
+            ignored += ['htdocs']
+        return ignored
 
     @property
     def curl(self) -> str:
