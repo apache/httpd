@@ -177,8 +177,9 @@ void h3q_engine_want(h3q_engine* engine, int* want_read, int* want_write, int* t
     int is_infinite = 0;
     if (SSL_get_event_timeout(engine->ssl_listener, &tv, &is_infinite) && !is_infinite)
     {
-        long ms = (long)(tv.tv_sec * 1000 + tv.tv_usec / 1000);
-        if (ms < *timeout_ms)
+        /* long is 32-bit on Windows, so tv_sec * 1000 overflows it. */
+        int64_t ms = (int64_t)tv.tv_sec * 1000 + (int64_t)tv.tv_usec / 1000;
+        if (ms >= 0 && ms < (int64_t)*timeout_ms)
         {
             *timeout_ms = (int)ms;
         }

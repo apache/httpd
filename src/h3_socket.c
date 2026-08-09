@@ -105,7 +105,6 @@ apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w)
         return rv;
     }
 
-    /* Ask the reader which port the bind landed on, then aim the writer at it. */
     apr_sockaddr_t* bound = NULL;
     if ((rv = apr_socket_addr_get(&bound, APR_LOCAL, w->reader)) != APR_SUCCESS)
     {
@@ -115,7 +114,28 @@ apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w)
     {
         return rv;
     }
+    /* The writer needs a fresh address; the reader's had its port rewritten. */
+    apr_sockaddr_t* writer_bind = NULL;
+    if ((rv = apr_sockaddr_info_get(&writer_bind, "127.0.0.1", APR_INET, 0, 0, pool)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+    if ((rv = apr_socket_bind(w->writer, writer_bind)) != APR_SUCCESS)
+    {
+        return rv;
+    }
     if ((rv = apr_socket_connect(w->writer, bound)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+
+    /* Connect both ends, so only the writer can reach the reader. */
+    apr_sockaddr_t* writer_addr = NULL;
+    if ((rv = apr_socket_addr_get(&writer_addr, APR_LOCAL, w->writer)) != APR_SUCCESS)
+    {
+        return rv;
+    }
+    if ((rv = apr_socket_connect(w->reader, writer_addr)) != APR_SUCCESS)
     {
         return rv;
     }
@@ -130,7 +150,7 @@ apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w)
     {
         return rv;
     }
-    w->reader_fd = (int)os_sock;
+    w->reader_fd = os_sock;
     return APR_SUCCESS;
 }
 
@@ -151,8 +171,9 @@ void h3_wakeup_drain(h3_wakeup* w)
     {
         return;
     }
+    /* Bounded drain; leftovers cost one more poll wakeup at most. */
     char buf[64];
-    for (;;)
+    for (int i = 0; i < 64; i++)
     {
         apr_size_t len = sizeof(buf);
         if (apr_socket_recv(w->reader, buf, &len) != APR_SUCCESS || len == 0)

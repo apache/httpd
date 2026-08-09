@@ -79,7 +79,6 @@ int h3q_stream_read(h3q_stream* st, unsigned char* buf, size_t read_size, size_t
     {
         return 1;
     }
-    /* A successful read of nothing, or a clean zero-return, is the end. */
     if (rv == 1 || SSL_get_error(ssl, rv) == SSL_ERROR_ZERO_RETURN)
     {
         *fin = 1;

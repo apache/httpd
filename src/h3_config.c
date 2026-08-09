@@ -440,7 +440,7 @@ int h3_post_config(apr_pool_t* p H3_UNUSED, apr_pool_t* plog H3_UNUSED, apr_pool
     }
     apr_file_close(f);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d mpm=%s threaded=%d forked=%d max_threads=%d", getpid(), conf->h3_cert_path, conf->h3_key_path, (int)conf->h3_port, ap_show_mpm(), mpm_query(AP_MPMQ_IS_THREADED), mpm_query(AP_MPMQ_IS_FORKED),
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d mpm=%s threaded=%d forked=%d max_threads=%d", h3_getpid(), conf->h3_cert_path, conf->h3_key_path, (int)conf->h3_port, ap_show_mpm(), mpm_query(AP_MPMQ_IS_THREADED), mpm_query(AP_MPMQ_IS_FORKED),
                  mpm_query(AP_MPMQ_MAX_THREADS));
     return OK;
 }
@@ -457,19 +457,19 @@ void* h3_merge_dir_config(apr_pool_t* p H3_UNUSED, void* base, void* add H3_UNUS
     return base;
 }
 
-const command_rec cmd_1 = AP_INIT_TAKE1("H3CertificatePath", set_h3_cert_path, NULL, RSRC_CONF, "Path to the SSL certificate file for HTTP/3");
-const command_rec cmd_2 = AP_INIT_TAKE1("H3CertificateKeyPath", set_h3_key_path, NULL, RSRC_CONF, "Path to the SSL certificate key file for HTTP/3");
-const command_rec cmd_3 = AP_INIT_TAKE1("H3Port", set_h3_port, NULL, RSRC_CONF, "UDP port to listen on for QUIC/HTTP-3 (default: same as main server)");
-const command_rec cmd_4 = AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 100)");
-const command_rec cmd_5 = AP_INIT_TAKE1("H3MaxConnections", set_h3_max_connections, NULL, RSRC_CONF, "Maximum concurrent QUIC/HTTP/3 connections per child process (default: 256)");
-const command_rec cmd_6 = AP_INIT_TAKE1("H3StreamBufferSize", set_h3_stream_buffer_size, NULL, RSRC_CONF, "Per-stream request and streaming-response buffer size in bytes (default: 65536)");
-const command_rec cmd_7 = AP_INIT_TAKE1("H3MaxRequestBodySize", set_h3_max_request_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 request body size in bytes, fully buffered in memory (default: 10485760)");
-const command_rec cmd_8 = AP_INIT_FLAG("H3AltSvc", set_h3_alt_svc, NULL, RSRC_CONF, "Whether to advertise HTTP/3 support via an Alt-Svc response header, required for browser discovery (default: on)");
-const command_rec cmd_9 = AP_INIT_TAKE1("H3AltSvcMaxAge", set_h3_alt_svc_max_age, NULL, RSRC_CONF, "Seconds a client may cache the Alt-Svc HTTP/3 advertisement for (default: 86400)");
-const command_rec cmd_10 = AP_INIT_TAKE1("H3HandshakeTimeout", set_h3_handshake_timeout, NULL, RSRC_CONF, "Timeout in seconds for QUIC handshakes to complete (default: 10)");
-const command_rec cmd_11 = AP_INIT_TAKE1("H3IdleTimeout", set_h3_idle_timeout, NULL, RSRC_CONF, "Idle timeout in seconds for QUIC connections (default: 300)");
-const command_rec cmd_12 = AP_INIT_TAKE1("H3MaxResponseBodySize", set_h3_max_response_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 response body size in bytes; an explicit limit enables bounded whole-response buffering (default: unlimited streaming)");
-const command_rec cmd_13 = AP_INIT_FLAG("H3AddressValidation", set_h3_address_validation, NULL, RSRC_CONF, "Whether to validate client addresses with a QUIC Retry packet before accepting a connection (default: on)");
-
-const command_rec cmd_end = AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL);
-const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_4, cmd_5, cmd_6, cmd_7, cmd_8, cmd_9, cmd_10, cmd_11, cmd_12, cmd_13, cmd_end};
+const command_rec h3_cmds[] = {
+    AP_INIT_TAKE1("H3CertificatePath", set_h3_cert_path, NULL, RSRC_CONF, "Path to the SSL certificate file for HTTP/3"),
+    AP_INIT_TAKE1("H3CertificateKeyPath", set_h3_key_path, NULL, RSRC_CONF, "Path to the SSL certificate key file for HTTP/3"),
+    AP_INIT_TAKE1("H3Port", set_h3_port, NULL, RSRC_CONF, "UDP port to listen on for QUIC/HTTP-3 (default: same as main server)"),
+    AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 100)"),
+    AP_INIT_TAKE1("H3MaxConnections", set_h3_max_connections, NULL, RSRC_CONF, "Maximum concurrent QUIC/HTTP/3 connections per child process (default: 256)"),
+    AP_INIT_TAKE1("H3StreamBufferSize", set_h3_stream_buffer_size, NULL, RSRC_CONF, "Per-stream request and streaming-response buffer size in bytes (default: 65536)"),
+    AP_INIT_TAKE1("H3MaxRequestBodySize", set_h3_max_request_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 request body size in bytes, fully buffered in memory (default: 10485760)"),
+    AP_INIT_FLAG("H3AltSvc", set_h3_alt_svc, NULL, RSRC_CONF, "Whether to advertise HTTP/3 support via an Alt-Svc response header, required for browser discovery (default: on)"),
+    AP_INIT_TAKE1("H3AltSvcMaxAge", set_h3_alt_svc_max_age, NULL, RSRC_CONF, "Seconds a client may cache the Alt-Svc HTTP/3 advertisement for (default: 86400)"),
+    AP_INIT_TAKE1("H3HandshakeTimeout", set_h3_handshake_timeout, NULL, RSRC_CONF, "Timeout in seconds for QUIC handshakes to complete (default: 10)"),
+    AP_INIT_TAKE1("H3IdleTimeout", set_h3_idle_timeout, NULL, RSRC_CONF, "Idle timeout in seconds for QUIC connections (default: 300)"),
+    AP_INIT_TAKE1("H3MaxResponseBodySize", set_h3_max_response_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 response body size in bytes; an explicit limit enables bounded whole-response buffering (default: unlimited streaming)"),
+    AP_INIT_FLAG("H3AddressValidation", set_h3_address_validation, NULL, RSRC_CONF, "Whether to validate client addresses with a QUIC Retry packet before accepting a connection (default: on)"),
+    AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL),
+};

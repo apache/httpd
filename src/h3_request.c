@@ -74,11 +74,27 @@ static int peer_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_pool_t* po
     {
         return 0;
     }
-    if (apr_sockaddr_info_get(addr, host, APR_UNSPEC, (apr_port_t)atoi(serv), 0, pool) != APR_SUCCESS)
+    char* end = NULL;
+    unsigned long port = strtoul(serv, &end, 10);
+    if (serv[0] == '\0' || !end || end[0] != '\0' || port > 65535)
     {
         return 0;
     }
-    return apr_sockaddr_ip_get(client_ip, *addr) == APR_SUCCESS;
+
+    /* Fill locals first: apr_sockaddr_info_get NULLs its out-param on failure. */
+    apr_sockaddr_t* resolved = NULL;
+    char* ip = NULL;
+    if (apr_sockaddr_info_get(&resolved, host, APR_UNSPEC, (apr_port_t)port, 0, pool) != APR_SUCCESS)
+    {
+        return 0;
+    }
+    if (apr_sockaddr_ip_get(&ip, resolved) != APR_SUCCESS)
+    {
+        return 0;
+    }
+    *addr = resolved;
+    *client_ip = ip;
+    return 1;
 }
 
 conn_rec* h3_synth_conn(h3_session* session)

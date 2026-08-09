@@ -54,9 +54,11 @@
 /* WSAPoll matches poll() field for field here, but counts with ULONG. */
 #if defined(_WIN32)
     #define h3_poll WSAPoll
+    #define h3_getpid _getpid
 typedef ULONG h3_nfds_t;
 #else
     #define h3_poll poll
+    #define h3_getpid getpid
 typedef nfds_t h3_nfds_t;
 #endif
 

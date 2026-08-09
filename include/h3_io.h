@@ -33,10 +33,6 @@
 #include "h3_socket.h"
 #include "quic/h3q.h"
 
-/// Optional MPM hooks; crash at runtime if unsupported.
-APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_added, (void));
-APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_removed, (void));
-
 typedef struct h3_session h3_session;
 
 typedef struct h3_io_t

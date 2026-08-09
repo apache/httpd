@@ -73,7 +73,7 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
             h3_socket_close(udp_fd);
             break;
         }
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, args->vhost, "port acquirer: pid=%d acquired QUIC port after retrying", getpid());
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, args->vhost, "port acquirer: pid=%d acquired QUIC port after retrying", h3_getpid());
         break;
     }
     return NULL;
@@ -112,7 +112,7 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     apr_status_t rv = h3_socket_open(conf->h3_port, pchild, &udp_fd);
     if (rv == APR_EAGAIN)
     {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, vhost, "h3_child_init: pid=%d port already owned, will keep retrying in background", getpid());
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, vhost, "h3_child_init: pid=%d port already owned, will keep retrying in background", h3_getpid());
         struct port_acquire_args* args = apr_palloc(pchild, sizeof(*args));
         args->pchild = pchild;
         args->vhost = vhost;
