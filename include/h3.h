@@ -52,6 +52,7 @@
 /* hidden directives */
 #define H3_GOAWAY_GRACE_SECS 3
 #define H3_PORT_ACQUIRE_RETRY_MS 200
+#define H3_LISTENER_FAILED_BACKOFF_MS 100
 
 /* Initial capacity for the doubling-growth request/response body buffers. */
 #define H3_BODY_BUF_INIT_CAP (8 * 1024)

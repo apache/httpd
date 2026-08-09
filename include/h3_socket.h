@@ -22,6 +22,7 @@
 #include <httpd.h>
 
 #include <apr_network_io.h>
+#include <apr_portable.h>
 
 /**
  * Open a non-blocking IPv6 dual-stack UDP socket and bind it to the given port.
@@ -58,7 +59,7 @@ typedef struct h3_wakeup
 /**
  * Create a wakeup pair on loopback. Both sockets are non-blocking.
  * @param pool Pool owning both sockets.
- * @param w    Out: the initialized pair; zeroed on failure.
+ * @param w    Out: the initialized pair; reset to reader_fd -1 on failure.
  * @return APR_SUCCESS or an APR error code.
  */
 apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w);

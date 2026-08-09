@@ -94,64 +94,70 @@ apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w)
     apr_status_t rv = apr_sockaddr_info_get(&loopback, "127.0.0.1", APR_INET, 0, 0, pool);
     if (rv != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     if ((rv = apr_socket_create(&w->reader, APR_INET, SOCK_DGRAM, APR_PROTO_UDP, pool)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     if ((rv = apr_socket_bind(w->reader, loopback)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
 
     apr_sockaddr_t* bound = NULL;
     if ((rv = apr_socket_addr_get(&bound, APR_LOCAL, w->reader)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     if ((rv = apr_socket_create(&w->writer, APR_INET, SOCK_DGRAM, APR_PROTO_UDP, pool)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     /* The writer needs a fresh address; the reader's had its port rewritten. */
     apr_sockaddr_t* writer_bind = NULL;
     if ((rv = apr_sockaddr_info_get(&writer_bind, "127.0.0.1", APR_INET, 0, 0, pool)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     if ((rv = apr_socket_bind(w->writer, writer_bind)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     if ((rv = apr_socket_connect(w->writer, bound)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
 
     /* Connect both ends, so only the writer can reach the reader. */
     apr_sockaddr_t* writer_addr = NULL;
     if ((rv = apr_socket_addr_get(&writer_addr, APR_LOCAL, w->writer)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     if ((rv = apr_socket_connect(w->reader, writer_addr)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
 
     if ((rv = apr_socket_timeout_set(w->reader, 0)) != APR_SUCCESS || (rv = apr_socket_timeout_set(w->writer, 0)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
 
     apr_os_sock_t os_sock;
     if ((rv = apr_os_sock_get(&os_sock, w->reader)) != APR_SUCCESS)
     {
-        return rv;
+        goto fail;
     }
     w->reader_fd = os_sock;
     return APR_SUCCESS;
+
+fail:
+    /* The pool closes the sockets; restore the uncreated state. */
+    memset(w, 0, sizeof(*w));
+    w->reader_fd = -1;
+    return rv;
 }
 
 void h3_wakeup_signal(h3_wakeup* w)

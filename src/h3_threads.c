@@ -23,6 +23,7 @@
 
 #include <apr_atomic.h>
 
+#include "h3.h"
 #include "h3_io.h"
 #include "h3_session.h"
 #include "h3_threads.h"
@@ -52,12 +53,13 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
         int pumped = h3q_engine_pump(io->qengine);
         if (pumped < 0)
         {
-            /* Latched: this loop runs continuously. */
             if (!listener_failed)
             {
                 listener_failed = 1;
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC listener event processing failed; no further datagrams will be handled");
             }
+            /* Once latched, unread datagrams keep POLLIN hot; do not spin on them. */
+            apr_sleep(apr_time_from_msec(H3_LISTENER_FAILED_BACKOFF_MS));
         }
         else
         {

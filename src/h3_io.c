@@ -182,7 +182,7 @@ void wait_for_event(h3_io_t* io)
 
     struct pollfd pfds[2] = {{.fd = io->udp_fd, .events = 0}, {.fd = -1, .events = POLLIN}};
     h3_nfds_t npfds = 1;
-    if (io->wakeup.reader)
+    if (io->wakeup.reader && io->wakeup.reader_fd != (apr_os_sock_t)-1)
     {
         pfds[1].fd = io->wakeup.reader_fd;
         npfds = 2;
