@@ -93,6 +93,8 @@ void hold_console_open_on_error(void);
 
 /* From child.c: */
 void child_main(apr_pool_t *pconf, DWORD parent_pid);
+void ap_mpm_note_extra_connection_added(void);
+void ap_mpm_note_extra_connection_removed(void);
 
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */

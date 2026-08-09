@@ -131,8 +131,20 @@ static apr_thread_mutex_t  *ctxpool_lock;
 static winnt_conn_ctx_t *ctxpool_head = NULL;
 static apr_uint32_t num_completion_contexts = 0;
 static apr_uint32_t max_num_completion_contexts = 0;
+static apr_uint32_t extra_connection_count = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE ctxpool_wait_event = NULL;
+
+/* Connections a module accepted itself, which the worker threads do not serve. */
+void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&extra_connection_count);
+}
+
+void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&extra_connection_count);
+}
 
 static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
 {
@@ -1235,6 +1247,12 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         else {
             break;
         }
+    }
+
+    /* Drain externally accepted connections within what is left of the deadline. */
+    while (apr_atomic_read32(&extra_connection_count) > 0 && time_remains >= 0) {
+        Sleep(100);
+        time_remains -= 100;
     }
 
     if (threads_created) {
