@@ -2321,6 +2321,11 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     }
     if (r->status_line && strlen(r->status_line) > 4) {
         reason = r->status_line + 4;
+        /* Reject control characters in the reason phrase to prevent
+         * forwarding backend-controlled bare CR in the status line. */
+        if (*ap_scan_http_field_content(reason)) {
+            reason = NULL;
+        }
     }
     b = ap_bucket_response_create(r->status, reason,
                                   send_headers? r->headers_out : NULL,
