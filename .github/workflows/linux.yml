@@ -91,19 +91,19 @@ jobs:
               TEST_INSTALL=1
               SKIP_TESTING=1
           # -------------------------------------------------------------------------
-          - name: All-modules, APR 1.7.6, APR-util 1.6.3
+          - name: All-modules, APR 1.7.6, APR-util 1.6.5
             config: --enable-mods-shared=reallyall
             env: |
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
-          - name: APR 1.7.6, APR-util 1.6.3, LDAP
+          - name: APR 1.7.6, APR-util 1.6.5, LDAP
             config: --enable-mods-shared=reallyall
             pkgs: ldap-utils
             env: |
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_LDAP=1
@@ -255,7 +255,7 @@ jobs:
             pkgs: nghttp2-client
             env: |
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
@@ -281,7 +281,7 @@ jobs:
           #     NOTEST_CFLAGS="-Werror"
           #     CC="gcc -m32"
           #     APR_VERSION=1.7.0
-          #     APU_VERSION=1.6.3
+          #     APU_VERSION=1.6.5
           # APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.0 LTS
@@ -289,7 +289,7 @@ jobs:
             env: |
               TEST_OPENSSL3=3.0.21
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -299,7 +299,7 @@ jobs:
             env: |
               TEST_OPENSSL3=3.4.6
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -309,7 +309,7 @@ jobs:
               TEST_OPENSSL3=3.4.6
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -320,7 +320,7 @@ jobs:
               TEST_OPENSSL3=3.5.7
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -331,7 +331,7 @@ jobs:
               TEST_OPENSSL3=4.0.1
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
