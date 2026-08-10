@@ -88,18 +88,18 @@ jobs:
               TEST_INSTALL=1
               SKIP_TESTING=1
           # -------------------------------------------------------------------------
-          - name: All-modules, APR 1.7.4, APR-util 1.6.3
+          - name: All-modules, APR 1.7.6, APR-util 1.6.5
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.4
-              APU_VERSION=1.6.3
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
-          - name: All-modules, APR 1.7.4, APR-util 1.6.3 (no APU crypto/LDAP)
+          - name: APR 1.7.6, APR-util 1.6.5 (no APU crypto/LDAP)
             config: --enable-mods-shared=reallyall
             env: |
-              APR_VERSION=1.7.4
-              APU_VERSION=1.6.3
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto --without-ldap"
           # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
@@ -169,11 +169,11 @@ jobs:
               TESTS="t/modules/dav.t"
             pkgs: litmus
           # -------------------------------------------------------------------------
-          - name: APR 1.7.4, APR-util 1.6.3, LDAP
+          - name: APR 1.7.6, APR-util 1.6.3, LDAP
             config: --enable-mods-shared=reallyall
             pkgs: ldap-utils
             env: |
-              APR_VERSION=1.7.4
+              APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
@@ -226,8 +226,8 @@ jobs:
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
             pkgs: curl python3-pytest nghttp2-client python3-cryptography python3-requests python3-multipart python3-filelock python3-websockets
             env: |
-              APR_VERSION=1.7.4
-              APU_VERSION=1.6.3
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
               TEST_INSTALL=1
@@ -243,7 +243,7 @@ jobs:
           #     python3-pytest nghttp2-client python3-cryptography python3-requests python3-filelock
           #     golang-1.17 curl
           #   env: |
-          #     APR_VERSION=1.7.4
+          #     APR_VERSION=1.7.6
           #     APU_VERSION=1.6.3
           #     APU_CONFIG="--with-crypto"
           #     GOROOT=/usr/lib/go-1.17
@@ -266,7 +266,7 @@ jobs:
           #     NOTEST_CFLAGS="-Werror"
           #     CC="gcc -m32"
           #     APR_VERSION=1.7.3
-          #     APU_VERSION=1.6.3
+          #     APU_VERSION=1.6.5
           # APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.0 LTS
@@ -274,7 +274,7 @@ jobs:
             env: |
               TEST_OPENSSL3=3.0.21
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -284,7 +284,7 @@ jobs:
             env: |
               TEST_OPENSSL3=3.4.6
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -294,7 +294,7 @@ jobs:
               TEST_OPENSSL3=3.4.6
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -305,7 +305,7 @@ jobs:
               TEST_OPENSSL3=3.5.7
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
@@ -316,7 +316,7 @@ jobs:
               TEST_OPENSSL3=4.0.1
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
-              APU_VERSION=1.6.3
+              APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
             pkgs: subversion
           # -------------------------------------------------------------------------
