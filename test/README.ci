@@ -29,21 +29,61 @@ The CI scripts use the following environment variables:
 * NO_TEST_FRAMEWORK - if set, the Perl-based test framework and
                       libcheck-based unit tests are skipped
 
+* TEST_LOGNO - if set, checks for APLOGNO() macro errors (duplicates
+               or empty arguments) and exits; no build or testing is done.
+
 * TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
-* TEST_MALLOC - set for job using enhanced malloc debugging.
+* TEST_ASAN - set for job using ASan ("Address Sanitizer")
+
+* TEST_MALLOC - set for job using enhanced malloc debugging
+  (sets MALLOC_PERTURB_, MALLOC_CHECK_ and LIBC_FATAL_STDERR_).
 
 * TEST_INSTALL - set for job testing "make install"
 
-* TEST_VPATH - set for job testing srcdir!=builddir 
+* TEST_VPATH - set for job testing srcdir!=builddir (VPATH build)
 
 * TEST_LDAP - set for job with slapd, running LDAP tests
 
-* TEST_SSL - set for job with SSL/TLS testing variants
+* TEST_SSL - set for job with SSL/TLS testing variants (encrypted
+  private keys, session cache backends via redis/memcache/shmcb, etc.)
+
+* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.6"), that
+  version of OpenSSL is built from source and used for mod_ssl.
+  Requires non-system APR/APR-util (APR_VERSION must also be set).
+
+* TEST_OPENSSL3_BRANCH - if set together with TEST_OPENSSL3, the
+  OpenSSL source is cloned from the named git branch instead of
+  downloading a release tarball.
+
+* OPENSSL_CONFIG - extra arguments passed to OpenSSL's ./Configure
+  when building from source (e.g. "no-engine").
+
+* TEST_PYTEST - if set, runs all available pytest-based test suites
+  via "make check-all-pytest" (pytest_suite/ and test/modules/*/
+  pyhttpd suites).  Replaces the old per-suite TEST_CORE / TEST_PROXY
+  / TEST_H2 / TEST_MD flags.
+
+* TEST_MOD_TLS - if set (together with RUSTLS_VERSION), builds
+  rustls-ffi from source and configures httpd with --with-tls
+  --with-rustls for mod_tls testing.
+
+* TEST_MD - (currently unused) if set, builds pebble and runs the
+  mod_md ACME test suite.  Preserved for future use once a working
+  pebble build is available; see comments in travis_run_linux.sh.
+
+* TEST_APR_TARBALL - if set, APR/APR-util source is fetched as a
+  release tarball from archive.apache.org rather than cloned from git.
 
 * TESTS - a list of Perl framework tests to run
 
 * TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
+
+* LITMUS - if set, runs the litmus WebDAV test suite against mod_dav.
+
+* PHP_FPM - path to the php-fpm binary.  If set, PHP tests are
+  included in the pytest test suites.  Set globally in the workflow
+  (e.g. "/usr/sbin/php-fpm8.3").
 
 * CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
 
