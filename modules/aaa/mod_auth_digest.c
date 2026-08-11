@@ -815,8 +815,10 @@ static client_entry *add_client(unsigned long key, client_entry *info,
  * Authorization header parser code
  */
 
-/* Parse the Authorization header, if it exists */
-static int get_digest_rec(request_rec *r, digest_header_rec *resp)
+/* Parse the Authorization header, if it exists, into resp; returns the
+ * status of the header. */
+static enum hdr_sts parse_digest_header(request_rec *r,
+                                        digest_header_rec *resp)
 {
     const char *auth_line;
     apr_size_t l;
@@ -828,14 +830,12 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
                                  ? "Proxy-Authorization"
                                  : "Authorization");
     if (!auth_line) {
-        resp->auth_hdr_sts = NO_HEADER;
-        return !OK;
+        return NO_HEADER;
     }
 
     resp->scheme = ap_getword_white(r->pool, &auth_line);
     if (ap_cstr_casecmp(resp->scheme, "Digest")) {
-        resp->auth_hdr_sts = NOT_DIGEST;
-        return !OK;
+        return NOT_DIGEST;
     }
 
     l = strlen(auth_line);
@@ -923,8 +923,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
         || !VALID_NONCE(resp->nonce)
         || !resp->digest || strlen(resp->digest) != MD5_DIGEST_LEN
         || (resp->message_qop && (!resp->cnonce || !resp->nonce_count))) {
-        resp->auth_hdr_sts = INVALID;
-        return !OK;
+        return INVALID;
     }
 
     if (resp->opaque) {
@@ -937,14 +936,13 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
             resp->opaque_num = (unsigned long)num;
     }
 
-    resp->auth_hdr_sts = VALID;
-    return OK;
+    return VALID;
 }
 
 
-/* This is a convenient place to parse the Authorization header, to get the
- * request-uri (before any subrequests etc are initiated) and to initialize
- * the request_config.
+/* Set up the per-request record: this is the place to get the request-uri
+ * (before any subrequests etc are initiated), to initialize the
+ * request_config, and to parse the Authorization header.
  *
  * Note that the nonce-count tracked for the client is deliberately NOT
  * updated here: the state of an authenticated client must not be altered
@@ -955,7 +953,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
  * Note that this must be called after mod_proxy had its go so that
  * r->proxyreq is set correctly.
  */
-static int parse_digest_header(request_rec *r)
+static int init_digest_request(request_rec *r)
 {
     digest_header_rec *resp;
 
@@ -970,7 +968,7 @@ static int parse_digest_header(request_rec *r)
     resp->method = r->method;
     ap_set_module_config(r->request_config, &auth_digest_module, resp);
 
-    get_digest_rec(r, resp);
+    resp->auth_hdr_sts = parse_digest_header(r, resp);
     resp->client = get_client(resp->opaque_num, r);
 
     return DECLINED;
@@ -1801,7 +1799,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_pre_config(pre_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(initialize_module, NULL, cfgPost, APR_HOOK_MIDDLE);
     ap_hook_child_init(initialize_child, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(parse_digest_header, parsePre, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(init_digest_request, parsePre, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_authn(authenticate_digest_user, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
 
