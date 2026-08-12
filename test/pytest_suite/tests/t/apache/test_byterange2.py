@@ -13,4 +13,4 @@ from apache_pytest import need_cgi, need_min_apache_version, t_cmp
 @need_cgi()
 def test_byterange2(http):
     resp = http.GET_BODY("/modules/cgi/ranged.pl", headers={"Range": "bytes=5-10/10"})
-    assert t_cmp(resp, "hello\n"), "return correct content"
+    assert t_cmp(resp.replace("\r\n", "\n"), "hello\n"), "return correct content"

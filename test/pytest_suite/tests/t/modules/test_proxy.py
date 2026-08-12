@@ -13,6 +13,7 @@ Perl original: plan tests => 46, need need_module 'proxy', need_module 'setenvif
 import os
 import re
 import socket
+import sys
 import threading
 import time
 
@@ -87,7 +88,7 @@ def test_proxy_cgi(http):
 
         r = http.GET("/reverse/modules/cgi/env.pl?reverse-proxy")
         assert t_cmp(r.status_code, 200), "reverse proxy with query string"
-        assert t_cmp(r.text, re.compile(r"QUERY_STRING = reverse-proxy\n", re.S)), \
+        assert t_cmp(r.text, re.compile(r"QUERY_STRING = reverse-proxy\r?\n", re.S)), \
             "reverse proxied query string OK"
 
         r = http.GET("/reverse/modules/cgi/nph-dripfeed.pl")
@@ -187,6 +188,7 @@ def test_proxy_redirect_rewrite(http):
 
 
 @need_module("proxy", "setenvif")
+@pytest.mark.skipif(sys.platform == "win32", reason="AF_UNIX not available on Windows")
 def test_proxy_uds(http):
     if not http.have_min_apache_version("2.4.7"):
         pytest.skip("UDS requires httpd >= 2.4.7")

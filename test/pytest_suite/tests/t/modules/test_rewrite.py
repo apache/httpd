@@ -10,6 +10,7 @@ Perl original: plan tests => ..., todo => \@todo, need_module 'rewrite'.
 """
 
 import re
+import sys
 
 import pytest
 
@@ -53,8 +54,8 @@ def test_rewrite_special_accepts(http):
 
 @need_module("rewrite")
 def test_rewrite_qsa(http):
-    r = http.GET_BODY("/modules/rewrite/qsa.html?baz=bee").rstrip("\n")
-    assert t_cmp(r, re.compile(r"\nQUERY_STRING = foo=bar&baz=bee\n", re.S)), \
+    r = http.GET_BODY("/modules/rewrite/qsa.html?baz=bee").rstrip("\r\n")
+    assert t_cmp(r, re.compile(r"\r?\nQUERY_STRING = foo=bar&baz=bee\r?\n", re.S)), \
         "query-string append test"
 
 
@@ -88,24 +89,24 @@ def test_rewrite_to_proxy(http):
 def test_rewrite_proxy_query_string(http):
     if not (_have_proxy(http) and _have_cgi(http)):
         pytest.skip("missing proxy or CGI module")
-    r = http.GET_BODY("/modules/rewrite/proxy2/env.pl?fish=fowl").rstrip("\n")
-    assert t_cmp(r, re.compile(r"QUERY_STRING = fish=fowl\n", re.S)), \
+    r = http.GET_BODY("/modules/rewrite/proxy2/env.pl?fish=fowl").rstrip("\r\n")
+    assert t_cmp(r, re.compile(r"QUERY_STRING = fish=fowl\r?\n", re.S)), \
         "QUERY_STRING passed OK"
 
     assert t_cmp(http.GET_RC("/modules/rewrite/proxy3/env.pl?horse=norman"), 404), \
         "RewriteCond QUERY_STRING test"
 
-    r = http.GET_BODY("/modules/rewrite/proxy3/env.pl?horse=trigger").rstrip("\n")
-    assert t_cmp(r, re.compile(r"QUERY_STRING = horse=trigger\n", re.S)), \
+    r = http.GET_BODY("/modules/rewrite/proxy3/env.pl?horse=trigger").rstrip("\r\n")
+    assert t_cmp(r, re.compile(r"QUERY_STRING = horse=trigger\r?\n", re.S)), \
         "QUERY_STRING passed OK"
 
     r = http.GET("/modules/rewrite/proxy-qsa.html?bloo=blar")
     assert t_cmp(r.status_code, 200), "proxy/QSA test success"
-    assert t_cmp(r.text, re.compile(r"QUERY_STRING = foo=bar&bloo=blar\n", re.S)), \
+    assert t_cmp(r.text, re.compile(r"QUERY_STRING = foo=bar&bloo=blar\r?\n", re.S)), \
         "proxy/QSA test appended args correctly"
 
 
-@need_module("rewrite")
+@need_module("rewrite", "test_utilities")
 def test_rewrite_pr60478(http):
     if not http.have_min_apache_version("2.4"):
         pytest.skip("PR 60478 requires ap_expr in version 2.4")
@@ -301,6 +302,8 @@ def _prefixstats(http):
 
 
 @need_module("rewrite")
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="Windows drive-letter colons in paths cause 400 Bad Request")
 def test_rewrite_prefixstat(http):
     # Uses the rewrite_prefix_stat vhost (larger LimitRequestLine).
     http.module("rewrite_prefix_stat")

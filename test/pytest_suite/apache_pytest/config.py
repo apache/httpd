@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import re
 import socket
+import sys
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -290,15 +291,15 @@ class TestConfig:
         v: dict[str, str] = {}
         v["top_dir"] = str(top_dir)
         v["t_dir"] = str(t_dir)
-        v["serverroot"] = str(serverroot)
-        v["documentroot"] = str(serverroot / "htdocs")
-        v["t_conf"] = str(serverroot / "conf")
-        v["t_logs"] = str(serverroot / "logs")
-        v["t_state"] = str(serverroot / "state")
+        v["serverroot"] = str(serverroot).replace("\\", "/")
+        v["documentroot"] = v["serverroot"] + "/htdocs"
+        v["t_conf"] = v["serverroot"] + "/conf"
+        v["t_logs"] = v["serverroot"] + "/logs"
+        v["t_state"] = v["serverroot"] + "/state"
         v["statedir"] = v["t_state"]
-        v["t_conf_file"] = str(serverroot / "conf" / "httpd.conf")
-        v["t_pid_file"] = str(serverroot / "logs" / "httpd.pid")
-        v["sslca"] = str(serverroot / "conf" / "ssl" / "ca")
+        v["t_conf_file"] = v["t_conf"] + "/httpd.conf"
+        v["t_pid_file"] = v["t_logs"] + "/httpd.pid"
+        v["sslca"] = v["t_conf"] + "/ssl/ca"
         v["sslcaorg"] = "asf"
         v["sslproto"] = "all"
         v["scheme"] = "http"
@@ -309,9 +310,9 @@ class TestConfig:
         # getfiles-* download aliases (see generate_httpd_conf %aliases). httpd
         # is the probed binary; perl is whatever runs the helper scripts.
         v["httpd"] = str(self.info.httpd)
-        from shutil import which
+        from .scripts import default_perl
 
-        v["perl"] = which("perl") or ""
+        v["perl"] = default_perl()
         # perlpod: a 'pods' dir under @INC, like Perl's find_in_inc('pods')
         # (TestConfig.pm:297). Drives the /getfiles-perl-pod alias that
         # t/filter/case.t (mod_alias case) downloads from. Left "" if not found,
@@ -497,7 +498,7 @@ class TestConfig:
             rewritten = self._maybe_rewrite_vhost(expanded)
             out_lines.append(rewritten if rewritten is not None else expanded)
         out_path = conf_in.with_suffix("")  # strip ".in" -> ".conf"
-        out_path.write_text("\n".join(out_lines) + "\n")
+        out_path.write_text("\n".join(out_lines) + "\n", newline="\n")
         return out_path
 
     def conf_in_files(self) -> list[Path]:
@@ -537,7 +538,7 @@ class TestConfig:
         else:
             mime = Path(self.vars["t_conf"]) / "mime.types"
             if not mime.exists():
-                mime.write_text(self.MIME_TYPES)
+                mime.write_text(self.MIME_TYPES, newline="\n")
             self.postamble.append(
                 f'<IfModule mod_mime.c>\n    TypesConfig "{mime}"\n</IfModule>'
             )
@@ -546,14 +547,16 @@ class TestConfig:
         index = Path(self.vars["documentroot"]) / "index.html"
         if not index.exists():
             index.write_text(
-                f"welcome to {self.vars['servername']}:{self.vars['port']}\n"
+                f"welcome to {self.vars['servername']}:{self.vars['port']}\n",
+                newline="\n",
             )
 
     def _load_module_preamble(self, name: str, so: Path) -> None:
         """Append a guarded LoadModule (find_and_load_module, TestConfig.pm:1329)."""
+        so_fwd = str(so).replace("\\", "/")
         self.preamble.append(
             f'<IfModule !mod_{name}.c>\n'
-            f'    LoadModule {name}_module "{so}"\n'
+            f'    LoadModule {name}_module "{so_fwd}"\n'
             f'</IfModule>'
         )
 
@@ -674,9 +677,10 @@ class TestConfig:
         for d in self.info.load_directives:
             if not _Path(d.so).exists():
                 continue
+            so = d.so.replace("\\", "/")
             self.preamble.append(
                 f"<IfModule !{d.cname}>\n"
-                f'    LoadModule {d.symbol} "{d.so}"\n'
+                f'    LoadModule {d.symbol} "{so}"\n'
                 f"</IfModule>"
             )
 
@@ -836,7 +840,8 @@ class TestConfig:
         # accumulate across modules and are flushed once at the end.
         cmodule_args: list[str] = []
         for sym, so in cmodule_loads or []:
-            self.preamble.append(f'LoadModule {sym}_module "{so}"')
+            so_fwd = str(so).replace("\\", "/")
+            self.preamble.append(f'LoadModule {sym}_module "{so_fwd}"')
             # Register the module in the modules set so <VirtualHost mod_X>
             # rewriting recognizes it (TestConfigC.pm:308 $self->{modules}{$cname}=1).
             self.info.modules.add(f"mod_{sym}.c")
@@ -859,13 +864,23 @@ class TestConfig:
             generated.append(self.process_conf_in(f))
             self._check_vars()
         for g in sorted(generated):
-            self.postamble.append(f'Include "{g}"')
+            g_fwd = str(g).replace("\\", "/")
+            self.postamble.append(f'Include "{g_fwd}"')
 
         # mod_mime/mod_alias may be shared and absent from the system conf; load
         # them defensively. Order matches Perl: generate_types_config loads
         # mod_mime first (TestConfig.pm:1394), then mod_alias (TestConfig.pm:1635).
         self._find_and_load_fallback("mod_mime")
         self._find_and_load_fallback("mod_alias")
+
+        # On Windows, tell mod_cgi to read the #! shebang line instead of
+        # using the Registry file association to find the script interpreter.
+        if sys.platform == "win32":
+            self.postamble.append(
+                "<IfModule mod_cgi.c>\n"
+                "    ScriptInterpreterSource Script\n"
+                "</IfModule>"
+            )
 
         # Assemble httpd.conf in generate_httpd_conf order (TestConfig.pm:1609-1690).
         parts: list[str] = []
@@ -880,5 +895,5 @@ class TestConfig:
         parts.extend(self.postamble)
 
         conf = Path(self.vars["t_conf_file"])
-        conf.write_text("\n".join(parts) + "\n")
+        conf.write_text("\n".join(parts) + "\n", newline="\n")
         return conf

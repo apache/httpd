@@ -8,6 +8,7 @@ Perl original needed: need_apache(2), mod_include, need_lwp.
 """
 
 import re
+import sys
 
 import pytest
 
@@ -58,6 +59,7 @@ def _cases(http):
 
 @need_module("include")
 @need_lwp()
+@pytest.mark.skipif(sys.platform == "win32", reason="uses shell CGI scripts")
 def test_acceptpathinfo(http):
     for mode, req, exp_rc, exp_body in _cases(http):
         # Apache::TestRequest's GET follows redirects by default; the bare

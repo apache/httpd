@@ -12,7 +12,7 @@ INFLATOR = "/modules/deflate/echo_post"
 URI = "/modules/filter/pr49328/pr49328.shtml"
 
 
-@need_module("filter", "include", "deflate")
+@need_module("filter", "include", "deflate", "echo_post")
 def test_pr49328(http):
     # GET_RAW: keep the gzip stream undecoded so we can re-POST it through the
     # inflate input filter (httpx would otherwise auto-decompress .content).
@@ -20,4 +20,4 @@ def test_pr49328(http):
     deflated = http.POST_BODY(
         INFLATOR, content=content, headers={"Content-Encoding": "gzip"}
     )
-    assert t_cmp(deflated, "before\nincluded\nafter\n")
+    assert t_cmp(deflated.replace("\r\n", "\n"), "before\nincluded\nafter\n")

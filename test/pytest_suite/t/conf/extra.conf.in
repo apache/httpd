@@ -178,7 +178,7 @@
     RewriteMap numbers-txt txt:@SERVERROOT@/htdocs/modules/rewrite/numbers.txt
     RewriteMap numbers-rnd rnd:@SERVERROOT@/htdocs/modules/rewrite/numbers.rnd
     #RewriteMap numbers-dbm dbm:@SERVERROOT@/htdocs/modules/rewrite/numbers.dbm
-    RewriteMap numbers-prg prg:@SERVERROOT@/htdocs/modules/rewrite/numbers.pl
+    RewriteMap numbers-prg "prg:@PERL@ @SERVERROOT@/htdocs/modules/rewrite/numbers.pl"
     RewriteMap lower int:tolower
 
     <Directory @SERVERROOT@/htdocs/modules/rewrite>
@@ -358,6 +358,7 @@
    </VirtualHost>
 
    # PR60478: pathological rewrite expansion
+   <IfModule mod_test_utilities.c>
    <IfVersion >= 2.4>
    <Location /modules/rewrite/pr60478-rewrite-loop>
       # This pair of RewriteRules will loop but should eventually 500 once we
@@ -368,6 +369,7 @@
       RewriteRule X - [N]
    </Location>
    </IfVersion>
+   </IfModule>
 
 </IfModule>
 

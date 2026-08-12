@@ -13,6 +13,7 @@ Perl original: plan tests => ..., need 'DateTime', need_lwp, need_module 'includ
 import os
 import re
 import stat
+import sys
 
 import pytest
 
@@ -149,6 +150,8 @@ def test_include_pages(http):
 
     for doc in sorted(tests):
         expected = tests[doc]
+        if sys.platform == "win32" and doc.startswith("exec/on/cmd"):
+            continue
         if isinstance(expected, tuple):
             body, host = expected
             got = super_chomp(http.GET_BODY(f"{DIR}{doc}", headers={"Host": host}))
@@ -234,6 +237,7 @@ def _check_xbithack_etag(resp):
 
 
 @need_module("include")
+@pytest.mark.skipif(sys.platform == "win32", reason="XBitHack relies on Unix file permission bits")
 def test_include_xbithack(http):
     http.scheme("http")
     http.module("mod_include")

@@ -15,10 +15,11 @@ URI = "/modules/cgi/pr37166.pl"
 def test_pr37166(http):
     r = http.GET(URI)
     assert t_cmp(r.status_code, 200), "SSI was allowed for location"
-    assert t_cmp(r.text, "Hello world\n"), "file was served with correct content"
+    assert t_cmp(r.text.replace("\r\n", "\n"), "Hello world\n"), \
+        "file was served with correct content"
 
     r = http.GET(URI, headers={"If-Modified-Since": "Tue, 15 Feb 2005 15:00:00 GMT"})
     assert t_cmp(r.status_code, 200), "explicit 200 response"
-    assert t_cmp(r.text, "Hello world\n"), (
+    assert t_cmp(r.text.replace("\r\n", "\n"), "Hello world\n"), (
         "file was again served with correct content"
     )

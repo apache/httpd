@@ -65,6 +65,20 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=False,
         help="remove all compiled C-module artifacts before building (emulate make clean)",
     )
+    group.addoption(
+        "--conf",
+        action="store",
+        default=None,
+        help="path to the installed httpd.conf (for LoadModule discovery "
+        "when --apxs is not available, e.g. on Windows)",
+    )
+    group.addoption(
+        "--prefix",
+        action="store",
+        default=None,
+        help="server install prefix for resolving relative module paths "
+        "(default: derived from --conf path)",
+    )
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -114,6 +128,16 @@ def _resolve_paths(
         inherited_conf = sysconfdir / "httpd.conf"
         if httpd_opt is None:
             httpd_opt = str(sbindir / "httpd")
+
+    conf_opt = config.getoption("--conf")
+    prefix_opt = config.getoption("--prefix")
+    if conf_opt is not None and inherited_conf is None:
+        inherited_conf = Path(conf_opt)
+    if prefix_opt is not None:
+        install_prefix = Path(prefix_opt)
+    elif inherited_conf is not None and install_prefix is None:
+        install_prefix = inherited_conf.parent.parent
+
     if httpd_opt is None:
         raise _NoServerError("must pass --httpd or --apxs")
     return Path(httpd_opt), apxs, inherited_conf, install_prefix, defines
@@ -144,11 +168,13 @@ def _probed_info(config: pytest.Config) -> HttpdInfo | None:
     # fixture, so need_module("authany") etc. should be satisfied at collection
     # time too. Augment the probed set with the C modules that WILL be built
     # (honoring the same HTTPD_TEST_REQUIRE_APACHE gating discover() applies).
-    from apache_pytest.cmodules import discover
+    # Without apxs the modules can't be compiled, so don't promise them.
+    if _apxs is not None:
+        from apache_pytest.cmodules import discover
 
-    cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
-    for mod in cmods:
-        info.modules.add(f"mod_{mod.name}.c")
+        cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
+        for mod in cmods:
+            info.modules.add(f"mod_{mod.name}.c")
     _probe_cache = info
     return _probe_cache
 

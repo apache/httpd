@@ -49,7 +49,7 @@ def generate_pl_scripts(root: Path, *, perl: str | None = None) -> list[Path]:
             continue
         target = pl.with_suffix("")  # strip ".PL" -> "...pl"
         body = pl.read_text()
-        target.write_text(_shebang() + body)
+        target.write_text(_shebang() + body, newline="\n")
         target.chmod(target.stat().st_mode | stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
         generated.append(target)
     return generated
@@ -59,4 +59,5 @@ def default_perl() -> str:
     """Best-effort path to a perl interpreter for the generated shebangs."""
     from shutil import which
 
-    return which("perl") or PERL or sys.executable
+    path = PERL or which("perl") or sys.executable
+    return path.replace("\\", "/")

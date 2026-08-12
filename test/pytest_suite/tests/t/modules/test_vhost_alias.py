@@ -11,6 +11,7 @@ selected the mod_vhost_alias vhost port; SSL is not listening on this vhost.
 
 import os
 import stat
+import sys
 
 import pytest
 
@@ -83,6 +84,7 @@ def _setup(root):
 
 @need_module("vhost_alias")
 @need_cgi()
+@pytest.mark.skipif(sys.platform == "win32", reason="uses shell CGI scripts")
 @pytest.mark.parametrize("vh", VHOSTS)
 def test_vhost_alias(http, vh):
     root = os.path.join(http.vars("documentroot"), "modules", "vhost_alias")
