@@ -1,0 +1,34 @@
+[global]
+prefix = @SERVER_ROOT@
+exec_prefix = ${prefix}
+bindir =  ${prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libdir = ${exec_prefix}/lib
+libexecdir = ${exec_prefix}/modules
+
+apr_bindir = ${prefix}
+apxs =  ${prefix}/bin/apxs
+apachectl = ${exec_prefix}/bin/apachectl.bat
+
+curl_bin = curl.exe
+nghttp = nghttp
+h2load = h2load
+
+pre_built_test_binaries_dir = ${libexecdir}
+
+[httpd]
+version = @HTTPD_VERSION@
+name = httpd
+dso_modules =  autht_jwt autht_core authn_file authn_dbm authn_anon authn_dbd authn_socache authn_core authz_host authz_groupfile authz_user authz_dbm authz_owner authz_dbd authz_core authnz_ldap access_compat auth_basic auth_bearer auth_form auth_digest allowmethods allowhandlers apreq file_cache cache cache_disk cache_socache socache_shmcb socache_dbm socache_memcache socache_redis watchdog macro dbd dumpio firehose echo buffer data ratelimit reqtimeout ext_filter request include filter reflector substitute sed charset_lite xml2enc proxy_html mime ldap syslog log_json log_config log_debug log_forensic logio env mime_magic expires headers usertrack unique_id setenvif version remoteip proxy proxy_connect proxy_ftp proxy_http proxy_fcgi proxy_scgi proxy_uwsgi proxy_fdpass proxy_wstunnel proxy_ajp proxy_balancer proxy_express proxy_hcheck session session_cookie session_crypto session_dbd slotmem_shm slotmem_plain ssl dialup http2 md lbmethod_byrequests lbmethod_bytraffic lbmethod_bybusyness lbmethod_heartbeat heartbeat heartmonitor dav status autoindex asis info dav_fs dav_lock vhost_alias negotiation dir actions speling userdir alias rewrite
+mpm_modules =  mpm_winnt
+
+[test]
+gen_dir = @SERVER_ROOT@
+http_port = 5002
+https_port = 5001
+proxy_port = 5003
+http_port2 = 5004
+ws_port = 5100
+http_tld = tests.httpd.apache.org
+test_dir =  @ABS_SRCDIR@
+test_src_dir = @ABS_SRCDIR@

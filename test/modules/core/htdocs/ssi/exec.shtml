@@ -1,1 +1,2 @@
-<!--#exec cmd="echo SSI_OK" -->
+<!--#set var="SSI" value="SSI_OK" -->
+<!--#echo var="SSI" -->

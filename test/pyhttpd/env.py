@@ -8,6 +8,7 @@ import stat
 import subprocess
 import sys
 import time
+import platform
 from datetime import datetime, timedelta
 from string import Template
 from typing import List, Optional
@@ -92,6 +93,7 @@ class HttpdTestSetup:
             self.add_modules([self.env.ssl_module])
         self._make_modules_conf()
         self._make_htdocs()
+
         self._add_aptest()
         self._build_clients()
         self.env.clear_curl_headerfiles()
@@ -198,21 +200,27 @@ class HttpdTestSetup:
                     os.chmod(py_file, st.st_mode | stat.S_IEXEC)
 
     def _add_aptest(self):
-        local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
-        p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
-                           capture_output=True,
-                           cwd=os.path.join(local_dir, 'mod_aptest'))
-        rv = p.returncode
-        if rv != 0:
-            log.error(f"compiling mod_aptest failed: {p.stderr}")
-            raise Exception(f"compiling mod_aptest failed: {p.stderr}")
+        module_dir = self.env.test_modules_dir
+        if not self.env.isWindows:
+            local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
+            p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
+                            capture_output=True,
+                            cwd=os.path.join(local_dir, 'mod_aptest'))
+            rv = p.returncode
+            if rv != 0:
+                log.error(f"compiling mod_aptest failed: {p.stderr}")
+                raise Exception(f"compiling mod_aptest failed: {p.stderr}")
+
+            module_dir = f"{local_dir}/mod_aptest/.libs/"
 
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:
-            # load our test module which is not installed
-            fd.write(f"LoadModule aptest_module   \"{local_dir}/mod_aptest/.libs/mod_aptest.so\"\n")
+            # load our test module
+            fd.write(f"LoadModule aptest_module   \"{module_dir}/mod_aptest.so\"\n")
 
     def _build_clients(self):
+        if self.env.test_modules_dir:
+            return
         clients_dir = os.path.join(
             os.path.dirname(os.path.dirname(inspect.getfile(HttpdTestSetup))),
             'clients')
@@ -269,8 +277,15 @@ class HttpdTestEnv:
         self._apxs = self.config.get('global', 'apxs')
         self._prefix = self.config.get('global', 'prefix')
         self._apachectl = self.config.get('global', 'apachectl')
+
+        self._libexec_dir = self.config.get('global', 'libexecdir')
+        HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir
+
         if HttpdTestEnv.LIBEXEC_DIR is None:
             HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir = self.get_apxs_var('LIBEXECDIR')
+
+        self._httpd_ver = self.config.get('httpd', 'version')
+
         self._curl = self.config.get('global', 'curl_bin')
         if 'CURL' in os.environ:
             self._curl = os.environ['CURL']
@@ -280,6 +295,8 @@ class HttpdTestEnv:
         self._h2load = self.config.get('global', 'h2load')
         if self._h2load is None:
             self._h2load = 'h2load'
+        self._test_modules_dir = self.config.get('global', 'pre_built_test_binaries_dir',
+                                                 fallback=None)
 
         self._http_port = int(self.config.get('test', 'http_port'))
         self._http_port2 = int(self.config.get('test', 'http_port2'))
@@ -288,19 +305,28 @@ class HttpdTestEnv:
         self._ws_port = int(self.config.get('test', 'ws_port'))
         self._http_tld = self.config.get('test', 'http_tld')
         self._test_dir = self.config.get('test', 'test_dir')
+
+        # In cmake determining the test directory is a headache and this is a simple workaround
+        if not self._test_dir:
+            self._test_dir = os.getcwd() + "/pyhttpd" if "pyhttpd" not in os.getcwd() else os.getcwd()
+
         self._clients_dir = os.path.join(os.path.dirname(self._test_dir), 'clients')
         self._gen_dir = self.config.get('test', 'gen_dir')
+
         self._server_dir = os.path.join(self._gen_dir, 'apache')
+        self._server_dir = self._server_dir.replace("\\","/")
         self._server_conf_dir = os.path.join(self._server_dir, "conf")
         self._server_docs_dir = os.path.join(self._server_dir, "htdocs")
         self._server_logs_dir = os.path.join(self.server_dir, "logs")
+        self._server_run_dir = os.path.join(self.server_dir, "run")
         self._server_access_log = os.path.join(self._server_logs_dir, "access_log")
-        self._error_log = HttpdErrorLog(os.path.join(self._server_logs_dir, "error_log"))
+        error_log_sep =  "." if self.isWindows else "_"
+        self._error_log = HttpdErrorLog(os.path.join(self._server_logs_dir, f"error{error_log_sep}log"))
         self._apachectl_stderr = None
 
         self._dso_modules = self.config.get('httpd', 'dso_modules').split(' ')
         self._mpm_modules = self.config.get('httpd', 'mpm_modules').split(' ')
-        self._mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_event'
+        self._mpm_module = f"mpm_{os.environ['MPM']}" if 'MPM' in os.environ else 'mpm_winnt' if self.isWindows else 'mpm_event'
         self._ssl_module = self.get_ssl_module()
         if len(self._ssl_module.strip()) == 0:
             self._ssl_module = None
@@ -525,6 +551,10 @@ class HttpdTestEnv:
         return self._server_logs_dir
 
     @property
+    def server_run_dir(self) -> str:
+        return self._server_run_dir
+
+    @property
     def libexec_dir(self) -> str:
         return HttpdTestEnv.LIBEXEC_DIR
 
@@ -567,8 +597,16 @@ class HttpdTestEnv:
         self._current_test = val
 
     @property
-    def apachectl_stderr(self):
+    def apachectl_stderr(self) -> str:
         return self._apachectl_stderr
+
+    @property
+    def test_modules_dir(self) -> str:
+        return self._test_modules_dir
+
+    @property
+    def isWindows(self) -> bool:
+        return platform.system().lower() == "windows"
 
     def add_cert_specs(self, specs: List[CertificateSpec]):
         self._cert_specs.extend(specs)
@@ -661,7 +699,7 @@ class HttpdTestEnv:
         return p.stdout.strip()
 
     def get_httpd_version(self) -> str:
-        return self.get_apxs_var("HTTPD_VERSION")
+        return self._httpd_ver
 
     def mkpath(self, path):
         if not os.path.exists(path):
