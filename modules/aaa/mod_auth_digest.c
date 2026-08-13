@@ -897,10 +897,8 @@ static int add_client(client_id_t key, client_entry *info, server_rec *s)
                      client_list->num_removed, client_list->num_renewed);
         entry = rmm_malloc(client_rmm, sizeof(client_entry));
         if (!entry) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(01767)
-                         "unable to allocate new auth_digest client");
             apr_global_mutex_unlock(client_lock);
-            return 0;          /* give up */
+            return 0;          /* give up; the caller logs this */
         }
     }
 
@@ -1153,7 +1151,8 @@ static client_id_t client_generate(const request_rec *r)
 
     if (!add_client(op, &new_entry, r->server)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
-                      "failed to allocate client entry - ignoring client");
+                      "unable to allocate a client entry - failing the "
+                      "request, since this configuration needs one");
         return 0;
     }
 
@@ -1165,21 +1164,24 @@ static client_id_t client_generate(const request_rec *r)
  * Authorization challenge generation code (for WWW-Authenticate)
  */
 
+/* Format a client id as the opaque sent to the client. Never called with
+ * zero: the callers check client_generate() for failure first. */
 static const char *ltox(apr_pool_t *p, client_id_t num)
 {
-    if (num != 0) {
-        return apr_psprintf(p, "%x", num);
-    }
-    else {
-        return "";
-    }
+    return apr_psprintf(p, "%x", num);
 }
 
-static void note_digest_auth_failure(request_rec *r,
-                                     const digest_config_rec *conf,
-                                     digest_header_rec *resp, int stale)
+/* Generate a challenge for the client, and return the status which the
+ * caller should return for this request: HTTP_UNAUTHORIZED normally, or
+ * HTTP_SERVICE_UNAVAILABLE if the per-client state which this configuration
+ * requires could not be allocated. No challenge is sent in that case: it
+ * could only carry an opaque which identifies nothing, so the client would
+ * be unable to authenticate through it however often it retried. */
+static int note_digest_auth_failure(request_rec *r,
+                                    const digest_config_rec *conf,
+                                    digest_header_rec *resp, int stale)
 {
-    const char   *qop, *opaque, *opaque_param, *domain, *nonce;
+    const char   *qop, *opaque = NULL, *opaque_param = "", *domain, *nonce;
     client_id_t   client_key = 0;
 
     /* Setup qop */
@@ -1189,25 +1191,22 @@ static void note_digest_auth_failure(request_rec *r,
 
     if (resp->opaque == NULL) {
         /* new client */
-        if ((conf->check_nc || conf->nonce_lifetime == 0)
-            && (client_key = client_generate(r)) != 0) {
+        if (conf->check_nc || conf->nonce_lifetime == 0) {
+            if ((client_key = client_generate(r)) == 0) {
+                return HTTP_SERVICE_UNAVAILABLE;
+            }
             opaque = ltox(r->pool, client_key);
         }
-        else {
-            opaque = "";                /* opaque not needed */
-        }
+        /* else no opaque is needed, and none is sent */
     }
     else if (!client_exists(resp->opaque_num, r)) {
         /* client info was gc'd */
-        client_key = client_generate(r);
-        if (client_key != 0) {
-            opaque = ltox(r->pool, client_key);
-            stale = 1;
-            client_note_renewed();
+        if ((client_key = client_generate(r)) == 0) {
+            return HTTP_SERVICE_UNAVAILABLE;
         }
-        else {
-            opaque = "";                /* ??? */
-        }
+        opaque = ltox(r->pool, client_key);
+        stale = 1;
+        client_note_renewed();
     }
     else {
         /* Note that the nonce-count tracked for this client is left alone
@@ -1218,11 +1217,8 @@ static void note_digest_auth_failure(request_rec *r,
         opaque = resp->opaque;
     }
 
-    if (opaque[0]) {
+    if (opaque) {
         opaque_param = apr_pstrcat(r->pool, ", opaque=\"", opaque, "\"", NULL);
-    }
-    else {
-        opaque_param = NULL;
     }
 
     /* Setup nonce */
@@ -1252,10 +1248,11 @@ static void note_digest_auth_failure(request_rec *r,
                      apr_psprintf(r->pool, "Digest realm=\"%s\", "
                                   "nonce=\"%s\", algorithm=%s%s%s%s%s",
                                   ap_auth_name(r), nonce, conf->algorithm,
-                                  opaque_param ? opaque_param : "",
+                                  opaque_param,
                                   domain ? domain : "",
                                   stale ? ", stale=true" : "", qop));
 
+    return HTTP_UNAUTHORIZED;
 }
 
 static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
@@ -1382,8 +1379,7 @@ static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
     if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01773)
                       "invalid nc %s received - not a number", snc);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
 
     switch (client_update_nonce(r, resp->opaque_num, conf, resp->nonce_time,
@@ -1394,12 +1390,10 @@ static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
     case NONCE_STALE:
         /* the credentials were good, so the client can silently retry with
          * the nonce from this challenge */
-        note_digest_auth_failure(r, conf, resp, 1);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 1);
 
     default:
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
 }
 
@@ -1421,8 +1415,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01776)
                       "invalid nonce %s received - hash is not %s",
                       resp->nonce, hash);
-        note_digest_auth_failure(r, conf, resp, 1);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 1);
     }
 
     dt = r->request_time - nonce_time.time;
@@ -1430,8 +1423,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01777)
                       "invalid nonce %s received - user attempted "
                       "time travel", resp->nonce);
-        note_digest_auth_failure(r, conf, resp, 1);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 1);
     }
 
     if (conf->nonce_lifetime > 0) {
@@ -1441,8 +1433,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
                           "- max lifetime %.2f) - sending new nonce",
                           r->user, (double)apr_time_sec(dt),
                           (double)apr_time_sec(conf->nonce_lifetime));
-            note_digest_auth_failure(r, conf, resp, 1);
-            return HTTP_UNAUTHORIZED;
+            return note_digest_auth_failure(r, conf, resp, 1);
         }
     }
     /* else (lifetime <= 0) => never expires by time; a one-time nonce is
@@ -1588,8 +1579,7 @@ static int authenticate_digest_user(request_rec *r)
                           r->uri);
         }
         /* else (resp->auth_hdr_sts == NO_HEADER) */
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
 
     r->user         = (char *) resp->username;
@@ -1689,8 +1679,7 @@ static int authenticate_digest_user(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01787)
                       "received invalid opaque - got `%s'",
                       resp->opaque);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
  
     
@@ -1699,16 +1688,14 @@ static int authenticate_digest_user(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02533)
                       "realm mismatch - got `%s' but no realm specified",
                       resp->realm);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
 
     if (!resp->realm || strcmp(resp->realm, realm)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01788)
                       "realm mismatch - got `%s' but expected `%s'",
                       resp->realm, realm);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
 
     if (resp->algorithm != NULL
@@ -1716,8 +1703,7 @@ static int authenticate_digest_user(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01789)
                       "unknown algorithm `%s' received: %s",
                       resp->algorithm, r->uri);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
 
     return_code = get_hash(r, r->user, conf, &resp->ha1);
@@ -1726,8 +1712,7 @@ static int authenticate_digest_user(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01790)
                       "user `%s' in realm `%s' not found: %s",
                       r->user, realm, r->uri);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
     else if (return_code == AUTH_USER_FOUND) {
         /* we have a password, so continue */
@@ -1737,8 +1722,7 @@ static int authenticate_digest_user(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01791)
                       "user `%s' in realm `%s' denied by provider: %s",
                       r->user, realm, r->uri);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
     else {
         /* AUTH_GENERAL_ERROR (or worse)
@@ -1754,8 +1738,7 @@ static int authenticate_digest_user(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10560)
                       "invalid or missing qop value '%s', RFC 2069 is "
                       "no longer supported: %s", resp->message_qop, r->uri);
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
+        return note_digest_auth_failure(r, conf, resp, 0);
     }
     else {
         /* RFC 2617 (or 7616)-style Digest hash calculation. */
@@ -1768,8 +1751,7 @@ static int authenticate_digest_user(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01794)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
-            note_digest_auth_failure(r, conf, resp, 0);
-            return HTTP_UNAUTHORIZED;
+            return note_digest_auth_failure(r, conf, resp, 0);
         }
     }
 
