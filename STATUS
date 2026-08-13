@@ -163,7 +163,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) mod_http2: Do not drop an in-flight response when a client sends a
+     graceful GOAWAY (error code 0) while streams it opened are still being
+     processed; drain the open streams instead of tearing the session down
+     (RFC 9113 compliant, bounded by Timeout). Async MPMs hit this far more
+     than event. Independently useful; also a prerequisite for mpm_motorz+h2.
+     trunk patch: https://svn.apache.org/r1934868
+        (the modules/http2/h2_session.c/.h portion of that commit)
+     2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
+     +1: jim, jorton, covener
 
 ------------------------------------------------------------------------
 
@@ -185,16 +193,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
      +1: jim, 
 
-  *) mod_http2: Do not drop an in-flight response when a client sends a
-     graceful GOAWAY (error code 0) while streams it opened are still being
-     processed; drain the open streams instead of tearing the session down
-     (RFC 9113 compliant, bounded by Timeout). Async MPMs hit this far more
-     than event. Independently useful; also a prerequisite for mpm_motorz+h2.
-     trunk patch: https://svn.apache.org/r1934868
-        (the modules/http2/h2_session.c/.h portion of that commit)
-     2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
-     +1: jim, jorton
-
   *) mod_dir: fix crash with no content-type. PR68527
      trunk patch:  https://svn.apache.org/r1936401
      2.4.x: svn merge -c 1936401,1936403 ^/httpd/httpd/trunk .
@@ -214,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1936264
                   https://svn.apache.org/r1937041
      2.4.x patch: https://github.com/apache/httpd/pull/703.patch
-     +1: jorton, 
+     +1: jorton, covener
 
   *) mod_auth_digest: Rebase to trunk.
      trunk patch: https://svn.apache.org/r1731662
@@ -239,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1937110
                   https://svn.apache.org/r1937111
      2.4.x patch: https://github.com/apache/httpd/pull/706.patch
-     +1: jorton,
+     +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
