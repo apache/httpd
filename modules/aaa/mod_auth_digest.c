@@ -118,7 +118,10 @@ typedef struct digest_config_struct {
 typedef struct hash_entry {
     unsigned long      key;                     /* the key for this entry    */
     struct hash_entry *next;                    /* next entry in the bucket  */
-    unsigned long      nonce_count;             /* for nonce-count checking  */
+    unsigned long      nonce_count;             /* highest nonce-count seen
+                                                 * for last_nonce_time       */
+    apr_time_t         last_nonce_time;         /* nonce of the last request
+                                                 * accepted for this client  */
     char               last_nonce[NONCE_LEN+1]; /* for one-time nonce's      */
 } client_entry;
 
@@ -932,21 +935,22 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
 }
 
 
-/* Because the browser may preemptively send auth info, incrementing the
- * nonce-count when it does, and because the client does not get notified
- * if the URI didn't need authentication after all, we need to be sure to
- * update the nonce-count each time we receive an Authorization header no
- * matter what the final outcome of the request. Furthermore this is a
- * convenient place to get the request-uri (before any subrequests etc
- * are initiated) and to initialize the request_config.
+/* This is a convenient place to parse the Authorization header, to get the
+ * request-uri (before any subrequests etc are initiated) and to initialize
+ * the request_config.
+ *
+ * Note that the nonce-count tracked for the client is deliberately NOT
+ * updated here: the state of an authenticated client must not be altered
+ * by a request which has not (yet) been authenticated, or a replayed or
+ * bogus request quoting the client's opaque would be able to rewind that
+ * state. See check_and_record_nonce().
  *
  * Note that this must be called after mod_proxy had its go so that
  * r->proxyreq is set correctly.
  */
-static int parse_hdr_and_update_nc(request_rec *r)
+static int parse_digest_header(request_rec *r)
 {
     digest_header_rec *resp;
-    int res;
 
     if (!ap_is_initial_req(r)) {
         return DECLINED;
@@ -959,11 +963,8 @@ static int parse_hdr_and_update_nc(request_rec *r)
     resp->method = r->method;
     ap_set_module_config(r->request_config, &auth_digest_module, resp);
 
-    res = get_digest_rec(r, resp);
+    get_digest_rec(r, resp);
     resp->client = get_client(resp->opaque_num, r);
-    if (res == OK && resp->client) {
-        resp->client->nonce_count++;
-    }
 
     return DECLINED;
 }
@@ -1028,7 +1029,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
 static client_entry *gen_client(const request_rec *r)
 {
     apr_uint32_t op = apr_atomic_inc32(opaque_counter);
-    client_entry new_entry = { 0, NULL, 0, "" }, *entry;
+    client_entry new_entry = { 0, NULL, 0, 0, "" }, *entry;
 
     if (!(entry = add_client(op, &new_entry, r->server))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
@@ -1088,9 +1089,11 @@ static void note_digest_auth_failure(request_rec *r,
         }
     }
     else {
+        /* Note that the nonce-count tracked for this client is left alone
+         * here: the client may not even see this challenge (it may have
+         * been triggered by somebody else quoting its opaque), and it is
+         * tied to the nonce it was counted for in any case. */
         opaque = resp->opaque;
-        /* we're generating a new nonce, so reset the nonce-count */
-        resp->client->nonce_count = 0;
     }
 
     if (opaque[0]) {
@@ -1233,12 +1236,33 @@ static authn_status get_hash(request_rec *r, const char *user,
     return auth_result;
 }
 
-static int check_nc(const request_rec *r, const digest_header_rec *resp,
-                    const digest_config_rec *conf)
+/* Check the nonce-count of a request against the count tracked for this
+ * client, and update the tracked count.
+ *
+ * The nonce-count is counted by the client per-nonce (RFC 7616 3.4.3), so
+ * the count tracked here is tied to the nonce it was counted for: a request
+ * using a newer nonce starts a new count, and a request using an older
+ * nonce is replaying a superseded one. Within a single nonce the count must
+ * strictly increase, but it need not increase by exactly one: the client
+ * also counts the requests it sends to URIs in the protection space which
+ * turn out not to need authentication, and this server never sees those.
+ *
+ * This must only be called for a request which is fully verified - both the
+ * response digest and the nonce - so that a request which fails to
+ * authenticate cannot alter the state tracked for the client whose opaque
+ * it quotes. Otherwise a bogus or replayed request could rewind the count
+ * and so lock out the legitimate client, and line the count up with the
+ * nonce-count of the replayed request itself.
+ */
+static int check_and_record_nonce(const request_rec *r,
+                               const digest_header_rec *resp,
+                               const digest_config_rec *conf)
 {
-    unsigned long nc;
+    client_entry *client = resp->client;
+    unsigned long nc, tracked;
     const char *snc = resp->nonce_count;
     char *endptr;
+    int accepted;
 
     if (!conf->check_nc) {
         return OK;
@@ -1251,15 +1275,33 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
         return !OK;
     }
 
-    if (!resp->client) {
+    if (!client) {
+        /* Without an opaque identifying the client there is nothing to
+         * check the nonce-count against. */
         return !OK;
     }
 
-    if (nc != resp->client->nonce_count) {
+    apr_global_mutex_lock(client_lock);
+
+    tracked = client->nonce_count;
+
+    /* Accept, and record, iff the client has moved on to a newer nonce (in
+     * which case this is the first request counted for that nonce), or is
+     * still on the tracked nonce and has raised the count. */
+    accepted = (resp->nonce_time > client->last_nonce_time)
+               || (resp->nonce_time == client->last_nonce_time && nc > tracked);
+    if (accepted) {
+        client->last_nonce_time = resp->nonce_time;
+        client->nonce_count = nc;
+    }
+
+    apr_global_mutex_unlock(client_lock);
+
+    if (!accepted) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01774)
-                      "Warning, possible replay attack: nonce-count "
-                      "check failed: %lu != %lu", nc,
-                      resp->client->nonce_count);
+                      "Warning, possible replay attack: nonce-count check "
+                      "failed: %lu is not above %lu for nonce %s", nc,
+                      tracked, resp->nonce);
         return !OK;
     }
 
@@ -1644,15 +1686,18 @@ static int authenticate_digest_user(request_rec *r)
         }
     }
 
-    if (check_nc(r, resp, conf) != OK) {
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
-    }
-
-    /* Note: this check is done last so that a "stale=true" can be
-       generated if the nonce is old */
+    /* Note: the nonce is checked before the nonce-count so that the
+     * nonce-count state is only ever updated for a request which is using
+     * a nonce this server issued, and so that a request using an expired
+     * nonce gets a "stale=true" challenge (and hence a silent retry with a
+     * fresh nonce-count) rather than being reported as a replay. */
     if ((res = check_nonce(r, resp, conf))) {
         return res;
+    }
+
+    if (check_and_record_nonce(r, resp, conf) != OK) {
+        note_digest_auth_failure(r, conf, resp, 0);
+        return HTTP_UNAUTHORIZED;
     }
 
     return OK;
@@ -1688,8 +1733,6 @@ static int add_auth_info(request_rec *r)
                                    gen_nonce(r->pool, r->request_time,
                                              resp->opaque, r->server, conf, ap_auth_name(r)),
                                    "\"", NULL);
-            if (resp->client)
-                resp->client->nonce_count = 0;
         }
     }
     else if (conf->nonce_lifetime == 0 && resp->client) {
@@ -1756,7 +1799,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_pre_config(pre_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(initialize_module, NULL, cfgPost, APR_HOOK_MIDDLE);
     ap_hook_child_init(initialize_child, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_read_request(parse_digest_header, parsePre, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_authn(authenticate_digest_user, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
 
