@@ -1,0 +1,8 @@
+  *) mod_auth_digest: Fix compatibility with expression-based AuthName.
+     PR 59039.  [Eric Covener]
+
+  *) mod_auth_digest.c: Drop RFC 2069 support; rewrite shared memory
+     handling and client nonce handling; "authdigest-opaque" mutex is
+     now longer needed.  [Joe Orton]
+
+
