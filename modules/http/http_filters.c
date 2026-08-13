@@ -414,7 +414,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 }
                 apr_bucket_delete(e);
             }
-            if (APR_BUCKET_IS_EOS(e)) {
+            else if (APR_BUCKET_IS_EOS(e)) {
                 ctx->at_eos = 1;
                 if (!apr_is_empty_table(r->trailers_in)) {
                     core_server_config *conf = ap_get_module_config(
