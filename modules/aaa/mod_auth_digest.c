@@ -1149,6 +1149,12 @@ static client_id_t client_generate(const request_rec *r)
     client_id_t op = apr_atomic_inc32(client_id_counter);
     client_entry new_entry = { 0, NULL, 0, 0 };
 
+    /* The counter wraps after 2^32 clients: skip an id of zero, which means
+     * "no client" and which add_client() would refuse. */
+    if (op == 0) {
+        op = apr_atomic_inc32(client_id_counter);
+    }
+
     if (!add_client(op, &new_entry, r->server)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
                       "unable to allocate a client entry - failing the "
