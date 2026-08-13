@@ -73,6 +73,12 @@ def env(pytestconfig) -> AAATestEnv:
         f'AuthUserFile "{pwfile}"',
         'AuthDigestNonceLifetime 0',
     ]))
+    conf.add(_digest_dir(docs, "onetime-nccheck", [
+        'AuthDigestProvider file',
+        f'AuthUserFile "{pwfile}"',
+        'AuthDigestNonceLifetime 0',
+        'AuthDigestNcCheck On',
+    ]))
     conf.add(_digest_dir(docs, "domain", [
         'AuthDigestProvider file',
         f'AuthUserFile "{pwfile}"',
