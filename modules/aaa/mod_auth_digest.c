@@ -817,7 +817,7 @@ static enum nonce_state client_update_nonce(const request_rec *r,
  * last entry in each bucket and updates the counters. Returns the
  * number of removed entries.
  */
-static long gc(server_rec *s)
+static unsigned long gc(server_rec *s)
 {
     client_entry *entry, *prev;
     unsigned long num_removed = 0, idx;
@@ -888,11 +888,11 @@ static int add_client(client_id_t key, client_entry *info, server_rec *s)
 
     entry = rmm_malloc(client_rmm, sizeof(client_entry));
     if (!entry) {
-        long num_removed = gc(s);
+        unsigned long num_removed = gc(s);
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01766)
-                     "gc'd %ld client entries. Total new clients: "
-                     "%ld; Total removed clients: %ld; Total renewed clients: "
-                     "%ld", num_removed,
+                     "gc'd %lu client entries. Total new clients: "
+                     "%lu; Total removed clients: %lu; Total renewed clients: "
+                     "%lu", num_removed,
                      client_list->num_created - client_list->num_renewed,
                      client_list->num_removed, client_list->num_renewed);
         entry = rmm_malloc(client_rmm, sizeof(client_entry));
