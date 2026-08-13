@@ -122,7 +122,6 @@ typedef struct hash_entry {
                                                  * for last_nonce_time       */
     apr_time_t         last_nonce_time;         /* nonce of the last request
                                                  * accepted for this client  */
-    char               last_nonce[NONCE_LEN+1]; /* for one-time nonce's      */
 } client_entry;
 
 static struct hash_table {
@@ -138,6 +137,14 @@ static struct hash_table {
 /* struct to hold a parsed Authorization header */
 
 enum hdr_sts { NO_HEADER, NOT_DIGEST, INVALID, VALID };
+
+/* Outcome of checking a request's nonce and nonce-count against the state
+ * tracked for its client. */
+enum nonce_state {
+    NONCE_ACCEPTED,     /* recorded as the latest used by this client */
+    NONCE_STALE,        /* already used, or the client is unknown */
+    NONCE_BAD_COUNT     /* nonce-count did not increase: possible replay */
+};
 
 typedef struct digest_header_struct {
     const char           *scheme;
@@ -1009,7 +1016,10 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         t.time = now;
     }
     else {
-        t.time = apr_atomic_inc32(otn_counter);
+        /* Nonces are ordered by this counter rather than by time; the +1
+         * is because apr_atomic_inc32() returns the previous value, and a
+         * nonce time of zero means "no nonce used yet" in a client entry. */
+        t.time = apr_atomic_inc32(otn_counter) + 1;
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
@@ -1029,7 +1039,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
 static client_entry *gen_client(const request_rec *r)
 {
     apr_uint32_t op = apr_atomic_inc32(opaque_counter);
-    client_entry new_entry = { 0, NULL, 0, 0, "" }, *entry;
+    client_entry new_entry = { 0, NULL, 0, 0 }, *entry;
 
     if (!(entry = add_client(op, &new_entry, r->server))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
@@ -1106,9 +1116,6 @@ static void note_digest_auth_failure(request_rec *r,
     /* Setup nonce */
 
     nonce = gen_nonce(r->pool, r->request_time, opaque, r->server, conf, ap_auth_name(r));
-    if (resp->client && conf->nonce_lifetime == 0) {
-        memcpy(resp->client->last_nonce, nonce, NONCE_LEN+1);
-    }
 
     /* setup domain attribute. We want to send this attribute wherever
      * possible so that the client won't send the Authorization header
@@ -1236,76 +1243,108 @@ static authn_status get_hash(request_rec *r, const char *user,
     return auth_result;
 }
 
-/* Check the nonce-count of a request against the count tracked for this
- * client, and update the tracked count.
+/* Check the nonce and nonce-count of a fully verified request against the
+ * state tracked for its client, record them, and generate a new challenge
+ * if they are not acceptable.
  *
- * The nonce-count is counted by the client per-nonce (RFC 7616 3.4.3), so
- * the count tracked here is tied to the nonce it was counted for: a request
- * using a newer nonce starts a new count, and a request using an older
- * nonce is replaying a superseded one. Within a single nonce the count must
- * strictly increase, but it need not increase by exactly one: the client
- * also counts the requests it sends to URIs in the protection space which
- * turn out not to need authentication, and this server never sees those.
+ * Both are compared against what the client last *used*, never against what
+ * was last issued to it: a nonce is issued whenever a challenge is
+ * generated, and anything quoting the client's opaque can provoke a
+ * challenge, so tracking what was issued lets an unauthenticated request
+ * invalidate the nonce which the legitimate client is holding.
+ *
+ * A one-time nonce (AuthDigestNonceLifetime 0) is therefore accepted iff it
+ * is newer than the last nonce this client used, which permits it exactly
+ * once. Otherwise, with AuthDigestNcCheck, a newer nonce starts a new count
+ * and the same nonce must raise it: the nonce-count is counted by the client
+ * per-nonce (RFC 7616 3.4.3). Within a nonce the count must strictly
+ * increase, but it need not increase by exactly one, since the client also
+ * counts the requests it sends to URIs in the protection space which turn
+ * out not to need authentication, and this server never sees those.
  *
  * This must only be called for a request which is fully verified - both the
  * response digest and the nonce - so that a request which fails to
  * authenticate cannot alter the state tracked for the client whose opaque
- * it quotes. Otherwise a bogus or replayed request could rewind the count
- * and so lock out the legitimate client, and line the count up with the
- * nonce-count of the replayed request itself.
+ * it quotes.
  */
-static int check_and_record_nonce(const request_rec *r,
-                               const digest_header_rec *resp,
-                               const digest_config_rec *conf)
+static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
+                                  const digest_config_rec *conf)
 {
     client_entry *client = resp->client;
-    unsigned long nc, tracked;
+    unsigned long nc, tracked = 0;
     const char *snc = resp->nonce_count;
     char *endptr;
-    int accepted;
+    enum nonce_state state = NONCE_STALE;
 
-    if (!conf->check_nc) {
-        return OK;
+    if (!conf->check_nc && conf->nonce_lifetime != 0) {
+        return OK;              /* nothing is tracked per-client */
     }
 
     nc = strtol(snc, &endptr, 16);
     if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01773)
                       "invalid nc %s received - not a number", snc);
-        return !OK;
+        note_digest_auth_failure(r, conf, resp, 0);
+        return HTTP_UNAUTHORIZED;
+    }
+
+    if (client) {
+        apr_global_mutex_lock(client_lock);
+
+        tracked = client->nonce_count;
+        if (conf->nonce_lifetime == 0) {
+            /* one-time nonce: usable until it has been used */
+            state = (resp->nonce_time > client->last_nonce_time)
+                    ? NONCE_ACCEPTED : NONCE_STALE;
+        }
+        else if (resp->nonce_time > client->last_nonce_time
+                 || (resp->nonce_time == client->last_nonce_time
+                     && nc > tracked)) {
+            state = NONCE_ACCEPTED;
+        }
+        else {
+            state = NONCE_BAD_COUNT;
+        }
+
+        if (state == NONCE_ACCEPTED) {
+            client->last_nonce_time = resp->nonce_time;
+            client->nonce_count     = nc;
+        }
+
+        apr_global_mutex_unlock(client_lock);
     }
 
     if (!client) {
-        /* Without an opaque identifying the client there is nothing to
-         * check the nonce-count against. */
-        return !OK;
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
+                      "client %lu is no longer known - sending new nonce",
+                      resp->opaque_num);
     }
-
-    apr_global_mutex_lock(client_lock);
-
-    tracked = client->nonce_count;
-
-    /* Accept, and record, iff the client has moved on to a newer nonce (in
-     * which case this is the first request counted for that nonce), or is
-     * still on the tracked nonce and has raised the count. */
-    accepted = (resp->nonce_time > client->last_nonce_time)
-               || (resp->nonce_time == client->last_nonce_time && nc > tracked);
-    if (accepted) {
-        client->last_nonce_time = resp->nonce_time;
-        client->nonce_count = nc;
+    else if (state == NONCE_STALE) {
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
+                      "user %s: one-time-nonce %s already used - sending "
+                      "new nonce", r->user, resp->nonce);
     }
-
-    apr_global_mutex_unlock(client_lock);
-
-    if (!accepted) {
+    else if (state == NONCE_BAD_COUNT) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01774)
                       "Warning, possible replay attack: nonce-count check "
                       "failed: %lu is not above %lu for nonce %s", nc,
                       tracked, resp->nonce);
-        return !OK;
     }
 
-    return OK;
+    switch (state) {
+    case NONCE_ACCEPTED:
+        return OK;
+
+    case NONCE_STALE:
+        /* the credentials were good, so the client can silently retry with
+         * the nonce from this challenge */
+        note_digest_auth_failure(r, conf, resp, 1);
+        return HTTP_UNAUTHORIZED;
+
+    default:
+        note_digest_auth_failure(r, conf, resp, 0);
+        return HTTP_UNAUTHORIZED;
+    }
 }
 
 static int check_nonce(request_rec *r, digest_header_rec *resp,
@@ -1350,16 +1389,8 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
             return HTTP_UNAUTHORIZED;
         }
     }
-    else if (conf->nonce_lifetime == 0 && resp->client) {
-        if (memcmp(resp->client->last_nonce, resp->nonce, NONCE_LEN)) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
-                          "user %s: one-time-nonce mismatch - sending "
-                          "new nonce", r->user);
-            note_digest_auth_failure(r, conf, resp, 1);
-            return HTTP_UNAUTHORIZED;
-        }
-    }
-    /* else (lifetime < 0) => never expires */
+    /* else (lifetime <= 0) => never expires by time; a one-time nonce is
+     * retired by use, in check_and_record_nonce() */
 
     return OK;
 }
@@ -1695,12 +1726,7 @@ static int authenticate_digest_user(request_rec *r)
         return res;
     }
 
-    if (check_and_record_nonce(r, resp, conf) != OK) {
-        note_digest_auth_failure(r, conf, resp, 0);
-        return HTTP_UNAUTHORIZED;
-    }
-
-    return OK;
+    return check_and_record_nonce(r, resp, conf);
 }
 
 /* Authentication-Info header code. */
@@ -1739,7 +1765,6 @@ static int add_auth_info(request_rec *r)
         const char *nonce = gen_nonce(r->pool, 0, resp->opaque, r->server,
                                       conf, ap_auth_name(r));
         nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"", nonce, "\"", NULL);
-        memcpy(resp->client->last_nonce, nonce, NONCE_LEN+1);
     }
     /* else nonce never expires, hence no nextnonce */
 
