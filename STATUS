@@ -193,7 +193,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1934868
         (the modules/http2/h2_session.c/.h portion of that commit)
      2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
-     +1: jim, 
+     +1: jim, jorton
 
   *) mod_dir: fix crash with no content-type. PR68527
      trunk patch:  https://svn.apache.org/r1936401
@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/703.patch
      +1: jorton, 
 
-  *) mod_auth_digest: Rebase to trunk, fixing three CVEs.
+  *) mod_auth_digest: Rebase to trunk.
      trunk patch: https://svn.apache.org/r1731662
                   https://svn.apache.org/r1934434
                   https://svn.apache.org/r1935944
