@@ -429,6 +429,66 @@ SET(MODULE_LIST
   "modules/test/mod_policy+I+HTTP protocol compliance filters"
 )
 
+IF(BUILD_TEST_MODULES)
+  LIST(APPEND MODULE_LIST
+    "test/pyhttpd/mod_aptest/mod_aptest+A+Test module. Useful only for developers and testing purposes."
+    "test/modules/http1/mod_h1test/mod_h1test+A+Http/1 Test module. Useful only for developers and testing purposes."
+    "test/modules/http2/mod_h2test/mod_h2test+A+Http/2 Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/authany/mod_authany+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/client_add_filter/mod_client_add_filter+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/eat_post/mod_eat_post+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/echo_post/mod_echo_post+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/echo_post_chunk/mod_echo_post_chunk+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/fold/mod_fold+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/input_body_filter/mod_input_body_filter+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/list_modules/mod_list_modules+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/memory_track/mod_memory_track+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/nntp_like/mod_nntp_like+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/random_chunk/mod_random_chunk+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/test_apr_uri/mod_test_apr_uri+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/test_pass_brigade/mod_test_pass_brigade+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/test_rwrite/mod_test_rwrite+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/test_session/mod_test_session+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/test_utilities/mod_test_utilities+A+Test module. Useful only for developers and testing purposes."
+  )
+ENDIF()
+IF(BUILD_TEST_MODULES AND OPENSSL_FOUND)
+  LIST(APPEND MODULE_LIST
+    "test/pytest_suite/c-modules/test_ssl/mod_test_ssl+A+Test module. Useful only for developers and testing purposes."
+  )
+ENDIF()
+
+IF(BUILD_TEST_MODULES)
+  SET(PYTEST_CMODULES_DIR "${CMAKE_SOURCE_DIR}/test/pytest_suite/c-modules")
+  IF(WIN32)
+    file(GLOB _python_hints "$ENV{LOCALAPPDATA}/Programs/Python/Python3*"
+                            "$ENV{PROGRAMFILES}/Python3*")
+    find_program(PYTHON_EXE NAMES py python3 python
+      HINTS ${_python_hints}
+    )
+    IF(NOT PYTHON_EXE)
+      MESSAGE(FATAL_ERROR "Python interpreter not found, required for BUILD_TEST_MODULES")
+    ENDIF()
+    execute_process(
+      COMMAND "${PYTHON_EXE}" "${CMAKE_SOURCE_DIR}/test/pytest_suite/gen_test_header.py" "${PYTEST_CMODULES_DIR}/apache_httpd_test.h"
+      RESULT_VARIABLE _gen_header_rc
+    )
+    IF(NOT _gen_header_rc EQUAL 0)
+      MESSAGE(FATAL_ERROR "Failed to generate apache_httpd_test.h (exit ${_gen_header_rc})")
+    ENDIF()
+  ENDIF()
+  SET(PYTEST_CMODULE_DEFINES APACHE2 APACHE2_4)
+  FOREACH(pytest_mod
+      mod_authany mod_client_add_filter mod_eat_post mod_echo_post
+      mod_echo_post_chunk mod_fold mod_input_body_filter mod_list_modules
+      mod_memory_track mod_nntp_like mod_random_chunk mod_test_apr_uri
+      mod_test_pass_brigade mod_test_rwrite mod_test_session
+      mod_test_utilities mod_test_ssl)
+    SET(${pytest_mod}_extra_defines ${PYTEST_CMODULE_DEFINES})
+  ENDFOREACH()
+  SET(mod_test_session_extra_libs mod_session)
+ENDIF()
+
 # Track which modules actually built have APIs to link against.
 SET(installed_mod_libs_exps)
 
@@ -753,6 +813,12 @@ SET(HTTPD_INCLUDE_DIRECTORIES
   ${PCRE_INCLUDE_DIR}
 )
 
+IF(BUILD_TEST_MODULES)
+  LIST(APPEND HTTPD_INCLUDE_DIRECTORIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/test/pytest_suite/c-modules
+  )
+ENDIF()
+
 # The .h files we install from outside the main include directory
 # largely parallel the include directories above.
 SET(other_installed_h
@@ -876,8 +942,8 @@ FOREACH (mod ${MODULE_PATHS})
 
     # Extra defines?
     SET(mod_extra_defines "${mod_name}_extra_defines")
-    IF(NOT ${${mod_extra_defines}} STREQUAL "")
-      SET_TARGET_PROPERTIES(${mod_name} PROPERTIES COMPILE_DEFINITIONS ${${mod_extra_defines}})
+    IF(NOT "${${mod_extra_defines}}" STREQUAL "")
+      TARGET_COMPILE_DEFINITIONS(${mod_name} PRIVATE ${${mod_extra_defines}})
     ENDIF()
 
     # Extra includes?
