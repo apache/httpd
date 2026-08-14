@@ -26,8 +26,21 @@ if "%HERE:~-1%"=="\" set "HERE=%HERE:~0,-1%"
 
 cd /d "%HERE%"
 
-rem --- python location
-set PYTHON=%LOCALAPPDATA%\Programs\Python\Python314\python.exe
+rem --- python location: find the newest native Windows Python 3.x
+set PYTHON=
+for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
+    if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+)
+if not defined PYTHON (
+    for /f "delims=" %%D in ('dir /b /o-n "%PROGRAMFILES%\Python3*" 2^>nul') do (
+        if not defined PYTHON set "PYTHON=%PROGRAMFILES%\%%D\python.exe"
+    )
+)
+if not defined PYTHON (
+    echo runtests.bat: ERROR: Python interpreter not found. >&2
+    echo   Install Python from https://www.python.org or set PYTHON=... >&2
+    exit /b 1
+)
 
 rem --- ensure the venv exists and is current ----------------------------------
 set "PYTEST=%HERE%\.venv\Scripts\pytest.exe"
