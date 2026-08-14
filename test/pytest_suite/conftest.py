@@ -168,13 +168,11 @@ def _probed_info(config: pytest.Config) -> HttpdInfo | None:
     # fixture, so need_module("authany") etc. should be satisfied at collection
     # time too. Augment the probed set with the C modules that WILL be built
     # (honoring the same HTTPD_TEST_REQUIRE_APACHE gating discover() applies).
-    # Without apxs the modules can't be compiled, so don't promise them.
-    if _apxs is not None:
-        from apache_pytest.cmodules import discover
+    from apache_pytest.cmodules import discover
 
-        cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
-        for mod in cmods:
-            info.modules.add(f"mod_{mod.name}.c")
+    cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
+    for mod in cmods:
+        info.modules.add(f"mod_{mod.name}.c")
     _probe_cache = info
     return _probe_cache
 
@@ -263,6 +261,14 @@ def framework(request: pytest.FixtureRequest):
         cmodule_loads, _skipped = compile_all(
             cmodules_dir, apxs, info, defines=["APACHE2", "APACHE2_4", *defines]
         )
+    else:
+        from apache_pytest.cmodules import discover
+        modules_dir = (install_prefix / "modules") if install_prefix else httpd.parent
+        cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
+        for mod in cmods:
+            so = modules_dir / f"mod_{mod.name}.so"
+            if so.exists():
+                cmodule_loads.append((mod.symbol, so))
 
     config.generate(cmodule_loads=cmodule_loads)
 

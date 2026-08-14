@@ -68,16 +68,16 @@ def _docroot_file(http, *parts):
 
 
 def _write_testfile(http, content):
-    with open(_docroot_file(http, "test.txt"), "w") as f:
-        f.write(content)
+    with open(_docroot_file(http, "test.txt"), "wb") as f:
+        f.write(content.encode("utf-8"))
 
 
 def _write_htaccess(http, rules):
     content = "SetOutputFilter BUCKETEER;SUBSTITUTE\n"
     for rule in rules:
         content += f"Substitute {rule}\n"
-    with open(_docroot_file(http, ".htaccess"), "w") as f:
-        f.write(content)
+    with open(_docroot_file(http, ".htaccess"), "wb") as f:
+        f.write(content.encode("utf-8"))
 
 
 def _httpd_rule_to_python(content, rule):

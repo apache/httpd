@@ -588,7 +588,7 @@ class TestConfig:
             var = self._GETFILES_ALIASES[label]
             val = self.vars.get(var)
             if val:
-                lines.append(f"    Alias /getfiles-{label} {val}")
+                lines.append(f'    Alias /getfiles-{label} "{val}"')
         lines.append("</IfModule>")
         return "\n".join(lines)
 
@@ -845,8 +845,10 @@ class TestConfig:
             # Register the module in the modules set so <VirtualHost mod_X>
             # rewriting recognizes it (TestConfigC.pm:308 $self->{modules}{$cname}=1).
             self.info.modules.add(f"mod_{sym}.c")
-            # so is <src_dir>/.libs/mod_<sym>.so; source is <src_dir>/mod_<sym>.c
+            # so is <src_dir>/.libs/mod_<sym>.so (apxs) or <prefix>/modules/ (CMake).
             c_source = so.parent.parent / f"mod_{sym}.c"
+            if not c_source.is_file():
+                c_source = Path(self.vars["top_dir"]) / "c-modules" / sym / f"mod_{sym}.c"
             if c_source.is_file():
                 self.add_module_config(c_source, cmodule_args)
         if cmodule_args:

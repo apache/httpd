@@ -17,17 +17,15 @@ import pytest
 from apache_pytest import need_min_apache_version, need_module, t_cmp
 
 CASES = [
-    ("/apache/ratelimit/", 200, "ratelimited small file", False),
-    ("/apache/ratelimit/autoindex/", 200, "ratelimited small autoindex output", False),
-    ("/apache/ratelimit/chunk?0,8192", 200, "ratelimited chunked response", True),
+    ("/apache/ratelimit/", 200, "ratelimited small file"),
+    ("/apache/ratelimit/autoindex/", 200, "ratelimited small autoindex output"),
+    ("/apache/ratelimit/chunk?0,8192", 200, "ratelimited chunked response"),
 ]
 
 
 @need_module("ratelimit", "autoindex")
 @need_min_apache_version("2.4.35")
-@pytest.mark.parametrize("url,code,desc,needs_cmod", CASES, ids=[c[2] for c in CASES])
-def test_ratelimit(http, url, code, desc, needs_cmod):
-    if needs_cmod and not http.have_module("random_chunk"):
-        pytest.skip("random_chunk C test module not available")
+@pytest.mark.parametrize("url,code,desc", CASES, ids=[c[2] for c in CASES])
+def test_ratelimit(http, url, code, desc):
     r = http.GET(url)
     assert t_cmp(r.status_code, code), desc
