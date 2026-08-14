@@ -612,6 +612,7 @@
  * 20120211.140 (2.4.64-dev) Add ap_set_time_process_request() to scoreboard.h
  * 20120211.141 (2.4.64-dev) add ap_stat_check() to httpd.h
  * 20120211.142 (2.4.64-dev) Add ap_*_timingsafe() to httpd.h
+ * 20120211.143 (2.4.69-dev) Add optional hooks for MPM to accept UDP conns.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -619,7 +620,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 142                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 143                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
