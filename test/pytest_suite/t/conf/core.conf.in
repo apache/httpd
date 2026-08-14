@@ -4,11 +4,6 @@
 
 MaxMemFree 1
 
-<VirtualHost righthost:core>
-      ServerName righthost
-      ServerAlias Righthost 128.0.0.1
-</VirtualHost>
-
 <VirtualHost strict-default:core>
       ServerName default-strict
       <IfVersion >= 2.4.49>
