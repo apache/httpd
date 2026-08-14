@@ -487,6 +487,10 @@ IF(BUILD_TEST_MODULES)
     SET(${pytest_mod}_extra_defines ${PYTEST_CMODULE_DEFINES})
   ENDFOREACH()
   SET(mod_test_session_extra_libs mod_session)
+  # Enable httpd debugging/example modules needed by the test suite.
+  SET(ENABLE_BUCKETEER "A" CACHE STRING "buckets manipulation filter" FORCE)
+  SET(ENABLE_CASE_FILTER "A" CACHE STRING "Example uppercase conversion filter" FORCE)
+  SET(ENABLE_CASE_FILTER_IN "A" CACHE STRING "Example uppercase conversion input filter" FORCE)
 ENDIF()
 
 # Track which modules actually built have APIs to link against.
