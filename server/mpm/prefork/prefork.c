@@ -219,6 +219,34 @@ static void prefork_note_child_started(int slot, pid_t pid)
     ap_run_child_status(ap_server_conf, pid, gen, slot, MPM_CHILD_STARTED);
 }
 
+static void wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&connection_count);
+    apr_time_t graceful, timeout, deadline;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    deadline = apr_time_now() + timeout;
+
+    do {
+        apr_sleep(apr_time_from_msec(100));
+        count = apr_atomic_read32(&connection_count);
+    } while (count > 0 && apr_time_now() < deadline);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(10620)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
+}
+
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit_ex(int code, int from_signal) __attribute__ ((noreturn));
 static void clean_child_exit_ex(int code, int from_signal)
@@ -232,9 +260,7 @@ static void clean_child_exit_ex(int code, int from_signal)
         if (!code && !from_signal) {
             ap_run_child_stopping(pchild, !retained->mpm->is_ungraceful);
             if (!retained->mpm->is_ungraceful) {
-                while (apr_atomic_read32(&connection_count) > 0) {
-                    apr_sleep(apr_time_from_msec(100));
-                }
+                wait_for_extra_connections();
             }
             ap_run_child_stopped(pchild, !retained->mpm->is_ungraceful);
         }
