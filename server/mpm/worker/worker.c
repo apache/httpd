@@ -518,6 +518,34 @@ static void ap_mpm_note_extra_connection_removed(void)
     apr_atomic_dec32(&connection_count);
 }
 
+static void wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&connection_count);
+    apr_time_t graceful, timeout, deadline;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    deadline = apr_time_now() + timeout;
+
+    do {
+        apr_sleep(apr_time_from_msec(100));
+        count = apr_atomic_read32(&connection_count);
+    } while (count > 0 && apr_time_now() < deadline);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(10621)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
+}
+
 static void unblock_signal(int sig)
 {
     sigset_t sig_mask;
@@ -1314,9 +1342,7 @@ static void child_main(int child_num_arg, int child_bucket)
     }
 
     if (terminate_mode == ST_GRACEFUL) {
-        while (apr_atomic_read32(&connection_count) > 0) {
-            apr_sleep(apr_time_from_msec(100));
-        }
+        wait_for_extra_connections();
     }
 
     free(threads);
