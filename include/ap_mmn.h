@@ -612,7 +612,9 @@
  * 20120211.140 (2.4.64-dev) Add ap_set_time_process_request() to scoreboard.h
  * 20120211.141 (2.4.64-dev) add ap_stat_check() to httpd.h
  * 20120211.142 (2.4.64-dev) Add ap_*_timingsafe() to httpd.h
- * 20120211.143 (2.4.69-dev) Add optional hooks for MPM to accept UDP conns.
+ * 20120211.143 (2.4.69-dev) Add the optional functions ap_mpm_note_extra_
+ *                           connection_added() and ap_mpm_note_extra_
+ *                           connection_removed() to mpm_common.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
