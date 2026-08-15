@@ -35,11 +35,22 @@
 void h3_child_init(apr_pool_t* pchild, server_rec* s);
 
 /**
- * Child-stop hook: tear down the QUIC listener, join worker threads, and
- * release the SSL context. No-op if the child never owned the listener.
+ * Child-stopping hook: stop retrying for the QUIC port, then either drain the
+ * live connections (graceful) or tear the listener down at once (immediate).
+ * No-op if the child never owned the listener.
  * @param pool     The pool used for any teardown allocations.
  * @param graceful Non-zero for a graceful stop, zero for immediate.
  */
 void h3_c1_child_stopping(apr_pool_t* pool, int graceful);
+
+/**
+ * Child-stopped hook: tear down the QUIC listener, join worker threads, and
+ * release the SSL context. Runs once the MPM has finished waiting for the
+ * connections we noted, so anything still alive here gets cut short.
+ * No-op if the child never owned the listener or already tore it down.
+ * @param pool     The pool used for any teardown allocations.
+ * @param graceful Non-zero for a graceful stop, zero for immediate.
+ */
+void h3_c1_child_stopped(apr_pool_t* pool, int graceful);
 
 #endif /* H3_SERVER_H */

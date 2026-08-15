@@ -147,5 +147,16 @@ void h3_c1_child_stopping(apr_pool_t* p H3_UNUSED, int graceful)
         apr_thread_join(&ignored, port_acquire_thread);
         port_acquire_thread = NULL;
     }
+    if (graceful)
+    {
+        h3_io_listen_drain(child_h3_io);
+        return;
+    }
+    h3_io_listen_stop(child_h3_io);
+}
+
+void h3_c1_child_stopped(apr_pool_t* p H3_UNUSED, int graceful)
+{
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "mod_http3: child stopped (graceful=%d)", graceful);
     h3_io_listen_stop(child_h3_io);
 }

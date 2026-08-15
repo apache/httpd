@@ -49,6 +49,10 @@ typedef struct h3_io_t
     volatile apr_uint64_t total_bytes_read;
     volatile apr_uint64_t total_bytes_written;
     volatile int thread_running;
+    /* Set by a graceful stop: keep servicing the sessions we already have,
+     * but accept no new ones.  The event thread keeps running so in-flight
+     * streams can finish; the MPM bounds how long the child waits for them. */
+    volatile int draining;
     h3_wakeup wakeup;
 
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;
@@ -80,8 +84,18 @@ extern h3_io_t* child_h3_io;
 apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_conf* conf, int udp_fd);
 
 /**
+ * Begin a graceful drain: stop accepting connections and send GOAWAY on the
+ * live ones, letting their in-flight streams finish. Returns immediately;
+ * every session is noted with the MPM, so the child stays up while they
+ * drain and the MPM bounds the wait. Safe to call with NULL.
+ * @param io The h3_io_t to drain.
+ */
+void h3_io_listen_drain(h3_io_t* io);
+
+/**
  * Stop the event thread, join all worker threads, and release the UDP fd
- * and engine. Safe to call with NULL.
+ * and engine. Sessions still alive are given H3_GOAWAY_GRACE_SECS to finish
+ * before being cut. Safe to call with NULL, and safe to call twice.
  * @param io The h3_io_t to tear down.
  */
 void h3_io_listen_stop(h3_io_t* io);

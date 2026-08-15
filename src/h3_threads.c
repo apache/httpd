@@ -67,7 +67,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             work_pending = pumped;
         }
 
-        if (io->thread_running)
+        if (io->thread_running && !io->draining)
         {
             for (;;)
             {

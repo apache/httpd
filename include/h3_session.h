@@ -62,6 +62,7 @@ struct h3_session
     size_t stream_drain_cursor;
 
     int control_streams_created;
+    int goaway_sent;
     apr_time_t goaway_deadline;
 
     volatile apr_uint32_t active_tasks;

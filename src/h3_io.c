@@ -157,6 +157,18 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     return APR_SUCCESS;
 }
 
+void h3_io_listen_drain(h3_io_t* io)
+{
+    if (io && !io->draining)
+    {
+        io->draining = 1;
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server,
+                     "graceful stop: draining %d connection(s), the MPM waits for them to finish",
+                     io->active_sessions ? io->active_sessions->nelts : 0);
+        h3_wakeup_signal(&io->wakeup);
+    }
+}
+
 void h3_io_listen_stop(h3_io_t* io)
 {
     if (io)
@@ -362,22 +374,27 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         return 0;
     }
 
-    if (!io->thread_running)
+    if (io->draining || !io->thread_running)
     {
         apr_thread_mutex_lock(session->lock);
-        if (!session->goaway_deadline)
+        if (!session->goaway_sent)
         {
             nghttp3_conn_submit_shutdown_notice(session->ngh3);
         }
         flush_nghttp3(session);
         int drained = nghttp3_conn_is_drained2(session->ngh3);
         apr_thread_mutex_unlock(session->lock);
-        if (!session->goaway_deadline)
+        if (!session->goaway_sent)
+        {
+            session->goaway_sent = 1;
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; letting in-flight streams finish");
+        }
+        if (!io->thread_running && !session->goaway_deadline)
         {
             session->goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "stopping: allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
         }
-        if (drained || apr_time_now() >= session->goaway_deadline)
+        if (drained || (session->goaway_deadline && apr_time_now() >= session->goaway_deadline))
         {
             apr_thread_mutex_lock(session->lock);
             nghttp3_conn_shutdown(session->ngh3);
