@@ -131,11 +131,10 @@ static apr_thread_mutex_t  *ctxpool_lock;
 static winnt_conn_ctx_t *ctxpool_head = NULL;
 static apr_uint32_t num_completion_contexts = 0;
 static apr_uint32_t max_num_completion_contexts = 0;
-static apr_uint32_t extra_connection_count = 0;
+static apr_uint32_t extra_connection_count = 0; /* Number of open connections that the MPM does not own */
 static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE ctxpool_wait_event = NULL;
 
-/* Connections a module accepted itself, which the worker threads do not serve. */
 void ap_mpm_note_extra_connection_added(void)
 {
     apr_atomic_inc32(&extra_connection_count);
@@ -149,8 +148,7 @@ void ap_mpm_note_extra_connection_removed(void)
 static void wait_for_extra_connections(void)
 {
     apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
-    apr_time_t graceful, timeout;
-    int time_remains;
+    apr_time_t graceful, timeout, time_remains;
 
     if (count == 0) {
         return;
@@ -158,7 +156,7 @@ static void wait_for_extra_connections(void)
 
     graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
     timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
-    time_remains = (int)(timeout / APR_TIME_C(1000));
+    time_remains = timeout / APR_TIME_C(1000);
 
     do {
         Sleep(100);

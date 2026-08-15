@@ -737,7 +737,9 @@
  * 20211221.29 (2.5.1-dev) Add ap_set_time_process_request() to scoreboard.h
  * 20211221.30 (2.5.1-dev) Add ap_stat_check() to httpd.h
  * 20211221.31 (2.5.1-dev) Add ap_*_timingsafe() to httpd.h
- * 20211221.32 (2.5.1-dev) Add optional hooks for MPM to accept UDP conns.
+ * 20211221.32 (2.5.1-dev) Add the optional functions ap_mpm_note_extra_
+ *                         connection_added() and ap_mpm_note_extra_
+ *                         connection_removed() to mpm_common.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */

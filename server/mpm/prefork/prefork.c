@@ -90,7 +90,7 @@
 
 /* config globals */
 
-static apr_uint32_t connection_count = 0;   /* Number of open connections */
+static apr_uint32_t extra_connection_count = 0; /* Number of open connections that the MPM does not own */
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -219,9 +219,19 @@ static void prefork_note_child_started(int slot, pid_t pid)
     ap_run_child_status(ap_server_conf, pid, gen, slot, MPM_CHILD_STARTED);
 }
 
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&extra_connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&extra_connection_count);
+}
+
 static void wait_for_extra_connections(void)
 {
-    apr_uint32_t count = apr_atomic_read32(&connection_count);
+    apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
     apr_time_t graceful, timeout, deadline;
 
     if (count == 0) {
@@ -234,7 +244,7 @@ static void wait_for_extra_connections(void)
 
     do {
         apr_sleep(apr_time_from_msec(100));
-        count = apr_atomic_read32(&connection_count);
+        count = apr_atomic_read32(&extra_connection_count);
     } while (count > 0 && apr_time_now() < deadline);
 
     if (count > 0) {
@@ -412,16 +422,6 @@ static void just_die(int sig)
 
 /* volatile because it's updated from a signal handler */
 static int volatile die_now = 0;
-
-static void ap_mpm_note_extra_connection_added(void)
-{
-    apr_atomic_inc32(&connection_count);
-}
-
-static void ap_mpm_note_extra_connection_removed(void)
-{
-    apr_atomic_dec32(&connection_count);
-}
 
 static void stop_listening(int sig)
 {
