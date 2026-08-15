@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933923:1936863 (outdated) -->
+<!-- English Revision: 1936863 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1367,6 +1367,91 @@ redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLStoreURI</name>
+<description>Stockage du certificat et de la clé du serveur</description>
+<syntax>SSLStoreURI <var>uri</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache
+s’il est lié à OpenSSL v3 ou supérieure.</compatibility>
+
+<usage>
+<p>
+Cette directive permet de définir, sous la forme d’un URI, un emplacement de
+stockage pour les certificats, les certificats intermédiaires et les clés
+privées.
+</p>
+<p>
+L’URI désigne des données encodées en PEM ou un fichier PKCS12, et possède le
+protocole <var>file:</var> par défaut. Les autres protocoles possibles sont
+(liste non exhaustive) : <var>pkcs11:</var> pour les cartes à puce et les
+modules de sécurité matériel (HSM - Hardware Security Module), <var>cng:</var>
+pour le stockage des certificats sous Windows et <var>handle:</var> pour les
+modules de plateforme sécurisée (TPM - Trusted Platform Module). Sous Windows, où
+le chemin de fichier est aussi un URI valable, le protocole <var>file:</var>
+doit être utilisé.
+</p>
+<p>
+La directive peut être spécifiée plusieurs fois avec des URI plus précis pour
+cibler des clés et certificats spécifiques, ou une seule fois avec un URI
+général comme <var>pkcs11:</var> qui cible tous les certificats et clés
+possibles. Les certificats, certificats intermédiaires et les clés peuvent être
+définis dans n’importe quel ordre.
+</p>
+<p>Les certificats et les clés sont traités comme suit :
+</p>
+<ul>
+<li>Les certificats feuille qui n’ont pas pour fonction l’<var>Authentification
+du Serveur</var> sont ignorés.</li>
+<li>La correspondance entre le nom d’hôte ou l’adresse IP des autres certificats
+feuille et la directive <directive module="core">ServerName</directive> et
+toutes les directives <directive module="core">ServerAlias</directive> est
+vérifiée. Si ce n’est pas le cas, ces certificats sont ignorés.</li>
+<li>Les certificats intermédiaires sont conçus pour construire des chaînes de
+certification du mieux qu’ils peuvent.</li>
+<li>Les clés sont associées aux certificats feuille ; tout certificat sans clé
+privée est ignoré.</li>
+<li>Les certificats feuille avec clé privée sont triés du plus ancien au plus
+récent, puis transmis à la configuration.</li>
+<li>La paire certificat/clé la plus récente pour chaque type d’algorithme
+(RSA, ECDSA, etc.) sera utilisée pour chaque serveur virtuel.</li>
+<li>Pour vous aider, le serveur vous indiquera le nombre de certificats trouvés
+pour chaque type si aucun certificat ne convient.</li>
+</ul>
+
+<p>Si la clé privée est chiffrée, l’invite de saisie de la phrase secrète
+sera ouverte au démarrage.</p>
+
+<example><title>Exemple</title>
+<highlight language="config">
+# Exemple utilisant un fichier encodé en PEM.
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Exemple utilisant un fichier PKCS12.
+SSLStoreURI "/usr/local/apache2/conf/ssl.crt/server.p12"
+# Exemple utilisant un certificat et une clé privée depuis un jeton PKCS#11 :
+SSLStoreURI "pkcs11:token=My%20Token%20Name;id=45"
+</highlight>
+</example>
+
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
+encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
+il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
+redémarrage du serveur est requis pour que les changements prennent effet.</p>
+
+<note type="warning"><title>Utilisation simultanée de SSLCertificateFile et
+SSLStoreURI</title>
+<p>
+Vous pouvez utiliser simultanément SSLCertificateFile et SSLStoreURI ; il n’y a
+cependant pas de recoupement entre ces deux mécanismes. Un certificat défini par
+SSLCertificateFile ne sera pas associé à une clé provenant de SSLStoreURI.
+</p>
+</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLCACertificatePath</name>
 <description>Répertoire des certificats de CA codés en PEM pour
 l'authentification des clients</description>
@@ -1436,6 +1521,50 @@ redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLTrustURI</name>
+<description>Stockage du certificat de CA du serveur pour l’authentification du
+client</description>
+<syntax>SSLTrustURI <var>uri</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<override>AuthConfig</override>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache,
+quand il est lié avec OpenSSL v3 ou supérieure.</compatibility>
+
+<usage>
+<p>Cette directive permet de définir les URI où vous pouvez stocker les
+certificats des autorités de certification (CA) pour les clients auxquels vous
+avez à faire. Ces certificats sont utilisés pour l’authentification des clients.
+Cette directive peut être utilisée à la place ou en plus des directives
+<directive module="mod_ssl">SSLCACertificateFile</directive> ou <directive
+module="mod_ssl">SSLCACertificatePath</directive>.</p>
+<example><title>Exemple</title>
+<highlight language="config">
+# faire confiance à des certificats contenus dans un paquet de certificats encodé en PEM
+SSLTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
+# faire confiance à tous les certificats dans une machine Linux typique
+SSLTrustURI "pkcs11:token=System%20Trust"
+# faire confiance à tous les certificats dans le stockage de confiance de
+# Windows
+SSLTrustURI "org.openssl.winstore:"
+</highlight>
+</example>
+
+<p>
+Cette directive lit aussi les listes de révocation de certificats (CRL) des
+autorités de certification (CA) pour les clients auxquels vous avez à faire. Ces
+listes sont utilisées pour révoquer des certificats client lors d’une
+authentification client.</p>
+
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
+encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
+il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
+redémarrage du serveur est requis pour que les changements prennent effet.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLCADNRequestFile</name>
 <description>Fichier contenant la concaténation des certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</description>
@@ -1451,12 +1580,14 @@ alors utiliser cette liste de noms de CA pour sélectionner un certificat
 client approprié parmi ceux dont il dispose.</p>
 
 <p>Si aucune des directives <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
 module="mod_ssl">SSLCADNRequestPath</directive> ou <directive
-module="mod_ssl">SSLCADNRequestFile</directive> n'est définie, la liste
-de noms de CsA acceptables envoyée au client est la liste des noms de
+module="mod_ssl">SSLTrustRequestURI</directive> n'est définie, la liste
+de noms de CA acceptables envoyée au client est la liste des noms de
 tous les certificats de CA spécifiés par les directives <directive
-module="mod_ssl">SSLCACertificateFile</directive> et <directive
-module="mod_ssl">SSLCACertificatePath</directive> ; en d'autres termes,
+module="mod_ssl">SSLCACertificateFile</directive>, <directive
+module="mod_ssl">SSLCACertificatePath</directive> et <directive
+module="mod_ssl">SSLTrustURI</directive> ; en d'autres termes,
 c'est la liste des noms de CAs qui sera effectivement utilisée pour
 vérifier le certificat du client.</p>
 
@@ -1465,8 +1596,9 @@ une liste de noms de CA acceptables qui diffère de la liste des CAs
 effectivement utilisés pour vérifier le certificat du client ;
 considérons par exemple le cas où le certificat du client est signé par
 des CAs intermédiaires. On peut ici utiliser les directives <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
 module="mod_ssl">SSLCADNRequestPath</directive> et/ou <directive
-module="mod_ssl">SSLCADNRequestFile</directive>, et les noms de CA
+module="mod_ssl">SSLTrustRequestURI</directive>, et les noms de CA
 acceptables seront alors extraits de l'ensemble des certificats contenus
 dans le répertoire et/ou le fichier définis par cette paire de
 directives.</p>
@@ -1516,6 +1648,70 @@ assurer que ce répertoire contient les liens symboliques appropriés.</p>
 SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </highlight>
 </example>
+
+<p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
+ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
+normal ; un redémarrage du serveur est requis pour que les changements prennent
+effet.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLTrustRequestURI</name>
+<description>Stockage des certificats de CA pour la définition de noms de CA
+acceptables</description>
+<syntax>SSLTrustRequestURI <var>uri</var></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>Quand un certificat client est demandé par mod_ssl, une liste de <em>noms
+d’autorités de certification acceptables</em> est envoyée au client lors de la
+négociation SSL. Le client peut utiliser ces noms de CA pour sélectionner un
+certificat client approprié parmi ceux dont il dispose.</p>
+
+<p>Si aucune des directives <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
+module="mod_ssl">SSLCADNRequestPath</directive> ou <directive
+module="mod_ssl">SSLTrustRequestURI</directive> n'est définie, la liste
+de noms de CA acceptables envoyée au client est la liste des noms de
+tous les certificats de CA spécifiés par les directives <directive
+module="mod_ssl">SSLCACertificateFile</directive>, <directive
+module="mod_ssl">SSLCACertificatePath</directive> et <directive
+module="mod_ssl">SSLTrustURI</directive> ; en d'autres termes,
+c'est la liste des noms de CAs qui sera effectivement utilisée pour
+vérifier le certificat du client.</p>
+
+<p>Dans certaines circonstances, il peut s’avérer utile de pouvoir envoyer un
+jeu de noms de CA acceptables qui diffère du jeu de CA effectivement utilisé
+pour vérifier le certificat client — par exemple, dans le cas où les certificats
+client sont signés par des CA intermédiaires. Dans ces cas, il est possible
+d’utiliser les directives <directive
+module="mod_ssl">SSLCADNRequestFile</directive>, <directive
+module="mod_ssl">SSLCADNRequestPath</directive> et/ou <directive
+module="mod_ssl">SSLTrustRequestURI</directive> ; les noms de CA acceptables
+seront alors issus du jeu complet de certificats et/ou du fichier spécifiés par
+ces directives.</p>
+
+<p>La directive <directive module="mod_ssl">SSLTrustRequestURI</directive> doit
+spécifier un URI de stockage de certificats <em>tout-en-un</em> contenant un jeu
+de certificats de CA.</p>
+
+<example><title>Exemple</title>
+<highlight language="config">
+SSLTrustRequestURI "file:///usr/local/apache2/conf/ca-names.crt"
+</highlight>
+</example>
+
+<p>La directive <directive
+module="mod_ssl">SSLCADNRequestFile</directive> peut être remplacée par un URI
+<var>file:</var> désignant un fichier de certificats encodés en PEM, et la
+directive <directive
+module="mod_ssl">SSLCADNRequestPath</directive> peut être remplacée par un URI
+<var>file:</var> désignant un répertoire de certificats encodés en PEM.
+</p>
 
 <p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
 dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
@@ -2449,6 +2645,102 @@ SSLProxyMachineCertificateChainFile
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLProxyStoreURI</name>
+<description>Stockages des certificats et des clés d’un serveur mandataire</description>
+<syntax>SSLProxyStoreURI <var>uri</var></syntax>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache,
+quand il est lié avec OpenSSL v3 ou supérieure.</compatibility>
+
+<usage>
+<p>
+Cette directive désigne un emplacement de stockage contenant des
+certificats, des certificats intermédiaires et des clés privées, représenté par
+un URI à utiliser lors de l’authentification auprès d’un autre serveur
+mandataire.
+</p>
+<p>
+L’URI désigne des données encodées en PEM ou un fichier PKCS12, et possède le
+protocole <var>file:</var> par défaut. Les autres protocoles possibles sont
+(liste non exhaustive) : <var>pkcs11:</var> pour les cartes à puce et les
+modules de sécurité matériel (HSM - Hardware Security Module), <var>cng:</var>
+pour le stockage des certificats sous Windows et <var>handle:</var> pour les
+modules de plateforme sécurisée (TPM - Trusted Platform Module). Sous Windows, où
+le chemin de fichier est aussi un URI valable, le protocole <var>file:</var>
+doit être utilisé.
+</p>
+<p>
+La directive peut être spécifiée plusieurs fois avec des URI plus précis pour
+cibler des clés et certificats spécifiques, ou une seule fois avec un URI
+général comme <var>pkcs11:</var> qui cible tous les certificats et clés
+possibles. Les certificats, certificats intermédiaires et les clés peuvent être
+définis dans n’importe quel ordre.
+</p>
+<p>Les certificats et clés de mandataire sont traités comme suit :
+</p>
+<ul>
+<li>Les certificats feuille qui n’ont pas pour fonction l’<var>Authentification
+du Serveur</var> sont ignorés.</li>
+<li>Les certificats intermédiaires sont conçus pour construire des chaînes de
+certification du mieux qu’ils peuvent.</li>
+<li>Les clés sont associées aux certificats feuille ; tout certificat sans clé
+privée est ignoré.</li>
+<li>Les certificats feuille avec clé privée sont triés du plus ancien au plus
+récent, et pris en compte lors de la négociation SSL avec un mandataire.</li>
+<li>Pour vous aider, le mandataire vous indiquera le nombre de certificats
+trouvés pour chaque type si aucun certificat ne convient.</li>
+</ul>
+
+<p>Si la clé privée est chiffrée, l’invite de saisie de la phrase secrète
+sera ouverte au démarrage.</p>
+
+<example><title>Exemple</title>
+<highlight language="config">
+# Exemple utilisant un fichier encodé en PEM.
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.pem"
+# Exemple utilisant un fichier PKCS12.
+SSLProxyStoreURI "/usr/local/apache2/conf/ssl.crt/proxy.p12"
+# Exemple utilisant un certificat et une clé privée depuis un jeton PKCS#11 :
+SSLProxyStoreURI "pkcs11:token=My%20Token%20Name;id=45"
+</highlight>
+</example>
+
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
+encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
+il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
+redémarrage du serveur est requis pour que les changements prennent effet.</p>
+
+<p>Lorsqu’un serveur distant le met au défi de fournir un certificat client, le
+serveur doit fournir une liste de <em>noms d’autorités de certification
+acceptables</em> lors de la négociation. Si une telle liste n’est <em>pas</em>
+fournie, <module>mod_ssl</module> utilisera les certificat et clé client les
+plus récemment fournis. Si une liste de noms de CA <em>est</em> fournie,
+<module>mod_ssl</module> va parcourir cette liste pour tenter de trouver un
+certificat client configuré qui a été fourni soit directement par ce CA, soit
+indirectement par un nombre quelconque de CA intermédiaires.
+</p>
+
+<p>Si la liste de noms ce CA <em>est</em> fournie par le serveur distant, et si
+<em>aucun</em> certificat client correspondant ne peut être trouvé, aucun
+certificat client ne sera fourni par <module>mod_ssl</module>, qui fera
+probablement échouer la négociation SSL/TLS (en fonction de la configuration du
+serveur distant).</p>
+
+<note type="warning"><title>Utilisation simultanée de
+SSLProxyMachineCertificateFile et SSLProxyStoreURI</title>
+<p> Vous pouvez utiliser simultanément SSLProxyMachineCertificateFile et
+SSLProxyStoreURI ; il n’y a cependant pas de recoupement entre ces deux
+mécanismes. Un certificat défini par SSLProxyMachineCertificateFile ne sera pas
+associé à une clé provenant de SSLProxyStoreURI.
+</p>
+</note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLProxyVerify</name>
 <description>Niveau de vérification du certificat du serveur
 distant</description>
@@ -2797,6 +3089,38 @@ SSLProxyCACertificateFile
 "/usr/local/apache2/conf/ssl.crt/ca-bundle-serveur.distant.crt"
 </highlight>
 </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyTrustURI</name>
+<description>Stockage du certificat de CA du mandataire pour l’authentification
+du serveur distant</description>
+<syntax>SSLProxyTrustURI <var>uri</var></syntax>
+<contextlist><context>server config</context> <context>virtual host</context>
+<context>proxy section</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache,
+quand il est lié avec OpenSSL v3 ou supérieure.</compatibility>
+
+<usage>
+<p>Cette directive permet de définir les URI où vous pouvez stocker les
+certificats des autorités de certification (CA) pour les <em>serveurs
+distants</em> auxquels vous avez à faire. Ces certificats sont utilisés pour
+l’authentification des serveurs distants.  Cette directive peut être utilisée à
+la place ou en plus des directives <directive
+module="mod_ssl">SSLProxyCACertificateFile</directive> ou <directive
+module="mod_ssl">SSLProxyCACertificatePath</directive>.</p>
+<example><title>Exemple</title>
+<highlight language="config">
+SSLProxyTrustURI "/usr/local/apache2/conf/ssl.crt/ca-bundle-remote-server.crt"
+</highlight>
+</example>
+<p>
+Cette directive lit aussi les listes de révocation de certificats (CRL) des
+autorités de certification (CA) pour les serveurs distants auxquels vous avez à
+faire, s’ils sont dans la portée. Ces listes sont utilisées pour révoquer les
+certificats du serveur distant lors de l’authentification de ce dernier.
+</p>
 </usage>
 </directivesynopsis>
 
