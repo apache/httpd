@@ -138,6 +138,36 @@ void ap_mpm_note_extra_connection_removed(void)
     apr_atomic_dec32(&extra_connection_count);
 }
 
+static void wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
+    apr_time_t graceful, timeout;
+    int time_remains;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    time_remains = (int)(timeout / APR_TIME_C(1000));
+
+    do {
+        Sleep(100);
+        time_remains -= 100;
+        count = apr_atomic_read32(&extra_connection_count);
+    } while (count > 0 && time_remains > 0);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_SUCCESS, ap_server_conf,
+                     APLOGNO(10622)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
+}
+
 static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
 {
     /* Recycle the completion context.
@@ -1284,13 +1314,6 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
         }
     }
 
-    /* Drain externally accepted connections within what is left of the deadline. */
-    while (apr_atomic_read32(&extra_connection_count) > 0 && time_remains >= 0) {
-        Sleep(100);
-        time_remains -= 100;
-    }
-
-    /* Kill remaining threads off the hard way */
     if (threads_created) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00363)
                      "Child: Terminating %d threads that failed to exit.",
@@ -1308,6 +1331,10 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00364)
                  "Child: All worker threads have exited.");
+
+    if (graceful_shutdown) {
+        wait_for_extra_connections();
+    }
 
     apr_thread_mutex_destroy(child_lock);
     apr_thread_mutex_destroy(qlock);
