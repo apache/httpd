@@ -582,13 +582,16 @@ complexe et arbitraire est vraie</td></tr>
 <tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
 <tr><td colspan="2" class="descr">Interdit l'acc&egrave;s lorsque la requ&ecirc;te HTTP n'utilise pas
 SSL</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Nom de la variable servant &agrave; d&eacute;terminer le nom de
+<tr class="odd"><td><a href="mod_ssl.html#ssltrusturi">SSLTrustURI</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Stockage du certificat de CA du serveur pour l&rsquo;authentification du
+client</td></tr>
+<tr><td><a href="mod_ssl.html#sslusername">SSLUserName</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Nom de la variable servant &agrave; d&eacute;terminer le nom de
 l'utilisateur</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr><td colspan="2" class="descr">Niveau de v&eacute;rification du certificat client</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Profondeur maximale des certificats de CA pour la
+<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Niveau de v&eacute;rification du certificat client</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></td><td class="module"><a href="mod_ssl.html">mod_ssl</a></td></tr>
+<tr><td colspan="2" class="descr">Profondeur maximale des certificats de CA pour la
 v&eacute;rification des certificats clients</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-fileinfo">FileInfo</a></h2>
     <p>

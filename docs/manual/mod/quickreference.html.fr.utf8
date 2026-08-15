@@ -1575,8 +1575,9 @@ clients cod&eacute;s en PEM que le mandataire doit utiliser</td></tr>
 le mandataire doit utiliser</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol [+|-]<var>protocole</var> ...</a></td><td> all -SSLv3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit les protocoles SSL disponibles pour la fonction de
 mandataire</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslproxystoreuri">SSLProxyStoreURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Proxy certificate and key stores</td></tr>
-<tr><td><a href="mod_ssl.html#sslproxytrusturi">SSLProxyTrustURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Proxy CA certificate store for Remote Server Auth</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslproxystoreuri">SSLProxyStoreURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Stockages des certificats et des cl&eacute;s d&rsquo;un serveur mandataire</td></tr>
+<tr><td><a href="mod_ssl.html#sslproxytrusturi">SSLProxyTrustURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Stockage du certificat de CA du mandataire pour l&rsquo;authentification
+du serveur distant</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify <var>niveau</var></a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Niveau de v&eacute;rification du certificat du serveur
 distant</td></tr>
 <tr><td><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth <var>niveau</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Niveau de profondeur maximum dans les certificats de CA
@@ -1614,13 +1615,14 @@ n&eacute;gociation TLS</td></tr>
 <tr><td><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors on|off</a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Transmet au client les erreurs survenues lors des requ&ecirc;tes
 OCSP</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout <var>secondes</var></a></td><td> 3600 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dur&eacute;e de vie des r&eacute;ponses OCSP dans le cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslstoreuri">SSLStoreURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Server certificate and key store</td></tr>
+<tr><td><a href="mod_ssl.html#sslstoreuri">SSLStoreURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Stockage du certificat et de la cl&eacute; du serveur</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Contr&ocirc;le de l'acc&egrave;s des clients non-SNI &agrave; un serveur virtuel &agrave;
 base de nom.
 </td></tr>
-<tr><td><a href="mod_ssl.html#ssltrustrequesturi">SSLTrustRequestURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">certificate store of CA Certificates for defining
-acceptable CA names</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#ssltrusturi">SSLTrustURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server CA certificate store for Client Authentication</td></tr>
+<tr><td><a href="mod_ssl.html#ssltrustrequesturi">SSLTrustRequestURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Stockage des certificats de CA pour la d&eacute;finition de noms de CA
+acceptables</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#ssltrusturi">SSLTrustURI <var>uri</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Stockage du certificat de CA du serveur pour l&rsquo;authentification du
+client</td></tr>
 <tr><td><a href="mod_ssl.html#sslusername">SSLUserName <var>nom-var</var></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Nom de la variable servant &agrave; d&eacute;terminer le nom de
 l'utilisateur</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslusestapling">SSLUseStapling on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'ajout des r&eacute;ponses OCSP &agrave; la n&eacute;gociation TLS</td></tr>
