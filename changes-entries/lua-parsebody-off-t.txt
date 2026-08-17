@@ -1,0 +1,4 @@
+  *) mod_lua: Fix a stack write past a 4-byte object in r:parsebody() where
+     the body length was read through an apr_off_t* aliased onto an apr_size_t,
+     corrupting adjacent stack on builds with sizeof(apr_off_t) > sizeof(apr_size_t)
+     (32-bit large-file). [arshiya tabasum]
