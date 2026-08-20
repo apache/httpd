@@ -565,14 +565,20 @@ class TestConfig:
 
         Mirrors find_and_load_module (TestConfig.pm:1329): emits a guarded
         LoadModule into the preamble. We reuse the inherited load directive's .so
-        path when present; otherwise we skip (the module is built-in or absent).
+        path when present; otherwise scan the install modules directory.
         """
         sym = mod[len("mod_"):] if mod.startswith("mod_") else mod
         cname = f"mod_{sym}.c"
         for d in self.info.load_directives:
             if d.cname == cname and Path(d.so).exists():
                 self._load_module_preamble(sym, Path(d.so))
+                self.info.modules.add(cname)
                 return
+        modules_dir = self.info.httpd.parent.parent / "modules"
+        so = modules_dir / f"mod_{sym}.so"
+        if so.exists():
+            self._load_module_preamble(sym, so)
+            self.info.modules.add(cname)
 
     # %aliases map (TestConfig.pm:1604): label -> var holding the path.
     _GETFILES_ALIASES = {
@@ -874,6 +880,10 @@ class TestConfig:
         # mod_mime first (TestConfig.pm:1394), then mod_alias (TestConfig.pm:1635).
         self._find_and_load_fallback("mod_mime")
         self._find_and_load_fallback("mod_alias")
+        # httpd-built test/experimental modules not in the default httpd.conf
+        for mod in ("mod_bucketeer", "mod_case_filter", "mod_case_filter_in",
+                     "mod_echo", "mod_log_debug", "mod_reflector", "mod_data"):
+            self._find_and_load_fallback(mod)
 
         # On Windows, tell mod_cgi to read the #! shebang line instead of
         # using the Registry file association to find the script interpreter.

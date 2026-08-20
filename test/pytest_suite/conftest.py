@@ -79,6 +79,13 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="server install prefix for resolving relative module paths "
         "(default: derived from --conf path)",
     )
+    group.addoption(
+        "--with-perl",
+        action="store",
+        default=None,
+        help="path to the perl interpreter for generated scripts and "
+        "rewrite prg-maps (default: /usr/bin/perl or APACHE_TEST_PERL env)",
+    )
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -236,6 +243,11 @@ def framework(request: pytest.FixtureRequest):
         pytest.fail(str(exc))
 
     info = probe(httpd, inherited_conf, install_prefix)
+
+    perl_opt = request.config.getoption("--with-perl")
+    if perl_opt:
+        import os
+        os.environ["APACHE_TEST_PERL"] = perl_opt
 
     # Optional PHP-FPM: if a php-fpm binary was given and mod_proxy_fcgi is
     # available, route htdocs/php/*.php to a managed FPM daemon. The php-fpm

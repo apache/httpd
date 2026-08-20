@@ -7,15 +7,17 @@ rem Apache httpd (the server under test) located via apxs, and
 rem optionally a php-fpm binary to run the PHP tests.
 rem
 rem Usage:
-rem   runtests.bat                       -- auto-detect apxs/httpd/php-fpm on PATH
-rem   runtests.bat --apxs C:\path\apxs   -- point at a specific build
-rem   runtests.bat tests\t\modules       -- run a subset (any pytest args pass through)
-rem   runtests.bat -k status -v          -- extra pytest args pass through too
+rem   runtests.bat                                -- auto-detect apxs/httpd/php-fpm/perl on PATH
+rem   runtests.bat --apxs C:\path\apxs            -- point at a specific build
+rem   runtests.bat --with-perl C:\path\perl.exe   -- point at a specific perl
+rem   runtests.bat tests\t\modules                -- run a subset (any pytest args pass through)
+rem   runtests.bat -k status -v                   -- extra pytest args pass through too
 rem
 rem Environment overrides (used when the matching --flag is not supplied):
-rem   APXS       path to apxs
-rem   HTTPD      path to httpd
-rem   PHP_FPM    path to php-fpm
+rem   APXS              path to apxs
+rem   HTTPD             path to httpd
+rem   PHP_FPM           path to php-fpm
+rem   APACHE_TEST_PERL  path to perl
 rem
 
 setlocal enabledelayedexpansion
@@ -94,6 +96,14 @@ if not defined PHP_FPM (
     )
 )
 
+if not defined APACHE_TEST_PERL (
+    for %%C in (perl.exe) do (
+        for /f "delims=" %%P in ('where %%C 2^>nul') do (
+            if "!APACHE_TEST_PERL!"=="" set "APACHE_TEST_PERL=%%P"
+        )
+    )
+)
+
 rem Build the default flag set only for values the user did not pass explicitly.
 set "AUTO_ARGS="
 
@@ -127,6 +137,21 @@ if "%HAS_PHP_FLAG%"=="0" (
     ) else (
         echo runtests.bat: note: no php-fpm found; PHP tests will skip. >&2
         echo   Set PHP_FPM=C:\path\to\php-fpm to run them. >&2
+    )
+)
+
+rem Check if user passed --with-perl on the command line.
+set "HAS_PERL_FLAG=0"
+for %%A in (%*) do (
+    echo %%A | findstr /b /c:"--with-perl" >nul 2>&1 && set "HAS_PERL_FLAG=1"
+)
+
+if "%HAS_PERL_FLAG%"=="0" (
+    if defined APACHE_TEST_PERL (
+        set "AUTO_ARGS=!AUTO_ARGS! --with-perl=!APACHE_TEST_PERL!"
+    ) else (
+        echo runtests.bat: note: no perl found; rewrite prg-map tests may fail. >&2
+        echo   Pass --with-perl=C:\path\to\perl.exe or set APACHE_TEST_PERL=... >&2
     )
 )
 

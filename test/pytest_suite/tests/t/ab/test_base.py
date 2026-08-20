@@ -18,7 +18,10 @@ import pytest
 
 
 def _ab_path(http) -> Path:
-    return Path(http.config.info.httpd).parent / "ab"
+    ab = Path(http.config.info.httpd).parent / "ab"
+    if not ab.exists() and ab.with_suffix(".exe").exists():
+        return ab.with_suffix(".exe")
+    return ab
 
 
 def _run_ab(ab: Path, url: str) -> subprocess.CompletedProcess:

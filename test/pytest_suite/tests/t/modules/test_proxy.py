@@ -91,11 +91,12 @@ def test_proxy_cgi(http):
         assert t_cmp(r.text, re.compile(r"QUERY_STRING = reverse-proxy\r?\n", re.S)), \
             "reverse proxied query string OK"
 
-        r = http.GET("/reverse/modules/cgi/nph-dripfeed.pl")
-        assert t_cmp(r.status_code, 200), "reverse proxy to dripfeed CGI"
-        assert t_cmp(r.text, "abcdef"), "reverse proxied to dripfeed CGI content OK"
+        if sys.platform != "win32":
+            r = http.GET("/reverse/modules/cgi/nph-dripfeed.pl")
+            assert t_cmp(r.status_code, 200), "reverse proxy to dripfeed CGI"
+            assert t_cmp(r.text, "abcdef"), "reverse proxied to dripfeed CGI content OK"
 
-        if http.have_min_apache_version("2.1.0"):
+        if http.have_min_apache_version("2.1.0") and sys.platform != "win32":
             # nph-102.pl emits a 102 Processing interim response then a 200.
             # The Perl test asserted the LWP-surfaced code 102 (empty body) and
             # noted LWP needed fixing for 1xx. httpx correctly consumes the
