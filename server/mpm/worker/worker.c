@@ -1328,6 +1328,10 @@ static void child_main(int child_num_arg, int child_bucket)
                      rv == AP_MPM_PODX_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
     }
 
+    if (terminate_mode == ST_GRACEFUL) {
+        ap_mpm_wait_for_extra_connections();
+    }
+
     free(threads);
 
     clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
@@ -2102,6 +2106,8 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     int no_detach, debug, foreground;
     apr_status_t rv;
     const char *userdata_key = "mpm_worker_module";
+
+    ap_mpm_register_extra_connection_fns();
 
     debug = ap_exists_config_define("DEBUG");
 

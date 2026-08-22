@@ -3139,6 +3139,10 @@ static void child_main(int child_num_arg, int child_bucket)
                      rv == AP_MPM_PODX_GRACEFUL ? "graceful" : "ungraceful");
     }
 
+    if (terminate_mode == ST_GRACEFUL) {
+        ap_mpm_wait_for_extra_connections();
+    }
+
     free(threads);
 
     clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
@@ -3876,6 +3880,10 @@ static void setup_slave_conn(conn_rec *c, void *csd)
     event_conn_state_t *cs;
     
     mcs = ap_get_module_config(c->master->conn_config, &mpm_event_module);
+    if (!mcs) {
+        /* Master connection is not managed by this MPM; nothing to inherit. */
+        return;
+    }
     
     cs = apr_pcalloc(c->pool, sizeof(*cs));
     cs->c = c;
@@ -3953,6 +3961,8 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     apr_status_t rv;
     const char *userdata_key = "mpm_event_module";
     int test_atomics = 0;
+
+    ap_mpm_register_extra_connection_fns();
 
     debug = ap_exists_config_define("DEBUG");
 
