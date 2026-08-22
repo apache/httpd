@@ -34,6 +34,7 @@
 #include "apr_getopt.h"
 #include "apr_optional.h"
 #include "apr_allocator.h"
+#include "apr_atomic.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -184,6 +185,52 @@ AP_DECLARE_DATA apr_size_t ap_thread_stacksize;
 
 #define ALLOCATOR_MAX_FREE_DEFAULT (2048*1024)
 AP_DECLARE_DATA apr_uint32_t ap_max_mem_free = ALLOCATOR_MAX_FREE_DEFAULT;
+
+static apr_uint32_t extra_connection_count = 0; /* Number of open connections that the MPM does not own */
+
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&extra_connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&extra_connection_count);
+}
+
+AP_DECLARE(void) ap_mpm_register_extra_connection_fns(void)
+{
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
+}
+
+AP_DECLARE(void) ap_mpm_wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
+    apr_time_t graceful, timeout, deadline;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    deadline = apr_time_now() + timeout;
+
+    do {
+        apr_sleep(apr_time_from_msec(100));
+        count = apr_atomic_read32(&extra_connection_count);
+    } while (count > 0 && apr_time_now() < deadline);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(10622)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
+}
 
 /* Set defaults for config directives implemented here.  This is
  * called from core's pre-config hook, so MPMs which need to override

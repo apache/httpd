@@ -229,6 +229,9 @@ static void clean_child_exit_ex(int code, int from_signal)
     if (pchild) {
         if (!code && !from_signal) {
             ap_run_child_stopping(pchild, !retained->mpm->is_ungraceful);
+            if (!retained->mpm->is_ungraceful) {
+                ap_mpm_wait_for_extra_connections();
+            }
             ap_run_child_stopped(pchild, !retained->mpm->is_ungraceful);
         }
         apr_pool_destroy(pchild);
@@ -1324,6 +1327,8 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     int no_detach, debug, foreground;
     apr_status_t rv;
     const char *userdata_key = "mpm_prefork_module";
+
+    ap_mpm_register_extra_connection_fns();
 
     debug = ap_exists_config_define("DEBUG");
 
