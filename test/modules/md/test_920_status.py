@@ -115,6 +115,7 @@ class TestStatus:
 MDBaseServer on
 MDPortMap http:- https:{env.https_port}
 MDStapling on
+MDServerStatus on
 
 ServerName {domain}
 <IfModule ssl_module>
