@@ -1,0 +1,3 @@
+  *) mod_proxy_http2: Reserve room for the terminating NUL when rewriting a
+     backend Link response header, fixing a one-byte stack overflow reachable
+     with a crafted Link header.  [arshiya tabasum]
