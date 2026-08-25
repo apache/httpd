@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event, mpm_worker, mpm_winnt, mpm_prefork: Add the optional functions
+     ap_mpm_note_extra_connection_added() and
+     ap_mpm_note_extra_connection_removed() to account for connections managed
+     outside the MPM accept loop (e.g., UDP).  On graceful stop a child waits
+     for those connections no longer than max(Timeout,
+     GracefulShutdownTimeout), then warns and exits.
+     [Tarek Ibrahim <tareki@pulsarxtech.com> <t1br4h1m@gmail.com>]
+
   * mod_ssl: Add support for OpenSSL provider based certificate
     stores. [Graham Leggett]
 

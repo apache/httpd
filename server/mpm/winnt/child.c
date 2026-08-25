@@ -131,8 +131,48 @@ static apr_thread_mutex_t  *ctxpool_lock;
 static winnt_conn_ctx_t *ctxpool_head = NULL;
 static apr_uint32_t num_completion_contexts = 0;
 static apr_uint32_t max_num_completion_contexts = 0;
+static apr_uint32_t extra_connection_count = 0; /* Number of open connections that the MPM does not own */
 static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE ctxpool_wait_event = NULL;
+
+void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&extra_connection_count);
+}
+
+void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&extra_connection_count);
+}
+
+static void wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
+    apr_time_t graceful, timeout, time_remains;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    time_remains = timeout / APR_TIME_C(1000);
+
+    do {
+        Sleep(100);
+        time_remains -= 100;
+        count = apr_atomic_read32(&extra_connection_count);
+    } while (count > 0 && time_remains > 0);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_SUCCESS, ap_server_conf,
+                     APLOGNO(10622)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
+}
 
 static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
 {
@@ -1261,6 +1301,10 @@ void child_main(apr_pool_t *pconf, DWORD parent_pid)
     }
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, APLOGNO(00364)
                  "Child: All worker threads have exited.");
+
+    if (graceful_shutdown) {
+        wait_for_extra_connections();
+    }
 
     ap_run_child_stopped(pchild, graceful_shutdown);
 
