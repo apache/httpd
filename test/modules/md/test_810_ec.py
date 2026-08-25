@@ -54,6 +54,9 @@ class TestAutov2:
             {'spec': "secp256r1", 'ciphers': "ECDSA", 'keylen': 256},
             {'spec': "", 'ciphers': "RSA", 'keylen': 0},
         ])
+        env.httpd_error_log.ignore_recent(
+            lognos=["AH10373"]
+        )
 
     # set EC key type override on MD and get certificate
     def test_md_810_002(self, env):
@@ -70,6 +73,9 @@ class TestAutov2:
             {'spec': "secp384r1", 'ciphers': "ECDSA", 'keylen': 384},
             {'spec': "", 'ciphers': "RSA", 'keylen': 0},
         ])
+        env.httpd_error_log.ignore_recent(
+            lognos=["AH10373"]
+        )
 
     # set two key spec, ec before rsa
     def test_md_810_003a(self, env):
