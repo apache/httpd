@@ -27,9 +27,7 @@ Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html)
 If an issue is reported against an aspect of the security model which
 is not documented here, it MUST be accompanied by a clear description
 of that aspect of the model, showing why a trust boundary exists and how
-it is violated. It is helpful to use references to vulnerabilities
-previously disclosed by this project, the httpd documentation
-(see docs/manual), and to demonstrate common usage patterns.
+it is violated.
 
 Any security vulnerability SHOULD be reproducible:
 
@@ -47,6 +45,13 @@ include references (such as public documentation) which show why that
 is a configuration that would arise naturally in common deployments.
 Special considerations also apply to any issues requiring `.htaccess`
 files, per the [Delegated Configuration](#delegated-configuration) section.
+
+It MAY be helpful to use references to vulnerabilities previously
+disclosed by this project, the httpd documentation (see docs/manual),
+and to demonstrate common usage patterns. Issues MUST NOT be reported
+based only on the similarity to a known vulnerability; all the
+requirements described here MUST be met (a reproducible bug, with a
+description of the specific security impact under the model).
 
 ## Basic model
 
