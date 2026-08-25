@@ -489,7 +489,7 @@ static int h2_session_on_frame_recv(nghttp2_session *ngh2,
                                     const nghttp2_frame *frame,
                                     void *user_data)
 {
-    (void)user_data;
+    (void)ngh2;
 
     switch (frame->hd.type) {
     case NGHTTP2_HEADERS:
@@ -510,6 +510,19 @@ static int h2_session_on_frame_recv(nghttp2_session *ngh2,
         break;
     case NGHTTP2_GOAWAY:
         log_infof("frame recv", "FRAME[GOAWAY]");
+        {
+            struct h2_session *session = user_data;
+            struct h2_stream *s;
+            while ((s = session->streams) != NULL) {
+                s->error_code = frame->goaway.error_code;
+                s->closed = 1;
+                s->reset = 1;
+                fprintf(stdout, "[%d] RST\n", s->id);
+                h2_session_stream_remove(session, s);
+                if (s->on_close)
+                    s->on_close(s);
+            }
+        }
         break;
     }
     return 0;
