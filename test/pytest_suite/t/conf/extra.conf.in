@@ -883,6 +883,7 @@ LimitRequestFields    32
   Alias /modules/ldap/simple @DocumentRoot@
   Alias /modules/ldap/group @DocumentRoot@
   Alias /modules/ldap/refer @DocumentRoot@
+  Alias /modules/ldap/search @DocumentRoot@
 
   # Simple user lookup
   <Location /modules/ldap/simple>
@@ -915,6 +916,14 @@ LimitRequestFields    32
      AuthBasicProvider ldap
      Require ldap-group cn=Subgroup,ou=dept,dc=example,dc=com
   </Location>
+  # ldap-search
+  <Location /modules/ldap/search>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     Require ldap-search cn=Subgroup
+  </Location>
+
 </IfDefine>
 
 ##
