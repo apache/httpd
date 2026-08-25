@@ -1,0 +1,121 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Makefile.in for support/a2md
+# Builds the a2md standalone command-line tool.
+#
+# Source files are split into two groups:
+#   MD_LIB_SRCS  - the libmd core, taken directly from modules/md/
+#   A2MD_SRCS    - the command layer, living in this directory
+
+DISTCLEAN_TARGETS =
+CLEAN_TARGETS = a2md
+
+# The top-level httpd build rules provide $(LIBTOOL), $(CC), $(LINK),
+# $(LT_COMPILE), ALL_CFLAGS, ALL_CPPFLAGS, ALL_INCLUDES, etc.
+include $(top_builddir)/build/rules.mk
+
+# -----------------------------------------------------------------------
+# Include paths
+# -----------------------------------------------------------------------
+# modules/md/ contains all md_*.h headers (md.h, md_acme.h, …) that the
+# cmd sources and the lib sources include.
+A2MD_CPPFLAGS = \
+    -I$(top_srcdir)/include \
+    -I$(top_srcdir)/modules/md \
+    -I$(top_srcdir)/support/a2md \
+    -std=c99 -D_GNU_SOURCE \
+    $(MOD_CPPFLAGS) $(CPPFLAGS) $(EXTRA_CPPFLAGS)
+
+# -----------------------------------------------------------------------
+# Library objects – every md_*.c from modules/md that mod_md compiles,
+# minus the mod_md_*.c files which depend on the httpd server API.
+# -----------------------------------------------------------------------
+MD_LIB_DIR = $(top_srcdir)/modules/md
+
+MD_LIB_OBJS = \
+    md_acme.lo \
+    md_acme_acct.lo \
+    md_acme_authz.lo \
+    md_acme_drive.lo \
+    md_acme_order.lo \
+    md_acmev2_drive.lo \
+    md_core.lo \
+    md_curl.lo \
+    md_crypt.lo \
+    md_event.lo \
+    md_http.lo \
+    md_json.lo \
+    md_jws.lo \
+    md_log.lo \
+    md_ocsp.lo \
+    md_result.lo \
+    md_reg.lo \
+    md_status.lo \
+    md_store.lo \
+    md_store_fs.lo \
+    md_time.lo \
+    md_util.lo
+
+# -----------------------------------------------------------------------
+# Command objects – the four sources that live in this directory
+# -----------------------------------------------------------------------
+A2MD_OBJS = \
+    md_cmd_main.lo \
+    md_cmd_acme.lo \
+    md_cmd_reg.lo \
+    md_cmd_store.lo
+
+# -----------------------------------------------------------------------
+# Linker flags for a2md's external dependencies:
+#   - APR / APR-Util: AP_LIBS is set in build/config_vars.mk (included via
+#     build/rules.mk) and carries libapr-1.la and libaprutil-1.la.
+#   - libcurl, libssl/libcrypto, libjansson: set by configure into A2MD_LIBS
+#     (also in build/config_vars.mk).
+# -----------------------------------------------------------------------
+PROGRAM_LDADD = $(UTIL_LDFLAGS) $(EXTRA_LIBS) $(AP_LIBS)
+A2MD_LDADD    = $(PROGRAM_LDADD) $(A2MD_LIBS)
+
+# -----------------------------------------------------------------------
+# Pattern rules: compile lib sources from modules/md/
+# -----------------------------------------------------------------------
+.SUFFIXES: .c .lo
+
+$(MD_LIB_OBJS): %.lo: $(MD_LIB_DIR)/%.c
+	$(LIBTOOL) --mode=compile $(CC) $(A2MD_CPPFLAGS) $(ALL_CFLAGS) \
+	    $(ALL_INCLUDES) $(PICFLAGS) $(LTCFLAGS) -c $< -o $@
+
+# -----------------------------------------------------------------------
+# Pattern rules: compile cmd sources from this directory
+# -----------------------------------------------------------------------
+$(A2MD_OBJS): %.lo: %.c
+	$(LIBTOOL) --mode=compile $(CC) $(A2MD_CPPFLAGS) $(ALL_CFLAGS) \
+	    $(ALL_INCLUDES) $(PICFLAGS) $(LTCFLAGS) -c $< -o $@
+
+# -----------------------------------------------------------------------
+# Final link
+# -----------------------------------------------------------------------
+a2md: $(MD_LIB_OBJS) $(A2MD_OBJS)
+	$(LIBTOOL) --mode=link $(CC) $(ALL_CFLAGS) $(PILDFLAGS) \
+	    $(LT_LDFLAGS) $(ALL_LDFLAGS) -o $@ \
+	    $(a2md_LTFLAGS) \
+	    $(MD_LIB_OBJS) $(A2MD_OBJS) $(A2MD_LDADD)
+
+# -----------------------------------------------------------------------
+# Clean targets (invoked by the parent Makefile)
+# -----------------------------------------------------------------------
+clean:
+	-rm -f a2md *.lo *.o *.la
+	-rm -rf .libs _libs
