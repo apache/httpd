@@ -1025,6 +1025,7 @@ APACHE_SUBST(TEST_SUITE_LOCATION)
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
 APACHE_FAST_OUTPUT(support/Makefile)
+APACHE_FAST_OUTPUT(support/a2md/Makefile)
 
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)

@@ -3,11 +3,11 @@ DISTCLEAN_TARGETS = apxs apxs-ng apachectl dbmmanage dbmmanage-ng \
 	phf_abuse_log.cgi phf_abuse_log-ng.cgi split-logfile split-logfile-ng \
 	envvars-std
 
-CLEAN_TARGETS = suexec
+CLEAN_TARGETS = suexec a2md/a2md
 
 bin_PROGRAMS = htpasswd htdigest htdbm firehose ab logresolve httxt2dbm
 sbin_PROGRAMS = htcacheclean rotatelogs $(NONPORTABLE_SUPPORT)
-TARGETS  = $(bin_PROGRAMS) $(sbin_PROGRAMS)
+TARGETS  = $(bin_PROGRAMS) $(sbin_PROGRAMS) a2md/a2md
 
 PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
 PROGRAM_DEPENDENCIES = 
@@ -93,4 +93,13 @@ fcgistarter: $(fcgistarter_OBJECTS)
 firehose_OBJECTS = firehose.lo
 firehose: $(firehose_OBJECTS)
 	$(LINK) $(firehose_LTFLAGS) $(firehose_OBJECTS) $(PROGRAM_LDADD)
+
+# Build a2md when the required mod_md dependencies (curl, jansson, openssl) are
+# available.  @A2MD_LIBS@ is empty when configure determined a2md cannot be built,
+# so the sub-make is a no-op in that case.
+a2md/a2md:
+	@if test -n "$(A2MD_LIBS)"; then \
+	    (cd a2md && $(MAKE) $(MFLAGS) a2md) || exit 1; \
+	fi
+
 
