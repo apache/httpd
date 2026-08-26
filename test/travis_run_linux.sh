@@ -276,6 +276,12 @@ if test -v TEST_PYTEST -a $RV -eq 0; then
     #
     # A job can narrow this down by presetting PYHTTPD_TARGETS and/or
     # PYTEST_ARGS; see README.ci.
+    if test -v TEST_LDAP && ! test -v PYTEST_ARGS; then
+        # Only pytest_suite has LDAP coverage, and it needs the LDAP
+        # define to configure the mod_authnz_ldap vhosts.  The other
+        # suites are covered by the pytest-specific jobs.
+        PYTEST_ARGS="--only=pysuite --defines LDAP tests/t/modules/test_ldap.py"
+    fi
     (cd test/clients && make)
     if ! test -v PYHTTPD_TARGETS; then
         PYHTTPD_TARGETS=""
