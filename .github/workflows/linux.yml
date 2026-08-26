@@ -344,12 +344,13 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
-    # JOBID is used in the cache keys, created here as a hash of all
-    # properties of the environment, including the image OS version,
-    # compiler flags and any job-specific properties.
+    # JOBID is used to name the artifacts uploaded on failure.  IMAGEOS
+    # is exported so that it is visible to the env context, which does
+    # not see the runner's own $ImageOS.
     - name: Set environment variables
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
+        echo "IMAGEOS=$ImageOS" >> $GITHUB_ENV
         echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
            | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     - name: apt refresh
@@ -372,11 +373,17 @@ jobs:
       with:
         path: ~/root
         key: cache-libs-${{ env.JOBID }}
+    # ~/perl5 does not vary by job: the module list is fixed and the
+    # modules are always built with CC=gcc.  It varies only by the perl
+    # ABI (hence the image and architecture) and by the module list
+    # itself, so one cache is shared by every job.  Bump the serial in
+    # the key to force a rebuild against current CPAN.
     - name: Cache CPAN modules
       uses: actions/cache@v5
+      if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
       with:
         path: ~/perl5
-        key: cache-cpan-${{ env.JOBID }}
+        key: cache-cpan-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ hashFiles('test/travis_before_linux.sh') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
