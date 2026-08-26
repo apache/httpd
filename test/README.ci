@@ -99,9 +99,6 @@ The CI scripts use the following environment variables:
   included in the pytest test suites.  Set globally in the workflow
   (e.g. "/usr/sbin/php-fpm8.3").
 
-* CLEAR_CACHE - if set, the cached $HOME/root and $HOME/perl5 are
-  removed before each build
-
 Caching
 -------
 
@@ -119,26 +116,34 @@ key, not in the script.
 
 Two directories are cached.
 
-~/root (key "cache-libs-$JOBID") holds the APR, APR-util and OpenSSL
-installs.  $JOBID is a hash of the runner image ($ImageOS), the
-architecture ($RUNNER_ARCH), and the matrix entry's notest-cflags, env
-and config.  Hence if e.g. APR_VERSION or APR_CONFIG changes, a
-different cache key will be used for future builds, but while it
-remains the same the cached install can be used across builds.
+~/root (key "cache-libs-<serial>-<image>-<arch>-$ROOTID") holds the
+APR, APR-util and OpenSSL installs.  gha-resolve-deps.sh computes
+$ROOTID before the cache is restored, hashing only what determines
+those installs: the versions, their configure arguments and $CC.  The
+job's own configuration is deliberately not included, so jobs building
+the same dependencies share one entry however differently they
+configure or test httpd - the five pool-debug jobs, for instance.  A job
+which builds no dependencies gets no $ROOTID and does not use the cache
+at all.
 
-This does not work optimally for e.g. APR_VERSION=trunk - in this
-case, a trunk build of APR is built and cached (assuming the job
-succeeds). Once the trunk revision changes, install_apx() will see the
-cached trunk install is stale and throw it away for every single
-subsequent job; the cache is never updated.
+For anything built from a branch rather than a tag - APR_VERSION=trunk
+or 1.7.x, and TEST_OPENSSL3_BRANCH - the version alone does not identify
+what gets built, so the branch is resolved to a commit and that goes
+into $ROOTID too.  The commit is exported as
+$APR_COMMIT/$APU_COMMIT/$OPENSSL_COMMIT so that the build uses exactly
+what the key names rather than resolving the branch a second time,
+minutes later, by which point it may have moved.
+
+It is restored before the dependencies are built and saved afterwards,
+only if they built successfully - a failed job would otherwise write a
+half-built tree to a key which can never be updated.
 
 ~/perl5 (key "cache-cpan-<serial>-<image>-<arch>-<hash>") holds the
 CPAN modules.  Nothing in it varies per job: the module list is fixed
 and the modules are always built with CC=gcc, so the content depends
 only on the perl ABI - which is determined by the image and the
 architecture - and on the module list itself, hashed from
-travis_before_linux.sh.  One cache is therefore shared by every job
-rather than one per $JOBID.  The .perlver check in the script remains
+travis_before_linux.sh.  One cache is therefore shared by every job.  The .perlver check in the script remains
 as a backstop for a perl upgrade within the same image.
 
 The cached CPAN modules still become gradually stale as versions in
@@ -146,29 +151,14 @@ CPAN move on from whatever was installed for the first build.  Bump
 the serial in the key ("cache-cpan-1-" -> "cache-cpan-2-") to discard
 them and rebuild against current CPAN.
 
-If APR_VERSION and APU_VERSION are both set to 1.x versions, then
-CLEAR_CACHE should also be set to disable APR* caching.  APR-util can
-only be rebuilt if an APR checkout is present, so a APR-util cannot be
-built from source alone.  (i.e. the scripts do not handle the case of
-cached, fresh APR plus a cached but stale APR-util)
+APR and APR-util must stay in a single cache entry.  APR-util's
+buildconf needs APR's *source* tree, which lives in $HOME/build and is
+not cached, so a cached but stale APR-util alongside a cached and fresh
+APR cannot be rebuilt from the cache alone.  This used to be handled by
+setting CLEAR_CACHE on such jobs to disable caching altogether;
+install_apx() now fetches the APR source on demand in that case
+instead, so no job needs to opt out of caching.
 
-Still to do:
-
-* Put the resolved commit hash in the cache key for APR/APR-util and
-  OpenSSL branch builds, as in the example documentation:
-  https://github.com/actions/cache/blob/main/examples.md
-  That would retire CLEAR_CACHE along with the hand-rolled staleness
-  logic - the .key-* files in install_apx() and the openssl-is-*
-  stamps, which are two independent implementations of the same
-  "remote HEAD vs recorded HEAD" check.  Note APR and APR-util must
-  stay in one cache entry, for the reason given above.
-* Share ~/root between jobs which build identical dependencies; the
-  five pool-debug jobs each build the same APR 1.7.x + APR-util 1.7.x
-  into a separate cache key.
-* Use actions/cache/restore plus actions/cache/save with
-  if: success(), so that a job which fails part-way through building a
-  dependency cannot write a broken tree to a key which can never be
-  updated.
 
 Travis to Github Actions Migration TODO
 ---------------------------------------
