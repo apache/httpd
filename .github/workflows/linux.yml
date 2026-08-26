@@ -234,8 +234,8 @@ jobs:
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: ASan, pool-debug
-            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
-            config: --enable-mods-shared=reallyall
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
             pkgs: nghttp2-client
             env: |
               APR_VERSION=1.7.x
