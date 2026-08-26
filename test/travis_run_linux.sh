@@ -67,6 +67,13 @@ if test -v TEST_OPENSSL3; then
     openssl version
 fi
 
+if test -v TEST_NGHTTP2; then
+    # APACHE_CHECK_NGHTTP2 only yields -L, so an RPATH is needed here or
+    # mod_http2.so resolves to the system libnghttp2 at run-time.
+    CONFIG="$CONFIG --with-nghttp2=$HOME/root/nghttp2"
+    export LDFLAGS="${LDFLAGS:-} -Wl,-rpath,$HOME/root/nghttp2/lib"
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
@@ -78,6 +85,14 @@ builddir=$PWD
 
 $srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
+
+if test -v TEST_NGHTTP2; then
+    ldd modules/http2/.libs/mod_http2.so | grep --color=always nghttp2
+    if ! ldd modules/http2/.libs/mod_http2.so | grep -q "$HOME/root/nghttp2/lib"; then
+        : mod_http2 is not linked against the nghttp2 built from source
+        exit 1
+    fi
+fi
 
 if test -v TEST_OPENSSL3; then
    # Clear the library/run paths so that anything else run during
@@ -258,17 +273,23 @@ if test -v TEST_PYTEST -a $RV -eq 0; then
     # UBSan job's --disable-http2): its pytest package hard-requires
     # both http2 and proxy_http2 to load, and errors at fixture setup
     # otherwise rather than skipping.
+    #
+    # A job can narrow this down by presetting PYHTTPD_TARGETS and/or
+    # PYTEST_ARGS; see README.ci.
     (cd test/clients && make)
-    targets=""
-    for d in test/modules/*/; do
-        name=$(basename "$d")
-        case "$name" in
-            md|__pycache__) continue ;;
-            http2) test -f modules/http2/.libs/mod_http2.so || continue ;;
-        esac
-        targets="$targets modules/$name"
-    done
-    PYHTTPD_TARGETS="$targets" make check-all-pytest
+    if ! test -v PYHTTPD_TARGETS; then
+        PYHTTPD_TARGETS=""
+        for d in test/modules/*/; do
+            name=$(basename "$d")
+            case "$name" in
+                md|__pycache__) continue ;;
+                http2) test -f modules/http2/.libs/mod_http2.so || continue ;;
+            esac
+            PYHTTPD_TARGETS="$PYHTTPD_TARGETS modules/$name"
+        done
+    fi
+    export PYHTTPD_TARGETS
+    make check-all-pytest PYTEST_ARGS="${PYTEST_ARGS:-}"
     RV=$?
 fi
 

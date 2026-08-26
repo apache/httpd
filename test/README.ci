@@ -64,6 +64,20 @@ The CI scripts use the following environment variables:
   pyhttpd suites).  Replaces the old per-suite TEST_CORE / TEST_PROXY
   / TEST_H2 / TEST_MD flags.
 
+* PYHTTPD_TARGETS - with TEST_PYTEST, a space-separated list of
+  test/modules/*/ suites to run (e.g. "modules/http2").  If unset, all
+  are run except modules/md, and modules/http2 when mod_http2 was not
+  built.
+
+* PYTEST_ARGS - with TEST_PYTEST, extra arguments passed through to
+  test/run-all-tests.sh (e.g. "--only=pyhttpd" to skip pytest_suite/).
+
+* TEST_NGHTTP2 - if set to a version string (e.g. "1.68.0"), that
+  release of nghttp2 is built from its GitHub tag (library only) and
+  used for mod_http2/mod_proxy_http2 via --with-nghttp2.  Used by the
+  HTTP/2 workflow to test against nghttp2 versions other than the one
+  packaged for the runner image.
+
 * TEST_MOD_TLS - if set (together with RUSTLS_VERSION), builds
   rustls-ffi from source and configures httpd with --with-tls
   --with-rustls for mod_tls testing.

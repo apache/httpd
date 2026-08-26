@@ -496,7 +496,7 @@ check-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stam
 	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(PYTEST3) $(PYTEST_DIRS)
 
 check-all-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stamp
-	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(SHELL) $(top_srcdir)/test/run-all-tests.sh --apxs "$(top_builddir)/check/bin/apxs"
+	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(SHELL) $(top_srcdir)/test/run-all-tests.sh --apxs "$(top_builddir)/check/bin/apxs" $(PYTEST_ARGS)
 
 # Runs all configured/available test targets.
 check: $(CHECK_TARGETS)

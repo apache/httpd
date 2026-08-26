@@ -189,6 +189,29 @@ if test -v TEST_OPENSSL3; then
     fi
 fi
 
+# Build the requested version of nghttp2 if it's not already installed
+# in the cached ~/root; the nghttp/h2load tools come from the package.
+if test -v TEST_NGHTTP2; then
+    if ! test -f $HOME/root/nghttp2-is-${TEST_NGHTTP2}; then
+        # Remove any previous install.
+        rm -rf $HOME/root/nghttp2
+
+        mkdir -p build/nghttp2
+        pushd build/nghttp2
+           curl -L "https://github.com/nghttp2/nghttp2/releases/download/v${TEST_NGHTTP2}/nghttp2-${TEST_NGHTTP2}.tar.xz" |
+               tar -xJf -
+           cd nghttp2-${TEST_NGHTTP2}
+           ./configure --prefix=$HOME/root/nghttp2 --enable-lib-only
+           make $MFLAGS
+           make install
+           touch $HOME/root/nghttp2-is-${TEST_NGHTTP2}
+        popd
+    fi
+
+    : -- Using nghttp2 from $HOME/root/nghttp2 --
+    grep -H '^Version' $HOME/root/nghttp2/lib/pkgconfig/libnghttp2.pc
+fi
+
 if test -v APR_VERSION; then
     install_apx apr ${APR_VERSION} "${APR_CONFIG}"
     ldd $HOME/root/apr-${APR_VERSION}/lib/libapr-?.so || true
