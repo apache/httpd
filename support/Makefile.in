@@ -37,6 +37,9 @@ install:
 	        cp -p envvars-std $(DESTDIR)$(sbindir)/envvars ; \
 	    fi ; \
 	fi
+	@if test -f "$(builddir)/a2md/a2md"; then \
+	    $(INSTALL_PROGRAM) a2md/a2md $(DESTDIR)$(bindir); \
+	fi
 
 htpasswd.lo: passwd_common.h
 passwd_common.lo: passwd_common.h
