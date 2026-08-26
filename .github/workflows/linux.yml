@@ -145,6 +145,19 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
           # -------------------------------------------------------------------------
+          # nghttp2 promoted various stream errors to connection errors in
+          # 1.67.0, which mod_http2 handles differently; the runner image
+          # is still on 1.59, so build a newer release from source.
+          - name: mod_http2 w/nghttp2 1.68.0
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event
+            pkgs: nghttp2-client
+            env: |
+              TEST_NGHTTP2=1.68.0
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYHTTPD_TARGETS=modules/http2
+              PYTEST_ARGS=--only=pyhttpd
+          # -------------------------------------------------------------------------
           - name: Default
           # -------------------------------------------------------------------------
           - name: All-static modules
