@@ -1,0 +1,3 @@
+  *) mod_mime_magic: Reject negative indirect offsets in mget() so a crafted
+     file cannot drive an out-of-bounds read of the sniff buffer.
+     [arshiya tabasum]
