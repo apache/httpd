@@ -239,6 +239,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/706.patch
      +1: jorton, covener
 
+   *) mod_authnz_ldap trunk sync
+      trunk patch: too many
+      2.4.x patch: https://github.com/apache/httpd/pull/712.patch
+                   (copy file and restore maxNestingDepth)
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
