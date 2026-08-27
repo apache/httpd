@@ -1,6 +1,33 @@
 @ECHO off
 @REM
 
+
+@REM -------------------------------------
+@REM Make sure the PATH is limited, but only
+@REM if build tools are not already available
+@REM -------------------------------------
+where cl.exe >nul 2>&1 && where cmake.exe >nul 2>&1 && where nmake.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    set PATH=C:\Windows\system32;C:\Windows
+)
+
+@REM -------------------------------------
+@REM check for git otherwise install it
+@REM -------------------------------------
+where git.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "git.exe not found, installing PortableGit..."
+    curl -L -o git-portable.exe "https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/PortableGit-2.48.1-64-bit.7z.exe"
+    git-portable.exe -y -o"%USERPROFILE%\PortableGit"
+    SET "PATH=%USERPROFILE%\PortableGit\bin;%PATH%"
+    where git.exe >nul 2>&1
+    if %ERRORLEVEL% NEQ 0 (
+        echo "ERROR: git.exe still not found after installing PortableGit."
+        exit /b 1
+    )
+    echo "PortableGit installed successfully."
+)
+
 @REM -------------------------------------
 @REM Variables used in this script
 @REM -------------------------------------
@@ -15,7 +42,90 @@ SET GENERATOR="NMake Makefiles"
 @REM SET GENERATOR="Ninja"
 SET CMAKE_VERSION="4.0"
 SET HTTPD_INSTALL_DIRECTORY="C:/Users/%USERNAME%/Projects/http-debug/apache"
+
 @REM -------------------------------------
+@REM Check for MS build tools cl.exe cmake etc.
+@REM -------------------------------------
+where cl.exe >nul 2>&1 && where cmake.exe >nul 2>&1 && where nmake.exe >nul 2>&1
+if %ERRORLEVEL% EQU 0 (
+    echo "cl.exe, cmake.exe and nmake.exe already in PATH, skipping vcvars64.bat"
+    SET "VCVARS_DONE=1"
+    goto :tools_ok
+)
+
+SET "VCVARS_DONE=0"
+if EXIST "C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat" (
+    echo "found1: Professional edition"
+    SET "VCVARS_BAT=C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat"
+    goto :tools_ok
+)
+if EXIST "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" (
+    echo "found2: Community edition"
+    SET "VCVARS_BAT=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+    goto :tools_ok
+)
+if EXIST "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat" (
+    echo "found3: Build Tools edition"
+    SET "VCVARS_BAT=C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+    goto :tools_ok
+)
+
+@REM None found - tell the user to install Visual Studio Build Tools
+echo "ERROR: No Visual Studio 2022 build tools found."
+echo "Please install one of:"
+echo "  - Visual Studio 2022 Professional"
+echo "  - Visual Studio 2022 Community"
+echo "  - Visual Studio 2022 Build Tools"
+echo "from https://visualstudio.microsoft.com/downloads/"
+
+@REM -------------------------------------
+@REM try to downlaod and install it.
+@REM -------------------------------------
+
+curl -L -o vs_buildtools.exe "https://aka.ms/vs/17/release/vs_buildtools.exe"
+vs_buildtools.exe --quiet --wait --norestart --nocache ^
+    --add Microsoft.VisualStudio.Workload.VCTools ^
+    --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 ^
+    --add Microsoft.VisualStudio.Component.Windows11SDK.22621 ^
+    --includeRecommended
+
+@REM After install, check again for BuildTools vcvars64.bat
+if NOT EXIST "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat" (
+    echo "ERROR: Build Tools installation failed or vcvars64.bat not found."
+    exit /b 1
+)
+echo "found3: Build Tools edition (just installed)"
+call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+
+@REM Verify cl.exe, cmake.exe and nmake.exe are now available
+where cl.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "ERROR: cl.exe still not found after installing Build Tools."
+    exit /b 1
+)
+where cmake.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "ERROR: cmake.exe not found. Please install CMake."
+    exit /b 1
+)
+where nmake.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "ERROR: nmake.exe not found after installing Build Tools."
+    exit /b 1
+)
+SET "VCVARS_DONE=1"
+
+:tools_ok
+where cmake.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "ERROR: cmake.exe not found in PATH. Please install CMake."
+    exit /b 1
+)
+where nmake.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "ERROR: nmake.exe not found in PATH."
+    exit /b 1
+)
 
 @REM -------------------------------------
 @REM Installs via MS vcpkg manager all the 
@@ -40,9 +150,12 @@ POPD
 
 @REM -------------------------------------
 @REM Setup build env using VS build 2022
-@REM It maybe installed somewhere else, if so, the path will need updating to find the batch file
 @REM -------------------------------------
-call "C:\Program Files\Microsoft Visual Studio\2022\Professional\VC\Auxiliary\Build\vcvars64.bat"
+if "%VCVARS_DONE%" == "1" (
+    echo "Build environment already configured, skipping vcvars64.bat"
+) else (
+    call "%VCVARS_BAT%"
+)
 
 @REM -------------------------------------
 @REM Create a temp dir for cmake files
@@ -95,16 +208,3 @@ if %BUILD_TYPE% == "Debug" (
 @REM Copy the libraries needed to run httpd
 @REM -------------------------------------
 xcopy %VCPKG_DIRECTORY_LIB%\bin\* %HTTPD_INSTALL_DIRECTORY%\bin /y /f /i
-
-@REM -------------------------------------
-@REM Run the pyHttpd tests
-@REM -------------------------------------
-PUSHD test\
-@REM python.exe -m pip install --upgrade pip
-@REM python.exe -m venv .venv
-@REM call .venv\Scripts\activate
-@REM call python.exe -m pip install websockets filelock cryptography pyopenssl python-multipart pebble pytest-html pytest==8.4.2 cffi
-@REM call python.exe -m pytest -vvv --ignore="modules/http2" -k "not test_cgi_003_01 and not test_800_websockets and not test_02_unix and not test_003_get and not test_004_post and not test_002_restarts and not test_005_trailers" --junitxml="reports/pytest-results.xml" --html="reports/Results" --self-contained-html
-@REM deactivate
-
-POPD
