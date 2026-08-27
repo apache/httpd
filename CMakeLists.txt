@@ -1161,22 +1161,45 @@ ENDIF()
 INSTALL(DIRECTORY DESTINATION logs)
 INSTALL(DIRECTORY DESTINATION cgi-bin)
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/error\" \"${CMAKE_INSTALL_PREFIX}/error\" ifdestmissing)")
-
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot\" \"${CMAKE_INSTALL_PREFIX}/htdocs\" ifdestmissing)")
-
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/icons\" \"${CMAKE_INSTALL_PREFIX}/icons\" ifdestmissing)")
+# Copy error, htdocs, icons only if the destination dir doesn't exist yet
+# (same semantics as cpR_noreplace.pl ifdestmissing, without Perl)
+INSTALL(CODE "
+    if(NOT IS_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/error\")
+        file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/docs/error/\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/error\")
+    endif()
+")
+INSTALL(CODE "
+    if(NOT IS_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/htdocs\")
+        file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot/\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/htdocs\")
+    endif()
+")
+INSTALL(CODE "
+    if(NOT IS_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/icons\")
+        file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/docs/icons/\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/icons\")
+    endif()
+")
 
 # Copy generated .conf files from the build directory to the install,
-# without overwriting stuff already there.
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_BINARY_DIR}/conf\" \"${CMAKE_INSTALL_PREFIX}/conf\")")
+# without overwriting stuff already there (no Perl dependency).
+INSTALL(CODE "
+    file(GLOB_RECURSE _conf_files \"${CMAKE_BINARY_DIR}/conf/*\")
+    foreach(_f \${_conf_files})
+        # Skip conf/original/ — handled separately below
+        string(FIND \"\${_f}\" \"/conf/original/\" _is_original)
+        if(NOT \${_is_original} EQUAL -1)
+            continue()
+        endif()
+        file(RELATIVE_PATH _rel \"${CMAKE_BINARY_DIR}/conf\" \"\${_f}\")
+        set(_dest \"${CMAKE_INSTALL_PREFIX}/conf/\${_rel}\")
+        if(NOT EXISTS \"\${_dest}\")
+            get_filename_component(_dest_dir \"\${_dest}\" DIRECTORY)
+            file(COPY \"\${_f}\" DESTINATION \"\${_dest_dir}\")
+        endif()
+    endforeach()
+")
 # But conf/original is supposed to be overwritten.
-# Note: FILE(TO_NATIVE_PATH ...) leaves the backslashes unescaped, which
-#       generates warnings.  Just do it manually since this build only supports
-#       Windows anyway.
-STRING(REPLACE "/" "\\\\" native_src ${CMAKE_BINARY_DIR}/conf/original)
-STRING(REPLACE "/" "\\\\" native_dest ${CMAKE_INSTALL_PREFIX}/conf/original)
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy \"${native_src}\" \"${native_dest}\" /Q /S /Y)")
+INSTALL(DIRECTORY "${CMAKE_BINARY_DIR}/conf/original/"
+        DESTINATION conf/original)
 
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" buildtype)
 MESSAGE(STATUS "")
