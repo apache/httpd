@@ -30,7 +30,7 @@ class AAATestEnv(HttpdTestEnv):
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core"])
-        self._digest_pwfile = os.path.join(self.server_dir, "digest.passwd")
+        self._digest_pwfile = f"{self.server_dir}/digest.passwd"
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=AAATestSetup(env=self))

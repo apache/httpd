@@ -5,6 +5,7 @@ from .env import H2Conf, H2TestEnv
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@pytest.mark.skipif(not H2TestEnv().has_h2load(), reason="h2load not available")
 class TestLoadPostStatic:
 
     @pytest.fixture(autouse=True, scope='class')
