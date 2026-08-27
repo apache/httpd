@@ -1047,6 +1047,42 @@ IF(OPENSSL_FOUND)
   TARGET_LINK_LIBRARIES(abs ${EXTRA_LIBS} ${APR_LIBRARIES} ${OPENSSL_LIBRARIES} Ws2_32.lib)
 ENDIF()
 
+IF(OPENSSL_FOUND AND CURL_FOUND AND JANSSON_FOUND)
+  SET(a2md_md_lib_sources
+    modules/md/md_acme.c               modules/md/md_acme_acct.c
+    modules/md/md_acme_authz.c         modules/md/md_acme_drive.c
+    modules/md/md_acmev2_drive.c       modules/md/md_event.c
+    modules/md/md_acme_order.c         modules/md/md_core.c
+    modules/md/md_curl.c               modules/md/md_crypt.c
+    modules/md/md_http.c               modules/md/md_json.c
+    modules/md/md_jws.c                modules/md/md_log.c
+    modules/md/md_result.c             modules/md/md_reg.c
+    modules/md/md_status.c             modules/md/md_store.c
+    modules/md/md_store_fs.c           modules/md/md_time.c
+    modules/md/md_ocsp.c               modules/md/md_util.c
+  )
+  SET(a2md_cmd_sources
+    support/a2md/md_cmd_main.c
+    support/a2md/md_cmd_acme.c
+    support/a2md/md_cmd_reg.c
+    support/a2md/md_cmd_store.c
+  )
+  ADD_EXECUTABLE(a2md ${a2md_cmd_sources} ${a2md_md_lib_sources} build/win32/httpd.rc)
+  SET(install_targets ${install_targets} a2md)
+  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:a2md>)
+  SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES}
+    ${OPENSSL_INCLUDE_DIR} ${CURL_INCLUDE_DIR} ${JANSSON_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/modules/md ${CMAKE_SOURCE_DIR}/support/a2md)
+  SET_TARGET_PROPERTIES(a2md PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
+  TARGET_COMPILE_DEFINITIONS(a2md PRIVATE
+      "APP_FILE"
+      "LONG_NAME=Apache HTTP Server a2md program"
+      "BIN_NAME=a2md.exe"
+  )
+  TARGET_LINK_LIBRARIES(a2md ${EXTRA_LIBS} ${APR_LIBRARIES}
+    ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES} ${JANSSON_LIBRARIES})
+ENDIF()
+
 # Unit Test Suite
 IF(CHECK_FOUND)
   # Get all of the test cases.
