@@ -46,6 +46,9 @@ echo "PortableGit installed successfully."
 @REM -------------------------------------
 @REM Variables used in this script
 @REM -------------------------------------
+@REM Derive httpd source root from this script's location (test/pyhttpd/build-win.bat)
+SET "HTTPD_SRC=%~dp0..\.."
+for %%i in ("%HTTPD_SRC%") do SET "HTTPD_SRC=%%~fi"
 SET CWD=%CD%
 SET "CWD=%CWD:\=/%"
 @REM -------------------------------------
@@ -191,7 +194,7 @@ PUSHD build-asf-win\
 @REM Run cmake so that it configures the
 @REM and creates the needed makefiles
 @REM -------------------------------------
-cmake .. -B . ^
+cmake "%HTTPD_SRC%" -B . ^
     -G %GENERATOR% ^
     -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ^
     -DCMAKE_TOOLCHAIN_FILE=%CWD%/vcpkg/scripts/buildsystems/vcpkg.cmake ^
