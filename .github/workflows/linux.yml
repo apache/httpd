@@ -277,7 +277,6 @@ jobs:
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.4 -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -287,7 +286,6 @@ jobs:
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -297,7 +295,6 @@ jobs:
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.5 no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -308,7 +305,6 @@ jobs:
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 4.0
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -319,7 +315,6 @@ jobs:
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
     runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
