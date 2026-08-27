@@ -15,18 +15,27 @@ if %ERRORLEVEL% NEQ 0 (
 @REM check for git otherwise install it
 @REM -------------------------------------
 where git.exe >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    echo "git.exe not found, installing PortableGit..."
-    curl -L -o git-portable.exe "https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/PortableGit-2.48.1-64-bit.7z.exe"
-    git-portable.exe -y -o"%USERPROFILE%\PortableGit"
+if %ERRORLEVEL% EQU 0 goto :git_ok
+
+@REM git not in PATH, check if PortableGit exists but PATH is missing it
+if EXIST "%USERPROFILE%\PortableGit\bin\git.exe" (
+    echo "PortableGit found, adding to PATH..."
     SET "PATH=%USERPROFILE%\PortableGit\bin;%PATH%"
-    where git.exe >nul 2>&1
-    if %ERRORLEVEL% NEQ 0 (
-        echo "ERROR: git.exe still not found after installing PortableGit."
-        exit /b 1
-    )
-    echo "PortableGit installed successfully."
+    goto :git_ok
 )
+
+@REM PortableGit not installed, download and install it
+echo "git.exe not found, installing PortableGit..."
+curl -L -o git-portable.exe "https://github.com/git-for-windows/git/releases/download/v2.48.1.windows.1/PortableGit-2.48.1-64-bit.7z.exe"
+git-portable.exe -y -o"%USERPROFILE%\PortableGit"
+if NOT EXIST "%USERPROFILE%\PortableGit\bin\git.exe" (
+    echo "ERROR: PortableGit installation failed."
+    exit /b 1
+)
+SET "PATH=%USERPROFILE%\PortableGit\bin;%PATH%"
+echo "PortableGit installed successfully."
+
+:git_ok
 
 @REM -------------------------------------
 @REM Variables used in this script
