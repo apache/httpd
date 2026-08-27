@@ -44,6 +44,107 @@ jobs:
       matrix:
         include:
           # -------------------------------------------------------------------------
+          - name: Shared MPMs (event), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs (worker), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs (prefork), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+          # -------------------------------------------------------------------------
+          - name: UBSan
+            notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
+            config: --enable-mods-shared=reallyall --disable-http2
+            env: |
+              NOTEST_LIBS=-lubsan
+              TEST_UBSAN=1
+              TEST_PYTEST=1
+          # -------------------------------------------------------------------------
+          # The ASan jobs are the slowest in the matrix and so set the
+          # wall-clock time for the whole workflow; running the Perl
+          # framework and the pytest suites in separate jobs halves that.
+          # Both halves build the same dependencies, so they share one
+          # ~/root cache entry.
+          - name: ASan
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_ASAN=1
+          # -------------------------------------------------------------------------
+          - name: ASan, pytest
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
+            config: --enable-mods-shared=reallyall
+            pkgs: nghttp2-client
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_ASAN=1
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+          # -------------------------------------------------------------------------
+          - name: ASan, pool-debug
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_ASAN=1
+          # -------------------------------------------------------------------------
+          - name: ASan, pool-debug, pytest
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode
+            pkgs: nghttp2-client
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_ASAN=1
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+          # -------------------------------------------------------------------------
+          # Runs every pytest-based test suite (pytest_suite/ + all
+          # test/modules/*/ pyhttpd suites except modules/md, which needs a
+          # local ACME/pebble server that isn't available here) via `make
+          # check-all-pytest`. See TEST_PYTEST in test/travis_run_linux.sh.
+          - name: Python pytest test suites
+            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
+            pkgs: nghttp2-client
+            env: |
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--with-crypto"
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+          # -------------------------------------------------------------------------
           - name: Empty APLOGNO() test
             env: |
               SKIP_TESTING=1
@@ -155,36 +256,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
           # -------------------------------------------------------------------------
-          - name: Shared MPMs (event), pool-debug, SSL/TLS variants
-            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event
-            env: |
-              APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_MALLOC=1
-              TEST_SSL=1
-          # -------------------------------------------------------------------------
-          - name: Shared MPMs (worker), pool-debug, SSL/TLS variants
-            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker
-            env: |
-              APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_MALLOC=1
-              TEST_SSL=1
-          # -------------------------------------------------------------------------
-          - name: Shared MPMs (prefork), pool-debug, SSL/TLS variants
-            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
-            env: |
-              APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_MALLOC=1
-              TEST_SSL=1
-          # -------------------------------------------------------------------------
           - name: litmus WebDAV tests
             config: --enable-dav --enable-dav-fs
             env: |
@@ -209,77 +280,6 @@ jobs:
             env: |
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
-          # -------------------------------------------------------------------------
-          - name: UBSan
-            notest-cflags: -fsanitize=undefined -fno-sanitize-recover=undefined
-            config: --enable-mods-shared=reallyall --disable-http2
-            env: |
-              NOTEST_LIBS=-lubsan
-              TEST_UBSAN=1
-              TEST_PYTEST=1
-          # -------------------------------------------------------------------------
-          # The ASan jobs are the slowest in the matrix and so set the
-          # wall-clock time for the whole workflow; running the Perl
-          # framework and the pytest suites in separate jobs halves that.
-          # Both halves build the same dependencies, so they share one
-          # ~/root cache entry.
-          - name: ASan
-            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
-            config: --enable-mods-shared=reallyall
-            env: |
-              APR_VERSION=1.7.x
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_ASAN=1
-          # -------------------------------------------------------------------------
-          - name: ASan, pytest
-            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
-            config: --enable-mods-shared=reallyall
-            pkgs: nghttp2-client
-            env: |
-              APR_VERSION=1.7.x
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_ASAN=1
-              NO_TEST_FRAMEWORK=1
-              TEST_PYTEST=1
-          # -------------------------------------------------------------------------
-          - name: ASan, pool-debug
-            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
-            config: --enable-mods-shared=reallyall --enable-maintainer-mode
-            env: |
-              APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_ASAN=1
-          # -------------------------------------------------------------------------
-          - name: ASan, pool-debug, pytest
-            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
-            config: --enable-mods-shared=reallyall --enable-maintainer-mode
-            pkgs: nghttp2-client
-            env: |
-              APR_VERSION=1.7.x
-              APR_CONFIG="--enable-pool-debug"
-              APU_VERSION=1.7.x
-              APU_CONFIG="--with-crypto --with-ldap"
-              TEST_ASAN=1
-              NO_TEST_FRAMEWORK=1
-              TEST_PYTEST=1
-          # -------------------------------------------------------------------------
-          # Runs every pytest-based test suite (pytest_suite/ + all
-          # test/modules/*/ pyhttpd suites except modules/md, which needs a
-          # local ACME/pebble server that isn't available here) via `make
-          # check-all-pytest`. See TEST_PYTEST in test/travis_run_linux.sh.
-          - name: Python pytest test suites
-            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
-            pkgs: nghttp2-client
-            env: |
-              APR_VERSION=1.7.6
-              APU_VERSION=1.6.5
-              APU_CONFIG="--with-crypto"
-              NO_TEST_FRAMEWORK=1
-              TEST_PYTEST=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
           - name: Configured w/reduced exports
