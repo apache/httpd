@@ -1,6 +1,27 @@
 @ECHO off
 @REM
-
+@REM Build script for Apache httpd on Windows using CMake + vcpkg.
+@REM
+@REM This script bootstraps a complete build environment from scratch:
+@REM   - Installs PortableGit if git is not available
+@REM   - Installs Visual Studio 2022 Build Tools (cl, cmake, nmake) if not found
+@REM   - Installs dependencies (apr, openssl, curl, etc.) via vcpkg
+@REM   - Clones the httpd source if not already in the source tree
+@REM   - Builds and installs httpd
+@REM
+@REM Usage: build-win.bat [repo_url] [branch]
+@REM
+@REM   repo_url  Git repository URL (default: https://github.com/apache/httpd.git)
+@REM   branch    Git branch to clone (default: trunk)
+@REM
+@REM If run from within the httpd source tree, uses that source directly.
+@REM Otherwise clones the repo into %USERPROFILE%\httpd-trunk.
+@REM
+@REM Examples:
+@REM   build-win.bat
+@REM   build-win.bat https://github.com/myfork/httpd.git
+@REM   build-win.bat https://github.com/myfork/httpd.git my-branch
+@REM
 
 @REM -------------------------------------
 @REM Make sure the PATH is limited, but only
