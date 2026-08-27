@@ -344,12 +344,18 @@ jobs:
            | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
+    # cpanminus and perl-doc are only used to build the CPAN modules for
+    # the Perl test framework, and perl-doc drags in around a hundred
+    # packages.  gdb is only used to extract a backtrace from any core
+    # dumped during testing, which includes the pytest suites.
     - name: Install prerequisites
       run: sudo apt-get install -o Acquire::Retries=5
-                    cpanminus libtool-bin libapr1-dev libaprutil1-dev
+                    libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev
-                    libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc libsasl2-dev curl pipx ${{ matrix.pkgs }} check
+                    libnghttp2-dev libjansson-dev libpcre2-dev
+                    ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) && 'cpanminus perl-doc' || '' }}
+                    ${{ ! env.SKIP_TESTING && 'gdb' || '' }}
+                    libsasl2-dev curl pipx ${{ matrix.pkgs }} check
     - uses: actions/checkout@v6
     - uses: actions/checkout@v6
       with:
