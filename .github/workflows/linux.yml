@@ -38,6 +38,9 @@ jobs:
   build:
     strategy:
       fail-fast: false
+      # https://infra.apache.org/github-actions-policy.html requires a
+      # job concurrency level of 20 or less.
+      max-parallel: 20
       matrix:
         include:
           # -------------------------------------------------------------------------
