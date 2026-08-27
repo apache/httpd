@@ -189,10 +189,13 @@
         <dt>status</dt><dd>Status of the cached response.</dd>
         <dt>entity version</dt><dd>The number of times this entry has been
         revalidated without being deleted.</dd>
-        <dt>date</dt><dd>Date of the response.</dd>
-        <dt>expiry</dt><dd>Expiry date of the response.</dd>
-        <dt>request time</dt><dd>Time of the start of the request.</dd>
-        <dt>response time</dt><dd>Time of the end of the request.</dd>
+        <dt>date</dt><dd>Timestamp of the response in microseconds.</dd>
+        <dt>expiry</dt><dd>Expiry timestamp of the response in
+        microseconds.</dd>
+        <dt>request time</dt><dd>Timestamp of the start of the request in
+        microseconds.</dd>
+        <dt>response time</dt><dd>Timestamp of the end of the request in
+        microseconds.</dd>
         <dt>body present</dt><dd>If 0, no body is stored with this request,
         1 otherwise.</dd>
         <dt>head request</dt><dd>If 1, the entry contains a cached HEAD
