@@ -46,9 +46,33 @@ echo "PortableGit installed successfully."
 @REM -------------------------------------
 @REM Variables used in this script
 @REM -------------------------------------
-@REM Derive httpd source root from this script's location (test/pyhttpd/build-win.bat)
-SET "HTTPD_SRC=%~dp0..\.."
-for %%i in ("%HTTPD_SRC%") do SET "HTTPD_SRC=%%~fi"
+@REM Find httpd source: try script location first, then fall back to clone
+SET "SCRIPT_DIR=%~dp0"
+for %%i in ("%SCRIPT_DIR%..\..") do SET "CANDIDATE=%%~fi"
+if EXIST "%CANDIDATE%\include\httpd.h" (
+    SET "HTTPD_SRC=%CANDIDATE%"
+    goto :src_ok
+)
+SET "HTTPD_SRC=%USERPROFILE%\httpd-trunk"
+if EXIST "%HTTPD_SRC%\include\httpd.h" (
+    echo "Using existing httpd source in %HTTPD_SRC%"
+    git -C "%HTTPD_SRC%" pull
+    goto :src_ok
+)
+if EXIST "%HTTPD_SRC%\.git" (
+    echo "Updating incomplete httpd clone..."
+    git -C "%HTTPD_SRC%" pull
+) else (
+    echo "Cloning httpd source..."
+    git clone https://github.com/apache/httpd.git "%HTTPD_SRC%"
+)
+if NOT EXIST "%HTTPD_SRC%\include\httpd.h" (
+    echo "ERROR: httpd source not found after clone."
+    exit /b 1
+)
+cd /d "%HTTPD_SRC%\test\pyhttpd"
+:src_ok
+
 SET CWD=%CD%
 SET "CWD=%CWD:\=/%"
 @REM -------------------------------------
