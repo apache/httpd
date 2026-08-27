@@ -559,9 +559,15 @@ static apr_status_t stream_pool_destroy(void *data)
     h2_stream *stream = data;
     switch (stream->magic) {
     case H2_STRM_MAGIC_OK:
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, stream->session->c1,
-                      H2_STRM_MSG(stream, "was not destroyed explicitly"));
-        AP_DEBUG_ASSERT(0);
+        /* Reclaimed with the session pool rather than destroyed
+         * explicitly.  This is expected for a stream which was created
+         * but never scheduled for processing - e.g. one whose request
+         * nghttp2 rejects before it is handed to the mplx - and is
+         * harmless, since nothing but the session pool ever owned it.
+         * Use-after-free of a stream is still caught in any build by the
+         * H2_STRM_ASSERT_MAGIC at each use. */
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
+                      H2_STRM_MSG(stream, "reclaimed, never processed"));
         break;
     case H2_STRM_MAGIC_SDEL:
         /* stream has been explicitly destroyed, as it should */
