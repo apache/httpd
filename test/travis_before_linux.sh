@@ -1,9 +1,5 @@
 #!/bin/bash -xe
 
-if test -v CLEAR_CACHE; then
-    rm -rf $HOME/root
-fi
-
 : Travis tag = ${TRAVIS_TAG}
 : Travis branch = ${TRAVIS_BRANCH}
 
@@ -21,61 +17,111 @@ if grep ip6-localhost /etc/hosts; then
     cat /etc/hosts
 fi
 
-function install_apx() {
+# Echo the object ID (hash) of the commit to build for $1 at version
+# $2, or "tarball" if a release tarball is used instead of a checkout.
+function resolve_apx() {
     local name=$1
     local version=$2
-    local prefix=${HOME}/root/${name}-${version}
-    local build=${HOME}/build/${name}-${version}
-    local giturl=https://github.com/apache/${name}.git
-    local config=$3
-    local buildconf=$4
-    local commit=tarball
+    local ref commit
 
-    mkdir -p ${HOME}/build
-
-    if ! test -v TEST_APR_TARBALL; then
-         case $version in
-            trunk|*.x) ref=refs/heads/${version} ;;
-            *) ref=refs/tags/${version} ;;
-         esac
-
-         # Fetch the object ID (hash) of latest commit
-         commit=`git ls-remote ${giturl} ${ref} | cut -f1`
-         if test -z "$commit"; then
-            : Could not determine latest commit hash for ${ref} in ${giturl} - check branch is valid?
-            exit 1
-         fi
-    fi
-
-    # Blow away the cached install root if the cached install is stale
-    # or doesn't match the expected configuration.
-    grep -q "${version} ${commit} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
-
-    if test -d ${prefix}; then
+    if test -v TEST_APR_TARBALL; then
+        echo tarball
         return 0
     fi
+
+    # For a branch, prefer the commit already resolved by
+    # gha-resolve-deps.sh for the cache key; resolving it again here
+    # would race with the branch moving in the meantime.  Tags are
+    # immutable so they are always resolved below.
+    case $name in
+       apr)      commit=${APR_COMMIT-} ;;
+       apr-util) commit=${APU_COMMIT-} ;;
+    esac
+    if test -n "$commit"; then
+        echo ${commit}
+        return 0
+    fi
+
+    case $version in
+       trunk|*.x) ref=refs/heads/${version} ;;
+       *) ref=refs/tags/${version} ;;
+    esac
+
+    commit=`git ls-remote https://github.com/apache/${name}.git ${ref} | cut -f1`
+    if test -z "$commit"; then
+       : Could not determine latest commit hash for ${ref} in ${name} - check branch is valid?
+       exit 1
+    fi
+
+    echo ${commit}
+}
+
+# Unpack the source for $1 at version $2, commit $3, into
+# $HOME/build/$1-$2, running ./buildconf with the arguments in $4.  Does
+# nothing if the source tree is already present.  Note $HOME/build is
+# not cached, unlike the install root in $HOME/root.
+function fetch_apx() {
+    local name=$1
+    local version=$2
+    local commit=$3
+    local buildconf=$4
+    local build=${HOME}/build/${name}-${version}
+
+    if test -d ${build}; then
+        return 0
+    fi
+
+    mkdir -p ${HOME}/build
 
     if test -v TEST_APR_TARBALL; then
          curl https://archive.apache.org/dist/apr/${name}-${version}.tar.gz > apx.tar.gz
          tar -C ${HOME}/build -xzf apx.tar.gz
          rm apx.tar.gz
-         pushd ${build}
     else
          git init -q ${build}
          pushd $build
          # Clone and checkout the commit identified above.
-         git remote add origin ${giturl}
+         git remote add origin https://github.com/apache/${name}.git
          git fetch -q --depth=1 origin ${commit}
          git checkout ${commit}
          ./buildconf ${buildconf}
+         popd
+    fi
+}
+
+function install_apx() {
+    local name=$1
+    local version=$2
+    local prefix=${HOME}/root/${name}-${version}
+    local build=${HOME}/build/${name}-${version}
+    local config=$3
+    local buildconf=$4
+    local commit
+
+    # The cache key covers the version, the resolved commit for a branch
+    # build, the configuration and $CC, and is only written once the
+    # build has succeeded, so anything restored here is usable as-is.
+    if test -d ${prefix}; then
+        return 0
     fi
 
+    commit=`resolve_apx ${name} ${version}`
+
+    # apr-util's buildconf needs APR's source tree, which is not cached.
+    # If APR itself was restored from the cache it was never built here,
+    # so fetch the source now - otherwise a stale APR-util alongside a
+    # fresh APR cannot be rebuilt.
+    if test ${name} = apr-util -a ! -d ${HOME}/build/apr-${APR_VERSION}; then
+        fetch_apx apr ${APR_VERSION} `resolve_apx apr ${APR_VERSION}`
+    fi
+
+    fetch_apx ${name} ${version} ${commit} "${buildconf}"
+
+    pushd ${build}
     ./configure --prefix=${prefix} ${config}
     make -j2
     make install
     popd
-
-    echo ${version} ${commit} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
@@ -84,9 +130,6 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 # Unless either SKIP_TESTING or NO_TEST_FRAMEWORK are set, install
 # CPAN modules required to run the Perl test framework.
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
-    # Clear CPAN cache if necessary
-    if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
-
     if ! perl -V > perlver; then
         : Perl binary broken
         perl -V
@@ -138,26 +181,20 @@ fi
 # Build the requested version of OpenSSL if it's not already installed
 # in the cached ~/root
 if test -v TEST_OPENSSL3; then
-    # For a branch, rebuild if the remote branch has updated.
-    if test -v TEST_OPENSSL3_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
-        latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
-        : Got branch latest commit ${latest}
-        if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL3}; then
-            : Cached repos already at ${latest}
-        else
-            : Forcing rebuild
-            rm -f $HOME/root/openssl-is-${TEST_OPENSSL3}
-        fi
-    fi
-
-    if ! test -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
-        # Remove any previous install.
-        rm -rf $HOME/root/openssl3
-
+    # The cache key covers $TEST_OPENSSL3, $OPENSSL_CONFIG and, for a
+    # branch build, the resolved commit, so an install found here is
+    # current.
+    if ! test -d $HOME/root/openssl3; then
         mkdir -p build/openssl
         pushd build/openssl
            if test -v TEST_OPENSSL3_BRANCH; then
                git clone --depth=1 -b $TEST_OPENSSL3_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL3}
+               # Build the commit named in the cache key, not whatever
+               # the branch tip has become since it was resolved.
+               if test -n "${OPENSSL_COMMIT-}"; then
+                   git -C openssl-${TEST_OPENSSL3} fetch -q --depth=1 origin ${OPENSSL_COMMIT}
+                   git -C openssl-${TEST_OPENSSL3} checkout -q ${OPENSSL_COMMIT}
+               fi
            else
                curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
                    tar -xzf -
@@ -169,12 +206,6 @@ if test -v TEST_OPENSSL3; then
                        '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
            make install_sw
-           if test -d .git; then
-               : Caching git commit hash:
-               git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL3}
-           else
-               touch $HOME/root/openssl-is-${TEST_OPENSSL3}
-           fi
        popd
     fi
 

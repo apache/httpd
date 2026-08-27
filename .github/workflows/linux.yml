@@ -117,7 +117,6 @@ jobs:
               APR_VERSION=1.7.x
               APU_VERSION=1.6.x
               APU_CONFIG="--with-crypto --with-ldap"
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
@@ -125,7 +124,6 @@ jobs:
               APR_VERSION=1.8.x
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR 1.7.x, APR-util 1.7.x, LDAP
             config: --enable-mods-shared=reallyall
@@ -139,7 +137,6 @@ jobs:
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
               TEST_PYTEST=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: APR trunk thread debugging
             config: --enable-mods-shared=reallyall --with-mpm=event
@@ -155,7 +152,6 @@ jobs:
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: Shared MPMs (event), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event
@@ -166,7 +162,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_SSL=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: Shared MPMs (worker), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker
@@ -177,7 +172,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_SSL=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: Shared MPMs (prefork), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
@@ -188,7 +182,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_SSL=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: litmus WebDAV tests
             config: --enable-dav --enable-dav-fs
@@ -233,7 +226,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
               TEST_PYTEST=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: ASan, pool-debug
             notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
@@ -246,7 +238,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
               TEST_PYTEST=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           # Runs every pytest-based test suite (pytest_suite/ + all
           # test/modules/*/ pyhttpd suites except modules/md, which needs a
@@ -368,11 +359,22 @@ jobs:
         path: test/perl-framework
         submodules: true
       if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
-    - name: Cache installed libraries
-      uses: actions/cache@v5
+    # Sets $ROOTID, identifying the contents of ~/root, and leaves it
+    # unset for a job which builds no dependencies from source.
+    - name: Resolve dependency versions
+      run: ./test/gha-resolve-deps.sh
+    # Restored here but saved only once the dependencies have been built
+    # successfully, below: a job which fails part-way through building
+    # them would otherwise save a half-built tree under a key which can
+    # never be updated.  Bump the serial in the key to discard the cached
+    # builds and start afresh.
+    - name: Restore installed libraries
+      uses: actions/cache/restore@v5
+      id: cache-libs
+      if: env.ROOTID != ''
       with:
         path: ~/root
-        key: cache-libs-${{ env.JOBID }}
+        key: cache-libs-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
     # ~/perl5 does not vary by job: the module list is fixed and the
     # modules are always built with CC=gcc.  It varies only by the perl
     # ABI (hence the image and architecture) and by the module list
@@ -387,6 +389,12 @@ jobs:
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
+    - name: Save installed libraries
+      uses: actions/cache/save@v5
+      if: success() && env.ROOTID != '' && steps.cache-libs.outputs.cache-hit != 'true'
+      with:
+        path: ~/root
+        key: ${{ steps.cache-libs.outputs.cache-primary-key }}
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
