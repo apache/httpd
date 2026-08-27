@@ -7,9 +7,15 @@
 @REM if build tools are not already available
 @REM -------------------------------------
 where cl.exe >nul 2>&1 && where cmake.exe >nul 2>&1 && where nmake.exe >nul 2>&1
-if %ERRORLEVEL% NEQ 0 (
-    set PATH=C:\Windows\system32;C:\Windows
-)
+if %ERRORLEVEL% EQU 0 goto :path_ok
+    @REM Find powershell.exe while PATH still has it, before we reset
+    SET "POWERSHELL_DIR="
+    for /f "delims=" %%i in ('where powershell.exe 2^>nul') do (
+        if not defined POWERSHELL_DIR set "POWERSHELL_DIR=%%~dpi"
+    )
+    set "PATH=C:\Windows\system32;C:\Windows"
+    if defined POWERSHELL_DIR set "PATH=%PATH%;%POWERSHELL_DIR%"
+:path_ok
 
 @REM -------------------------------------
 @REM check for git otherwise install it
@@ -159,7 +165,7 @@ if NOT EXIST vcpkg\ (
     echo "Adding...."
     git submodule add --force https://github.com/microsoft/vcpkg.git vcpkg
     PUSHD vcpkg\
-    CALL bootstrap-vcpkg.bat
+    CALL bootstrap-vcpkg.bat -disableMetrics
 ) else (
     echo "Updating...."
     git submodule update --remote --merge vcpkg\
