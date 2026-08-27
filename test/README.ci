@@ -22,7 +22,10 @@ The CI scripts use the following environment variables:
 
 * BUILDCONFIG - arguments to pass when running httpd's ./buildconf script
 
-* MFLAGS - arguments to pass when running "make" for httpd.
+* MFLAGS - arguments to pass when running "make", both for httpd and
+  for any dependency built from source.  The Linux workflow defaults
+  this to "-j<number of CPUs>"; a matrix entry can override it, e.g.
+  setting it empty to force a serial build.
 
 * SKIP_TESTING - if set, no testing is done at all
 

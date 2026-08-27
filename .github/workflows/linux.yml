@@ -26,7 +26,6 @@ permissions:
   contents: read
 
 env:
-  MARGS: "-j2"
   CFLAGS: "-g"
   # This will need updating as the ubuntu-latest image changes:
   PHP_FPM: "/usr/sbin/php-fpm8.3"
@@ -342,6 +341,10 @@ jobs:
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
         echo "IMAGEOS=$ImageOS" >> $GITHUB_ENV
+        # The scripts run "make $MFLAGS"; default it to the number of
+        # CPUs the runner has, unless the matrix entry set it already
+        # (the ap_expr job sets it empty on purpose).
+        grep -q '^MFLAGS=' $GITHUB_ENV || echo "MFLAGS=-j`nproc`" >> $GITHUB_ENV
         echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
            | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
     - name: apt refresh
