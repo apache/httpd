@@ -125,6 +125,21 @@ if %ERRORLEVEL% NEQ 0 (
 SET "VCVARS_DONE=1"
 
 :tools_ok
+
+@REM -------------------------------------
+@REM Setup build env using VS build 2022
+@REM -------------------------------------
+if "%VCVARS_DONE%" == "1" (
+    echo "Build environment already configured, skipping vcvars64.bat"
+) else (
+    call "%VCVARS_BAT%"
+)
+
+where cl.exe >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo "ERROR: cl.exe still not found after installing Build Tools."
+    exit /b 1
+)
 where cmake.exe >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo "ERROR: cmake.exe not found in PATH. Please install CMake."
@@ -156,15 +171,6 @@ SET VCPKG_ROOT=%CWD%\vcpkg
 vcpkg.exe install --triplet x64-windows apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
 
 POPD
-
-@REM -------------------------------------
-@REM Setup build env using VS build 2022
-@REM -------------------------------------
-if "%VCVARS_DONE%" == "1" (
-    echo "Build environment already configured, skipping vcvars64.bat"
-) else (
-    call "%VCVARS_BAT%"
-)
 
 @REM -------------------------------------
 @REM Create a temp dir for cmake files
