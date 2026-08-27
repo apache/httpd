@@ -46,6 +46,12 @@ echo "PortableGit installed successfully."
 @REM -------------------------------------
 @REM Variables used in this script
 @REM -------------------------------------
+@REM httpd git repo URL and branch: use arguments or defaults
+SET "HTTPD_REPO=%~1"
+if "%HTTPD_REPO%"=="" SET "HTTPD_REPO=https://github.com/apache/httpd.git"
+SET "HTTPD_BRANCH=%~2"
+if "%HTTPD_BRANCH%"=="" SET "HTTPD_BRANCH=trunk"
+
 @REM Find httpd source: try script location first, then fall back to clone
 SET "SCRIPT_DIR=%~dp0"
 for %%i in ("%SCRIPT_DIR%..\..") do SET "CANDIDATE=%%~fi"
@@ -64,7 +70,7 @@ if EXIST "%HTTPD_SRC%\.git" (
     git -C "%HTTPD_SRC%" pull
 ) else (
     echo "Cloning httpd source..."
-    git clone https://github.com/apache/httpd.git "%HTTPD_SRC%"
+    git clone -b "%HTTPD_BRANCH%" "%HTTPD_REPO%" "%HTTPD_SRC%"
 )
 if NOT EXIST "%HTTPD_SRC%\include\httpd.h" (
     echo "ERROR: httpd source not found after clone."
