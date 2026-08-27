@@ -145,6 +145,17 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
           # -------------------------------------------------------------------------
+          # Test against a newer nghttp2 than in the Ubuntu images.
+          - name: mod_http2 w/nghttp2 1.68.0
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event
+            pkgs: nghttp2-client
+            env: |
+              TEST_NGHTTP2=1.68.0
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYHTTPD_TARGETS=modules/http2
+              PYTEST_ARGS=--only=pyhttpd
+          # -------------------------------------------------------------------------
           - name: Default
           # -------------------------------------------------------------------------
           - name: All-static modules
