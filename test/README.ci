@@ -105,18 +105,6 @@ The CI scripts use the following environment variables:
 Caching
 -------
 
-Caching was designed in Travis then migrated to GitHub Actions, and
-should probably be redone from scratch.
-
-The root cause of most of what follows is that Travis caches were
-mutable - restored at the start of a build and re-uploaded under the
-same key at the end - so it was fine for the scripts to do their own
-staleness checks and update the cached tree in place.  Caches in GHA
-are immutable: on an exact key hit the post-job save is skipped
-entirely, so any rebuild the scripts do is discarded and repeated on
-every subsequent run.  Invalidation therefore has to live in the cache
-key, not in the script.
-
 Two directories are cached.
 
 ~/root (key "cache-libs-<serial>-<image>-<arch>-$ROOTID") holds the
@@ -156,18 +144,16 @@ them and rebuild against current CPAN.
 
 APR and APR-util must stay in a single cache entry.  APR-util's
 buildconf needs APR's *source* tree, which lives in $HOME/build and is
-not cached, so a cached but stale APR-util alongside a cached and fresh
-APR cannot be rebuilt from the cache alone.  This used to be handled by
-setting CLEAR_CACHE on such jobs to disable caching altogether;
-install_apx() now fetches the APR source on demand in that case
-instead, so no job needs to opt out of caching.
-
+not cached, so a cached but stale APR-util alongside a cached and
+fresh APR cannot be rebuilt from the cache alone.  This used to be
+handled by always ignoring the cache on such jobs; install_apx() now
+fetches the APR source on demand in that case instead, so no job needs
+to opt out of caching.
 
 Travis to Github Actions Migration TODO
 ---------------------------------------
 
 * enable ACME/mod_md testing
-* support branch conditionals again (some tests are 2.4.x only, some trunk only)
 * test across different Ubuntu versions again
  - and test against OpenSSL 1.x since we're now ONLY building against 3.x
 * container testing for non-Ubuntu hosts
@@ -181,29 +167,13 @@ TODO list
 
 * non-x86 builds
 * MacOS build
-* Windows build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
 
 Known Failures
 --------------
 
-Some known failures:
-
-* prefork, and more rarely non-prefork testing sometimes catches child
-  segfaults under pool-debug from assert()s in (e.g.)
-  __pthread_tpp_change_priority where one child is destroying threads
-  which another is waiting for, or iterating through via
-  apr_pool_walk_tree().
-
-  See dev@httpd threads:
-  msg <5f4abde1b5789_13fde2ecacb40795a1@travis-tasks-5b566d48fc-drkb9.mail>
-  msg <73060f7b-df7f-ad3c-a9fa-dd666a59b31e@kippdata.de> and
-  https://bz.apache.org/bugzilla/show_bug.cgi?id=63098
-  https://bz.apache.org/bugzilla/show_bug.cgi?id=46185
-
-  Not clear if there is a real bug here which can be reproduced
-  outside of pool-debug.
+- A few mod_http2 Python tests sometimes fail spuriously.
 
 Testing from a Feature Branch
 -----------------------------
