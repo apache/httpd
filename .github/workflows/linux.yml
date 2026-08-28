@@ -157,6 +157,17 @@ jobs:
               PYTEST_ARGS=--only=pyhttpd
           # -------------------------------------------------------------------------
           - name: Default
+            # Check the defaults expected for a default build on Linux.
+            config-output: >-
+              SINGLE_LISTEN_UNSERIALIZED_ACCEPT AP_NONBLOCK_WHEN_MULTI_LISTEN
+              AP_ENABLE_V4_MAPPED HAVE_GMTOFF HAVE_FDPASSING HAVE_CRYPT_SHA2
+              HAVE_PCRE2 HAVE_EPOLL_CREATE HAVE_GETTID HAVE_PRCTL HAVE_TIMEGM
+              HAVE_GETLOADAVG HAVE_FOPEN64 HAVE_SETSID HAVE_KILLPG HAVE_INITGROUPS
+              AP_FORCE_EXPORTS HAVE_NGHTTP2 HAVE_CURL
+            # buildconf strips these from the generated header.
+            config-no-output: >-
+              PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING
+              PACKAGE_BUGREPORT PACKAGE_URL
           # -------------------------------------------------------------------------
           - name: All-static modules
             config: --enable-mods-static=reallyall
@@ -291,6 +302,8 @@ jobs:
           - name: Configured w/reduced exports
             config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd
             pkgs: libsystemd-dev
+            config-output: HAVE_SYSTEMD
+            config-no-output: AP_FORCE_EXPORTS
             env: |
               SKIP_TESTING=1
               TEST_INSTALL=1
@@ -313,6 +326,7 @@ jobs:
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            config-no-output: HAVE_NGHTTP2 HAVE_CURL
             env: |
               TEST_OPENSSL3=3.0.21
               APR_VERSION=1.7.6
@@ -447,6 +461,18 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Build and test
       run: ./test/travis_run_linux.sh
+    # Checks the config header in the build tree, so this must follow
+    # the build, and is only useful for a non-VPATH job.
+    - if: ${{ matrix.config-output != '' }}
+      name: Check for expected ap_config_auto.h definitions
+      run: for var in ${{ matrix.config-output }}; do
+             grep --color=always "^#define *${var} *1" include/ap_config_auto.h;
+           done
+    - if: ${{ matrix.config-no-output != '' }}
+      name: Check for unexpected ap_config_auto.h definitions
+      run: for var in ${{ matrix.config-no-output }}; do
+             ! grep --color=always "^#define *${var}" include/ap_config_auto.h;
+           done
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
