@@ -40,11 +40,11 @@ fi
 if test "$session_mods_enable_crypto" != "no"; then
   saved_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES"
-  AC_TRY_COMPILE([#include <apr_crypto.h>],[
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <apr_crypto.h>]],[[
 #if APU_HAVE_CRYPTO == 0
 #error no crypto support
 #endif
-  ], [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
+  ]])], [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
   CPPFLAGS="$saved_CPPFLAGS"
   if test $ap_HAVE_APR_CRYPTO = "no"; then
     AC_MSG_WARN([Your APR does not include SSL/EVP support. To enable it: configure --with-crypto])

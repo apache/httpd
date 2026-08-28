@@ -564,13 +564,13 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
     fi
 
     AC_CACHE_CHECK([for OpenSSL version >= 0.9.8a], [ap_cv_openssl098a], [
-    AC_COMPILE_IFELSE(AC_LANG_PROGRAM([#include <openssl/opensslv.h>],[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <openssl/opensslv.h>]],[[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing OpenSSL version"
 #endif
 #if OPENSSL_VERSION_NUMBER < 0x0090801f
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
-#endif]), [ap_cv_openssl098a=yes], [ap_cv_openssl098a=no])])
+#endif]])], [ap_cv_openssl098a=yes], [ap_cv_openssl098a=no])])
     if test "x$ap_cv_openssl098a" = xyes; then
        ac_cv_openssl=yes
     fi
@@ -910,11 +910,8 @@ dnl
 AC_DEFUN([APACHE_CHECK_VOID_PTR_LEN], [
 
 AC_CACHE_CHECK([for void pointer length], [ap_cv_void_ptr_lt_long],
-[AC_TRY_RUN([
-int main(void)
-{
-    return sizeof(void *) < sizeof(long); 
-}], [ap_cv_void_ptr_lt_long=no], [ap_cv_void_ptr_lt_long=yes], 
+[AC_RUN_IFELSE([AC_LANG_PROGRAM([], [return sizeof(void *) < sizeof(long);])],
+    [ap_cv_void_ptr_lt_long=no], [ap_cv_void_ptr_lt_long=yes],
     [ap_cv_void_ptr_lt_long="cross compile - not checked"])])
 
 if test "$ap_cv_void_ptr_lt_long" = "yes"; then
@@ -1056,9 +1053,9 @@ AC_DEFUN([APACHE_CHECK_JANSSON],[
 
     # attempts to include jansson.h fail me. So lets make sure we can at least
     # include its other header file
-    AC_TRY_COMPILE([#include <jansson_config.h>],[],
-      [AC_MSG_RESULT(OK) 
-       ac_cv_jansson=yes], 
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <jansson_config.h>]], [[]])],
+      [AC_MSG_RESULT(OK)
+       ac_cv_jansson=yes],
        [AC_MSG_RESULT(FAILED)])
 
     if test "x$ac_cv_jansson" = "xyes"; then

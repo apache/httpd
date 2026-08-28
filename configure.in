@@ -7,7 +7,7 @@ dnl
 AC_PREREQ(2.60)
 AC_INIT(ABOUT_APACHE)
 
-AC_CONFIG_HEADER(include/ap_config_auto.h)
+AC_CONFIG_HEADERS(include/ap_config_auto.h)
 AC_CONFIG_AUX_DIR(build)
 
 dnl Absolute source/build directory
@@ -76,7 +76,7 @@ dnl ## Run configure for packages Apache uses
 dnl shared library support for these packages doesn't currently
 dnl work on some platforms
 
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_HOST
 
 orig_prefix="$prefix"
 
@@ -202,9 +202,6 @@ dnl config cache so that PCRE uses it.  Otherwise, CC and CPP used for
 dnl PCRE and for our config tests will be whatever PCRE determines.
 AC_PROG_CC
 AC_PROG_CPP
-
-dnl Try to get c99 support for variadic macros
-ifdef([AC_PROG_CC_C99], [AC_PROG_CC_C99])
 
 dnl In case of cross compilation we set CC_FOR_BUILD to cc unless
 dnl we got already CC_FOR_BUILD from environment.
@@ -362,7 +359,7 @@ case $host in
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *-solaris2*)
-      dnl This is a hack -- we should be using AC_TRY_RUN instead
+      dnl This is a hack -- we should be using AC_RUN_IFELSE instead
       ap_platform_runtime_link_flag="-R"
       dnl solaris 8 and above don't have a thundering herd
       dnl not sure about rev's before this one.
@@ -460,11 +457,6 @@ dnl I think these are just used all over the place, so just check for
 dnl them at the base of the tree. If some are specific to a single
 dnl directory, they should be moved (Comment #Spoon)
 
-dnl Regarding standard header files: AC_HEADER_STDC doesn't set symbols
-dnl HAVE_STRING_H, HAVE_STDLIB_H, etc., so those are checked for
-dnl explicitly so that the normal HAVE_xxx_H symbol is defined.
-
-AC_HEADER_STDC
 AC_CHECK_HEADERS( \
 string.h \
 limits.h \
@@ -548,12 +540,11 @@ APACHE_CHECK_VOID_PTR_LEN
 if test $ac_cv_func_gettid = no; then
   # On Linux before glibc 2.30, gettid() is only usable via syscall()
   AC_CACHE_CHECK([for gettid() via syscall], ap_cv_gettid,
-[AC_TRY_RUN(#define _GNU_SOURCE
+[AC_RUN_IFELSE([AC_LANG_PROGRAM([[#define _GNU_SOURCE
 #include <unistd.h>
 #include <sys/syscall.h>
-#include <sys/types.h>
-int main(int argc, char **argv) {
-pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0; },
+#include <sys/types.h>]],
+[[pid_t t = syscall(SYS_gettid); return t == -1 ? 1 : 0;]])],
   [ap_cv_gettid=yes], [ap_cv_gettid=no], [ap_cv_gettid=no])])
   if test "$ap_cv_gettid" = "yes"; then
       AC_DEFINE(HAVE_SYS_GETTID, 1, [Define if you have gettid() via syscall()])
@@ -730,7 +721,7 @@ if test "$enable_pie" = "yes"; then
      save_LDFLAGS=$LDFLAGS
      CFLAGS="$CFLAGS -fPIE"
      LDFLAGS="$LDFLAGS -pie"
-     AC_TRY_RUN([static int foo[30000]; int main () { return 0; }],
+     AC_RUN_IFELSE([AC_LANG_SOURCE([static int foo[30000]; int main () { return 0; }])],
       [ap_cv_cc_pie=yes], [ap_cv_cc_pie=no], [ap_cv_cc_pie=yes])
      CFLAGS=$save_CFLAGS
      LDFLAGS=$save_LDFLAGS
