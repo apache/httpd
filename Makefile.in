@@ -533,7 +533,7 @@ test/httpdunit.lo: test/httpdunit.c test/httpdunit.cases | unittest-objdir
 # libcheck on the system.
 httpdunit_OBJECTS := test/httpdunit.lo $(testcase_OBJECTS)
 $(httpdunit_OBJECTS): override LTCFLAGS += $(UNITTEST_CFLAGS)
-test/httpdunit: $(httpdunit_OBJECTS) $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS)
+test/httpdunit: $(httpdunit_OBJECTS) $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS) buildmark.o
 	$(LINK) $(httpdunit_OBJECTS) $(PROGRAM_OBJECTS) $(UNITTEST_LIBS) $(PROGRAM_LDADD)
 
 check-unittests: test/httpdunit
