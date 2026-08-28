@@ -49,26 +49,22 @@ if defined PYTHON (
 )
 
 echo install_tools.bat: Python not found, installing... >&2
-rem Scrape the latest Python 3 release version from the downloads page
-set "PY_VERSION="
-for /f "delims=" %%V in ('curl -s https://www.python.org/downloads/ ^| findstr /r "Latest Python 3" ^| findstr /r "[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"') do (
-    if not defined PY_VERSION (
-        for /f "tokens=2 delims=<>" %%T in ("%%V") do (
-            for %%W in (%%T) do (
-                echo %%W | findstr /r "^[0-9]" >nul 2>&1 && if not defined PY_VERSION set "PY_VERSION=%%W"
-            )
+rem Find the latest python-*-amd64.exe installer URL from the Windows downloads page
+set "PY_URL="
+for /f "tokens=2 delims==" %%A in ('curl -s https://www.python.org/downloads/windows/ ^| findstr /i "python-3.*-amd64.exe"') do (
+    if not defined PY_URL (
+        for /f "tokens=1 delims=> " %%U in ("%%A") do (
+            echo %%~U | findstr /i "amd64.exe" >nul 2>&1 && if not defined PY_URL set "PY_URL=%%~U"
         )
     )
 )
-if not defined PY_VERSION (
-    echo install_tools.bat: ERROR: could not detect latest Python version. >&2
-    echo   Install Python manually from https://www.python.org/downloads/ >&2
+if not defined PY_URL (
+    echo install_tools.bat: ERROR: could not detect latest Python installer. >&2
+    echo   Install Python manually from https://www.python.org/downloads/windows/ >&2
     exit /b 1
 )
-echo install_tools.bat: latest Python version: %PY_VERSION% >&2
-
-set "PY_INSTALLER=python-%PY_VERSION%-amd64.exe"
-set "PY_URL=https://www.python.org/ftp/python/%PY_VERSION%/%PY_INSTALLER%"
+rem Extract filename from URL for local save
+for %%F in ("%PY_URL%") do set "PY_INSTALLER=%%~nxF"
 echo install_tools.bat: downloading %PY_URL%... >&2
 curl -L -o "%TEMP%\%PY_INSTALLER%" "%PY_URL%"
 if errorlevel 1 (
@@ -111,24 +107,17 @@ if defined PERL (
 )
 
 echo install_tools.bat: Perl not found, installing Strawberry Perl... >&2
-rem Scrape the latest Strawberry Perl version from the releases page
-set "PERL_VERSION="
-for /f "delims=" %%L in ('curl -s https://strawberryperl.com/releases.html ^| findstr /i "strawberry-perl-.*-64bit.msi"') do (
-    if not defined PERL_VERSION (
-        for /f "tokens=2 delims=-" %%V in ("%%L") do (
-            echo %%V | findstr /r "^[0-9]" >nul 2>&1 && if not defined PERL_VERSION set "PERL_VERSION=%%V"
-        )
-    )
+rem Get the latest 64bit.msi download URL from GitHub releases API
+set "PERL_URL="
+for /f "tokens=2 delims= " %%U in ('curl -s https://api.github.com/repos/StrawberryPerl/Perl-Dist-Strawberry/releases/latest ^| findstr /i "browser_download_url.*64bit.msi"') do (
+    if not defined PERL_URL set "PERL_URL=%%~U"
 )
-if not defined PERL_VERSION (
-    echo install_tools.bat: ERROR: could not detect latest Strawberry Perl version. >&2
+if not defined PERL_URL (
+    echo install_tools.bat: ERROR: could not detect latest Strawberry Perl installer. >&2
     echo   Install Perl manually from https://strawberryperl.com >&2
     exit /b 1
 )
-echo install_tools.bat: latest Strawberry Perl version: %PERL_VERSION% >&2
-
-set "PERL_MSI=strawberry-perl-%PERL_VERSION%-64bit.msi"
-set "PERL_URL=https://strawberryperl.com/download/%PERL_VERSION%/%PERL_MSI%"
+for %%F in ("%PERL_URL%") do set "PERL_MSI=%%~nxF"
 echo install_tools.bat: downloading %PERL_URL%... >&2
 curl -L -o "%TEMP%\%PERL_MSI%" "%PERL_URL%"
 if errorlevel 1 (
