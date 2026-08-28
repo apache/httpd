@@ -49,22 +49,22 @@ if defined PYTHON (
 )
 
 echo install_tools.bat: Python not found, installing... >&2
-rem Find the latest python-*-amd64.exe installer URL from the Windows downloads page
-set "PY_URL="
-for /f "tokens=2 delims==" %%A in ('curl -s https://www.python.org/downloads/windows/ ^| findstr /i "python-3.*-amd64.exe"') do (
-    if not defined PY_URL (
-        for /f "tokens=1 delims=> " %%U in ("%%A") do (
-            echo %%~U | findstr /i "amd64.exe" >nul 2>&1 && if not defined PY_URL set "PY_URL=%%~U"
-        )
-    )
+rem Query the Python API for the latest stable release and extract the version
+set "PY_VERSION="
+curl -s -o "%TEMP%\pyrel.json" "https://www.python.org/api/v2/downloads/release/?is_published=true&pre_release=false&version=3"
+for /f "delims=" %%V in ('powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; $j = Get-Content '%TEMP%\pyrel.json' -Raw | ConvertFrom-Json; ($j | Where-Object { $_.is_latest -eq $true }).name -replace 'Python ', ''" 2^>nul') do (
+    set "PY_VERSION=%%V"
 )
-if not defined PY_URL (
-    echo install_tools.bat: ERROR: could not detect latest Python installer. >&2
+del "%TEMP%\pyrel.json" 2>nul
+if not defined PY_VERSION (
+    echo install_tools.bat: ERROR: could not detect latest Python version. >&2
     echo   Install Python manually from https://www.python.org/downloads/windows/ >&2
     exit /b 1
 )
-rem Extract filename from URL for local save
-for %%F in ("%PY_URL%") do set "PY_INSTALLER=%%~nxF"
+echo install_tools.bat: latest Python version: %PY_VERSION% >&2
+
+set "PY_INSTALLER=python-%PY_VERSION%-amd64.exe"
+set "PY_URL=https://www.python.org/ftp/python/%PY_VERSION%/%PY_INSTALLER%"
 echo install_tools.bat: downloading %PY_URL%... >&2
 curl -L -o "%TEMP%\%PY_INSTALLER%" "%PY_URL%"
 if errorlevel 1 (
