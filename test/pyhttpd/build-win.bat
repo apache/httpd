@@ -256,7 +256,7 @@ cmake "%HTTPD_SRC%" -B . ^
     "-DAPR_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/libapr-1.lib;%CWD%/vcpkg/installed/x64-windows/lib/libaprutil-1.lib" ^
     -DNGHTTP2_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/nghttp2.lib ^
     -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/jansson.lib ^
-    -DBUILD_PYHTTPD_MODULES=true ^
+    -DBUILD_TEST_MODULES=true ^
     -DCMAKE_POLICY_VERSION_MINIMUM=%CMAKE_VERSION% ^
     --install-prefix %HTTPD_INSTALL_DIRECTORY%
 
