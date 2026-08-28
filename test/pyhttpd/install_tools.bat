@@ -33,6 +33,131 @@ if not exist "%PREFIX%\bin\httpd.exe" (
     exit /b 1
 )
 
+rem --- python detection and install --------------------------------------------
+set PYTHON=
+for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
+    if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+)
+if not defined PYTHON (
+    for /f "delims=" %%D in ('dir /b /o-n "%PROGRAMFILES%\Python3*" 2^>nul') do (
+        if not defined PYTHON set "PYTHON=%PROGRAMFILES%\%%D\python.exe"
+    )
+)
+if defined PYTHON (
+    echo install_tools.bat: Python found at "!PYTHON!" >&2
+    goto :python_ok
+)
+
+echo install_tools.bat: Python not found, installing... >&2
+rem Scrape the latest Python 3 release version from the downloads page
+set "PY_VERSION="
+for /f "delims=" %%V in ('curl -s https://www.python.org/downloads/ ^| findstr /r "Latest Python 3" ^| findstr /r "[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*"') do (
+    if not defined PY_VERSION (
+        for /f "tokens=2 delims=<>" %%T in ("%%V") do (
+            for %%W in (%%T) do (
+                echo %%W | findstr /r "^[0-9]" >nul 2>&1 && if not defined PY_VERSION set "PY_VERSION=%%W"
+            )
+        )
+    )
+)
+if not defined PY_VERSION (
+    echo install_tools.bat: ERROR: could not detect latest Python version. >&2
+    echo   Install Python manually from https://www.python.org/downloads/ >&2
+    exit /b 1
+)
+echo install_tools.bat: latest Python version: %PY_VERSION% >&2
+
+set "PY_INSTALLER=python-%PY_VERSION%-amd64.exe"
+set "PY_URL=https://www.python.org/ftp/python/%PY_VERSION%/%PY_INSTALLER%"
+echo install_tools.bat: downloading %PY_URL%... >&2
+curl -L -o "%TEMP%\%PY_INSTALLER%" "%PY_URL%"
+if errorlevel 1 (
+    echo install_tools.bat: ERROR: download failed. >&2
+    exit /b 1
+)
+
+echo install_tools.bat: installing Python %PY_VERSION%... >&2
+"%TEMP%\%PY_INSTALLER%" /quiet InstallAllUsers=0 PrependPath=0 Include_launcher=0
+if errorlevel 1 (
+    echo install_tools.bat: ERROR: Python installation failed. >&2
+    exit /b 1
+)
+del "%TEMP%\%PY_INSTALLER%" 2>nul
+
+rem Re-detect after install
+set PYTHON=
+for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
+    if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+)
+if not defined PYTHON (
+    echo install_tools.bat: ERROR: Python still not found after install. >&2
+    exit /b 1
+)
+echo install_tools.bat: Python installed at "!PYTHON!" >&2
+
+:python_ok
+
+rem --- perl detection and install (Strawberry Perl) ----------------------------
+set PERL=
+for /f "delims=" %%P in ('where perl.exe 2^>nul') do (
+    if not defined PERL set "PERL=%%P"
+)
+if not defined PERL (
+    if exist "C:\Strawberry\perl\bin\perl.exe" set "PERL=C:\Strawberry\perl\bin\perl.exe"
+)
+if defined PERL (
+    echo install_tools.bat: Perl found at "!PERL!" >&2
+    goto :perl_ok
+)
+
+echo install_tools.bat: Perl not found, installing Strawberry Perl... >&2
+rem Scrape the latest Strawberry Perl version from the releases page
+set "PERL_VERSION="
+for /f "delims=" %%L in ('curl -s https://strawberryperl.com/releases.html ^| findstr /i "strawberry-perl-.*-64bit.msi"') do (
+    if not defined PERL_VERSION (
+        for /f "tokens=2 delims=-" %%V in ("%%L") do (
+            echo %%V | findstr /r "^[0-9]" >nul 2>&1 && if not defined PERL_VERSION set "PERL_VERSION=%%V"
+        )
+    )
+)
+if not defined PERL_VERSION (
+    echo install_tools.bat: ERROR: could not detect latest Strawberry Perl version. >&2
+    echo   Install Perl manually from https://strawberryperl.com >&2
+    exit /b 1
+)
+echo install_tools.bat: latest Strawberry Perl version: %PERL_VERSION% >&2
+
+set "PERL_MSI=strawberry-perl-%PERL_VERSION%-64bit.msi"
+set "PERL_URL=https://strawberryperl.com/download/%PERL_VERSION%/%PERL_MSI%"
+echo install_tools.bat: downloading %PERL_URL%... >&2
+curl -L -o "%TEMP%\%PERL_MSI%" "%PERL_URL%"
+if errorlevel 1 (
+    echo install_tools.bat: ERROR: download failed. >&2
+    exit /b 1
+)
+
+echo install_tools.bat: installing Strawberry Perl %PERL_VERSION%... >&2
+msiexec /i "%TEMP%\%PERL_MSI%" /quiet /norestart INSTALLDIR="C:\Strawberry"
+if errorlevel 1 (
+    echo install_tools.bat: ERROR: Strawberry Perl installation failed. >&2
+    exit /b 1
+)
+del "%TEMP%\%PERL_MSI%" 2>nul
+
+rem Re-detect after install
+set PERL=
+if exist "C:\Strawberry\perl\bin\perl.exe" (
+    set "PERL=C:\Strawberry\perl\bin\perl.exe"
+    set "PATH=C:\Strawberry\perl\bin;C:\Strawberry\c\bin;!PATH!"
+)
+if not defined PERL (
+    echo install_tools.bat: ERROR: Perl still not found after install. >&2
+    exit /b 1
+)
+echo install_tools.bat: Strawberry Perl installed at "!PERL!" >&2
+
+:perl_ok
+
 rem --- vcpkg location ---------------------------------------------------------
 set "VCPKG_DIR=%TEST_DIR%\vcpkg"
 set "VCPKG_TRIPLET=x64-windows"
