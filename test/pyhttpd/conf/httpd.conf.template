@@ -60,4 +60,9 @@ RequestReadTimeout header=10 body=10
     Options +ExecCGI
 </Directory>
 
+<IfModule mpm_winnt_module>
+    <IfModule mod_cgi.c>
+        ScriptInterpreterSource Script
+    </IfModule>
+</IfModule>
 

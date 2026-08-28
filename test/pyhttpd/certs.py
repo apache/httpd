@@ -174,7 +174,7 @@ class Credentials:
 
         if spec.sub_specs:
             if self._store:
-                sub_store = CertStore(fpath=os.path.join(self._store.path, creds.name))
+                sub_store = CertStore(fpath=f"{self._store.path}/{creds.name}")
                 creds.set_store(sub_store)
             subchain = chain.copy() if chain else []
             subchain.append(self)
@@ -231,7 +231,7 @@ class CertStore:
             chain.append(creds)
         if not with_root and len(chain) > 1:
             chain = chain[:-1]
-        chain_file = os.path.join(self._store_dir, f'{name}-{infix}.pem')
+        chain_file = f"{self._store_dir}/{name}-{infix}.pem"
         with open(chain_file, "wb") as fd:
             for c in chain:
                 fd.write(c.cert_pem)
@@ -246,11 +246,11 @@ class CertStore:
 
     def get_cert_file(self, name: str, key_type=None) -> str:
         key_infix = ".{0}".format(key_type) if key_type is not None else ""
-        return os.path.join(self._store_dir, f'{name}{key_infix}.cert.pem')
+        return f"{self._store_dir}/{name}{key_infix}.cert.pem"
 
     def get_pkey_file(self, name: str, key_type=None) -> str:
         key_infix = ".{0}".format(key_type) if key_type is not None else ""
-        return os.path.join(self._store_dir, f'{name}{key_infix}.pkey.pem')
+        return f"{self._store_dir}/{name}{key_infix}.pkey.pem"
 
     def load_pem_cert(self, fpath: str) -> x509.Certificate:
         with open(fpath) as fd:
