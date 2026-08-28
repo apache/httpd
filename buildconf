@@ -310,6 +310,12 @@ else
     exit 1
 fi
 
+# The PACKAGE_* definitions are unused here since AC_INIT is not given
+# the package arguments, and only pollute the namespace of anything
+# which includes the installed header.
+echo buildconf: removing PACKAGE_ definitions from $config_h_in
+sed -i -e '/^#undef PACKAGE_/d' $config_h_in
+
 echo buildconf: rebuilding configure
 rm -f config.cache
 if ${AUTOCONF:-autoconf} ${autoconf_args}; then
