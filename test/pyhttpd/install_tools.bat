@@ -93,6 +93,27 @@ echo install_tools.bat: Python installed at "!PYTHON!" >&2
 
 :python_ok
 
+rem --- uv detection and install ------------------------------------------------
+"!PYTHON!" -m uv --version >nul 2>&1
+if not errorlevel 1 (
+    echo install_tools.bat: uv already installed. >&2
+    goto :uv_ok
+)
+echo install_tools.bat: uv not found, installing via pip... >&2
+"!PYTHON!" -m pip install uv
+if errorlevel 1 (
+    echo install_tools.bat: ERROR: failed to install uv. >&2
+    exit /b 1
+)
+"!PYTHON!" -m uv --version >nul 2>&1
+if errorlevel 1 (
+    echo install_tools.bat: ERROR: uv still not working after install. >&2
+    exit /b 1
+)
+echo install_tools.bat: uv installed successfully. >&2
+
+:uv_ok
+
 rem --- perl detection and install (Strawberry Perl) ----------------------------
 set PERL=
 for /f "delims=" %%P in ('where perl.exe 2^>nul') do (
