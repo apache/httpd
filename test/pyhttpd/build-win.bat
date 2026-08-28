@@ -258,8 +258,7 @@ cmake "%HTTPD_SRC%" -B . ^
     -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/jansson.lib ^
     -DBUILD_PYHTTPD_MODULES=true ^
     -DCMAKE_POLICY_VERSION_MINIMUM=%CMAKE_VERSION% ^
-    --install-prefix %HTTPD_INSTALL_DIRECTORY% ^
-    --fresh
+    --install-prefix %HTTPD_INSTALL_DIRECTORY%
 
 @REM -------------------------------------
 @REM Build httpd 
