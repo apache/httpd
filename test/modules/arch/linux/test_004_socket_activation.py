@@ -68,11 +68,10 @@ class TestSystemdSocketActivation:
             r = env.curl_get(f"http://{env.http_addr}:{env.http_port2}/")
             assert r.response['status'] == 200
 
-    @pytest.mark.xfail(reason="ap_setup_listeners() clears LISTEN_FDS from "
-                              "the environment after startup, so re-reading "
-                              "the configuration finds no sockets")
     def test_systemd_004_04_graceful_restart(self, env):
-        """An activated server survives a graceful restart."""
+        """An activated server survives a graceful restart, which means
+        finding the passed sockets again after the environment naming them
+        has been cleared."""
         with ActivatedServer(env, port=env.http_port2,
                              name='activate-reload') as server:
             assert server.is_live(), \
