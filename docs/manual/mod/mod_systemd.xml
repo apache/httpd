@@ -69,7 +69,12 @@ WantedBy=multi-user.target
    href="https://www.freedesktop.org/software/systemd/man/systemd.kill.html">systemd.kill(5)</a>
    for more information.</p>
     
-   <p>This module does not provide support for Systemd socket activation.</p>
+   <p>Systemd socket activation is supported if httpd was built with
+   it.  Each <directive module="mpm_common">Listen</directive> port
+   must then be one passed in by systemd; a port which was not is a
+   fatal configuration error rather than one httpd opens for itself.
+   Socket activation is used only if this module is loaded, so it can
+   be built in and left unused.</p>
 
     <p><directive module="core">ExtendedStatus</directive> is
     enabled by default if the module is loaded.  If <directive
