@@ -73,10 +73,6 @@ class TestIdleTermination:
         assert not self.wait_for_exit(pid, 6), \
             "the server terminated with no IdleTerminationTimeout configured"
 
-    @pytest.mark.xfail(reason="idleness is sampled once a second, and a "
-                              "request served between two samples leaves no "
-                              "trace, so a server under steady traffic is "
-                              "counted idle every time and terminates")
     def test_core_007_03_requests_reset_the_timer(self, env):
         """A server which is being used does not time out."""
         pid = self.start(env, 'IdleTerminationTimeout 3')
@@ -94,13 +90,13 @@ class TestIdleTermination:
         pid = self.start(env, 'IdleTerminationTimeout 0')
         assert self.wait_for_exit(pid, 10)
 
-    @pytest.mark.xfail(reason="event detaches a keepalive connection from "
-                              "its scoreboard slot and returns the thread to "
-                              "the pool, so idle threads say nothing about "
-                              "open connections, and they are dropped")
     def test_core_007_05_open_connection_holds_it_up(self, env):
-        """A client which is connected but quiet keeps the server alive."""
-        pid = self.start(env, 'IdleTerminationTimeout 2')
+        """A client which is connected but quiet keeps the server alive.
+
+        KeepAliveTimeout has to outlast the wait below, or the server
+        closes the connection itself and is then genuinely idle.
+        """
+        pid = self.start(env, 'IdleTerminationTimeout 2\nKeepAliveTimeout 30')
         with socket.create_connection((env.http_addr, env.http_port), 5) as c:
             c.sendall(b'GET / HTTP/1.1\r\nHost: test1.' +
                       env.http_tld.encode() + b'\r\n\r\n')

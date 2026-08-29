@@ -200,7 +200,8 @@ static fd_queue_info_t *worker_queue_info;
 static apr_thread_mutex_t *timeout_mutex;
 
 static int idle_termination_timeout = -1; /* never terminate by default */
-static int idle_termination_remaining;
+static apr_time_t idle_termination_since; /* when the server went quiet */
+static unsigned long idle_termination_accesses; /* requests counted then */
 
 module AP_MODULE_DECLARE_DATA mpm_event_module;
 
@@ -841,6 +842,16 @@ static void just_die(int sig)
 
 static int child_fatal;
 
+/* The parent and mod_status see this count only through the scoreboard,
+ * and the listener can sleep for a whole keepalive timeout without
+ * passing through its queue maintenance, so publish it where it changes
+ * rather than there. */
+static void publish_connection_count(void)
+{
+    ap_scoreboard_image->parent[ap_child_slot].connections =
+        apr_atomic_read32(&connection_count);
+}
+
 static apr_status_t decrement_connection_count(void *cs_)
 {
     int is_last_connection;
@@ -864,6 +875,7 @@ static apr_status_t decrement_connection_count(void *cs_)
      * now accept new connections.
      */
     is_last_connection = !apr_atomic_dec32(&connection_count);
+    publish_connection_count();
     if (listener_is_wakeable
             && ((is_last_connection && listener_may_exit)
                 || should_enable_listensocks())) {
@@ -1072,6 +1084,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             return;
         }
         apr_atomic_inc32(&connection_count);
+        publish_connection_count();
         apr_pool_cleanup_register(c->pool, cs, decrement_connection_count,
                                   apr_pool_cleanup_null);
         ap_set_module_config(c->conn_config, &mpm_event_module, cs);
@@ -2398,16 +2411,15 @@ do_maintenance:
             ps->keep_alive = 0;
         }
         else {
-            /* No queue maintenance was due, but these counts are all that
-             * the parent and mod_status can see, and a connection can sit
-             * in a queue for as long as its timeout without either.
-             * Publish them on every pass rather than only on an expiry. */
+            /* No queue maintenance was due, but the counts above are what
+             * the parent and mod_status see, and a connection can sit in a
+             * queue for as long as its timeout without either.  Publish
+             * them on every pass instead of only when a queue expires. */
             ps->wait_io = apr_atomic_read32(waitio_q->total);
             ps->write_completion = apr_atomic_read32(write_completion_q->total);
             ps->keep_alive = apr_atomic_read32(keepalive_q->total);
             ps->lingering_close = apr_atomic_read32(&lingering_count);
             ps->suspended = apr_atomic_read32(&suspended_count);
-            ps->connections = apr_atomic_read32(&connection_count);
         }
 
         /* If there are some lingering closes to defer (to a worker), schedule
@@ -3254,6 +3266,39 @@ static void startup_children(int number_to_start)
     }
 }
 
+/* Whether the server has nothing whatever to do.  An idle worker count is
+ * not enough on its own: this MPM hands a connection back to the listener
+ * between requests, so open connections occupy no worker, and a request
+ * which starts and finishes between two calls here leaves every worker
+ * idle at both of them. */
+static int server_is_idle(int workers_busy)
+{
+    unsigned long accesses = 0;
+    apr_uint32_t connections = 0;
+    int i, j;
+
+    for (i = 0; i < server_limit; i++) {
+        process_score *ps = ap_get_scoreboard_process(i);
+
+        if (ps->pid == 0) {
+            continue;
+        }
+        connections += ps->connections;
+        for (j = 0; j < thread_limit; j++) {
+            accesses += ap_scoreboard_image->servers[i][j].access_count;
+        }
+    }
+
+    if (workers_busy || connections
+        || accesses != idle_termination_accesses) {
+        idle_termination_accesses = accesses;
+        idle_termination_since = 0;
+        return 0;
+    }
+
+    return 1;
+}
+
 static void perform_idle_server_maintenance(int child_bucket,
                                             int *max_daemon_used)
 {
@@ -3357,18 +3402,17 @@ static void perform_idle_server_maintenance(int child_bucket,
                     && retained->total_daemons <= retained->max_daemon_used
                     && retained->max_daemon_used <= server_limit);
 
-    if (idle_termination_timeout >= 0) {
-        if (idle_thread_count == total_thread_count) {
-            /* we are completely idle, decrease and check the timer */
-            if (--idle_termination_remaining < 0) {
-                /* the termination timeout has expired, inform us we want to terminate immediately */
-                retained->mpm->shutdown_pending = 1;
-                retained->mpm->is_ungraceful = 1;
-                retained->idle_timeout = 1;
-            }
-        } else {
-            /* not idle, reset the timer */
-            idle_termination_remaining = idle_termination_timeout;
+    if (idle_termination_timeout >= 0
+        && server_is_idle(idle_thread_count != total_thread_count)) {
+        if (!idle_termination_since) {
+            idle_termination_since = apr_time_now();
+        }
+        if (apr_time_now() - idle_termination_since
+            >= apr_time_from_sec(idle_termination_timeout)) {
+            /* terminate immediately: nothing is going on to wait for */
+            retained->mpm->shutdown_pending = 1;
+            retained->mpm->is_ungraceful = 1;
+            retained->idle_timeout = 1;
         }
     }
 
@@ -4068,6 +4112,8 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     idle_termination_timeout = -1;
+    idle_termination_since = 0;
+    idle_termination_accesses = 0;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     server_limit = DEFAULT_SERVER_LIMIT;
@@ -4540,7 +4586,6 @@ static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, co
     }
 
     idle_termination_timeout = (int)secs;
-    idle_termination_remaining = idle_termination_timeout;
     return NULL;
 }
 

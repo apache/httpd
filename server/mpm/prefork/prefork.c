@@ -96,7 +96,8 @@ static int ap_daemons_limit=0;      /* MaxRequestWorkers */
 static int server_limit = 0;
 
 static int idle_termination_timeout = -1; /* never terminate by default */
-static int idle_termination_remaining;
+static apr_time_t idle_termination_since; /* when the server went quiet */
+static unsigned long idle_termination_accesses; /* requests counted then */
 
 typedef struct prefork_child_bucket {
     ap_pod_t *pod;
@@ -824,6 +825,38 @@ static void startup_children(int number_to_start)
     }
 }
 
+/* Whether the server has nothing whatever to do.  Idle workers are not
+ * enough to go on: a request which starts and finishes between two calls
+ * here leaves every worker idle at both of them, and an async MPM holds
+ * open connections without occupying a worker at all. */
+static int server_is_idle(int workers_busy)
+{
+    unsigned long accesses = 0;
+    apr_uint32_t connections = 0;
+    int i, j;
+
+    for (i = 0; i < server_limit; i++) {
+        process_score *ps = ap_get_scoreboard_process(i);
+
+        if (ps->pid == 0) {
+            continue;
+        }
+        connections += ps->connections;
+        for (j = 0; j < 1; j++) {
+            accesses += ap_scoreboard_image->servers[i][j].access_count;
+        }
+    }
+
+    if (workers_busy || connections
+        || accesses != idle_termination_accesses) {
+        idle_termination_accesses = accesses;
+        idle_termination_since = 0;
+        return 0;
+    }
+
+    return 1;
+}
+
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
     int i;
@@ -872,21 +905,20 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     }
     retained->max_daemons_limit = last_non_dead + 1;
 
-    if (idle_termination_timeout >= 0) {
-        if (idle_count == total_non_dead) {
-            /* we are completely idle, decrease and check the timer */
-            if (--idle_termination_remaining < 0) {
-                /* the termination timeout has expired, inform us we want to terminate immediately */
-                retained->mpm->shutdown_pending = 1;
-                retained->mpm->is_ungraceful = 1;
-                retained->idle_timeout = 1;
-            }
-        } else {
-            /* not idle, reset the timer */
-            idle_termination_remaining = idle_termination_timeout;
+    if (idle_termination_timeout >= 0
+        && server_is_idle(idle_count != total_non_dead)) {
+        if (!idle_termination_since) {
+            idle_termination_since = apr_time_now();
+        }
+        if (apr_time_now() - idle_termination_since
+            >= apr_time_from_sec(idle_termination_timeout)) {
+            /* terminate immediately: nothing is going on to wait for */
+            retained->mpm->shutdown_pending = 1;
+            retained->mpm->is_ungraceful = 1;
+            retained->idle_timeout = 1;
         }
     }
-    
+
     if (idle_count > ap_daemons_max_free) {
         static int bucket_kill_child_record = -1;
         /* kill off one child... we use the pod because that'll cause it to
@@ -1404,6 +1436,8 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     idle_termination_timeout = -1;
+    idle_termination_since = 0;
+    idle_termination_accesses = 0;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
     server_limit = DEFAULT_SERVER_LIMIT;
@@ -1622,7 +1656,6 @@ static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, co
     }
 
     idle_termination_timeout = (int)secs;
-    idle_termination_remaining = idle_termination_timeout;
     return NULL;
 }
 
