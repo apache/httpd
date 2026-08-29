@@ -312,6 +312,7 @@ class HttpdTestEnv:
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
         self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
+        self._httpd_env = {}
         self._httpd_log_modules = ['aptest']
         self._log_interesting = None
         self._setup = None
@@ -335,6 +336,19 @@ class HttpdTestEnv:
 
     def add_httpd_log_modules(self, modules: List[str]):
         self._httpd_log_modules.extend(modules)
+
+    def set_httpd_env(self, name: str, value: Optional[str]):
+        """Add a variable to the environment httpd is started with, or
+        remove it again when passed None.
+
+        Used by tests for modules which take their input from the
+        environment rather than from the configuration, such as
+        mod_systemd reading $NOTIFY_SOCKET.
+        """
+        if value is None:
+            self._httpd_env.pop(name, None)
+        else:
+            self._httpd_env[name] = value
 
     def issue_certs(self):
         if self._ca is None:
@@ -782,6 +796,7 @@ class HttpdTestEnv:
             parts.insert(0, venv_bin)
         env = os.environ.copy()
         env['PATH'] = os.pathsep.join(parts)
+        env.update(self._httpd_env)
         return env
 
     def _run_apachectl(self, cmd) -> ExecResult:

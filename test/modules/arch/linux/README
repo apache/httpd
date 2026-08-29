@@ -1,0 +1,79 @@
+mod_systemd tests
+=================
+
+What is different about this module
+-----------------------------------
+mod_systemd has no directives.  Everything it does is driven by the
+environment httpd was started with, and almost everything it produces goes
+to the service manager rather than to a client:
+
+  - sd_notify(3) datagrams sent to $NOTIFY_SOCKET at four points: reading
+    the configuration (pre_config), configuration loaded (post_config),
+    the MPM starting (pre_mpm, the only notification carrying MAINPID),
+    and a status line refreshed by the monitor hook.
+  - listening sockets inherited from the service manager, found through
+    $LISTEN_FDS.  mod_systemd registers the two optional functions
+    server/listen.c calls, so loading the module is what enables socket
+    activation and not loading it is what disables it.
+  - ap_extended_status forced on in pre_config, so that the monitor hook
+    has request counts to report.
+
+None of that is observable over HTTP, so the tests observe it directly.
+
+How the tests run without systemd, and without privileges
+---------------------------------------------------------
+There is no need for a service manager to exercise the protocol.  Only
+test_005 involves systemd at all; the rest run anywhere, and need nothing
+from the systemd package beyond the libsystemd httpd itself is linked
+against.
+
+  test_001_notify.py   $NOTIFY_SOCKET is an ordinary AF_UNIX datagram
+                       socket the test binds itself (env.NotifyListener).
+                       sd_notify writes to whatever that variable names, so
+                       the test reads httpd's notifications straight off the
+                       socket.  HttpdTestEnv.set_httpd_env() puts the
+                       variable into the environment apachectl passes on.
+
+  test_002_monitor.py  The periodic status line.  ap_run_monitor() is
+                       called once every ten turns of the parent's ~1s
+                       loop, so these tests wait up to 25 seconds.
+
+  test_003_extended_status.py
+                       The ExtendedStatus side effect, observed through
+                       mod_status.
+
+  test_004_socket_activation.py
+                       The test opens the listening socket itself and
+                       hands it to httpd as descriptor 3 with LISTEN_FDS
+                       and LISTEN_PID set, which is the whole protocol.
+                       systemd-socket-activate would do the same, but its
+                       --now option is newer than the systemd on some
+                       distributions, and doing it directly needs no
+                       systemd tooling at all.
+
+  test_005_service.py  The real thing: a transient Type=notify unit run
+                       with "systemd-run --user".  This is what checks that
+                       systemd holds the unit in "activating" until READY=1
+                       arrives, tracks the right MainPID, and shows the
+                       reported STATUS= as the unit's status text.
+                       Skipped when the user has no systemd manager.
+
+The whole package is skipped unless mod_systemd was built, which needs
+configure --enable-systemd.  A static module is enough for everything
+except the test which has to leave mod_systemd out of the configuration;
+that one needs --enable-systemd=shared.
+
+Running the last suite where there is no user session
+-----------------------------------------------------
+"systemctl --user" needs a per-user manager, which a login session has but
+a CI container does not; enabling lingering needs privileges.  Where that
+is a problem, run the tests inside a container with systemd as pid 1,
+which rootless podman supports on a cgroup v2 host:
+
+    podman run --rm -it --systemd=always \
+        -v $PWD:/src:z -w /src registry.fedoraproject.org/fedora:latest \
+        /usr/sbin/init
+
+then, in another terminal, "podman exec" into it and run pytest as a
+non-root user with XDG_RUNTIME_DIR set.  The other four suites need none of
+this and run anywhere.

@@ -298,15 +298,17 @@ jobs:
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
           # -------------------------------------------------------------------------
-          ### TODO: if: *condition_not_24x
-          - name: Configured w/reduced exports
-            config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd
+          - name: mod_systemd, reduced exports
+            config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd=shared
             pkgs: libsystemd-dev
             config-output: HAVE_SYSTEMD
             config-no-output: AP_FORCE_EXPORTS
             env: |
-              SKIP_TESTING=1
               TEST_INSTALL=1
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYHTTPD_TARGETS=modules/arch
+              PYTEST_ARGS=--only=pyhttpd
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.

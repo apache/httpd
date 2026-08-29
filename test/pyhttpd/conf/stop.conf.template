@@ -5,6 +5,11 @@
 ServerName localhost
 ServerRoot "${server_dir}"
 
+# Must agree with httpd.conf, or the running server cannot be found:
+# the built-in default varies between httpd versions.
+DefaultRuntimeDir logs
+PidFile httpd.pid
+
 Include "conf/modules.conf"
 
 DocumentRoot "${server_dir}/htdocs"
