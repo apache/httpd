@@ -51,7 +51,7 @@ The CI scripts use the following environment variables:
 * TEST_SSL - set for job with SSL/TLS testing variants (encrypted
   private keys, session cache backends via redis/memcache/shmcb, etc.)
 
-* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.6"), that
+* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.7"), that
   version of OpenSSL is built from source and used for mod_ssl.
   Requires non-system APR/APR-util (APR_VERSION must also be set).
 
