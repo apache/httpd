@@ -380,10 +380,22 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
-    # JOBID is used to name the artifacts uploaded on failure.  IMAGEOS
-    # is exported so that it is visible to the env context, which does
-    # not see the runner's own $ImageOS.
+    # JOBID names the artifacts uploaded on failure.  The matrix index
+    # is what makes it unique: it cannot collide however the matrix
+    # changes, including for an entry which sets no name, whereas
+    # hashing a hand-picked subset of the job configuration collides
+    # silently as soon as two entries differ only in a field which is
+    # not part of the hash.  The name is slugged onto the index - it is
+    # not needed for uniqueness - so that an artifact can be matched to
+    # the job it came from without counting matrix entries; the
+    # characters upload-artifact rejects, "/" among them, are replaced.
+    # $MATRIX_NAME is passed through the environment rather than
+    # interpolated into the script, so that no name can be written which
+    # breaks the shell.  IMAGEOS is exported so that it is visible to
+    # the env context, which does not see the runner's own $ImageOS.
     - name: Set environment variables
+      env:
+        MATRIX_NAME: ${{ matrix.name }}
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
         echo "IMAGEOS=$ImageOS" >> $GITHUB_ENV
@@ -391,8 +403,8 @@ jobs:
         # CPUs the runner has, unless the matrix entry set it already
         # (the ap_expr job sets it empty on purpose).
         grep -q '^MFLAGS=' $GITHUB_ENV || echo "MFLAGS=-j`nproc`" >> $GITHUB_ENV
-        echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
-           | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+        echo JOBID=`printf '%s-%s' "${{ strategy.job-index }}" "$MATRIX_NAME" \
+           | tr -cs '[:alnum:]._-' '-'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     # cpanminus and perl-doc are only used to build the CPAN modules for
