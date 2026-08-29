@@ -380,10 +380,12 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
-    # JOBID is used to name the artifacts uploaded on failure.  IMAGEOS
-    # is exported so that it is visible to the env context, which does
-    # not see the runner's own $ImageOS.
+    # JOBID names the artifacts uploaded on failure; see "Artifacts" in
+    # README.ci.  IMAGEOS is exported so that it is visible to the env
+    # context, which does not see the runner's own $ImageOS.
     - name: Set environment variables
+      env:
+        MATRIX_NAME: ${{ matrix.name }}
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
         echo "IMAGEOS=$ImageOS" >> $GITHUB_ENV
@@ -391,8 +393,8 @@ jobs:
         # CPUs the runner has, unless the matrix entry set it already
         # (the ap_expr job sets it empty on purpose).
         grep -q '^MFLAGS=' $GITHUB_ENV || echo "MFLAGS=-j`nproc`" >> $GITHUB_ENV
-        echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
-           | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+        echo JOBID=`printf '%s-%s' "${{ strategy.job-index }}" "$MATRIX_NAME" \
+           | tr -cs '[:alnum:]._-' '-'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     # cpanminus and perl-doc are only used to build the CPAN modules for
