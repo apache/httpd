@@ -159,6 +159,35 @@ handled by always ignoring the cache on such jobs; install_apx() now
 fetches the APR source on demand in that case instead, so no job needs
 to opt out of caching.
 
+Artifacts
+---------
+
+A job which fails uploads its config.log, and the error_log from any
+test run, as artifacts named "config.log-$JOBID" and "error_log-$JOBID".
+
+$JOBID is the matrix index of the job followed by its name, with every
+character upload-artifact rejects - "/" among them - replaced, so job
+zero uploads "error_log-0-Shared-MPMs-event-pool-debug-SSL-TLS-variants".
+
+The index is what makes the name unique.  It cannot collide however the
+matrix changes, including for an entry which sets no name at all,
+whereas hashing a hand-picked subset of the job configuration - as this
+used to do - collides silently as soon as two entries differ only in a
+field which the hash omits.  Two entries already differ only in "os",
+which was never hashed: they stayed apart only because $ImageOS, which
+was, happens to differ on an ARM runner.  The job name is appended
+purely so that an artifact can be matched to the job it came from
+without counting matrix entries; it is not needed for uniqueness, and
+an entry which sets none is still named unambiguously.
+
+The name reaches the shell as $MATRIX_NAME through the step's env
+rather than being interpolated into the script, so that no job name can
+be written which breaks the shell.
+
+The value computed for a job can be read from its log without waiting
+for a failure: it is listed in the environment which the runner prints
+under the "Run" group of every step after the one which sets it.
+
 Travis to Github Actions Migration TODO
 ---------------------------------------
 

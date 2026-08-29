@@ -380,19 +380,9 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
-    # JOBID names the artifacts uploaded on failure.  The matrix index
-    # is what makes it unique: it cannot collide however the matrix
-    # changes, including for an entry which sets no name, whereas
-    # hashing a hand-picked subset of the job configuration collides
-    # silently as soon as two entries differ only in a field which is
-    # not part of the hash.  The name is slugged onto the index - it is
-    # not needed for uniqueness - so that an artifact can be matched to
-    # the job it came from without counting matrix entries; the
-    # characters upload-artifact rejects, "/" among them, are replaced.
-    # $MATRIX_NAME is passed through the environment rather than
-    # interpolated into the script, so that no name can be written which
-    # breaks the shell.  IMAGEOS is exported so that it is visible to
-    # the env context, which does not see the runner's own $ImageOS.
+    # JOBID names the artifacts uploaded on failure; see "Artifacts" in
+    # README.ci.  IMAGEOS is exported so that it is visible to the env
+    # context, which does not see the runner's own $ImageOS.
     - name: Set environment variables
       env:
         MATRIX_NAME: ${{ matrix.name }}
