@@ -127,9 +127,31 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     return DECLINED;
 }
 
+/* The number of sockets passed by the service manager has to be
+ * remembered: the configuration is read again on restart, by which time
+ * the environment sd_listen_fds() reads has been cleared, and the module
+ * itself has been unloaded and loaded again.  Hence retained data rather
+ * than a static. */
+static const char *const retained_key = "mod_systemd_listen_fds";
+
+static int ap_systemd_listen_fds(int unset_environment)
+{
+    int *fds = ap_retained_data_get(retained_key);
+
+    if (fds == NULL) {
+        fds = ap_retained_data_create(retained_key, sizeof(*fds));
+        *fds = sd_listen_fds(0);
+    }
+    if (unset_environment) {
+        /* Take the variables out of the environment, keeping the count. */
+        sd_listen_fds(1);
+    }
+    return *fds;
+}
+
 static int ap_find_systemd_socket(process_rec * process, apr_port_t port) {
-    int fdcount, fd;
-    int sdc = sd_listen_fds(0);
+    int fd;
+    int sdc = ap_systemd_listen_fds(0);
 
     if (sdc < 0) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, sdc, process->pool, APLOGNO(02486)
@@ -144,18 +166,13 @@ static int ap_find_systemd_socket(process_rec * process, apr_port_t port) {
         return -1;
     }
 
-    fdcount = atoi(getenv("LISTEN_FDS"));
-    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + fdcount; fd++) {
+    for (fd = SD_LISTEN_FDS_START; fd < SD_LISTEN_FDS_START + sdc; fd++) {
         if (sd_is_socket_inet(fd, 0, 0, -1, port) > 0) {
             return fd;
         }
     }
 
     return -1;
-}
-
-static int ap_systemd_listen_fds(int unset_environment){
-    return sd_listen_fds(unset_environment);
 }
 
 static void systemd_register_hooks(apr_pool_t *p)
