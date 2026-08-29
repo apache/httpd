@@ -2397,6 +2397,18 @@ do_maintenance:
             apr_thread_mutex_unlock(timeout_mutex);
             ps->keep_alive = 0;
         }
+        else {
+            /* No queue maintenance was due, but these counts are all that
+             * the parent and mod_status can see, and a connection can sit
+             * in a queue for as long as its timeout without either.
+             * Publish them on every pass rather than only on an expiry. */
+            ps->wait_io = apr_atomic_read32(waitio_q->total);
+            ps->write_completion = apr_atomic_read32(write_completion_q->total);
+            ps->keep_alive = apr_atomic_read32(keepalive_q->total);
+            ps->lingering_close = apr_atomic_read32(&lingering_count);
+            ps->suspended = apr_atomic_read32(&suspended_count);
+            ps->connections = apr_atomic_read32(&connection_count);
+        }
 
         /* If there are some lingering closes to defer (to a worker), schedule
          * them now. We might wakeup a worker spuriously if another one empties
