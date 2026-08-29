@@ -16,6 +16,7 @@
  */
 
 #include <stdint.h>
+#include <time.h>
 #include <ap_config.h>
 #include "ap_mpm.h"
 #include "ap_listen.h"
@@ -39,12 +40,36 @@
 #include <unistd.h>
 #endif
 
+/* Microseconds on the clock systemd compares RELOADING=1 against, or
+ * zero if it cannot be read. */
+static apr_uint64_t monotonic_usec(void)
+{
+    struct timespec ts;
+
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) {
+        return 0;
+    }
+    return (apr_uint64_t)ts.tv_sec * APR_USEC_PER_SEC + ts.tv_nsec / 1000;
+}
+
 static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
 {
-    sd_notify(0,
-              "RELOADING=1\n"
-              "STATUS=Reading configuration...\n");
+    apr_uint64_t usec = monotonic_usec();
+
+    /* A Type=notify-reload service ignores a reload notification which
+     * does not say when it was sent. */
+    if (usec) {
+        sd_notifyf(0,
+                   "RELOADING=1\n"
+                   "MONOTONIC_USEC=%" APR_UINT64_T_FMT "\n"
+                   "STATUS=Reading configuration...\n", usec);
+    }
+    else {
+        sd_notify(0,
+                  "RELOADING=1\n"
+                  "STATUS=Reading configuration...\n");
+    }
     ap_extended_status = 1;
     return OK;
 }
