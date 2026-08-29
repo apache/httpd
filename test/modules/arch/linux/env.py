@@ -212,11 +212,11 @@ class NotifyListener:
 
 
 # The STATUS= line the monitor hook reports, from systemd_monitor() in
-# modules/arch/unix/mod_systemd.c.  "Idle/Busy workers" are in fact the
-# percentages computed by ap_get_sload(), not worker counts.
+# modules/arch/unix/mod_systemd.c.  Idle and busy are the percentages
+# ap_get_sload() computes, and are -1 when there are no workers at all.
 MONITOR_STATUS = re.compile(
     r'^Total requests: (?P<requests>\d+);\s*'
-    r'Idle/Busy workers (?P<idle>-?\d+)/(?P<busy>-?\d+);\s*'
+    r'Idle/Busy workers (?P<idle>-?\d+)%/(?P<busy>-?\d+)%;\s*'
     r'Requests/sec: (?P<rate>\S+);\s*'
     r'Bytes served/sec: (?P<bps>.*)B/sec$')
 

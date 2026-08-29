@@ -106,15 +106,20 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     }
     
     ap_get_sload(&sload);
-    /* up_time in seconds */
-    up_time = (apr_uint32_t) apr_time_sec(apr_time_now() -
-                               ap_scoreboard_image->global->restart_time);
+    /* up_time in seconds, and never zero: a restart resets restart_time,
+     * so this hook can run in the same second it was set. */
+    up_time = apr_time_sec(apr_time_now() -
+                           ap_scoreboard_image->global->restart_time);
+    if (up_time < 1) {
+        up_time = 1;
+    }
 
-    apr_strfsize((unsigned long)((float) (sload.bytes_served)
-                                 / (float) up_time), bps);
+    apr_strfsize(sload.bytes_served / up_time, bps);
 
+    /* ap_get_sload() gives idle and busy as percentages of the workers
+     * available, not as counts. */
     sd_notifyf(0, "READY=1\n"
-               "STATUS=Total requests: %lu; Idle/Busy workers %d/%d; "
+               "STATUS=Total requests: %lu; Idle/Busy workers %d%%/%d%%; "
                "Requests/sec: %.3g; Bytes served/sec: %sB/sec\n",
                sload.access_count, sload.idle, sload.busy,
                ((float) sload.access_count) / (float) up_time, bps);

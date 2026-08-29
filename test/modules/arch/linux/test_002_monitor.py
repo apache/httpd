@@ -93,11 +93,15 @@ class TestSystemdMonitor:
         """The status line keeps being refreshed while the server runs."""
         assert reports['first'].group(0) != reports['second'].group(0)
 
-    @pytest.mark.xfail(reason="ap_get_sload() reports idle and busy as "
-                              "percentages, but mod_systemd labels them "
-                              "'Idle/Busy workers'")
-    def test_systemd_002_05_worker_counts(self, reports):
-        """The numbers presented as worker counts are worker counts."""
+    def test_systemd_002_05_worker_percentages(self, reports):
+        """Idle and busy are percentages of the workers available, and are
+        reported as such."""
         m, auto = reports['second'], reports['auto']
-        assert int(m.group('idle')) == int(auto['IdleWorkers'])
-        assert int(m.group('busy')) == int(auto['BusyWorkers'])
+        idle, busy = int(m.group('idle')), int(m.group('busy'))
+        assert 0 <= idle <= 100 and 0 <= busy <= 100
+        # Integer division loses at most one point between the two.
+        assert 99 <= idle + busy <= 100
+        # Busy workers are a minority of a mostly idle test server, which
+        # is what mod_status reports over the same scoreboard.
+        assert int(auto['IdleWorkers']) > int(auto['BusyWorkers'])
+        assert idle > busy
