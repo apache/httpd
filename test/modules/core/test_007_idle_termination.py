@@ -108,9 +108,6 @@ class TestIdleTermination:
             assert not self.wait_for_exit(pid, 8), \
                 "the server terminated with a connection still open"
 
-    @pytest.mark.xfail(reason="the value is parsed with atoi(), so anything "
-                              "unparseable is silently taken as 0, which "
-                              "terminates the server as soon as it is idle")
     def test_core_007_06_rejects_a_bad_value(self, env):
         conf = HttpdConf(env, extras={'base': 'IdleTerminationTimeout burble'})
         conf.add_vhost_test1()

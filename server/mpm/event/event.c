@@ -4513,11 +4513,20 @@ static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
 static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    char *end;
+    long secs;
+
     if (err != NULL) {
         return err;
     }
 
-    idle_termination_timeout = atoi(arg);
+    secs = strtol(arg, &end, 10);
+    if (*arg == '\0' || *end != '\0' || secs < 0 || secs > APR_INT32_MAX) {
+        return "IdleTerminationTimeout must be a non-negative number of "
+               "seconds";
+    }
+
+    idle_termination_timeout = (int)secs;
     idle_termination_remaining = idle_termination_timeout;
     return NULL;
 }
