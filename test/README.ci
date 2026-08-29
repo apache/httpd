@@ -129,13 +129,22 @@ It is restored before the dependencies are built and saved afterwards,
 only if they built successfully - a failed job would otherwise write a
 half-built tree to a key which can never be updated.
 
-~/perl5 (key "cache-cpan-<serial>-<image>-<arch>-<hash>") holds the
+~/perl5 (key "cache-cpan-<serial>-$PERLID-<arch>-<hash>") holds the
 CPAN modules.  Nothing in it varies per job: the module list is fixed
 and the modules are always built with CC=gcc, so the content depends
-only on the perl ABI - which is determined by the image and the
-architecture - and on the module list itself, hashed from
-travis_before_linux.sh.  One cache is therefore shared by every job.  The .perlver check in the script remains
-as a backstop for a perl upgrade within the same image.
+only on the perl ABI and on the module list itself, hashed from
+travis_before_linux.sh.  One cache is therefore shared by every job.
+
+$PERLID is a hash of the "perl -V" output, computed by
+gha-resolve-deps.sh, which also logs that output so a change to it can
+be seen.  The image name is deliberately not used: the runner image is
+rebuilt regularly and its name does not change when perl does, so the
+key outlived a perl upgrade which the modules did not.  Each job then
+restored the modules, travis_before_linux.sh discarded them as
+mismatched against the cached .perlver and rebuilt them, and nothing
+was saved - actions/cache does not save on a hit against the primary
+key - so every job rebuilt every module on every run.  The .perlver
+check remains as a backstop, and now reports what differs.
 
 The cached CPAN modules still become gradually stale as versions in
 CPAN move on from whatever was installed for the first build.  Bump

@@ -1,7 +1,8 @@
 #!/bin/bash -e
 #
-# Work out what identifies the contents of ~/root, and write it to
-# $GITHUB_ENV as $ROOTID for the cache key to use.
+# Work out what identifies the contents of the cached directories and
+# write it to $GITHUB_ENV for the cache keys to use: $ROOTID for ~/root,
+# $PERLID for ~/perl5.
 #
 # ~/root holds only the dependencies built from source, so the key
 # covers those alone - not the job's own configuration.  Jobs which
@@ -82,3 +83,17 @@ if test -n "$root"; then
 else
     : No dependencies are built from source, so ~/root is not cached.
 fi
+
+# The CPAN modules in ~/perl5 are XS builds tied to the system perl, so
+# key that cache on the "perl -V" output rather than on the image name.
+# The image is rebuilt regularly and its name does not change when perl
+# does, so the key stayed valid across a perl upgrade: the modules were
+# restored, travis_before_linux.sh then threw them away as mismatched,
+# and the rebuild was never saved because the primary key had hit - so
+# every job rebuilt them, every run.  The output is logged because it is
+# otherwise impossible to see what changed.
+perlv=`perl -V`
+echo "::group::perl -V"
+echo "$perlv"
+echo "::endgroup::"
+echo PERLID=`echo "$perlv" | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV

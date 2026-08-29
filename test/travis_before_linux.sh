@@ -142,6 +142,11 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # module.
     if ! cmp -s perlver ~/perl5/.perlver; then
         : Purging cache since "perl -V" output has changed
+        # $PERLID covers this in the cache key, so it should now only
+        # fire for a cold cache; show what changed if it fires anyway.
+        if test -f ~/perl5/.perlver; then
+            diff -u ~/perl5/.perlver perlver || true
+        fi
         rm -rf ~/perl5
     fi
     

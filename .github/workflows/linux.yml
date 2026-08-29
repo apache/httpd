@@ -414,8 +414,9 @@ jobs:
         path: test/perl-framework
         submodules: true
       if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
-    # Sets $ROOTID, identifying the contents of ~/root, and leaves it
-    # unset for a job which builds no dependencies from source.
+    # Sets $ROOTID, identifying the contents of ~/root - left unset for
+    # a job which builds no dependencies from source - and $PERLID,
+    # identifying the perl which the ~/perl5 modules are built against.
     - name: Resolve dependency versions
       run: ./test/gha-resolve-deps.sh
     # Restored here but saved only once the dependencies have been built
@@ -432,15 +433,15 @@ jobs:
         key: cache-libs-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
     # ~/perl5 does not vary by job: the module list is fixed and the
     # modules are always built with CC=gcc.  It varies only by the perl
-    # ABI (hence the image and architecture) and by the module list
-    # itself, so one cache is shared by every job.  Bump the serial in
-    # the key to force a rebuild against current CPAN.
+    # ABI, which $PERLID identifies, and by the module list itself, so
+    # one cache is shared by every job.  Bump the serial in the key to
+    # force a rebuild against current CPAN.
     - name: Cache CPAN modules
       uses: actions/cache@v5
       if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
       with:
         path: ~/perl5
-        key: cache-cpan-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ hashFiles('test/travis_before_linux.sh') }}
+        key: cache-cpan-1-${{ env.PERLID }}-${{ runner.arch }}-${{ hashFiles('test/travis_before_linux.sh') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
