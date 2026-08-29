@@ -8,7 +8,6 @@ import socket
 import subprocess
 import threading
 import time
-from datetime import timedelta
 from typing import Callable, Dict, List, Optional
 
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
@@ -80,25 +79,6 @@ class SystemdTestEnv(HttpdTestEnv):
     @property
     def httpd_bin(self) -> str:
         return os.path.join(self.bin_dir, 'httpd')
-
-    def apache_hard_restart(self) -> int:
-        """Restart without the "graceful" flag, so the MPM starts over."""
-        r = self._run_apachectl("restart")
-        if r.exit_code == 0:
-            return 0 if self.is_live(self._http_base, timeout=timedelta(seconds=10)) else -1
-        return r.exit_code
-
-    def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
-        # Where PidFile lands depends on how the httpd under test resolves
-        # a relative path against DefaultRuntimeDir, which has differed
-        # between versions; look in both places rather than assume.
-        for d in (self.server_logs_dir, self.server_dir):
-            try:
-                with open(os.path.join(d, name)) as fd:
-                    return int(fd.read().strip())
-            except (OSError, ValueError):
-                continue
-        return None
 
 
 class NotifyListener:

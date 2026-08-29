@@ -848,6 +848,26 @@ class HttpdTestEnv:
             rv = 0
         return rv
 
+    def apache_hard_restart(self) -> int:
+        """Restart without the "graceful" flag, so the MPM starts over."""
+        r = self._run_apachectl("restart")
+        if r.exit_code == 0:
+            return 0 if self.is_live(self._http_base,
+                                     timeout=timedelta(seconds=10)) else -1
+        return r.exit_code
+
+    def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
+        # Where PidFile lands depends on how the httpd under test resolves
+        # a relative path against DefaultRuntimeDir, which has differed
+        # between versions; look in both places rather than assume.
+        for d in (self._server_logs_dir, self._server_dir):
+            try:
+                with open(os.path.join(d, name)) as fd:
+                    return int(fd.read().strip())
+            except (OSError, ValueError):
+                continue
+        return None
+
     def apache_access_log_clear(self):
         if os.path.isfile(self._server_access_log):
             os.remove(self._server_access_log)
