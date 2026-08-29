@@ -104,17 +104,16 @@ class TestSystemdNotify:
         assert env.apache_restart() == 0
         assert env.notify.wait_for_status(r'^Configuration loaded\.$')
 
-    @pytest.mark.xfail(reason="mod_systemd sends no STOPPING=1; systemd "
-                              "learns of the shutdown only from the process "
-                              "exiting")
     def test_systemd_001_07_stopping(self, env):
-        """Shutdown ought to be announced before the process goes away."""
+        """Shutdown is announced before the process goes away."""
         assert env.apache_restart() == 0
         env.notify.clear()
         assert env.apache_stop() == 0
         # The server is already gone, so anything it sent has arrived.
-        assert env.notify.wait_for_key('STOPPING', timeout=1), \
-            f"no STOPPING=1 on shutdown, got {env.notify.messages}"
+        msg = env.notify.wait_for_key('STOPPING', timeout=1)
+        assert msg, f"no STOPPING=1 on shutdown, got {env.notify.messages}"
+        assert msg['STOPPING'] == '1'
+        assert msg.get('STATUS') == 'Shutting down.' 
 
     def test_systemd_001_08_reloading_monotonic(self, env):
         assert env.apache_restart() == 0
