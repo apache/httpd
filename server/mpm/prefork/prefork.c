@@ -1403,6 +1403,7 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
+    idle_termination_timeout = -1;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
     server_limit = DEFAULT_SERVER_LIMIT;

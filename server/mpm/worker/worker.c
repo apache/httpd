@@ -2172,6 +2172,7 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
+    idle_termination_timeout = -1;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     server_limit = DEFAULT_SERVER_LIMIT;

@@ -116,9 +116,6 @@ class TestIdleTermination:
         env.httpd_error_log.ignore_recent()
         assert rv != 0, "a non-numeric timeout was accepted"
 
-    @pytest.mark.xfail(reason="the timeout is held in an MPM static which "
-                              "pre_config does not reset, so it survives a "
-                              "reload which no longer configures it")
     def test_core_007_07_forgotten_on_reload(self, env):
         """Removing the directive and reloading stops the behaviour.
 
