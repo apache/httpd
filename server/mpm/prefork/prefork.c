@@ -970,7 +970,11 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             }
         }
         else {
-            /* Kill 'em off */
+            /* Kill 'em off.  The parent is in this process group too, and
+             * its handler would take the signal as a fresh restart request
+             * and loop; ap_unixd_mpm_set_signals() below puts the handler
+             * back. */
+            apr_signal(SIGHUP, SIG_IGN);
             if (ap_unixd_killpg(getpgrp(), SIGHUP) < 0) {
                 ap_log_error(APLOG_MARK, APLOG_WARNING, errno,
                              ap_server_conf, APLOGNO(00172) "killpg SIGHUP");
