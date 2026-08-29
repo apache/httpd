@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from pyhttpd.conf import HttpdConf
@@ -114,9 +116,6 @@ class TestSystemdNotify:
         assert env.notify.wait_for_key('STOPPING', timeout=1), \
             f"no STOPPING=1 on shutdown, got {env.notify.messages}"
 
-    @pytest.mark.xfail(reason="RELOADING=1 is sent without MONOTONIC_USEC, "
-                              "which Type=notify-reload requires since "
-                              "systemd 253")
     def test_systemd_001_08_reloading_monotonic(self, env):
         assert env.apache_restart() == 0
         env.notify.clear()
@@ -125,6 +124,9 @@ class TestSystemdNotify:
         assert msg, "no RELOADING=1 on graceful restart"
         assert 'MONOTONIC_USEC' in msg, \
             f"RELOADING=1 sent without MONOTONIC_USEC: {msg}"
+        # systemd compares this against its own reading of the same clock.
+        assert 0 < int(msg['MONOTONIC_USEC']) <= time.clock_gettime_ns(
+            time.CLOCK_MONOTONIC) // 1000
 
     @pytest.mark.xfail(reason="mod_systemd implements no watchdog keepalive, "
                               "so a unit using WatchdogSec= would be killed")
