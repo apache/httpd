@@ -88,6 +88,17 @@ static void log_selinux_context(void)
 }
 #endif
 
+/* pconf is also cleared on a restart, where the service is not stopping
+ * at all, so distinguish the two by the state of the process. */
+static apr_status_t systemd_stopping(void *unused)
+{
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_EXITING) {
+        sd_notify(0, "STOPPING=1\n"
+                  "STATUS=Shutting down.\n");
+    }
+    return APR_SUCCESS;
+}
+
 /* Report the service is ready in post_config, which could be during
  * startup or after a reload.  The server could still hit a fatal
  * startup error after this point during ap_run_mpm(), so this is
@@ -104,6 +115,11 @@ static int systemd_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 #ifdef HAVE_SELINUX
     log_selinux_context();
 #endif
+
+    /* Not reached by "httpd -k stop" and friends, which signal the
+     * running server and exit before post_config. */
+    apr_pool_cleanup_register(pconf, NULL, systemd_stopping,
+                              apr_pool_cleanup_null);
 
     sd_notify(0, "READY=1\n"
               "STATUS=Configuration loaded.\n");
