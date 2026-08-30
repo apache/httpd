@@ -286,6 +286,25 @@ def http_responds(port: int, timeout: float = 2.0) -> bool:
         return False
 
 
+def error_log_size(env: SystemdTestEnv) -> int:
+    """Where the shared error log ends now, so that a later read can take
+    only what one operation wrote."""
+    try:
+        return os.path.getsize(env.httpd_error_log.path)
+    except OSError:
+        return 0
+
+
+def error_log_since(env: SystemdTestEnv, pos: int) -> str:
+    """The error log written since error_log_size() returned pos."""
+    try:
+        with open(env.httpd_error_log.path, errors='replace') as fd:
+            fd.seek(pos)
+            return fd.read()
+    except OSError:
+        return ''
+
+
 class ActivatedServer:
     """An httpd handed a listening socket the way a service manager does.
 
@@ -445,6 +464,24 @@ class ActivatedServer:
         self.stop()
 
 
+# Type=notify-reload and ReloadSignal= both arrived in systemd 253.  An
+# unrecognised Type= does not degrade to anything, it stops the unit loading
+# at all, so there is nothing to fall back to and the tests are skipped.
+NOTIFY_RELOAD_VERSION = 253
+
+
+def systemd_version() -> int:
+    """The version of the systemd on this host, or 0 if it cannot be asked.
+    "systemctl --version" opens with "systemd 259 (259.8-1.fc44)"."""
+    try:
+        p = subprocess.run(['systemctl', '--version'], capture_output=True,
+                           text=True, timeout=15)
+    except (OSError, subprocess.TimeoutExpired):
+        return 0
+    m = re.match(r'systemd (\d+)', p.stdout)
+    return int(m.group(1)) if m else 0
+
+
 class TransientService:
     """httpd run as a real transient systemd unit, with systemd-run.
 
@@ -454,17 +491,24 @@ class TransientService:
     tracks MAINPID, and shows the reported STATUS= as the unit's status
     text.  It needs a per-user service manager, which a login session has
     but a bare CI container does not.
+
+    service_type selects what is exercised: "notify" for startup and
+    shutdown, "notify-reload" for the reload protocol on top of them.
     """
 
     def __init__(self, env: SystemdTestEnv, port: int,
                  name: str = None, extra: str = '',
+                 service_type: str = 'notify', exec_reload: bool = True,
                  properties: List[str] = None):
         self.env = env
         self.port = port
         self.unit = name or f'httpd-test-{os.getpid()}'
+        self.service_type = service_type
+        self.exec_reload = exec_reload
         self.conf_file = write_server_conf(env, 'transient', port, extra=extra)
         self.pid_file = os.path.join(env.server_logs_dir, 'transient.pid')
-        # Extra --property arguments for the unit, such as WatchdogSec=.
+        # Extra --property arguments for the unit, such as WatchdogSec= or
+        # ReloadSignal=.
         self.properties = list(properties or [])
 
     def read_pid(self) -> Optional[int]:
@@ -490,9 +534,10 @@ class TransientService:
         except (OSError, subprocess.TimeoutExpired):
             return False
 
-    def systemctl(self, *args) -> subprocess.CompletedProcess:
+    def systemctl(self, *args,
+                  timeout: float = 60.0) -> subprocess.CompletedProcess:
         return subprocess.run(['systemctl', '--user', *args],
-                              capture_output=True, text=True)
+                              capture_output=True, text=True, timeout=timeout)
 
     def show(self, prop: str) -> str:
         r = self.systemctl('show', '-p', prop, '--value', f'{self.unit}.service')
@@ -500,18 +545,39 @@ class TransientService:
 
     def start(self, timeout: float = 20.0) -> subprocess.CompletedProcess:
         httpd = self.env.httpd_bin
+        props = [
+            f'--service-type={self.service_type}',
+            '--property=KillMode=mixed',
+            # A reload which is never reported finished holds the job open
+            # until this elapses, so keep it to the same bound as the start.
+            f'--property=TimeoutStartSec={int(timeout)}',
+        ]
+        if self.exec_reload:
+            props.append(f'--property=ExecReload={httpd} '
+                         f'-d {self.env.server_dir} '
+                         f'-f {self.conf_file} -k graceful')
+        props += [f'--property={p}' for p in self.properties]
         r = subprocess.run([
             'systemd-run', '--user', '--collect', '--quiet',
-            '--unit', self.unit,
-            '--service-type=notify',
-            '--property=KillMode=mixed',
-            f'--property=ExecReload={httpd} -d {self.env.server_dir} '
-            f'-f {self.conf_file} -k graceful',
-            *[f'--property={p}' for p in self.properties],
+            '--unit', self.unit, *props,
             httpd, '-DFOREGROUND',
             '-d', self.env.server_dir, '-f', self.conf_file,
         ], capture_output=True, text=True, timeout=timeout)
         return r
+
+    def reload(self, timeout: float = 60.0) -> subprocess.CompletedProcess:
+        """Ask the manager to reload the unit.  Under Type=notify-reload
+        this returns once the server has reported the reload finished;
+        under Type=notify, as soon as ExecReload= has exited."""
+        return self.systemctl('reload', f'{self.unit}.service',
+                              timeout=timeout)
+
+    def rewrite_conf(self, extra: str = ''):
+        """Replace the configuration the unit reads on its next reload.
+        The path does not change, so ExecStart= and ExecReload= still name
+        it."""
+        self.conf_file = write_server_conf(self.env, 'transient', self.port,
+                                           extra=extra)
 
     def wait_active(self, timeout: float = 20.0) -> bool:
         end = time.time() + timeout
