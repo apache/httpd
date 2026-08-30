@@ -2035,7 +2035,8 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             if (!retained->idle_timeout) {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00295)
                             "caught SIGTERM, shutting down");
-            } else {
+            }
+            else {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(10620)
                             "idle timeout reached, shutting down");
             }
@@ -2541,7 +2542,7 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
-static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, const char *arg)
+static const char *set_idle_termination_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     char *end;
