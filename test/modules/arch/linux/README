@@ -17,15 +17,19 @@ to the service manager rather than to a client:
     activation and not loading it is what disables it.
   - ap_extended_status forced on in pre_config, so that the monitor hook
     has request counts to report.
+  - the watchdog keep-alive, WATCHDOG=1, sent while the service manager
+    asks for one.  Which it does through the environment as well:
+    WatchdogSec= in the unit becomes $WATCHDOG_USEC, and $WATCHDOG_PID
+    names the process expected to report.
 
 None of that is observable over HTTP, so the tests observe it directly.
 
 How the tests run without systemd, and without privileges
 ---------------------------------------------------------
 There is no need for a service manager to exercise the protocol.  Only
-test_005 involves systemd at all; the rest run anywhere, and need nothing
-from the systemd package beyond the libsystemd httpd itself is linked
-against.
+test_005, and the last test of test_006, involve systemd at all; the rest
+run anywhere, and need nothing from the systemd package beyond the
+libsystemd httpd itself is linked against.
 
   test_001_notify.py   $NOTIFY_SOCKET is an ordinary AF_UNIX datagram
                        socket the test binds itself (env.NotifyListener).
@@ -50,6 +54,22 @@ against.
                        --now option is newer than the systemd on some
                        distributions, and doing it directly needs no
                        systemd tooling at all.
+
+  test_006_watchdog.py The keep-alive.  Mostly the same stand-in socket,
+                       with $WATCHDOG_USEC set in the environment httpd is
+                       started with; env.ForegroundServer runs httpd in the
+                       foreground where $WATCHDOG_PID can name it, which
+                       apachectl cannot do for a parent it has not forked
+                       yet.  The last test uses a real unit with
+                       WatchdogSec=, where systemd's own
+                       WatchdogTimestampMonotonic is the evidence that the
+                       pings arrived.
+
+                       The keep-alive is sent from the monitor hook, so it
+                       is only as frequent as that hook is: about every ten
+                       seconds.  A WatchdogSec shorter than twice that
+                       cannot be met, and mod_systemd says so (AH10621)
+                       rather than letting a healthy server be killed.
 
   test_005_service.py  The real thing: a transient Type=notify unit run
                        with "systemd-run --user".  This is what checks that

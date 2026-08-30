@@ -211,6 +211,28 @@ MONITOR_TIMEOUT = 25.0
 NO_MONITOR_TIMEOUT = 15.0
 
 
+# The keep-alive notification is sent from the same monitor hook, so waiting
+# for one costs the same as waiting for a status report.
+WATCHDOG_TIMEOUT = MONITOR_TIMEOUT
+
+# The shortest WatchdogSec mod_systemd will accept without complaining, which
+# is twice the monitor interval: the recommended keep-alive period is half the
+# watchdog timeout, and half of anything shorter than this is out of reach of a
+# hook which runs every ten seconds.  Keep in step with mod_systemd.c.
+SYSTEMD_MONITOR_INTERVAL = 10
+MIN_WATCHDOG_SEC = 2 * SYSTEMD_MONITOR_INTERVAL
+
+
+def is_watchdog_ping(msg: Dict[str, str]) -> bool:
+    """Whether a notification carries the keep-alive ping.
+
+    mod_systemd is free to send WATCHDOG=1 in a datagram of its own or
+    alongside whatever else it is reporting, so match on the assignment
+    rather than on the message being only that.
+    """
+    return msg.get('WATCHDOG') == '1'
+
+
 # A configuration for a server run directly rather than through apachectl,
 # sharing the server root, module list and error log with the rest of the
 # suite but with its own pid file and port.
@@ -435,12 +457,15 @@ class TransientService:
     """
 
     def __init__(self, env: SystemdTestEnv, port: int,
-                 name: str = None, extra: str = ''):
+                 name: str = None, extra: str = '',
+                 properties: List[str] = None):
         self.env = env
         self.port = port
         self.unit = name or f'httpd-test-{os.getpid()}'
         self.conf_file = write_server_conf(env, 'transient', port, extra=extra)
         self.pid_file = os.path.join(env.server_logs_dir, 'transient.pid')
+        # Extra --property arguments for the unit, such as WatchdogSec=.
+        self.properties = list(properties or [])
 
     def read_pid(self) -> Optional[int]:
         try:
@@ -482,6 +507,7 @@ class TransientService:
             '--property=KillMode=mixed',
             f'--property=ExecReload={httpd} -d {self.env.server_dir} '
             f'-f {self.conf_file} -k graceful',
+            *[f'--property={p}' for p in self.properties],
             httpd, '-DFOREGROUND',
             '-d', self.env.server_dir, '-f', self.conf_file,
         ], capture_output=True, text=True, timeout=timeout)
@@ -504,3 +530,43 @@ class TransientService:
 
     def __exit__(self, *args):
         self.stop()
+
+
+class ForegroundServer(ActivatedServer):
+    """httpd run directly in the foreground, with extra environment.
+
+    The watchdog protocol is keyed to a process id: sd_watchdog_enabled(3)
+    ignores $WATCHDOG_USEC unless $WATCHDOG_PID is unset or names the
+    process reading it.  apachectl cannot be used to set that, since the
+    variable has to name the parent httpd and the pid is not known until it
+    exists, so the value is assigned in a shell which then exec's httpd in
+    its own place -- the same trick ActivatedServer uses for $LISTEN_PID.
+
+    Assignments are shell words, so "$$" in a value is the pid httpd will
+    have.
+    """
+
+    def __init__(self, env: SystemdTestEnv, port: int,
+                 name: str = 'foreground', extra: str = '',
+                 setenv: Dict[str, str] = None,
+                 modules_conf: str = 'modules.conf'):
+        super().__init__(env, port, name=name, extra=extra,
+                         modules_conf=modules_conf)
+        self.setenv = dict(setenv or {})
+
+    def args(self, fd: int = None) -> List[str]:
+        assigns = ' '.join(f'{k}={v}' for k, v in self.setenv.items())
+        return [
+            'bash', '-c',
+            f'export {assigns}; exec "$0" "$@"' if assigns else 'exec "$0" "$@"',
+            self.env.httpd_bin, '-DFOREGROUND',
+            '-d', self.env.server_dir, '-f', self.conf_file,
+        ]
+
+    def start(self) -> 'ForegroundServer':
+        # A new session, so the whole group can be signalled on the way out
+        # even when a failed restart leaves children behind.
+        self.proc = subprocess.Popen(
+            self.args(), env=self.env.server_env(), start_new_session=True,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return self
