@@ -81,6 +81,31 @@ WantedBy=multi-user.target
     module="core">ExtendedStatus</directive> is not disabled in
     the configuration, run-time load and request statistics are made
     available in the <code>systemctl status</code> output.</p>
+
+    <p>The systemd watchdog is supported.  If the service unit sets
+    <code>WatchdogSec=</code>, the parent process sends the keep-alive
+    notification which tells systemd the server is still alive; a server
+    which stops sending it is terminated and, with a suitable
+    <code>Restart=</code> setting, restarted.  The notification is sent
+    while the configuration is being read and again once it is loaded, so
+    that a reload is covered, and periodically from the parent process
+    while the server runs.</p>
+
+    <p>That periodic notification is sent about every ten seconds, which
+    is how often the parent process runs the hook it is sent from.  A
+    <code>WatchdogSec=</code> of less than twice that cannot be met, and
+    would have systemd terminating a server which is working normally;
+    such a setting is reported as a warning at startup.  Use a
+    <code>WatchdogSec=</code> of at least 20 seconds.</p>
+
+    <example>
+    <title>Adding watchdog supervision to the unit above</title>
+    <pre>
+[Service]
+WatchdogSec=30
+Restart=on-failure
+    </pre>
+    </example>
 </summary>
 
 </modulesynopsis>
