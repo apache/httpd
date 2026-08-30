@@ -10,6 +10,10 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - 'modules/arch/unix/**'
+      - 'os/unix/**'
+      - server/mpm_unix.c
+      - 'test/modules/arch/linux/**'
     tags:
       - 2.*
   pull_request:
@@ -21,6 +25,10 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - 'modules/arch/unix/**'
+      - 'os/unix/**'
+      - server/mpm_unix.c
+      - 'test/modules/arch/linux/**'
 
 permissions:
   contents: read
