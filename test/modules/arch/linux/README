@@ -27,8 +27,8 @@ None of that is observable over HTTP, so the tests observe it directly.
 How the tests run without systemd, and without privileges
 ---------------------------------------------------------
 There is no need for a service manager to exercise the protocol.  Only
-test_005, and the last test of test_006, involve systemd at all; the rest
-run anywhere, and need nothing from the systemd package beyond the
+test_005, the last test of test_006, and test_007 involve systemd at all;
+the rest run anywhere, and need nothing from the systemd package beyond the
 libsystemd httpd itself is linked against.
 
   test_001_notify.py   $NOTIFY_SOCKET is an ordinary AF_UNIX datagram
@@ -78,13 +78,23 @@ libsystemd httpd itself is linked against.
                        reported STATUS= as the unit's status text.
                        Skipped when the user has no systemd manager.
 
+  test_007_notify_reload.py
+                       The reload protocol, as a transient
+                       Type=notify-reload unit: that "systemctl reload"
+                       waits for the new configuration to be in use, that a
+                       configuration which does not parse fails the reload
+                       without disturbing the running server, and that a
+                       reload restarts it gracefully and only once.  Also
+                       skipped where systemd is older than 253, which is
+                       where Type=notify-reload arrived.
+
 The whole package is skipped unless mod_systemd was built, which needs
 configure --enable-systemd.  A static module is enough for everything
 except the test which has to leave mod_systemd out of the configuration;
 that one needs --enable-systemd=shared.
 
-Running the last suite where there is no user session
------------------------------------------------------
+Running the systemd suites where there is no user session
+---------------------------------------------------------
 "systemctl --user" needs a per-user manager, which a login session has but
 a CI container does not; enabling lingering needs privileges.  Where that
 is a problem, run the tests inside a container with systemd as pid 1,
