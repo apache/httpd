@@ -1,0 +1,2 @@
+  *) mod_systemd: Support the systemd watchdog, sending the keep-alive
+     notification if the service unit sets WatchdogSec=.  [Joe Orton]
