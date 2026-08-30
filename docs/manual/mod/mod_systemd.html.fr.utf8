@@ -36,10 +36,10 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.42 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module impl&eacute;mente le support de l'int&eacute;gration de systemd. Il
-    permet d'utiliser httpd en temps que service avec le param&egrave;tre de
-    systemd <code>Type=notify</code> (voir la page de manuel
-    <a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
+    <p>Ce module impl&eacute;mente le support de l'int&eacute;gration de systemd. Il permet
+    d'utiliser httpd en temps que service avec le param&egrave;tre de systemd
+    <code>Type=notify</code> ou <code>Type=notify-reload</code> (voir la page de
+    manuel <a href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
     pour plus de d&eacute;tails). Le module est activ&eacute; s'il est charg&eacute;.</p>
 
     <div class="example"><h3>Exemple basique d'unit&eacute; de service systemd (&agrave; &eacute;toffer pour un syst&egrave;me en
@@ -69,13 +69,83 @@ WantedBy=multi-user.target</pre></div>
    recevront alors le signal <code>SIGKILL</code>. Voir <a href="https://www.freedesktop.org/software/systemd/man/systemd.kill.html">systemd.kill(5)</a>
    pour plus d'informations.</p>
     
-   <p>Ce module ne fournit pas le support de l'activation du socket Systemd.</p>
+   <p>&Agrave; partir de la version 253 de systemd, un gestionnaire de service fournit
+   <code>Type=notify-reload</code> qu&rsquo;il est pr&eacute;f&eacute;rable d&rsquo;utiliser. Avec
+   <code>Type=notify</code>, <code>systemctl reload</code> quitte d&egrave;s que la
+   commande <code>ExecReload</code> a envoy&eacute; son signal, ce qui se produit avant
+   que la nouvelle configuration n&rsquo;ait &eacute;t&eacute; lue, et elle indique une ex&eacute;cution
+   r&eacute;ussie quoi qu&rsquo;il se passe au cours du red&eacute;marrage suivant.
+   <code>Type=notify-reload</code>, quant &agrave; lui, maintien le rechargement ouvert
+   jusqu&rsquo;&agrave; ce que le serveur indique qu&rsquo;il a termin&eacute;, de sorte que la commande
+   attende que la nouvelle configuration soit prise en compte, et &eacute;choue si ce
+   n&rsquo;est pas le cas. mod_systemd envoie la notification <code>RELOADING=1</code>
+   que le protocole attend pendant la lecture de la configuration, estampill&eacute;e
+   de l&rsquo;&eacute;tiquette <code>MONOTONIC_USEC</code> requise par le gestionnaire de
+   services, et <code>READY=1</code> quand elle a &eacute;t&eacute; charg&eacute;e.</p>
+
+    <div class="example"><h3>Un exemple d&rsquo;unit&eacute; de service qui recharge de mani&egrave;re synchrone</h3><pre>[Service]
+Type=notify-reload
+ReloadSignal=SIGCONT
+ExecStart=/usr/local/apache2/bin/httpd -D FOREGROUND -k start
+ExecReload=/usr/local/apache2/bin/httpd -k graceful
+KillMode=mixed</pre></div>
+
+   <p>Le gestionnaire de service ex&eacute;cute tout d&rsquo;abord <code>ExecReload</code>,
+   puis n&rsquo;envoie le signal sp&eacute;cifi&eacute; par <code>ReloadSignal</code> que lorsque la
+   commande a quitt&eacute; avec succ&egrave;s. Conserver <code>ExecReload</code> rend le
+   rechargement de la configuration s&ucirc;r&nbsp;: <code>httpd -k graceful</code> analyse
+   la nouvelle configuration dans un processus qui lui est propre et quitte sans
+   rien signaler si l&rsquo;analyse &eacute;choue&nbsp;; dans ce cas, le rechargement de la
+   configuration &eacute;choue et le serveur en cours d&rsquo;ex&eacute;cution continue avec la
+   configuration qu&rsquo;il utilise d&eacute;j&agrave;. Omettre <code>ExecReload</code> et laisser
+   le gestionnaire de service informer le serveur directement emp&ecirc;che cette
+   v&eacute;rification&nbsp;: le processus parent en cours d&rsquo;ex&eacute;cution lit la nouvelle
+   configuration lui-m&ecirc;me, et une configuration dont l&rsquo;analyse &eacute;choue le fait
+   quitter, ce qui arr&ecirc;te le serveur.</p>
+
+   <p>Le signal envoy&eacute; une fois <code>ExecReload</code> ex&eacute;cut&eacute;e est alors
+   redondant&nbsp;; <code>ReloadSignal</code> devrait donc en sp&eacute;cifier un dont
+   httpd ne tient pas compte, tel que <code>SIGCONT</code>. Il est important
+   qu&rsquo;il soit d&eacute;fini&nbsp;: le signal par d&eacute;faut est <code>SIGHUP</code> que httpd
+   interpr&egrave;te comme un red&eacute;marrage <em>forc&eacute;</em> en fermant les connexions
+   qu&rsquo;un red&eacute;marrage est cens&eacute; pr&eacute;server. Une unit&eacute; qui utilise
+   <code>ExecReload</code> doit d&eacute;finir <code>ReloadSignal=SIGUSR1</code>, le
+   signal avec lequel httpd red&eacute;marre en douceur.</p>
+
+   <p>L&rsquo;activation du socket de systemd est prise en charge si httpd a &eacute;t&eacute;
+   construit en ce sens. Chaque port sp&eacute;cifi&eacute; par la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> doit alors avoir &eacute;t&eacute; indiqu&eacute; par
+   systemd&nbsp;; tout port qui ne l&rsquo;a pas &eacute;t&eacute; g&eacute;n&eacute;rera une erreur de configuration
+   fatale et httpd ne l&rsquo;ouvrira pas pour lui-m&ecirc;me. L&rsquo;activation du socket n&rsquo;est
+   utilis&eacute;e que si ce module est charg&eacute;&nbsp;; il peut donc &ecirc;tre construit et gard&eacute;
+   inutilis&eacute;.</p>
 
     <p><code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> est activ&eacute; par d&eacute;faut
     si le module est charg&eacute;. Si <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> n'est pas explicitement d&eacute;sactiv&eacute;
     dans le fichier de configuration, les statistiques &agrave; propos de la charge et
     des requ&ecirc;tes pendant l'ex&eacute;cution appara&icirc;tront dans la sortie de la commande
     <code>systemctl status</code>.</p>
+
+    <p>systemd watchdog est pris en charge. Si l&rsquo;unit&eacute; de service d&eacute;finit
+    <code>WatchdogSec=</code>, le processus parent envoie la notification de
+    persistance qui informe systemd que le serveur est encore en vie&nbsp;; un
+    serveur qui cesse de l&rsquo;envoyer est arr&ecirc;t&eacute; et red&eacute;marr&eacute; avec une d&eacute;finition
+    de <code>Restart=</code> appropri&eacute;e. La notification est envoy&eacute;e pendant la
+    lecture de la configuration et &agrave; nouveau une fois qu&rsquo;elle a &eacute;t&eacute; charg&eacute;e, de
+    sorte qu&rsquo;un rechargement soit pris en compte p&eacute;riodiquement par le processus
+    parent pendant l&rsquo;ex&eacute;cution du serveur.</p>
+
+    <p>Cette notification p&eacute;riodique est envoy&eacute;e environ toutes les dix
+    secondes, ce qui correspond &agrave; la p&eacute;riodicit&eacute; avec laquelle le processus
+    parent ex&eacute;cute le programme d&rsquo;accroche &agrave; partir duquel elle est envoy&eacute;e. Une
+    valeur de <code>WatchdogSec=</code> inf&eacute;rieure &agrave; deux fois cette p&eacute;riode ne
+    conviendrait pas, car systemd arr&ecirc;terait un serveur qui fonctionne
+    normalement&nbsp;; un tel r&eacute;glage est signal&eacute; sous forme d&rsquo;avertissement au
+    d&eacute;marrage. Utilisez une valeur d&rsquo;au moins 20&nbsp;secondes pour
+    <code>WatchdogSec=</code>.</p>
+
+    <div class="example"><h3>Ajouter une supervision watchdog &agrave; une des unit&eacute;s ci-avant</h3><pre>[Service]
+WatchdogSec=30
+Restart=on-failure</pre></div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>

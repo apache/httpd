@@ -211,10 +211,10 @@
         <dt>status</dt><dd>Etat de la r&eacute;ponse en cache.</dd>
         <dt>entity version</dt><dd>Le nombre de fois que cette entr&eacute;e a
 	&eacute;t&eacute; revalid&eacute;e sans &ecirc;tre effac&eacute;e.</dd>
-        <dt>date</dt><dd>Date de la r&eacute;ponse.</dd>
-        <dt>expiry</dt><dd>Date d'expiration de la r&eacute;ponse.</dd>
-        <dt>request time</dt><dd>Date du d&eacute;but de la requ&ecirc;te.</dd>
-        <dt>response time</dt><dd>Date de la fin de la requ&ecirc;te.</dd>
+        <dt>date</dt><dd>Horodatage de la r&eacute;ponse en microsecondes.</dd>
+        <dt>expiry</dt><dd>Horodatage de l'expiration de la r&eacute;ponse en microsecondes.</dd>
+        <dt>request time</dt><dd>Horodatage du d&eacute;but de la requ&ecirc;te en microsecondes.</dd>
+        <dt>response time</dt><dd>Horodatage de la fin de la requ&ecirc;te en microsecondes.</dd>
         <dt>body present</dt><dd>Ce champ contient la valeur 0 si aucun
 	corps n'est stock&eacute; avec cette requ&ecirc;te, 1 dans le cas contraire.</dd>
         <dt>head request</dt><dd>Ce champ contient la valeur 1 si
