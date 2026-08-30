@@ -52,10 +52,37 @@ static apr_uint64_t monotonic_usec(void)
     return (apr_uint64_t)ts.tv_sec * APR_USEC_PER_SEC + ts.tv_nsec / 1000;
 }
 
+/* ap_run_monitor() is called once every INTERVAL_OF_WRITABLE_PROBES turns
+ * of the parent's one second loop in ap_wait_or_timeout(), so that is how
+ * often a keep-alive notification can be sent, and the shortest watchdog
+ * timeout which can be met is twice that: sd_watchdog_enabled(3) asks for
+ * a notification every half of the configured timeout. */
+#define WATCHDOG_INTERVAL_SEC (10)
+
+/* The WatchdogSec= of the service in microseconds, or zero if the service
+ * manager is not watching.  Set in pre_config, before the first
+ * notification which could carry a keep-alive. */
+static apr_uint64_t watchdog_usec;
+
+/* A keep-alive assignment to paste into a notification, or nothing while
+ * the service manager is not asking for one.  Sending WATCHDOG=1 when it
+ * is not expected is harmless, but saying so only when asked keeps what
+ * httpd reports the same as what the service was configured for. */
+static const char *watchdog_ping(void)
+{
+    return watchdog_usec ? "WATCHDOG=1\n" : "";
+}
+
 static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
 {
-    apr_uint64_t usec = monotonic_usec();
+    apr_uint64_t usec = monotonic_usec(), wd_usec;
+
+    /* Read afresh on each configuration load, since a restart unloads and
+     * loads the module again, and without unsetting it as server/listen.c
+     * does for $LISTEN_FDS, which would stop the keep-alive at the first
+     * reload. */
+    watchdog_usec = sd_watchdog_enabled(0, &wd_usec) > 0 ? wd_usec : 0;
 
     /* A Type=notify-reload service ignores a reload notification which
      * does not say when it was sent. */
@@ -63,12 +90,14 @@ static int systemd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         sd_notifyf(0,
                    "RELOADING=1\n"
                    "MONOTONIC_USEC=%" APR_UINT64_T_FMT "\n"
-                   "STATUS=Reading configuration...\n", usec);
+                   "%s"
+                   "STATUS=Reading configuration...\n", usec, watchdog_ping());
     }
     else {
-        sd_notify(0,
-                  "RELOADING=1\n"
-                  "STATUS=Reading configuration...\n");
+        sd_notifyf(0,
+                   "RELOADING=1\n"
+                   "%s"
+                   "STATUS=Reading configuration...\n", watchdog_ping());
     }
     ap_extended_status = 1;
     return OK;
@@ -121,8 +150,28 @@ static int systemd_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_pool_cleanup_register(pconf, NULL, systemd_stopping,
                               apr_pool_cleanup_null);
 
-    sd_notify(0, "READY=1\n"
-              "STATUS=Configuration loaded.\n");
+    /* A timeout the parent cannot meet would have the service manager
+     * killing a healthy server every WatchdogSec, so say so rather than
+     * leaving nothing in the log to explain it. */
+    if (watchdog_usec
+        && watchdog_usec / 2 < (apr_uint64_t)WATCHDOG_INTERVAL_SEC
+                               * APR_USEC_PER_SEC) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, main_server, APLOGNO(10621)
+                     "WatchdogSec is %" APR_UINT64_T_FMT "us, but keep-alive "
+                     "notifications are sent from the parent process only "
+                     "every %ds; configure a WatchdogSec of at least %ds or "
+                     "the service will be killed while it is healthy",
+                     watchdog_usec, WATCHDOG_INTERVAL_SEC,
+                     2 * WATCHDOG_INTERVAL_SEC);
+    }
+
+    /* The keep-alive rides along with the notification which ends a
+     * reload: the configuration is read outside the parent's monitor loop,
+     * so nothing reports while it is being parsed, and the service manager
+     * keeps the timeout armed throughout. */
+    sd_notifyf(0, "READY=1\n"
+               "%s"
+               "STATUS=Configuration loaded.\n", watchdog_ping());
     return OK;
 }
 
@@ -140,6 +189,12 @@ static int systemd_monitor(apr_pool_t *p, server_rec *s)
     ap_sload_t sload;
     apr_interval_time_t up_time;
     char bps[5];
+
+    /* Before anything which might decline: reporting the server is alive
+     * does not depend on there being a status line to report with it. */
+    if (watchdog_usec) {
+        sd_notify(0, "WATCHDOG=1\n");
+    }
 
     if (!ap_extended_status) {
         /* Nothing useful to report with ExtendedStatus disabled. */

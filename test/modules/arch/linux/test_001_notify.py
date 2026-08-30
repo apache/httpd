@@ -127,16 +127,26 @@ class TestSystemdNotify:
         assert 0 < int(msg['MONOTONIC_USEC']) <= time.clock_gettime_ns(
             time.CLOCK_MONOTONIC) // 1000
 
-    @pytest.mark.xfail(reason="mod_systemd implements no watchdog keepalive, "
-                              "so a unit using WatchdogSec= would be killed")
     def test_systemd_001_09_watchdog(self, env):
+        """A server started with $WATCHDOG_USEC reports that it is alive.
+
+        $WATCHDOG_PID is left unset, which sd_watchdog_enabled(3) takes to
+        mean any process may report: it has to be, since apachectl starts a
+        parent whose pid nothing knew in advance.  The keep-alive arrives
+        with the startup notifications rather than only from the monitor
+        hook ten seconds later, which is what makes this cheap to check.
+        test_006_watchdog.py covers the rest of the protocol.
+        """
         assert env.apache_stop() == 0
-        env.set_httpd_env('WATCHDOG_USEC', '2000000')  # ping every 1s
+        # Long enough that mod_systemd does not object to it (AH10622).
+        env.set_httpd_env('WATCHDOG_USEC', str(60 * 1000000))
         try:
             env.notify.clear()
             assert env.apache_restart() == 0
-            assert env.notify.wait_for_key('WATCHDOG', timeout=4), \
-                "no watchdog keepalive was sent"
+            msg = env.notify.wait_for_key('WATCHDOG', timeout=4)
+            assert msg, f"no watchdog keepalive was sent, " \
+                        f"got {env.notify.messages}"
+            assert msg['WATCHDOG'] == '1'
         finally:
             env.set_httpd_env('WATCHDOG_USEC', None)
             assert env.apache_restart() == 0
