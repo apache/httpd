@@ -1,0 +1,4 @@
+  *) mod_systemd: Support the systemd watchdog, sending the keep-alive
+     notification if the service unit sets WatchdogSec=.  The notification
+     is sent every ten seconds, so a shorter WatchdogSec cannot be met and
+     is warned about at startup.  [Joe Orton]
