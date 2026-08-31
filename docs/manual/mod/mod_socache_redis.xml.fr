@@ -70,9 +70,9 @@
     (plateformes threadées seulement).</p>
     
     <p>Les valeurs valides pour <directive>RedisConnPoolTTL</directive> sont des
-    durées limitées à 1 heure . 0 signifie aucune limite.</p>
+    durées limitées à 1 heure. 0 signifie aucune limite.</p>
 
-    <note><p>Par défaut, l'unité de ces valeurs est la secondes, mais on peut
+    <note><p>Par défaut, l'unité de ces valeurs est la seconde, mais on peut
     spécifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),
     en minutes (min) ou en heures (h).
     </p></note>
@@ -105,9 +105,9 @@ serveur(s) Redis.</description>
     sur la connexion avec le(s) serveur(s) Redis.</p>
     
     <p>Les valeurs valides pour <directive>RedisTimeout</directive> sont des
-    durées limitées à 1 heure . 0 signifie aucune limite.</p>
+    durées limitées à 1 heure. 0 signifie aucune limite.</p>
 
-    <note><p>Par défaut, l'unité de ces valeurs est la secondes, mais on peut
+    <note><p>Par défaut, l'unité de ces valeurs est la seconde, mais on peut
     spécifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),
     en minutes (min) ou en heures (h).
     </p></note>
