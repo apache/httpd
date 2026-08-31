@@ -196,15 +196,22 @@ class HttpdTestSetup:
             srcdocs = os.path.join(d, 'htdocs')
             if os.path.isdir(srcdocs):
                 shutil.copytree(srcdocs, dest_dir, dirs_exist_ok=True)
-        # make all contained .py scripts executable and fix shebangs on Windows
         for dirpath, _dirnames, filenames in os.walk(dest_dir):
             for fname in filenames:
+                fpath = os.path.join(dirpath, fname)
+                if sys.platform == "win32":
+                    # normalize line endings to LF so test assertions match
+                    try:
+                        data = open(fpath, 'rb').read()
+                        if b'\r\n' in data and b'\x00' not in data:
+                            open(fpath, 'wb').write(data.replace(b'\r\n', b'\n'))
+                    except OSError:
+                        pass
                 if re.match(r'.+\.py', fname):
-                    py_file = os.path.join(dirpath, fname)
                     if sys.platform == "win32":
-                        self._fix_shebang(py_file)
-                    st = os.stat(py_file)
-                    os.chmod(py_file, st.st_mode | stat.S_IEXEC)
+                        self._fix_shebang(fpath)
+                    st = os.stat(fpath)
+                    os.chmod(fpath, st.st_mode | stat.S_IEXEC)
 
     @staticmethod
     def _fix_shebang(py_file):
