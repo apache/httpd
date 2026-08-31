@@ -824,33 +824,35 @@ static enum nonce_state client_update_nonce(const request_rec *r,
  */
 static unsigned long gc(server_rec *s)
 {
-    client_entry *entry, *prev;
     unsigned long num_removed = 0, idx;
 
-    /* garbage collect all last entries */
+    /* garbage collect one entry from each bucket */
 
     for (idx = 0; idx < client_list->tbl_len; idx++) {
-        entry = client_list->table[idx];
-        prev  = NULL;
+        client_entry **link, **victim = NULL;
+        int unused = 0;
 
-        if (!entry) {
-            /* This bucket is empty. */
-            continue;
+        /* The last entry is the least recently used, since find_client()
+         * moves an entry to the front on each access; but prefer a client
+         * which has never completed an authentication, whose entry records
+         * nothing and so costs it nothing to lose. Every request which
+         * fails to authenticate allocates one of those, and without this
+         * they would evict the clients which are using the server. */
+        for (link = &client_list->table[idx]; *link; link = &(*link)->next) {
+            if ((*link)->last_nonce_time == 0) {
+                victim = link;
+                unused = 1;
+            }
+            else if (!unused) {
+                victim = link;
+            }
         }
 
-        while (entry->next) {   /* find last entry */
-            prev  = entry;
-            entry = entry->next;
-        }
-        if (prev) {
-            prev->next = NULL;   /* cut list */
-        }
-        else {
-            client_list->table[idx] = NULL;
-        }
-        if (entry) {                    /* remove entry */
+        if (victim) {
+            client_entry *entry = *victim;
             apr_status_t err;
 
+            *victim = entry->next;
             err = rmm_free(client_rmm, entry);
             num_removed++;
 
