@@ -255,6 +255,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 718
      +1: covener
 
+  *) mod_proxy_hcheck: Fix 503 Errors and High CPU/Memory. BUGZ70192
+     trunk patch:  https://svn.apache.org/1937678
+     2.4.x: svn merge -c 1937678 ^/httpd/httpd/trunk .
+     +1 jim,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
