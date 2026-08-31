@@ -43,6 +43,12 @@ def env(pytestconfig) -> AAATestEnv:
     docs = env.server_docs_dir
     pwfile = env.digest_pwfile
     conf = HttpdConf(env)
+    # Pin the client table to its historical size, ~12 entries, rather than
+    # the current default of ~140: the tests which need an entry to be
+    # garbage collected (085) drive that by filling the table with bare
+    # requests, and a table an order of magnitude larger makes them an order
+    # of magnitude slower for nothing.
+    conf.add('AuthDigestShmemSize 1000')
     conf.add(_digest_dir(docs, "default", [
         'AuthDigestProvider file',
         f'AuthUserFile "{pwfile}"',
