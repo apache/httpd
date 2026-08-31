@@ -1,8 +1,11 @@
+import sys
 import pytest
 import textwrap
 
 from pyhttpd.conf import HttpdConf
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="exec cmd= needs /bin/sh; echo is a cmd.exe builtin, not an executable")
 class TestSSIInjection:
 
     @pytest.fixture(autouse=True, scope="class")
