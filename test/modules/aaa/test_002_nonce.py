@@ -42,17 +42,22 @@ class TestDigestNonce:
         env.httpd_error_log.ignore_recent(lognos=["AH01776"])
 
     def test_digest_021_garbage_nonce_hash_is_stale(self, env):
-        # A nonce must still look like "b64(time)+sha1hex(hash)" (VALID_NONCE
-        # in mod_auth_digest.c checks length and the '=' padding boundary) to
+        # A nonce must still look like "b64(time)+hex(hash)" (VALID_NONCE in
+        # mod_auth_digest.c checks length and the '=' padding boundary) to
         # even be considered for a hash check; something that doesn't match
         # that shape is instead rejected as a malformed header (see
         # test_digest_010). Here we keep the genuine time-prefix (so the
         # shape is valid) but replace the whole hash suffix with garbage, to
         # hit check_nonce()'s "hash is not %s" path distinctly from
         # test_digest_020's single-flipped-character tamper.
+        #
+        # The hash length depends on which keyed hash the module was built
+        # with, so take it from the nonce rather than assuming: the time is
+        # base64 of 8 bytes and so ends with the only '=' in the string.
         challenge = self.challenge(env, "default")
-        time_prefix = challenge.nonce[:-40]
-        challenge.nonce = time_prefix + ("f" * 40)
+        time_prefix = challenge.nonce[:challenge.nonce.index('=') + 1]
+        hash_len = len(challenge.nonce) - len(time_prefix)
+        challenge.nonce = time_prefix + ("f" * hash_len)
         r = self.authenticate(env, "default", challenge)
         assert r.response["status"] == 401
         new_challenge = dc.DigestChallenge.parse(r.response["header"]["www-authenticate"])
