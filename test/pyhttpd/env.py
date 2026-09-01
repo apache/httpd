@@ -1158,7 +1158,7 @@ class HttpdTestEnv:
         fpath = os.path.join(indir, fname)
         s10 = "0123456789"
         s = (101 * s10) + s10[0:3]
-        with open(fpath, 'w') as fd:
+        with open(fpath, 'w', newline='') as fd:
             for i in range(int(fsize / 1024)):
                 fd.write(f"{i:09d}-{s}\n")
             remain = int(fsize % 1024)
