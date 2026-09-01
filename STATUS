@@ -196,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_dir: fix crash with no content-type. PR68527
      trunk patch:  https://svn.apache.org/r1936401
      2.4.x: svn merge -c 1936401,1936403 ^/httpd/httpd/trunk .
-     +1 covener, jorton
+     +1 covener, jorton, jim
 
   *) Various hardening fixes.
      trunk patch: https://svn.apache.org/r1935191
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1936264
                   https://svn.apache.org/r1937041
      2.4.x patch: https://github.com/apache/httpd/pull/703.patch
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
   *) mod_auth_digest: Rebase to trunk.
      trunk patch: https://svn.apache.org/r1731662
@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1937110
                   https://svn.apache.org/r1937111
      2.4.x patch: https://github.com/apache/httpd/pull/706.patch
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
    *) mod_authnz_ldap trunk sync
       trunk patch: too many
@@ -253,7 +253,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/718.diff
      Can be applied via apply_backport_pr.sh 718
-     +1: covener
+     +1: covener, jim
 
   *) mod_proxy_hcheck: Fix 503 Errors and High CPU/Memory. BUGZ70192
      trunk patch:  https://svn.apache.org/1937678
