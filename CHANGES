@@ -1,10 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) mod_cgid, mod_ssl, mod_md: Various hardening fixes.  [Various authors]
+
   *) mod_md: MDServerStatus is now disabled by default.  [Joe Orton]
 
   *) mod_auth_digest: Fix compatibility with expression-based AuthName.
      PR 59039.  [Eric Covener]
+
   *) mod_auth_digest.c: Drop RFC 2069 support; rewrite shared memory
      handling and client nonce handling; "authdigest-opaque" mutex is
      now longer needed.  [Joe Orton]
