@@ -163,11 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_dir: fix crash with no content-type. PR68527
-     trunk patch:  https://svn.apache.org/r1936401
-     2.4.x: svn merge -c 1936401,1936403 ^/httpd/httpd/trunk .
-     +1 covener, jorton, jim
-
   *) Various hardening fixes.
      trunk patch: https://svn.apache.org/r1935191
                   https://svn.apache.org/r1935192

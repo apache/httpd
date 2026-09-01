@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) mod_dir: Fix a crash in fixup_dir for a request not mapped to any type. 
+     PR68527.  [Eric Covener]
+
   *) mod_http2: Do not drop an in-flight response when a client sends a
      graceful GOAWAY (error code 0) while streams it opened are still
      being processed. The session now drains open streams instead of
