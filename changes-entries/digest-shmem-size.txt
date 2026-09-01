@@ -1,0 +1,3 @@
+  *) mod_auth_digest: Increase the default AuthDigestShmemSize to 8192
+     bytes, tracking around 140 clients rather than around 12.
+     [Joe Orton]

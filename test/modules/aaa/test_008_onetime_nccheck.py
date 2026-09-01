@@ -39,6 +39,7 @@ BOTH = ["onetime", "onetime-nccheck"]
 NC_FAILED = "AH01774"
 NONCE_HASH_INVALID = "AH01776"
 PASSWORD_MISMATCH = "AH01794"
+CLIENT_UNKNOWN = "AH10618"
 
 
 class TestOneTimeNonce:
@@ -161,14 +162,14 @@ class TestOneTimeNonce:
     @pytest.mark.parametrize("location", BOTH)
     def test_digest_085_replay_rejected_when_the_client_entry_is_gone(self, env,
                                                                       location):
-        # The client table is small -- AuthDigestShmemSize defaults to 1000
-        # bytes, "~ 12 entries" -- and a request with no credentials at all
-        # allocates an entry, since the challenge it gets back has to carry an
-        # opaque. An attacker can therefore make gc() discard a client's entry
-        # for the price of a dozen bare requests.
+        # The client table is small here -- conftest pins AuthDigestShmemSize
+        # to 1000 bytes, "~ 12 entries" -- so filling it makes gc() discard
+        # entries. The pressure has to come from clients which have
+        # authenticated: gc() discards the entries of clients which never
+        # did first, so bare requests no longer evict anybody who matters.
         #
-        # A captured request must still not be replayable once that has
-        # happened. It used to be: check_nonce() skipped the one-time
+        # A captured request must still not be replayable once the client's
+        # entry has gone. It used to be: check_nonce() skipped the one-time
         # comparison entirely when the client was unknown, so the nonce was
         # taken on trust and the replay served the protected resource.
         challenge = self.challenge(env, location)
@@ -176,10 +177,18 @@ class TestOneTimeNonce:
         assert self.send(env, location, captured).response["status"] == 200
         assert self.send(env, location, captured).response["status"] == 401
 
-        for _ in range(40):
-            env.curl_get(self.url(env, location))
+        # Note that the victim is left alone while the table fills: looking
+        # its entry up would move it to the front of its bucket, which is
+        # exactly what saves an entry from gc().
+        for _ in range(30):
+            other = self.challenge(env, location)
+            assert self.send(env, location,
+                             self.header(location, other)).response["status"] == 200
 
         r = self.send(env, location, captured)
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
         assert r.response["status"] == 401, \
             "captured request replayed once the client entry was evicted"
+        gone = dc.DigestChallenge.parse(r.response["header"]["www-authenticate"])
+        assert gone.opaque != challenge.opaque, \
+            "the entry was not evicted, so the gc'd-client path is untested"
