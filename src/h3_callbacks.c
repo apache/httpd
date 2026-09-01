@@ -50,8 +50,9 @@ static int set_pseudo(h3_stream* stream, h3_session* session, int32_t token, ngh
 
     if (value->len == 0 || value->len >= 8192)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "pseudo-header length %zu invalid", value->len);
-        return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "pseudo-header length %zu invalid", value->len);
+        stream->malformed = 1;
+        return 0;
     }
     char* copy = apr_pstrndup(stream->pool, (const char*)value->base, value->len);
     switch (token)
@@ -69,7 +70,8 @@ static int set_pseudo(h3_stream* stream, h3_session* session, int32_t token, ngh
         stream->authority = copy;
         break;
     default:
-        return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
+        stream->malformed = 1;
+        break;
     }
     return 0;
 }

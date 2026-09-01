@@ -100,6 +100,8 @@ struct h3_stream
     size_t request_body_capacity;
     int request_body_overflow;
 
+    int malformed;
+
     const char* method;
     const char* scheme;
     const char* authority;

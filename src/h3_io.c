@@ -242,6 +242,10 @@ void remove_pending_handshake(h3_io_t* io, int index, int free_conn)
     {
         h3q_conn_free(pending[index].conn);
     }
+    if (io->note_conn_removed)
+    {
+        io->note_conn_removed();
+    }
     if (index < io->pending_handshakes->nelts - 1)
     {
         pending[index] = pending[io->pending_handshakes->nelts - 1];
@@ -369,6 +373,10 @@ int prepare_accepted_connection(h3_io_t* io, h3q_conn* conn)
     pending->conn = conn;
     pending->accepted_at = apr_time_now();
     apr_atomic_inc32(&io->total_connections);
+    if (io->note_conn_added)
+    {
+        io->note_conn_added();
+    }
     return 1;
 }
 

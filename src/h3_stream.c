@@ -184,12 +184,44 @@ static void mark_ngh3_dead(h3_session* session, const char* op, int64_t stream_i
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "%s failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, op, stream_id, session->abort_reason, (apr_int64_t)liberr, session->abort_quic_error_code);
 }
 
+/* nghttp3 reports an RFC 9114 4.x header violation as one of these non-fatal read errors. */
+static int is_malformed_request_error(nghttp3_ssize liberr)
+{
+    return liberr == NGHTTP3_ERR_MALFORMED_HTTP_HEADER || liberr == NGHTTP3_ERR_MALFORMED_HTTP_MESSAGING;
+}
+
+/* RFC 9114 4.1.2: reject the offending stream, keep the connection serving. Session lock held. */
+static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3_ssize liberr)
+{
+    uint64_t app_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "malformed HTTP/3 request on stream %" APR_INT64_T_FMT " (%s); rejecting with stream error 0x%" APR_UINT64_T_HEX_FMT, h3s->stream_id, nghttp3_strerror((int)liberr), app_error_code);
+    if (h3s->qstream)
+    {
+        h3q_stream_reset(h3s->qstream, app_error_code);
+    }
+    nghttp3_conn_shutdown_stream_read(session->ngh3, h3s->stream_id);
+    nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, app_error_code);
+    h3s->done = 1;
+    h3s->body_complete = 1;
+}
+
 static void feed_stream_fin(h3_session* session, h3_stream* h3s)
 {
     nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
     if (consumed < 0)
     {
-        mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
+        if (is_malformed_request_error(consumed))
+        {
+            reject_malformed_stream(session, h3s, consumed);
+        }
+        else
+        {
+            mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
+        }
+    }
+    else if (h3s->malformed && !h3s->done)
+    {
+        reject_malformed_stream(session, h3s, NGHTTP3_ERR_MALFORMED_HTTP_HEADER);
     }
     h3s->body_complete = 1;
 }
@@ -225,7 +257,7 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
         {
             nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, NGHTTP3_H3_NO_ERROR);
         }
-        return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
+        return h3s->is_bidi && !h3s->done && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
     }
 
     while (*reads_remaining > 0 && *bytes_remaining > 0)
@@ -256,10 +288,20 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
             session->pending.h3s = NULL;
             if (consumed < 0)
             {
+                if (is_malformed_request_error(consumed))
+                {
+                    reject_malformed_stream(session, h3s, consumed);
+                    return 0;
+                }
                 /* Mark dead if read fails. */
                 mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
                 h3s->done = 1;
                 break;
+            }
+            if (h3s->malformed && !h3s->done)
+            {
+                reject_malformed_stream(session, h3s, NGHTTP3_ERR_MALFORMED_HTTP_HEADER);
+                return 0;
             }
             if (h3s->done)
             {
@@ -273,7 +315,7 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
         }
         break;
     }
-    return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
+    return h3s->is_bidi && !h3s->done && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
 }
 
 apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_pool, int* data_read)

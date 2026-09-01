@@ -127,6 +127,8 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
     }
     while (io->pending_handshakes->nelts > 0)
     {
+        h3_pending_handshake* pending = (h3_pending_handshake*)io->pending_handshakes->elts;
+        h3q_conn_shutdown(pending[0].conn, 1, 0, NULL);
         remove_pending_handshake(io, 0, 1);
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread exiting");
