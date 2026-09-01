@@ -18,6 +18,13 @@
 
 PROGRAM_OBJECTS = $(PROGRAM_SOURCES:.c=.lo)
 
-$(PROGRAM_NAME): $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS)
+# buildmark.o is named in $(PROGRAM_LDADD), so give it an explicit rule
+# rather than building it as a side effect of the link below: other targets
+# which use $(PROGRAM_LDADD) can then depend on it, instead of racing
+# against this rule under "make -j".  Rebuilding it whenever the program is
+# relinked keeps the reported build timestamp current.
+buildmark.o: $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS)
 	$(PROGRAM_PRELINK)
+
+$(PROGRAM_NAME): $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS) buildmark.o
 	$(LINK) $(PROGRAM_LDFLAGS) $(PROGRAM_OBJECTS) $(PROGRAM_LDADD)

@@ -1,0 +1,2 @@
+  *) mod_proxy_connect: Implement "AllowCONNECT None", which 
+     disallows CONNECT to all ports.  [Joe Orton]

@@ -41,3 +41,4 @@ t/htdocs/modules/substitute/test.txt
 # Logs
 t/php-fpm/log/
 
+t/basic1
