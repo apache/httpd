@@ -80,7 +80,7 @@ if defined PYHTTPD_TARGETS (
 
 rem --- Windows-specific exclusions --------------------------------------------
 set "WIN_IGNORE=--ignore=modules\md"
-set "WIN_SKIP=not test_cgi_003_01 and not test_800_websockets and not test_02_unix and not test_003_get and not test_004_post and not test_002_restarts and not test_005_trailers and not test_h2_601"
+set "WIN_SKIP=not test_800_websockets and not test_02_unix"
 
 echo runtests.bat: "%PYTEST%" %WIN_IGNORE% -k "%WIN_SKIP%" %TARGETS% %* >&2
 "%PYTEST%" %WIN_IGNORE% -k "%WIN_SKIP%" %TARGETS% %*
