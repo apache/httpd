@@ -270,7 +270,7 @@ authentication</description>
 <description>The amount of shared memory to allocate for keeping track
 of clients</description>
 <syntax>AuthDigestShmemSize <var>size</var></syntax>
-<default>AuthDigestShmemSize 1000</default>
+<default>AuthDigestShmemSize 8192</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -283,6 +283,13 @@ of clients</description>
     set <directive>AuthDigestShmemSize</directive> to the value of
     <code>0</code> and read the error message after trying to start the
     server.</p>
+
+    <p>The default holds roughly 140 clients. A client which is discarded
+    to make room for another is not denied access: it is issued a new
+    nonce with <code>stale=true</code>, which costs it one extra request.
+    Note that a request which does not authenticate also takes an entry,
+    since the challenge sent back to it carries the identifier the client
+    is tracked by.</p>
 
     <p>The <var>size</var> is normally expressed in Bytes, but you
     may follow the number with a <code>K</code> or an <code>M</code> to

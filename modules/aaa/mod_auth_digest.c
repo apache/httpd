@@ -197,9 +197,14 @@ static apr_global_mutex_t *client_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
 static const char     *client_shm_filename;
 
-#define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
-#define DEF_NUM_BUCKETS 15L
+#define DEF_SHMEM_SIZE  8192L           /* ~ 140 entries */
 #define HASH_DEPTH      5
+/* Buckets for a given segment size, so that the default and
+ * AuthDigestShmemSize cannot disagree. */
+#define NUM_BUCKETS(size_) (((size_) - sizeof(*client_list)) /             \
+                            (sizeof(client_entry *)                       \
+                             + HASH_DEPTH * sizeof(client_entry)))
+#define DEF_NUM_BUCKETS NUM_BUCKETS(DEF_SHMEM_SIZE)
 
 static apr_size_t shmem_size  = DEF_SHMEM_SIZE;
 static unsigned long num_buckets = DEF_NUM_BUCKETS;
@@ -583,8 +588,7 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
     }
 
     shmem_size  = size;
-    num_buckets = (size - sizeof(*client_list)) /
-                  (sizeof(client_entry*) + HASH_DEPTH * sizeof(client_entry));
+    num_buckets = NUM_BUCKETS(size);
     if (num_buckets == 0) {
         num_buckets = 1;
     }

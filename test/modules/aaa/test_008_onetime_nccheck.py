@@ -161,11 +161,13 @@ class TestOneTimeNonce:
     @pytest.mark.parametrize("location", BOTH)
     def test_digest_085_replay_rejected_when_the_client_entry_is_gone(self, env,
                                                                       location):
-        # The client table is small -- AuthDigestShmemSize defaults to 1000
-        # bytes, "~ 12 entries" -- and a request with no credentials at all
-        # allocates an entry, since the challenge it gets back has to carry an
-        # opaque. An attacker can therefore make gc() discard a client's entry
-        # for the price of a dozen bare requests.
+        # The client table is small here -- conftest pins AuthDigestShmemSize
+        # to 1000 bytes, "~ 12 entries" -- and a request with no credentials
+        # at all allocates an entry, since the challenge it gets back has to
+        # carry an opaque. An attacker can therefore make gc() discard a
+        # client's entry for the price of a dozen bare requests. The shipped
+        # default is larger, which raises that price but does not change the
+        # property under test.
         #
         # A captured request must still not be replayable once that has
         # happened. It used to be: check_nonce() skipped the one-time
