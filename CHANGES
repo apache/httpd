@@ -1,6 +1,18 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) mod_lbmethod_heartbeat: Use safe integer parsing with range
+     validation, replacing atoi().  [Sayed Kaif <metsw24 gmail.com>]
+
+  *) core: Reject control characters in the reason phrase of interim
+     responses.  Only accept space as status-code separator.  [Joe Orton]
+
+  *) mod_substitute: Fix SubstituteMaxLineLength to reject values too
+     large for the K/M/G suffix.  [Joe Orton]
+
+  *) mod_substitute: Fix crash or misbehaviour when loading a Substitute
+     directive with a missing closing delimiter.  [Joe Orton]
+
   *) mod_dir: Fix a crash in fixup_dir for a request not mapped to any type. 
      PR68527.  [Eric Covener]
 
