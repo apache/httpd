@@ -182,6 +182,7 @@ static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
                                                in listener thread */
 static apr_uint32_t connection_count = 0;   /* Number of open connections */
+static apr_uint32_t extra_connection_count = 0; /* Number of open connections that the MPM does not own */
 static apr_uint32_t lingering_count = 0;    /* Number of connections in lingering close */
 static apr_uint32_t suspended_count = 0;    /* Number of suspended connections */
 static apr_uint32_t clogged_count = 0;      /* Number of threads processing ssl conns */
@@ -826,6 +827,44 @@ static apr_status_t decrement_connection_count(void *cs_)
         ap_queue_interrupt_one(worker_queue);
     }
     return APR_SUCCESS;
+}
+
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&extra_connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&extra_connection_count);
+}
+
+static void wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
+    apr_time_t graceful, timeout, deadline;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    deadline = apr_time_now() + timeout;
+
+    do {
+        apr_sleep(apr_time_from_msec(100));
+        count = apr_atomic_read32(&extra_connection_count);
+    } while (count > 0 && apr_time_now() < deadline);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(10619)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
 }
 
 static void notify_suspend(event_conn_state_t *cs)
@@ -2805,6 +2844,10 @@ static void child_main(int child_num_arg, int child_bucket)
                      rv == AP_MPM_PODX_GRACEFUL ? "graceful" : "ungraceful");
     }
 
+    if (terminate_mode == ST_GRACEFUL) {
+        wait_for_extra_connections();
+    }
+
     free(threads);
 
     clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
@@ -3466,6 +3509,10 @@ static void setup_slave_conn(conn_rec *c, void *csd)
     event_conn_state_t *cs;
     
     mcs = ap_get_module_config(c->master->conn_config, &mpm_event_module);
+    if (!mcs) {
+        /* Master connection is not managed by this MPM; nothing to inherit. */
+        return;
+    }
     
     cs = apr_pcalloc(c->pool, sizeof(*cs));
     cs->c = c;
@@ -3606,6 +3653,9 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     apr_status_t rv;
     const char *userdata_key = "mpm_event_module";
     int test_atomics = 0;
+
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
 
     debug = ap_exists_config_define("DEBUG");
 
