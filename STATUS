@@ -173,26 +173,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
      +1: jim, jorton, covener
 
-------------------------------------------------------------------------
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
-     announcement -- backends self-register as balancer members over UDP.
-     trunk patch: https://svn.apache.org/r1934995
-                  https://svn.apache.org/r1935040
-                  https://svn.apache.org/r1935556
-     2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
-     +1: jim, 
-
-  *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
-     (multi-poller scale-out with new PollersPerChild directive, async
-     keep-alive/HTTP/2 handoff, concurrency hardening, motorz test suite).
-     trunk patch: https://svn.apache.org/r1934868
-     2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
-     +1: jim, 
-
   *) mod_dir: fix crash with no content-type. PR68527
      trunk patch:  https://svn.apache.org/r1936401
      2.4.x: svn merge -c 1936401,1936403 ^/httpd/httpd/trunk .
@@ -238,6 +218,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1937111
      2.4.x patch: https://github.com/apache/httpd/pull/706.patch
      +1: jorton, covener, jim
+
+------------------------------------------------------------------------
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
+     announcement -- backends self-register as balancer members over UDP.
+     trunk patch: https://svn.apache.org/r1934995
+                  https://svn.apache.org/r1935040
+                  https://svn.apache.org/r1935556
+     2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
+     +1: jim, 
+
+  *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
+     (multi-poller scale-out with new PollersPerChild directive, async
+     keep-alive/HTTP/2 handoff, concurrency hardening, motorz test suite).
+     trunk patch: https://svn.apache.org/r1934868
+     2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
+     +1: jim, 
 
    *) mod_authnz_ldap trunk sync
       trunk patch: too many
