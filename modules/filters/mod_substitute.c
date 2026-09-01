@@ -627,7 +627,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     if (delim)
         from = ++ourline;
     if (from) {
-        if (*ourline != delim) {
+        if (*ourline && *ourline != delim) {
             while (*++ourline && *ourline != delim);
         }
         if (*ourline) {
@@ -636,7 +636,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
         }
     }
     if (to) {
-        if (*ourline != delim) {
+        if (*ourline && *ourline != delim) {
             while (*++ourline && *ourline != delim);
         }
         if (*ourline) {
@@ -713,12 +713,18 @@ static const char *set_max_line_length(cmd_parms *cmd, void *cfg, const char *ar
     rv = apr_strtoff(&max, arg, &end, 10);
     if (rv == APR_SUCCESS) {
         if ((*end == 'K' || *end == 'k') && !end[1]) {
+            if (max > APR_INT64_MAX / KBYTE)
+                return "SubstituteMaxLineLength value too large";
             max *= KBYTE;
         }
         else if ((*end == 'M' || *end == 'm') && !end[1]) {
+            if (max > APR_INT64_MAX / MBYTE)
+                return "SubstituteMaxLineLength value too large";
             max *= MBYTE;
         }
         else if ((*end == 'G' || *end == 'g') && !end[1]) {
+            if (max > APR_INT64_MAX / GBYTE)
+                return "SubstituteMaxLineLength value too large";
             max *= GBYTE;
         }
         else if (*end && /* neither empty nor [Bb] */
