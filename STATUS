@@ -163,30 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_auth_digest: Rebase to trunk.
-     trunk patch: https://svn.apache.org/r1731662
-                  https://svn.apache.org/r1934434
-                  https://svn.apache.org/r1935944
-                  https://svn.apache.org/r1935945
-                  https://svn.apache.org/r1935946
-                  https://svn.apache.org/r1935947
-                  https://svn.apache.org/r1935948
-                  https://svn.apache.org/r1935949
-                  https://svn.apache.org/r1935950
-                  https://svn.apache.org/r1935951
-                  https://svn.apache.org/r1935952
-                  https://svn.apache.org/r1935953
-                  https://svn.apache.org/r1935954
-                  https://svn.apache.org/r1937104
-                  https://svn.apache.org/r1937105
-                  https://svn.apache.org/r1937106
-                  https://svn.apache.org/r1937107
-                  https://svn.apache.org/r1937108
-                  https://svn.apache.org/r1937109
-                  https://svn.apache.org/r1937110
-                  https://svn.apache.org/r1937111
-     2.4.x patch: https://github.com/apache/httpd/pull/706.patch
-     +1: jorton, covener, jim
 
 ------------------------------------------------------------------------
 

@@ -1,3 +1,0 @@
-  *) mod_md: MDServerStatus is now disabled by default.  [Joe Orton]
-
-
