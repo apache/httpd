@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) mod_http2: Do not drop an in-flight response when a client sends a
+     graceful GOAWAY (error code 0) while streams it opened are still
+     being processed. The session now drains open streams instead of
+     tearing down immediately, which async MPMs hit far more than event.
+     Fixes a silently dropped response; RFC 9113 compliant. [Jim Jagielski]
+
   *) mod_md: OpenSSL 4 compatibility.
 
   *) pytest_suite: Port of the old PERL test framework to Python
