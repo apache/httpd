@@ -109,9 +109,13 @@ void flush_nghttp3(h3_session* session)
             continue;
         }
         h3q_write_result res = h3q_stream_write(h3s->qstream, (const h3q_vec*)vec, (size_t)nvec, fin);
-        if (res.accepted > 0 && child_h3_io)
+        if (res.accepted > 0)
         {
-            apr_atomic_add64(&child_h3_io->total_bytes_written, res.accepted);
+            session->last_activity = apr_time_now();
+            if (child_h3_io)
+            {
+                apr_atomic_add64(&child_h3_io->total_bytes_written, res.accepted);
+            }
         }
         if (res.broken)
         {

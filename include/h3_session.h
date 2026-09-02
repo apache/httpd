@@ -65,6 +65,8 @@ struct h3_session
     int goaway_sent;
     apr_time_t goaway_deadline;
 
+    apr_time_t last_activity;
+
     volatile apr_uint32_t active_tasks;
 
     struct

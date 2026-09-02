@@ -70,6 +70,7 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     session->qconn = qconn;
     session->streams = apr_hash_make(pool);
     session->pending_free = apr_array_make(pool, 8, sizeof(h3q_stream*));
+    session->last_activity = apr_time_now();
 
     apr_status_t rv = apr_thread_mutex_create(&session->lock, APR_THREAD_MUTEX_DEFAULT, pool);
     if (rv != APR_SUCCESS)
