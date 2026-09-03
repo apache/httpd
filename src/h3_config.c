@@ -73,6 +73,7 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_handshake_timeout = new->h3_handshake_timeout ? new->h3_handshake_timeout : base->h3_handshake_timeout;
     merged->h3_idle_timeout = new->h3_idle_timeout ? new->h3_idle_timeout : base->h3_idle_timeout;
     merged->h3_socket_buffer_size = new->h3_socket_buffer_size ? new->h3_socket_buffer_size : base->h3_socket_buffer_size;
+    merged->h3_session_tickets = new->h3_session_tickets != H3_FLAG_UNSET ? new->h3_session_tickets : base->h3_session_tickets;
 
     return merged;
 }
@@ -340,6 +341,14 @@ static const char* set_h3_idle_timeout(cmd_parms* cmd, void* dummy H3_UNUSED, co
     return NULL;
 }
 
+static const char* set_h3_session_tickets(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
+{
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_session_tickets = flag ? H3_FLAG_ON : H3_FLAG_OFF;
+    return NULL;
+}
+
 static const char* set_h3_alt_svc(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
 {
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
@@ -435,6 +444,10 @@ int h3_post_config(apr_pool_t* p H3_UNUSED, apr_pool_t* plog H3_UNUSED, apr_pool
             {
                 vc->h3_address_validation = H3_FLAG_ON;
             }
+            if (vc->h3_session_tickets == H3_FLAG_UNSET)
+            {
+                vc->h3_session_tickets = H3_FLAG_ON;
+            }
             if (vc->h3_alt_svc_max_age == 0)
             {
                 vc->h3_alt_svc_max_age = H3_ALT_SVC_MAX_AGE_DEFAULT;
@@ -503,5 +516,6 @@ const command_rec h3_cmds[] = {
     AP_INIT_TAKE1("H3MaxResponseBodySize", set_h3_max_response_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 response body size in bytes; an explicit limit enables bounded whole-response buffering (default: unlimited streaming)"),
     AP_INIT_FLAG("H3AddressValidation", set_h3_address_validation, NULL, RSRC_CONF, "Whether to validate client addresses with a QUIC Retry packet before accepting a connection (default: on)"),
     AP_INIT_TAKE1("H3SocketBufferSize", set_h3_socket_buffer_size, NULL, RSRC_CONF, "Bytes requested for the QUIC socket send and receive buffers; the OS may grant less (default: 2097152)"),
+    AP_INIT_FLAG("H3SessionTickets", set_h3_session_tickets, NULL, RSRC_CONF, "Whether to issue TLS session tickets so returning clients can resume instead of running a full handshake (default: on)"),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL),
 };

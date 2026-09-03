@@ -37,6 +37,7 @@ typedef struct h3q_config
     const char* cert_path;
     const char* key_path;
     unsigned address_validation : 1;
+    unsigned session_tickets : 1;
 } h3q_config;
 
 /**

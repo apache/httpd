@@ -135,6 +135,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         .cert_path = conf->h3_cert_path,
         .key_path = conf->h3_key_path,
         .address_validation = (conf->h3_address_validation != H3_FLAG_OFF),
+        .session_tickets = (conf->h3_session_tickets != H3_FLAG_OFF),
     };
     io->qengine = h3q_engine_create(&qcfg, udp_fd, qerr, sizeof(qerr));
     if (!io->qengine)

@@ -95,6 +95,15 @@ SSL_CTX* h3q_tls_ctx_create(const h3q_config* cfg, char* err, size_t errlen)
         return NULL;
     }
 
+    static const unsigned char sid_ctx[] = "mod_http3";
+    SSL_CTX_set_session_id_context(ssl_ctx, sid_ctx, sizeof(sid_ctx) - 1);
+
+    if (!cfg->session_tickets)
+    {
+        /* TLS 1.3 resumption travels in tickets, so issuing none turns it off. */
+        SSL_CTX_set_num_tickets(ssl_ctx, 0);
+    }
+
     SSL_CTX_set_alpn_select_cb(ssl_ctx, h3q_tls_alpn_select_cb, NULL);
     if (getenv("SSLKEYLOGFILE"))
     {
