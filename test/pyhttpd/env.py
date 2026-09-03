@@ -363,6 +363,7 @@ class HttpdTestEnv:
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
         self._test_conf = f"{self._server_conf_dir}/test.conf"
         self._httpd_base_conf = []
+        self._httpd_env = {}
         self._httpd_log_modules = ['aptest']
         self._log_interesting = None
         self._setup = None
@@ -386,6 +387,19 @@ class HttpdTestEnv:
 
     def add_httpd_log_modules(self, modules: List[str]):
         self._httpd_log_modules.extend(modules)
+
+    def set_httpd_env(self, name: str, value: Optional[str]):
+        """Add a variable to the environment httpd is started with, or
+        remove it again when passed None.
+
+        Used by tests for modules which take their input from the
+        environment rather than from the configuration, such as
+        mod_systemd reading $NOTIFY_SOCKET.
+        """
+        if value is None:
+            self._httpd_env.pop(name, None)
+        else:
+            self._httpd_env[name] = value
 
     def issue_certs(self):
         if self._ca is None:
@@ -849,6 +863,7 @@ class HttpdTestEnv:
             parts.insert(0, venv_bin)
         env = os.environ.copy()
         env['PATH'] = os.pathsep.join(parts)
+        env.update(self._httpd_env)
         return env
 
     def _run_apachectl(self, cmd) -> ExecResult:
@@ -957,6 +972,26 @@ class HttpdTestEnv:
         else:
             rv = 0
         return rv
+
+    def apache_hard_restart(self) -> int:
+        """Restart without the "graceful" flag, so the MPM starts over."""
+        r = self._run_apachectl("restart")
+        if r.exit_code == 0:
+            return 0 if self.is_live(self._http_base,
+                                     timeout=timedelta(seconds=10)) else -1
+        return r.exit_code
+
+    def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
+        # Where PidFile lands depends on how the httpd under test resolves
+        # a relative path against DefaultRuntimeDir, which has differed
+        # between versions; look in both places rather than assume.
+        for d in (self._server_logs_dir, self._server_dir):
+            try:
+                with open(os.path.join(d, name)) as fd:
+                    return int(fd.read().strip())
+            except (OSError, ValueError):
+                continue
+        return None
 
     def apache_access_log_clear(self):
         if os.path.isfile(self._server_access_log):

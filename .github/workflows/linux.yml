@@ -145,7 +145,29 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
           # -------------------------------------------------------------------------
+          # Test against a newer nghttp2 than in the Ubuntu images.
+          - name: mod_http2 w/nghttp2 1.68.0
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event
+            pkgs: nghttp2-client
+            env: |
+              TEST_NGHTTP2=1.68.0
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYHTTPD_TARGETS=modules/http2
+              PYTEST_ARGS=--only=pyhttpd
+          # -------------------------------------------------------------------------
           - name: Default
+            # Check the defaults expected for a default build on Linux.
+            config-output: >-
+              SINGLE_LISTEN_UNSERIALIZED_ACCEPT AP_NONBLOCK_WHEN_MULTI_LISTEN
+              AP_ENABLE_V4_MAPPED HAVE_GMTOFF HAVE_FDPASSING HAVE_CRYPT_SHA2
+              HAVE_PCRE2 HAVE_EPOLL_CREATE HAVE_GETTID HAVE_PRCTL HAVE_TIMEGM
+              HAVE_GETLOADAVG HAVE_FOPEN64 HAVE_SETSID HAVE_KILLPG HAVE_INITGROUPS
+              AP_FORCE_EXPORTS HAVE_NGHTTP2 HAVE_CURL
+            # buildconf strips these from the generated header.
+            config-no-output: >-
+              PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING
+              PACKAGE_BUGREPORT PACKAGE_URL
           # -------------------------------------------------------------------------
           - name: All-static modules
             config: --enable-mods-static=reallyall
@@ -276,13 +298,17 @@ jobs:
               BUILDCONFIG="--with-regen-expr"
               MFLAGS=
           # -------------------------------------------------------------------------
-          ### TODO: if: *condition_not_24x
-          - name: Configured w/reduced exports
-            config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd
+          - name: mod_systemd, reduced exports
+            config: --enable-reduced-exports --enable-maintainer-mode --enable-systemd=shared
             pkgs: libsystemd-dev
+            config-output: HAVE_SYSTEMD
+            config-no-output: AP_FORCE_EXPORTS
             env: |
-              SKIP_TESTING=1
               TEST_INSTALL=1
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYHTTPD_TARGETS=modules/arch
+              PYTEST_ARGS=--only=pyhttpd
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
@@ -302,8 +328,9 @@ jobs:
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            config-no-output: HAVE_NGHTTP2 HAVE_CURL
             env: |
-              TEST_OPENSSL3=3.0.21
+              TEST_OPENSSL3=3.0.22
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
@@ -312,7 +339,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.4.6
+              TEST_OPENSSL3=3.4.7
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
@@ -320,7 +347,7 @@ jobs:
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.4.6
+              TEST_OPENSSL3=3.4.7
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -330,7 +357,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.5.7
+              TEST_OPENSSL3=3.5.8
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -340,7 +367,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=4.0.1
+              TEST_OPENSSL3=4.0.2
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -353,10 +380,12 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
-    # JOBID is used to name the artifacts uploaded on failure.  IMAGEOS
-    # is exported so that it is visible to the env context, which does
-    # not see the runner's own $ImageOS.
+    # JOBID names the artifacts uploaded on failure; see "Artifacts" in
+    # README.ci.  IMAGEOS is exported so that it is visible to the env
+    # context, which does not see the runner's own $ImageOS.
     - name: Set environment variables
+      env:
+        MATRIX_NAME: ${{ matrix.name }}
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
         echo "IMAGEOS=$ImageOS" >> $GITHUB_ENV
@@ -364,8 +393,8 @@ jobs:
         # CPUs the runner has, unless the matrix entry set it already
         # (the ap_expr job sets it empty on purpose).
         grep -q '^MFLAGS=' $GITHUB_ENV || echo "MFLAGS=-j`nproc`" >> $GITHUB_ENV
-        echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
-           | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+        echo JOBID=`printf '%s-%s' "${{ strategy.job-index }}" "$MATRIX_NAME" \
+           | tr -cs '[:alnum:]._-' '-'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     # cpanminus and perl-doc are only used to build the CPAN modules for
@@ -387,8 +416,9 @@ jobs:
         path: test/perl-framework
         submodules: true
       if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
-    # Sets $ROOTID, identifying the contents of ~/root, and leaves it
-    # unset for a job which builds no dependencies from source.
+    # Sets $ROOTID, identifying the contents of ~/root - left unset for
+    # a job which builds no dependencies from source - and $PERLID,
+    # identifying the perl which the ~/perl5 modules are built against.
     - name: Resolve dependency versions
       run: ./test/gha-resolve-deps.sh
     # Restored here but saved only once the dependencies have been built
@@ -405,15 +435,15 @@ jobs:
         key: cache-libs-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
     # ~/perl5 does not vary by job: the module list is fixed and the
     # modules are always built with CC=gcc.  It varies only by the perl
-    # ABI (hence the image and architecture) and by the module list
-    # itself, so one cache is shared by every job.  Bump the serial in
-    # the key to force a rebuild against current CPAN.
+    # ABI, which $PERLID identifies, and by the module list itself, so
+    # one cache is shared by every job.  Bump the serial in the key to
+    # force a rebuild against current CPAN.
     - name: Cache CPAN modules
       uses: actions/cache@v5
       if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
       with:
         path: ~/perl5
-        key: cache-cpan-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ hashFiles('test/travis_before_linux.sh') }}
+        key: cache-cpan-1-${{ env.PERLID }}-${{ runner.arch }}-${{ hashFiles('test/travis_before_linux.sh') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
@@ -436,6 +466,18 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Build and test
       run: ./test/travis_run_linux.sh
+    # Checks the config header in the build tree, so this must follow
+    # the build, and is only useful for a non-VPATH job.
+    - if: ${{ matrix.config-output != '' }}
+      name: Check for expected ap_config_auto.h definitions
+      run: for var in ${{ matrix.config-output }}; do
+             grep --color=always "^#define *${var} *1" include/ap_config_auto.h;
+           done
+    - if: ${{ matrix.config-no-output != '' }}
+      name: Check for unexpected ap_config_auto.h definitions
+      run: for var in ${{ matrix.config-no-output }}; do
+             ! grep --color=always "^#define *${var}" include/ap_config_auto.h;
+           done
     - uses: actions/upload-artifact@v7
       if: failure()
       with:

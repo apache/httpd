@@ -51,7 +51,7 @@ The CI scripts use the following environment variables:
 * TEST_SSL - set for job with SSL/TLS testing variants (encrypted
   private keys, session cache backends via redis/memcache/shmcb, etc.)
 
-* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.6"), that
+* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.7"), that
   version of OpenSSL is built from source and used for mod_ssl.
   Requires non-system APR/APR-util (APR_VERSION must also be set).
 
@@ -129,13 +129,22 @@ It is restored before the dependencies are built and saved afterwards,
 only if they built successfully - a failed job would otherwise write a
 half-built tree to a key which can never be updated.
 
-~/perl5 (key "cache-cpan-<serial>-<image>-<arch>-<hash>") holds the
+~/perl5 (key "cache-cpan-<serial>-$PERLID-<arch>-<hash>") holds the
 CPAN modules.  Nothing in it varies per job: the module list is fixed
 and the modules are always built with CC=gcc, so the content depends
-only on the perl ABI - which is determined by the image and the
-architecture - and on the module list itself, hashed from
-travis_before_linux.sh.  One cache is therefore shared by every job.  The .perlver check in the script remains
-as a backstop for a perl upgrade within the same image.
+only on the perl ABI and on the module list itself, hashed from
+travis_before_linux.sh.  One cache is therefore shared by every job.
+
+$PERLID is a hash of the "perl -V" output, computed by
+gha-resolve-deps.sh, which also logs that output so a change to it can
+be seen.  The image name is deliberately not used: the runner image is
+rebuilt regularly and its name does not change when perl does, so the
+key outlived a perl upgrade which the modules did not.  Each job then
+restored the modules, travis_before_linux.sh discarded them as
+mismatched against the cached .perlver and rebuilt them, and nothing
+was saved - actions/cache does not save on a hit against the primary
+key - so every job rebuilt every module on every run.  The .perlver
+check remains as a backstop, and now reports what differs.
 
 The cached CPAN modules still become gradually stale as versions in
 CPAN move on from whatever was installed for the first build.  Bump
@@ -149,6 +158,35 @@ fresh APR cannot be rebuilt from the cache alone.  This used to be
 handled by always ignoring the cache on such jobs; install_apx() now
 fetches the APR source on demand in that case instead, so no job needs
 to opt out of caching.
+
+Artifacts
+---------
+
+A job which fails uploads its config.log, and the error_log from any
+test run, as artifacts named "config.log-$JOBID" and "error_log-$JOBID".
+
+$JOBID is the matrix index of the job followed by its name, with every
+character upload-artifact rejects - "/" among them - replaced, so job
+zero uploads "error_log-0-Shared-MPMs-event-pool-debug-SSL-TLS-variants".
+
+The index is what makes the name unique.  It cannot collide however the
+matrix changes, including for an entry which sets no name at all,
+whereas hashing a hand-picked subset of the job configuration - as this
+used to do - collides silently as soon as two entries differ only in a
+field which the hash omits.  Two entries already differ only in "os",
+which was never hashed: they stayed apart only because $ImageOS, which
+was, happens to differ on an ARM runner.  The job name is appended
+purely so that an artifact can be matched to the job it came from
+without counting matrix entries; it is not needed for uniqueness, and
+an entry which sets none is still named unambiguously.
+
+The name reaches the shell as $MATRIX_NAME through the step's env
+rather than being interpolated into the script, so that no job name can
+be written which breaks the shell.
+
+The value computed for a job can be read from its log without waiting
+for a failure: it is listed in the environment which the runner prints
+under the "Run" group of every step after the one which sets it.
 
 Travis to Github Actions Migration TODO
 ---------------------------------------

@@ -41,3 +41,14 @@ jobs:
       run: ./test/travis_run_linux.sh
       env:
         TEST_LOGNO: 1
+
+  buildconf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install prerequisites
+      run: sudo apt-get -o Acquire::Retries=5 update &&
+           sudo apt-get install -o Acquire::Retries=5 libapr1-dev libaprutil1-dev
+    - name: Check for autoconf warnings
+      run: ./buildconf --with-apr=/usr/bin/apr-1-config --with-errors

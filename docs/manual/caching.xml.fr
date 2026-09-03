@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1933506 -->
+<!-- English Revision: 1937530 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -495,7 +495,7 @@ Vary: negotiate,accept-language,accept-charset
       <p>En général, le module se configure comme suit :</p>
 
       <highlight language="config">
-CacheRoot   "/var/cache/apache/"
+CacheRoot   "/var/cache/apache"
 CacheEnable disk /
 CacheDirLevels 2
 CacheDirLength 1

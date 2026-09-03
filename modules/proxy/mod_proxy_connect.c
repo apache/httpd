@@ -48,6 +48,7 @@ module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
 typedef struct {
     apr_array_header_t *allowed_connect_ports;
+    int none; /* AllowCONNECT None: disallow CONNECT to all ports */
 } connect_conf;
 
 typedef struct {
@@ -68,9 +69,31 @@ static void *merge_config(apr_pool_t *p, void *basev, void *overridesv)
     connect_conf *base = (connect_conf *) basev;
     connect_conf *overrides = (connect_conf *) overridesv;
 
-    c->allowed_connect_ports = apr_array_append(p,
+    if (overrides->none) {
+        /* "AllowCONNECT None" here disallows all ports regardless of base. */
+        c->allowed_connect_ports =
+            apr_array_copy(p, overrides->allowed_connect_ports);
+        c->none = 1;
+    }
+    else if (apr_is_empty_array(overrides->allowed_connect_ports)) {
+        /* Nothing set here: inherit the base. */
+        c->allowed_connect_ports =
+            apr_array_copy(p, base->allowed_connect_ports);
+        c->none = base->none;
+    }
+    else if (base->none || apr_is_empty_array(base->allowed_connect_ports)) {
+        /* Base was "None" or unset, so the ports set here stand alone; e.g.
+         * "AllowCONNECT 443" in a vhost re-allows that port under a global
+         * "AllowCONNECT None". */
+        c->allowed_connect_ports =
+            apr_array_copy(p, overrides->allowed_connect_ports);
+    }
+    else {
+        /* Two port lists merge as a union, as they always have. */
+        c->allowed_connect_ports = apr_array_append(p,
                                                 base->allowed_connect_ports,
                                                 overrides->allowed_connect_ports);
+    }
 
     return c;
 }
@@ -90,8 +113,21 @@ static const char *
     char *endptr;
     const char *p = arg;
 
+    /* "None" disallows CONNECT to all ports, including the defaults, and
+     * cannot be combined with a port list in the same context. */
+    if (!ap_cstr_casecmp(arg, "None")) {
+        if (!apr_is_empty_array(conf->allowed_connect_ports)) {
+            return "AllowCONNECT: \"None\" cannot be combined with port numbers";
+        }
+        conf->none = 1;
+        return NULL;
+    }
+    if (conf->none) {
+        return "AllowCONNECT: \"None\" cannot be combined with port numbers";
+    }
+
     if (!apr_isdigit(arg[0]))
-        return "AllowCONNECT: port numbers must be numeric";
+        return "AllowCONNECT: port numbers must be numeric or \"None\"";
 
     first = strtol(p, &endptr, 10);
     if (*endptr == '-') {
@@ -118,6 +154,10 @@ static int allowed_port(connect_conf *conf, int port)
 {
     int i;
     port_range *list = (port_range *) conf->allowed_connect_ports->elts;
+
+    if (conf->none) {
+        return 0;
+    }
 
     if (apr_is_empty_array(conf->allowed_connect_ports)) {
         return port == APR_URI_HTTPS_DEFAULT_PORT
@@ -389,7 +429,8 @@ static void ap_proxy_connect_register_hook(apr_pool_t *p)
 static const command_rec cmds[] =
 {
     AP_INIT_ITERATE("AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF,
-     "A list of ports or port ranges which CONNECT may connect to"),
+     "A list of ports or port ranges which CONNECT may connect to, or "
+     "\"None\" to disallow all"),
     {NULL}
 };
 

@@ -514,8 +514,9 @@ ProxyPass "/apps"     "http://127"
 
 <usage>
     <p>Directives placed in <directive type="section">Proxy</directive>
-    sections apply only to matching proxied content using a simple string prefix match against the URL.  Shell-style wildcards are also
-    allowed.</p>
+       sections apply only to matching proxied content using a simple string
+       prefix match against the URL.  Shell-style wildcards are also allowed.
+    </p>
 
     <p>For example, the following will allow only hosts in
     <code>yournetwork.example.com</code> to access content via your proxy
@@ -548,6 +549,14 @@ ProxyPass "/apps"     "http://127"
   Require ip 192.168.0.0/16
 &lt;/Proxy&gt;
    </highlight>
+
+   <note type="warning"><title>Warning</title>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+    </note>
 
     <note><title>Differences from the Location configuration section</title>
       <p>A backend URL matches the configuration section if it begins with the
@@ -611,6 +620,14 @@ proxied resources</description>
     identical to the <directive module="mod_proxy"
     type="section">Proxy</directive> directive, except that it matches URLs
     using <glossary ref="regex">regular expressions</glossary>.</p>
+
+   <note type="warning"><title>Warning</title>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+   </note>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with

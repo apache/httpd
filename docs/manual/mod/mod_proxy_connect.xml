@@ -101,8 +101,16 @@ Port ranges available since Apache 2.3.7.</compatibility>
     <directive>AllowCONNECT</directive> directive to override this default and
     allow connections to the listed ports only.</p>
 
-    <p>Set the value to <code>None</code> to disallow
-    <code>CONNECT</code> requests to all ports, including the defaults.</p>
+    <p>Set the value to <code>None</code> to disallow <code>CONNECT</code>
+    requests to all ports, including the defaults.  <code>None</code> cannot
+    be combined with port numbers in the same context.</p>
+
+    <p>Where <directive>AllowCONNECT</directive> is set in both the main
+    server and a virtual host, the lists of ports are merged, so a virtual
+    host may permit additional ports.  A value of <code>None</code> takes
+    precedence and disallows all ports where it is set; but an inherited
+    <code>None</code> is in turn overridden by an explicit list of ports in a
+    virtual host.</p>
 </usage>
 </directivesynopsis>
 

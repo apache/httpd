@@ -4,7 +4,7 @@ dnl Autoconf 2.50 can not handle substr correctly.  It does have
 dnl AC_HELP_STRING, so let's try to call it if we can.
 dnl Note: this define must be on one line so that it can be properly returned
 dnl as the help string.
-AC_DEFUN([APACHE_HELP_STRING],[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING($1,$2),[  ]$1 substr([                       ],len($1))$2)])dnl
+AC_DEFUN([APACHE_HELP_STRING],[ifdef([AS_HELP_STRING], AS_HELP_STRING($1, $2),[ifelse(regexp(AC_ACVERSION, 2\.1), -1, AC_HELP_STRING($1,$2),[  ]$1 substr([                       ],len($1))$2)])])dnl
 
 dnl APACHE_SUBST(VARIABLE)
 dnl Makes VARIABLE available in generated files
@@ -118,28 +118,6 @@ AC_DEFUN([APACHE_GEN_CONFIG_VARS],[
   for i in $APACHE_VAR_SUBST; do
     eval echo "$i = \$$i" >> build/config_vars.mk
   done
-])
-
-dnl
-dnl APACHE_TYPE_RLIM_T
-dnl
-dnl If rlim_t is not defined, define it to int
-dnl
-AC_DEFUN([APACHE_TYPE_RLIM_T], [
-  AC_CACHE_CHECK([for rlim_t], ac_cv_type_rlim_t, [
-    AC_TRY_COMPILE([
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-], [rlim_t spoon;], [
-      ac_cv_type_rlim_t=yes
-    ],[ac_cv_type_rlim_t=no
-    ])
-  ])
-  if test "$ac_cv_type_rlim_t" = "no" ; then
-      AC_DEFINE(rlim_t, int,
-          [Define to 'int' if <sys/resource.h> doesn't define it for us])
-  fi
 ])
 
 dnl the list of build variables which are available for customization on a
@@ -585,17 +563,17 @@ AC_DEFUN([APACHE_CHECK_OPENSSL],[
       fi
     fi
 
-    AC_MSG_CHECKING([for OpenSSL version >= 0.9.8a])
-    AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
+    AC_CACHE_CHECK([for OpenSSL version >= 0.9.8a], [ap_cv_openssl098a], [
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <openssl/opensslv.h>]],[[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing OpenSSL version"
 #endif
 #if OPENSSL_VERSION_NUMBER < 0x0090801f
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
-#endif],
-      [AC_MSG_RESULT(yes)
-       ac_cv_openssl=yes],
-      [AC_MSG_RESULT(no)])
+#endif]])], [ap_cv_openssl098a=yes], [ap_cv_openssl098a=no])])
+    if test "x$ap_cv_openssl098a" = xyes; then
+       ac_cv_openssl=yes
+    fi
 
     if test "x$ac_cv_openssl" = "xyes"; then
       ap_openssl_libs="${ap_openssl_libs:--lssl -lcrypto} `$apr_config --libs`"
@@ -932,11 +910,8 @@ dnl
 AC_DEFUN([APACHE_CHECK_VOID_PTR_LEN], [
 
 AC_CACHE_CHECK([for void pointer length], [ap_cv_void_ptr_lt_long],
-[AC_TRY_RUN([
-int main(void)
-{
-    return sizeof(void *) < sizeof(long); 
-}], [ap_cv_void_ptr_lt_long=no], [ap_cv_void_ptr_lt_long=yes], 
+[AC_RUN_IFELSE([AC_LANG_PROGRAM([], [return sizeof(void *) < sizeof(long);])],
+    [ap_cv_void_ptr_lt_long=no], [ap_cv_void_ptr_lt_long=yes],
     [ap_cv_void_ptr_lt_long="cross compile - not checked"])])
 
 if test "$ap_cv_void_ptr_lt_long" = "yes"; then
@@ -1078,9 +1053,9 @@ AC_DEFUN([APACHE_CHECK_JANSSON],[
 
     # attempts to include jansson.h fail me. So lets make sure we can at least
     # include its other header file
-    AC_TRY_COMPILE([#include <jansson_config.h>],[],
-      [AC_MSG_RESULT(OK) 
-       ac_cv_jansson=yes], 
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <jansson_config.h>]], [[]])],
+      [AC_MSG_RESULT(OK)
+       ac_cv_jansson=yes],
        [AC_MSG_RESULT(FAILED)])
 
     if test "x$ac_cv_jansson" = "xyes"; then

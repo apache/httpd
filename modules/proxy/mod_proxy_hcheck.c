@@ -617,7 +617,7 @@ static apr_status_t hc_init_baton(baton_t *baton)
 {
     sctx_t *ctx = baton->ctx;
     proxy_worker *worker = baton->worker, *hc;
-    apr_status_t rv = APR_SUCCESS;
+    apr_status_t rv;
     int once = 0;
 
     /*
@@ -637,19 +637,19 @@ static apr_status_t hc_init_baton(baton_t *baton)
 
     baton->hc = hc = hc_get_hcworker(ctx, worker, baton->ptemp);
 
-    /* Try to resolve the worker address once if it's reusable */
+    /* Warm up the address cache once if it's reusable. A failure here is
+     * not fatal: hc_check() runs the real check and accounts for it.
+     */
     if (once && worker->s->is_address_reusable) {
         proxy_conn_rec *backend = NULL;
-        if (hc_get_backend("HCHECK", &backend, hc, ctx)) {
-            rv = APR_EGENERAL;
-        }
+        hc_get_backend("HCHECK", &backend, hc, ctx);
         if (backend) {
             backend->close = 1;
             ap_proxy_release_connection("HCHECK", backend, ctx->s);
         }
     }
 
-    return rv;
+    return APR_SUCCESS;
 }
 
 static apr_status_t hc_check_cping(baton_t *baton, apr_thread_t *thread)
@@ -1025,6 +1025,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                                  tpsize);
                     /* we can continue on without the threadpools */
                     hctp = NULL;
+                    rv = APR_SUCCESS;
                 } else {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03313)
                                  "apr_thread_pool_create() with %d threads succeeded",
@@ -1033,7 +1034,6 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             } else {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s, APLOGNO(03314)
                              "Skipping apr_thread_pool_create()");
-                hctp = NULL;
             }
 #endif
             break;
@@ -1074,10 +1074,13 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                             baton->balancer = balancer;
                             baton->worker = worker;
                             baton->ptemp = ptemp;
-                            if ((rv = hc_init_baton(baton))) {
+                            if (hc_init_baton(baton) != APR_SUCCESS) {
+                                /* Never fail the callback: mod_watchdog stops
+                                 * calling it for the life of the child.
+                                 */
                                 worker->s->updated = now;
                                 apr_pool_destroy(ptemp);
-                                return rv;
+                                continue;
                             }
 
 #if HC_USE_THREADS

@@ -469,7 +469,7 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>En g&eacute;n&eacute;ral, le module se configure comme suit :</p>
 
-      <pre class="prettyprint lang-config">CacheRoot   "/var/cache/apache/"
+      <pre class="prettyprint lang-config">CacheRoot   "/var/cache/apache"
 CacheEnable disk /
 CacheDirLevels 2
 CacheDirLength 1</pre>
