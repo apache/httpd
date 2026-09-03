@@ -24,7 +24,40 @@
 #include "h3_os.h"
 #include "h3_socket.h"
 
-apr_status_t h3_socket_open(apr_port_t port, apr_pool_t* pool, int* out_fd)
+static void tune_buffers(apr_socket_t* sock, apr_size_t want, apr_port_t port, apr_pool_t* pool)
+{
+    if (want == 0 || want > (apr_size_t)APR_INT32_MAX)
+    {
+        return;
+    }
+    apr_os_sock_t os_sock = -1;
+    int have_fd = apr_os_sock_get(&os_sock, sock) == APR_SUCCESS;
+    static const apr_int32_t opts[] = {APR_SO_RCVBUF, APR_SO_SNDBUF};
+    static const int sys_opts[] = {SO_RCVBUF, SO_SNDBUF};
+    static const char* const names[] = {"SO_RCVBUF", "SO_SNDBUF"};
+    for (int i = 0; i < 2; i++)
+    {
+        if (apr_socket_opt_set(sock, opts[i], (apr_int32_t)want) != APR_SUCCESS)
+        {
+            ap_log_perror(APLOG_MARK, APLOG_INFO, 0, pool, "h3_socket_open(%d): %s could not be set to %" APR_SIZE_T_FMT " bytes, keeping the OS default", (int)port, names[i], want);
+            continue;
+        }
+        int got = 0;
+        socklen_t got_len = sizeof(got);
+        if (have_fd && getsockopt(os_sock, SOL_SOCKET, sys_opts[i], (char*)&got, &got_len) == 0 && got > 0)
+        {
+#if defined(__linux__)
+            got /= 2; /* Linux stores, and reports back, twice what was asked for. */
+#endif
+            if ((apr_size_t)got < want)
+            {
+                ap_log_perror(APLOG_MARK, APLOG_INFO, 0, pool, "h3_socket_open(%d): %s granted %d bytes of the %" APR_SIZE_T_FMT " requested; raise the OS limit to grant more", (int)port, names[i], got, want);
+            }
+        }
+    }
+}
+
+apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int* out_fd)
 {
     CHECK(pool);
     CHECK(out_fd);
@@ -36,6 +69,7 @@ apr_status_t h3_socket_open(apr_port_t port, apr_pool_t* pool, int* out_fd)
         return rv;
     }
     apr_socket_opt_set(sock, APR_IPV6_V6ONLY, 0);
+    tune_buffers(sock, buffer_size, port, pool);
     apr_sockaddr_t* addr = NULL;
     rv = apr_sockaddr_info_get(&addr, NULL, APR_INET6, port, 0, pool);
     if (rv != APR_SUCCESS)

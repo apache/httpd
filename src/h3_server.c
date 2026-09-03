@@ -51,7 +51,7 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
     while (!child_stopping)
     {
         int udp_fd = -1;
-        apr_status_t rv = h3_socket_open(args->conf->h3_port, args->pchild, &udp_fd);
+        apr_status_t rv = h3_socket_open(args->conf->h3_port, args->conf->h3_socket_buffer_size, args->pchild, &udp_fd);
         if (rv == APR_EAGAIN)
         {
             apr_sleep(apr_time_from_msec(H3_PORT_ACQUIRE_RETRY_MS));
@@ -109,7 +109,7 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     }
 
     int udp_fd = -1;
-    apr_status_t rv = h3_socket_open(conf->h3_port, pchild, &udp_fd);
+    apr_status_t rv = h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pchild, &udp_fd);
     if (rv == APR_EAGAIN)
     {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, vhost, "h3_child_init: pid=%d port already owned, will keep retrying in background", h3_getpid());
