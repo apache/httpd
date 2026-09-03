@@ -733,8 +733,9 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Directives placed in <code class="directive">&lt;Proxy&gt;</code>
-    sections apply only to matching proxied content using a simple string prefix match against the URL.  Shell-style wildcards are also
-    allowed.</p>
+       sections apply only to matching proxied content using a simple string
+       prefix match against the URL.  Shell-style wildcards are also allowed.
+    </p>
 
     <p>For example, the following will allow only hosts in
     <code>yournetwork.example.com</code> to access content via your proxy
@@ -753,6 +754,14 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
   SetOutputFilter INCLUDES
 &lt;/Proxy&gt;</pre>
 
+
+   <div class="warning"><h3>Warning</h3>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+    </div>
 
     <div class="note"><h3>Differences from the Location configuration section</h3>
       <p>A backend URL matches the configuration section if it begins with the
@@ -980,6 +989,14 @@ proxied resources</td></tr>
     <p>The <code class="directive">&lt;ProxyMatch&gt;</code> directive is
     identical to the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> directive, except that it matches URLs
     using <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>.</p>
+
+   <div class="warning"><h3>Warning</h3>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+   </div>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
