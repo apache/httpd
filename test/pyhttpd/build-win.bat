@@ -97,8 +97,8 @@ if NOT EXIST "%HTTPD_SRC%\include\httpd.h" (
     echo "ERROR: httpd source not found after clone."
     exit /b 1
 )
-cd /d "%HTTPD_SRC%\test\pyhttpd"
 :src_ok
+cd /d "%HTTPD_SRC%\test\pyhttpd"
 
 SET CWD=%CD%
 SET "CWD=%CWD:\=/%"
@@ -228,7 +228,8 @@ if NOT EXIST vcpkg\ (
 
 SET VCPKG_ROOT=%CWD%\vcpkg
 @REM For some reason using the manifest doesn't install the default-features
-vcpkg.exe install --triplet x64-windows apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
+@REM use full path and not bare vcpkg.exe
+%VCPKG_ROOT%\vcpkg.exe install --triplet x64-windows apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
 
 POPD
 
