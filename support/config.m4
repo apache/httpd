@@ -146,17 +146,21 @@ AC_ARG_ENABLE(a2md,APACHE_HELP_STRING(--enable-a2md,Build the a2md command-line 
   enable_a2md="auto"
 ])
 
-# Configure or check which of the non-portable support programs can be enabled.
+# Configure or check which of the optional sbin support programs can be
+# enabled.  support/a2md/config2.m4 may append to these lists; the
+# EXTRA_CHECK_BINARIES are symlinked into check/bin for the test suite.
 
-NONPORTABLE_SUPPORT=""
+EXTRA_SBIN_PROGRAMS=""
+EXTRA_CHECK_BINARIES=""
 case $host in
     *mingw*)
         ;;
     *)
-        NONPORTABLE_SUPPORT="checkgid fcgistarter"
+        EXTRA_SBIN_PROGRAMS="checkgid fcgistarter"
         ;;
 esac
-APACHE_SUBST(NONPORTABLE_SUPPORT)
+APACHE_SUBST(EXTRA_SBIN_PROGRAMS)
+APACHE_SUBST(EXTRA_CHECK_BINARIES)
 
 # Configure the ulimit -n command used by apachectl.
 
