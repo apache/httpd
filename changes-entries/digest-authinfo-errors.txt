@@ -1,0 +1,4 @@
+  *) mod_auth_digest: Add the Authentication-Info response header to
+     err_headers_out so it survives an error response, letting a client
+     using one-time nonces continue after a 4xx rather than being
+     re-challenged as stale.  [Joe Orton]
