@@ -174,6 +174,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 718
      +1: covener, jim, jorton
 
+  *) mod_proxy_hcheck: Fix 503 Errors and High CPU/Memory. BUGZ70192
+     trunk patch:  https://svn.apache.org/r1937678
+     2.4.x: svn merge -c 1937678 ^/httpd/httpd/trunk .
+     +1: jim, jorton, covener
+
+  *) mpm_unix: OpenBSD doesn't support connect() to INADDR_ANY,
+           fallback to 127.0.0.1 if lp->bind_addr is INADDR_ANY
+           and connect() fails with EINVAL
+     trunk patch:  https://svn.apache.org/r1936893
+     2.4.x: svn merge -c 1936893 ^/httpd/httpd/trunk
+    +1: gbechis, jorton, covener
+
+
 ------------------------------------------------------------------------
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -198,18 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: too many
       2.4.x patch: https://github.com/apache/httpd/pull/712.patch
                    (copy file and restore maxNestingDepth)
-
-  *) mod_proxy_hcheck: Fix 503 Errors and High CPU/Memory. BUGZ70192
-     trunk patch:  https://svn.apache.org/r1937678
-     2.4.x: svn merge -c 1937678 ^/httpd/httpd/trunk .
-     +1: jim, jorton
-
-  *) mpm_unix: OpenBSD doesn't support connect() to INADDR_ANY,
-           fallback to 127.0.0.1 if lp->bind_addr is INADDR_ANY
-           and connect() fails with EINVAL
-     trunk patch:  https://svn.apache.org/r1936893
-     2.4.x: svn merge -c 1936893 ^/httpd/httpd/trunk
-    +1: gbechis, jorton
+      +1 covener,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
