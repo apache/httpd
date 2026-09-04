@@ -269,6 +269,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 {
     unsigned long idx;
     apr_status_t   sts;
+    client_id_t    seed;
 
     /* set up client list */
 
@@ -343,7 +344,15 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
     }
-    *client_id_counter = 1;
+    /* Start the ids at a random point rather than at 1. This segment does
+     * not survive a restart, but the nonces naming its entries do, since the
+     * secret they are hashed with is retained; ids restarting from 1 too
+     * would hand a returning client's id straight back out, so that client
+     * would be checked against whichever new client now held it. The ids are
+     * not secret - they are sent in the clear as the opaque - this only has
+     * to make them distinct across a restart. */
+    ap_random_insecure_bytes(&seed, sizeof seed);
+    *client_id_counter = seed;
 
     /* setup one-time-nonce counter */
 
@@ -400,9 +409,10 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
      * child of the previous generation keeps the mapping it inherited
      * until it exits, so the tables are not pulled out from under it.
      *
-     * Per-client state therefore does not survive a restart. A client
-     * which returns afterwards is simply unknown, and is re-challenged
-     * with stale=true at the cost of one extra request.
+     * Per-client state therefore does not survive a restart, and neither
+     * does the client id space; see the seeding in initialize_tables().
+     * A client which returns afterwards is simply unknown, and is
+     * re-challenged with stale=true at the cost of one extra request.
      */
     return initialize_tables(s, p);
 }
