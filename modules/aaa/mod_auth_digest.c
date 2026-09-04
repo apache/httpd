@@ -1297,6 +1297,14 @@ static int note_digest_auth_failure(request_rec *r,
         domain = conf->uri_list;
     }
 
+    /* A challenge supersedes any Authentication-Info added at fixups
+     * for this request, e.g. when a handler notes an auth failure
+     * after the user was authenticated: the client must not be given
+     * both a nextnonce and a new nonce. */
+    apr_table_unset(r->err_headers_out,
+                    (PROXYREQ_PROXY == r->proxyreq)
+                        ? "Proxy-Authentication-Info" : "Authentication-Info");
+
     apr_table_mergen(r->err_headers_out,
                      (PROXYREQ_PROXY == r->proxyreq)
                          ? "Proxy-Authenticate" : "WWW-Authenticate",
@@ -1878,7 +1886,10 @@ static int add_auth_info(request_rec *r)
     }
 
     if (ai && ai[0]) {
-        apr_table_mergen(r->headers_out,
+        /* This must use ->err_headers_out so it survives an error
+         * response, else a one-time-nonce client loses the nextnonce
+         * and is stale-challenged on its next request. */
+        apr_table_mergen(r->err_headers_out,
                          (PROXYREQ_PROXY == r->proxyreq)
                              ? "Proxy-Authentication-Info"
                              : "Authentication-Info",
