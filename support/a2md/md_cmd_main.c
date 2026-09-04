@@ -436,6 +436,7 @@ int main(int argc, const char *const *argv)
         fprintf(stderr, "error initializing pool\n");
         return 1;
     }
+    apr_allocator_owner_set(allocator, p);
     
     md_http_use_implementation(md_curl_get_impl(p));
     md_acme_init(p, BASE_VERSION, 1);
@@ -462,5 +463,7 @@ int main(int argc, const char *const *argv)
         fprintf(stdout, "%s\n", out ? out : "<failed to serialize!>");
     }
     
+    apr_pool_destroy(p);
+
     return (rv == APR_SUCCESS)? 0 : 1;
 }

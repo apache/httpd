@@ -454,6 +454,9 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
              * Modifying the SSL on a slave connection is no good.
              */
             apr_table_setn(r->notes, "ssl-renegotiate-forbidden", "cipher-suite");
+            if (cipher_list_old) {
+                sk_SSL_CIPHER_free(cipher_list_old);
+            }
             return HTTP_FORBIDDEN;
         }
 
