@@ -44,6 +44,7 @@
  *     opposite of sharing: the two would have to be configured explicitly.
  */
 
+#include "apu_version.h"
 #include "apr_sha1.h"
 #include "apr_base64.h"
 #include "apr_lib.h"
@@ -82,6 +83,21 @@
 #error mod_auth_digest requires APR with random and shared memory support
 #endif
 
+/* The nonce is authenticated with a keyed hash, so that a client cannot
+ * forge one. apr_siphash() is a MAC, and is what that calls for; it is
+ * available in APU 1.6 / APR 2.0 and later. Older APR falls back to the
+ * original SHA-1 of the secret followed by the message, which is not a
+ * sound construction - a Merkle-Damgard hash keyed by a prefix can be
+ * extended without the key - but which is not attackable here, since the
+ * padding such an extension needs cannot survive the opaque being parsed
+ * as a hex number before the nonce is checked. */
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
+#define DIGEST_SIPHASH_NONCE 1
+#include "apr_siphash.h"
+#else
+#define DIGEST_SIPHASH_NONCE 0
+#endif
+
 /* struct to hold the configuration info */
 
 typedef struct digest_config_struct {
@@ -99,9 +115,16 @@ typedef struct digest_config_struct {
 #define NEXTNONCE_DELTA apr_time_from_sec(30)
 
 /* The server nonce has fixed length and is the concatenation of:
- *    base64(apr_time_t timestamp) + hex(SHA1(realm+time[+opaque])) */
+ *    base64(apr_time_t timestamp) + hex(keyed hash of realm+time[+opaque])
+ * The hash is half as long with siphash, which produces 64 bits: enough for
+ * a value which can only be attacked by presenting it to the server, there
+ * being no way to test a candidate offline. */
 #define NONCE_TIME_LEN  (((sizeof(apr_time_t)+2)/3)*4)
+#if DIGEST_SIPHASH_NONCE
+#define NONCE_HASH_LEN  (2*APR_SIPHASH_DSIZE)
+#else
 #define NONCE_HASH_LEN  (2*APR_SHA1_DIGESTSIZE)
+#endif
 #define NONCE_LEN       (int )(NONCE_TIME_LEN + NONCE_HASH_LEN)
 /* Evaluates to true if nonce string is valid. Since the time part of
  * the nonce is a base64 encoding of an apr_time_t (8 bytes), it
@@ -112,6 +135,10 @@ typedef struct digest_config_struct {
 
 #define SECRET_LEN          20
 #define RETAINED_DATA_ID    "mod_auth_digest"
+
+#if DIGEST_SIPHASH_NONCE && SECRET_LEN < APR_SIPHASH_KSIZE
+#error the secret is too short to key siphash
+#endif
 
 
 /* client list definitions */
@@ -1093,11 +1120,31 @@ static int init_digest_request(request_rec *r)
 
 /* Writes the hash part of the server nonce to hash, which must be of
  * minimum size (NONCE_HASH_LEN+1). */
-static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, const char *opaque,
+static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
+                           const char *timestr, const char *opaque,
                            const server_rec *server,
-                           const digest_config_rec *conf, 
+                           const digest_config_rec *conf,
                            const char *realm)
 {
+#if DIGEST_SIPHASH_NONCE
+    unsigned char mac[APR_SIPHASH_DSIZE];
+    const char *msg;
+
+    /* siphash takes the whole message at once, having no streaming
+     * interface, so the fields are joined here rather than fed in one at a
+     * time. The realm is length-prefixed, which keeps the boundaries
+     * between the fields unambiguous whatever they contain: without it a
+     * realm ending in what another realm's timestamp begins with would
+     * hash the same. An absent opaque is the empty string, which is what
+     * the challenge side passes for it too. */
+    msg = apr_psprintf(p, "%" APR_SIZE_T_FMT ":%s:%s:%s",
+                       (apr_size_t)strlen(realm), realm, timestr,
+                       opaque ? opaque : "");
+
+    apr_siphash24_auth(mac, msg, strlen(msg), secret);
+
+    ap_bin2hex(mac, APR_SIPHASH_DSIZE, hash);
+#else
     unsigned char sha1[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t ctx;
 
@@ -1113,6 +1160,7 @@ static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, con
     apr_sha1_final(sha1, &ctx);
 
     ap_bin2hex(sha1, APR_SHA1_DIGESTSIZE, hash);
+#endif
 }
 
 
@@ -1136,7 +1184,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         t.time = apr_atomic_inc32(otn_counter) + 1;
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
-    gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
+    gen_nonce_hash(p, nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
 
     return nonce;
 }
@@ -1415,7 +1463,8 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
     apr_base64_decode_binary(nonce_time.arr, resp->nonce);
-    gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf, ap_auth_name(r));
+    gen_nonce_hash(r->pool, hash, resp->nonce, resp->opaque, r->server, conf,
+                   ap_auth_name(r));
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
 
