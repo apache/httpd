@@ -1047,6 +1047,42 @@ IF(OPENSSL_FOUND)
   TARGET_LINK_LIBRARIES(abs ${EXTRA_LIBS} ${APR_LIBRARIES} ${OPENSSL_LIBRARIES} Ws2_32.lib)
 ENDIF()
 
+IF(OPENSSL_FOUND AND CURL_FOUND AND JANSSON_FOUND)
+  SET(a2md_md_lib_sources
+    modules/md/md_acme.c               modules/md/md_acme_acct.c
+    modules/md/md_acme_authz.c         modules/md/md_acme_drive.c
+    modules/md/md_acmev2_drive.c       modules/md/md_event.c
+    modules/md/md_acme_order.c         modules/md/md_core.c
+    modules/md/md_curl.c               modules/md/md_crypt.c
+    modules/md/md_http.c               modules/md/md_json.c
+    modules/md/md_jws.c                modules/md/md_log.c
+    modules/md/md_result.c             modules/md/md_reg.c
+    modules/md/md_status.c             modules/md/md_store.c
+    modules/md/md_store_fs.c           modules/md/md_time.c
+    modules/md/md_ocsp.c               modules/md/md_util.c
+  )
+  SET(a2md_cmd_sources
+    support/a2md/md_cmd_main.c
+    support/a2md/md_cmd_acme.c
+    support/a2md/md_cmd_reg.c
+    support/a2md/md_cmd_store.c
+  )
+  ADD_EXECUTABLE(a2md ${a2md_cmd_sources} ${a2md_md_lib_sources} build/win32/httpd.rc)
+  SET(install_targets ${install_targets} a2md)
+  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:a2md>)
+  SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES}
+    ${OPENSSL_INCLUDE_DIR} ${CURL_INCLUDE_DIR} ${JANSSON_INCLUDE_DIR}
+    ${CMAKE_SOURCE_DIR}/modules/md ${CMAKE_SOURCE_DIR}/support/a2md)
+  SET_TARGET_PROPERTIES(a2md PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
+  TARGET_COMPILE_DEFINITIONS(a2md PRIVATE
+      "APP_FILE"
+      "LONG_NAME=Apache HTTP Server a2md program"
+      "BIN_NAME=a2md.exe"
+  )
+  TARGET_LINK_LIBRARIES(a2md ${EXTRA_LIBS} ${APR_LIBRARIES}
+    ${OPENSSL_LIBRARIES} ${CURL_LIBRARIES} ${JANSSON_LIBRARIES})
+ENDIF()
+
 # Unit Test Suite
 IF(CHECK_FOUND)
   # Get all of the test cases.
@@ -1161,22 +1197,45 @@ ENDIF()
 INSTALL(DIRECTORY DESTINATION logs)
 INSTALL(DIRECTORY DESTINATION cgi-bin)
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/error\" \"${CMAKE_INSTALL_PREFIX}/error\" ifdestmissing)")
-
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot\" \"${CMAKE_INSTALL_PREFIX}/htdocs\" ifdestmissing)")
-
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_CURRENT_SOURCE_DIR}/docs/icons\" \"${CMAKE_INSTALL_PREFIX}/icons\" ifdestmissing)")
+# Copy error, htdocs, icons only if the destination dir doesn't exist yet
+# (same semantics as cpR_noreplace.pl ifdestmissing, without Perl)
+INSTALL(CODE "
+    if(NOT IS_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/error\")
+        file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/docs/error/\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/error\")
+    endif()
+")
+INSTALL(CODE "
+    if(NOT IS_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/htdocs\")
+        file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/docs/docroot/\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/htdocs\")
+    endif()
+")
+INSTALL(CODE "
+    if(NOT IS_DIRECTORY \"${CMAKE_INSTALL_PREFIX}/icons\")
+        file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/docs/icons/\" DESTINATION \"${CMAKE_INSTALL_PREFIX}/icons\")
+    endif()
+")
 
 # Copy generated .conf files from the build directory to the install,
-# without overwriting stuff already there.
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND perl \"${CMAKE_CURRENT_SOURCE_DIR}/build/cpR_noreplace.pl\" \"${CMAKE_BINARY_DIR}/conf\" \"${CMAKE_INSTALL_PREFIX}/conf\")")
+# without overwriting stuff already there (no Perl dependency).
+INSTALL(CODE "
+    file(GLOB_RECURSE _conf_files \"${CMAKE_BINARY_DIR}/conf/*\")
+    foreach(_f \${_conf_files})
+        # Skip conf/original/ — handled separately below
+        string(FIND \"\${_f}\" \"/conf/original/\" _is_original)
+        if(NOT \${_is_original} EQUAL -1)
+            continue()
+        endif()
+        file(RELATIVE_PATH _rel \"${CMAKE_BINARY_DIR}/conf\" \"\${_f}\")
+        set(_dest \"${CMAKE_INSTALL_PREFIX}/conf/\${_rel}\")
+        if(NOT EXISTS \"\${_dest}\")
+            get_filename_component(_dest_dir \"\${_dest}\" DIRECTORY)
+            file(COPY \"\${_f}\" DESTINATION \"\${_dest_dir}\")
+        endif()
+    endforeach()
+")
 # But conf/original is supposed to be overwritten.
-# Note: FILE(TO_NATIVE_PATH ...) leaves the backslashes unescaped, which
-#       generates warnings.  Just do it manually since this build only supports
-#       Windows anyway.
-STRING(REPLACE "/" "\\\\" native_src ${CMAKE_BINARY_DIR}/conf/original)
-STRING(REPLACE "/" "\\\\" native_dest ${CMAKE_INSTALL_PREFIX}/conf/original)
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND xcopy \"${native_src}\" \"${native_dest}\" /Q /S /Y)")
+INSTALL(DIRECTORY "${CMAKE_BINARY_DIR}/conf/original/"
+        DESTINATION conf/original)
 
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" buildtype)
 MESSAGE(STATUS "")
