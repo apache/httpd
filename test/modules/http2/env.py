@@ -46,16 +46,16 @@ class H2TestSetup(HttpdTestSetup):
 
     def _setup_data_1k_1m(self):
         s90 = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
-        with open(os.path.join(self.env.gen_dir, "data-1k"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-1k"), 'w', newline='') as f:
             for i in range(10):
                 f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.env.gen_dir, "data-10k"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-10k"), 'w', newline='') as f:
             for i in range(100):
                 f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.env.gen_dir, "data-100k"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-100k"), 'w', newline='') as f:
             for i in range(1000):
                 f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.env.gen_dir, "data-1m"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-1m"), 'w', newline='') as f:
             for i in range(10000):
                 f.write(f"{i:09d}-{s90}")
         test1_docs = os.path.join(self.env.server_docs_dir, 'test1')

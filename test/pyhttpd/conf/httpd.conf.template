@@ -66,4 +66,9 @@ RequestReadTimeout header=10 body=10
     </IfModule>
 </IfModule>
 
+<IfModule mpm_winnt_module>
+    <IfModule mod_cgi.c>
+        ScriptInterpreterSource Script
+    </IfModule>
+</IfModule>
 

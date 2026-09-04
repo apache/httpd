@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sys
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -72,6 +73,8 @@ class TestH2ProxyTwisted:
     def test_h2_601_05_echo_fail_many(self, env):
         if not env.httpd_is_at_least('2.4.58'):
             pytest.skip(f'needs httpd 2.4.58')
+        if sys.platform == "win32":
+            pytest.skip("command line too long for Windows (200 parallel curl requests)")
         if not env.curl_is_at_least('8.0.0'):
             pytest.skip(f'need at least curl v8.0.0 for this')
         count = 200
