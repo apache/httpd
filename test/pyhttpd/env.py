@@ -920,15 +920,31 @@ class HttpdTestEnv:
             log.warning("port still in use after stop")
         return 0
 
+    # Logged by every MPM once the new generation is serving.
+    RE_RESUMING = re.compile(r'.* configured -- resuming normal operations$')
+
+    def _apache_signal_restart(self, cmd: str) -> int:
+        """Have the running parent restart, gracefully or not, and wait
+        for the new generation to be serving.  "httpd -k restart" only
+        sends the signal; a request answered straight afterwards may have
+        been served by the old generation, with the old config, and about
+        to be killed."""
+        log_pos = self.httpd_error_log.current_pos()
+        r = self._run_apachectl(cmd)
+        if r.exit_code != 0:
+            return r.exit_code
+        timeout = timedelta(seconds=10)
+        if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
+                                             timeout=timeout.total_seconds()):
+            log.warning(f"no restart logged after '{cmd}' within {timeout}")
+            return -1
+        return 0 if self.is_live(self._http_base, timeout=timeout) else -1
+
     def apache_reload(self):
         if self.isWindows:
             self._win_stop()
             return self._win_start()
-        r = self._run_apachectl("graceful")
-        if r.exit_code == 0:
-            timeout = timedelta(seconds=10)
-            return 0 if self.is_live(self._http_base, timeout=timeout) else -1
-        return r.exit_code
+        return self._apache_signal_restart("graceful")
 
     def apache_restart(self):
         if self.isWindows:
@@ -976,11 +992,7 @@ class HttpdTestEnv:
 
     def apache_hard_restart(self) -> int:
         """Restart without the "graceful" flag, so the MPM starts over."""
-        r = self._run_apachectl("restart")
-        if r.exit_code == 0:
-            return 0 if self.is_live(self._http_base,
-                                     timeout=timedelta(seconds=10)) else -1
-        return r.exit_code
+        return self._apache_signal_restart("restart")
 
     def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
         # Where PidFile lands depends on how the httpd under test resolves
