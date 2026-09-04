@@ -49,6 +49,14 @@ exec sed "
 /^MPM_MODULES/d
 /^ENABLED_MPM_MODULE/d
 /^DSO_MODULES/d
+/^ENABLED_DSO_MODULES/d
+/^LOAD_ALL_MODULES/d
+/^EXTRA_SBIN_PROGRAMS/d
+/^EXTRA_CHECK_BINARIES/d
+/_SRCLIB_DIRS/d
+/^UNITTEST_/d
+/^davlockdb/d
+/^other_targets/d
 /^MODULE_/d
 /^PORT/d
 /^SSLPORT/d
