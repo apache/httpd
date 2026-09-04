@@ -92,6 +92,17 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     nghttp3_conn_set_max_concurrent_streams(session->ngh3, conf->h3_max_concurrent_streams);
     nghttp3_conn_set_max_client_streams_bidi(session->ngh3, conf->h3_max_concurrent_streams);
 
+    h3q_tls_info tls = {0};
+    if (h3q_conn_tls_info(qconn, &tls))
+    {
+        session->tls_env.protocol = tls.protocol ? apr_pstrdup(pool, tls.protocol) : NULL;
+        session->tls_env.cipher = tls.cipher ? apr_pstrdup(pool, tls.cipher) : NULL;
+        session->tls_env.cipher_usekeysize = apr_psprintf(pool, "%d", tls.cipher_bits);
+        session->tls_env.cipher_algkeysize = apr_psprintf(pool, "%d", tls.cipher_alg_bits);
+        session->tls_env.cipher_export = "false";
+        session->tls_env.session_resumed = tls.resumed ? "Resumed" : "Initial";
+    }
+
     *psession = session;
     return APR_SUCCESS;
 }

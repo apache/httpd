@@ -66,8 +66,20 @@ int h3_hook_fixups(request_rec* r)
 
     if (IS_H3_REQUEST(r))
     {
-        /* mod_ssl does not manage this connection, so it sets no TLS environment. */
+        /* mod_ssl does not manage this connection, so it publishes no TLS environment. */
         apr_table_setn(r->subprocess_env, "HTTPS", "on");
+
+        h3_conn_ctx_t* ctx = ap_get_module_config(r->request_config, &http3_module);
+        const h3_tls_env* tls = (ctx && ctx->stream && ctx->stream->session) ? &ctx->stream->session->tls_env : NULL;
+        if (tls && tls->protocol)
+        {
+            apr_table_setn(r->subprocess_env, "SSL_PROTOCOL", tls->protocol);
+            apr_table_setn(r->subprocess_env, "SSL_CIPHER", tls->cipher);
+            apr_table_setn(r->subprocess_env, "SSL_CIPHER_USEKEYSIZE", tls->cipher_usekeysize);
+            apr_table_setn(r->subprocess_env, "SSL_CIPHER_ALGKEYSIZE", tls->cipher_algkeysize);
+            apr_table_setn(r->subprocess_env, "SSL_CIPHER_EXPORT", tls->cipher_export);
+            apr_table_setn(r->subprocess_env, "SSL_SESSION_RESUMED", tls->session_resumed);
+        }
     }
 
     h3_server_conf* conf = ap_get_module_config(r->server->module_config, &http3_module);

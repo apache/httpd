@@ -35,11 +35,24 @@ typedef struct h3_session h3_session;
 typedef struct h3_stream h3_stream;
 typedef struct h3_response_chunk h3_response_chunk;
 
+/// mod_ssl-compatible TLS environment for one connection, all members are NULL when TLS details are unavailable.
+typedef struct h3_tls_env
+{
+    const char* protocol;
+    const char* cipher;
+    const char* cipher_usekeysize;
+    const char* cipher_algkeysize;
+    const char* cipher_export;
+    const char* session_resumed;
+} h3_tls_env;
+
 struct h3_session
 {
     conn_rec* c;
     server_rec* s;
     apr_pool_t* pool;
+
+    h3_tls_env tls_env;
 
     h3q_conn* qconn;
     nghttp3_conn* ngh3;

@@ -24,6 +24,24 @@
 
 #include "quic/h3q.h"
 
+/// Negotiated TLS parameters of one connection
+typedef struct h3q_tls_info
+{
+    const char* protocol;
+    const char* cipher;
+    int cipher_bits;
+    int cipher_alg_bits;
+    unsigned resumed : 1;
+} h3q_tls_info;
+
+/**
+ * Read the negotiated TLS parameters of a connection.
+ * @param conn Connection to query; NULL reports failure.
+ * @param out  Filled in on success; untouched otherwise.
+ * @return 1 when @p out was filled, 0 when the cipher is not yet known.
+ */
+int h3q_conn_tls_info(h3q_conn* conn, h3q_tls_info* out);
+
 /**
  * Apply the stream modes, incoming-stream policy and idle timeout a freshly
  * accepted connection needs before its handshake is driven.
