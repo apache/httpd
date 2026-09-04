@@ -110,7 +110,7 @@ class HttpdTestSetup:
 
     def _make_conf(self):
         # remove anything from another run/test suite
-        conf_dest_dir = os.path.join(self.env.server_dir, 'conf')
+        conf_dest_dir = f"{self.env.server_dir}/conf"
         if os.path.isdir(conf_dest_dir):
             shutil.rmtree(conf_dest_dir)
         for d in self._source_dirs:
