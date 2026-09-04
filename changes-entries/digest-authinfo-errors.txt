@@ -1,0 +1,3 @@
+  *) mod_auth_digest: With one-time nonces (AuthDigestNonceLifetime 0),
+     stop needlessly re-challenging a client after an error response.
+     [Joe Orton]
