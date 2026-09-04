@@ -1194,11 +1194,8 @@ static int note_digest_auth_failure(request_rec *r,
                                     const digest_config_rec *conf,
                                     digest_header_rec *resp, int stale)
 {
-    const char   *qop, *opaque = NULL, *opaque_param = "", *domain, *nonce;
-    client_id_t   client_key = 0;
-
-    /* Setup qop */
-    qop = ", qop=\"auth\"";
+    const char   *opaque = NULL, *opaque_param = "", *domain, *nonce;
+    client_id_t   client_key;
 
     /* Setup opaque */
 
@@ -1231,7 +1228,6 @@ static int note_digest_auth_failure(request_rec *r,
          * here: the client may not even see this challenge (it may have
          * been triggered by somebody else quoting its opaque), and it is
          * tied to the nonce it was counted for in any case. */
-        client_key = resp->opaque_num;
         opaque = resp->opaque;
     }
 
@@ -1257,11 +1253,12 @@ static int note_digest_auth_failure(request_rec *r,
                      (PROXYREQ_PROXY == r->proxyreq)
                          ? "Proxy-Authenticate" : "WWW-Authenticate",
                      apr_psprintf(r->pool, "Digest realm=\"%s\", "
-                                  "nonce=\"%s\", algorithm=%s%s%s%s%s",
+                                  "nonce=\"%s\", algorithm=%s%s%s%s"
+                                  ", qop=\"auth\"",
                                   ap_auth_name(r), nonce, conf->algorithm,
                                   opaque_param,
                                   domain ? domain : "",
-                                  stale ? ", stale=true" : "", qop));
+                                  stale ? ", stale=true" : ""));
 
     return HTTP_UNAUTHORIZED;
 }
