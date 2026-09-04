@@ -164,6 +164,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
+  *) misc trunk PR's from arshsmith1
+     Trunk version of patch:
+        https://svn.apache.org/r1937525
+        https://svn.apache.org/r1937527
+        https://svn.apache.org/r1937528
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/718.diff
+     Can be applied via apply_backport_pr.sh 718
+     +1: covener, jim, jorton
+
 ------------------------------------------------------------------------
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -189,28 +199,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://github.com/apache/httpd/pull/712.patch
                    (copy file and restore maxNestingDepth)
 
-
-  *) misc trunk PR's from arshsmith1
-     Trunk version of patch:
-        https://svn.apache.org/r1937525
-        https://svn.apache.org/r1937527
-        https://svn.apache.org/r1937528
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/718.diff
-     Can be applied via apply_backport_pr.sh 718
-     +1: covener, jim
-
   *) mod_proxy_hcheck: Fix 503 Errors and High CPU/Memory. BUGZ70192
-     trunk patch:  https://svn.apache.org/1937678
+     trunk patch:  https://svn.apache.org/r1937678
      2.4.x: svn merge -c 1937678 ^/httpd/httpd/trunk .
-     +1 jim,
+     +1: jim, jorton
 
   *) mpm_unix: OpenBSD doesn't support connect() to INADDR_ANY,
            fallback to 127.0.0.1 if lp->bind_addr is INADDR_ANY
            and connect() fails with EINVAL
      trunk patch:  https://svn.apache.org/r1936893
      2.4.x: svn merge -c 1936893 ^/httpd/httpd/trunk
-    +1 gbechis
+    +1: gbechis, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
