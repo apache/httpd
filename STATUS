@@ -205,6 +205,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1937678 ^/httpd/httpd/trunk .
      +1 jim,
 
+  *) mpm_unix: OpenBSD doesn't support connect() to INADDR_ANY,
+           fallback to 127.0.0.1 if lp->bind_addr is INADDR_ANY
+           and connect() fails with EINVAL
+     trunk patch:  https://svn.apache.org/r1936893
+     2.4.x: svn merge -c 1936893 ^/httpd/httpd/trunk
+    +1 gbechis
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
