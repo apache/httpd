@@ -21,32 +21,27 @@
  * Updated to RFC-2617 by Ronald Tschalär <ronald@innovation.ch>
  * based on mod_auth, by Rob McCool and Robert S. Thau
  *
- * This module an updated version of modules/standard/mod_digest.c
- * It is still fairly new and problems may turn up - submit problem
- * reports to the Apache bug-database, or send them directly to me
- * at ronald@innovation.ch.
- *
  * Open Issues:
- *   - qop=auth-int (when streams and trailer support available)
- *   - nonce-format configurability
+ *   - MD5-sess and auth-int are not implemented; auth-int needs stream and
+ *     trailer support. An incomplete implementation has been removed and
+ *     can be retrieved from svn history.
  *   - Proxy-Authentication-Info header is set by this module, but is
  *     currently ignored by mod_proxy (needs patch to mod_proxy)
  *   - The source of the secret should be run-time directive (with server
- *     scope: RSRC_CONF)
- *   - shared-mem not completely tested yet. Seems to work ok for me,
- *     but... (definitely won't work on Windoze)
- *   - Sharing a realm among multiple servers has following problems:
- *     o Server name and port can't be included in nonce-hash
- *       (we need two nonce formats, which must be configured explicitly)
- *     o Nonce-count check can't be for equal, or then nonce-count checking
- *       must be disabled. What we could do is the following:
- *       (expected < received) ? set expected = received : issue error
- *       The only problem is that it allows replay attacks when somebody
- *       captures a packet sent to one server and sends it to another
- *       one. Should we add "AuthDigestNcCheck Strict"?
- *   - expired nonces give amaya fits.
- *   - MD5-sess and auth-int are not yet implemented. An incomplete
- *     implementation has been removed and can be retrieved from svn history.
+ *     scope: RSRC_CONF). Each server generates its own, so a nonce issued
+ *     by one does not verify at another, and a client moving between them
+ *     is re-challenged every time.
+ *   - Sharing a realm among multiple servers needs more than that secret,
+ *     though. It would be enough for a configuration which tracks no
+ *     per-client state, but the client table, the ids which key it and the
+ *     one-time nonce counter are all per-server, so under AuthDigestNcCheck
+ *     or AuthDigestNonceLifetime 0 a client would still be unknown to
+ *     whichever server it reached next.
+ *   - Sharing the secret would also make a request captured against one
+ *     server replayable against the others, and the nonce-count check
+ *     would not stop that, since each server counts separately. Hashing
+ *     the server name and port into the nonce would, but that is the
+ *     opposite of sharing: the two would have to be configured explicitly.
  */
 
 #include "apr_sha1.h"
@@ -399,15 +394,15 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
-    /* Note: this stuff is currently fixed for the lifetime of the server,
-     * i.e. even across restarts. This means that A) any shmem-size
-     * configuration changes are ignored, and B) certain optimizations,
-     * such as only allocating the smallest necessary entry for each
-     * client, can't be done. However, the alternative is a nightmare:
-     * we can't call apr_shm_destroy on a graceful restart because there
-     * will be children using the tables, and we also don't know when the
-     * last child dies. Therefore we can never clean up the old stuff,
-     * creating a creeping memory leak.
+    /* The client table belongs to one configuration generation: it is
+     * allocated from pconf, which the restart loop clears - destroying the
+     * segment - before running this hook again to create a new one. A
+     * child of the previous generation keeps the mapping it inherited
+     * until it exits, so the tables are not pulled out from under it.
+     *
+     * Per-client state therefore does not survive a restart. A client
+     * which returns afterwards is simply unknown, and is re-challenged
+     * with stale=true at the cost of one extra request.
      */
     return initialize_tables(s, p);
 }
@@ -1199,10 +1194,15 @@ static int note_digest_auth_failure(request_rec *r,
             }
             opaque = ltox(r->pool, client_key);
         }
-        /* else no opaque is needed, and none is sent */
+        /* else this configuration tracks no per-client state, so no entry
+         * is allocated and no opaque is sent */
     }
     else if (!client_exists(resp->opaque_num, r)) {
-        /* client info was gc'd */
+        /* We have no record of this client: its entry may have been
+         * garbage collected, the segment may have been recreated by a
+         * restart, or the opaque may never have been issued by us.
+         * Nothing was wrong with the credentials, so the challenge is
+         * stale and an RFC-compliant client retries silently. */
         if ((client_key = client_generate(r)) == 0) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
@@ -1227,16 +1227,9 @@ static int note_digest_auth_failure(request_rec *r,
 
     nonce = gen_nonce(r->pool, r->request_time, opaque, r->server, conf, ap_auth_name(r));
 
-    /* setup domain attribute. We want to send this attribute wherever
-     * possible so that the client won't send the Authorization header
-     * unnecessarily (it's usually > 200 bytes!).
-     */
-
-
-    /* don't send domain
-     * - for proxy requests
-     * - if it's not specified
-     */
+    /* Setup domain, which tells the client which URIs share this
+     * protection space, so that it does not send the Authorization header
+     * (usually more than 200 bytes) where it is not needed. */
     if (r->proxyreq || !conf->uri_list) {
         domain = NULL;
     }
