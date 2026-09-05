@@ -1005,7 +1005,13 @@ static void s_c2_done(h2_mplx *m, conn_rec *c2, h2_conn_ctx_t *conn_ctx)
         if (conn_ctx->beam_out)
           h2_beam_abort(conn_ctx->beam_out, c2);
     }
-    else if (!conn_ctx->beam_out || !h2_beam_is_complete(conn_ctx->beam_out)) {
+    else if (!conn_ctx->beam_out
+             || (!h2_beam_is_complete(conn_ctx->beam_out)
+                 && !conn_ctx->header_only)) {
+        /* A header-only response (204/304/HEAD) produces no body EOS, so an
+         * incomplete out beam is expected for it, not a truncation. This is the
+         * same case the c1 output path skips via AP_STATUS_IS_HEADER_ONLY().
+         * Only reset a response that began a body and never finished it. */
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, conn_ctx->last_err, c2,
                       "h2_c2(%s-%d): processing finished with incomplete output",
                       conn_ctx->id, conn_ctx->stream_id);
