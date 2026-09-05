@@ -106,14 +106,14 @@ static const TRANS facilities[] = {
 
 static void *syslog_error_log_init(apr_pool_t *p, server_rec *s)
 {
-    char *fname = s->error_fname;
+    char *fname = s->errorlog_provider_argument;
     void *success = (void *)p; /* anything non-NULL is success */
 
     if (*fname == '\0') {
         openlog(ap_server_argv0, LOG_NDELAY|LOG_CONS|LOG_PID, LOG_LOCAL7);
     }
     else {
-        /* s->error_fname could be [level]:[tag] (see #60525) */
+        /* s->errorlog_provider_argument could be [level]:[tag] (see #60525) */
         const char *tag;
         apr_size_t flen;
         const TRANS *fac;
