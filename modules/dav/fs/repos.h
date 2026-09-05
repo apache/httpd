@@ -25,6 +25,8 @@
 #ifndef _DAV_FS_REPOS_H_
 #define _DAV_FS_REPOS_H_
 
+#include "util_mutex.h"
+
 /* the subdirectory to hold all DAV-related information for a directory */
 #define DAV_FS_STATE_DIR                ".DAV"
 #define DAV_FS_STATE_FILE_FOR_DIR       ".state_for_dir"
@@ -53,8 +55,8 @@ dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
 /* DBM functions used by the repository and locking providers */
 extern const dav_hooks_db dav_hooks_db_dbm;
 
-dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
-                                dav_db **pdb);
+dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname,
+                                const char *dbmtype, int ro, dav_db **pdb);
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
                             const char **state1, const char **state2);
 dav_error * dav_dbm_delete(dav_db *db, apr_datum_t key);
@@ -64,8 +66,15 @@ void dav_dbm_freedatum(dav_db *db, apr_datum_t data);
 int dav_dbm_exists(dav_db *db, apr_datum_t key);
 void dav_dbm_close(dav_db *db);
 
-/* where is the lock database located? */
-const char *dav_get_lockdb_path(const request_rec *r);
+/* Per-server configuration. */
+typedef struct {
+    const char *lockdb_path;
+    const char *lockdb_type;
+    apr_global_mutex_t *lockdb_mutex;
+} dav_fs_server_conf;
+
+/* Returns server configuration for the request. */
+const dav_fs_server_conf *dav_fs_get_server_conf(const request_rec *r);
 
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
