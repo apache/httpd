@@ -264,10 +264,9 @@ if test -v TEST_PYTEST -a $RV -eq 0; then
     # check-all-pytest instead builds and tests entirely from the in-tree
     # check/ build, needing no install.
     #
-    # modules/md is excluded: its ACME tests need a local pebble CA server,
-    # which isn't available here (built from source, pebble's Go module
-    # currently fails to build against modern Go -- see the old commit
-    # history for the details of that dead end).
+    # modules/md is included only when `pebble` is on PATH: its ACME
+    # tests need a local pebble CA server, so a job wanting md coverage
+    # must install pebble first; see README.ci.
     #
     # modules/http2 is excluded when mod_http2 wasn't built (e.g. the
     # UBSan job's --disable-http2): its pytest package hard-requires
@@ -288,7 +287,8 @@ if test -v TEST_PYTEST -a $RV -eq 0; then
         for d in test/modules/*/; do
             name=$(basename "$d")
             case "$name" in
-                md|__pycache__) continue ;;
+                __pycache__) continue ;;
+                md) command -v pebble >/dev/null 2>&1 || continue ;;
                 http2) test -f modules/http2/.libs/mod_http2.so || continue ;;
             esac
             PYHTTPD_TARGETS="$PYHTTPD_TARGETS modules/$name"
@@ -296,26 +296,6 @@ if test -v TEST_PYTEST -a $RV -eq 0; then
     fi
     export PYHTTPD_TARGETS
     make check-all-pytest PYTEST_ARGS="${PYTEST_ARGS:-}"
-    RV=$?
-fi
-
-if test -v TEST_MD -a $RV -eq 0; then
-    # Preserved for reference only: nothing sets TEST_MD, so this never
-    # runs. modules/md is covered by TEST_PYTEST's check-all-pytest run above
-    # for everything except its ACME tests, which need a local pebble CA
-    # server -- building pebble from source last failed with:
-    # package github.com/letsencrypt/pebble/cmd/pebble
-    #         imports crypto/ed25519: unrecognized import path "crypto/ed25519" (import path does not begin with hostname)
-    #
-    # Revive this (e.g. once a working pebble build/package is available)
-    # by setting TEST_MD=1 on a job and ensuring GOROOT/GOPATH are usable.
-    export GOPATH=${PREFIX}/gocode
-    mkdir -p "${GOPATH}"
-    export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
-    go get -u github.com/letsencrypt/pebble/...
-    (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
-
-    py.test-3 test/modules/md
     RV=$?
 fi
 

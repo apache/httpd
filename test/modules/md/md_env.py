@@ -90,8 +90,9 @@ class MDTestEnv(HttpdTestEnv):
     @classmethod
     def has_a2md(cls):
         d = os.path.dirname(inspect.getfile(HttpdTestEnv))
+        config_ini = os.getenv("PYHTTPD_CONFIG", os.path.join(d, 'config.ini'))
         config = ConfigParser(interpolation=ExtendedInterpolation())
-        config.read(os.path.join(d, 'config.ini'))
+        config.read(config_ini)
         bin_dir = config.get('global', 'bindir')
         a2md_bin = os.path.join(bin_dir, 'a2md')
         return os.path.isfile(a2md_bin)

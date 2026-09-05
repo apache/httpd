@@ -69,8 +69,8 @@ The CI scripts use the following environment variables:
 
 * PYHTTPD_TARGETS - with TEST_PYTEST, a space-separated list of
   test/modules/*/ suites to run (e.g. "modules/http2").  If unset, all
-  are run except modules/md, and modules/http2 when mod_http2 was not
-  built.
+  are run except modules/md when no `pebble` is on PATH, and
+  modules/http2 when mod_http2 was not built.
 
 * PYTEST_ARGS - with TEST_PYTEST, extra arguments passed through to
   test/run-all-tests.sh (e.g. "--only=pyhttpd" to skip pytest_suite/).
@@ -85,9 +85,9 @@ The CI scripts use the following environment variables:
   rustls-ffi from source and configures httpd with --with-tls
   --with-rustls for mod_tls testing.
 
-* TEST_MD - (currently unused) if set, builds pebble and runs the
-  mod_md ACME test suite.  Preserved for future use once a working
-  pebble build is available; see comments in travis_run_linux.sh.
+* TEST_MD - set together with TEST_PYTEST; installs pebble first so
+  PYHTTPD_TARGETS auto-detection includes modules/md.  See the
+  "Python pytest test suites" job in .github/workflows/linux.yml.
 
 * TEST_APR_TARBALL - if set, APR/APR-util source is fetched as a
   release tarball from archive.apache.org rather than cloned from git.
@@ -191,7 +191,6 @@ under the "Run" group of every step after the one which sets it.
 Travis to Github Actions Migration TODO
 ---------------------------------------
 
-* enable ACME/mod_md testing
 * test across different Ubuntu versions again
  - and test against OpenSSL 1.x since we're now ONLY building against 3.x
 * container testing for non-Ubuntu hosts
