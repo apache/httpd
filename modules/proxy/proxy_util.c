@@ -262,6 +262,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc_ex(apr_pool_t *p, const char *x, int len,
         reserved = "";
     }
 
+    ap_assert(len <= (APR_SIZE_MAX - 1) / 3);
     y = apr_palloc(p, 3 * len + 1);
 
     for (i = 0, j = 0; i < len; i++, j++) {
