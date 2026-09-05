@@ -1482,8 +1482,13 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
     if ((verify_result != X509_V_OK) ||
         sslconn->verify_error)
     {
-        if (ssl_verify_error_is_optional(verify_result) &&
-            (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL_NO_CA))
+        unsigned int verify_error_mask = sc->server->auth.verify_error_mask;
+
+        if (sslconn->dc && sslconn->dc->nVerifyClient != SSL_CVERIFY_UNSET) {
+            verify_error_mask = sslconn->dc->nVerifyClientErrorMask;
+        }
+
+        if (ssl_verify_error_is_accepted(verify_result, verify_error_mask))
         {
             /* leaving this log message as an error for the moment,
              * according to the mod_ssl docs:
@@ -1496,7 +1501,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(02009)
                           "SSL client authentication failed, "
                           "accepting certificate based on "
-                          "\"SSLVerifyClient optional_no_ca\" "
+                          "\"SSLVerifyClient accepted-errors\" "
                           "configuration");
             ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, server);
 
