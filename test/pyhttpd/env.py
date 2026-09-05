@@ -810,7 +810,10 @@ class HttpdTestEnv:
         while datetime.now() < try_until:
             # noinspection PyBroadException
             try:
-                r = self.curl_get(url, insecure=True)
+                # --max-time, or a server which accepts a connection and
+                # then never answers hangs the probe rather than failing it.
+                r = self.curl_get(url, insecure=True,
+                                  options=['--max-time', '5'])
                 if r.exit_code == 0:
                     return True
                 time.sleep(.1)
@@ -835,7 +838,7 @@ class HttpdTestEnv:
         while datetime.now() < try_until:
             # noinspection PyBroadException
             try:
-                r = self.curl_get(url)
+                r = self.curl_get(url, options=['--max-time', '5'])
                 if r.exit_code != 0:
                     return True
                 time.sleep(.1)

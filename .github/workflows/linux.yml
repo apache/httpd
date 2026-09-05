@@ -310,6 +310,19 @@ jobs:
               PYHTTPD_TARGETS=modules/arch
               PYTEST_ARGS=--only=pyhttpd
           # -------------------------------------------------------------------------
+          # The pytest suites again under prefork, whose idle and shutdown
+          # handling is a separate implementation from event's.  Worker is
+          # close enough to event not to be worth a third job.
+          - name: Python pytest test suites, prefork
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork --enable-systemd=shared
+            pkgs: nghttp2-client libsystemd-dev
+            env: |
+              MPM=prefork
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYHTTPD_TARGETS=modules/arch modules/core
+              PYTEST_ARGS=--only=pyhttpd
+          # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
           # - name: i386 Shared MPMs, most modules, maintainer-mode w/-Werror
