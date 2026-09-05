@@ -1942,7 +1942,9 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         remaining_children_to_start = ap_daemons_limit;
     }
     if (!retained->mpm->was_graceful) {
-        startup_children(remaining_children_to_start);
+        if (!retained->mpm->restart_pending) {
+            startup_children(remaining_children_to_start);
+        }
         remaining_children_to_start = 0;
     }
     else {
