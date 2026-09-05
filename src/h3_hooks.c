@@ -131,6 +131,10 @@ int h3_hook_access_checker(request_rec* r)
     /* Reject unprocessable bodies early. */
     h3_conn_ctx_t* ctx = ap_get_module_config(r->request_config, &http3_module);
     h3_stream* stream = ctx ? ctx->stream : NULL;
+    if (stream && stream->headers_too_large)
+    {
+        return HTTP_REQUEST_HEADER_FIELDS_TOO_LARGE;
+    }
     if (stream && stream->request_body_overflow)
     {
         return HTTP_REQUEST_ENTITY_TOO_LARGE;

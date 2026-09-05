@@ -117,6 +117,9 @@ struct h3_stream
 
     int malformed;
 
+    int header_count;
+    int headers_too_large;
+
     const char* method;
     const char* scheme;
     const char* authority;

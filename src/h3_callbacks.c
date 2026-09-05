@@ -108,15 +108,39 @@ int on_recv_header(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, in
         return 0;
     }
     nghttp3_vec nv = nghttp3_rcbuf_get_buf(value);
+    nghttp3_vec nk = nghttp3_rcbuf_get_buf(name);
+    const server_rec* s = session->s;
+    int oversized = s->limit_req_fieldsize > 0 && nk.len + nv.len + 2 > (size_t)s->limit_req_fieldsize;
     if (IS_PSEUDO_TOKEN(token))
     {
+        /* No request can be built to answer 431 with, so RFC 9114 4.2.2 lets us reset the stream. */
+        if (oversized)
+        {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": pseudo-header '%.*s' exceeds LimitRequestFieldSize (%d); resetting the stream", stream->stream_id, (int)(nk.len > 32 ? 32 : nk.len), (const char*)nk.base, s->limit_req_fieldsize);
+            stream->malformed = 1;
+            return 0;
+        }
         return set_pseudo(stream, session, token, &nv);
     }
-    if (!stream->headers)
+    if (!stream->headers || stream->headers_too_large)
     {
         return 0;
     }
-    apr_table_addn(stream->headers, apr_pstrndup(stream->pool, (const char*)nghttp3_rcbuf_get_buf(name).base, nghttp3_rcbuf_get_buf(name).len), apr_pstrndup(stream->pool, (const char*)nv.base, nv.len));
+
+    if (s->limit_req_fields > 0 && ++stream->header_count > s->limit_req_fields)
+    {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": more than LimitRequestFields (%d) header fields; rejecting with 431", stream->stream_id, s->limit_req_fields);
+        stream->headers_too_large = 1;
+        return 0;
+    }
+    if (oversized)
+    {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": header field '%.*s' exceeds LimitRequestFieldSize (%d); rejecting with 431", stream->stream_id, (int)(nk.len > 32 ? 32 : nk.len), (const char*)nk.base, s->limit_req_fieldsize);
+        stream->headers_too_large = 1;
+        return 0;
+    }
+
+    apr_table_addn(stream->headers, apr_pstrndup(stream->pool, (const char*)nk.base, nk.len), apr_pstrndup(stream->pool, (const char*)nv.base, nv.len));
     return 0;
 }
 
