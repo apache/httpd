@@ -935,25 +935,6 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
     return outctx->rc;
 }
 
-/* Just use a simple request.  Any request will work for this, because
- * we use a flag in the conn_rec->conn_vector now.  The fake request just
- * gets the request back to the Apache core so that a response can be sent.
- * Since we use an HTTP/1.x request, we also have to inject the empty line
- * that terminates the headers, or the core will read more data from the
- * socket.
- */
-#define HTTP_ON_HTTPS_PORT \
-    "GET / HTTP/1.0" CRLF
-
-#define HTTP_ON_HTTPS_PORT_BUCKET(alloc) \
-    apr_bucket_immortal_create(HTTP_ON_HTTPS_PORT, \
-                               sizeof(HTTP_ON_HTTPS_PORT) - 1, \
-                               alloc)
-
-/* Custom apr_status_t error code, used when a plain HTTP request is
- * received on an SSL port. */
-#define MODSSL_ERROR_HTTP_ON_HTTPS (APR_OS_START_USERERR + 0)
-
 /* Custom apr_status_t error code, used when the proxy cannot
  * establish an outgoing SSL connection. */
 #define MODSSL_ERROR_BAD_GATEWAY (APR_OS_START_USERERR + 1)
@@ -978,26 +959,6 @@ static apr_status_t ssl_io_filter_error(bio_filter_in_ctx_t *inctx,
     int send_eos = 1;
 
     switch (status) {
-    case MODSSL_ERROR_HTTP_ON_HTTPS:
-            /* log the situation */
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01996)
-                         "SSL handshake failed: HTTP spoken on HTTPS port; "
-                         "trying to send HTML error page");
-            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, sslconn->server);
-
-            ssl_io_filter_disable(sslconn, inctx);
-            f->c->keepalive = AP_CONN_CLOSE;
-            if (is_init) {
-                sslconn->non_ssl_request = NON_SSL_SEND_REQLINE;
-                return AP_FILTER_ERROR;
-            }
-            sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
-
-            /* fake the request line */
-            bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
-            send_eos = 0;
-            break;
-
     case MODSSL_ERROR_BAD_GATEWAY:
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c, APLOGNO(01997)
                       "SSL handshake failed: sending 502");
@@ -1444,10 +1405,12 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             /*
              * The case where OpenSSL has recognized a HTTP request:
              * This means the client speaks plain HTTP on our HTTPS port.
-             * ssl_io_filter_error will disable the ssl filters when it
-             * sees this status code.
+             * Log the situation and shutdown ssl filter.
              */
-            return MODSSL_ERROR_HTTP_ON_HTTPS;
+            ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(01996)
+                         "SSL handshake failed: HTTP spoken on HTTPS port; "
+                         "aborting connection");
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, sslconn->server);
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rc, c, APLOGNO(02007)
@@ -1572,24 +1535,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     }
 
     if (!inctx->ssl) {
-        SSLConnRec *sslconn = myConnConfig(f->c);
-        if (sslconn->non_ssl_request == NON_SSL_SEND_REQLINE) {
-            bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, bucket);
-            if (mode != AP_MODE_SPECULATIVE) {
-                sslconn->non_ssl_request = NON_SSL_SEND_HDR_SEP;
-            }
-            return APR_SUCCESS;
-        }
-        if (sslconn->non_ssl_request == NON_SSL_SEND_HDR_SEP) {
-            bucket = apr_bucket_immortal_create(CRLF, 2, f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, bucket);
-            if (mode != AP_MODE_SPECULATIVE) {
-                sslconn->non_ssl_request = NON_SSL_SET_ERROR_MSG;
-            }
-            return APR_SUCCESS;
-        }
-        return ap_get_brigade(f->next, bb, mode, block, readbytes);
+        return APR_ECONNABORTED;
     }
 
     /* XXX: we don't currently support anything other than these modes. */
