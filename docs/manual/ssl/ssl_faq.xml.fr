@@ -844,8 +844,8 @@ de 1024 bits ?</title>
     <example><pre>-----BEGIN DH PARAMETERS-----
     MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
     Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
-    /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC -----END DH
-    PARAMETERS-----</pre></example> <p>Ajoute les paramètres personnalisés
+    /1y29Aa37e44a/taiZ+lrp8kEXxLH+ZJKGZR7OZTgf//////////AgEC
+    -----END DH PARAMETERS-----</pre></example> <p>Ajoute les paramètres personnalisés
     incluant les lignes "BEGIN DH PARAMETERS" et "END DH PARAMETERS" à la fin du
     premier fichier de certificat défini via la directive <directive
     module="mod_ssl">SSLCertificateFile</directive>.</p>
