@@ -93,7 +93,7 @@ jobs:
               TEST_ASAN=1
           # -------------------------------------------------------------------------
           # Runs every pytest-based test suite via `make check-all-pytest`.
-          # See TEST_PYTEST in test/travis_run_linux.sh.
+          # See TEST_PYTEST/TEST_MD in test/travis_run_linux.sh.
           - name: Python pytest test suites
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
             pkgs: nghttp2-client
@@ -103,6 +103,7 @@ jobs:
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
+              TEST_MD=1
           # -------------------------------------------------------------------------
           - name: Default
           # -------------------------------------------------------------------------
@@ -424,6 +425,13 @@ jobs:
       run: |
         pipx install uv
         echo "$HOME/.local/bin" >> $GITHUB_PATH
+    - name: Install pebble
+      if: env.TEST_MD == '1'
+      run: |
+        go install github.com/letsencrypt/pebble/v2/cmd/pebble@latest \
+          && go install github.com/letsencrypt/pebble/v2/cmd/pebble-challtestsrv@latest \
+          && echo "$(go env GOPATH)/bin" >> $GITHUB_PATH \
+          || echo "::warning::pebble install failed; modules/md tests will be skipped"
     - name: Build and test
       run: ./test/travis_run_linux.sh
     - uses: actions/upload-artifact@v7
