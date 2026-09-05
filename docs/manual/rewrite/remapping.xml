@@ -188,7 +188,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
 
 <highlight language="config">
 RewriteEngine On
-RewriteRule "^/\.well-known/acme-challenge/" - [L]
+RewriteRule "^\.well-known/acme-challenge/" - [L]
 RewriteCond "%{HTTPS}" !=on
 RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
 </highlight>
