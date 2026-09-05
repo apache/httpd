@@ -3,6 +3,8 @@
 # To permit this cgi, replace # on the first line above with the
 # appropriate #!/path/to/perl shebang, and on Unix / Linux also
 # set this script executable with chmod 755.
+# You will also need to uncomment lines matching cgid_module and
+# Scriptsock in http.conf and restart (or HUP) the server.
 #
 # ***** !!! WARNING !!! *****
 # This script echoes the server environment variables and therefore
