@@ -26,6 +26,11 @@
 typedef struct h3_conn_ctx_t h3_conn_ctx_t;
 
 /**
+ * Resolve what the request path needs from other modules, once, at post_config.
+ */
+void h3_request_init(void);
+
+/**
  * Build a synthetic conn_rec for a freshly accepted QUIC session. The
  * returned conn_rec has no underlying socket; it's used as a parent for
  * request_recs handed to ap_process_request.

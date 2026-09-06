@@ -63,6 +63,19 @@
 /* Client-caused stream errors tolerated before the connection is closed. */
 #define H3_MAX_STREAM_ERRORS_DEFAULT 8
 #define H3_MAX_STREAM_ERRORS_MAX 10000
+/* QPACK decoder capacity advertised to clients; nghttp3 would otherwise forbid the dynamic table. */
+#define H3_QPACK_TABLE_CAPACITY_DEFAULT 4096
+#define H3_QPACK_TABLE_CAPACITY_MAX (1024UL * 1024)
+/* 0 by default: nghttp3 buffers a blocked stream's bytes without bound, and no request limit applies there. */
+#define H3_QPACK_BLOCKED_STREAMS_DEFAULT 0
+#define H3_QPACK_BLOCKED_STREAMS_MAX 1000
+
+/* Request worker threads per child process. */
+#define H3_MIN_WORKERS_DEFAULT 16
+#define H3_MAX_WORKERS_DEFAULT 64
+#define H3_WORKERS_MAX 4096
+#define H3_MAX_WORKER_IDLE_SECONDS_DEFAULT 600
+#define H3_MAX_WORKER_IDLE_SECONDS_MAX 86400
 
 #define H3_HANDSHAKE_TIMEOUT_DEFAULT 10
 #define H3_HANDSHAKE_TIMEOUT_MAX 600

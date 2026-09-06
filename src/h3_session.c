@@ -80,8 +80,13 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     }
 
     nghttp3_callbacks cb = {.acked_stream_data = on_acked_stream_data, .recv_header = on_recv_header, .end_headers = on_end_headers, .recv_data = on_recv_data, .stream_close = on_stream_close, .begin_headers = on_begin_headers, .stop_sending = on_stop_sending, .reset_stream = on_reset_stream};
+    h3_server_conf* conf = ap_get_module_config(s->module_config, &http3_module);
     nghttp3_settings settings = {0};
     nghttp3_settings_default(&settings);
+
+    CHECK(conf, return APR_EGENERAL;);
+    settings.qpack_max_dtable_capacity = conf->h3_qpack_table_capacity;
+    settings.qpack_blocked_streams = conf->h3_qpack_blocked_streams;
 
     if (s->limit_req_fields > 0 && s->limit_req_fieldsize > 0)
     {
@@ -93,7 +98,6 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
         return APR_EGENERAL;
     }
 
-    h3_server_conf* conf = ap_get_module_config(s->module_config, &http3_module);
     nghttp3_conn_set_max_concurrent_streams(session->ngh3, conf->h3_max_concurrent_streams);
     nghttp3_conn_set_max_client_streams_bidi(session->ngh3, conf->h3_max_concurrent_streams);
 

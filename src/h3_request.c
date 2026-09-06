@@ -46,6 +46,13 @@
 
 static volatile apr_uint32_t h3_conn_id_seq = 0;
 
+static module* h3_logio_module = NULL;
+
+void h3_request_init(void)
+{
+    h3_logio_module = ap_find_linked_module("mod_logio.c");
+}
+
 /**
  * Per-connection byte counters, laid out to match mod_logio's private
  * config struct (modules/loggers/mod_logio.c:52) so that %I/%O log format
@@ -141,10 +148,9 @@ conn_rec* h3_synth_conn(h3_session* session)
     apr_table_setn(c->notes, "ssl-bypass", "1");
     ap_update_vhost_given_ip(c);
 
-    module* logio = ap_find_linked_module("mod_logio.c");
-    if (logio)
+    if (h3_logio_module)
     {
-        ap_set_module_config(c->conn_config, logio, apr_pcalloc(cpool, sizeof(h3_logio_config_t)));
+        ap_set_module_config(c->conn_config, h3_logio_module, apr_pcalloc(cpool, sizeof(h3_logio_config_t)));
     }
 
     session->c = c;
@@ -457,10 +463,9 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     c->conn_config = ap_create_conn_config(cpool);
     c->bucket_alloc = apr_bucket_alloc_create(cpool);
 
-    module* logio = ap_find_linked_module("mod_logio.c");
-    if (logio)
+    if (h3_logio_module)
     {
-        ap_set_module_config(c->conn_config, logio, apr_pcalloc(cpool, sizeof(h3_logio_config_t)));
+        ap_set_module_config(c->conn_config, h3_logio_module, apr_pcalloc(cpool, sizeof(h3_logio_config_t)));
     }
 
     h3_stream_task* task = apr_pcalloc(cpool, sizeof(*task));

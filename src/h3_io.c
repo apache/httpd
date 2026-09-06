@@ -124,11 +124,12 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_wakeup_create failed");
         return APR_EGENERAL;
     }
-    if (apr_thread_pool_create(&io->h3_worker_pool, 16, 64, pchild) != APR_SUCCESS)
+    if (apr_thread_pool_create(&io->h3_worker_pool, conf->h3_min_workers, conf->h3_max_workers, pchild) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_pool_create failed");
         return APR_EGENERAL;
     }
+    apr_thread_pool_idle_wait_set(io->h3_worker_pool, apr_time_from_sec(conf->h3_max_worker_idle_seconds));
 
     char qerr[H3Q_ERRLEN] = {0};
     h3q_config qcfg = {

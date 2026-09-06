@@ -55,6 +55,13 @@ struct h3_server_conf
     h3_tri_flag h3_session_tickets;
     apr_uint32_t h3_stream_timeout;
     apr_uint32_t h3_max_stream_errors;
+    int h3_qpack_capacity_set;
+    int h3_qpack_blocked_set;
+    apr_uint32_t h3_qpack_table_capacity;
+    apr_uint32_t h3_qpack_blocked_streams;
+    apr_uint32_t h3_min_workers;
+    apr_uint32_t h3_max_workers;
+    apr_uint32_t h3_max_worker_idle_seconds;
 };
 
 /**
