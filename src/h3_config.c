@@ -74,6 +74,8 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_idle_timeout = new->h3_idle_timeout ? new->h3_idle_timeout : base->h3_idle_timeout;
     merged->h3_socket_buffer_size = new->h3_socket_buffer_size ? new->h3_socket_buffer_size : base->h3_socket_buffer_size;
     merged->h3_session_tickets = new->h3_session_tickets != H3_FLAG_UNSET ? new->h3_session_tickets : base->h3_session_tickets;
+    merged->h3_stream_timeout = new->h3_stream_timeout ? new->h3_stream_timeout : base->h3_stream_timeout;
+    merged->h3_max_stream_errors = new->h3_max_stream_errors ? new->h3_max_stream_errors : base->h3_max_stream_errors;
 
     return merged;
 }
@@ -234,6 +236,58 @@ static const char* set_h3_socket_buffer_size(cmd_parms* cmd, void* dummy H3_UNUS
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
     CHECK(conf);
     conf->h3_socket_buffer_size = (apr_size_t)val;
+    return NULL;
+}
+
+static const char* set_h3_stream_timeout(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3StreamTimeout: empty value";
+    }
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv == APR_EINVAL)
+    {
+        return apr_psprintf(cmd->pool, "H3StreamTimeout: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3StreamTimeout: '%s' is out of representable range", arg);
+    }
+    if (val == 0 || val > H3_STREAM_TIMEOUT_MAX)
+    {
+        return apr_psprintf(cmd->pool, "H3StreamTimeout: '%s' is out of allowed range (1-%u)", arg, (unsigned)H3_STREAM_TIMEOUT_MAX);
+    }
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_stream_timeout = (apr_uint32_t)val;
+    return NULL;
+}
+
+static const char* set_h3_max_stream_errors(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3MaxStreamErrors: empty value";
+    }
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv == APR_EINVAL)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxStreamErrors: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxStreamErrors: '%s' is out of representable range", arg);
+    }
+    if (val == 0 || val > H3_MAX_STREAM_ERRORS_MAX)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxStreamErrors: '%s' is out of allowed range (1-%u)", arg, (unsigned)H3_MAX_STREAM_ERRORS_MAX);
+    }
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_max_stream_errors = (apr_uint32_t)val;
     return NULL;
 }
 
@@ -428,6 +482,10 @@ int h3_post_config(apr_pool_t* p H3_UNUSED, apr_pool_t* plog H3_UNUSED, apr_pool
             {
                 vc->h3_socket_buffer_size = H3_SOCKET_BUFFER_SIZE_DEFAULT;
             }
+            if (vc->h3_max_stream_errors == 0)
+            {
+                vc->h3_max_stream_errors = H3_MAX_STREAM_ERRORS_DEFAULT;
+            }
             if (vc->h3_max_request_body_size == 0)
             {
                 vc->h3_max_request_body_size = H3_MAX_REQUEST_BODY_SIZE_DEFAULT;
@@ -517,5 +575,7 @@ const command_rec h3_cmds[] = {
     AP_INIT_FLAG("H3AddressValidation", set_h3_address_validation, NULL, RSRC_CONF, "Whether to validate client addresses with a QUIC Retry packet before accepting a connection (default: on)"),
     AP_INIT_TAKE1("H3SocketBufferSize", set_h3_socket_buffer_size, NULL, RSRC_CONF, "Bytes requested for the QUIC socket send and receive buffers; the OS may grant less (default: 2097152)"),
     AP_INIT_FLAG("H3SessionTickets", set_h3_session_tickets, NULL, RSRC_CONF, "Whether to issue TLS session tickets so returning clients can resume instead of running a full handshake (default: on)"),
+    AP_INIT_TAKE1("H3StreamTimeout", set_h3_stream_timeout, NULL, RSRC_CONF, "Seconds a response may make no progress before the stream is aborted (default: the server Timeout)"),
+    AP_INIT_TAKE1("H3MaxStreamErrors", set_h3_max_stream_errors, NULL, RSRC_CONF, "Stream errors one connection may cause before it is closed with H3_EXCESSIVE_LOAD (default: 8)"),
     AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL),
 };

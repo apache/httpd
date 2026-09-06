@@ -171,6 +171,7 @@ h3_stream* track_stream(h3_session* session, int64_t sid, h3q_stream* qstream)
     h3s->is_bidi = H3_SID_IS_BIDI(sid);
     h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
     h3s->response_buffer_limit = conf && conf->h3_stream_buffer_size ? (size_t)conf->h3_stream_buffer_size : (size_t)H3_STREAM_BUFFER_SIZE_DEFAULT;
+    h3s->response_progress_at = apr_time_now();
     if (apr_thread_cond_create(&h3s->response_cond, stream_pool) != APR_SUCCESS)
     {
         apr_pool_destroy(stream_pool);
@@ -207,6 +208,16 @@ static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3
     nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, app_error_code);
     h3s->done = 1;
     h3s->body_complete = 1;
+
+    h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
+    apr_uint32_t limit = conf ? conf->h3_max_stream_errors : H3_MAX_STREAM_ERRORS_DEFAULT;
+    if (++session->stream_errors > limit)
+    {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, session->s, "closing HTTP/3 connection after %u client-caused stream errors (H3MaxStreamErrors %u)", (unsigned)session->stream_errors, (unsigned)limit);
+        session->abort_quic_error_code = NGHTTP3_H3_EXCESSIVE_LOAD;
+        session->abort_reason = "too many malformed requests";
+        session->ngh3_dead = 1;
+    }
 }
 
 static void feed_stream_fin(h3_session* session, h3_stream* h3s)

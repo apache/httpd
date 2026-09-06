@@ -381,6 +381,33 @@ int prepare_accepted_connection(h3_io_t* io, h3q_conn* conn)
     return 1;
 }
 
+static void abandon_stalled_responses(h3_session* session, apr_interval_time_t stall_timeout)
+{
+    if (stall_timeout <= 0)
+    {
+        return;
+    }
+    apr_time_t now = apr_time_now();
+    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+    {
+        h3_stream* h3s = apr_hash_this_val(hi);
+        if (!h3s || h3s->response_cancelled || h3s->response_complete)
+        {
+            continue;
+        }
+        if (h3s->response_buffered < h3s->response_buffer_limit)
+        {
+            continue;
+        }
+        if (now - h3s->response_progress_at < stall_timeout)
+        {
+            continue;
+        }
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT " made no progress for %" APR_TIME_T_FMT " seconds; abandoning the response", h3s->stream_id, apr_time_sec(stall_timeout));
+        h3_stream_response_cancel_locked(h3s);
+    }
+}
+
 int service_session_pass(h3_io_t* io, h3_session* session)
 {
     CHECK(io);
@@ -478,8 +505,10 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     }
 
     int completed_count = completed->nelts;
+    h3_server_conf* sconf = ap_get_module_config(s->module_config, &http3_module);
     apr_thread_mutex_lock(session->lock);
     flush_nghttp3(session);
+    abandon_stalled_responses(session, (sconf && sconf->h3_stream_timeout) ? apr_time_from_sec(sconf->h3_stream_timeout) : s->timeout);
     apr_thread_mutex_unlock(session->lock);
     apr_pool_destroy(scratch);
 

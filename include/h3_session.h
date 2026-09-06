@@ -79,6 +79,7 @@ struct h3_session
     apr_time_t goaway_deadline;
 
     apr_time_t last_activity;
+    apr_uint32_t stream_errors;
 
     volatile apr_uint32_t active_tasks;
 
@@ -137,6 +138,7 @@ struct h3_stream
     int response_submitted;
     int response_complete;
     int response_cancelled;
+    apr_time_t response_progress_at;
 };
 
 /**

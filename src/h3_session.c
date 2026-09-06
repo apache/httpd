@@ -324,6 +324,7 @@ void h3_stream_response_ack_locked(h3_stream* stream, uint64_t datalen)
         size_t consumed = datalen < (uint64_t)available ? (size_t)datalen : available;
         chunk->acked += consumed;
         stream->response_buffered -= consumed;
+        stream->response_progress_at = apr_time_now();
         datalen -= (uint64_t)consumed;
         released = 1;
         if (chunk->acked == chunk->len)

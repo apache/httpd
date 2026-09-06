@@ -57,6 +57,12 @@
 /* Asked of SO_RCVBUF/SO_SNDBUF on the QUIC socket; the OS may grant less. */
 #define H3_SOCKET_BUFFER_SIZE_DEFAULT (2 * 1024 * 1024)
 #define H3_SOCKET_BUFFER_SIZE_MAX (64UL * 1024 * 1024)
+/* Unset leaves the field 0, which reads as the server's Timeout; the directive itself takes 1 or more. */
+#define H3_STREAM_TIMEOUT_MAX 86400
+
+/* Client-caused stream errors tolerated before the connection is closed. */
+#define H3_MAX_STREAM_ERRORS_DEFAULT 8
+#define H3_MAX_STREAM_ERRORS_MAX 10000
 
 #define H3_HANDSHAKE_TIMEOUT_DEFAULT 10
 #define H3_HANDSHAKE_TIMEOUT_MAX 600

@@ -53,6 +53,8 @@ struct h3_server_conf
     apr_uint32_t h3_idle_timeout;
     apr_size_t h3_socket_buffer_size;
     h3_tri_flag h3_session_tickets;
+    apr_uint32_t h3_stream_timeout;
+    apr_uint32_t h3_max_stream_errors;
 };
 
 /**
