@@ -920,16 +920,18 @@ class HttpdTestEnv:
         return 0
 
     def _win_signal_restart(self, cmd: str) -> int:
-        httpd = os.path.join(self._bin_dir, 'httpd')
-        args = [httpd,
-                "-d", self.server_dir,
-                "-f", os.path.join(self.server_dir, 'conf', 'httpd.conf'),
-                "-k", cmd]
+        import ctypes
+        if self._httpd_proc is None:
+            log.error("no httpd process to signal")
+            return -1
+        event_name = f"ap{self._httpd_proc.pid}_restart"
         log_pos = self.httpd_error_log.current_pos()
-        r = self.run(args, env=self._clean_path_env())
-        if r.exit_code != 0:
-            log.warning(f"failed: {r}")
-            return r.exit_code
+        handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
+        if not handle:
+            log.error(f"cannot open event {event_name}")
+            return -1
+        ctypes.windll.kernel32.SetEvent(handle)
+        ctypes.windll.kernel32.CloseHandle(handle)
         timeout = timedelta(seconds=10)
         if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
                                              timeout=timeout.total_seconds()):
@@ -1008,6 +1010,8 @@ class HttpdTestEnv:
 
     def apache_hard_restart(self) -> int:
         """Restart without the "graceful" flag, so the MPM starts over."""
+        if self.isWindows:
+            return self._win_signal_restart("restart")
         return self._apache_signal_restart("restart")
 
     def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
