@@ -35,6 +35,10 @@ The ids are now seeded randomly for each segment, so a returning client's
 opaque no longer names anybody, and it takes the unknown-client path above.
 """
 
+import sys
+
+import pytest
+
 from . import digest_client as dc
 from .env import AAATestEnv
 
@@ -77,6 +81,9 @@ class TestDigestRestart:
         assert "nextnonce" in ai
         challenge.nonce = ai["nextnonce"]
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     def test_digest_090_returning_client_is_challenged_as_stale(self, env):
         # A client which authenticated before a restart comes back afterwards
         # with the nonce it was holding. The state naming its opaque is gone,
@@ -102,6 +109,9 @@ class TestDigestRestart:
         assert self.send(env, location,
                          self.header(location, fresh)).response["status"] == 200
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     def test_digest_091_returning_client_is_stale_even_if_its_id_was_reused(self, env):
         # Same property, but now the id space has caught up: after the restart
         # a new client is handed the id the returning client still quotes.
