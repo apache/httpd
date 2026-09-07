@@ -919,6 +919,24 @@ class HttpdTestEnv:
             log.warning("port still in use after stop")
         return 0
 
+    def _win_signal_restart(self, cmd: str) -> int:
+        httpd = os.path.join(self._bin_dir, 'httpd')
+        args = [httpd,
+                "-d", self.server_dir,
+                "-f", os.path.join(self.server_dir, 'conf', 'httpd.conf'),
+                "-k", cmd]
+        log_pos = self.httpd_error_log.current_pos()
+        r = self.run(args, env=self._clean_path_env())
+        if r.exit_code != 0:
+            log.warning(f"failed: {r}")
+            return r.exit_code
+        timeout = timedelta(seconds=10)
+        if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
+                                             timeout=timeout.total_seconds()):
+            log.warning(f"no restart logged after '{cmd}' within {timeout}")
+            return -1
+        return 0 if self.is_live(self._http_base, timeout=timeout) else -1
+
     # Logged by every MPM once the new generation is serving.
     RE_RESUMING = re.compile(r'.* configured -- resuming normal operations$')
 
@@ -941,8 +959,7 @@ class HttpdTestEnv:
 
     def apache_reload(self):
         if self.isWindows:
-            self._win_stop()
-            return self._win_start()
+            return self._win_signal_restart("graceful")
         return self._apache_signal_restart("graceful")
 
     def apache_restart(self):

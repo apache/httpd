@@ -1071,10 +1071,10 @@ static enum hdr_sts parse_digest_header(request_rec *r,
 
     if (resp->opaque) {
         char *endptr;
-        long num;
+        unsigned long num;
 
         errno = 0;
-        num = strtol(resp->opaque, &endptr, 16);
+        num = strtoul(resp->opaque, &endptr, 16);
         if (errno == 0 && *endptr == '\0' && num > 0
             && num <= APR_UINT32_MAX)
             resp->opaque_num = (client_id_t)num;
