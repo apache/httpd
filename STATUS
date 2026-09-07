@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    *) mod_ssl: fix OpenSSL 1.0 compatibility
       trunk patch:  https://svn.apache.org/r1935577
       2.4.x patch: https://github.com/apache/httpd/pull/742.patch
-      +1: jorton,
+      +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
