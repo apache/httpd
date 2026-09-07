@@ -110,7 +110,7 @@ class HttpdTestSetup:
 
     def _make_conf(self):
         # remove anything from another run/test suite
-        conf_dest_dir = f"{self.env.server_dir}/conf"
+        conf_dest_dir = os.path.join(self.env.server_dir, 'conf')
         if os.path.isdir(conf_dest_dir):
             shutil.rmtree(conf_dest_dir)
         for d in self._source_dirs:
@@ -161,7 +161,7 @@ class HttpdTestSetup:
                     m = match.group(1)
                 if m in loaded:
                     continue
-                mod_path = f"{self.env.libexec_dir}/mod_{m}.so"
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if m in builtin_modules:
                     fd.write(f"#built-in: LoadModule {m}_module   \"{mod_path}\"\n")
                 elif os.path.isfile(mod_path):
@@ -177,7 +177,7 @@ class HttpdTestSetup:
                     m = match.group(1)
                 if m in loaded:
                     continue
-                mod_path = f"{self.env.libexec_dir}/mod_{m}.so"
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if m not in builtin_modules and os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
                     loaded.add(m)
@@ -188,7 +188,7 @@ class HttpdTestSetup:
     def _make_htdocs(self):
         if not os.path.exists(self.env.server_docs_dir):
             os.makedirs(self.env.server_docs_dir)
-        dest_dir = f"{self.env.server_dir}/htdocs"
+        dest_dir = os.path.join(self.env.server_dir, 'htdocs')
         # remove anything from another run/test suite
         if os.path.isdir(dest_dir):
             shutil.rmtree(dest_dir)
@@ -236,7 +236,7 @@ class HttpdTestSetup:
                 log.error(f"compiling mod_aptest failed: {p.stderr}")
                 raise Exception(f"compiling mod_aptest failed: {p.stderr}")
 
-            module_dir = f"{local_dir}/mod_aptest/.libs/"
+            module_dir = os.path.join(local_dir, "mod_aptest", ".libs")
 
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:
@@ -339,14 +339,13 @@ class HttpdTestEnv:
         self._gen_dir = self.config.get('test', 'gen_dir')
 
         self._server_dir = os.path.join(self._gen_dir, 'apache')
-        self._server_dir = self._server_dir.replace("\\","/")
-        self._server_conf_dir = f"{self._server_dir}/conf"
-        self._server_docs_dir = f"{self._server_dir}/htdocs"
-        self._server_logs_dir = f"{self._server_dir}/logs"
-        self._server_run_dir = f"{self._server_dir}/run"
-        self._server_access_log = f"{self._server_logs_dir}/access_log"
-        error_log_sep =  "." if self.isWindows else "_"
-        self._error_log = HttpdErrorLog(f"{self._server_logs_dir}/error{error_log_sep}log")
+        self._server_conf_dir = os.path.join(self._server_dir, "conf")
+        self._server_docs_dir = os.path.join(self._server_dir, "htdocs")
+        self._server_logs_dir = os.path.join(self._server_dir, "logs")
+        self._server_run_dir = os.path.join(self._server_dir, "run")
+        self._server_access_log = os.path.join(self._server_logs_dir, "access_log")
+        error_log_sep = "." if self.isWindows else "_"
+        self._error_log = HttpdErrorLog(os.path.join(self._server_logs_dir, f"error{error_log_sep}log"))
         self._apachectl_stderr = None
         self._httpd_proc = None
 
@@ -362,7 +361,7 @@ class HttpdTestEnv:
         self._https_base = f"https://{self._httpd_addr}:{self.https_port}"
 
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
-        self._test_conf = f"{self._server_conf_dir}/test.conf"
+        self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
         self._httpd_env = {}
         self._httpd_log_modules = ['aptest']
@@ -405,7 +404,7 @@ class HttpdTestEnv:
     def issue_certs(self):
         if self._ca is None:
             self._ca = HttpdTestCA.create_root(name=self.http_tld,
-                                               store_dir=f"{self.server_dir}/ca",
+                                               store_dir=os.path.join(self.server_dir, 'ca'),
                                                key_type="rsa4096")
         self._ca.issue_certs(self._cert_specs)
 
@@ -871,7 +870,7 @@ class HttpdTestEnv:
         conf_file = 'stop.conf' if cmd == 'stop' else 'httpd.conf'
         args = [self._apachectl,
                 "-d", self.server_dir,
-                "-f", f"{self._server_dir}/conf/{conf_file}",
+                "-f", os.path.join(self._server_dir, 'conf', conf_file),
                 "-k", cmd]
         r = self.run(args, env=self._clean_path_env())
         self._apachectl_stderr = r.stderr
@@ -883,7 +882,7 @@ class HttpdTestEnv:
         httpd = os.path.join(self._bin_dir, 'httpd')
         return [httpd,
                 "-d", self.server_dir,
-                "-f", f"{self.server_dir}/conf/httpd.conf",
+                "-f", os.path.join(self.server_dir, 'conf', 'httpd.conf'),
                 "-DFOREGROUND"]
 
     def _win_start(self) -> int:
