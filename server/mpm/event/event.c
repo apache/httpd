@@ -973,6 +973,10 @@ static apr_status_t event_request_cleanup(void *dummy)
     event_conn_state_t *cs = ap_get_module_config(c->conn_config,
                                                   &mpm_event_module);
 
+    if (!cs) {
+        return APR_SUCCESS;
+    }
+
     cs->r = NULL;
     return APR_SUCCESS;
 }
@@ -981,6 +985,10 @@ static void event_pre_read_request(request_rec *r, conn_rec *c)
 {
     event_conn_state_t *cs = ap_get_module_config(c->conn_config,
                                                   &mpm_event_module);
+
+    if (!cs) {
+        return;
+    }
 
     cs->r = r;
     cs->sc = ap_get_module_config(ap_server_conf->module_config,
@@ -998,6 +1006,10 @@ static int event_post_read_request(request_rec *r)
     conn_rec *c = r->connection;
     event_conn_state_t *cs = ap_get_module_config(c->conn_config,
                                                   &mpm_event_module);
+
+    if (!cs) {
+        return DECLINED;
+    }
 
     /* To preserve legacy behaviour (consistent with other MPMs), use
      * the keepalive timeout from the base server (first on this IP:port)
@@ -3922,7 +3934,9 @@ static int event_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
         event_conn_state_t *cs;
         
         cs = ap_get_module_config(c->conn_config, &mpm_event_module);
-        cs->sc = ap_get_module_config(s->module_config, &mpm_event_module);
+        if (cs) {
+            cs->sc = ap_get_module_config(s->module_config, &mpm_event_module);
+        }
     }
     return DECLINED;
 }
