@@ -169,9 +169,34 @@ echo install_tools.bat: Strawberry Perl installed at "!PERL!" >&2
 :perl_ok
 
 rem --- vcpkg location ---------------------------------------------------------
+if not defined VCPKG_TRIPLET set "VCPKG_TRIPLET=x64-windows"
+
+rem Honor VCPKG_DIR from the environment (e.g. set by CI)
+if defined VCPKG_DIR (
+    if not defined VCPKG_INSTALLED set "VCPKG_INSTALLED=%VCPKG_DIR%\installed\%VCPKG_TRIPLET%"
+    if exist "%VCPKG_DIR%\vcpkg.exe" (
+        set "VCPKG_EXE=%VCPKG_DIR%\vcpkg.exe"
+        echo install_tools.bat: using VCPKG_DIR from environment: "!VCPKG_DIR!" >&2
+        goto :vcpkg_ok
+    )
+)
+
+rem Try vcpkg on PATH (e.g. GitHub Actions has C:\vcpkg)
+set "VCPKG_EXE="
+for /f "delims=" %%V in ('where vcpkg.exe 2^>nul') do (
+    if not defined VCPKG_EXE set "VCPKG_EXE=%%V"
+)
+if defined VCPKG_EXE (
+    echo install_tools.bat: using vcpkg from PATH: "!VCPKG_EXE!" >&2
+    for %%F in ("!VCPKG_EXE!") do set "VCPKG_DIR=%%~dpF"
+    if "!VCPKG_DIR:~-1!"=="\" set "VCPKG_DIR=!VCPKG_DIR:~0,-1!"
+    if not defined VCPKG_INSTALLED set "VCPKG_INSTALLED=!VCPKG_DIR!\installed\%VCPKG_TRIPLET%"
+    goto :vcpkg_ok
+)
+
+rem Fall back to cloning vcpkg locally
 set "VCPKG_DIR=%TEST_DIR%\vcpkg"
-set "VCPKG_TRIPLET=x64-windows"
-set "VCPKG_INSTALLED=%VCPKG_DIR%\installed\%VCPKG_TRIPLET%"
+if not defined VCPKG_INSTALLED set "VCPKG_INSTALLED=%VCPKG_DIR%\installed\%VCPKG_TRIPLET%"
 
 rem --- bootstrap vcpkg if needed ----------------------------------------------
 if not exist "%VCPKG_DIR%\" (
@@ -203,6 +228,8 @@ if not exist "%VCPKG_DIR%\vcpkg.exe" (
 
 icacls "%VCPKG_DIR%\vcpkg.exe" /grant "%USERNAME%":RX >nul 2>&1
 set "VCPKG_EXE=%VCPKG_DIR%\vcpkg.exe"
+
+:vcpkg_ok
 
 rem --- install packages -------------------------------------------------------
 echo install_tools.bat: installing curl[core,tool,http2,openssl] and nghttp2 via vcpkg... >&2
