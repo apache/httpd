@@ -87,3 +87,12 @@ jobs:
       - name: Build
         run: |
             cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
+
+      - name: Install
+        run: |
+            cmake --install ${{github.workspace}}/build --config ${{ matrix.build-type }}
+
+      - name: Test
+        run: |
+            ${{github.workspace}}\test\pyhttpd\install_tools.bat "C:\Program Files (x86)\HTTPD"
+            ${{github.workspace}}\test\pyhttpd\runtests.bat --httpd "C:\Program Files (x86)\HTTPD\bin\httpd.exe" --conf "C:\Program Files (x86)\HTTPD\conf\httpd.conf"
