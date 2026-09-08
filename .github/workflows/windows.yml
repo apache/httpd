@@ -71,7 +71,7 @@ jobs:
               core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Install dependencies
-        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl
+        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
 
       - uses: actions/checkout@v6
 
@@ -82,7 +82,11 @@ jobs:
                 -G "${{ matrix.generator }}" `
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
                 -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
-                "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib"
+                "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib" `
+                -DNGHTTP2_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
+                -DNGHTTP2_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/nghttp2.lib `
+                -DJANSSON_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/jansson.lib `
+                -DBUILD_TEST_MODULES=true
 
       - name: Build
         run: |
