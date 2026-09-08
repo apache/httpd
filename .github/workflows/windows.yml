@@ -46,7 +46,7 @@ jobs:
           - name: Default
             triplet: x64-windows
             arch: x64
-            build-type: Debug
+            build-type: Release
             generator: "Ninja"
 
     runs-on: windows-latest
@@ -90,23 +90,27 @@ jobs:
 
       - name: Build
         run: |
-            cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
+            cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }} -- -j 1
 
       - name: Install
         run: |
             cmake --install ${{github.workspace}}/build --config ${{ matrix.build-type }}
 
-      - name: Check httpd
-        run: |
-            & "C:\Program Files (x86)\HTTPD\bin\httpd.exe" -V
-            & "C:\Program Files (x86)\HTTPD\bin\httpd.exe" -t -f "C:\Program Files (x86)\HTTPD\conf\httpd.conf"
-
-      - name: Test
+      - name: Install dependencies
         env:
           VCPKG_DIR: C:\vcpkg
           VCPKG_TRIPLET: ${{ matrix.triplet }}
         run: |
             ${{github.workspace}}\test\pyhttpd\install_tools.bat "C:\Program Files (x86)\HTTPD"
+
+      - name: Check httpd
+        run: |
+            $env:PATH = "C:\Program Files (x86)\HTTPD\bin;C:\vcpkg\installed\x64-windows\bin;$env:PATH"
+            & "C:\Program Files (x86)\HTTPD\bin\httpd.exe" -V
+            & "C:\Program Files (x86)\HTTPD\bin\httpd.exe" -t -f "C:\Program Files (x86)\HTTPD\conf\httpd.conf"
+
+      - name: Test httpd
+        run: |
             ${{github.workspace}}\test\pyhttpd\runtests.bat --httpd "C:\Program Files (x86)\HTTPD\bin\httpd.exe" --conf "C:\Program Files (x86)\HTTPD\conf\httpd.conf" -vvvv -x
 
       - name: Upload test logs
