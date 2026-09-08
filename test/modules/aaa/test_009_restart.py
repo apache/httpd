@@ -39,12 +39,19 @@ import sys
 
 import pytest
 
+import sys
+
+import pytest
+
 from . import digest_client as dc
 from .env import AAATestEnv
 
 NC_FAILED = "AH01774"
+NONCE_INVALID = "AH01776"
 CLIENT_UNKNOWN = "AH10618"
 ONETIME_REUSED = "AH01779"
+
+_WIN32 = sys.platform == "win32"
 
 
 class TestDigestRestart:
@@ -98,7 +105,8 @@ class TestDigestRestart:
         self.reload(env)
 
         r = self.send(env, location, self.header(location, challenge, "00000002"))
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert r.response["status"] == 401
         fresh = self.challenge_of(r)
         assert fresh.stale, \
@@ -137,7 +145,8 @@ class TestDigestRestart:
                          self.header(location, newcomer)).response["status"] == 200
 
         r = self.send(env, location, self.header(location, challenge, "00000002"))
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert r.response["status"] == 401
         assert self.challenge_of(r).stale, \
             "a returning client was reported as a possible replay attack " \
@@ -168,7 +177,8 @@ class TestDigestRestart:
         # The nonce from the previous server generation must not be usable.
         stale_use = self.send(env, location, self.header(location, challenge))
         env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN,
-                                                  ONETIME_REUSED])
+                                                  ONETIME_REUSED]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert stale_use.response["status"] == 401, \
             "a one-time nonce issued before the restart was accepted after it"
 
@@ -205,6 +215,7 @@ class TestDigestRestart:
 
         replay = self.send(env, location, captured)
         env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN,
-                                                  ONETIME_REUSED])
+                                                  ONETIME_REUSED]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert replay.response["status"] == 401, \
             "a captured one-time request was replayed successfully after a restart"
