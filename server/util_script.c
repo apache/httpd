@@ -649,9 +649,9 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
 
             /* Nuke trailing whitespace */
 
-            char *endp = l + strlen(l) - 1;
-            while (endp > l && apr_isspace(*endp)) {
-                *endp-- = '\0';
+            char *endp = l + strlen(l);
+            while (endp > l && apr_isspace(endp[-1])) {
+                *--endp = '\0';
             }
 
             tmp = apr_pstrdup(r->pool, l);

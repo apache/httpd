@@ -776,8 +776,9 @@ static int hc_read_headers(request_rec *r)
         ++value;
         while (apr_isspace(*value))
             ++value;            /* Skip to start of value   */
-        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
-            *end = '\0';
+        for (end = value + strlen(value);
+             end > value && apr_isspace(end[-1]); --end)
+            end[-1] = '\0';
         apr_table_add(r->headers_out, buffer, value);
     }
 

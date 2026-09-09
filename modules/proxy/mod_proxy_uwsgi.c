@@ -386,9 +386,9 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         }
         while (apr_isspace(*value))
             ++value;
-        for (end = &value[strlen(value) - 1];
-             end > value && apr_isspace(*end); --end)
-            *end = '\0';
+        for (end = value + strlen(value);
+             end > value && apr_isspace(end[-1]); --end)
+            end[-1] = '\0';
         if (*ap_scan_http_field_content(value)) {
             /* invalid value */
             len = -1;

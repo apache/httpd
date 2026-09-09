@@ -16,6 +16,16 @@ class _ResponseFaker(TCPFaker):
             return """HTTP/1.1 200 OK\r\nContent-Type: 
             text/html\x00extra\r\n\r\n""".encode()
 
+        if "/empty-header" in path:
+            body = b"Hello"
+            return (
+                b"HTTP/1.1 200 OK\r\n"
+                b"X-Empty:\r\n"
+                b"Content-Length: 5\r\n"
+                b"\r\n"
+                + body
+            )
+
         if "/forwarded" in path:
             headers = data.split(b"\r\n\r\n")[0].decode("latin-1")
             forwarded = []
@@ -88,6 +98,13 @@ class TestProxyResponse:
         env.httpd_error_log.ignore_recent(
             lognos=["AH01106", "AH10404"]
         )
+
+    # empty backend response header values are valid
+    def test_proxy_03_004(self, env):
+        r = env.curl_get(env.mkurl("http", "test1", "/empty-header"))
+        assert r.response["status"] == 200
+        assert "x-empty" in r.response["header"]
+        assert r.response["body"] == b"Hello"
 
     # checks X-Forwarded headers
     def test_proxy_03_002(self, env):
