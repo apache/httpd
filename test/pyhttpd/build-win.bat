@@ -107,9 +107,10 @@ cd /d "%HTTPD_SRC%\test\pyhttpd"
 SET CWD=%CD%
 SET "CWD=%CWD:\=/%"
 @REM -------------------------------------
-SET ARCH="x64-windows"
-SET BUILD_TYPE="Debug"
-SET VCPKG_DIRECTORY="vcpkg\installed\x64-windows"
+SET BUILD_TYPE="Release"
+SET VCPKG_ROOT=%CWD%\vcpkg
+SET VCPKG_TRIPLET=x64-windows-release
+SET VCPKG_DIRECTORY="vcpkg\installed\%VCPKG_TRIPLET%"
 SET VCPKG_DIRECTORY_LIB=%VCPKG_DIRECTORY%
 SET GENERATOR="NMake Makefiles"
 @REM SET GENERATOR="Ninja"
@@ -230,9 +231,8 @@ if NOT EXIST vcpkg\ (
     PUSHD vcpkg\
 )
 
-SET VCPKG_ROOT=%CWD%\vcpkg
 @REM For some reason using the manifest doesn't install the default-features
-vcpkg.exe install --triplet x64-windows apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
+vcpkg.exe install --triplet %VCPKG_TRIPLET% apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
 
 POPD
 
@@ -256,13 +256,13 @@ cmake "%HTTPD_SRC%" -B . ^
     -G %GENERATOR% ^
     -DCMAKE_BUILD_TYPE=%BUILD_TYPE% ^
     -DCMAKE_TOOLCHAIN_FILE=%CWD%/vcpkg/scripts/buildsystems/vcpkg.cmake ^
-    -DVCPKG_TARGET_TRIPLET=%ARCH% ^
-    -DNGHTTP2_INCLUDE_DIR=%CWD%/vcpkg/installed/x64-windows/include ^
-    -DAPR_INCLUDE_DIR=%CWD%/vcpkg/installed/x64-windows/include ^
-    -DJANSSON_INCLUDE_DIR=%CWD%/vcpkg/installed/x64-windows/include ^
-    "-DAPR_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/libapr-1.lib;%CWD%/vcpkg/installed/x64-windows/lib/libaprutil-1.lib" ^
-    -DNGHTTP2_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/nghttp2.lib ^
-    -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/x64-windows/lib/jansson.lib ^
+    -DVCPKG_TARGET_TRIPLET=%VCPKG_TRIPLET% ^
+    -DNGHTTP2_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
+    -DAPR_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
+    -DJANSSON_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
+    "-DAPR_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/libapr-1.lib;%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/libaprutil-1.lib" ^
+    -DNGHTTP2_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/nghttp2.lib ^
+    -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/jansson.lib ^
     -DBUILD_TEST_MODULES=true ^
     -DCMAKE_POLICY_VERSION_MINIMUM=%CMAKE_VERSION% ^
     --install-prefix %HTTPD_INSTALL_DIRECTORY%
