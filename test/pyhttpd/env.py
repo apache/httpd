@@ -907,10 +907,18 @@ class HttpdTestEnv:
 
     def _win_stop(self) -> int:
         if self._httpd_proc is not None:
-            log.debug("stopping httpd (terminate parent)")
-            self._httpd_proc.terminate()
+            import ctypes
+            log.debug("stopping httpd (signal shutdown event)")
+            event_name = f"ap{self._httpd_proc.pid}_shutdown"
+            handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
+            if handle:
+                ctypes.windll.kernel32.SetEvent(handle)
+                ctypes.windll.kernel32.CloseHandle(handle)
+            else:
+                log.warning(f"cannot open {event_name}, falling back to terminate")
+                self._httpd_proc.terminate()
             try:
-                self._httpd_proc.wait(timeout=10)
+                self._httpd_proc.wait(timeout=30)
             except subprocess.TimeoutExpired:
                 self._httpd_proc.kill()
                 self._httpd_proc.wait(timeout=5)
