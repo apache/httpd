@@ -169,7 +169,7 @@ echo install_tools.bat: Strawberry Perl installed at "!PERL!" >&2
 :perl_ok
 
 rem --- vcpkg location ---------------------------------------------------------
-if not defined VCPKG_TRIPLET set "VCPKG_TRIPLET=x64-windows"
+if not defined VCPKG_TRIPLET set "VCPKG_TRIPLET=x64-windows-release"
 
 rem Honor VCPKG_DIR from the environment (e.g. set by CI)
 if defined VCPKG_DIR (
