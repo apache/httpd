@@ -35,12 +35,23 @@ The ids are now seeded randomly for each segment, so a returning client's
 opaque no longer names anybody, and it takes the unknown-client path above.
 """
 
+import sys
+
+import pytest
+
+import sys
+
+import pytest
+
 from . import digest_client as dc
 from .env import AAATestEnv
 
 NC_FAILED = "AH01774"
+NONCE_INVALID = "AH01776"
 CLIENT_UNKNOWN = "AH10618"
 ONETIME_REUSED = "AH01779"
+
+_WIN32 = sys.platform == "win32"
 
 
 class TestDigestRestart:
@@ -77,6 +88,9 @@ class TestDigestRestart:
         assert "nextnonce" in ai
         challenge.nonce = ai["nextnonce"]
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     def test_digest_090_returning_client_is_challenged_as_stale(self, env):
         # A client which authenticated before a restart comes back afterwards
         # with the nonce it was holding. The state naming its opaque is gone,
@@ -91,7 +105,8 @@ class TestDigestRestart:
         self.reload(env)
 
         r = self.send(env, location, self.header(location, challenge, "00000002"))
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert r.response["status"] == 401
         fresh = self.challenge_of(r)
         assert fresh.stale, \
@@ -102,6 +117,9 @@ class TestDigestRestart:
         assert self.send(env, location,
                          self.header(location, fresh)).response["status"] == 200
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     def test_digest_091_returning_client_is_stale_even_if_its_id_was_reused(self, env):
         # Same property, but now the id space has caught up: after the restart
         # a new client is handed the id the returning client still quotes.
@@ -127,7 +145,8 @@ class TestDigestRestart:
                          self.header(location, newcomer)).response["status"] == 200
 
         r = self.send(env, location, self.header(location, challenge, "00000002"))
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert r.response["status"] == 401
         assert self.challenge_of(r).stale, \
             "a returning client was reported as a possible replay attack " \
@@ -158,7 +177,8 @@ class TestDigestRestart:
         # The nonce from the previous server generation must not be usable.
         stale_use = self.send(env, location, self.header(location, challenge))
         env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN,
-                                                  ONETIME_REUSED])
+                                                  ONETIME_REUSED]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert stale_use.response["status"] == 401, \
             "a one-time nonce issued before the restart was accepted after it"
 
@@ -195,6 +215,7 @@ class TestDigestRestart:
 
         replay = self.send(env, location, captured)
         env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN,
-                                                  ONETIME_REUSED])
+                                                  ONETIME_REUSED]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert replay.response["status"] == 401, \
             "a captured one-time request was replayed successfully after a restart"
