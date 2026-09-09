@@ -81,6 +81,7 @@
   <modulefile>mod_md.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
+  <modulefile>mod_mime_libmagic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
   <modulefile>mod_nw_ssl.xml</modulefile>
   <modulefile>mod_policy.xml</modulefile>
