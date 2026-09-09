@@ -138,6 +138,9 @@ static fd_queue_t *worker_queue;
 static fd_queue_info_t *worker_queue_info;
 static apr_pollset_t *worker_pollset;
 
+static int idle_termination_timeout = -1; /* never terminate by default */
+static int idle_termination_remaining;
+
 typedef struct worker_child_bucket {
     ap_pod_t *pod;
     ap_listen_rec *listeners;
@@ -175,6 +178,8 @@ typedef struct worker_retained_data {
      */
     int *idle_spawn_rate;
     int hold_off_on_exponential_spawning;
+
+    int idle_timeout; /* did we time out? */
 } worker_retained_data;
 static worker_retained_data *retained;
 
@@ -1427,22 +1432,16 @@ static void startup_children(int number_to_start)
 static void perform_idle_server_maintenance(int child_bucket)
 {
     int num_buckets = retained->mpm->num_buckets;
-    int idle_thread_count;
+    int idle_thread_count = 0;
+    int total_thread_count = 0;
     process_score *ps;
-    int free_length;
+    int free_length = 0;
     int totally_free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
-    int last_non_dead;
-    int total_non_dead;
+    int last_non_dead = -1;
+    int total_non_dead = 0;
     int active_thread_count = 0;
     int i, j;
-
-    /* initialize the free_list */
-    free_length = 0;
-
-    idle_thread_count = 0;
-    last_non_dead = -1;
-    total_non_dead = 0;
 
     for (i = 0; i < ap_daemons_limit; ++i) {
         /* Initialization to satisfy the compiler. It doesn't know
@@ -1491,6 +1490,7 @@ static void perform_idle_server_maintenance(int child_bucket)
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
                     ++child_threads_active;
                 }
+                ++total_thread_count;
             }
         }
         active_thread_count += child_threads_active;
@@ -1555,6 +1555,21 @@ static void perform_idle_server_maintenance(int child_bucket)
                          "successfully... httpd is exiting!");
             /* the child already logged the failure details */
             return;
+        }
+    }
+
+    if (idle_termination_timeout >= 0) {
+        if (idle_thread_count == total_thread_count) {
+            /* we are completely idle, decrease and check the timer */
+            if (--idle_termination_remaining < 0) {
+                /* the termination timeout has expired, inform us we want to terminate immediately */
+                retained->mpm->shutdown_pending = 1;
+                retained->mpm->is_ungraceful = 1;
+                retained->idle_timeout = 1;
+            }
+        } else {
+            /* not idle, reset the timer */
+            idle_termination_remaining = idle_termination_timeout;
         }
     }
 
@@ -1983,8 +1998,15 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
             ap_remove_pid(pconf, ap_pid_fname);
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
-                         ap_server_conf, APLOGNO(00295) "caught SIGTERM, shutting down");
+
+            /* log message depends on if we are terminating by signal or by idle timeout */
+            if (!retained->idle_timeout) {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00295)
+                            "caught SIGTERM, shutting down");
+            } else {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00295)
+                            "idle timeout reached, shutting down");
+            }
         }
         return DONE;
     }
@@ -2484,6 +2506,18 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
+static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    idle_termination_timeout = atoi(arg);
+    idle_termination_remaining = idle_termination_timeout;
+    return NULL;
+}
+
 static const command_rec worker_cmds[] = {
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
@@ -2502,6 +2536,8 @@ AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
   "Maximum number of child processes for this run of Apache"),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum number of worker threads per child process for this run of Apache - Upper limit for ThreadsPerChild"),
+AP_INIT_TAKE1("IdleTerminationTimeout", set_idle_termination_timeout, NULL, RSRC_CONF,
+  "Number of seconds to terminate in when the server is idle"),
 AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
