@@ -172,6 +172,10 @@
 #include <limits.h>
 #endif
 
+#ifdef HAVE_SYSTEMD
+#include <systemd/sd-journal.h>
+#endif
+
 #define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %>s %b"
 
 module AP_MODULE_DECLARE_DATA log_config_module;
@@ -1630,6 +1634,26 @@ static apr_status_t ap_default_log_writer( request_rec *r,
 
     return rv;
 }
+
+static apr_status_t wrap_journal_stream(apr_pool_t *p, apr_file_t **outfd,
+                                        int priority)
+{
+#if defined(HAVE_SYSTEMD) && defined(AP_SYSTEMD_VERSION) && AP_SYSTEMD_VERSION >= 187
+    int fd;
+
+    fd = sd_journal_stream_fd("httpd", priority, 0);
+    /* Returns a negative errno value on error, invert into apr_status_t. */
+    if (fd < 0) return APR_FROM_OS_ERROR(-fd);
+
+    /* This is an AF_UNIX socket fd so is more pipe-like than
+     * file-like (the fd is neither seekable or readable), and use of
+     * apr_os_pipe_put_ex() allows cleanup registration. */
+    return apr_os_pipe_put_ex(outfd, &fd, 1, p);
+#else
+    return APR_ENOTIMPL;
+#endif
+}
+
 static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name)
 {
@@ -1641,6 +1665,32 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
            return NULL;
         }
         return ap_piped_log_write_fd(pl);
+    }
+    else if (strncasecmp(name, "journald:", 9) == 0) {
+        int priority;
+        const char *err = ap_parse_log_level(name + 9, &priority);
+        apr_status_t rv;
+        apr_file_t *fd;
+
+        if (err == NULL && priority > APLOG_DEBUG) {
+            err = "TRACE level debugging not supported with journald";
+        }
+
+        if (err) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EINVAL, s, APLOGNO(10544)
+                         "invalid journald log priority name %s: %s",
+                         name, err);
+            return NULL;
+        }
+
+        rv = wrap_journal_stream(p, &fd, priority);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(10545)
+                         "could not open journald log stream");
+            return NULL;
+        }
+
+        return fd;
     }
     else {
         const char *fname = ap_server_root_relative(p, name);
