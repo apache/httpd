@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) mod_env: Add the SetEnvFromFile directive to set internal environment
+     variables from a file of name=value lines, read at configuration time.
+     [Cornel Isbiceanu]
+
   *) mod_cgid, mod_ssl, mod_md: Various hardening fixes.  [Various authors]
 
   *) mod_md: MDServerStatus is now disabled by default.  [Joe Orton]

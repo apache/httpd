@@ -20,6 +20,8 @@ TESTS = {
     "unset": "(none)",
     "type": "(none)",
     "nothere": "(none)",
+    # SetEnvFromFile reads htdocs/modules/env/vars.env (ENV_FROM_FILE=set from file).
+    "fromfile": "set from file",
 }
 
 

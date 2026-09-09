@@ -618,6 +618,8 @@ Alias /manual @inherit_documentroot@/manual
     SetEnv NOT_HERE "this will not be here"
     UnsetEnv NOT_HERE
 
+    SetEnvFromFile @SERVERROOT@/htdocs/modules/env/vars.env
+
     <Directory @SERVERROOT@/htdocs/modules/env>
         Options +Includes
     </Directory>

@@ -118,5 +118,54 @@ SSI pages</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SetEnvFromFile</name>
+<description>Sets environment variables from a file</description>
+<syntax>SetEnvFromFile <var>file-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Available in version 2.4.69 and later.</compatibility>
+
+<usage>
+    <p>Sets internal environment variables read from a file, which are then
+    available to Apache HTTP Server modules, and passed on to CGI scripts and
+    SSI pages. This is equivalent to a series of <directive
+    module="mod_env">SetEnv</directive> directives, one per variable, but keeps
+    the values in a separate file.</p>
+
+    <p>The <var>file-path</var> is either an absolute path or a path relative
+    to the <directive module="core">ServerRoot</directive>. The file is read
+    once when the configuration is parsed; changes to it take effect only after
+    the server is restarted.</p>
+
+    <p>Each line of the file has the form <code>name=value</code>. Blank lines
+    and lines beginning with <code>#</code> are ignored, and leading and
+    trailing whitespace is stripped. If a line contains no <code>=</code>, the
+    variable is set to an empty string.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+      SetEnvFromFile conf/app.env
+      </highlight>
+    </example>
+
+    <example><title>Example file (<code>conf/app.env</code>)</title>
+    <highlight language="config">
+      # Application settings
+      APP_MODE=production
+      SPECIAL_PATH=/foo/bin
+      </highlight>
+    </example>
+
+    <note><p>As with <directive module="mod_env">SetEnv</directive>, the
+    variables are set <em>after</em> most early request processing directives
+    are run, such as access control and URI-to-filename mapping.</p>
+    </note>
+</usage>
+<seealso><a href="../env.html">Environment Variables</a></seealso>
+<seealso><directive module="mod_env">SetEnv</directive></seealso>
+</directivesynopsis>
+
 </modulesynopsis>
 
