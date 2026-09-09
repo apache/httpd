@@ -1,3 +1,4 @@
+import socket
 import sys
 import os
 import re
@@ -9,6 +10,16 @@ import pytest
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 from pyhttpd.env import HttpdTestEnv
+
+
+def _has_ipv6():
+    try:
+        s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+        s.bind(('::1', 0))
+        s.close()
+        return True
+    except (socket.error, OSError):
+        return False
 
 
 def pytest_ignore_collect(collection_path, config):
@@ -177,6 +188,8 @@ def _package_scope(env, request):
             "AH00338",
             "AH00341",
         ])
+    if sys.platform == "win32" and _has_ipv6():
+        env.httpd_error_log.add_ignored_lognos(["AH00332"])
     yield
     assert env.apache_stop() == 0
     env.check_error_log()
