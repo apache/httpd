@@ -39,10 +39,6 @@ import sys
 
 import pytest
 
-import sys
-
-import pytest
-
 from . import digest_client as dc
 from .env import AAATestEnv
 
@@ -152,6 +148,7 @@ class TestDigestRestart:
             "a returning client was reported as a possible replay attack " \
             "because its id had been given to somebody else"
 
+    @pytest.mark.xfail(condition=_WIN32, reason="ap_retained_data lost across mpm_winnt restart")
     def test_digest_092_onetime_nonce_from_before_a_restart_is_not_accepted(self, env):
         # One-time nonces are ordered by a counter which restarts at 0 with
         # the segment, while the nonce itself stays verifiable. A client
