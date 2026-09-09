@@ -498,6 +498,10 @@ typedef struct {
     apr_int32_t      address_ttl;    /* backend address' TTL (seconds) */
     apr_uint32_t     address_expiry; /* backend address' next expiry time */
     int              sock_proto;     /* The protocol to use to create the socket */
+    unsigned int override_http_host_set:1;
+    unsigned int override_ssl_sni_set:1;
+    char override_http_host[PROXY_RFC1035_HOSTNAME_SIZE];
+    char override_ssl_sni[PROXY_RFC1035_HOSTNAME_SIZE];
 } proxy_worker_shared;
 
 #define ALIGNED_PROXY_WORKER_SHARED_SIZE (APR_ALIGN_DEFAULT(sizeof(proxy_worker_shared)))
