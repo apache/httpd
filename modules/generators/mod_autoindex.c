@@ -176,7 +176,11 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
     if (xhtml) {
         ap_rvputs(r, DOCTYPE_XHTML_1_0T,
                   "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
-                  " <head>\n  <title>Index of ", title,
+                  " <head>\n", NULL);
+	if(d->charset != NULL) {
+          ap_rvputs(r, "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=", d->charset, "\" />\n", NULL);
+	}
+      	ap_rvputs(r, "  <title>Index of ", title,
                   "</title>\n", NULL);
     } else {
         ap_rvputs(r, DOCTYPE_HTML_4_01,
@@ -457,8 +461,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
             else {
                 int width = atoi(&w[10]);
 
-                if (width && (width < 5)) {
-                    return "NameWidth value must be greater than 5";
+                if (width < 5) {
+                    return "NameWidth value must be at least 5";
                 }
                 d_cfg->name_width = width;
                 d_cfg->name_adjust = K_NOADJUST;
@@ -1915,8 +1919,13 @@ static int dsortf(struct ent **e1, struct ent **e2)
 
     /*
      * First, see if either of the entries is for the parent directory.
-     * If so, that *always* sorts lower than anything else.
+     * If so, that *always* sorts lower than anything else. The
+     * function must be transitive else behaviour is undefined, although
+     * in no real case should both entries start with a '/'.
      */
+    if ((*e1)->name[0] == '/' && (*e2)->name[0] == '/') {
+        return 0;
+    }
     if ((*e1)->name[0] == '/') {
         return -1;
     }
