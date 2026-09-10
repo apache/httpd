@@ -181,6 +181,9 @@ dialup_handler(request_rec *r)
                        , 0, r->pool);
 
     if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO()
+                      "dialup: declined because can not open file %s",
+                      r->filename);
         return DECLINED;
     }
 
