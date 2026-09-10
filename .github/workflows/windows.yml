@@ -89,6 +89,7 @@ jobs:
                 -DNGHTTP2_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/nghttp2.lib `
                 -DJANSSON_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 -DJANSSON_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/jansson.lib `
+                -DENABLE_MIME_MAGIC=A `
                 -DBUILD_TEST_MODULES=true
 
       - name: Build
