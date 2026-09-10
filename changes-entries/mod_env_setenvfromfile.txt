@@ -1,0 +1,5 @@
+  *) mod_env: Add the SetEnvFromFile directive to set internal environment
+     variables from a file of name=value lines, read at configuration time.
+     Allowed only in the main server configuration (not in .htaccess), so an
+     untrusted author cannot read arbitrary server-readable files into the
+     environment. [Cornel Isbiceanu]

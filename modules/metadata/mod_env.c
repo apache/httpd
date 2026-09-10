@@ -146,6 +146,59 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, void *sconf_,
     return NULL;
 }
 
+static const char *add_env_module_vars_from_file(cmd_parms *cmd, void *sconf_,
+                                                 const char *arg)
+{
+    env_dir_config_rec *sconf = sconf_;
+    const char *fname;
+    ap_configfile_t *file;
+    apr_status_t rv;
+    char line[MAX_STRING_LEN];
+
+    fname = ap_server_root_relative(cmd->temp_pool, arg);
+    if (!fname) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           ": Invalid file path ", arg, NULL);
+    }
+
+    rv = ap_pcfg_openfile(&file, cmd->temp_pool, fname);
+    if (rv != APR_SUCCESS) {
+        return apr_psprintf(cmd->pool, "%s: Could not open file %s: %pm",
+                            cmd->cmd->name, fname, &rv);
+    }
+
+    /* Each line is "name=value"; blank lines and '#' comments are ignored.
+     * ap_cfg_getline() strips surrounding whitespace and handles line
+     * continuations.  Names are read at config time and stored in the same
+     * table used by SetEnv, so they merge and reach r->subprocess_env the
+     * same way.
+     */
+    while (!ap_cfg_getline(line, sizeof(line), file)) {
+        const char *rest = line;
+        const char *name, *value;
+
+        if (line[0] == '#' || line[0] == '\0') {
+            continue;
+        }
+
+        name = ap_getword(cmd->pool, &rest, '=');
+        if (!name[0]) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                         APLOGNO(10624) "%s: Skipping malformed line "
+                         "(no variable name) in %s", cmd->cmd->name, fname);
+            continue;
+        }
+
+        /* rest points just past the '='; no '=' means an empty value. */
+        value = apr_pstrdup(cmd->pool, rest);
+        apr_table_setn(sconf->vars, name, value);
+    }
+
+    ap_cfg_closefile(file);
+
+    return NULL;
+}
+
 static const command_rec env_module_cmds[] =
 {
 AP_INIT_ITERATE("PassEnv", add_env_module_vars_passed, NULL,
@@ -154,6 +207,9 @@ AP_INIT_TAKE12("SetEnv", add_env_module_vars_set, NULL,
      OR_FILEINFO, "an environment variable name and optional value to pass to CGI."),
 AP_INIT_ITERATE("UnsetEnv", add_env_module_vars_unset, NULL,
      OR_FILEINFO, "a list of variables to remove from the CGI environment."),
+AP_INIT_TAKE1("SetEnvFromFile", add_env_module_vars_from_file, NULL,
+     RSRC_CONF | ACCESS_CONF,
+     "the path to a file of name=value lines to pass to CGI."),
     {NULL},
 };
 
