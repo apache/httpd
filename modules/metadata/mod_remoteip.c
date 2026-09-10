@@ -563,6 +563,13 @@ static int remoteip_modify_request(request_rec *r)
         return OK;
     }
 
+    /* Clear incoming RemoteIPProxiesHeader by default,
+     * to make sure this header is only set when trusted proxy is found
+     */
+    if (config->proxies_header_name) {
+        apr_table_unset(r->headers_in, config->proxies_header_name);
+    }
+
     if (config->proxymatch_ip) {
         /* This indicates that a RemoteIPInternalProxy, RemoteIPInternalProxyList, RemoteIPTrustedProxy
            or RemoteIPTrustedProxyList directive is configured.
