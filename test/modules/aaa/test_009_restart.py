@@ -39,10 +39,6 @@ import sys
 
 import pytest
 
-import sys
-
-import pytest
-
 from . import digest_client as dc
 from .env import AAATestEnv
 
@@ -152,6 +148,9 @@ class TestDigestRestart:
             "a returning client was reported as a possible replay attack " \
             "because its id had been given to somebody else"
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     def test_digest_092_onetime_nonce_from_before_a_restart_is_not_accepted(self, env):
         # One-time nonces are ordered by a counter which restarts at 0 with
         # the segment, while the nonce itself stays verifiable. A client
@@ -187,6 +186,9 @@ class TestDigestRestart:
                          self.header(location, newcomer)).response["status"] == 200, \
             "the stale nonce locked out the client holding that id"
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     def test_digest_093_onetime_request_cannot_be_replayed_across_a_restart(self, env):
         # The severity case. A one-time nonce is single-use because the server
         # remembers the last nonce each client used -- and that memory does

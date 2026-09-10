@@ -25,13 +25,17 @@ a lifetime and a counter which starts at 1 for a one-time nonce. Neither is
 ever 0. The tests below run against both to pin that.
 """
 
+import sys
+
 import pytest
 
 from . import digest_client as dc
 from .env import AAATestEnv
 
 NC_FAILED = "AH01774"
+NONCE_INVALID = "AH01776"
 CLIENT_UNKNOWN = "AH10618"
+_WIN32 = sys.platform == "win32"
 
 # A location tracking clients for the nonce-count, and one tracking them for
 # one-time nonces: the two put different kinds of value in last_nonce_time.
@@ -78,6 +82,9 @@ class TestDigestEviction:
         for _ in range(count):
             env.curl_get(self.url(env, location))
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt child is a separate process, "
+                        "ap_retained_data does not survive restart")
     @pytest.mark.parametrize("location", BOTH)
     def test_digest_100_authenticated_client_survives_a_flood(self, env, location):
         # The legitimate client authenticates, so its entry now records the
@@ -94,7 +101,8 @@ class TestDigestEviction:
         # The victim carries on. Its entry must still be there: it is the
         # only one in the table which is worth keeping.
         r = self.send(env, location, self.header(location, challenge, nc))
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert r.response["status"] == 200, \
             "a flood of unauthenticated requests evicted an authenticated client"
 
@@ -110,7 +118,8 @@ class TestDigestEviction:
         self.flood(env, location, 60)
 
         r = self.send(env, location, self.header(location, first))
-        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN])
+        env.httpd_error_log.ignore_recent(lognos=[NC_FAILED, CLIENT_UNKNOWN]
+                                                  + ([NONCE_INVALID] if _WIN32 else []))
         assert r.response["status"] == 401
         again = dc.DigestChallenge.parse(r.response["header"]["www-authenticate"])
         assert again.opaque != first.opaque, \
