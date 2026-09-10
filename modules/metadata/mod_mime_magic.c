@@ -1802,16 +1802,18 @@ static int mconvert(request_rec *r, union VALUETYPE *p, struct magic *m)
         return 1;
     case BELONG:
     case BEDATE:
-        p->l = (long)
-            ((p->hl[0] << 24) | (p->hl[1] << 16) | (p->hl[2] << 8) | (p->hl[3]));
+        p->l = (long) (apr_int32_t)
+            (((apr_uint32_t) p->hl[0] << 24) | ((apr_uint32_t) p->hl[1] << 16)
+             | (p->hl[2] << 8) | (p->hl[3]));
         return 1;
     case LESHORT:
         p->h = (short) ((p->hs[1] << 8) | (p->hs[0]));
         return 1;
     case LELONG:
     case LEDATE:
-        p->l = (long)
-            ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
+        p->l = (long) (apr_int32_t)
+            (((apr_uint32_t) p->hl[3] << 24) | ((apr_uint32_t) p->hl[2] << 16)
+             | (p->hl[1] << 8) | (p->hl[0]));
         return 1;
     default:
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01538)
