@@ -35,8 +35,16 @@ if not exist "%PREFIX%\bin\httpd.exe" (
 
 rem --- python detection and install --------------------------------------------
 set PYTHON=
-for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
-    if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+for /f "delims=" %%P in ('where python.exe 2^>nul') do (
+    if not defined PYTHON (
+        echo %%P | findstr /i "hostedtoolcache" >nul
+        if not errorlevel 1 set "PYTHON=%%P"
+    )
+)
+if not defined PYTHON (
+    for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
+        if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+    )
 )
 if not defined PYTHON (
     for /f "delims=" %%D in ('dir /b /o-n "%PROGRAMFILES%\Python3*" 2^>nul') do (
