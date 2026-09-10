@@ -710,12 +710,12 @@ static const command_rec authz_cmds[] =
                   "controls how a <Directory>, <Location>, or similar "
                   "directive's authorization directives are combined with "
                   "those of its predecessor"),
-    AP_INIT_FLAG("AuthzSendForbiddenOnFailure", ap_set_flag_slot_char,
-                 (void *)APR_OFFSETOF(authz_core_dir_conf, authz_forbidden_on_fail),
-                 OR_AUTHCFG,
-                 "Controls if an authorization failure should result in a "
-                 "'403 FORBIDDEN' response instead of the HTTP-conforming "
-                 "'401 UNAUTHORIZED'"),
+    AP_INIT_FLAG_SCHAR_SLOT("AuthzSendForbiddenOnFailure",
+                            authz_core_dir_conf, authz_forbidden_on_fail,
+                            OR_AUTHCFG,
+                            "Controls if an authorization failure should result in a "
+                            "'403 FORBIDDEN' response instead of the HTTP-conforming "
+                            "'401 UNAUTHORIZED'"),
     {NULL}
 };
 
