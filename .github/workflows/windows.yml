@@ -50,7 +50,7 @@ jobs:
             generator: "Ninja"
 
     runs-on: windows-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     name: ${{ matrix.name }}
     env: 
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
