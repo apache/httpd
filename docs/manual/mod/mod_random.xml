@@ -1,0 +1,670 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_random.xml.meta">
+
+<name>mod_random</name>
+
+<description>Cryptographically secure random token generation</description>
+
+<status>Extension</status>
+<sourcefile>mod_random.c</sourcefile>
+<identifier>random_module</identifier>
+
+<summary>
+    <p>This module generates cryptographically secure random tokens and
+    injects them into environment variables and/or HTTP response headers
+    for each request. It is designed for security-critical applications
+    that require unpredictable, high-entropy tokens.</p>
+
+    <p>Common use cases include CSRF (Cross-Site Request Forgery) protection,
+    request identifiers for logging and tracing, nonces for Content Security
+    Policy headers, and one-time tokens for various security mechanisms.</p>
+
+    <p>The module uses the system's cryptographically secure pseudo-random
+    number generator (CSPRNG) via <code>apr_generate_random_bytes()</code>,
+    providing 128 bits of entropy by default (16 bytes). It supports multiple
+    output formats (base64, hex, base64url, custom alphabet), optional
+    timestamp inclusion, TTL-based caching for performance, and HMAC-SHA256
+    token signing with metadata.</p>
+</summary>
+
+<seealso><module>mod_unique_id</module></seealso>
+<seealso><module>mod_ssl</module></seealso>
+<seealso><a href="../env.html">Environment Variables</a></seealso>
+
+<section id="features">
+<title>Features</title>
+    <ul>
+        <li>CSPRNG-based token generation (cryptographically secure)</li>
+        <li>Multiple output formats: base64, hex, base64url, custom alphabet</li>
+        <li>Configurable token length (1-1024 bytes)</li>
+        <li>Optional timestamp prefix</li>
+        <li>Custom prefix and suffix support</li>
+        <li>TTL-based caching for performance optimization</li>
+        <li>HMAC-SHA256 token signing with expiry metadata</li>
+        <li>URL pattern filtering (conditional generation)</li>
+        <li>Multiple tokens per request</li>
+        <li>Thread-safe with per-token mutex protection</li>
+        <li>Output to environment variables and/or HTTP headers</li>
+    </ul>
+</section>
+
+<section id="security">
+<title>Security Considerations</title>
+    <p><strong>Cryptographic Strength:</strong> The module uses
+    <code>apr_generate_random_bytes()</code> which provides cryptographically
+    secure random data from the operating system's entropy source. The default
+    128-bit entropy ensures negligible collision probability.</p>
+
+    <p><strong>Not Guaranteed Unique:</strong> While collision probability is
+    extremely low with sufficient entropy, tokens are not guaranteed to be
+    globally unique. For guaranteed unique identifiers, use
+    <module>mod_unique_id</module> instead.</p>
+
+    <p><strong>Token Validation:</strong> When using
+    <directive module="mod_random">RandomEncodeMetadata</directive> with
+    <directive module="mod_random">RandomSigningKey</directive>, tokens
+    include an HMAC-SHA256 signature that can be validated to ensure integrity
+    and detect tampering.</p>
+
+    <p><strong>Cache Security:</strong> Cached tokens (via
+    <directive module="mod_random">RandomTTL</directive>) are stored in
+    memory and protected by thread-safe mutexes. The module handles clock
+    backward scenarios (NTP corrections) by invalidating affected cache entries.</p>
+</section>
+
+<section id="examples">
+<title>Usage Examples</title>
+
+    <example><title>Basic CSRF Token</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    RandomAddToken CSRF_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a base64-encoded 16-byte token in the
+    <code>CSRF_TOKEN</code> environment variable for all requests to
+    <code>/secure</code>.</p>
+
+    <example><title>Token in HTTP Header</title>
+    <highlight language="config">
+&lt;Location "/api"&gt;
+    RandomLength 32
+    RandomFormat base64url
+    RandomAddToken CSRF_TOKEN header=X-CSRF-Token
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a 32-byte base64url token and outputs it both to the
+    <code>CSRF_TOKEN</code> environment variable and the
+    <code>X-CSRF-Token</code> HTTP response header.</p>
+
+    <example><title>Cached Token with TTL</title>
+    <highlight language="config">
+&lt;Location "/forms"&gt;
+    RandomTTL 300
+    RandomAddToken FORM_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a token that is cached for 5 minutes (300 seconds),
+    reducing CPU overhead for frequently accessed resources.</p>
+
+    <example><title>Signed Token with Expiry</title>
+    <highlight language="config">
+&lt;Location "/payments"&gt;
+    RandomEncodeMetadata On
+    RandomExpiry 3600
+    RandomSigningKey "your-secret-hmac-key-here"
+    RandomAddToken PAYMENT_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a token that includes expiry metadata and an HMAC-SHA256
+    signature, allowing server-side validation of token age and integrity.</p>
+
+    <example><title>Custom Alphabet Token</title>
+    <highlight language="config">
+&lt;Location "/codes"&gt;
+    RandomFormat custom
+    RandomAlphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+    RandomAlphabetGrouping 4
+    RandomLength 16
+    RandomAddToken PROMO_CODE
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a human-readable token using a custom alphabet
+    (excluding confusing characters like 0/O, 1/I/L) with grouping every
+    4 characters for readability.</p>
+
+    <example><title>Using with mod_headers for CSP Nonce</title>
+    <highlight language="config">
+&lt;Location "/app"&gt;
+    RandomLength 16
+    RandomFormat base64url
+    RandomAddToken CSP_NONCE header=X-CSP-Nonce
+    Header set Content-Security-Policy "script-src 'nonce-%{CSP_NONCE}e';"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a unique nonce for Content Security Policy and includes
+    it both in the CSP header and as a custom header for client-side access.</p>
+
+    <example><title>Request ID for Logging and Tracing</title>
+    <highlight language="config">
+&lt;Location "/"&gt;
+    RandomLength 16
+    RandomFormat hex
+    RandomAddToken REQUEST_ID header=X-Request-ID
+    LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\" %{REQUEST_ID}e" combined_with_id
+    CustomLog logs/access_log combined_with_id
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This generates a unique request ID that is sent to the client via
+    the X-Request-ID header and logged for request tracing and debugging.</p>
+
+    <example><title>Multiple Tokens with mod_headers</title>
+    <highlight language="config">
+&lt;Location "/secure-api"&gt;
+    # CSRF token for form protection
+    RandomAddToken CSRF_TOKEN header=X-CSRF-Token
+
+    # Request ID for tracing
+    RandomFormat base64url
+    RandomAddToken REQUEST_ID header=X-Request-ID
+
+    # Session nonce with expiry
+    RandomEncodeMetadata On
+    RandomExpiry 1800
+    RandomSigningKey "your-hmac-secret-key"
+    RandomAddToken SESSION_NONCE header=X-Session-Nonce
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>This demonstrates using multiple tokens with different configurations
+    for various security purposes in a single location.</p>
+</section>
+
+<directivesynopsis>
+<name>RandomAddToken</name>
+<description>Add a random token to the request</description>
+<syntax>RandomAddToken <var>var-name</var> [<var>key</var>=<var>value</var> ...]</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>This directive creates a random token and stores it in the specified
+    environment variable. Optional parameters can override global defaults
+    for this specific token.</p>
+
+    <p>The <var>var-name</var> parameter is <strong>required</strong> and
+    specifies the environment variable name where the token will be stored.
+    Additional optional parameters can be specified as <code>key=value</code>
+    pairs:</p>
+
+    <dl>
+        <dt><code>length=<var>N</var></code></dt>
+        <dd>Token length in bytes (1-1024). Overrides
+        <directive module="mod_random">RandomLength</directive>.</dd>
+
+        <dt><code>format=<var>format</var></code></dt>
+        <dd>Output format: <code>base64</code>, <code>hex</code>,
+        <code>base64url</code>, or <code>custom</code>. Overrides
+        <directive module="mod_random">RandomFormat</directive>.</dd>
+
+        <dt><code>header=<var>name</var></code></dt>
+        <dd>HTTP response header name to output the token.</dd>
+
+        <dt><code>timestamp=<var>on|off</var></code></dt>
+        <dd>Include Unix timestamp prefix. Overrides
+        <directive module="mod_random">RandomIncludeTimestamp</directive>.</dd>
+
+        <dt><code>prefix=<var>string</var></code></dt>
+        <dd>Custom prefix. Overrides
+        <directive module="mod_random">RandomPrefix</directive>.</dd>
+
+        <dt><code>suffix=<var>string</var></code></dt>
+        <dd>Custom suffix. Overrides
+        <directive module="mod_random">RandomSuffix</directive>.</dd>
+
+        <dt><code>ttl=<var>seconds</var></code></dt>
+        <dd>Cache TTL in seconds (0-86400). Overrides
+        <directive module="mod_random">RandomTTL</directive>.</dd>
+    </dl>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# Simple token
+RandomAddToken MY_TOKEN
+
+# Token with custom parameters
+RandomAddToken API_TOKEN length=32 format=hex header=X-API-Token
+
+# Multiple tokens
+RandomAddToken CSRF_TOKEN
+RandomAddToken REQUEST_ID format=base64url
+    </highlight>
+    </example>
+
+    <p><strong>Note:</strong> Up to 50 tokens can be defined per configuration
+    context to prevent DoS attacks via excessive configuration.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomLength</name>
+<description>Default token length in bytes</description>
+<syntax>RandomLength <var>bytes</var></syntax>
+<default>RandomLength 16</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Sets the default number of random bytes to generate for tokens.
+    Valid range is 1-1024 bytes.</p>
+
+    <p>The default of 16 bytes provides 128 bits of entropy, which is
+    sufficient for most security applications. Larger values provide more
+    entropy but result in longer encoded tokens.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# 256-bit entropy
+RandomLength 32
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomFormat</name>
+<description>Default token output format</description>
+<syntax>RandomFormat base64|hex|base64url|custom</syntax>
+<default>RandomFormat base64</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Sets the default encoding format for tokens:</p>
+
+    <dl>
+        <dt><code>base64</code></dt>
+        <dd>Standard base64 encoding (RFC 4648). Output contains A-Z, a-z,
+        0-9, +, /, and = padding. Good for general use.</dd>
+
+        <dt><code>hex</code></dt>
+        <dd>Hexadecimal encoding (0-9, a-f). Output is twice the byte length.
+        Good for debugging and readability.</dd>
+
+        <dt><code>base64url</code></dt>
+        <dd>URL-safe base64 (RFC 4648). Uses - and _ instead of + and /,
+        no padding. Ideal for URLs and HTTP headers.</dd>
+
+        <dt><code>custom</code></dt>
+        <dd>Custom alphabet encoding. Requires
+        <directive module="mod_random">RandomAlphabet</directive>.
+        Good for human-readable tokens.</dd>
+    </dl>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomFormat base64url
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomIncludeTimestamp</name>
+<description>Include timestamp prefix in tokens</description>
+<syntax>RandomIncludeTimestamp On|Off</syntax>
+<default>RandomIncludeTimestamp Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>When enabled, prepends the current Unix timestamp (seconds since epoch)
+    to the token, separated by a hyphen.</p>
+
+    <p>This is useful for debugging, log correlation, or approximate age
+    verification without cryptographic metadata.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomIncludeTimestamp On
+# Generates tokens like: 1701234567-Ab3dEf...
+    </highlight>
+    </example>
+
+    <p><strong>Note:</strong> For precise expiry validation with cryptographic
+    verification, use <directive module="mod_random">RandomEncodeMetadata</directive>
+    instead.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomPrefix</name>
+<description>Default prefix for all tokens</description>
+<syntax>RandomPrefix <var>string</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Adds a fixed prefix to all generated tokens. Useful for token
+    identification or versioning.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomPrefix "csrf_"
+# Generates tokens like: csrf_Ab3dEf...
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomSuffix</name>
+<description>Default suffix for all tokens</description>
+<syntax>RandomSuffix <var>string</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Adds a fixed suffix to all generated tokens. Useful for token
+    versioning or format identification.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomSuffix "_v2"
+# Generates tokens like: Ab3dEf..._v2
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomTTL</name>
+<description>Cache TTL for tokens in seconds</description>
+<syntax>RandomTTL <var>seconds</var></syntax>
+<default>RandomTTL 0</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Enables token caching with the specified time-to-live in seconds.
+    Valid range is 0-86400 (24 hours). A value of 0 disables caching.</p>
+
+    <p>Caching reduces CPU overhead and entropy consumption for frequently
+    accessed resources. Each token has its own cache protected by a mutex
+    for thread safety.</p>
+
+    <p>The module handles clock backward scenarios (NTP corrections) by
+    automatically invalidating affected cache entries.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# Cache tokens for 5 minutes
+RandomTTL 300
+    </highlight>
+    </example>
+
+    <p><strong>Security Note:</strong> Cached tokens are reused for all
+    requests within the TTL period. For per-request uniqueness, keep TTL at 0.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomOnlyFor</name>
+<description>Generate tokens only for matching URL patterns</description>
+<syntax>RandomOnlyFor <var>regex</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Conditionally generates tokens only when the request URI matches the
+    specified extended regular expression (POSIX ERE).</p>
+
+    <p>This is useful for fine-grained control over token generation,
+    such as limiting to specific API endpoints.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Location "/api"&gt;
+    # Only generate for /api/v1/* endpoints
+    RandomOnlyFor "^/api/v1/"
+    RandomAddToken API_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomAlphabet</name>
+<description>Custom character set for custom format</description>
+<syntax>RandomAlphabet <var>characters</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Defines a custom alphabet for <code>custom</code> format encoding.
+    Required when <directive module="mod_random">RandomFormat</directive>
+    is set to <code>custom</code>.</p>
+
+    <p>The alphabet must contain at least 2 unique characters and no more
+    than 256. Duplicate characters are rejected.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# Crockford's Base32 (human-readable, no ambiguous characters)
+RandomFormat custom
+RandomAlphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+    </highlight>
+    </example>
+
+    <p><strong>Note:</strong> Alphabets that are not powers of 2 in size
+    may introduce slight bias in character distribution.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomAlphabetGrouping</name>
+<description>Group custom alphabet output every N characters</description>
+<syntax>RandomAlphabetGrouping <var>N</var></syntax>
+<default>RandomAlphabetGrouping 0</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>When using <code>custom</code> format, inserts a hyphen separator
+    every <var>N</var> characters for improved readability. Valid range is
+    0-128. A value of 0 disables grouping.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomFormat custom
+RandomAlphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+RandomAlphabetGrouping 4
+# Generates tokens like: A3D5-7K9M-P2Q8-...
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomEncodeMetadata</name>
+<description>Encode expiry metadata into tokens</description>
+<syntax>RandomEncodeMetadata On|Off</syntax>
+<default>RandomEncodeMetadata Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>When enabled, encodes expiry timestamp and optional HMAC-SHA256
+    signature into the token. Requires
+    <directive module="mod_random">RandomExpiry</directive> to be set
+    greater than 0.</p>
+
+    <p>If <directive module="mod_random">RandomSigningKey</directive> is
+    configured, the token includes an HMAC-SHA256 signature that can be
+    validated to ensure integrity.</p>
+
+    <p>Token format: <code>expiry:random:signature</code> (with signature)
+    or <code>expiry:random</code> (without signature).</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomEncodeMetadata On
+RandomExpiry 3600
+RandomSigningKey "your-secret-key"
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomExpiry</name>
+<description>Token expiration time in seconds</description>
+<syntax>RandomExpiry <var>seconds</var></syntax>
+<default>RandomExpiry 0</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Sets the token expiration time in seconds when using
+    <directive module="mod_random">RandomEncodeMetadata</directive>.
+    Valid range is 0-31536000 (1 year). A value of 0 means no expiry.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+# 1-hour expiry
+RandomExpiry 3600
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomSigningKey</name>
+<description>HMAC-SHA256 signing key for token validation</description>
+<syntax>RandomSigningKey <var>key</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Sets the secret key used for HMAC-SHA256 signature generation when
+    <directive module="mod_random">RandomEncodeMetadata</directive> is
+    enabled.</p>
+
+    <p>The key should be a strong, random string. It must be kept secret
+    and should be the same across all servers that need to validate tokens.</p>
+
+    <example><title>Example</title>
+    <highlight language="config">
+RandomSigningKey "your-secret-hmac-key-change-this"
+    </highlight>
+    </example>
+
+    <p><strong>Security Warning:</strong> Store the signing key securely.
+    Consider using environment variables or include files with restricted
+    permissions instead of hardcoding it in the main configuration.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

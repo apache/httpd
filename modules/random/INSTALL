@@ -1,0 +1,135 @@
+INSTALLATION INSTRUCTIONS FOR mod_random
+=========================================
+
+REQUIREMENTS
+------------
+- Apache HTTP Server 2.4.x source tree
+- OpenSSL development libraries (libssl-dev)
+- APR (Apache Portable Runtime) - included with Apache
+- C compiler (gcc or clang)
+
+BUILDING WITH APACHE
+--------------------
+
+1. Place mod_random in Apache modules directory:
+   $ cd /path/to/httpd/source
+   $ ls modules/random/
+   # Should see: mod_random.c, config.m4, Makefile.in, etc.
+
+2. Regenerate Apache configuration:
+   $ cd /path/to/httpd/source
+   $ ./buildconf
+
+   This will scan all modules (including mod_random) and regenerate
+   the configure script.
+
+3. Configure Apache with mod_random enabled:
+   $ ./configure --enable-random [other options]
+
+   Options:
+   --enable-random       Build mod_random as shared module (default)
+   --enable-random=yes   Build mod_random as shared module
+   --enable-random=no    Do not build mod_random
+   --enable-random=shared  Build as shared .so (DSO)
+   --enable-random=static  Build statically into httpd
+
+4. Build Apache:
+   $ make
+
+5. Install Apache (optional):
+   $ sudo make install
+
+VERIFYING INSTALLATION
+----------------------
+
+1. Check if module was built:
+   $ ls modules/random/.libs/
+   # Should see: mod_random.so (or .la files)
+
+2. Check if module can be loaded:
+   $ /path/to/httpd -l
+   # For static build, mod_random should be listed
+
+   $ /path/to/httpd -M | grep random
+   # For shared build with LoadModule directive:
+   random_module (shared)
+
+ENABLING THE MODULE
+-------------------
+
+For shared module builds, add to httpd.conf:
+
+    LoadModule random_module modules/mod_random.so
+
+Or use apxs:
+
+    $ apxs -i -a -c mod_random.c [other .c files]
+
+BASIC CONFIGURATION
+-------------------
+
+Add to httpd.conf or .htaccess:
+
+    <Location "/secure">
+        RandomLength 32
+        RandomFormat base64url
+        RandomAddToken CSRF_TOKEN header=X-CSRF-Token
+    </Location>
+
+TESTING
+-------
+
+1. Start Apache:
+   $ /path/to/httpd -k start
+
+2. Make a request:
+   $ curl -v http://localhost/secure
+   # Check for X-CSRF-Token header in response
+
+3. Check logs for any errors:
+   $ tail -f /path/to/apache/logs/error_log
+
+REBUILDING AFTER CHANGES
+-------------------------
+
+If you modify mod_random source:
+
+1. Rebuild only mod_random:
+   $ cd modules/random
+   $ make
+
+2. Or rebuild all of Apache:
+   $ cd /path/to/httpd/source
+   $ make
+
+3. Restart Apache to load new version:
+   $ /path/to/httpd -k restart
+
+TROUBLESHOOTING
+---------------
+
+Problem: "configure: error: OpenSSL not found"
+Solution: Install OpenSSL development libraries:
+   $ sudo apt-get install libssl-dev  # Debian/Ubuntu
+   $ sudo yum install openssl-devel   # RedHat/CentOS
+
+Problem: "mod_random.so: undefined symbol: HMAC"
+Solution: Ensure OpenSSL libraries are linked:
+   Check that config.m4 includes: APR_ADDTO(MOD_RANDOM_LDADD, [$OPENSSL_LIBS])
+
+Problem: Module loads but directives not recognized
+Solution: Ensure module is loaded before use:
+   Check LoadModule directive comes before configuration directives
+
+Problem: ./buildconf fails
+Solution: Install autoconf and libtool:
+   $ sudo apt-get install autoconf libtool
+
+UNINSTALLING
+------------
+
+1. Remove LoadModule directive from httpd.conf
+2. Restart Apache
+3. (Optional) Remove mod_random.so from modules directory
+
+For more information, see README file.
