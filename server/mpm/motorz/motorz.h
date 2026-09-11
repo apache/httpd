@@ -39,6 +39,7 @@
 #include "http_log.h"
 #include "http_config.h"
 #include "http_core.h"          /* for get_remote_host */
+#include "http_protocol.h"      /* for pre_read_request hook */
 #include "http_connection.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
