@@ -973,8 +973,9 @@ static apr_status_t ap_proxy_read_headers(request_rec *r, request_rec *rr,
             ++value;            /* Skip to start of value   */
 
         /* should strip trailing whitespace as well */
-        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
-            *end = '\0';
+        for (end = value + strlen(value);
+             end > value && apr_isspace(end[-1]); --end)
+            end[-1] = '\0';
 
         /* make sure we add so as not to destroy duplicated headers
          * Modify headers requiring canonicalisation and/or affected

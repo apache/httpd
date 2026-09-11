@@ -244,9 +244,9 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
             char *tmp;
             /* Nuke trailing whitespace */
 
-            char *endp = l + strlen(l) - 1;
-            while (endp > l && apr_isspace(*endp))
-                *endp-- = '\0';
+            char *endp = l + strlen(l);
+            while (endp > l && apr_isspace(endp[-1]))
+                *--endp = '\0';
 
             tmp = apr_pstrdup(r->pool, l);
             ap_content_type_tolower(tmp);
