@@ -404,7 +404,7 @@ jobs:
       run: sudo apt-get install -o Acquire::Retries=5
                     libtool-bin libapr1-dev libaprutil1-dev
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev
-                    libnghttp2-dev libjansson-dev libpcre2-dev
+                    libnghttp2-dev libjansson-dev libmagic-dev libpcre2-dev
                     ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) && 'cpanminus perl-doc' || '' }}
                     ${{ ! env.SKIP_TESTING && 'gdb' || '' }}
                     libsasl2-dev curl pipx ${{ matrix.pkgs }} check
