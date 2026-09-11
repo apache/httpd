@@ -127,6 +127,16 @@ SET(CHECK_LIBRARIES       "${default_check_libraries}"   CACHE STRING "Check lib
 OPTION(INSTALL_PDB        "Install .pdb files (if generated)"  ON)
 OPTION(INSTALL_MANUAL     "Install manual"                     ON)
 
+# Optional Clang -fbounds-safety. Default OFF: AP_*SIZED_BY* / AP_*COUNTED_BY*
+# macros in include/ap_bounds_safety.h are inert and the ABI/build is unchanged.
+# When ON, requires a Clang that provides -fbounds-safety / <ptrcheck.h>.
+OPTION(ENABLE_FBOUNDS_SAFETY "Enable experimental Clang -fbounds-safety annotations (OFF by default)" OFF)
+IF(ENABLE_FBOUNDS_SAFETY)
+  MESSAGE(STATUS "ENABLE_FBOUNDS_SAFETY enabled")
+ELSE()
+  MESSAGE(STATUS "ENABLE_FBOUNDS_SAFETY disabled")
+ENDIF()
+
 SET(ENABLE_MODULES        "O"                            CACHE STRING "Minimum module enablement (e.g., \"i\" to build all but those without prerequisites)")
 SET(WITH_MODULES          ""                             CACHE STRING "comma-separated paths to single-file modules to statically link into the server")
 SET(EXTRA_INCLUDES        ""                             CACHE STRING "Extra include directories")
@@ -993,6 +1003,14 @@ SET_TARGET_PROPERTIES(httpd PROPERTIES
 )
 TARGET_LINK_LIBRARIES(httpd libhttpd ${EXTRA_LIBS})
 
+# Optional -fbounds-safety (inert macros unless ENABLE_FBOUNDS_SAFETY)
+IF(ENABLE_FBOUNDS_SAFETY)
+  TARGET_COMPILE_DEFINITIONS(libhttpd PRIVATE AP_SUPPORT_FBOUNDS_SAFETY)
+  TARGET_COMPILE_OPTIONS(libhttpd PRIVATE -fbounds-safety)
+  TARGET_COMPILE_DEFINITIONS(httpd PRIVATE AP_SUPPORT_FBOUNDS_SAFETY)
+  TARGET_COMPILE_OPTIONS(httpd PRIVATE -fbounds-safety)
+ENDIF()
+
 SET(standard_support
   htcacheclean
   htdbm
@@ -1266,6 +1284,7 @@ MESSAGE(STATUS "  Jansson libraries ............... : ${JANSSON_LIBRARIES}")
 MESSAGE(STATUS "  Extra include directories ....... : ${EXTRA_INCLUDES}")
 MESSAGE(STATUS "  Extra compile flags ............. : ${EXTRA_COMPILE_FLAGS}")
 MESSAGE(STATUS "  Extra libraries ................. : ${EXTRA_LIBS}")
+MESSAGE(STATUS "  ENABLE_FBOUNDS_SAFETY ........... : ${ENABLE_FBOUNDS_SAFETY}")
 
 MESSAGE(STATUS "  Modules built and loaded:")
 FOREACH(mod ${mods_built_and_loaded})

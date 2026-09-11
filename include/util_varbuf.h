@@ -35,6 +35,7 @@
 #include "apr_allocator.h"
 
 #include "httpd.h"
+#include "ap_bounds_safety.h" /* optional -fbounds-safety macros */
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,8 +47,12 @@ struct ap_varbuf_info;
 /** A resizable buffer. */
 struct ap_varbuf {
     /** The actual buffer; will point to a const '\\0' if avail == 0 and
-     *  to memory of the same lifetime as the pool otherwise. */
-    char *buf;
+     *  to memory of the same lifetime as the pool otherwise.
+     *  Bound is avail + 1 bytes (avail is capacity minus the final \\0);
+     *  OR_NULL covers ap_varbuf_free()'s NULL. Field order preserved;
+     *  update sites assign capacity before the pointer so sized-by
+     *  invariants hold under optional -fbounds-safety builds. */
+    char *AP_SIZED_BY_OR_NULL(avail + 1) buf;
 
     /** Allocated size of the buffer (minus one for the final \\0);
      *  must only be changed using ap_varbuf_grow(). */
