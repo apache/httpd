@@ -25,6 +25,14 @@ if "%HERE:~-1%"=="\" set "HERE=%HERE:~0,-1%"
 rem --- python location: find the newest native Windows Python 3.x -------------
 if not defined PYTHON (
     set PYTHON=
+    for /f "delims=" %%P in ('where python.exe 2^>nul') do (
+        if not defined PYTHON (
+            echo %%P | findstr /i "hostedtoolcache" >nul
+            if not errorlevel 1 set "PYTHON=%%P"
+        )
+    )
+)
+if not defined PYTHON (
     for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
         if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
     )

@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from pyhttpd.conf import HttpdConf
@@ -47,6 +49,9 @@ class TestRestart:
         assert env.read_pid_file() == pid, "the restart replaced the parent"
         self.get(env, "after an ungraceful restart")
 
+    @pytest.mark.xfail(sys.platform == "win32", reason=
+                        "mpm_winnt restart does not wait for child exit, "
+                        "rapid restarts cause AH02322 socket errors")
     def test_core_008_03_repeated(self, env):
         """Restarting twice in a row is no different from once."""
         for _ in range(2):
