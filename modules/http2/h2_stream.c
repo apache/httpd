@@ -763,7 +763,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     if (name[0] == ':') {
         if (vlen > APR_INT32_MAX || (int)vlen > session->s->limit_req_line) {
             /* pseudo header: approximation of request line size check */
-            if (!h2_stream_is_ready(stream)) {
+            if (!stream->request_headers_failed) {
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                               H2_STRM_LOG(APLOGNO(10178), stream,
                                           "Request pseudo header exceeds "
@@ -810,7 +810,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
     
     if (APR_EINVAL == status) {
         /* header too long */
-        if (!h2_stream_is_ready(stream) && !stream->request_headers_failed) {
+        if (!stream->request_headers_failed) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10180), stream,
                           "Request header exceeds LimitRequestFieldSize(%d): %.*s"),
@@ -829,7 +829,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
             h2_stream_rst(stream, H2_ERR_ENHANCE_YOUR_CALM);
             return APR_ECONNRESET;
         }
-        if (!h2_stream_is_ready(stream)) {
+        if (!stream->request_headers_failed) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(10181), stream, "Number of request headers "
                                       "exceeds LimitRequestFields(%d)"),
@@ -889,7 +889,7 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
     ctx.failed_key = NULL;
     apr_table_do(table_check_val_len, &ctx, req->headers, NULL);
     if (ctx.failed_key) {
-        if (!h2_stream_is_ready(stream)) {
+        if (!stream->request_headers_failed) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
                           H2_STRM_LOG(APLOGNO(10230), stream,"Request header exceeds "
                                       "LimitRequestFieldSize: %.*s"),
