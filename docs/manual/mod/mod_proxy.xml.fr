@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1936368:1937810 (outdated) -->
+<!-- English Revision: 1937810 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -595,6 +595,15 @@ mandatées</description>
 &lt;/Proxy&gt;
     </highlight>
 
+    <note type="warning"><title>Avertissement</title>
+   Cette section de configuration ne rend canonique aucune partie de la chaîne
+   comparée, comme les protocoles, les noms d’hôte, les adresses IP, etc. Il
+   faut être très prudent si on l’utilise pour le contrôle d’accès en ne se
+   limitant pas à interdire l’accès par défaut et en autorisant certains noms
+   d’hôte donnés plutôt que l’inverse, où une interdiction pourrait être
+   court-circuitée en utilisant des formes alternatives.
+    </note>
+
     <note><title>Différences avec la section de configuration Location</title>
       <p>Une URL d'arrière-plan sera concernée par le conteneur Proxy si
       elle commence par la <var>url-avec-jokers</var>, même si le
@@ -664,6 +673,15 @@ mandatées correspondant à une expression rationnelle</description>
     type="section">Proxy</directive>, à l'exception qu'elle définit
     les URLs auxquelles elle s'applique en utilisant une <glossary
     ref="regex">expression rationnelle</glossary>.</p>
+
+    <note type="warning"><title>Avertissement</title>
+   Cette section de configuration ne rend canonique aucune partie de la chaîne
+   comparée, comme les protocoles, les noms d’hôte, les adresses IP, etc. Il
+   faut être très prudent si on l’utilise pour le contrôle d’accès en ne se
+   limitant pas à interdire l’accès par défaut et en autorisant certains noms
+   d’hôte donnés plutôt que l’inverse, où une interdiction pourrait être
+   court-circuitée en utilisant des formes alternatives.
+    </note>
 
     <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
