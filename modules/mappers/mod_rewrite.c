@@ -2086,7 +2086,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
         case  5:
             if (!strcmp(var, "HTTPS")) {
-                int flag = ap_ssl_conn_is_ssl(r->connection);
+                int flag = ap_remote_is_ssl(r);
                 return apr_pstrdup(r->pool, flag ? "on" : "off");
             }
             break;
@@ -2195,6 +2195,13 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                 }
                 break;
 
+            case 'H':
+                if (!strcmp(var, "HTTPS_LOCAL")) {
+                    int flag = ap_ssl_conn_is_ssl(r->connection);
+                    return apr_pstrdup(r->pool, flag ? "on" : "off");
+                }
+                break;
+
             case 'I':
                 if (!strcmp(var, "API_VERSION")) {
                     return apr_psprintf(r->pool, "%d:%d",
@@ -2244,6 +2251,13 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
         case 12:
             switch (var[3]) {
+            case 'H':
+                if (!strcmp(var, "HTTPS_REMOTE")) {
+                    int flag = ap_remote_is_ssl(r);
+                    return apr_pstrdup(r->pool, flag ? "on" : "off");
+                }
+                break;
+
             case 'I':
                 if (!strcmp(var, "SCRIPT_GROUP")) {
                     result = "<unknown>";
