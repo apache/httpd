@@ -490,8 +490,8 @@
 		malveillante de la part du client.
             </p>
             <p>
-                D&eacute;finissez cette directive &agrave; 0 pour vous pr&eacute;munir contre les
-		clients qui provoquent des erreurs.
+                D&eacute;finissez cette directive &agrave; 0 pour tol&eacute;rer les clients
+			d&eacute;faillants.
             </p>
         
 </div>
