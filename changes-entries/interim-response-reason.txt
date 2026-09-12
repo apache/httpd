@@ -1,0 +1,2 @@
+  *) core: Reject control characters in the reason phrase of interim
+     responses.  Only accept space as status-code separator.  [Joe Orton]
