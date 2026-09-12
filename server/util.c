@@ -2157,9 +2157,7 @@ AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
 
     /* first, count the number of extra characters */
     for (i = 0, j = 0; s[i] != '\0'; i++) {
-        if (i + j > APR_SIZE_MAX - 6) {
-            abort();
-        }
+        ap_assert(i + j <= APR_SIZE_MAX - 6);
         if (s[i] == '<' || s[i] == '>')
             j += 3;
         else if (s[i] == '&')
@@ -2230,6 +2228,7 @@ AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
     }
     
     /* Each escaped character needs up to 3 extra bytes (0 --> \x00) */
+    ap_assert(escapes <= (APR_SIZE_MAX - length) / 3);
     ret = apr_palloc(p, length + 3 * escapes);
     d = (unsigned char *)ret;
     s = (const unsigned char *)str;
@@ -2376,6 +2375,7 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
      /* allocate +3 for '/' delimiter, trailing NULL and overallocate
       * one extra byte to allow the caller to add a trailing '/'
       */
+    ap_assert(len1 <= APR_SIZE_MAX - len2 - 3);
     path = (char *)apr_palloc(a, len1 + len2 + 3);
     if (len1 == 0) {
         *path = '/';

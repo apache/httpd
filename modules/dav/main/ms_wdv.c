@@ -94,7 +94,9 @@ static const char *mswdv_urlencode(request_rec *r, const char *str)
     char *output;
     char *op;
 
-    output = apr_palloc(r->pool, 3 * strlen(str) + 1);
+    apr_size_t slen = strlen(str);
+    ap_assert(slen <= (APR_SIZE_MAX - 1) / 3);
+    output = apr_palloc(r->pool, 3 * slen + 1);
     op = output;
 
     for (ip = str; *ip; ip++) {

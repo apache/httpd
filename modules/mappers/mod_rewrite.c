@@ -722,12 +722,17 @@ static char *escape_backref(apr_pool_t *p, const char *path,
                             const char *escapeme, const char *noescapeme,
                             int flags)
 {
-    char *copy = apr_palloc(p, 3 * strlen(path) + 1);
+    apr_size_t plen = strlen(path);
+    char *copy;
     const unsigned char *s = (const unsigned char *)path;
-    unsigned char *d = (unsigned char *)copy;
+    unsigned char *d;
     int noplus = (flags & RULEFLAG_ESCAPENOPLUS) != 0;
     int ctls = (flags & RULEFLAG_ESCAPECTLS) != 0;
     unsigned char c;
+
+    ap_assert(plen <= (APR_SIZE_MAX - 1) / 3);
+    copy = apr_palloc(p, 3 * plen + 1);
+    d = (unsigned char *)copy;
 
     while ((c = *s)) {
         if (((ctls ? !TEST_CHAR(c, T_VCHAR_OBSTEXT) : !escapeme)
