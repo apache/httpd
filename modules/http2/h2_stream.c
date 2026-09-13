@@ -1347,12 +1347,23 @@ apr_status_t h2_stream_in_consumed(h2_stream *stream, apr_off_t amount)
             int cur_size = nghttp2_session_get_stream_local_window_size(
                 session->ngh2, stream->id);
             int win = stream->in_window_size;
-            int thigh = win * 8/10;
-            int tlow = win * 2/10;
-            const int win_max = 2*1024*1024;
-            const int win_min = 32*1024;
-            
-            /* Work in progress, probably should add directives for these
+            const int win_min = h2_config_sgeti(session->s, H2_CONF_WIN_SIZE);
+            const int win_max = (win_min <= NGHTTP2_MAX_WINDOW_SIZE / 2)?
+                                win_min * 2 : NGHTTP2_MAX_WINDOW_SIZE;
+
+            if (win < win_min) {
+                win = win_min;
+            }
+
+            int thigh = (int)(((apr_int64_t)win * 8) / 10);
+            int tlow = (int)(((apr_int64_t)win * 2) / 10);
+
+           /* H2WindowSize is the configured receive window and acts as
+            * the lower bound for adaptive stream window sizing. This also
+            * prevents the tuner from getting stuck at a much smaller value.
+            */
+
+         /* Work in progress, probably should add directives for these
              * values once this stabilizes somewhat. The general idea is
              * to adapt stream window sizes if the input window changes
              * a) very quickly (< good RTT) from full to empty
