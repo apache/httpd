@@ -1183,16 +1183,15 @@ static int cfg_trim_line(char *buf)
     while (apr_isspace(*start))
         ++start;
     /* blast trailing whitespace */
-    end = &start[strlen(start)];
-    while (--end >= start && apr_isspace(*end))
-        *end = '\0';
+    ap_cstr_stripws(start);
+    end = start + strlen(start);
     /* Zap leading whitespace by shifting */
     if (start != buf)
-        memmove(buf, start, end - start + 2);
+        memmove(buf, start, end - start + 1);
 #ifdef DEBUG_CFG_LINES
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, APLOGNO(00555) "Read config: '%s'", buf);
 #endif
-    return end - start + 1;
+    return end - start;
 }
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
@@ -3703,6 +3702,16 @@ static const unsigned char ucharmap[256] = {
     0x38, 0x39, 0xB3, 0xDB, 0xDC, 0xD9, 0xDA, 0x9F
 };
 #endif
+
+AP_DECLARE(void) ap_cstr_stripws(char *str)
+{
+    char *end = str + strlen(str);
+
+    while (end > str && apr_isspace(end[-1])) {
+        --end;
+    }
+    *end = '\0';
+}
 
 AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2)
 {

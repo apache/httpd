@@ -649,10 +649,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
 
             /* Nuke trailing whitespace */
 
-            char *endp = l + strlen(l) - 1;
-            while (endp > l && apr_isspace(*endp)) {
-                *endp-- = '\0';
-            }
+            ap_cstr_stripws(l);
 
             tmp = apr_pstrdup(r->pool, l);
             ap_content_type_tolower(tmp);

@@ -2781,6 +2781,12 @@ AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array,
                                       const char *s);
 
 /**
+ * Strip trailing whitespace from a NUL-terminated string in place.
+ * @param str String to modify
+ */
+AP_DECLARE(void) ap_cstr_stripws(char *str);
+
+/**
  * Perform a case-insensitive comparison of two strings @a str1 and @a str2,
  * treating upper and lower case values of the 26 standard C/POSIX alphabetic
  * characters as equivalent. Extended latin characters outside of this set
