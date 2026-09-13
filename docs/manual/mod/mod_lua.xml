@@ -484,7 +484,19 @@ end
           <td><code>is_https</code></td>
           <td>boolean</td>
           <td>no</td>
-          <td>Whether or not this request is done via HTTPS</td>
+          <td>Whether or not this request is done via HTTPS (alias to remote_is_https)</td>
+        </tr>
+        <tr>
+          <td><code>remote_is_https</code></td>
+          <td>boolean</td>
+          <td>no</td>
+          <td>Whether or not this request is done via HTTPS locally or on frontend</td>
+        </tr>
+        <tr>
+          <td><code>local_is_https</code></td>
+          <td>boolean</td>
+          <td>no</td>
+          <td>Whether or not the local connection is done via HTTPS</td>
         </tr>
         <tr>
           <td><code>is_initial_req</code></td>
