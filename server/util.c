@@ -3071,8 +3071,9 @@ static char * const varbuf_empty = (char *)&nul;
 AP_DECLARE(void) ap_varbuf_init(apr_pool_t *p, struct ap_varbuf *vb,
                                 apr_size_t init_size)
 {
-    vb->buf = varbuf_empty;
+    /* Capacity before pointer so sized_by invariants hold under -fbounds-safety. */
     vb->avail = 0;
+    vb->buf = varbuf_empty;
     vb->strlen = AP_VARBUF_UNKNOWN;
     vb->pool = p;
     vb->info = NULL;
@@ -3126,6 +3127,7 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
         else {
             *new = '\0';
         }
+        /* Capacity before pointer (already ordered for sized_by). */
         vb->avail = new_len - 1;
         vb->buf = new;
         return;
@@ -3166,8 +3168,9 @@ AP_DECLARE(void) ap_varbuf_grow(struct ap_varbuf *vb, apr_size_t new_len)
     apr_pool_cleanup_register(vb->pool, new_info, varbuf_cleanup,
                               apr_pool_cleanup_null);
     vb->info = new_info;
-    vb->buf = new;
+    /* Capacity before pointer so sized_by invariants hold under -fbounds-safety. */
     vb->avail = new_len - 1;
+    vb->buf = new;
 }
 
 AP_DECLARE(void) ap_varbuf_strmemcat(struct ap_varbuf *vb, const char *str,
@@ -3196,6 +3199,8 @@ AP_DECLARE(void) ap_varbuf_free(struct ap_varbuf *vb)
         apr_pool_cleanup_run(vb->pool, vb->info, varbuf_cleanup);
         vb->info = NULL;
     }
+    /* Capacity before pointer; NULL allowed via AP_SIZED_BY_OR_NULL. */
+    vb->avail = 0;
     vb->buf = NULL;
 }
 

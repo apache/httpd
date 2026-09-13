@@ -731,6 +731,26 @@ fi
 APACHE_SUBST(PICFLAGS)
 APACHE_SUBST(PILDFLAGS)
 
+dnl Optional Clang -fbounds-safety. Default no: AP_*SIZED_BY* / AP_*COUNTED_BY*
+dnl macros in include/ap_bounds_safety.h are inert and the ABI/build is unchanged.
+dnl When yes, requires a Clang that provides -fbounds-safety / <ptrcheck.h>.
+AC_ARG_ENABLE(fbounds-safety,
+APACHE_HELP_STRING(--enable-fbounds-safety,Enable experimental Clang -fbounds-safety annotations),
+[
+  if test "$enableval" = "yes"; then
+    enable_fbounds_safety=yes
+  else
+    enable_fbounds_safety=no
+  fi
+],
+[enable_fbounds_safety=no])
+if test "$enable_fbounds_safety" = "yes"; then
+  AC_MSG_NOTICE([ENABLE_FBOUNDS_SAFETY enabled])
+  APR_ADDTO(CFLAGS,[-DAP_SUPPORT_FBOUNDS_SAFETY -fbounds-safety])
+else
+  AC_MSG_NOTICE([ENABLE_FBOUNDS_SAFETY disabled])
+fi
+
 ap_reduced_exports=no
 EXPORTS_DOT_C=exports.c
 LIBMAIN_LIB=server/libmain.la
