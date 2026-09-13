@@ -1175,7 +1175,7 @@ static apr_status_t stream_do_trailers(h2_stream *stream)
         if (APR_BUCKET_IS_METADATA(b)) {
 #if AP_HAS_RESPONSE_BUCKETS
             if (AP_BUCKET_IS_HEADERS(b)) {
-                headers = b->data;
+                headers = apr_pmemdup(stream->pool, b->data, sizeof(*headers));
 #else /* AP_HAS_RESPONSE_BUCKETS */
             if (H2_BUCKET_IS_HEADERS(b)) {
                 headers = h2_bucket_headers_get(b);
@@ -1615,7 +1615,7 @@ static apr_status_t stream_do_response(h2_stream *stream)
         if (APR_BUCKET_IS_METADATA(b)) {
 #if AP_HAS_RESPONSE_BUCKETS
             if (AP_BUCKET_IS_RESPONSE(b)) {
-                resp = b->data;
+                resp = apr_pmemdup(stream->pool, b->data, sizeof(*resp));
 #else /* AP_HAS_RESPONSE_BUCKETS */
             if (H2_BUCKET_IS_HEADERS(b)) {
                 resp = h2_bucket_headers_get(b);
