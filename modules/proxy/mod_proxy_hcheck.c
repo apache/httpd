@@ -766,7 +766,7 @@ static int hc_read_headers(request_rec *r)
 
     /* OK, 1st line is OK... scarf in the headers */
     while ((len = ap_getline(buffer, sizeof(buffer), r, 1)) > 0) {
-        char *value, *end;
+        char *value;
         ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, r->server, "%.*s",
                      len, buffer);
         if (!(value = strchr(buffer, ':'))) {
@@ -776,8 +776,7 @@ static int hc_read_headers(request_rec *r)
         ++value;
         while (apr_isspace(*value))
             ++value;            /* Skip to start of value   */
-        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
-            *end = '\0';
+        ap_cstr_stripws(value);
         apr_table_add(r->headers_out, buffer, value);
     }
 

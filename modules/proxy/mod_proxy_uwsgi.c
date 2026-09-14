@@ -303,7 +303,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
 
     char buffer[HUGE_STRING_LEN];
     const char *buf;
-    char *value, *end;
+    char *value;
     char keepchar;
     int len;
     int backend_broke = 0;
@@ -386,9 +386,7 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         }
         while (apr_isspace(*value))
             ++value;
-        for (end = &value[strlen(value) - 1];
-             end > value && apr_isspace(*end); --end)
-            *end = '\0';
+        ap_cstr_stripws(value);
         if (*ap_scan_http_field_content(value)) {
             /* invalid value */
             len = -1;
