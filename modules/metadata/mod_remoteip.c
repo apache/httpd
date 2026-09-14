@@ -616,12 +616,12 @@ static int remoteip_modify_request(request_rec *r)
             ++parse_remote;
         }
 
-        eos = parse_remote + strlen(parse_remote) - 1;
-        while (eos >= parse_remote && *eos == ' ') {
-            *(eos--) = '\0';
+        eos = parse_remote + strlen(parse_remote);
+        while (eos > parse_remote && eos[-1] == ' ') {
+            *--eos = '\0';
         }
 
-        if (eos < parse_remote) {
+        if (eos == parse_remote) {
             if (remote) {
                 *(remote + strlen(remote)) = ',';
             }

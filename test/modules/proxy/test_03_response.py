@@ -80,6 +80,7 @@ class TestProxyResponse:
             conf.add([
                 "RemoteIPHeader X-Forwarded-For",
                 "RemoteIPTrustedProxy 0.0.0.0",
+                "RemoteIPTrustedProxy 127.0.0.1",
             ])
         conf.end_vhost()
         conf.install()
@@ -105,6 +106,16 @@ class TestProxyResponse:
         assert r.response["status"] == 200
         assert "x-empty" in r.response["header"]
         assert r.response["body"] == b"Hello"
+
+    # a trailing empty RemoteIPHeader token must not underflow the trim pointer
+    def test_proxy_03_005(self, env):
+        if not env.has_shared_module("remoteip"):
+            pytest.skip("need mod_remoteip for this")
+
+        r = env.curl_get(env.mkurl("http", "test1", "/forwarded"), options=[
+            '-H', 'X-Forwarded-For: 192.0.2.1,',
+        ])
+        assert r.response["status"] == 200
 
     # checks X-Forwarded headers
     def test_proxy_03_002(self, env):
