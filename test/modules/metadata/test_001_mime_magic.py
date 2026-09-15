@@ -22,6 +22,11 @@ class TestMimeMagic:
             # 32-bit values with the high bit set, signed and unsigned
             f.write("0\tbelong\t0xcafebabe\tapplication/x-test-belong\n")
             f.write("0\tulelong\t0xcafebabe\tapplication/x-test-ulelong\n")
+            # an indirect rule whose computed offset is (long at 0) - 1;
+            # for a file beginning with a zero long that is -1, which a
+            # bounds check testing only the upper bound would let through
+            f.write("0\tlelong\t0\tx\n")
+            f.write(">(0.l-1)\tbyte\tx\tapplication/x-test-indir\n")
 
         # Files without an extension, so mod_mime sets no type and
         # mod_mime_magic has to derive one from the content.
@@ -38,6 +43,9 @@ class TestMimeMagic:
             f.write(b"\xca\xfe\xba\xbe" + b"\0" * 64)
         with open(os.path.join(doc_dir, "ulelong"), "wb") as f:
             f.write(b"\xbe\xba\xfe\xca" + b"\0" * 64)
+        # zero long at offset 0, then padding past the 64-byte minimum
+        with open(os.path.join(doc_dir, "indir"), "wb") as f:
+            f.write(b"\0" * 100)
         # HTML token followed by an ESC byte.
         with open(os.path.join(doc_dir, "html-escape"), "wb") as f:
             f.write(b"<html>\n\x1b[1mhello\x1b[0m\n")
@@ -106,3 +114,15 @@ class TestMimeMagic:
         assert r.response, "no response: server may have crashed"
         assert r.response["status"] == 200
         assert r.response["header"]["content-type"] == f"application/x-test-{name}"
+
+    # an indirect rule computing a negative offset must not read outside
+    # the sniff buffer.  The file begins with a zero long, so ">(0.l-1)"
+    # resolves to offset -1; without the fix that slips a bounds check
+    # testing only the upper bound and reads before the buffer, which a
+    # sanitizer build (the ASan and UBSan CI jobs) aborts on, leaving the
+    # request with no response.
+    def test_metadata_001_06_indirect_negative_offset(self, env):
+        url = env.mkurl("http", "test1", "/magic/indir")
+        r = env.curl_get(url)
+        assert r.response, "no response: server may have crashed"
+        assert r.response["status"] == 200
