@@ -180,6 +180,8 @@ request processing</dd>
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
     encoding)</dd>
+<dt><a href="mod_mime_libmagic.html">mod_mime_libmagic</a></dt><dd>Determines the MIME type of a file from its contents
+    using libmagic</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd>

@@ -278,9 +278,9 @@ store passwords</td></tr>
 passwords for authentication</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Selects the algorithm used to calculate the challenge and
-response hashes in digest authentication</td></tr>
+response hashes in Digest authentication</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr><td colspan="2" class="descr">URIs that are in the same protection space for digest
+<tr><td colspan="2" class="descr">URIs that are in the same protection space for Digest
 authentication</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Enables or disables checking of the nonce-count sent by the
@@ -290,7 +290,7 @@ client</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Sets the authentication provider(s) for this location</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr><td colspan="2" class="descr">Determines the quality-of-protection to use in digest
+<tr><td colspan="2" class="descr">Determines the quality-of-protection to use in Digest
 authentication</td></tr>
 <tr class="odd"><td><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative</a></td><td class="module"><a href="mod_auth_form.html">mod_auth_form</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Sets whether authorization and authentication are passed to

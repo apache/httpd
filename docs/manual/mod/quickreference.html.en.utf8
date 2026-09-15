@@ -174,18 +174,18 @@ of user groups for authorization</td></tr>
 store passwords</td></tr>
 <tr><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of a database file containing the list of users and
 passwords for authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
-response hashes in digest authentication</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">URIs that are in the same protection space for digest
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5</a></td><td> MD5 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
+response hashes in Digest authentication</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">URIs that are in the same protection space for Digest
 authentication</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
 client</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <var>seconds</var></a></td><td> 300 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
+<tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop auth</a></td><td> auth </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines the quality-of-protection to use in Digest
 authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 8192 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
 of clients</td></tr>
 <tr><td><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
 lower level modules</td></tr>
@@ -827,6 +827,10 @@ files</td></tr>
 <tr><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>svdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">File name suffix for the file containing CERN-style
 meta information</td></tr>
+<tr><td><a href="mod_mime_libmagic.html#mimelibmagic">MimeLibmagic On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable MIME type determination from file contents</td></tr>
+<tr class="odd"><td><a href="mod_mime_libmagic.html#mimelibmagicbytes">MimeLibmagicBytes <var>bytes</var></a></td><td> 16384 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of bytes of a file examined</td></tr>
+<tr><td><a href="mod_mime_libmagic.html#mimelibmagiccharset">MimeLibmagicCharset On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Add a charset parameter to text types</td></tr>
+<tr class="odd"><td><a href="mod_mime_libmagic.html#mimelibmagicfile">MimeLibmagicFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The magic database to use</td></tr>
 <tr><td><a href="mod_mime_magic.html#mimemagicdecompression">MimeMagicDecompression On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable decompression of compressed files for MIME type detection</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
