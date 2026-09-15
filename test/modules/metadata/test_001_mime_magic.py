@@ -1,5 +1,7 @@
 import os
 import re
+import sys
+
 import pytest
 
 from pyhttpd.conf import HttpdConf
@@ -17,6 +19,9 @@ class TestMimeMagic:
         with open(magic_file, "w") as f:
             f.write("0\tstring\tTESTMAGIC\tapplication/x-test-magic\tx-test-encoding\n")
             f.write("0\tstring\tTESTNOTE\tapplication/x-test-note (some note)\n")
+            # 32-bit values with the high bit set, signed and unsigned
+            f.write("0\tbelong\t0xcafebabe\tapplication/x-test-belong\n")
+            f.write("0\tulelong\t0xcafebabe\tapplication/x-test-ulelong\n")
 
         # Files without an extension, so mod_mime sets no type and
         # mod_mime_magic has to derive one from the content.
@@ -29,6 +34,10 @@ class TestMimeMagic:
             f.write(b"TESTNOTE" + b" and some more content" * 4 + b"\n")
         with open(os.path.join(doc_dir, "html-plain"), "wb") as f:
             f.write(b"<html>\n<body>hello</body>\n")
+        with open(os.path.join(doc_dir, "belong"), "wb") as f:
+            f.write(b"\xca\xfe\xba\xbe" + b"\0" * 64)
+        with open(os.path.join(doc_dir, "ulelong"), "wb") as f:
+            f.write(b"\xbe\xba\xfe\xca" + b"\0" * 64)
         # HTML token followed by an ESC byte.
         with open(os.path.join(doc_dir, "html-escape"), "wb") as f:
             f.write(b"<html>\n\x1b[1mhello\x1b[0m\n")
@@ -81,3 +90,19 @@ class TestMimeMagic:
         assert env.httpd_error_log.scan_recent(
             re.compile(r'.*AH10623: .*ignoring invalid content encoding.*'))
         env.httpd_error_log.ignore_recent(lognos=["AH10623"])
+
+    # a long value with the high bit set matches the rule's value,
+    # whether compared signed or unsigned
+    # The 0xcafebabe rule value only fits a 64-bit C long: on an LLP64
+    # platform (Windows) long is 32 bits, where the parser's strtol()
+    # cannot represent it and the sign-extension corner this guards
+    # against does not arise.
+    @pytest.mark.skipif(sys.platform == "win32",
+                        reason="magic value needs a 64-bit long")
+    @pytest.mark.parametrize("name", ["belong", "ulelong"])
+    def test_metadata_001_05_long_high_bit(self, env, name):
+        url = env.mkurl("http", "test1", f"/magic/{name}")
+        r = env.curl_get(url)
+        assert r.response, "no response: server may have crashed"
+        assert r.response["status"] == 200
+        assert r.response["header"]["content-type"] == f"application/x-test-{name}"
