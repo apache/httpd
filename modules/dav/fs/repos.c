@@ -391,6 +391,8 @@ static dav_error * dav_fs_copymove_file(
 
     if ((status = apr_file_open(&inf, src, APR_READ | APR_BINARY,
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_ERR, status, p, APLOGNO()
+                      "Could not open file %s for reading.", src);
         /* ### use something besides 500? */
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, status,
                              "Could not open file for reading");
@@ -402,6 +404,8 @@ static dav_error * dav_fs_copymove_file(
     if (status != APR_SUCCESS) {
         apr_file_close(inf);
 
+        ap_log_perror(APLOG_MARK, APLOG_ERR, status, p, APLOGNO()
+                      "Could not open file %s for writing.", dst);
         return dav_new_error(p, MAP_IO2HTTP(status), 0, status,
                              "Could not open file for writing");
     }
