@@ -941,8 +941,8 @@ struct request_rec {
      *  handler can't be installed by mod_actions.
      */
     ap_method_mask_t allowed;
-    /** Array of extension methods */
-    apr_array_header_t *allowed_xmethods;
+    /* "allowed_xmethods" lived here previously, but was never used: */
+    void *unused;
     /** List of allowed methods */
     ap_method_list_t *allowed_methods;
 
