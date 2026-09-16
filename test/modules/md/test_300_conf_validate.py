@@ -204,8 +204,7 @@ class TestConf:
             "not-forbidden.org", "test3.not-forbidden.org", "test4.not-forbidden.org"
         ])
         conf.install()
-        assert env.apache_fail() == 0
-        env.apache_stop()
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.httpd_error_log.ignore_recent([
             "AH10040"   # A requested MD certificate will not match ServerName
         ])
@@ -344,13 +343,13 @@ class TestConf:
             "not.secret.com", "secret.com"
         ])
         conf.install()
-        assert env.apache_fail() == 0
-        # this is unreliable on debian
-        #assert env.httpd_error_log.scan_recent(
-        #    re.compile(r'.*Virtual Host not.secret.com:0 matches Managed Domain \'secret.com\', '
-        #               'but the name/alias not.secret.com itself is not managed. A requested '
-        #               'MD certificate will not match ServerName.*'), timeout=10
-        #)
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10040",  # A requested MD certificate will not match ServerName
+                "AH10105"   # MD secret.com does not match any VirtualHost with 'SSLEngine on'
+            ]
+        )
 
     # test case: use MDRequireHttps in an <if> construct, but not in <Directory
     def test_md_300_022(self, env):
