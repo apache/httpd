@@ -1009,10 +1009,12 @@ class HttpdTestEnv:
             rv = self._win_start()
             return 0 if rv != 0 else (0 if self.is_dead() else -1)
         self._run_apachectl("stop")
-        r = self._run_apachectl("start")
-        if r.exit_code == 0:
-            return 0 if self.is_dead() else -1
-        return 0
+        rv = self._run_apachectl("start")
+        if rv == 0:
+            rv = 0 if self.is_dead() else -1
+        else:
+            rv = 0
+        return rv
 
     def apache_hard_restart(self) -> int:
         """Restart without the "graceful" flag, so the MPM starts over."""
