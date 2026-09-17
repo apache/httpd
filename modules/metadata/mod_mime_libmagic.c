@@ -317,10 +317,13 @@ static const command_rec libmagic_cmds[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char * const aszPre[] = { "mod_mime.c", "mod_mime_magic.c", NULL };
+    static const char *const pre[] = { "mod_mime.c", NULL };
+    static const char *const post[] = { "mod_mime_magic.c", NULL };
 
-    /* run after mod_mime (and mod_mime_magic, if loaded) */
-    ap_hook_type_checker(libmagic_find_ct, aszPre, NULL, APR_HOOK_MIDDLE);
+    /* Run after mod_mime and before mod_mime_magic, since this module
+     * is default-off and it should win over mod_mime_magic when
+     * enabled. */
+    ap_hook_type_checker(libmagic_find_ct, pre, post, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(mime_libmagic) =
