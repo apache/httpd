@@ -960,7 +960,13 @@ static char *ycomp(sed_commands_t *commands, char *expbuf)
             tsp++;
         }
         if(ep[cint] == commands->sseof || ep[cint] == '\0') {
+            /* Destination string is shorter than the source string: the byte
+             * just read is the closing delimiter or the NUL terminator, not a
+             * real replacement character.  Report the size mismatch and stop
+             * now -- continuing would walk tsp past the end of the line buffer
+             * (out-of-bounds read of linebuf). */
             command_errf(commands, SEDERR_TSNTSS, commands->linebuf);
+            return NULL;
         }
     }
     if(*tsp != commands->sseof) {
