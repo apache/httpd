@@ -186,6 +186,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x: svn merge -c 1936893 ^/httpd/httpd/trunk
     +1: gbechis, jorton, covener
 
+  *) mod_ssl: fix OpenSSL 1.0 compatibility
+     trunk patch:  https://svn.apache.org/r1935577
+     2.4.x patch: https://github.com/apache/httpd/pull/742.patch
+     +1: jorton, covener, rjung
 
 ------------------------------------------------------------------------
 
@@ -212,11 +216,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.4.x patch: https://github.com/apache/httpd/pull/712.patch
                    (copy file and restore maxNestingDepth)
       +1 covener, jorton
-
-   *) mod_ssl: fix OpenSSL 1.0 compatibility
-      trunk patch:  https://svn.apache.org/r1935577
-      2.4.x patch: https://github.com/apache/httpd/pull/742.patch
-      +1: jorton, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
