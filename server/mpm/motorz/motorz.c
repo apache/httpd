@@ -35,6 +35,8 @@
 /**
  * config globals
  */
+module AP_MODULE_DECLARE_DATA mpm_motorz_module;
+
 static motorz_core_t *g_motorz_core;
 static int threads_per_child = 16;
 static int ap_num_kids = DEFAULT_START_DAEMON;
@@ -124,6 +126,32 @@ static motorz_child_bucket *all_buckets, /* All listeners buckets */
 
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 
+/* Join every poller thread, clearing each poller->thread as it is joined so a
+ * second join is a no-op (apr_thread_join -> pthread_join on an already-joined
+ * handle is undefined behavior). clean_child_exit() and child_main() both call
+ * this; on the normal path child_main joins the pollers first and this becomes
+ * a pass over NULL handles.
+ */
+static void motorz_join_pollers(motorz_core_t *mz)
+{
+    apr_os_thread_t self = apr_os_thread_current();
+    apr_os_thread_t *pos;
+    int i;
+
+    if (mz->pollers) {
+        for (i = 0; i < mz->num_pollers; i++) {
+            motorz_poller_t *poller = mz->pollers[i];
+            if (poller && poller->thread
+                    && (apr_os_thread_get(&pos, poller->thread) != APR_SUCCESS
+                        || pos == NULL
+                        || !apr_os_thread_equal(*pos, self))) {
+                apr_status_t pstatus;
+                apr_thread_join(&pstatus, poller->thread);
+                poller->thread = NULL;
+            }
+        }
+    }
+}
 
 static apr_status_t motorz_io_process(motorz_conn_t *scon);
 static void motorz_pollset_del(motorz_poller_t *poller, motorz_conn_t *scon);
@@ -347,6 +375,12 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
 
     scon->c->cs = &scon->cs;
     sb = apr_pcalloc(scon->pool, sizeof(motorz_sb_t));
+
+    /* Publish this scon in the connection's module config so the
+     * pre_read_request hook (and any code needing the current scon from a
+     * conn_rec, e.g. tracking c->r for suspend/resume) can recover it.
+     */
+    ap_set_module_config(scon->c->conn_config, &mpm_motorz_module, scon);
 
     scon->c->current_thread = thread;
 
@@ -864,6 +898,36 @@ static void motorz_start_lingering_close(motorz_conn_t *scon)
     motorz_lingering_close(scon);
 }
 
+/* Track the current request on a suspension-capable connection (fix #2).
+ * motorz_suspend_connection()/motorz_resume_suspended() pass the request_rec
+ * to the suspend/resume_connection hooks; leave it NULL when no request is
+ * active (mpm_common.h documents NULL in that case). Mirror mpm_event's
+ * event_pre_read_request()/event_request_cleanup(): recover scon from the
+ * connection's module config (published in motorz_io_setup_conn) and zero r
+ * when the request pool is torn down.
+ */
+static apr_status_t motorz_request_cleanup(void *dummy)
+{
+    conn_rec *c = dummy;
+    motorz_conn_t *scon = ap_get_module_config(c->conn_config,
+                                               &mpm_motorz_module);
+    if (scon) {
+        scon->r = NULL;
+    }
+    return APR_SUCCESS;
+}
+
+static void motorz_pre_read_request(request_rec *r, conn_rec *c)
+{
+    motorz_conn_t *scon = ap_get_module_config(c->conn_config,
+                                                &mpm_motorz_module);
+    if (scon) {
+        scon->r = r;
+        apr_pool_cleanup_register(r->pool, c, motorz_request_cleanup,
+                                  apr_pool_cleanup_null);
+    }
+}
+
 /* Park a connection that a process_connection hook left in
  * CONN_STATE_SUSPENDED (A4). Ownership passes to the module, which interacts
  * with the MPM only through the suspend/resume_connection hooks until it calls
@@ -1311,22 +1375,7 @@ static void clean_child_exit(int code)
      * thread, never a poller thread).
      */
     die_now = 1;
-    if (mz->pollers) {
-        apr_os_thread_t self = apr_os_thread_current();
-        int i;
-        for (i = 0; i < mz->num_pollers; i++) {
-            motorz_poller_t *poller = mz->pollers[i];
-            if (poller && poller->thread) {
-                apr_os_thread_t *pos = NULL;
-                if (apr_os_thread_get(&pos, poller->thread) != APR_SUCCESS
-                        || pos == NULL
-                        || !apr_os_thread_equal(*pos, self)) {
-                    apr_status_t pstatus;
-                    apr_thread_join(&pstatus, poller->thread);
-                }
-            }
-        }
-    }
+    motorz_join_pollers(mz);
 
     /* Drain the worker thread pool before tearing down pools. Without this,
      * worker threads executing motorz_io_process or motorz_conn_done (which
@@ -1979,14 +2028,10 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     motorz_supervise(mz, sbh);
 
     /* die_now is now set; join the poller threads so their pollsets/rings are
-     * quiescent before we tear the child down.
+     * quiescent before we tear the child down. This clears poller->thread so
+     * clean_child_exit()'s join is a no-op (no double pthread_join).
      */
-    for (i = 0; i < mz->num_pollers; i++) {
-        if (mz->pollers[i]->thread) {
-            apr_status_t pstatus;
-            apr_thread_join(&pstatus, mz->pollers[i]->thread);
-        }
-    }
+    motorz_join_pollers(mz);
 
     clean_child_exit(0);
 }
@@ -2697,6 +2742,8 @@ static void motorz_hooks(apr_pool_t *p)
     ap_hook_mpm_get_name(motorz_get_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_resume_suspended(motorz_resume_suspended, NULL, NULL,
                                  APR_HOOK_MIDDLE);
+    ap_hook_pre_read_request(motorz_pre_read_request, NULL, NULL,
+                             APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)

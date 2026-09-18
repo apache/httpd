@@ -187,6 +187,7 @@ def _package_scope(env, request):
             "AH00337",
             "AH00338",
             "AH00341",
+            "AH02322",
         ])
     if sys.platform == "win32" and _has_ipv6():
         env.httpd_error_log.add_ignored_lognos(["AH00332"])

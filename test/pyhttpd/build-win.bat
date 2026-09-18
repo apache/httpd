@@ -263,6 +263,7 @@ cmake "%HTTPD_SRC%" -B . ^
     "-DAPR_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/libapr-1.lib;%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/libaprutil-1.lib" ^
     -DNGHTTP2_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/nghttp2.lib ^
     -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/jansson.lib ^
+    -DENABLE_MIME_MAGIC=A ^
     -DBUILD_TEST_MODULES=true ^
     -DCMAKE_POLICY_VERSION_MINIMUM=%CMAKE_VERSION% ^
     --install-prefix %HTTPD_INSTALL_DIRECTORY%

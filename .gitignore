@@ -354,6 +354,8 @@ Release
 /support/fcgistarter
 /support/firehose
 /support/*.exe
+/support/a2md/a2md
+/support/logresolve.py
 
 # /support/win32/
 !/support/win32/ApacheMonitor.rc

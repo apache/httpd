@@ -16,6 +16,16 @@ class _ResponseFaker(TCPFaker):
             return """HTTP/1.1 200 OK\r\nContent-Type: 
             text/html\x00extra\r\n\r\n""".encode()
 
+        if "/empty-header" in path:
+            body = b"Hello"
+            return (
+                b"HTTP/1.1 200 OK\r\n"
+                b"X-Empty:\r\n"
+                b"Content-Length: 5\r\n"
+                b"\r\n"
+                + body
+            )
+
         if "/forwarded" in path:
             headers = data.split(b"\r\n\r\n")[0].decode("latin-1")
             forwarded = []
@@ -70,6 +80,7 @@ class TestProxyResponse:
             conf.add([
                 "RemoteIPHeader X-Forwarded-For",
                 "RemoteIPTrustedProxy 0.0.0.0",
+                "RemoteIPTrustedProxy 127.0.0.1",
             ])
         conf.end_vhost()
         conf.install()
@@ -122,3 +133,20 @@ class TestProxyResponse:
         env.httpd_error_log.ignore_recent(
             lognos=["AH00957", "AH00959", "AH01114"]
         )
+
+    # empty backend response header values are valid
+    def test_proxy_03_004(self, env):
+        r = env.curl_get(env.mkurl("http", "test1", "/empty-header"))
+        assert r.response["status"] == 200
+        assert "x-empty" in r.response["header"]
+        assert r.response["body"] == b"Hello"
+
+    # a trailing empty RemoteIPHeader token must not underflow the trim pointer
+    def test_proxy_03_005(self, env):
+        if not env.has_shared_module("remoteip"):
+            pytest.skip("need mod_remoteip for this")
+
+        r = env.curl_get(env.mkurl("http", "test1", "/forwarded"), options=[
+            '-H', 'X-Forwarded-For: 192.0.2.1,',
+        ])
+        assert r.response["status"] == 200

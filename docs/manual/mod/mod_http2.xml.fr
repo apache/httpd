@@ -1363,8 +1363,8 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
 		malveillante de la part du client.
             </p>
             <p>
-                Définissez cette directive à 0 pour vous prémunir contre les
-		clients qui provoquent des erreurs.
+                Définissez cette directive à 0 pour tolérer les clients
+			défaillants.
             </p>
         </usage>
     </directivesynopsis>

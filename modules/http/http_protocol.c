@@ -897,8 +897,7 @@ static char *make_allow(request_rec *r)
 
     /* ### this is rather annoying. we should enforce registration of
        ### these methods */
-    if ((mask & (AP_METHOD_BIT << M_INVALID))
-        && (r->allowed_methods->method_list != NULL)
+    if (r->allowed_methods->method_list != NULL
         && (r->allowed_methods->method_list->nelts != 0)) {
         apr_array_cat(allow, r->allowed_methods->method_list);
     }

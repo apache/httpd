@@ -271,6 +271,7 @@ log_server_status</a></li>
 <li><a href="mod/mod_macro.html">Apache Module mod_macro</a></li>
 <li><a href="mod/mod_md.html">Apache Module mod_md</a></li>
 <li><a href="mod/mod_mime.html">Apache Module mod_mime</a></li>
+<li><a href="mod/mod_mime_libmagic.html">Apache Module mod_mime_libmagic</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Module mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Module mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache Module mod_nw_ssl</a></li>

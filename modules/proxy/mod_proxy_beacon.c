@@ -689,6 +689,24 @@ static void beacon_log_throttled(beacon_ctx_t *ctx, apr_time_t now, const char *
 }
 
 /*
+ * Does url already exist as a member worker of the configured balancer?
+ * balancer_manage()/balancer_process_balancer_worker() silently succeed on an
+ * add of a worker it cannot find, so on a failed add we look the worker up
+ * directly to distinguish "already present" (recoverable) from "full" (not).
+ */
+static int beacon_worker_exists(beacon_ctx_t *ctx, apr_pool_t *pool,
+                                const char *url)
+{
+    proxy_server_conf *conf =
+        ap_get_module_config(ctx->s->module_config, &proxy_module);
+    proxy_balancer *bsel = ap_proxy_get_balancer(pool, conf,
+            apr_pstrcat(pool, BALANCER_PREFIX, ctx->balancer_name, NULL), 0);
+
+    return bsel
+        && ap_proxy_get_worker(pool, bsel, conf, url) != NULL;
+}
+
+/*
  * Attempt to add (and enable) url as a member of the configured balancer,
  * reusing balancer_manage().  Two calls: add (the worker is created DISABLED by
  * default), then clear the DISABLED flag so it serves traffic.  Updates the
@@ -723,11 +741,22 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
     rv = ctx->manage_fn(r, params);
     apr_pool_destroy(subp);
     if (rv != APR_SUCCESS) {
-        /* Most likely the balancer has no free slots (grow it via ProxySet
-         * growth / BalancerGrowth).  Throttled log; retried only after the
-         * backoff window, not on every announcement. */
-        beacon_log_throttled(ctx, now, "balancer add failed (full?)");
-        return rv;
+        /* A "worker already exists" report is the normal case after a graceful
+         * restart, when the balancer's members (persisted in shared memory)
+         * outlive this process's empty ctx->seen.  balancer_manage() refuses to
+         * re-add an existing worker, so treat it as already-present and fall
+         * through to the enable step -- otherwise a previously-evicted member
+         * would stay DISABLED forever.  A genuinely full balancer (no such
+         * worker, no free slot) is throttled and retried only after the backoff
+         * window, not on every announcement. */
+        if (!beacon_worker_exists(ctx, pool, url)) {
+            beacon_log_throttled(ctx, now, "balancer add failed (full?)");
+            return rv;
+        }
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     APLOGNO(10589) "mod_proxy_beacon: backend %s already in "
+                     "balancer://%s (recovered after restart)",
+                     url, ctx->balancer_name);
     }
 
     /* Step 2: enable it (clear the DISABLED flag) so it serves traffic.

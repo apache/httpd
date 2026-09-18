@@ -941,8 +941,8 @@ struct request_rec {
      *  handler can't be installed by mod_actions.
      */
     ap_method_mask_t allowed;
-    /** Array of extension methods */
-    apr_array_header_t *allowed_xmethods;
+    /* "allowed_xmethods" lived here previously, but was never used: */
+    void *unused;
     /** List of allowed methods */
     ap_method_list_t *allowed_methods;
 
@@ -2779,6 +2779,13 @@ AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array,
  */
 AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
                                       const char *s);
+
+/**
+ * Strip trailing whitespace from a NUL-terminated string in place.
+ * @param str String to modify
+ * @return Pointer to the terminating NUL of the modified string
+ */
+AP_DECLARE(char *) ap_cstr_stripws(char *str);
 
 /**
  * Perform a case-insensitive comparison of two strings @a str1 and @a str2,

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934457 -->
+<!-- English Revision: 1937887 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,17 +33,20 @@ MD5</description>
 
 <summary>
     <p>Ce module implémente l'authentification HTTP basée sur les
-    condensés MD5 (<rfc>2617</rfc>), et
-    fournit une alternative à <module>mod_auth_basic</module> en
-    ne transmettant plus le mot de passe en clair. Cependant, cela ne
-    suffit pas pour améliorer la sécurité de manière significative par
-    rapport à l'authentification basique. En outre, le stockage du mot
-    de passe sur le serveur est encore moins sûr dans le cas
-    d'une authentification à base de condensé que dans le cas d'une
-    authentification basique. C'est pourquoi l'utilisation de
-    l'authentification basique associée à un chiffrement de la connexion
-    via <module>mod_ssl</module> constitue une bien meilleure
-    alternative.</p>
+    condensés MD5 (<rfc>2617</rfc>), une alternative à l’authentification basique
+    fournie par le module <module>mod_auth_basic</module>, et avec laquelle le
+    mot de passe n’est pas envoyé en clair sur le réseau.</p>
+
+    <p>Basic et Digest ne sont que deux schémas d’authentification : elles
+    établissent l’identité du client et ne font rien quant à la confidentialité
+    et à l’intégrité de la requête et de la réponse elles-mêmes. Si la connexion
+    n’est pas chiffrée, le contenu de chaque requête et réponse est exposé dans
+    les deux schémas ; un des avantages de l’authentification à base de condensés
+    est que le mot de passe ne fait pas partie de ces dernières. Digest n’est
+    donc pas un substitut pour une connexion sécurisée avec
+    <module>mod_ssl</module>, qui protège les éléments d’authentification et les
+    données de la même façon, et cet avantage a ses limites (voir la note
+    ci-après).</p>
 </summary>
 
 <seealso><directive module="mod_authn_core">AuthName</directive></seealso>
@@ -81,20 +84,20 @@ condensés</title>
     via l'utilitaire <program>htdigest</program>.</p>
 
     <note><title>Note</title>
-    <p>L'authentification à base de condensé a été conçue pour améliorer
-    la sécurité par rapport à l'authentification basique, mais il
-    s'avère que ce but n'a pas été atteint. Un attaquant de type
-    "man-in-the-middle" peut facilement forcer le navigateur à revenir à
-    une authentification basique. Même une oreille indiscrète passive
-    peut retrouver le mot de passe par force brute avec les moyens
-    modernes, car l'algorithme de hashage utilisé par l'authentification
-    à base de condensé est trop rapide. Autre problème, le stockage des
-    mots de passe sur le serveur n'est pas sûr. Le contenu d'un fichier
-    htdigest volé peut être utilisé directement pour l'authentification
-    à base de condensé. Il est donc fortement recommandé d'utiliser
-    <module>mod_ssl</module> pour chiffrer la connexion.</p>
-    <p><module>mod_auth_digest</module> ne fonctionne correctement que
-    sur les plates-formes où APR supporte la mémoire partagée.</p>
+    <p>Un des avantages de Digest par rapport à Basic, éviter l’envoi du mot de
+    passe en clair, est soumis à condition. Si le client se rabat
+    silencieusement sur l’authentification basique lors de la négociation, un
+    attaquant actif pourra contourner la négociation Digest et en proposer une
+    basique à la place ; le navigateur enverra alors le mot de passe en clair ;
+    un espion passif pourra monter une attaque de force brute hors ligne sur une
+    réponse capturée que le hachage MD5 rapide ne ralentira que légèrement ; et
+    si le fichier <program>htdigest</program> est volé, les hachages qu’il
+    contient pourront être rejoués pour s’authentifier directement, sans avoir à
+    récupérer le mot de passe proprement dit. Il est préférable de chiffrer la
+    totalité de la connexion avec <module>mod_ssl</module>.</p>
+    <p><module>mod_auth_digest</module> requiert qu’APR soit construit avec la
+    prise en charge de la mémoire partagée, sinon il ne pourra pas être
+    construit.</p>
     </note>
 </section>
 
@@ -129,30 +132,23 @@ zone du site web concernée</description>
 <name>AuthDigestQop</name>
 <description>Détermine le niveau de protection fourni par
 l'authentification à base de condensé</description>
-<syntax>AuthDigestQop none|auth|auth-int [auth|auth-int]</syntax>
+<syntax>AuthDigestQop auth</syntax>
 <default>AuthDigestQop auth</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>La directive <directive>AuthDigestQop</directive> permet de
-    définir le <dfn>niveau de protection</dfn> fourni. <code>auth</code>
-    ne fournit que l'authentification (nom utilisateur/mot de passe) ;
-    <code>auth-int</code> fournit l'authentification plus un contrôle
-    d'intégrité (un condensé MD5 de l'entité est aussi calculé et
-    vérifié) ; avec <code>none</code>, le module va utiliser l'ancien
-    algorithme de condensés RFC-2069 (qui n'effectue pas de contrôle
-    d'intégrité). On peut spécifier à la fois <code>auth</code> et
-    <code>auth-int</code>, auquel cas c'est le navigateur qui va choisir
-    lequel des deux utiliser. <code>none</code> ne doit être utilisé que
-    dans le cas où le navigateur ne serait pas à même (pour une raison
-    ou pour une autre) de relever le défit qu'il recevrait si un autre
-    niveau de protection était défini.</p>
+    <p>La directive <directive>AuthDigestQop</directive> permet de spécifier la
+    <dfn>qualité de protection</dfn> à utiliser. Seule la qualité
+    <code>auth</code> (authentification) est prise en charge et il s’agit de la
+    valeur par défaut. Cette directive n’a donc plus d’effet et n’est conservée
+    qu’à des fins de compatibilité.</p>
 
-    <note>
-      <code>auth-int</code> n'est pas encore implémenté.
-    </note>
+    <note>Les versions précédentes acceptaient aussi la qualité
+    <code>none</code> (le schéma Digest de la RFC 2069 sans qualité de
+    protection). Elle a été supprimée : une requête dont la <code>qop</code> est
+    absente ou différente de <code>auth</code> est maintenant rejetée.</note>
 </usage>
 </directivesynopsis>
 
@@ -160,7 +156,7 @@ l'authentification à base de condensé</description>
 <name>AuthDigestNonceLifetime</name>
 <description>Durée de validité du nombre à valeur unique du
 serveur (nonce)</description>
-<syntax>AuthDigestNonceLifetime <var>secondes</var></syntax>
+<syntax>AuthDigestNonceLifetime <var>seconds</var></syntax>
 <default>AuthDigestNonceLifetime 300</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -171,29 +167,34 @@ serveur (nonce)</description>
     permet de contrôler la durée de validité du nombre à valeur unique
     du serveur (nonce). Lorsque le client contacte le serveur en
     utilisant un nonce dont la validité a expiré, le serveur renvoie un
-    code d'erreur 401 avec <code>stale=true</code>. Si
-    <var>secondes</var> est supérieur à 0, il spécifie la durée de
-    validité du nonce ; il est en général déconseillé d'affecter à cet
-    argument une valeur inférieure à 10 secondes. Si
-    <var>secondes</var> est inférieur à 0, le nonce n'expire jamais.
-    <!-- Pas encore implémenté : si <var>secondes</var> est égal à 0, le
-    client ne doit utiliser le nonce qu'une seule fois. Notez que si les
-    nonces à usage unique assurent une sécurité accrue contre les
-    attaques à base de rejeu, il ont aussi d'importantes implications en
-    matière de performances, car le navigateur ne peut plus alors
-    effectuer de requêtes en paralléle (pipelining) ou utiliser
-    plusieurs connexions pour une même requête. Comme il n'est pas aisé
-    pour les navigateurs de détecter l'utilisation de nonces à usage
-    unique, on peut aboutir à la situation où le navigateur va tenter
-    d'effectuer des requêtes en parallèle et recevoir des codes d'erreur
-    401 pour toutes les requêtes sauf la première, ce qui aura pour
-    effet de lui faire renvoyer les requêtes. Notez aussi que la
-    protection contre les attaques à base de rejeu n'a de sens que dans
-    le cas de contenus générés dynamiquement ou de requêtes de type
-    POST ; dans le cas des contenus statiques, l'attaquant possède déjà
-    probablement la réponse complète, et les nonces à usage unique sont
-    ici sans objet.  -->
-    </p>
+    code d'erreur 401 avec <code>stale=true</code> et un client qui respecte la
+    RFC réessaiera avec un nouveau nombre à valeur unique sans le demander à
+    l’utilisateur.</p>
+
+    <ul>
+      <li>Si la valeur de l’argument <var>seconds</var> est supérieure à 0, elle
+      spécifie la durée de validité du nombre à valeur unique ; il est
+      raisonnable de penser qu’elle ne devra jamais être définie en dessous de
+      10 secondes.</li>
+
+      <li>Si la valeur de l’argument <var>seconds</var> est égale à 0, le nombre
+      à valeur unique ne pourra être utilisé qu’une seule fois. Le serveur
+      fournit le prochain nombre à valeur unique dans l’en-tête
+      <code>Authentication-Info</code> de chaque réponse, de sorte que le client
+      puisse continuer ; un client qui réutilise un nombre à valeur unique est
+      sollicité avec <code>stale=true</code> et réessaie. Les nombres à valeur
+      unique à usage unique assurent une protection plus efficace contre le
+      rejeu de réponses capturées, mais le client ne peut pas organiser les
+      requêtes en pipeline et s’il le fait, il recevra un code 401 pour toutes
+      les requêtes sauf la première et il devra les renvoyer. Ce coût est le
+      prix de la protection principalement pour les requêtes qui modifient
+      l’état du serveur ou renvoient du contenu qui varie au cours du temps ;
+      rejouer une requête pour du contenu qui ne varie pas que l’espion a déjà
+      capturé en entier ne rapporte rien.</li>
+
+      <li>Si la valeur de l’argument <var>seconds</var> est inférieure à 0, le nombre
+      à valeur unique n’expire jamais.</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
@@ -231,9 +232,9 @@ nombre à valeur unique (nonce) par le client</description>
 
 <directivesynopsis>
 <name>AuthDigestAlgorithm</name>
-<description>Sélectionne l'algorithme utilisé pour calculer les
-condensés du défit et de sa réponse</description>
-<syntax>AuthDigestAlgorithm MD5|MD5-sess</syntax>
+<description>Sélectionne l'algorithme utilisé pour calculer les condensés du
+défit et de sa réponse dans l’authentification à base de condensés</description>
+<syntax>AuthDigestAlgorithm MD5</syntax>
 <default>AuthDigestAlgorithm MD5</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -242,16 +243,8 @@ condensés du défit et de sa réponse</description>
 <usage>
     <p>La directive <directive>AuthDigestAlgorithm</directive> permet de
     sélectionner l'algorithme utilisé pour calculer les condensés du
-    défit et de sa réponse.</p>
-
-    <note>
-      <code>MD5-sess</code> n'est pas encore correctement implémenté.
-    </note>
-    <!--
-    <p>Pour pouvoir utiliser <code>MD5-sess</code>, vous devez tout
-    d'abord éditer le code de la fonction <code>get_userpw_hash()</code>
-    dans <code>mod_auth_digest.c</code>.</p>
-    -->
+    défit et de sa réponse. Seul l’algorithme <code>MD5</code> est pris en
+    charge.</p>    
 </usage>
 </directivesynopsis>
 
@@ -296,7 +289,7 @@ concernant l'authentification à base de condensés</description>
 <description>La quantité de mémoire partagée à allouer afin de conserver
 les informations à propos des clients</description>
 <syntax>AuthDigestShmemSize <var>taille</var></syntax>
-<default>AuthDigestShmemSize 1000</default>
+<default>AuthDigestShmemSize 8192</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -310,6 +303,14 @@ les informations à propos des clients</description>
     pouvez simplement définir <directive>AuthDigestShmemSize</directive>
     à <code>0</code> et consulter le message d'erreur que renverra le
     serveur lorsqu'on essaiera de le démarrer.</p>
+
+    <p>La valeur par défaut permet d’enregistrer environ 140 clients. Un client
+    qui est supprimé pour faire de la place à un autre ne se voit pas interdire
+    l’accès : un nouveau nombre à valeur unique lui est envoyé avec
+    <code>stale=true</code>, ce qui ne lui coûte qu’une requête supplémentaire.
+    Notez qu’une requête qui n’effectue pas d’authentification mobilise tout de
+    même une entrée, car le défit qui lui est renvoyé comporte l’identifiant
+    avec lequel le client est suivi.</p>
 
     <p>L'argument <var>size</var> s'exprime par défaut en octets, mais
     vous pouvez suffixer le nombre par un <code>K</code> ou un

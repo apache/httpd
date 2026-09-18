@@ -1,3 +1,15 @@
+# Python / tooling caches
+# (SVN covers these via svn:global-ignores on this directory; git needs them
+# listed here because the root .gitignore's test/*/*/__pycache__ does not reach
+# tests/t/*/__pycache__.)
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.venv/
+.env
+
 # C modules build artifacts
 c-modules/Makefile
 c-modules/apache_httpd_test.h
@@ -12,6 +24,7 @@ c-modules/*/*.o
 t/TEST
 t/conf/apache_test_config.pm
 t/conf/*.conf
+t/conf/mime.types
 t/conf/ssl/*.pl
 t/conf/ssl/*.conf
 t/conf/ssl/ca
@@ -19,8 +32,16 @@ t/conf/cacheroot/
 t/logs/
 t/state/
 
+# Generated htpasswd / htdigest files
+t/basic1
+t/form1
+t/groups1
+t/realm1
+t/realm2
+
 # Generated test scripts
 t/htdocs/**/*.pl
+t/htdocs/modules/alias/script
 
 # Generated .htaccess files
 t/htdocs/apache/cfg_getline/.htaccess
@@ -29,16 +50,22 @@ t/htdocs/authz_core/a/.htaccess
 t/htdocs/authz_core/a/b/.htaccess
 t/htdocs/authz_core/a/b/c/.htaccess
 t/htdocs/modules/access/htaccess/.htaccess
-t/htdocs/modules/autoindex/htaccess/.htaccess
-t/htdocs/modules/autoindex2/
 t/htdocs/modules/dir/htaccess/.htaccess
 t/htdocs/modules/expires/htaccess/.htaccess
 t/htdocs/modules/headers/htaccess/.htaccess
 t/htdocs/modules/setenvif/htaccess/.htaccess
 t/htdocs/modules/substitute/.htaccess
+
+# Generated document-root content
+t/htdocs/index.html
+t/htdocs/apache/chunked/byteranges.txt
+t/htdocs/modules/autoindex/
+t/htdocs/modules/autoindex2/
+t/htdocs/modules/dav/
 t/htdocs/modules/substitute/test.txt
+t/htdocs/modules/vhost_alias/
 
 # Logs
 t/php-fpm/log/
-
-t/basic1
+t/php-fpm/run/
+t/php-fpm/var/

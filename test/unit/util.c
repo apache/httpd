@@ -17,6 +17,7 @@
 #include "../httpdunit.h"
 
 #include "httpd.h"
+#include "apr_strings.h"
 
 /*
  * Test Fixture -- runs once per test
@@ -76,6 +77,40 @@ HTTPD_START_LOOP_TEST(find_token_correctly_parses_token_list, ap_test_token_case
 
     result = ap_find_token(g_pool, c->list, c->token);
     ck_assert_int_eq(result, c->expected);
+}
+END_TEST
+
+
+/*
+ * ap_cstr_stripws()
+ */
+
+struct ap_cstr_stripws_case {
+    const char *input;
+    const char *expected;
+};
+
+const struct ap_cstr_stripws_case ap_cstr_stripws_cases[] = {
+    { "", "" },
+    { " ", "" },
+    { "\t\r\n", "" },
+    { "value", "value" },
+    { "value ", "value" },
+    { "value\t ", "value" },
+    { " value ", " value" },
+};
+
+const size_t ap_cstr_stripws_cases_len = sizeof(ap_cstr_stripws_cases) /
+                                         sizeof(ap_cstr_stripws_cases[0]);
+
+HTTPD_START_LOOP_TEST(cstr_stripws_strips_trailing_whitespace, ap_cstr_stripws_cases_len)
+{
+    const struct ap_cstr_stripws_case *c = &ap_cstr_stripws_cases[_i];
+    char *str = apr_pstrdup(g_pool, c->input);
+    char *end = ap_cstr_stripws(str);
+
+    ck_assert_str_eq(str, c->expected);
+    ck_assert_ptr_eq(end, str + strlen(c->expected));
 }
 END_TEST
 

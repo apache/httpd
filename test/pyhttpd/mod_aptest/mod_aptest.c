@@ -51,6 +51,29 @@ static int aptest_post_read_request(request_rec *r)
     return DECLINED;
 }
 
+/*
+ * Register the methods named in an "AP-Test-Allow-Methods" request header
+ * via ap_allow_methods(), so a test can check how they are reflected in the
+ * Allow response header.
+ */
+static int aptest_allow_methods(request_rec *r)
+{
+    const char *methods = apr_table_get(r->headers_in, "AP-Test-Allow-Methods");
+    char *list, *name, *last;
+
+    if (methods == NULL) {
+        return DECLINED;
+    }
+
+    list = apr_pstrdup(r->pool, methods);
+    for (name = apr_strtok(list, ", ", &last); name != NULL;
+         name = apr_strtok(NULL, ", ", &last)) {
+        ap_allow_methods(r, MERGE_ALLOW, name, NULL);
+    }
+
+    return DECLINED;
+}
+
 /* Install this module into the apache2 infrastructure.
  */
 static void aptest_hooks(apr_pool_t *pool)
@@ -61,6 +84,7 @@ static void aptest_hooks(apr_pool_t *pool)
     /* test case monitoring */
     ap_hook_post_read_request(aptest_post_read_request, NULL,
                               NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(aptest_allow_methods, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
 

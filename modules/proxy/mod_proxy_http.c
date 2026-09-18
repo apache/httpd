@@ -864,7 +864,7 @@ static apr_status_t ap_proxy_read_headers(request_rec *r, request_rec *rr,
                                   conn_rec *c, int *pread_len)
 {
     int len;
-    char *value, *end;
+    char *value;
     int saw_headers = 0;
     void *sconf = r->server->module_config;
     proxy_server_conf *psc;
@@ -973,8 +973,7 @@ static apr_status_t ap_proxy_read_headers(request_rec *r, request_rec *rr,
             ++value;            /* Skip to start of value   */
 
         /* should strip trailing whitespace as well */
-        for (end = &value[strlen(value)-1]; end > value && apr_isspace(*end); --end)
-            *end = '\0';
+        ap_cstr_stripws(value);
 
         /* make sure we add so as not to destroy duplicated headers
          * Modify headers requiring canonicalisation and/or affected

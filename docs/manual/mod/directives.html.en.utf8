@@ -531,6 +531,10 @@
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagic">MimeLibmagic</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagicbytes">MimeLibmagicBytes</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagiccharset">MimeLibmagicCharset</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagicfile">MimeLibmagicFile</a></li>
 <li><a href="mod_mime_magic.html#mimemagicdecompression">MimeMagicDecompression</a></li>
 <li><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></li>
 <li><a href="mod_mime.html#mimeoptions">MimeOptions</a></li>

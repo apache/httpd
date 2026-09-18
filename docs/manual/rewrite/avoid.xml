@@ -440,9 +440,11 @@ RewriteRule "^/secret/files/"      "-"                   [F]
 
       <highlight language="config">
 &lt;Location "/"&gt;
-    Require all granted
-    Require not ip 193.102.180.41
-    Require not ip 192.76.162.40
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not ip 193.102.180.41
+        Require not ip 192.76.162.40
+    &lt;/RequireAll&gt;
 &lt;/Location&gt;
       </highlight>
     </dd>
@@ -559,4 +561,3 @@ featureful than anything you can cobble together using
 
 </section>
 </manualpage>
-

@@ -44,13 +44,13 @@ jobs:
       matrix:
         include:
           - name: Default
-            triplet: x64-windows
+            triplet: x64-windows-release
             arch: x64
             build-type: Release
             generator: "Ninja"
 
     runs-on: windows-latest
-    timeout-minutes: 60
+    timeout-minutes: 40
     name: ${{ matrix.name }}
     env: 
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
@@ -78,14 +78,18 @@ jobs:
       - name: Configure CMake
         run: |
             cmake --version
-            cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
+            cmake -B ${{github.workspace}}/build `
                 -G "${{ matrix.generator }}" `
+                -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
+                -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} `
                 -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib" `
                 -DNGHTTP2_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 -DNGHTTP2_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/nghttp2.lib `
+                -DJANSSON_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 -DJANSSON_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/jansson.lib `
+                -DENABLE_MIME_MAGIC=A `
                 -DBUILD_TEST_MODULES=true
 
       - name: Build
@@ -96,7 +100,7 @@ jobs:
         run: |
             cmake --install ${{github.workspace}}/build --config ${{ matrix.build-type }}
 
-      - name: Install dependencies
+      - name: Install Tools for tests
         env:
           VCPKG_DIR: C:\vcpkg
           VCPKG_TRIPLET: ${{ matrix.triplet }}

@@ -184,7 +184,7 @@ static const char *add_env_module_vars_from_file(cmd_parms *cmd, void *sconf_,
         name = ap_getword(cmd->pool, &rest, '=');
         if (!name[0]) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
-                         APLOGNO(10624) "%s: Skipping malformed line "
+                         APLOGNO(10632) "%s: Skipping malformed line "
                          "(no variable name) in %s", cmd->cmd->name, fname);
             continue;
         }

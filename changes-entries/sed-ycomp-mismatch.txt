@@ -1,0 +1,3 @@
+  *) mod_sed: Reject a y/// command whose two strings differ in length,
+     reporting the size mismatch rather than a missing delimiter.
+     [Ankit Prateek <ankit offbyquant.com>]

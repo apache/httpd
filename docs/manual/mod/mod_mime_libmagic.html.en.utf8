@@ -1,0 +1,225 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_mime_libmagic - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_mime_libmagic</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_mime_libmagic.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Determines the MIME type of a file from its contents
+    using libmagic</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>mime_libmagic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_mime_libmagic.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.5.1 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module determines the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME
+    type</a> of a file by examining its contents, in the same
+    way the <code>file(1)</code> command does. It is intended as a
+    "second line of defense" for files which
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> cannot type from their extension: it
+    runs after <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> and does nothing if a type
+    has already been set.</p>
+
+    <p>Unlike <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>, which has its own
+    copy of the <code>file(1)</code> engine and its own magic
+    database, this module uses the system's <code>libmagic(3)</code>
+    library and magic database from the <code>file</code> package,
+    so the types it reports are those which <code>file --mime-type</code>
+    would report. The module is built only if libmagic is found at
+    configure time, and is only active in a server or virtual host
+    where <code class="directive"><a href="#mimelibmagic">MimeLibmagic</a></code>
+    is <code>On</code>.</p>
+
+    <p>Where libmagic reports <code>application/octet-stream</code>
+    the module sets no type, leaving the response without a
+    <code>Content-Type</code> header, as <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>
+    does for unrecognised content. Directories are typed as
+    <code>httpd/unix-directory</code> and empty files as
+    <code>text/plain</code>.</p>
+
+    <p>The module does not look inside compressed files and never
+    sets a <code>Content-Encoding</code>: a gzip file is reported as
+    <code>application/gzip</code>. This differs from
+    <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>, which reports the compressed
+    file's encoding.</p>
+</div>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif"> <a href="#threads">Performance and memory overhead</a></li>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif"> <a href="#mimelibmagic">MimeLibmagic</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mimelibmagicbytes">MimeLibmagicBytes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mimelibmagiccharset">MimeLibmagicCharset</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mimelibmagicfile">MimeLibmagicFile</a></li>
+</ul>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_libmagic">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_libmagic">Report a bug</a></li></ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li>
+<li><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="threads">Performance and memory overhead <a title="Permanent link" href="#threads" class="permalink">&para;</a></h2>
+
+    <p>A libmagic handle is created, loaded with the magic database
+    and destroyed for every request examined. Loading a compiled database
+    (<code>magic.mgc</code>) maps the file into memory rather than
+    parsing it, and the mapped pages are shared between all server
+    processes, so this is inexpensive. If the configured database
+    is a text file rather than a compiled one, it is parsed on every
+    request.</p>
+
+    <p>Only the first <code class="directive"><a href="#mimelibmagicbytes">MimeLibmagicBytes</a></code> bytes of a file are read and
+    examined, whatever its size.</p>
+
+    <p>Examining text content in particular can allocate a few
+    megabytes of memory temporarily. With a threaded MPM and a C
+    library which keeps a separate heap per thread, each server
+    thread retains its peak allocation, so the resident size of a
+    busy child process can grow by that much per thread before
+    levelling off. This is not a leak.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mimelibmagic"><span id="MimeLibmagic">MimeLibmagic</span> Directive <a title="Permanent link" href="#mimelibmagic" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable MIME type determination from file contents</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeLibmagic On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MimeLibmagic Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_libmagic</td></tr>
+</table>
+    <p>The <code class="directive">MimeLibmagic</code> directive enables the
+    module for a server or virtual host. Files which
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> leaves untyped, typically those without
+    a recognised extension, then have their contents examined by
+    libmagic.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MimeLibmagic On</pre>
+</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mimelibmagicbytes"><span id="MimeLibmagicBytes">MimeLibmagicBytes</span> Directive <a title="Permanent link" href="#mimelibmagicbytes" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of bytes of a file examined</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeLibmagicBytes <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MimeLibmagicBytes 16384</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_libmagic</td></tr>
+</table>
+    <p>The <code class="directive">MimeLibmagicBytes</code> directive sets
+    how many bytes from the start of a file are read and examined.
+    Larger values allow magic rules which look deeper into a file to
+    match, at the cost of reading more of every examined file. The
+    maximum is 1048576.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mimelibmagiccharset"><span id="MimeLibmagicCharset">MimeLibmagicCharset</span> Directive <a title="Permanent link" href="#mimelibmagiccharset" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a charset parameter to text types</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeLibmagicCharset On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MimeLibmagicCharset Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_libmagic</td></tr>
+</table>
+    <p>When <code class="directive">MimeLibmagicCharset</code> is
+    <code>On</code>, the character encoding libmagic detects (such
+    as <code>us-ascii</code>, <code>utf-8</code> or
+    <code>iso-8859-1</code>) is added as a <code>charset</code>
+    parameter to <code>text/*</code> types, giving for example
+    <code>text/plain; charset=utf-8</code>. Other types are not
+    affected. As with <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>, the detected charset should be
+    trusted only where the content is known to be encoded
+    consistently.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mimelibmagicfile"><span id="MimeLibmagicFile">MimeLibmagicFile</span> Directive <a title="Permanent link" href="#mimelibmagicfile" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The magic database to use</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeLibmagicFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>The default database of the installed libmagic</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_libmagic</td></tr>
+</table>
+    <p>The <code class="directive">MimeLibmagicFile</code> directive names
+    the magic database, in place of the default compiled into
+    libmagic (typically <code>/usr/share/misc/magic</code>, for which
+    the compiled <code>magic.mgc</code> alongside it is loaded).
+    The database must be in the format described in
+    <code>magic(5)</code>; the file distributed with
+    <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> is not suitable. A relative path
+    is taken relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. If the database cannot be loaded, an
+    error is logged for each request examined and the file is left
+    untyped.</p>
+
+    <p>Note that the <code>MAGIC</code> environment variable, if set
+    when the server is started, overrides the library default, but
+    not a database given with this directive.</p>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">MimeLibmagicFile /usr/share/misc/magic.mgc</pre>
+</div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_mime_libmagic.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>
