@@ -399,9 +399,11 @@ static int req_parsebody(lua_State *L)
         int         i;
         size_t      vlen = 0;
         size_t      len = 0;
-        if (lua_read_body(r, &data, (apr_off_t*) &size, max_post_size) != OK) {
+        apr_off_t   body_len = 0;
+        if (lua_read_body(r, &data, &body_len, max_post_size) != OK) {
             return 2;
         }
+        size = (apr_size_t) body_len;
         len = strlen(multipart);
         i = 0;
         for

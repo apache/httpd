@@ -657,9 +657,9 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
 
         {
             apr_size_t n = strlen(ctx->buffer);
-            if (ctx->buffer[n-1] == CRLF[1])  /* strip trailing '\n' */
+            if (n > 0 && ctx->buffer[n-1] == CRLF[1])  /* strip trailing '\n' */
                 ctx->buffer[--n] = '\0';
-            if (ctx->buffer[n-1] == CRLF[0])  /* strip trailing '\r' if present */
+            if (n > 0 && ctx->buffer[n-1] == CRLF[0])  /* strip trailing '\r' if present */
                 ctx->buffer[--n] = '\0';
         }
 
@@ -746,7 +746,13 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
                               ap_escape_html(p, filename), "</a>\n", NULL);
         }
         else {
-            strcat(ctx->buffer, "\n"); /* re-append the newline */
+            /* re-append the newline, unless an over-long line already
+             * filled the buffer up to its last byte */
+            apr_size_t n = strlen(ctx->buffer);
+            if (n + 1 < sizeof(ctx->buffer)) {
+                ctx->buffer[n] = '\n';
+                ctx->buffer[n + 1] = '\0';
+            }
             str = ap_escape_html(p, ctx->buffer);
         }
 
