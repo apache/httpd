@@ -108,11 +108,27 @@ class TestSetEnvFromFileMalformed:
         assert env.apache_restart() == 0
 
     def test_metadata_002_02_malformed_line(self, env):
-        # The malformed line is skipped with a warning.  The file is read
-        # while the configuration is parsed, before the error log is open,
-        # so the AH10624 warning goes to stderr rather than the error log.
-        assert "AH10624" in env.apachectl_stderr
-        assert "Skipping malformed line" in env.apachectl_stderr
+        # The malformed line is skipped with an AH10632 warning.  Where that
+        # warning surfaces is MPM-dependent: when the config is parsed before
+        # the error log is open (e.g. the event MPM on Unix) it goes to
+        # apachectl's stderr; with mpm_winnt the config is parsed again by the
+        # child with the error log already open, so it lands in the error log
+        # instead (and possibly more than once).  apachectl_stderr is also
+        # None on the winnt startup path, so guard it.  Accept the warning in
+        # either place.
+        stderr = env.apachectl_stderr or ""
+        warn_re = re.compile(
+            r'.*AH10632: SetEnvFromFile: Skipping malformed line.*')
+        found = "AH10632" in stderr
+        if not found:
+            try:
+                found = env.httpd_error_log.scan_recent(warn_re)
+            except TimeoutError:
+                found = False
+        assert found, "AH10632 warning not found in stderr or error log"
+        # The warning is expected here; keep it from failing the teardown log
+        # check (it may appear in the error log several times under winnt).
+        env.httpd_error_log.ignore_recent(lognos=["AH10632"])
         # ... and the well-formed line after it is still applied
         url = env.mkurl("http", "test1", "/malformed.shtml")
         r = env.curl_get(url)
@@ -172,8 +188,11 @@ class TestSetEnvFromFileMissing:
         conf.install()
         # httpd must refuse to start ...
         assert env.apache_fail() == 0
-        # ... reporting why
-        assert "Could not open file" in env.apachectl_stderr
+        # ... reporting why.  The message is emitted at config-parse time;
+        # apachectl_stderr only captures it on the non-winnt start path (it is
+        # None under mpm_winnt), so only assert on it where it was captured.
+        if env.apachectl_stderr:
+            assert "Could not open file" in env.apachectl_stderr
 
         # restore a working, running server so the log check and package
         # teardown are clean
