@@ -301,11 +301,7 @@ static const char *add_redirect_internal(cmd_parms *cmd,
      * if we understand the first arg but have no second arg, we are dealing
      * with a status like "GONE" or a non-redirect status (e.g. 404, 503).
      */
-    if (!cmd->path) {
-        /* <Location> context only for now */
-        ;
-    }
-    else if ((grokarg1 > 0 && arg2 && !arg3) || (!grokarg1 && !arg2)) {
+    if ((grokarg1 > 0 && arg2 && !arg3) || (!grokarg1 && !arg2)) {
         const char *expr_err = NULL;
 
         url = grokarg1 ? arg2 : arg1;
