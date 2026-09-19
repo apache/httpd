@@ -441,7 +441,8 @@ static apr_status_t finish_partial_char(charset_filter_ctx_t *ctx,
     /* Keep adding bytes from the input string to the saved string until we
      *    1) finish the input char
      *    2) get an error
-     * or 3) run out of bytes to add
+     *    3) run out of bytes to add
+     * or 4) fill ctx->buf, meaning the char is wider than we handle
      */
 
     do {
@@ -455,7 +456,8 @@ static apr_status_t finish_partial_char(charset_filter_ctx_t *ctx,
                                    &tmp_input_len,
                                    *out_str,
                                    out_len);
-    } while (rv == APR_INCOMPLETE && *cur_len);
+    } while (rv == APR_INCOMPLETE && *cur_len
+             && ctx->saved < sizeof(ctx->buf));
 
     if (rv == APR_SUCCESS) {
         ctx->saved = 0;
