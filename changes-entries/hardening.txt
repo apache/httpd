@@ -1,0 +1,4 @@
+  *) mod_cgid, mod_ssl, mod_md: Various hardening fixes.  [Various authors]
+
+  *) mod_lbmethod_heartbeat: Use safe integer parsing with range
+     validation, replacing atoi().  [Sayed Kaif <metsw24 gmail.com>]
