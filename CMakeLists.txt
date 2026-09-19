@@ -128,7 +128,7 @@ OPTION(INSTALL_PDB        "Install .pdb files (if generated)"  ON)
 OPTION(INSTALL_MANUAL     "Install manual"                     ON)
 
 # Optional Clang -fbounds-safety. Default OFF: AP_*SIZED_BY* / AP_*COUNTED_BY*
-# macros in include/ap_bounds_safety.h are inert and the ABI/build is unchanged.
+# macros in include/ap_config.h are inert and the ABI/build is unchanged.
 # When ON, requires a Clang that provides -fbounds-safety / <ptrcheck.h>.
 OPTION(ENABLE_FBOUNDS_SAFETY "Enable experimental Clang -fbounds-safety annotations (OFF by default)" OFF)
 IF(ENABLE_FBOUNDS_SAFETY)

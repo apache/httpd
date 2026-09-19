@@ -35,7 +35,6 @@
 #include "apr_allocator.h"
 
 #include "httpd.h"
-#include "ap_bounds_safety.h" /* optional -fbounds-safety macros */
 
 #ifdef __cplusplus
 extern "C" {
