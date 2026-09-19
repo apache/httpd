@@ -318,6 +318,13 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
  */
 void ap_logs_child_init(apr_pool_t *p, server_rec *s);
 
+/* Opens a log file (or piped log) of given name. 
+ * @param name    Log file name
+ * @param is_main Non-zero if this is the error log for the main server
+ * @param p       Pool from which the file is allocated
+ */
+AP_DECLARE(apr_file_t *) ap_open_error_log(const char *name, int is_main, apr_pool_t *p);
+
 /*
  * The primary logging functions, ap_log_error, ap_log_rerror, ap_log_cerror,
  * and ap_log_perror use a printf style format string to build the log message.
