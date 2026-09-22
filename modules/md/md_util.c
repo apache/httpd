@@ -24,6 +24,11 @@
 #include <apr_fnmatch.h>
 #include <apr_tables.h>
 #include <apr_uri.h>
+#include <apr_version.h>
+
+#if APR_VERSION_AT_LEAST(1,7,0)
+#include <apr_encode.h>
+#endif
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -1154,6 +1159,33 @@ apr_status_t md_util_exec_cmdline(apr_pool_t *p, const char *cmdline,
 
 /* base64 url encoding ****************************************************************************/
 
+#if APR_VERSION_AT_LEAST(1,7,0)
+
+apr_size_t md_util_base64url_decode(md_data_t *decoded, const char *encoded, 
+                                    apr_pool_t *pool)
+{
+    const unsigned char *data;
+    apr_size_t len = 0;
+
+    /* RELAXED, since callers rely on decoding up to the first character
+     * which is not part of the alphabet. */
+    data = apr_pdecode_base64_binary(pool, encoded, APR_ENCODE_STRING,
+                                     APR_ENCODE_RELAXED, &len);
+    decoded->data = data? (const char *)data : "";
+    decoded->len = data? len : 0;
+    return decoded->len;
+}
+
+const char *md_util_base64url_encode(const md_data_t *data, apr_pool_t *pool)
+{
+    if (!data->data || !data->len) return "";
+    return apr_pencode_base64_binary(pool, (const unsigned char *)data->data,
+                                     (apr_ssize_t)data->len,
+                                     APR_ENCODE_BASE64URL, NULL);
+}
+
+#else /* !APR_VERSION_AT_LEAST(1,7,0) */
+
 #define N6 (unsigned int)-1
 
 static const unsigned int BASE64URL_UINT6[] = {
@@ -1265,6 +1297,8 @@ const char *md_util_base64url_encode(const md_data_t *data, apr_pool_t *pool)
     *p++ = '\0';
     return (char *)enc;
 }
+
+#endif /* !APR_VERSION_AT_LEAST(1,7,0) */
 
 /*******************************************************************************
  * link header handling 
