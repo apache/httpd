@@ -1,0 +1,229 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>a2md - Show and manipulate Apache Managed Domains - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>a2md - Show and manipulate Apache Managed Domains</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/programs/a2md.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>The <code class="program"><a href="../programs/a2md.html">a2md</a></code> utility can be used to configure and update
+    managed domains with the mod_md module for Apache HTTP Server.
+    Managed Domains are virtual hosts which automatically obtain and renew
+    TLS certificates from an ACME server.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Synopsis</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#acme_command">ACME server commands</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#add_command">Managed domain addition</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#update_command">Updating managed domain</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#drive_command">Drive managed domains</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#list_command">List managed domamins</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#store_command">Manipulating MD store</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="synopsis">Synopsis <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md</strong> [<strong>options</strong>]
+    {<strong>acme | add | update | drive | list | store</strong>}
+    [<strong>cmd_options</strong>] [<strong>args</strong>]</code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="options">Options <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+    <dl>
+        <dt><code>{-a|--acme} <var>arg</var></code></dt>
+        <dd>The url of the ACME server directory</dd>
+
+        <dt><code>{-d|--dir} <var>arg</var></code></dt>
+        <dd>Directory for file data</dd>
+
+        <dt><code>{-h|--help}</code></dt>
+        <dd>Print usage information</dd>
+
+        <dt><code>{-j|--json}</code></dt>
+        <dd>Produce JSON output</dd>
+
+        <dt><code>{-p|--proxy} <var>arg</var></code></dt>
+        <dd>Use the HTTP proxy url</dd>
+
+        <dt><code>{-q|--quiet}</code></dt>
+        <dd>Produce less output</dd>
+
+        <dt><code>{-t|--terms} <var>arg</var></code></dt>
+        <dd>You agree to the terms of services (url)</dd>
+
+        <dt><code>{-v|--verbose}</code></dt>
+        <dd>Produce more output</dd>
+
+        <dt><code>{-V|--version}</code></dt>
+        <dd>Print version</dd>
+
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="acme_command">ACME server commands <a title="Permanent link" href="#acme_command" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md acme</strong>
+    {newreg | delreg | agree | authz | validate}
+    [opts] [args]</code></p>
+
+    <p>Play with the ACME server. For most of the commands you need to specify
+    the url of the ACME server directory.</p>
+
+    <dl>
+        <dt><code><strong>newreg</strong> <var>contact-uri</var> [<var>contact-uri</var> ...]</code></dt>
+        <dd>Register a new account at ACME server with given <var>contact-uri</var> (email)</dd>
+
+        <dt><code><strong>delreg</strong> <var>account</var></code></dt>
+        <dd>Delete an existing ACME <var>account</var></dd>
+
+        <dt><code><strong>agree</strong> <var>account</var></code></dt>
+        <dd>Agree to ACME terms of service</dd>
+
+        <dt><code><strong>authz</strong> <var>account</var> <var>domain</var></code></dt>
+        <dd>Request a new authorization for an <var>account</var> and <var>domain</var></dd>
+
+        <dt><code><strong>validate</strong> <var>account</var></code></dt>
+        <dd>Validate <var>account</var> existence</dd>
+
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="add_command">Managed domain addition <a title="Permanent link" href="#add_command" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md add</strong>
+    [opts] domain [domain ...]</code></p>
+
+    <p>Adds a new managed domain. Must not overlap with existing domains.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="update_command">Updating managed domain <a title="Permanent link" href="#update_command" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md update</strong>
+    <var>name</var> [opts] {domains | ca | account | contacts | agreement}</code></p>
+
+    <p>Update a managed domain's properties, where <var>name</var> belongs
+    to managed domain which will be updated.</p>
+
+    <p>URL of ACME server can be also updated if <code>-a|--acme</code> option is present.</p>
+
+    <dl>
+        <dt><code><strong>domains</strong> <var>dname</var> [<var>dname</var> ...]</code></dt>
+        <dd>Update domain where <var>dname</var> is domain name which will be updated.</dd>
+
+        <dt><code><strong>ca</strong> <var>url</var> [<var>proto</var>]</code></dt>
+        <dd>The <var>URL</var> where the CA offers its service.
+        Currently only the ACME (LetsEncrypt) <var>proto</var> is implemented.</dd>
+
+        <dt><code><strong>account</strong></code></dt>
+        <dd>Account name on corresponding ACME server.</dd>
+
+        <dt><code><strong>contacts</strong> <var>email</var> [<var>email</var> ...]</code></dt>
+        <dd>Contact address which will be used by ACME server to inform about renewals
+        or changed terms of service.</dd>
+
+        <dt><code><strong>agreement</strong> <var>URI</var></code></dt>
+        <dd>URI pointing to terms of service of ACME server.</dd>
+
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="drive_command">Drive managed domains <a title="Permanent link" href="#drive_command" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md drive</strong>
+    [<var>md ...</var>] [<var>options ...</var>]</code></p>
+
+    <p>Drive all or the mentioned managed domains toward completeness</p>
+
+    <dl>
+        <dt><code>{-c|--challenge} <var>arg</var></code></dt>
+        <dd>Which challenge type to use</dd>
+
+        <dt><code>{-f|--force} <var>arg</var></code></dt>
+        <dd>Force driving the managed domain, even when it seems valid</dd>
+
+        <dt><code>{-r|--reset} <var>arg</var></code></dt>
+        <dd>Reset any staging data for the managed domain</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="list_command">List managed domamins <a title="Permanent link" href="#list_command" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md list</strong></code></p>
+
+    <p>List all managed domamins</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="store_command">Manipulating MD store <a title="Permanent link" href="#store_command" class="permalink">&para;</a></h2>
+    <p><code><strong>a2md store</strong>
+    {add | remove | list | update}
+    [<var>opts</var>] [<var>args</var>]</code></p>
+
+    <p>Manipulate the MD store</p>
+
+    <dl>
+        <dt><code><strong>add</strong> <var>dns</var> [<var>dns</var> ...]</code></dt>
+        <dd>Add a new managed domain dns with all the additional domain names</dd>
+
+        <dt><code><strong>remove</strong> [{-f | --force}] <var>name</var> [<var>name</var> ...]</code></dt>
+        <dd>Remove the managed domains <var>name</var> from the store.
+        When <code>-f</code> or <code>--force</code> option is specified, force managed domain removal
+        - be silent about missing domains</dd>
+
+        <dt><code><strong>list</strong></code></dt>
+        <dd>List all managed domains in the store</dd>
+
+        <dt><code><strong>update</strong> <var>name</var>
+        [<var>domains</var> <var>dname</var> [<var>dname</var> ...]]</code></dt>
+        <dd>If <var>domains</var> cmd is specified followed by one or
+        more domains, MD store will be updated with those domains.
+        The URL of the ACME server can be also updated if <code>-a</code> or
+        <code>--acme</code> option is present.</dd>
+
+    </dl>
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/programs/a2md.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>
