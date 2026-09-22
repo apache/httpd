@@ -1066,8 +1066,14 @@ AC_DEFUN([APACHE_CHECK_JANSSON],[
     CPPFLAGS="$saved_CPPFLAGS"
     LIBS="$saved_LIBS"
     LDFLAGS="$saved_LDFLAGS"
+
+    dnl cache MOD_LDFLAGS, MOD_CFLAGS
+    ap_jansson_mod_cflags=$MOD_CFLAGS
+    ap_jansson_mod_ldflags=$MOD_LDFLAGS
   ])
   if test "x$ac_cv_jansson" = "xyes"; then
     AC_DEFINE(HAVE_JANSSON, 1, [Define if jansson is available])
+    APR_ADDTO(MOD_LDFLAGS, [$ap_jansson_mod_ldflags])
+    APR_ADDTO(MOD_CFLAGS, [$ap_jansson_mod_cflags])
   fi
 ])
