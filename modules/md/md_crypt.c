@@ -1726,35 +1726,49 @@ apr_status_t md_chain_fload(apr_array_header_t **pcerts, apr_pool_t *p, const ch
     return rv;
 }
 
+static apr_status_t chain_to_buffer(md_data_t *buffer, apr_array_header_t *certs,
+                                    apr_pool_t *p)
+{
+    BIO *bio = BIO_new(BIO_s_mem());
+    const md_cert_t *cert;
+    int i;
+
+    if (!bio) {
+        return APR_ENOMEM;
+    }
+
+    ERR_clear_error();
+    for (i = 0; i < certs->nelts; ++i) {
+        cert = APR_ARRAY_IDX(certs, i, const md_cert_t *);
+        assert(cert->x509);
+
+        PEM_write_bio_X509(bio, cert->x509);
+        if (ERR_get_error() > 0) {
+            BIO_free(bio);
+            return APR_EINVAL;
+        }
+    }
+
+    i = BIO_pending(bio);
+    if (i > 0) {
+        buffer->data = apr_palloc(p, (apr_size_t)i);
+        i = BIO_read(bio, (char*)buffer->data, i);
+        buffer->len = (apr_size_t)i;
+    }
+    BIO_free(bio);
+    return APR_SUCCESS;
+}
+
 apr_status_t md_chain_fsave(apr_array_header_t *certs, apr_pool_t *p, 
                             const char *fname, apr_fileperms_t perms)
 {
-    FILE *f;
+    md_data_t buffer;
     apr_status_t rv;
-    const md_cert_t *cert;
-    unsigned long err = 0;
-    int i;
-    
-    (void)p;
-    rv = md_util_fopen(&f, fname, "w");
+
+    md_data_null(&buffer);
+    rv = chain_to_buffer(&buffer, certs, p);
     if (rv == APR_SUCCESS) {
-        apr_file_perms_set(fname, perms);
-        ERR_clear_error();
-        for (i = 0; i < certs->nelts; ++i) {
-            cert = APR_ARRAY_IDX(certs, i, const md_cert_t *);
-            assert(cert->x509);
-            
-            PEM_write_X509(f, cert->x509);
-            
-            if (0 < (err = ERR_get_error())) {
-                break;
-            }
-            
-        }
-        rv = fclose(f);
-        if (err) {
-            rv = APR_EINVAL;
-        }
+        return md_util_freplace(fname, perms, p, fwrite_buffer, &buffer);
     }
     return rv;
 }
