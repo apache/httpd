@@ -29,6 +29,8 @@ if test "x$enable_a2md" != "xno"; then
   if test "x$ac_cv_openssl" = "xyes" \
        -a "x$ac_cv_curl" = "xyes" \
        -a "x$ac_cv_jansson" = "xyes"; then
+    APR_ADDTO(A2MD_CFLAGS, [$ap_curl_mod_cflags])
+    APR_ADDTO(A2MD_LDFLAGS, [$ap_curl_mod_ldflags])
     APR_ADDTO(A2MD_LIBS, [$ap_curl_libs])
     APR_ADDTO(A2MD_CFLAGS, [$ap_jansson_mod_cflags])
     APR_ADDTO(A2MD_LDFLAGS, [$ap_jansson_mod_ldflags])
