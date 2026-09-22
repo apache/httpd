@@ -224,7 +224,7 @@ AP_DECLARE(void) ap_mpm_wait_for_extra_connections(void)
 
     if (count > 0) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
-                     APLOGNO(10622)
+                     APLOGNO(10632)
                      "Child: %u connection(s) noted by modules did not "
                      "finish within %" APR_TIME_T_FMT " seconds, "
                      "exiting anyway",
