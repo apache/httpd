@@ -1632,7 +1632,7 @@ SSLCARevocationCheck chain no_crl_for_cert_ok
 <directivesynopsis>
 <name>SSLVerifyClient</name>
 <description>Type of Client Certificate verification</description>
-<syntax>SSLVerifyClient <var>level</var></syntax>
+<syntax>SSLVerifyClient <var>level</var> [<var>accepted-errors</var>]</syntax>
 <default>SSLVerifyClient none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -1653,19 +1653,60 @@ before the HTTP response is sent.</p>
 The following levels are available for <var>level</var>:</p>
 <ul>
 <li><strong>none</strong>:
-     no client Certificate is required at all</li>
+     no client certificate is required at all. When this level is used, 
+     a second argument for <var>accepted-errors</var> is not permitted.</li>
 <li><strong>optional</strong>:
-     the client <em>may</em> present a valid Certificate</li>
+     the client <em>may</em> present a valid certificate</li>
 <li><strong>require</strong>:
-     the client <em>has to</em> present a valid Certificate</li>
+     the client <em>has to</em> present a valid certificate</li>
 <li><strong>optional_no_ca</strong>:
-     the client may present a valid Certificate<br />
+     the client may present a valid certificate<br />
      but it need not to be (successfully) verifiable. This option
-     cannot be relied upon for client authentication.  </li>
+     cannot be relied upon for client authentication. This is now equivalent to 
+     <code>SSLVerifyClient optional X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT,X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN,X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY,X509_V_ERR_CERT_UNTRUSTED,X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE,X509_V_ERR_CERT_HAS_EXPIRED</code>.</li>
 </ul>
+<p>
+The optional second argument <var>accepted-errors</var> can be used to specify a
+comma-separated list of verification errors that should be accepted, even if the
+verification level would otherwise reject the certificate.
+Use of <var>accepted-errors</var> weakens client certificate verification and
+should not be used in production deployments.
+The following shorthand names are available for <var>accepted-errors</var>:</p>
+<ul>
+<li><strong>self-signed</strong>:
+     Accepts <code>X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT</code> and 
+     <code>X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN</code>.</li>
+<li><strong>untrusted-cert</strong>:
+     Accepts <code>X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code> and 
+     <code>X509_V_ERR_CERT_UNTRUSTED</code>.</li>
+<li><strong>invalid-signature</strong>:
+     Accepts <code>X509_V_ERR_CERT_SIGNATURE_FAILURE</code> and
+     <code>X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE</code>.</li>
+<li><strong>expired-cert</strong>:
+     Accepts <code>X509_V_ERR_CERT_HAS_EXPIRED</code> and 
+     <code>X509_V_ERR_CERT_NOT_YET_VALID</code>.</li>
+<li><strong>purpose-mismatch</strong>:
+     Accepts <code>X509_V_ERR_INVALID_PURPOSE</code>.</li>
+</ul>
+<p>
+Alternatively, any of the following OpenSSL X509 verification error names can be used directly,
+such as <code>X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT</code>, 
+<code>X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN</code>, 
+<code>X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY</code>, 
+<code>X509_V_ERR_CERT_UNTRUSTED</code>, 
+<code>X509_V_ERR_CERT_SIGNATURE_FAILURE</code>,
+<code>X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE</code>,
+<code>X509_V_ERR_CERT_HAS_EXPIRED</code>,
+<code>X509_V_ERR_CERT_NOT_YET_VALID</code>, or 
+<code>X509_V_ERR_INVALID_PURPOSE</code>.</p>
 <example><title>Example</title>
 <highlight language="config">
-SSLVerifyClient require
+    SSLVerifyClient require purpose-mismatch
+</highlight>
+</example>
+<example><title>Example with accepted errors</title>
+<highlight language="config">
+    SSLVerifyClient optional self-signed,untrusted-cert,purpose-mismatch
 </highlight>
 </example>
 </usage>
