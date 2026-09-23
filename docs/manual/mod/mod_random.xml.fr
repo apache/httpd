@@ -1,0 +1,688 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 0 -->
+<!-- French translation: Original -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_random.xml.meta">
+
+<name>mod_random</name>
+
+<description>G&eacute;n&eacute;ration de jetons al&eacute;atoires cryptographiquement s&eacute;curis&eacute;s</description>
+
+<status>Extension</status>
+<sourcefile>mod_random.c</sourcefile>
+<identifier>random_module</identifier>
+
+<summary>
+    <p>Ce module g&eacute;n&egrave;re des jetons al&eacute;atoires cryptographiquement
+    s&eacute;curis&eacute;s et les injecte dans les variables d'environnement et/ou
+    les en-t&ecirc;tes de r&eacute;ponse HTTP pour chaque requ&ecirc;te. Il est con&ccedil;u
+    pour les applications critiques en mati&egrave;re de s&eacute;curit&eacute; qui
+    n&eacute;cessitent des jetons impr&eacute;visibles &agrave; haute entropie.</p>
+
+    <p>Les cas d'utilisation courants incluent la protection CSRF (Cross-Site
+    Request Forgery), les identifiants de requ&ecirc;te pour la journalisation et
+    le tra&ccedil;age, les nonces pour les en-t&ecirc;tes Content Security Policy,
+    et les jetons &agrave; usage unique pour divers m&eacute;canismes de s&eacute;curit&eacute;.</p>
+
+    <p>Le module utilise le g&eacute;n&eacute;rateur de nombres pseudo-al&eacute;atoires
+    cryptographiquement s&eacute;curis&eacute; (CSPRNG) du syst&egrave;me via
+    <code>apr_generate_random_bytes()</code>, fournissant 128 bits d'entropie
+    par d&eacute;faut (16 octets). Il supporte plusieurs formats de sortie (base64,
+    hex, base64url, alphabet personnalis&eacute;), l'inclusion optionnelle d'horodatage,
+    la mise en cache bas&eacute;e sur TTL pour les performances, et la signature de
+    jetons HMAC-SHA256 avec m&eacute;tadonn&eacute;es.</p>
+</summary>
+
+<seealso><module>mod_unique_id</module></seealso>
+<seealso><module>mod_ssl</module></seealso>
+<seealso><a href="../env.html">Variables d'environnement</a></seealso>
+
+<section id="features">
+<title>Fonctionnalit&eacute;s</title>
+    <ul>
+        <li>G&eacute;n&eacute;ration de jetons bas&eacute;e sur CSPRNG (cryptographiquement s&eacute;curis&eacute;)</li>
+        <li>Plusieurs formats de sortie : base64, hex, base64url, alphabet personnalis&eacute;</li>
+        <li>Longueur de jeton configurable (1-1024 octets)</li>
+        <li>Pr&eacute;fixe d'horodatage optionnel</li>
+        <li>Support de pr&eacute;fixe et suffixe personnalis&eacute;s</li>
+        <li>Mise en cache bas&eacute;e sur TTL pour optimisation des performances</li>
+        <li>Signature de jetons HMAC-SHA256 avec m&eacute;tadonn&eacute;es d'expiration</li>
+        <li>Filtrage par motif d'URL (g&eacute;n&eacute;ration conditionnelle)</li>
+        <li>Jetons multiples par requ&ecirc;te</li>
+        <li>S&eacute;curis&eacute; pour les threads avec protection mutex par jeton</li>
+        <li>Sortie vers variables d'environnement et/ou en-t&ecirc;tes HTTP</li>
+    </ul>
+</section>
+
+<section id="security">
+<title>Consid&eacute;rations de s&eacute;curit&eacute;</title>
+    <p><strong>Robustesse cryptographique :</strong> Le module utilise
+    <code>apr_generate_random_bytes()</code> qui fournit des donn&eacute;es
+    al&eacute;atoires cryptographiquement s&eacute;curis&eacute;es &agrave; partir de la
+    source d'entropie du syst&egrave;me d'exploitation. L'entropie par d&eacute;faut de
+    128 bits garantit une probabilit&eacute; de collision n&eacute;gligeable.</p>
+
+    <p><strong>Unicit&eacute; non garantie :</strong> Bien que la probabilit&eacute; de
+    collision soit extr&ecirc;mement faible avec une entropie suffisante, les jetons
+    ne sont pas garantis d'&ecirc;tre globalement uniques. Pour des identifiants
+    uniques garantis, utilisez <module>mod_unique_id</module> &agrave; la place.</p>
+
+    <p><strong>Validation de jetons :</strong> Lors de l'utilisation de
+    <directive module="mod_random">RandomEncodeMetadata</directive> avec
+    <directive module="mod_random">RandomSigningKey</directive>, les jetons
+    incluent une signature HMAC-SHA256 qui peut &ecirc;tre valid&eacute;e pour assurer
+    l'int&eacute;grit&eacute; et d&eacute;tecter les falsifications.</p>
+
+    <p><strong>S&eacute;curit&eacute; du cache :</strong> Les jetons en cache (via
+    <directive module="mod_random">RandomTTL</directive>) sont stock&eacute;s en
+    m&eacute;moire et prot&eacute;g&eacute;s par des mutex s&eacute;curis&eacute;s pour les threads.
+    Le module g&egrave;re les sc&eacute;narios de recul d'horloge (corrections NTP) en
+    invalidant les entr&eacute;es de cache affect&eacute;es.</p>
+</section>
+
+<section id="examples">
+<title>Exemples d'utilisation</title>
+
+    <example><title>Jeton CSRF basique</title>
+    <highlight language="config">
+&lt;Location "/secure"&gt;
+    RandomAddToken CSRF_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un jeton de 16 octets encod&eacute; en base64 dans la
+    variable d'environnement <code>CSRF_TOKEN</code> pour toutes les requ&ecirc;tes
+    vers <code>/secure</code>.</p>
+
+    <example><title>Jeton dans un en-t&ecirc;te HTTP</title>
+    <highlight language="config">
+&lt;Location "/api"&gt;
+    RandomLength 32
+    RandomFormat base64url
+    RandomAddToken CSRF_TOKEN header=X-CSRF-Token
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un jeton de 32 octets en base64url et l'envoie &agrave; la
+    fois dans la variable d'environnement <code>CSRF_TOKEN</code> et dans
+    l'en-t&ecirc;te de r&eacute;ponse HTTP <code>X-CSRF-Token</code>.</p>
+
+    <example><title>Jeton en cache avec TTL</title>
+    <highlight language="config">
+&lt;Location "/forms"&gt;
+    RandomTTL 300
+    RandomAddToken FORM_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un jeton qui est mis en cache pendant 5 minutes
+    (300 secondes), r&eacute;duisant la charge CPU pour les ressources fr&eacute;quemment
+    acc&eacute;d&eacute;es.</p>
+
+    <example><title>Jeton sign&eacute; avec expiration</title>
+    <highlight language="config">
+&lt;Location "/payments"&gt;
+    RandomEncodeMetadata On
+    RandomExpiry 3600
+    RandomSigningKey "votre-cl&eacute;-secr&egrave;te-hmac-ici"
+    RandomAddToken PAYMENT_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un jeton qui inclut des m&eacute;tadonn&eacute;es d'expiration et
+    une signature HMAC-SHA256, permettant la validation c&ocirc;t&eacute; serveur de l'&acirc;ge
+    et de l'int&eacute;grit&eacute; du jeton.</p>
+
+    <example><title>Jeton avec alphabet personnalis&eacute;</title>
+    <highlight language="config">
+&lt;Location "/codes"&gt;
+    RandomFormat custom
+    RandomAlphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+    RandomAlphabetGrouping 4
+    RandomLength 16
+    RandomAddToken PROMO_CODE
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un jeton lisible par l'homme en utilisant un alphabet
+    personnalis&eacute; (&eacute;vitant les caract&egrave;res ambigus comme 0/O, 1/I/L) avec
+    groupement tous les 4 caract&egrave;res pour am&eacute;liorer la lisibilit&eacute;.</p>
+
+    <example><title>Utilisation avec mod_headers pour CSP Nonce</title>
+    <highlight language="config">
+&lt;Location "/app"&gt;
+    RandomLength 16
+    RandomFormat base64url
+    RandomAddToken CSP_NONCE header=X-CSP-Nonce
+    Header set Content-Security-Policy "script-src 'nonce-%{CSP_NONCE}e';"
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un nonce unique pour la Content Security Policy et l'inclut
+    &agrave; la fois dans l'en-t&ecirc;te CSP et comme en-t&ecirc;te personnalis&eacute; pour acc&egrave;s
+    c&ocirc;t&eacute; client.</p>
+
+    <example><title>ID de requ&ecirc;te pour journalisation et tra&ccedil;age</title>
+    <highlight language="config">
+&lt;Location "/"&gt;
+    RandomLength 16
+    RandomFormat hex
+    RandomAddToken REQUEST_ID header=X-Request-ID
+    LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\" %{REQUEST_ID}e" combined_with_id
+    CustomLog logs/access_log combined_with_id
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci g&eacute;n&egrave;re un identifiant de requ&ecirc;te unique envoy&eacute; au client via
+    l'en-t&ecirc;te X-Request-ID et journalis&eacute; pour le tra&ccedil;age et le d&eacute;bogage.</p>
+
+    <example><title>Jetons multiples avec mod_headers</title>
+    <highlight language="config">
+&lt;Location "/secure-api"&gt;
+    # Jeton CSRF pour protection des formulaires
+    RandomAddToken CSRF_TOKEN header=X-CSRF-Token
+
+    # ID de requ&ecirc;te pour tra&ccedil;age
+    RandomFormat base64url
+    RandomAddToken REQUEST_ID header=X-Request-ID
+
+    # Nonce de session avec expiration
+    RandomEncodeMetadata On
+    RandomExpiry 1800
+    RandomSigningKey "votre-cl&eacute;-secr&egrave;te-hmac"
+    RandomAddToken SESSION_NONCE header=X-Session-Nonce
+&lt;/Location&gt;
+    </highlight>
+    </example>
+
+    <p>Ceci d&eacute;montre l'utilisation de jetons multiples avec diff&eacute;rentes
+    configurations pour divers objectifs de s&eacute;curit&eacute; dans un seul emplacement.</p>
+</section>
+
+<directivesynopsis>
+<name>RandomAddToken</name>
+<description>Ajoute un jeton al&eacute;atoire &agrave; la requ&ecirc;te</description>
+<syntax>RandomAddToken <var>nom-var</var> [<var>cl&eacute;</var>=<var>valeur</var> ...]</syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Cette directive cr&eacute;e un jeton al&eacute;atoire et le stocke dans la variable
+    d'environnement sp&eacute;cifi&eacute;e. Des param&egrave;tres optionnels peuvent remplacer
+    les valeurs par d&eacute;faut globales pour ce jeton sp&eacute;cifique.</p>
+
+    <p>Le param&egrave;tre <var>nom-var</var> est <strong>obligatoire</strong> et
+    sp&eacute;cifie le nom de la variable d'environnement o&ugrave; le jeton sera stock&eacute;.
+    Des param&egrave;tres optionnels suppl&eacute;mentaires peuvent &ecirc;tre sp&eacute;cifi&eacute;s
+    sous forme de paires <code>cl&eacute;=valeur</code> :</p>
+
+    <dl>
+        <dt><code>length=<var>N</var></code></dt>
+        <dd>Longueur du jeton en octets (1-1024). Remplace
+        <directive module="mod_random">RandomLength</directive>.</dd>
+
+        <dt><code>format=<var>format</var></code></dt>
+        <dd>Format de sortie : <code>base64</code>, <code>hex</code>,
+        <code>base64url</code>, ou <code>custom</code>. Remplace
+        <directive module="mod_random">RandomFormat</directive>.</dd>
+
+        <dt><code>header=<var>nom</var></code></dt>
+        <dd>Nom de l'en-t&ecirc;te de r&eacute;ponse HTTP pour sortir le jeton.</dd>
+
+        <dt><code>timestamp=<var>on|off</var></code></dt>
+        <dd>Inclure un pr&eacute;fixe d'horodatage Unix. Remplace
+        <directive module="mod_random">RandomIncludeTimestamp</directive>.</dd>
+
+        <dt><code>prefix=<var>cha&icirc;ne</var></code></dt>
+        <dd>Pr&eacute;fixe personnalis&eacute;. Remplace
+        <directive module="mod_random">RandomPrefix</directive>.</dd>
+
+        <dt><code>suffix=<var>cha&icirc;ne</var></code></dt>
+        <dd>Suffixe personnalis&eacute;. Remplace
+        <directive module="mod_random">RandomSuffix</directive>.</dd>
+
+        <dt><code>ttl=<var>secondes</var></code></dt>
+        <dd>TTL du cache en secondes (0-86400). Remplace
+        <directive module="mod_random">RandomTTL</directive>.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# Jeton simple
+RandomAddToken MY_TOKEN
+
+# Jeton avec param&egrave;tres personnalis&eacute;s
+RandomAddToken API_TOKEN length=32 format=hex header=X-API-Token
+
+# Jetons multiples
+RandomAddToken CSRF_TOKEN
+RandomAddToken REQUEST_ID format=base64url
+    </highlight>
+    </example>
+
+    <p><strong>Note :</strong> Jusqu'&agrave; 50 jetons peuvent &ecirc;tre d&eacute;finis par
+    contexte de configuration pour pr&eacute;venir les attaques DoS via une
+    configuration excessive.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomLength</name>
+<description>Longueur par d&eacute;faut du jeton en octets</description>
+<syntax>RandomLength <var>octets</var></syntax>
+<default>RandomLength 16</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>D&eacute;finit le nombre par d&eacute;faut d'octets al&eacute;atoires &agrave; g&eacute;n&eacute;rer pour
+    les jetons. La plage valide est de 1 &agrave; 1024 octets.</p>
+
+    <p>La valeur par d&eacute;faut de 16 octets fournit 128 bits d'entropie, ce qui
+    est suffisant pour la plupart des applications de s&eacute;curit&eacute;. Des valeurs
+    plus grandes fournissent plus d'entropie mais r&eacute;sultent en jetons encod&eacute;s
+    plus longs.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# Entropie de 256 bits
+RandomLength 32
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomFormat</name>
+<description>Format de sortie par d&eacute;faut du jeton</description>
+<syntax>RandomFormat base64|hex|base64url|custom</syntax>
+<default>RandomFormat base64</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>D&eacute;finit le format d'encodage par d&eacute;faut pour les jetons :</p>
+
+    <dl>
+        <dt><code>base64</code></dt>
+        <dd>Encodage base64 standard (RFC 4648). La sortie contient A-Z, a-z,
+        0-9, +, /, et padding =. Bon pour usage g&eacute;n&eacute;ral.</dd>
+
+        <dt><code>hex</code></dt>
+        <dd>Encodage hexad&eacute;cimal (0-9, a-f). La sortie fait deux fois la
+        longueur en octets. Bon pour le d&eacute;bogage et la lisibilit&eacute;.</dd>
+
+        <dt><code>base64url</code></dt>
+        <dd>Base64 s&eacute;curis&eacute; pour URL (RFC 4648). Utilise - et _ au lieu de
+        + et /, sans padding. Id&eacute;al pour URLs et en-t&ecirc;tes HTTP.</dd>
+
+        <dt><code>custom</code></dt>
+        <dd>Encodage avec alphabet personnalis&eacute;. N&eacute;cessite
+        <directive module="mod_random">RandomAlphabet</directive>.
+        Bon pour jetons lisibles par l'homme.</dd>
+    </dl>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomFormat base64url
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomIncludeTimestamp</name>
+<description>Inclure un pr&eacute;fixe d'horodatage dans les jetons</description>
+<syntax>RandomIncludeTimestamp On|Off</syntax>
+<default>RandomIncludeTimestamp Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Lorsqu'activ&eacute;, ajoute l'horodatage Unix actuel (secondes depuis epoch)
+    au d&eacute;but du jeton, s&eacute;par&eacute; par un trait d'union.</p>
+
+    <p>Ceci est utile pour le d&eacute;bogage, la corr&eacute;lation des journaux, ou la
+    v&eacute;rification approximative de l'&acirc;ge sans m&eacute;tadonn&eacute;es cryptographiques.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomIncludeTimestamp On
+# G&eacute;n&egrave;re des jetons comme : 1701234567-Ab3dEf...
+    </highlight>
+    </example>
+
+    <p><strong>Note :</strong> Pour une validation d'expiration pr&eacute;cise avec
+    v&eacute;rification cryptographique, utilisez
+    <directive module="mod_random">RandomEncodeMetadata</directive> &agrave; la place.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomPrefix</name>
+<description>Pr&eacute;fixe par d&eacute;faut pour tous les jetons</description>
+<syntax>RandomPrefix <var>cha&icirc;ne</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Ajoute un pr&eacute;fixe fixe &agrave; tous les jetons g&eacute;n&eacute;r&eacute;s. Utile pour
+    l'identification ou le versioning des jetons.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomPrefix "csrf_"
+# G&eacute;n&egrave;re des jetons comme : csrf_Ab3dEf...
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomSuffix</name>
+<description>Suffixe par d&eacute;faut pour tous les jetons</description>
+<syntax>RandomSuffix <var>cha&icirc;ne</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Ajoute un suffixe fixe &agrave; tous les jetons g&eacute;n&eacute;r&eacute;s. Utile pour le
+    versioning ou l'identification du format des jetons.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomSuffix "_v2"
+# G&eacute;n&egrave;re des jetons comme : Ab3dEf..._v2
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomTTL</name>
+<description>TTL du cache pour les jetons en secondes</description>
+<syntax>RandomTTL <var>secondes</var></syntax>
+<default>RandomTTL 0</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Active la mise en cache des jetons avec le temps de vie sp&eacute;cifi&eacute; en
+    secondes. La plage valide est 0-86400 (24 heures). Une valeur de 0
+    d&eacute;sactive la mise en cache.</p>
+
+    <p>La mise en cache r&eacute;duit la charge CPU et la consommation d'entropie
+    pour les ressources fr&eacute;quemment acc&eacute;d&eacute;es. Chaque jeton a son propre cache
+    prot&eacute;g&eacute; par un mutex pour la s&eacute;curit&eacute; des threads.</p>
+
+    <p>Le module g&egrave;re les sc&eacute;narios de recul d'horloge (corrections NTP) en
+    invalidant automatiquement les entr&eacute;es de cache affect&eacute;es.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# Mettre en cache les jetons pendant 5 minutes
+RandomTTL 300
+    </highlight>
+    </example>
+
+    <p><strong>Note de s&eacute;curit&eacute; :</strong> Les jetons en cache sont r&eacute;utilis&eacute;s
+    pour toutes les requ&ecirc;tes pendant la p&eacute;riode TTL. Pour une unicit&eacute; par
+    requ&ecirc;te, conservez TTL &agrave; 0.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomOnlyFor</name>
+<description>G&eacute;n&eacute;rer des jetons uniquement pour les motifs d'URL correspondants</description>
+<syntax>RandomOnlyFor <var>regex</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>G&eacute;n&egrave;re conditionnellement des jetons uniquement lorsque l'URI de la
+    requ&ecirc;te correspond &agrave; l'expression r&eacute;guli&egrave;re &eacute;tendue sp&eacute;cifi&eacute;e (POSIX ERE).</p>
+
+    <p>Ceci est utile pour un contr&ocirc;le fin de la g&eacute;n&eacute;ration de jetons, comme
+    limiter &agrave; des points de terminaison API sp&eacute;cifiques.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+&lt;Location "/api"&gt;
+    # G&eacute;n&eacute;rer uniquement pour les points de terminaison /api/v1/*
+    RandomOnlyFor "^/api/v1/"
+    RandomAddToken API_TOKEN
+&lt;/Location&gt;
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomAlphabet</name>
+<description>Jeu de caract&egrave;res personnalis&eacute; pour format custom</description>
+<syntax>RandomAlphabet <var>caract&egrave;res</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>D&eacute;finit un alphabet personnalis&eacute; pour l'encodage au format
+    <code>custom</code>. Requis lorsque
+    <directive module="mod_random">RandomFormat</directive> est d&eacute;fini sur
+    <code>custom</code>.</p>
+
+    <p>L'alphabet doit contenir au moins 2 caract&egrave;res uniques et pas plus de
+    256. Les caract&egrave;res en double sont rejet&eacute;s.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# Base32 de Crockford (lisible, sans caract&egrave;res ambigus)
+RandomFormat custom
+RandomAlphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+    </highlight>
+    </example>
+
+    <p><strong>Note :</strong> Les alphabets dont la taille n'est pas une
+    puissance de 2 peuvent introduire un l&eacute;ger biais dans la distribution
+    des caract&egrave;res.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomAlphabetGrouping</name>
+<description>Grouper la sortie de l'alphabet personnalis&eacute; tous les N caract&egrave;res</description>
+<syntax>RandomAlphabetGrouping <var>N</var></syntax>
+<default>RandomAlphabetGrouping 0</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Lors de l'utilisation du format <code>custom</code>, ins&egrave;re un s&eacute;parateur
+    trait d'union tous les <var>N</var> caract&egrave;res pour am&eacute;liorer la lisibilit&eacute;.
+    La plage valide est 0-128. Une valeur de 0 d&eacute;sactive le groupement.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomFormat custom
+RandomAlphabet "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+RandomAlphabetGrouping 4
+# G&eacute;n&egrave;re des jetons comme : A3D5-7K9M-P2Q8-...
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomEncodeMetadata</name>
+<description>Encoder les m&eacute;tadonn&eacute;es d'expiration dans les jetons</description>
+<syntax>RandomEncodeMetadata On|Off</syntax>
+<default>RandomEncodeMetadata Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>Lorsqu'activ&eacute;, encode l'horodatage d'expiration et la signature
+    HMAC-SHA256 optionnelle dans le jeton. N&eacute;cessite que
+    <directive module="mod_random">RandomExpiry</directive> soit d&eacute;fini
+    sup&eacute;rieur &agrave; 0.</p>
+
+    <p>Si <directive module="mod_random">RandomSigningKey</directive> est
+    configur&eacute;, le jeton inclut une signature HMAC-SHA256 qui peut &ecirc;tre
+    valid&eacute;e pour assurer l'int&eacute;grit&eacute;.</p>
+
+    <p>Format du jeton : <code>expiration:al&eacute;atoire:signature</code>
+    (avec signature) ou <code>expiration:al&eacute;atoire</code> (sans signature).</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomEncodeMetadata On
+RandomExpiry 3600
+RandomSigningKey "votre-cl&eacute;-secr&egrave;te"
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomExpiry</name>
+<description>Temps d'expiration du jeton en secondes</description>
+<syntax>RandomExpiry <var>secondes</var></syntax>
+<default>RandomExpiry 0</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>D&eacute;finit le temps d'expiration du jeton en secondes lors de l'utilisation
+    de <directive module="mod_random">RandomEncodeMetadata</directive>.
+    La plage valide est 0-31536000 (1 an). Une valeur de 0 signifie pas
+    d'expiration.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+# Expiration de 1 heure
+RandomExpiry 3600
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RandomSigningKey</name>
+<description>Cl&eacute; de signature HMAC-SHA256 pour validation de jetons</description>
+<syntax>RandomSigningKey <var>cl&eacute;</var></syntax>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>D&eacute;finit la cl&eacute; secr&egrave;te utilis&eacute;e pour la g&eacute;n&eacute;ration de signature
+    HMAC-SHA256 lorsque
+    <directive module="mod_random">RandomEncodeMetadata</directive> est activ&eacute;.</p>
+
+    <p>La cl&eacute; doit &ecirc;tre une cha&icirc;ne forte et al&eacute;atoire. Elle doit &ecirc;tre
+    gard&eacute;e secr&egrave;te et doit &ecirc;tre identique sur tous les serveurs qui doivent
+    valider les jetons.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+RandomSigningKey "votre-cl&eacute;-secr&egrave;te-hmac-&agrave;-changer"
+    </highlight>
+    </example>
+
+    <p><strong>Avertissement de s&eacute;curit&eacute; :</strong> Stockez la cl&eacute; de
+    signature de mani&egrave;re s&eacute;curis&eacute;e. Envisagez d'utiliser des variables
+    d'environnement ou des fichiers inclus avec permissions restreintes au
+    lieu de la coder en dur dans la configuration principale.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

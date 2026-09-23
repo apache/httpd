@@ -1,0 +1,79 @@
+mod_random - Cryptographically Secure Random Token Generation Module
+======================================================================
+
+PURPOSE
+-------
+Generates cryptographically secure random strings and injects them into
+environment variables and/or HTTP headers for each HTTP request.
+
+FEATURES
+--------
+- CSPRNG (Cryptographically Secure Pseudo-Random Number Generator)
+- Multiple output formats: base64, hex, base64url, custom alphabet
+- HMAC-SHA256 token signing with metadata
+- TTL-based caching for performance
+- Thread-safe with per-token mutex
+- Pattern-based URL filtering
+- Prefix/suffix support
+- Timestamp inclusion
+- Multiple tokens per request
+
+USE CASES
+---------
+- CSRF (Cross-Site Request Forgery) tokens
+- Request IDs for logging/tracing
+- Nonces for Content Security Policy
+- One-time tokens
+- Session identifiers
+
+SECURITY
+--------
+- Uses apr_generate_random_bytes() for entropy
+- Default 128 bits of entropy (16 bytes)
+- HMAC-SHA256 signatures via OpenSSL
+- DoS protection via configurable limits
+- Clock backward handling (NTP corrections)
+
+DEPENDENCIES
+------------
+- OpenSSL (libssl, libcrypto)
+- APR (Apache Portable Runtime)
+
+CONFIGURATION DIRECTIVES
+-------------------------
+RandomLength             - Token length in bytes (1-1024, default: 16)
+RandomFormat             - Output format: base64|hex|base64url|custom
+RandomIncludeTimestamp   - Add timestamp prefix (On|Off)
+RandomPrefix             - Prefix for all tokens
+RandomSuffix             - Suffix for all tokens
+RandomTTL                - Cache TTL in seconds (0-86400)
+RandomOnlyFor            - URL pattern regex filter
+RandomAlphabet           - Custom character set
+RandomAlphabetGrouping   - Group custom output every N chars
+RandomExpiry             - Token expiration time (0-31536000)
+RandomEncodeMetadata     - Encode expiry metadata (On|Off)
+RandomSigningKey         - HMAC-SHA256 signing key
+RandomAddToken           - Add token: VAR_NAME [key=value ...]
+
+EXAMPLE
+-------
+<Location "/api">
+    # Generate CSRF token with 32-byte entropy
+    RandomLength 32
+    RandomFormat base64url
+    RandomTTL 300
+    RandomAddToken CSRF_TOKEN header=X-CSRF-Token
+</Location>
+
+AUTHOR
+------
+Developed using Apache module best practices and security standards.
+
+LICENSE
+-------
+See Apache License 2.0
+
+MORE INFORMATION
+----------------
+For detailed documentation, configuration examples, and API reference,
+see the module source code and test suite.
