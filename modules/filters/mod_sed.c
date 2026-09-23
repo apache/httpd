@@ -54,6 +54,14 @@ typedef struct sed_filter_ctxt
     apr_size_t bufsize;
     apr_pool_t *tpool;
     int numbuckets;
+    /* Whether anything has been handed to the next filter yet.  Once it
+     * has, a failure can no longer be turned into an error response.
+     */
+    int passed;
+    /* Sticky failure of the evaluation, once the response is beyond
+     * rescue: the rest of the body is dropped but its metadata is not.
+     */
+    apr_status_t evalerr;
 } sed_filter_ctxt;
 
 module AP_MODULE_DECLARE_DATA sed_module;
@@ -119,6 +127,7 @@ static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, apr_size_t sz
         if (ctx->numbuckets >= MAX_TRANSIENT_BUCKETS) {
             b = apr_bucket_flush_create(ctx->r->connection->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
+            ctx->passed = 1;
             status = ap_pass_brigade(ctx->f->next, ctx->bb);
             apr_brigade_cleanup(ctx->bb);
             clear_ctxpool(ctx);
@@ -272,11 +281,32 @@ static apr_status_t init_context(ap_filter_t *f, sed_expr_config *sed_cfg, int u
     return APR_SUCCESS;
 }
 
+/* keep_metadata
+ * The response has been broken part-way through.  Whatever is left in bb is
+ * unfiltered content which must not be sent, but its metadata -- above all
+ * the EOS -- still has to reach the next filter, or the response is never
+ * terminated.
+ */
+static void keep_metadata(sed_filter_ctxt *ctx, apr_bucket_brigade *bb)
+{
+    while (!APR_BRIGADE_EMPTY(bb)) {
+        apr_bucket *b = APR_BRIGADE_FIRST(bb);
+        APR_BUCKET_REMOVE(b);
+        if (APR_BUCKET_IS_METADATA(b)) {
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
+        }
+        else {
+            apr_bucket_destroy(b);
+        }
+    }
+}
+
 /* Entry function for Sed output filter */
 static apr_status_t sed_response_filter(ap_filter_t *f,
                                         apr_bucket_brigade *bb)
 {
     apr_bucket *b;
+    apr_status_t rv;
     apr_status_t status = APR_SUCCESS;
     sed_config *cfg = ap_get_module_config(f->r->per_dir_config,
                                            &sed_module);
@@ -291,8 +321,12 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
 
     if (ctx == NULL) {
 
+        if (APR_BRIGADE_EMPTY(bb)) {
+            return ap_pass_brigade(f->next, bb);
+        }
+
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
-            /* no need to run sed filter for Head requests */
+            /* No body to filter */
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -304,6 +338,19 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
         apr_table_unset(f->r->headers_out, "Content-Length");
 
         ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+    }
+    else if (ctx->evalerr != APR_SUCCESS) {
+        /* The evaluation failed for an earlier brigade of this response,
+         * after some of it had already gone out.  Nothing more can be
+         * filtered, but the metadata still has to be carried through so
+         * that the EOS ends the response.
+         */
+        keep_metadata(ctx, bb);
+        if (!APR_BRIGADE_EMPTY(ctx->bb)) {
+            ap_pass_brigade(f->next, ctx->bb);
+            apr_brigade_cleanup(ctx->bb);
+        }
+        return ctx->evalerr;
     }
 
     /* Here is the main logic. Iterate through all the buckets, read the
@@ -328,49 +375,72 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
      */
     while (!APR_BRIGADE_EMPTY(bb)) {
         b = APR_BRIGADE_FIRST(bb);
-        if (APR_BUCKET_IS_EOS(b)) {
-            /* Now clean up the internal sed buffer */
-            sed_finalize_eval(&ctx->eval, ctx);
+        if (APR_BUCKET_IS_METADATA(b)) {
+            if (APR_BUCKET_IS_EOS(b)) {
+                /* Now clean up the internal sed buffer */
+                sed_finalize_eval(&ctx->eval, ctx);
+            }
+            /* Flush what has been generated so far, so that the metadata
+             * keeps its place in the stream, and move it across.  Buckets
+             * this filter has no opinion on are carried through rather
+             * than dropped: an error bucket has to reach the filters which
+             * act on it.
+             */
             status = flush_output_buffer(ctx);
             if (status != APR_SUCCESS) {
                 break;
             }
-            /* Move the eos bucket to ctx->bb brigade */
-            APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-        }
-        else if (APR_BUCKET_IS_FLUSH(b)) {
-            status = flush_output_buffer(ctx);
-            if (status != APR_SUCCESS) {
-                break;
-            }
-            /* Move the flush bucket to ctx->bb brigade */
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
         }
         else {
-            if (!APR_BUCKET_IS_METADATA(b)) {
-                const char *buf = NULL;
-                apr_size_t bytes = 0;
+            const char *buf = NULL;
+            apr_size_t bytes = 0;
 
-                status = apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ);
-                if (status == APR_SUCCESS) {
-                    status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
-                }
-                if (status != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, f->r, APLOGNO(10394) "error evaluating sed on output");
-                    break;
-                }
+            status = apr_bucket_read(b, &buf, &bytes, APR_BLOCK_READ);
+            if (status == APR_SUCCESS) {
+                status = sed_eval_buffer(&ctx->eval, buf, bytes, ctx);
+            }
+            if (status != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, status, f->r, APLOGNO(10394) "error evaluating sed on output");
+                break;
             }
             apr_bucket_delete(b);
         }
     }
+
+    /* Flush whatever did evaluate, even after a failure: it is valid output
+     * and the most of the response the client can still be given.
+     */
+    rv = flush_output_buffer(ctx);
     if (status == APR_SUCCESS) {
-        status = flush_output_buffer(ctx);
+        status = rv;
     }
+
+    if (status != APR_SUCCESS) {
+        if (!ctx->passed) {
+            /* None of the response has been written, so the caller can
+             * still turn this into a proper error response.  Say nothing
+             * more than that it failed.
+             */
+            apr_brigade_cleanup(ctx->bb);
+            clear_ctxpool(ctx);
+            return status;
+        }
+        /* Too late for that: part of the response is already on its way,
+         * so it has to be ended as the truncated response it has become.
+         * Dropping the EOS here instead leaves the header filters unrun
+         * and the client waiting for a response that never finishes.
+         */
+        ctx->evalerr = status;
+        keep_metadata(ctx, bb);
+    }
+
     if (!APR_BRIGADE_EMPTY(ctx->bb)) {
+        ctx->passed = 1;
+        rv = ap_pass_brigade(f->next, ctx->bb);
         if (status == APR_SUCCESS) {
-            status = ap_pass_brigade(f->next, ctx->bb);
+            status = rv;
         }
         apr_brigade_cleanup(ctx->bb);
     }
