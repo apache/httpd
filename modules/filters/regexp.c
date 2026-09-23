@@ -535,6 +535,13 @@ static int _advance(char *lp, char *ep, step_vars_storage *vars)
             bbeg = vars->braslist[epint];
             ct = vars->braelist[epint] - bbeg;
             ep++;
+            if (ct == 0) {
+                /* The capture matched nothing, so repeating it consumes
+                 * nothing: it can only match once, here.  Both loops below
+                 * step lp by ct and would never make progress.
+                 */
+                continue;
+            }
             curlp = lp;
             while (ecmp(bbeg, lp, ct))
                 lp += ct;
