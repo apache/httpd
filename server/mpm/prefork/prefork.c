@@ -95,6 +95,9 @@ static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxRequestWorkers */
 static int server_limit = 0;
 
+static int idle_termination_timeout = -1; /* never terminate by default */
+static int idle_termination_remaining;
+
 typedef struct prefork_child_bucket {
     ap_pod_t *pod;
     ap_listen_rec *listeners;
@@ -131,6 +134,8 @@ typedef struct prefork_retained_data {
 #define MAX_SPAWN_RATE  (32)
 #endif
     int hold_off_on_exponential_spawning;
+
+    int idle_timeout; /* did we time out? */
 } prefork_retained_data;
 static prefork_retained_data *retained;
 
@@ -866,6 +871,22 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
         }
     }
     retained->max_daemons_limit = last_non_dead + 1;
+
+    if (idle_termination_timeout >= 0) {
+        if (idle_count == total_non_dead) {
+            /* we are completely idle, decrease and check the timer */
+            if (--idle_termination_remaining < 0) {
+                /* the termination timeout has expired, inform us we want to terminate immediately */
+                retained->mpm->shutdown_pending = 1;
+                retained->mpm->is_ungraceful = 1;
+                retained->idle_timeout = 1;
+            }
+        } else {
+            /* not idle, reset the timer */
+            idle_termination_remaining = idle_termination_timeout;
+        }
+    }
+    
     if (idle_count > ap_daemons_max_free) {
         static int bucket_kill_child_record = -1;
         /* kill off one child... we use the pod because that'll cause it to
@@ -1206,8 +1227,15 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* cleanup pid file on normal shutdown */
         ap_remove_pid(pconf, ap_pid_fname);
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00169)
-                    "caught SIGTERM, shutting down");
+
+        /* log message depends on if we are terminating by signal or by idle timeout */
+        if (!retained->idle_timeout) {
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00169)
+                        "caught SIGTERM, shutting down");
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00169)
+                        "idle timeout reached, shutting down");
+        }
 
         return DONE;
     }
@@ -1346,6 +1374,7 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         retained->mpm = ap_unixd_mpm_get_retained_data();
         retained->mpm->baton = retained;
         retained->idle_spawn_rate = 1;
+        retained->idle_timeout = 0;
     }
     else if (retained->mpm->baton != retained) {
         /* If the MPM changes on restart, be ungraceful */
@@ -1575,6 +1604,18 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
+static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    idle_termination_timeout = atoi(arg);
+    idle_termination_remaining = idle_termination_timeout;
+    return NULL;
+}
+
 static const command_rec prefork_cmds[] = {
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
@@ -1589,6 +1630,8 @@ AP_INIT_TAKE1("MaxRequestWorkers", set_max_clients, NULL, RSRC_CONF,
               "Maximum number of children alive at the same time"),
 AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
               "Maximum value of MaxRequestWorkers for this run of Apache"),
+AP_INIT_TAKE1("IdleTerminationTimeout", set_idle_termination_timeout, NULL, RSRC_CONF,
+              "Number of seconds to terminate in when the server is idle"),
 AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
