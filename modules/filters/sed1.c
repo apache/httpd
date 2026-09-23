@@ -73,6 +73,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             step_vars_storage *step_vars);
 static apr_status_t wline(sed_eval_t *eval, char *buf, apr_size_t sz);
 static apr_status_t arout(sed_eval_t *eval);
+static void eval_errf(sed_eval_t *eval, const char *fmt, ...)
+                      __attribute__((format(printf,2,3)));
 
 static void eval_errf(sed_eval_t *eval, const char *fmt, ...)
 {
@@ -414,7 +416,7 @@ apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, apr_size_t bufsz
         /* Commands were not finalized properly. */
         const char* error = sed_get_finalize_error(eval->commands, eval->pool);
         if (error) {
-            eval_errf(eval, error);
+            eval_errf(eval, "%s", error);
             return APR_EGENERAL;
         }
     }
