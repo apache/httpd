@@ -777,7 +777,12 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
     switch(ipc->command) {
 
         case ACOM:
-            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
+            /* One slot has to be left for the NULL which terminates abuf,
+             * or writing it runs off the end of the array and over aptr
+             * itself -- after which the next append writes through a NULL
+             * pointer.
+             */
+            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE - 1]) {
                 eval_errf(eval, SEDERR_TMAMES, eval->lnum);
             } else {
                 *eval->aptr++ = ipc;
@@ -993,7 +998,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             break;
 
         case RCOM:
-            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
+            /* See ACOM: the terminating NULL needs a slot of its own. */
+            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE - 1]) {
                 eval_errf(eval, SEDERR_TMRMES, eval->lnum);
             } else {
                 *eval->aptr++ = ipc;
