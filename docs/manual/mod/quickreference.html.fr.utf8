@@ -1042,6 +1042,11 @@ m&eacute;tainformations dans le style du CERN</td></tr>
 <tr><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td></td></tr><tr><td class="descr" colspan="4">Active le traitement des m&eacute;tafichiers du CERN</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffixe</var></a></td><td> .meta </td><td>svdh</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Suffixe du fichier contenant les m&eacute;tainformations dans le
 style du CERN</td></tr>
+<tr><td><a href="mod_mime_libmagic.html#mimelibmagic">MimeLibmagic On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Activer la d&eacute;termination du type MIME &agrave; partir du contenu des
+fichiers</td></tr>
+<tr class="odd"><td><a href="mod_mime_libmagic.html#mimelibmagicbytes">MimeLibmagicBytes <var>bytes</var></a></td><td> 16384 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le nombre d&rsquo;octets &agrave; examiner dans un fichier</td></tr>
+<tr><td><a href="mod_mime_libmagic.html#mimelibmagiccharset">MimeLibmagicCharset On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajouter un param&egrave;tre &laquo;&nbsp;charset&nbsp;&raquo; aux types texte</td></tr>
+<tr class="odd"><td><a href="mod_mime_libmagic.html#mimelibmagicfile">MimeLibmagicFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La base de donn&eacute;es magique &agrave; utiliser</td></tr>
 <tr><td><a href="mod_mime_magic.html#mimemagicdecompression">MimeMagicDecompression On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Activer la d&eacute;compression des fichiers compress&eacute;s pour la d&eacute;tection
 du type MIME</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>chemin-fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la d&eacute;termination du type MIME en se basant sur le

@@ -37,7 +37,7 @@ A2MD_CPPFLAGS = \
     -I$(top_srcdir)/modules/md \
     -I$(top_srcdir)/support/a2md \
     -std=c99 -D_GNU_SOURCE \
-    $(MOD_CPPFLAGS) $(CPPFLAGS) $(EXTRA_CPPFLAGS)
+    $(CPPFLAGS) $(EXTRA_CPPFLAGS) $(A2MD_CFLAGS)
 
 # -----------------------------------------------------------------------
 # Library objects – every md_*.c from modules/md that mod_md compiles,
@@ -86,7 +86,7 @@ A2MD_OBJS = \
 #     (also in build/config_vars.mk).
 # -----------------------------------------------------------------------
 PROGRAM_LDADD = $(UTIL_LDFLAGS) $(EXTRA_LIBS) $(AP_LIBS)
-A2MD_LDADD    = $(PROGRAM_LDADD) $(A2MD_LIBS)
+A2MD_LDADD    = $(PROGRAM_LDADD) $(A2MD_LDFLAGS) $(A2MD_LIBS)
 
 # -----------------------------------------------------------------------
 # Pattern rules: compile lib sources from modules/md/

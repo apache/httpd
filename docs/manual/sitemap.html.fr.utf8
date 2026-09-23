@@ -287,6 +287,7 @@ pour d&eacute;crire les directives Apache</a></li>
 <li><a href="mod/mod_macro.html">Module Apache mod_macro</a></li>
 <li><a href="mod/mod_md.html">Module Apache mod_md</a></li>
 <li><a href="mod/mod_mime.html">Module Apache mod_mime</a></li>
+<li><a href="mod/mod_mime_libmagic.html">Module Apache mod_mime_libmagic</a></li>
 <li><a href="mod/mod_mime_magic.html">Module Apache mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Module Apache mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Module Apache mod_nw_ssl</a></li>

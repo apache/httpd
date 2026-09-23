@@ -213,6 +213,8 @@ de configuration Apache.</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associe les extensions des fichiers demand&eacute;s avec l'action
 d&eacute;clench&eacute;e par ces fichiers et avec leur contenu (type MIME, langage,
 jeu de caract&egrave;re et codage)</dd>
+<dt><a href="mod_mime_libmagic.html">mod_mime_libmagic</a></dt><dd>D&eacute;termine le type Mime d&rsquo;un fichier &agrave; partir de son contenu en
+utilisant libmagic</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>D&eacute;termine le type MIME d'un fichier &agrave; partir de quelques
 octets de son contenu</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Effectue la <a href="../content-negotiation.html">n&eacute;gociation de
