@@ -1,0 +1,3 @@
+  *) mod_env: Add the SetEnvFromFile directive to set internal environment
+     variables from a file of name=value lines, read at configuration time.
+     [Cornel Isbiceanu <cisbiceanu adobe.com>]
