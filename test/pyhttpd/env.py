@@ -84,6 +84,20 @@ class HttpdTestSetup:
     def add_optional_modules(self, modules: List[str]):
         self._optional_modules.extend(modules)
 
+    def _cgi_module(self):
+        """The name of a CGI module this build has: mod_cgid for preference,
+        mod_cgi otherwise.  There is no mod_cgid on Windows."""
+        if sys.platform != "win32" \
+                and os.path.isfile(os.path.join(self.env.libexec_dir,
+                                                "mod_cgid.so")):
+            return "cgid"
+        return "cgi"
+
+    def add_cgi_module(self):
+        """Load a CGI module, for a suite which needs CGI but does not care
+        which of mod_cgid and mod_cgi runs it."""
+        self.add_modules([self._cgi_module()])
+
     def make(self):
         self._make_dirs()
         self._make_conf()
@@ -153,8 +167,8 @@ class HttpdTestSetup:
             # issue load directives for all modules we want that are shared
             missing_mods = list()
             modules = self._modules
-            if sys.platform == "win32":
-                modules = ["cgi" if m == "cgid" else m for m in modules]
+            modules = [self._cgi_module() if m == "cgid" else m
+                       for m in modules]
             for m in modules:
                 match = re.match(r'^mod_(.+)$', m)
                 if match:
