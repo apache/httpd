@@ -1,0 +1,3 @@
+  *) mod_sed: End the response properly when a sed script fails part-way
+     through it, rather than leaving the client waiting for a response
+     which never finishes.  [Joe Orton]
