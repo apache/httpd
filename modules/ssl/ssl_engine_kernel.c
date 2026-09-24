@@ -948,7 +948,6 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             return DECLINED;
         }
 
-        vmode_needed |= SSL_VERIFY_CLIENT_ONCE;
         if (vmode_inplace != vmode_needed) {
             /* Need to change, if new setting is more restrictive than existing one */
 
