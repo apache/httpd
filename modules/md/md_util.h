@@ -30,6 +30,17 @@
 #define apr_cstr_casecmp apr_strnatcasecmp
 #endif
 
+/* a2md builds these sources standalone, without linking httpd, and defines
+ * MD_A2MD_BUILD to say so.  It must not see the httpd internals: on Windows
+ * ap_config.h pulls in os.h, whose exit() macro references ap_real_exit_code,
+ * a symbol only ApacheCore provides. */
+#ifdef MD_A2MD_BUILD
+#define MD_FN_ATTR_SENTINEL
+#else
+#include <ap_config.h>
+#define MD_FN_ATTR_SENTINEL AP_FN_ATTR_SENTINEL
+#endif
+
 struct apr_array_header_t;
 struct apr_table_t;
 
@@ -144,6 +155,18 @@ int md_array_str_add_missing(struct apr_array_header_t *dest,
 
 apr_status_t md_util_exec(apr_pool_t *p, const char *cmd, const char * const *argv,
                           int *exit_code);
+
+/**
+ * Run the program given by `cmdline`, which is tokenized into the program name
+ * and its arguments. Any further arguments are taken from the NULL terminated
+ * varargs list and passed to the program verbatim, e.g. without tokenization,
+ * so that an argument which contains whitespace or quotes cannot turn into
+ * several arguments.
+ * @param cmdline    the program to run, with optional arguments
+ * @param exit_code  receives the exit code of the program
+ */
+apr_status_t md_util_exec_cmdline(apr_pool_t *p, const char *cmdline,
+                                  int *exit_code, ...) MD_FN_ATTR_SENTINEL;
 
 /**************************************************************************************************/
 /* dns name check */

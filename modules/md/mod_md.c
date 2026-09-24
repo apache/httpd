@@ -151,8 +151,6 @@ static apr_status_t notify(md_job_t *job, const char *reason,
                            md_result_t *result, apr_pool_t *p, void *baton)
 {
     md_mod_conf_t *mc = baton;
-    const char * const *argv;
-    const char *cmdline;
     int exit_code;
     apr_status_t rv = APR_SUCCESS;
     apr_time_t min_interim = 0;
@@ -180,10 +178,8 @@ static apr_status_t notify(md_job_t *job, const char *reason,
 
     if (!strcmp("renewed", reason)) {
         if (mc->notify_cmd) {
-            cmdline = apr_psprintf(p, "%s %s", mc->notify_cmd, job->mdomain);
-            apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-            rv = md_util_exec(p, argv[0], argv, &exit_code);
-
+            rv = md_util_exec_cmdline(p, mc->notify_cmd, &exit_code,
+                                      job->mdomain, NULL);
             if (APR_SUCCESS == rv && exit_code) rv = APR_EGENERAL;
             if (APR_SUCCESS != rv) {
                 md_result_problem_printf(result, rv, MD_RESULT_LOG_ID(APLOGNO(10108)),
@@ -199,10 +195,10 @@ static apr_status_t notify(md_job_t *job, const char *reason,
                      "will be activated on next (graceful) server restart.", job->mdomain);
     }
     if (mc->message_cmd) {
-        cmdline = apr_psprintf(p, "%s %s %s", mc->message_cmd, reason, job->mdomain);
-        apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-        rv = md_util_exec(p, argv[0], argv, &exit_code);
-
+        /* `reason` may carry a domain name from the ACME server, pass it as a
+         * single argument and never let it parse into more than one. */
+        rv = md_util_exec_cmdline(p, mc->message_cmd, &exit_code,
+                                  reason, job->mdomain, NULL);
         if (APR_SUCCESS == rv && exit_code) rv = APR_EGENERAL;
         if (APR_SUCCESS != rv) {
             md_result_problem_printf(result, rv, MD_RESULT_LOG_ID(APLOGNO(10109)),
