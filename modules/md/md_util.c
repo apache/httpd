@@ -1119,6 +1119,39 @@ out:
     return rv;
 }
 
+apr_status_t md_util_exec_cmdline(apr_pool_t *p, const char *cmdline,
+                                  int *exit_code, ...)
+{
+    apr_array_header_t *argv;
+    char **cmd_argv;
+    const char *arg;
+    apr_status_t rv;
+    va_list ap;
+    int i;
+
+    *exit_code = 0;
+    rv = apr_tokenize_to_argv(cmdline, &cmd_argv, p);
+    if (rv != APR_SUCCESS) return rv;
+    if (!cmd_argv[0]) return APR_EINVAL;
+
+    /* The command line is configured by the administrator and parsed as such,
+     * the additional arguments may come from a remote party and are passed on
+     * verbatim, so that they can never become more than one argument. */
+    argv = apr_array_make(p, 8, sizeof(const char *));
+    for (i = 0; cmd_argv[i]; ++i) {
+        APR_ARRAY_PUSH(argv, const char *) = cmd_argv[i];
+    }
+    va_start(ap, exit_code);
+    while ((arg = va_arg(ap, const char *))) {
+        APR_ARRAY_PUSH(argv, const char *) = arg;
+    }
+    va_end(ap);
+    APR_ARRAY_PUSH(argv, const char *) = NULL;
+
+    return md_util_exec(p, APR_ARRAY_IDX(argv, 0, const char *),
+                        (const char * const *)argv->elts, exit_code);
+}
+
 /* base64 url encoding ****************************************************************************/
 
 #define N6 (unsigned int)-1

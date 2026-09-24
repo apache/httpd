@@ -136,7 +136,15 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
             
         authz->domain = md_json_gets(json, MD_KEY_IDENTIFIER, MD_KEY_VALUE, NULL); 
         authz->resource = json;
-        if (!strcmp(s, "pending")) {
+        if (!authz->domain
+            || (!md_dns_is_name(p, authz->domain, 1)
+                && !md_dns_is_wildcard(p, authz->domain))) {
+            /* The identifier names files in the store and is passed to the
+             * configured challenge commands. Only accept a DNS name here. */
+            err = "invalid identifier in response";
+            rv = APR_EINVAL;
+        }
+        else if (!strcmp(s, "pending")) {
             authz->state = MD_ACME_AUTHZ_S_PENDING;
             err = "challenge 'pending'";
             log_level = MD_LOG_DEBUG;
@@ -155,7 +163,7 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
         }
     }
 
-    if (json && authz->state == MD_ACME_AUTHZ_S_UNKNOWN) {
+    if (json && rv == APR_SUCCESS && authz->state == MD_ACME_AUTHZ_S_UNKNOWN) {
         err = "unable to understand response";
         rv = APR_EINVAL;
     }
@@ -423,8 +431,7 @@ static apr_status_t cha_dns_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *
                                      const char **psetup_token, apr_pool_t *p)
 {
     const char *token;
-    const char * const *argv;
-    const char *cmdline, *dns01_cmd;
+    const char *dns01_cmd;
     apr_status_t rv;
     int exit_code, notify_server;
     authz_req_ctx ctx;
@@ -457,12 +464,13 @@ static apr_status_t cha_dns_01_setup(md_acme_authz_cha_t *cha, md_acme_authz_t *
         goto out;
     }
 
-    cmdline = apr_psprintf(p, "%s setup %s %s", dns01_cmd, authz->domain, token); 
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, 0, p, 
-                  "%s: dns-01 setup command: %s", authz->domain, cmdline);
+                  "%s: dns-01 setup command: %s setup %s %s",
+                  authz->domain, dns01_cmd, authz->domain, token);
 
-    apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-    if (APR_SUCCESS != (rv = md_util_exec(p, argv[0], argv, &exit_code))) {
+    rv = md_util_exec_cmdline(p, dns01_cmd, &exit_code,
+                              "setup", authz->domain, token, NULL);
+    if (rv != APR_SUCCESS) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
                       "%s: dns-01 setup command failed to execute for %s", md->name, authz->domain);
         goto out;
@@ -500,8 +508,7 @@ out:
 static apr_status_t cha_dns_01_teardown(md_store_t *store, const char *domain, const md_t *md,
                                         apr_table_t *env, apr_pool_t *p)
 {
-    const char * const *argv;
-    const char *cmdline, *dns01_cmd, *dns01v;
+    const char *dns01_cmd, *dns01v, *token = NULL;
     char *tmp, *s;
     apr_status_t rv;
     int exit_code;
@@ -517,20 +524,24 @@ static apr_status_t cha_dns_01_teardown(md_store_t *store, const char *domain, c
             md->name, domain);
         goto out;
     }
+    /* dns-01 setup tokens carry the token after the domain, separated by a space */
+    tmp = apr_pstrdup(p, domain);
+    s = strchr(tmp, ' ');
+    if (s) {
+        *s = '\0';
+        domain = tmp;
+        token = s + 1;
+    }
     dns01v = apr_table_get(env, MD_KEY_DNS01_VERSION);
     if (!dns01v || strcmp(dns01v, "2")) {
         /* use older version of teardown args with only domain, remove token */
-        tmp = apr_pstrdup(p, domain);
-        s = strchr(tmp, ' ');
-        if (s) {
-            *s = '\0';
-            domain = tmp;
-        }
+        token = NULL;
     }
 
-    cmdline = apr_psprintf(p, "%s teardown %s", dns01_cmd, domain); 
-    apr_tokenize_to_argv(cmdline, (char***)&argv, p);
-    if (APR_SUCCESS != (rv = md_util_exec(p, argv[0], argv, &exit_code)) || exit_code) {
+    /* a NULL token ends the argument list, e.g. is not passed on */
+    rv = md_util_exec_cmdline(p, dns01_cmd, &exit_code,
+                              "teardown", domain, token, NULL);
+    if (rv != APR_SUCCESS || exit_code) {
         md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, p, 
                       "%s: dns-01 teardown command failed (exit code=%d) for %s",
                       md->name, exit_code, domain);

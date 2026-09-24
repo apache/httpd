@@ -36,7 +36,7 @@ A2MD_CPPFLAGS = \
     -I$(top_srcdir)/include \
     -I$(top_srcdir)/modules/md \
     -I$(top_srcdir)/support/a2md \
-    -std=c99 -D_GNU_SOURCE \
+    -std=c99 -D_GNU_SOURCE -DMD_A2MD_BUILD \
     $(CPPFLAGS) $(EXTRA_CPPFLAGS) $(A2MD_CFLAGS)
 
 # -----------------------------------------------------------------------
