@@ -879,6 +879,13 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                         continue;
                     }
                     if (!isprint(*p1 & 0377)) {
+                        /* The three octal digits have to come off the byte
+                         * value, not off a sign-extended char: 0xff is
+                         * \377, and shifting it as a negative number gave
+                         * "\/77".
+                         */
+                        unsigned char uc = (unsigned char)*p1;
+
                         *p2++ = '\\';
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
@@ -888,7 +895,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                                 return rv;
                             p2 = eval->genbuf;
                         }
-                        *p2++ = (*p1 >> 6) + '0';
+                        *p2++ = (uc >> 6) + '0';
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
@@ -897,7 +904,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                                 return rv;
                             p2 = eval->genbuf;
                         }
-                        *p2++ = ((*p1 >> 3) & 07) + '0';
+                        *p2++ = ((uc >> 3) & 07) + '0';
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
@@ -906,7 +913,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                                 return rv;
                             p2 = eval->genbuf;
                         }
-                        *p2++ = (*p1++ & 07) + '0';
+                        *p2++ = (uc & 07) + '0';
+                        p1++;
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
