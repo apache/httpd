@@ -439,7 +439,7 @@ apr_status_t md_util_freplace(const char *fpath, apr_fileperms_t perms, apr_pool
                               md_util_file_cb *write_cb, void *baton)
 {
     apr_status_t rv = APR_EEXIST;
-    apr_file_t *f;
+    apr_file_t *f = NULL;
     const char *tmp;
     int i, max;
     
@@ -450,22 +450,29 @@ creat:
         ++i;
         apr_sleep(apr_time_from_msec(50));
     } 
-    if (APR_EEXIST == rv 
-        && APR_SUCCESS == (rv = apr_file_remove(tmp, p))
-        && max <= 20) {
+    /* Still there, most likely left behind by a process which was killed
+     * while writing. Remove it and try once more. Keep `rv` as the status of
+     * the last create attempt, so that the file is only written below when it
+     * was actually created. */
+    if (rv == APR_EEXIST && max <= 20
+        && apr_file_remove(tmp, p) == APR_SUCCESS) {
         max *= 2;
         goto creat;
     }
     
-    if (APR_SUCCESS == rv) {
+    if (rv == APR_SUCCESS) {
+        apr_status_t rv2;
+
         rv = write_cb(baton, f, p);
-        apr_file_close(f);
+        rv2 = apr_file_close(f);
+        if (rv == APR_SUCCESS) rv = rv2;
         
-        if (APR_SUCCESS == rv) {
+        if (rv == APR_SUCCESS) {
             rv = apr_file_rename(tmp, fpath, p);
-            if (APR_SUCCESS != rv) {
-                apr_file_remove(tmp, p);
-            }
+        }
+        /* Leave no temporary file behind, it would delay the next writer. */
+        if (rv != APR_SUCCESS) {
+            apr_file_remove(tmp, p);
         }
     }
     return rv;
@@ -509,16 +516,12 @@ apr_status_t md_text_fcreatex(const char *fpath, apr_fileperms_t perms,
     apr_file_t *f;
     
     rv = md_util_fcreatex(&f, fpath, perms, p);
-    if (APR_SUCCESS == rv) {
+    if (rv == APR_SUCCESS) {
+        apr_status_t rv2;
+
         rv = write_text((void*)text, f, p);
-        apr_file_close(f);
-        /* See <https://github.com/icing/mod_md/issues/117>: when a umask
-         * is set, files need to be assigned permissions explicitly.
-         * Otherwise, as in the issues reported, it will break our access model. */
-        rv = apr_file_perms_set(fpath, perms);
-        if (APR_STATUS_IS_ENOTIMPL(rv)) {
-            rv = APR_SUCCESS;
-        }
+        rv2 = apr_file_close(f);
+        if (rv == APR_SUCCESS) rv = rv2;
     }
     return rv;
 }
