@@ -18,6 +18,8 @@ class TestCgid:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
+        if not env.has_cgid_module:
+            pytest.skip("mod_cgid not built")
         conf = HttpdConf(env, extras={
             'base': textwrap.dedent(f"""
             LogLevel cgid:trace1
