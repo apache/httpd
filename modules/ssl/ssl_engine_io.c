@@ -516,7 +516,19 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
         if (block == APR_BLOCK_READ 
             && APR_STATUS_IS_TIMEUP(inctx->rc)
             && APR_BRIGADE_EMPTY(inctx->bb)) {
-            /* don't give up, just return the timeout */
+            SSLConnRec *sslconn = myConnConfig(inctx->f->c);
+
+            /* A timeout is a retryable read: the connection is still up, it
+             * is only this wait which is over.  Flagging it retryable keeps
+             * the SSL session usable - reporting an I/O error here would put
+             * the state machine into an error state, after which OpenSSL
+             * refuses to send a close_notify alert.  The timeout itself is
+             * reported out of band, as OpenSSL's own BIOs do for a datagram
+             * receive timeout. */
+            BIO_set_retry_read(bio);
+            if (sslconn) {
+                sslconn->read_timedout = 1;
+            }
             return -1;
         }
         if (inctx->rc != APR_SUCCESS) {
@@ -730,6 +742,8 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  * (This is usually the case when the client forces an SSL
                  * renegotiation which is handled implicitly by OpenSSL.)
                  */
+                int timedout = APR_STATUS_IS_TIMEUP(inctx->rc);
+
                 inctx->rc = APR_EAGAIN;
 
                 if (*len > 0) {
@@ -737,6 +751,11 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                     break;
                 }
                 if (inctx->block == APR_NONBLOCK_READ) {
+                    break;
+                }
+                if (timedout) {
+                    /* The wait is over, so do not keep retrying it. */
+                    inctx->rc = APR_TIMEUP;
                     break;
                 }
                 continue;  /* Blocking and nothing yet?  Try again. */
@@ -1431,13 +1450,20 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                          "SSL handshake stopped: connection was closed");
         }
         else if (ssl_err == SSL_ERROR_WANT_READ) {
-            /*
-             * This is in addition to what was present earlier. It is
-             * borrowed from openssl_state_machine.c [mod_tls].
-             * TBD.
-             */
-            outctx->rc = APR_EAGAIN;
-            return APR_EAGAIN;
+            if (!APR_STATUS_IS_TIMEUP(inctx->rc)) {
+                /*
+                 * This is in addition to what was present earlier. It is
+                 * borrowed from openssl_state_machine.c [mod_tls].
+                 * TBD.
+                 */
+                outctx->rc = APR_EAGAIN;
+                return APR_EAGAIN;
+            }
+            /* A read timeout is reported as a retryable read to keep the
+             * SSL session usable, but the wait is over, so fail the
+             * handshake here rather than retrying it. */
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rc, c,
+                          "SSL handshake timed out");
         }
         else if (ERR_GET_LIB(ERR_peek_error()) == ERR_LIB_SSL &&
                  ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
