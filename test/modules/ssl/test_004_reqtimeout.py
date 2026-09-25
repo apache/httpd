@@ -23,6 +23,10 @@ CAP = CORE_TIMEOUT + 6
 
 VERSIONS = {"TLSv1.2": SSL.TLS1_2_VERSION, "TLSv1.3": SSL.TLS1_3_VERSION}
 
+# What the virtual host asks for, which decides whether a certificate has
+# already been collected by the time the <Location> asks for one.
+VHOSTS = {"unset": "", "optional": "SSLVerifyClient optional"}
+
 # pyOpenSSL exposes no post-handshake auth setting, so reach the one call
 # needed through the same OpenSSL bindings pyhttpd already uses for its CA.
 _LIB = Binding().lib
@@ -47,12 +51,13 @@ class TestReqTimeout:
             r'.*certificate verify failed.*',
         ])
 
-    def install(self, env, proto):
+    def install(self, env, proto, vhost_verify=""):
         conf = HttpdConf(env, extras={
             "base": RRT,
             f"test1.{env.http_tld}": f"""
             SSLProtocol -all +{proto}
             SSLCACertificateFile "{env.ca.cert_file}"
+            {vhost_verify}
             <Location "/secure">
                 SSLVerifyClient require
             </Location>
@@ -81,10 +86,10 @@ class TestReqTimeout:
         _LIB.SSL_CTX_set_post_handshake_auth(ctx._context, 1)
         return ctx
 
-    def stalled_request(self, env, proto):
+    def stalled_request(self, env, proto, vhost_verify=""):
         """Handshake, ask for a resource needing a client certificate, then
         stop reading - so the server's request for one is never answered."""
-        self.install(env, proto)
+        self.install(env, proto, vhost_verify)
         creds = env.ca.issue_cert(
             CertificateSpec(name="reqtimeout-client", client=True))
         sock = self.connect(env)
@@ -131,6 +136,41 @@ class TestReqTimeout:
             total += len(data)
         return total, False
 
+    def close_notify_then_eof(self, conn, sock, cap=CAP):
+        """Drain at the TLS layer after a timeout has fired, reporting
+        whether the server sent close_notify - which pyOpenSSL surfaces as
+        ZeroReturnError - and whether the TCP connection then went away."""
+        saw_close_notify = False
+        ending = None
+        deadline = time.monotonic() + cap
+        while time.monotonic() < deadline:
+            if not select.select([sock], [], [], 0.5)[0]:
+                continue
+            try:
+                if conn.recv(16384) == b"":
+                    ending = "eof"
+                    break
+            except SSL.ZeroReturnError:
+                saw_close_notify = True
+                break
+            except Exception as exc:
+                ending = f"{type(exc).__name__}: {exc}"
+                break
+        # the TLS shutdown should be followed by the connection closing
+        tcp_closed = False
+        fd = sock.fileno()
+        deadline = time.monotonic() + 5
+        while time.monotonic() < deadline:
+            if not select.select([fd], [], [], 0.25)[0]:
+                continue
+            try:
+                if os.read(fd, 65536) == b"":
+                    tcp_closed = True
+            except OSError:
+                tcp_closed = True
+            break
+        return saw_close_notify, tcp_closed, ending
+
     # -- timing -----------------------------------------------------------
 
     # A client stalling in the first handshake is bounded by the stage.
@@ -151,26 +191,16 @@ class TestReqTimeout:
     # RequestReadTimeout stage at all, only by the core Timeout.
     @pytest.mark.xfail(strict=True, reason="no RequestReadTimeout stage "
                        "applies to a renegotiation or post-handshake auth")
+    @pytest.mark.parametrize("vhost", list(VHOSTS), ids=list(VHOSTS))
     @pytest.mark.parametrize("proto", list(VERSIONS))
-    def test_ssl_004_02(self, env, proto):
-        conn, sock = self.stalled_request(env, proto)
+    def test_ssl_004_02(self, env, proto, vhost):
+        conn, sock = self.stalled_request(env, proto, VHOSTS[vhost])
         delay = self.close_delay(sock)
         sock.close()
         assert delay is not None, "connection was never closed"
         assert delay < HANDSHAKE_TIMEOUT + 2, \
             f"closed after {delay:.1f}s, expected the handshake stage " \
             f"({HANDSHAKE_TIMEOUT}s) not Timeout ({CORE_TIMEOUT}s)"
-
-    # ...but it is closed eventually, so the stall is bounded by something.
-    @pytest.mark.parametrize("proto", list(VERSIONS))
-    def test_ssl_004_03(self, env, proto):
-        conn, sock = self.stalled_request(env, proto)
-        delay = self.close_delay(sock)
-        sock.close()
-        assert delay is not None, \
-            f"still open after {CAP}s: nothing bounds the stall at all"
-        assert delay < CORE_TIMEOUT + 3, \
-            f"closed after {delay:.1f}s, later than Timeout ({CORE_TIMEOUT}s)"
 
     # -- what reaches the client -----------------------------------------
 
@@ -188,13 +218,35 @@ class TestReqTimeout:
         assert closed, \
             f"connection still open after {CAP}s ({sent} bytes received)"
 
+    @pytest.mark.parametrize("vhost", list(VHOSTS), ids=list(VHOSTS))
     @pytest.mark.parametrize("proto", list(VERSIONS))
-    def test_ssl_004_05(self, env, proto):
-        conn, sock = self.stalled_request(env, proto)
+    def test_ssl_004_05(self, env, proto, vhost):
+        conn, sock = self.stalled_request(env, proto, VHOSTS[vhost])
+        start = time.monotonic()
         sent, closed = self.sent_then_closed(sock)
+        elapsed = time.monotonic() - start
         try:
             sock.close()
         except OSError:
             pass
         assert closed, \
             f"connection still open after {CAP}s ({sent} bytes received)"
+        assert elapsed < CORE_TIMEOUT + 3, \
+            f"closed after {elapsed:.1f}s, later than Timeout ({CORE_TIMEOUT}s)"
+
+    # A timeout in the second handshake should be an orderly TLS shutdown:
+    # close_notify, and then the connection goes away.  Without it a client
+    # cannot distinguish the server giving up from the connection being cut.
+    @pytest.mark.parametrize("vhost", list(VHOSTS), ids=list(VHOSTS))
+    @pytest.mark.parametrize("proto", list(VERSIONS))
+    def test_ssl_004_06(self, env, proto, vhost):
+        conn, sock = self.stalled_request(env, proto, VHOSTS[vhost])
+        time.sleep(CORE_TIMEOUT + 1)        # let the timeout fire
+        notified, tcp_closed, ending = self.close_notify_then_eof(conn, sock)
+        try:
+            sock.close()
+        except OSError:
+            pass
+        assert notified, \
+            f"no close_notify from the server, stream ended with: {ending}"
+        assert tcp_closed, "close_notify sent but the connection stayed open"
