@@ -516,7 +516,14 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
         if (block == APR_BLOCK_READ 
             && APR_STATUS_IS_TIMEUP(inctx->rc)
             && APR_BRIGADE_EMPTY(inctx->bb)) {
-            /* don't give up, just return the timeout */
+            SSLConnRec *sslconn = myConnConfig(inctx->f->c);
+
+            /* don't give up, just return the timeout, but note it so that a
+             * caller which fails as a result can tell a client which stopped
+             * talking apart from a protocol failure. */
+            if (sslconn) {
+                sslconn->read_timedout = 1;
+            }
             return -1;
         }
         if (inctx->rc != APR_SUCCESS) {
