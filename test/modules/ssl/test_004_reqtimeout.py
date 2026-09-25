@@ -103,14 +103,16 @@ class TestReqTimeout:
 
     def close_delay(self, sock, cap=CAP):
         """Seconds until the server closes, read at the socket so that the
-        TLS layer never answers anything and ends the stall by accident."""
+        TLS layer never answers anything and ends the stall by accident.
+
+        Read with the socket rather than os.read(), which cannot take a
+        socket handle on Windows and fails there at once."""
         start = time.monotonic()
-        fd = sock.fileno()
         while time.monotonic() - start < cap:
-            if not select.select([fd], [], [], 0.25)[0]:
+            if not select.select([sock], [], [], 0.25)[0]:
                 continue
             try:
-                if os.read(fd, 65536) == b"":
+                if sock.recv(65536) == b"":
                     return time.monotonic() - start
             except OSError:
                 return time.monotonic() - start
@@ -123,12 +125,11 @@ class TestReqTimeout:
         stall by accident."""
         total = 0
         deadline = time.monotonic() + cap
-        fd = sock.fileno()
         while time.monotonic() < deadline:
-            if not select.select([fd], [], [], 0.25)[0]:
+            if not select.select([sock], [], [], 0.25)[0]:
                 continue
             try:
-                data = os.read(fd, 65536)
+                data = sock.recv(65536)
             except OSError:
                 return total, True
             if data == b"":
@@ -158,13 +159,12 @@ class TestReqTimeout:
                 break
         # the TLS shutdown should be followed by the connection closing
         tcp_closed = False
-        fd = sock.fileno()
         deadline = time.monotonic() + 5
         while time.monotonic() < deadline:
-            if not select.select([fd], [], [], 0.25)[0]:
+            if not select.select([sock], [], [], 0.25)[0]:
                 continue
             try:
-                if os.read(fd, 65536) == b"":
+                if sock.recv(65536) == b"":
                     tcp_closed = True
             except OSError:
                 tcp_closed = True
