@@ -1056,11 +1056,13 @@ static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, const SSLConnRe
         return apr_psprintf(p, "%04x", (uint16_t) clienthello_vars->version);
     }
     else if (strEQ(var, "CIPHERS") && (clienthello_vars->ciphers_len > 0)) {
+        ap_assert(clienthello_vars->ciphers_len <= (APR_SIZE_MAX - 1) / 2);
         value = apr_palloc(p, clienthello_vars->ciphers_len * 2 + 1);
         ap_bin2hex(clienthello_vars->ciphers_data, clienthello_vars->ciphers_len, value);
         return value;
     }
     else if (strEQ(var, "EXTENSIONS") && (clienthello_vars->extids_len > 0)) {
+        ap_assert(clienthello_vars->extids_len <= (APR_SIZE_MAX - 1) / 4);
         value = apr_palloc(p, clienthello_vars->extids_len * 4 + 1);
         for (i = 0; i < clienthello_vars->extids_len; i++) {
             apr_snprintf(value + i * 4, 5, "%04x", (uint16_t) clienthello_vars->extids_data[i]);
@@ -1068,26 +1070,31 @@ static const char *ssl_var_lookup_ssl_clienthello(apr_pool_t *p, const SSLConnRe
         return value;
     }
     else if (strEQ(var, "GROUPS") && (clienthello_vars->ecgroups_len > 2)) {
+        ap_assert(clienthello_vars->ecgroups_len <= (APR_SIZE_MAX - 1) / 2);
         value = apr_palloc(p, clienthello_vars->ecgroups_len * 2 + 1 - 2);
         ap_bin2hex(clienthello_vars->ecgroups_data + 2, clienthello_vars->ecgroups_len - 2, value);
         return value;
     }
     else if (strEQ(var, "EC_FORMATS") && (clienthello_vars->ecformats_len > 1)) {
+        ap_assert(clienthello_vars->ecformats_len <= (APR_SIZE_MAX - 1) / 2);
         value = apr_palloc(p, clienthello_vars->ecformats_len * 2 + 1 - 1);
         ap_bin2hex(clienthello_vars->ecformats_data + 1, clienthello_vars->ecformats_len - 1, value);
         return value;
     }
     else if (strEQ(var, "SIG_ALGOS") && (clienthello_vars->sigalgos_len > 2)) {
+        ap_assert(clienthello_vars->sigalgos_len <= (APR_SIZE_MAX - 1) / 2);
         value = apr_palloc(p, clienthello_vars->sigalgos_len * 2 + 1 - 2);
         ap_bin2hex(clienthello_vars->sigalgos_data + 2, clienthello_vars->sigalgos_len - 2, value);
         return value;
     }
     else if (strEQ(var, "ALPN") && (clienthello_vars->alpn_len > 2)) {
+        ap_assert(clienthello_vars->alpn_len <= (APR_SIZE_MAX - 1) / 2);
         value = apr_palloc(p, clienthello_vars->alpn_len * 2 + 1 - 2);
         ap_bin2hex(clienthello_vars->alpn_data + 2, clienthello_vars->alpn_len - 2, value);
         return value;
     }
     else if (strEQ(var, "VERSIONS") && (clienthello_vars->versions_len > 1)) {
+        ap_assert(clienthello_vars->versions_len <= (APR_SIZE_MAX - 1) / 2);
         value = apr_palloc(p, clienthello_vars->versions_len * 2 + 1 - 1);
         ap_bin2hex(clienthello_vars->versions_data + 1, clienthello_vars->versions_len - 1, value);
         return value;
