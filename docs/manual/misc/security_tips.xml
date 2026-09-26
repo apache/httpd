@@ -74,8 +74,10 @@
 
     <ul>
       <li>The <directive module="mod_reqtimeout">RequestReadTimeout</directive>
-      directive allows to limit the time a client may take to send the
-      request.</li>
+      directive allows you to limit the time a client may take to complete
+      the TLS handshake and send the request. In particular, the
+      <code>handshake</code> stage times out clients that stall during the
+      TLS handshake.</li>
 
       <li>The <directive module="core">TimeOut</directive> directive
       should be lowered on sites that are subject to DoS attacks.

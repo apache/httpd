@@ -40,6 +40,8 @@ to provide the cryptography engine.</p>
 <a href="../ssl/">SSL documentation</a>.</p>
 </summary>
 
+<seealso><directive module="mod_reqtimeout">RequestReadTimeout</directive></seealso>
+
 <section id="envvars"><title>Environment Variables</title>
 
 <p>This module can be configured to provide several items of SSL information
@@ -284,6 +286,29 @@ Require valid-user
     </highlight>
 
   </section>
+
+</section>
+
+<section id="timeouts"><title>Connection and Handshake Timeouts</title>
+
+<p>A client may open a TLS connection, receive the server certificate, and
+then stall without completing the handshake or sending a request. The
+HTTP-level timeouts, such as <directive module="core">TimeOut</directive>,
+do not reliably cover this situation, so the connection can be held open
+indefinitely.</p>
+
+<p>To limit the time a client may take to complete the TLS handshake, load
+<module>mod_reqtimeout</module> and configure the <code>handshake</code>
+stage of <directive module="mod_reqtimeout">RequestReadTimeout</directive>:</p>
+
+<highlight language="config">
+RequestReadTimeout handshake=5
+</highlight>
+
+<p>The <code>handshake</code> stage is disabled by default and is available
+since httpd 2.4.39. See the
+<directive module="mod_reqtimeout">RequestReadTimeout</directive>
+documentation for details and more examples.</p>
 
 </section>
 
