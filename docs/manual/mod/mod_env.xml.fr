@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1673947 -->
+<!-- English Revision : 1938506 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -126,6 +126,74 @@ shell</description>
       </highlight>
     </example>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnvFromFile</name>
+<description>Définitions de variables d’environnement à partir d’un fichier</description>
+<syntax>SetEnvFromFile <var>file-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache.</compatibility>
+
+<usage>
+    <p>Cette directive permet de définir des variables d’environnement internes
+    à partir d’un fichier ; ces dernières sont alors disponibles pour les
+    modules du serveur HTTP Apache et passées aux scripts CGI et aux pages SSI.
+    Mis à part le fait que les valeurs des variables sont enregistrées dans un
+    fichier séparé, cette directive a le même effet qu’une liste de directives
+    <directive module="mod_env">SetEnv</directive> directives, chacune d’entre
+    elles définissant une variable.</p>
+
+    <p><var>file-path</var> est soit un chemin absolu, soit un chemin relatif à
+    la valeur de la directive <directive module="core">ServerRoot</directive>.
+    Le fichier est lu une seule fois lors de l’analyse de la configuration ; ses
+    éventuelles modifications ne seront prises en compte qu’après un redémarrage
+    du serveur.</p>
+
+    <p>Chaque ligne du fichier se présente sous la forme
+    <code>nom=valeur</code>. Les lignes vides ou commençant par <code>#</code>
+    sont ignorées, et les blancs en début et en fin de ligne sont supprimés. Si
+    une ligne ne contient pas de signe <code>=</code>, la variable
+    correspondante se voit affecter une chaîne vide. Une ligne se terminant par
+    une controblique (<code>\</code>) continue à la ligne suivante, comme dans
+    les fichiers de configuration principaux.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+      SetEnvFromFile conf/app.env
+      </highlight>
+    </example>
+
+    <example><title>Exemple de fichier (<code>conf/app.env</code>)</title>
+    <highlight language="config">
+      # Application settings
+      APP_MODE=production
+      SPECIAL_PATH=/foo/bin
+      </highlight>
+    </example>
+
+    <note><p>Comme pour la directive <directive
+    module="mod_env">SetEnv</directive>, les variables sont définies
+    <em>après</em> que la plupart des directives précoces de traitement des
+    requêtes ont été exécutées, comme le contrôle d’accès et le mappage URI-Nom
+    de fichier.</p>
+    </note>
+
+    <note type="warning"><title>Sécurité</title>
+    <p>À la différence de <directive module="mod_env">SetEnv</directive>, cette
+    directive lit le <em>contenu</em> d’un fichier vers l’environnement interne,
+    où il peut être exposé par CGI, SSI, journalisation et autres consommateurs.
+    Afin d’empêcher un utilisateur non fiable de divulguer le contenu de tout
+    fichier lisible par le serveur (par exemple les fichiers de configuration ou
+    de données d’authentification ailleurs sur l’hôte), la directive
+    <directive>SetEnvFromFile</directive> n’est <strong>pas</strong> autorisée
+    dans les fichiers <code>.htaccess</code> ; elle ne peut être utilisée que
+    dans la configuration globale du serveur.</p>
+    </note>
+</usage>
+<seealso><a href="../env.html">Variables d’environnement</a></seealso>
+<seealso><directive module="mod_env">SetEnv</directive></seealso>
 </directivesynopsis>
 
 </modulesynopsis>
