@@ -54,6 +54,7 @@ personnalis&eacute;s</a></li>
 des expressions</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#authzproviders">Fournisseurs d'autorisation
 disponibles avec Require</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#timeouts">D&eacute;lais de connexion et de n&eacute;gociation</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif"> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
@@ -129,7 +130,10 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Signaler un bug</a></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code></li>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="envvars">Variables d'environnement <a title="Lien permanent" href="#envvars" class="permalink">&para;</a></h2>
@@ -434,6 +438,27 @@ Require valid-user</pre>
 
 
   
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="timeouts">D&eacute;lais de connexion et de n&eacute;gociation <a title="Lien permanent" href="#timeouts" class="permalink">&para;</a></h2>
+
+<p>Il peut arriver qu&rsquo;un client ouvre une connexion TLS, re&ccedil;oive le certificat
+du serveur, puis se fige sans terminer la n&eacute;gociation ou envoyer une requ&ecirc;te.
+Les d&eacute;lais HTTP comme <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> ne g&egrave;rent pas
+cette situation correctement, et la connexion peut alors rester ouverte
+ind&eacute;finiment.</p>
+
+<p>Pour limiter le temps que peut mettre un client pour terminer la n&eacute;gociation
+TLS, chargez le module <code class="module"><a href="../mod/mod_reqtimeout.html">mod_reqtimeout</a></code> et configurez la
+phase <code>handshake</code> de la directive <code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code>&nbsp;:</p>
+
+<pre class="prettyprint lang-config">RequestReadTimeout handshake=5</pre>
+
+
+<p>La phase <code>handshake</code> est d&eacute;sactiv&eacute;e par d&eacute;faut et est disponible &agrave;
+partir de la version 2.4.39. Voir la documentation de la directive <code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code> pour les d&eacute;tails et plus
+d&rsquo;exemples.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -1744,7 +1769,7 @@ cette demande peut &ecirc;tre formul&eacute;e parmi les trois suivantes :</p>
     Ici, un programme externe est appel&eacute; au d&eacute;marrage du serveur pour
     chaque fichier de cl&eacute; priv&eacute;e chiffr&eacute;.Il est appel&eacute; avec deux
     arguments (le premier est de la forme
-    ``<code>nom-serveur:port</code>'', le second
+``<code>nom-serveur:port</code>'', le second
     est ``<code>RSA</code>'', ``<code>DSA</code>'', ``<code>ECC</code>''
     ou un index entier commen&ccedil;ant &agrave; 3 si plus de 3 cl&eacute;s ont &eacute;t&eacute;
     configur&eacute;es), qui
