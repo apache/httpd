@@ -18,6 +18,7 @@
 #include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
+#include "apr_atomic.h"
 #include "apr_signal.h"
 
 #define APR_WANT_STDIO
@@ -88,6 +89,7 @@
 
 /* config globals */
 
+static apr_uint32_t extra_connection_count = 0; /* Number of open connections that the MPM does not own */
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -214,20 +216,60 @@ static void prefork_note_child_started(int slot, pid_t pid)
     ap_run_child_status(ap_server_conf, pid, gen, slot, MPM_CHILD_STARTED);
 }
 
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&extra_connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&extra_connection_count);
+}
+
+static void wait_for_extra_connections(void)
+{
+    apr_uint32_t count = apr_atomic_read32(&extra_connection_count);
+    apr_time_t graceful, timeout, deadline;
+
+    if (count == 0) {
+        return;
+    }
+
+    graceful = apr_time_from_sec(ap_graceful_shutdown_timeout);
+    timeout = (graceful > ap_server_conf->timeout) ? graceful : ap_server_conf->timeout;
+    deadline = apr_time_now() + timeout;
+
+    do {
+        apr_sleep(apr_time_from_msec(100));
+        count = apr_atomic_read32(&extra_connection_count);
+    } while (count > 0 && apr_time_now() < deadline);
+
+    if (count > 0) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
+                     APLOGNO(10620)
+                     "Child: %u connection(s) noted by modules did not "
+                     "finish within %" APR_TIME_T_FMT " seconds, "
+                     "exiting anyway",
+                     count, apr_time_sec(timeout));
+    }
+}
+
 /* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code) __attribute__ ((noreturn));
-static void clean_child_exit(int code)
+static void clean_child_exit_ex(int code, int from_signal) __attribute__ ((noreturn));
+static void clean_child_exit_ex(int code, int from_signal)
 {
     retained->mpm->mpm_state = AP_MPMQ_STOPPING;
 
     apr_signal(SIGHUP, SIG_IGN);
     apr_signal(SIGTERM, SIG_IGN);
 
-    if (code == 0) {
-        ap_run_child_stopping(pchild, 0);
-    }
-
     if (pchild) {
+        if (!code && !from_signal) {
+            ap_run_child_stopping(pchild, !retained->mpm->is_ungraceful);
+            if (!retained->mpm->is_ungraceful) {
+                wait_for_extra_connections();
+            }
+        }
         apr_pool_destroy(pchild);
     }
 
@@ -238,6 +280,12 @@ static void clean_child_exit(int code)
     ap_mpm_pod_close(my_bucket->pod);
     chdir_for_gprof();
     exit(code);
+}
+
+static void clean_child_exit(int code) __attribute__ ((noreturn));
+static void clean_child_exit(int code)
+{
+    clean_child_exit_ex(code, 0);
 }
 
 static apr_status_t accept_mutex_on(void)
@@ -356,7 +404,7 @@ static const char *prefork_get_name(void)
 
 static void just_die(int sig)
 {
-    clean_child_exit(0);
+    clean_child_exit_ex(0, 1);
 }
 
 /* volatile because it's updated from a signal handler */
@@ -1285,6 +1333,9 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     int no_detach, debug, foreground;
     apr_status_t rv;
     const char *userdata_key = "mpm_prefork_module";
+
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
 
     debug = ap_exists_config_define("DEBUG");
 
