@@ -1,0 +1,2 @@
+  *) Fix the tar icon in the documentation so that its background is
+     transparent.  PR 70238.  [Jeffery To <jeffery.to gmail.com>]
