@@ -438,7 +438,9 @@ check-dirs:
 # EXTRA_CHECK_BINARIES is set by configure for optional support programs
 # (e.g. check/bin/a2md when a2md is enabled).
 check-binaries: check/bin/apxs check/bin/httpd check/bin/ab \
-	check/bin/htcacheclean $(EXTRA_CHECK_BINARIES)
+	check/bin/htcacheclean check/bin/httxt2dbm check/bin/htpasswd \
+	check/bin/htdigest check/bin/htdbm check/bin/logresolve \
+	$(EXTRA_CHECK_BINARIES)
 
 check/bin/httpd:
 	ln -s $(top_builddir)/$(PROGRAM_NAME) check/bin/httpd
@@ -446,8 +448,23 @@ check/bin/httpd:
 check/bin/ab:
 	ln -s $(top_builddir)/support/ab check/bin/ab
 
+check/bin/htpasswd:
+	ln -s $(top_builddir)/support/htpasswd check/bin/htpasswd
+
+check/bin/htdigest:
+	ln -s $(top_builddir)/support/htdigest check/bin/htdigest
+
+check/bin/htdbm:
+	ln -s $(top_builddir)/support/htdbm check/bin/htdbm
+
+check/bin/logresolve:
+	ln -s $(top_builddir)/support/logresolve check/bin/logresolve
+
 check/bin/htcacheclean:
 	ln -s $(top_builddir)/support/htcacheclean check/bin/htcacheclean
+
+check/bin/httxt2dbm:
+	ln -s $(top_builddir)/support/httxt2dbm check/bin/httxt2dbm
 
 check/bin/a2md:
 	ln -s $(top_builddir)/support/a2md/a2md check/bin/a2md
