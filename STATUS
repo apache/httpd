@@ -169,6 +169,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                    (copy file and restore maxNestingDepth)
       +1 covener, jorton, jim
 
+  *) mod_http2: Don't abort a maintainer-mode build when a stream is never
+     processed, as happens with nghttp2 1.67.0 or later.
+     trunk patch: https://svn.apache.org/r1937524
+     2.4.x patch: https://github.com/apache/httpd/pull/775.patch
+     +1: jorton, covener, jim
+
 ------------------------------------------------------------------------
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -188,12 +194,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1934868
      2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
      +1: jim, 
-
-  *) mod_http2: Don't abort a maintainer-mode build when a stream is never
-     processed, as happens with nghttp2 1.67.0 or later.
-     trunk patch: https://svn.apache.org/r1937524
-     2.4.x patch: https://github.com/apache/httpd/pull/775.patch
-     +1: jorton, covener, jim
 
   *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
      MONOTONIC_USEC on reload, fix graceful restart with socket
