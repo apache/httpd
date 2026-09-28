@@ -163,11 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: Don't abort a maintainer-mode build when a stream is never
-     processed, as happens with nghttp2 1.67.0 or later.
-     trunk patch: https://svn.apache.org/r1937524
-     2.4.x patch: https://github.com/apache/httpd/pull/775.patch
-     +1: jorton, covener, jim
 
 ------------------------------------------------------------------------
 
