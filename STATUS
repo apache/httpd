@@ -189,6 +189,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
      +1: jim, 
 
+  *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
+     MONOTONIC_USEC on reload, fix graceful restart with socket
+     activation and the status line; add a systemd test suite.
+     trunk patch: https://svn.apache.org/r1909769
+                  https://svn.apache.org/r1928356
+                  https://svn.apache.org/r1937596
+                  https://svn.apache.org/r1937597
+                  https://svn.apache.org/r1937598
+                  https://svn.apache.org/r1937599
+                  https://svn.apache.org/r1937600
+                  https://svn.apache.org/r1937601
+                  https://svn.apache.org/r1937602
+                  https://svn.apache.org/r1937635
+                  https://svn.apache.org/r1937644
+                  https://svn.apache.org/r1937646
+                  https://svn.apache.org/r1937647
+     2.4.x patch: https://github.com/apache/httpd/pull/773.patch
+     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
