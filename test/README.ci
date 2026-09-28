@@ -87,6 +87,8 @@ The CI scripts use the following environment variables:
 
 * TEST_APR_TARBALL - if set, APR/APR-util source is fetched as a
   release tarball from archive.apache.org rather than cloned from git.
+  (This is necessary for old releases where running ./buildconf from
+  a tag may now be difficult.)
 
 * TESTS - a list of Perl framework tests to run
 
