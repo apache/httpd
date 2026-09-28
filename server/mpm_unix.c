@@ -674,6 +674,34 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     }
 
     rv = apr_socket_connect(sock, lp->bind_addr);
+#ifdef __OpenBSD__
+    /* OpenBSD's connect() returns EINVAL when the target address is the
+     * wildcard address (INADDR_ANY / IN6ADDR_ANY),
+     * Retry against the loopback address in that case. */
+    if (rv != APR_SUCCESS && APR_STATUS_IS_EINVAL(rv)) {
+        int is_wildcard = 0;
+
+        if (lp->bind_addr->family == APR_INET) {
+            is_wildcard = (lp->bind_addr->sa.sin.sin_addr.s_addr == INADDR_ANY);
+        }
+#if APR_HAVE_IPV6
+        else if (lp->bind_addr->family == APR_INET6) {
+            is_wildcard = IN6_IS_ADDR_UNSPECIFIED(&lp->bind_addr->sa.sin6.sin6_addr);
+        }
+#endif
+
+        if (is_wildcard) {
+            apr_sockaddr_t *loopback;
+            const char *ip = (lp->bind_addr->family == APR_INET6) ? "::1" : "127.0.0.1";
+
+            rv = apr_sockaddr_info_get(&loopback, ip, lp->bind_addr->family,
+                                        lp->bind_addr->port, 0, p);
+            if (rv == APR_SUCCESS) {
+                rv = apr_socket_connect(sock, loopback);
+            }
+        }
+    }
+#endif /* __OpenBSD__ */
     if (rv != APR_SUCCESS) {
         int log_level = APLOG_WARNING;
 
