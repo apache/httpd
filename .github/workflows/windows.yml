@@ -14,6 +14,8 @@ on:
       - 'os/unix/**'
       - server/mpm_unix.c
       - 'test/modules/arch/linux/**'
+      - 'test/travis_*.sh'
+      - 'test/gha-*.sh'
     tags:
       - 2.*
   pull_request:
@@ -29,6 +31,8 @@ on:
       - 'os/unix/**'
       - server/mpm_unix.c
       - 'test/modules/arch/linux/**'
+      - 'test/travis_*.sh'
+      - 'test/gha-*.sh'
 
 permissions:
   contents: read
