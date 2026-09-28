@@ -31,8 +31,8 @@ fi
 
 PREFIX=${PREFIX:-$HOME/build/httpd-root}
 
-# If perl-framework testing is required it is checked out here by
-# _before_linux.sh:
+# If perl-framework testing is required, the workflow checks it out
+# here:
 if test -d test/perl-framework; then
     CONFIG="$CONFIG --enable-load-all-modules"
     if grep -q ^check: Makefile.in; then
@@ -52,11 +52,6 @@ if test -v APU_VERSION; then
     CONFIG="$CONFIG --with-apr-util=$HOME/root/apr-util-${APU_VERSION}"
 else
     CONFIG="$CONFIG --with-apr-util=/usr"
-fi
-
-# Pick up the rustls install built previously.
-if test -v TEST_MOD_TLS -a RUSTLS_VERSION; then
-  CONFIG="$CONFIG --with-tls --with-rustls=$HOME/root/rustls"
 fi
 
 if test -v TEST_OPENSSL3; then
@@ -92,14 +87,6 @@ if test -v TEST_NGHTTP2; then
         : mod_http2 is not linked against the nghttp2 built from source
         exit 1
     fi
-fi
-
-if test -v TEST_OPENSSL3; then
-   # Clear the library/run paths so that anything else run during
-   # testing is not forced to use the custom OpenSSL build; e.g. perl,
-   # php-fpm, ...
-   unset LD_LIBRARY_PATH
-   unset LD_RUN_PATH
 fi
 
 if test -v TEST_INSTALL; then
