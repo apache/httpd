@@ -26,6 +26,7 @@ CASES = [
     ("/modules/ldap/group/", "delta", "Delta", 200),
     ("/modules/ldap/refer/", "alpha", "Alpha", 401),
     ("/modules/ldap/refer/", "beta", "Beta", 200),
+    ("/modules/ldap/search/", "unchecked", "unchecked", 200),
 ]
 
 
