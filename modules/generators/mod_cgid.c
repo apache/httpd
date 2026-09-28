@@ -801,6 +801,10 @@ static int cgid_server(void *data)
         return rc;
     }
 
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, main_server,
+                 "cgid daemon listening on %s, pid %" APR_PID_T_FMT,
+                 sockname, getpid());
+
     while (!daemon_should_exit) {
         int errfileno;
         char *argv0 = NULL;
