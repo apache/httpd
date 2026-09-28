@@ -1,8 +1,5 @@
 #!/bin/bash -xe
 
-: Travis tag = ${TRAVIS_TAG}
-: Travis branch = ${TRAVIS_BRANCH}
-
 : /etc/hosts --
 cat /etc/hosts
 : -- ends
@@ -17,107 +14,49 @@ if grep ip6-localhost /etc/hosts; then
     cat /etc/hosts
 fi
 
-# Echo the object ID (hash) of the commit to build for $1 at version
-# $2, or "tarball" if a release tarball is used instead of a checkout.
-function resolve_apx() {
-    local name=$1
-    local version=$2
-    local ref commit
-
-    if test -v TEST_APR_TARBALL; then
-        echo tarball
-        return 0
-    fi
-
-    # For a branch, prefer the commit already resolved by
-    # gha-resolve-deps.sh for the cache key; resolving it again here
-    # would race with the branch moving in the meantime.  Tags are
-    # immutable so they are always resolved below.
-    case $name in
-       apr)      commit=${APR_COMMIT-} ;;
-       apr-util) commit=${APU_COMMIT-} ;;
-    esac
-    if test -n "$commit"; then
-        echo ${commit}
-        return 0
-    fi
-
-    case $version in
-       trunk|*.x) ref=refs/heads/${version} ;;
-       *) ref=refs/tags/${version} ;;
-    esac
-
-    commit=`git ls-remote https://github.com/apache/${name}.git ${ref} | cut -f1`
-    if test -z "$commit"; then
-       : Could not determine latest commit hash for ${ref} in ${name} - check branch is valid?
-       exit 1
-    fi
-
-    echo ${commit}
-}
-
-# Unpack the source for $1 at version $2, commit $3, into
-# $HOME/build/$1-$2, running ./buildconf with the arguments in $4.  Does
-# nothing if the source tree is already present.  Note $HOME/build is
-# not cached, unlike the install root in $HOME/root.
-function fetch_apx() {
-    local name=$1
-    local version=$2
-    local commit=$3
-    local buildconf=$4
-    local build=${HOME}/build/${name}-${version}
-
-    if test -d ${build}; then
-        return 0
-    fi
-
-    mkdir -p ${HOME}/build
-
-    if test -v TEST_APR_TARBALL; then
-         curl https://archive.apache.org/dist/apr/${name}-${version}.tar.gz > apx.tar.gz
-         tar -C ${HOME}/build -xzf apx.tar.gz
-         rm apx.tar.gz
-    else
-         git init -q ${build}
-         pushd $build
-         # Clone and checkout the commit identified above.
-         git remote add origin https://github.com/apache/${name}.git
-         git fetch -q --depth=1 origin ${commit}
-         git checkout ${commit}
-         ./buildconf ${buildconf}
-         popd
-    fi
-}
-
+# Build and install $1 at version $2 into the cached
+# $HOME/root/$1-$2, configured with the arguments in $3 and bootstrapped
+# with ./buildconf $4, unless it was restored from the cache.  The
+# source goes in $HOME/build, which is not cached; it is a git checkout
+# or, with TEST_APR_TARBALL, the release tarball.
+#
+# The cache key covers APR and APR-util together, along with the
+# configuration, $CC and, for a branch, the commit which
+# gha-resolve-deps.sh resolved it to, so an install restored here is
+# usable as-is.  The build uses that same commit, since resolving the
+# branch again would race with it moving.
 function install_apx() {
     local name=$1
     local version=$2
-    local prefix=${HOME}/root/${name}-${version}
-    local build=${HOME}/build/${name}-${version}
     local config=$3
     local buildconf=$4
-    local commit
+    local prefix=${HOME}/root/${name}-${version}
+    local build=${HOME}/build/${name}-${version}
+    local ref
 
-    # The cache key covers the version, the resolved commit for a branch
-    # build, the configuration and $CC, and is only written once the
-    # build has succeeded, so anything restored here is usable as-is.
     if test -d ${prefix}; then
         return 0
     fi
 
-    commit=`resolve_apx ${name} ${version}`
+    if test -v TEST_APR_TARBALL; then
+        mkdir -p ${HOME}/build
+        curl https://archive.apache.org/dist/apr/${name}-${version}.tar.gz |
+            tar -C ${HOME}/build -xzf -
+        pushd ${build}
+    else
+        case ${name}:${version} in
+           apr:trunk|apr:*.x) ref=${APR_COMMIT:-refs/heads/${version}} ;;
+           apr-util:trunk|apr-util:*.x) ref=${APU_COMMIT:-refs/heads/${version}} ;;
+           *) ref=refs/tags/${version} ;;
+        esac
 
-    # apr-util's buildconf needs APR's source tree, which is not cached.
-    # If APR itself was restored from the cache it was never built here,
-    # so fetch the source now - otherwise a stale APR-util alongside a
-    # fresh APR cannot be rebuilt.
-    if test ${name} = apr-util -a ! -d ${HOME}/build/apr-${APR_VERSION}; then
-        fetch_apx apr ${APR_VERSION} `resolve_apx apr ${APR_VERSION}`
+        mkdir -p ${build}
+        pushd ${build}
+        git init -q
+        git fetch -q --depth=1 https://github.com/apache/${name}.git ${ref}
+        git checkout -q FETCH_HEAD
+        ./buildconf ${buildconf}
     fi
-
-    fetch_apx ${name} ${version} ${commit} "${buildconf}"
-
-    pushd ${build}
     ./configure --prefix=${prefix} ${config}
     make -j2
     make install
@@ -130,26 +69,6 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 # Unless either SKIP_TESTING or NO_TEST_FRAMEWORK are set, install
 # CPAN modules required to run the Perl test framework.
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
-    if ! perl -V > perlver; then
-        : Perl binary broken
-        perl -V
-        exit 1
-    fi
-
-    # Compare the current "perl -V" output with the output at the time
-    # the cache was built; flush the cache if it's changed to avoid
-    # failure later when /usr/bin/perl refuses to load a mismatched XS
-    # module.
-    if ! cmp -s perlver ~/perl5/.perlver; then
-        : Purging cache since "perl -V" output has changed
-        # $PERLID covers this in the cache key, so it should now only
-        # fire for a cold cache; show what changed if it fires anyway.
-        if test -f ~/perl5/.perlver; then
-            diff -u ~/perl5/.perlver perlver || true
-        fi
-        rm -rf ~/perl5
-    fi
-    
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
     pkgs="Net::SSL LWP::Protocol::https                                 \
@@ -162,9 +81,6 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # otherwise.
     CC=gcc cpanm --notest $pkgs
     unset pkgs
-
-    # Cache the perl -V output for future verification.
-    mv perlver ~/perl5/.perlver
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
@@ -228,10 +144,7 @@ fi
 # Build the requested version of nghttp2 if it's not already installed
 # in the cached ~/root; the nghttp/h2load tools come from the package.
 if test -v TEST_NGHTTP2; then
-    if ! test -f $HOME/root/nghttp2-is-${TEST_NGHTTP2}; then
-        # Remove any previous install.
-        rm -rf $HOME/root/nghttp2
-
+    if ! test -d $HOME/root/nghttp2; then
         mkdir -p build/nghttp2
         pushd build/nghttp2
            curl -L "https://github.com/nghttp2/nghttp2/releases/download/v${TEST_NGHTTP2}/nghttp2-${TEST_NGHTTP2}.tar.xz" |
@@ -240,7 +153,6 @@ if test -v TEST_NGHTTP2; then
            ./configure --prefix=$HOME/root/nghttp2 --enable-lib-only
            make $MFLAGS
            make install
-           touch $HOME/root/nghttp2-is-${TEST_NGHTTP2}
         popd
     fi
 
@@ -257,18 +169,6 @@ fi
 if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
     ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
-fi
-
-# Since librustls is not a package (yet) on any platform, we
-# build the version we want from source
-if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
-    if ! test -d $HOME/root/rustls; then
-        RUSTLS_HOME="$HOME/build/rustls-ffi"
-        git clone -q --depth=1 -b "$RUSTLS_VERSION" https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
-        pushd "$RUSTLS_HOME"
-            make install DESTDIR="$HOME/root/rustls"
-        popd
-    fi
 fi
 
 if test -v PHP_FPM -a ! -v SKIP_TESTING; then

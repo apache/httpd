@@ -81,10 +81,6 @@ The CI scripts use the following environment variables:
   HTTP/2 workflow to test against nghttp2 versions other than the one
   packaged for the runner image.
 
-* TEST_MOD_TLS - if set (together with RUSTLS_VERSION), builds
-  rustls-ffi from source and configures httpd with --with-tls
-  --with-rustls for mod_tls testing.
-
 * TEST_MD - set together with TEST_PYTEST; installs pebble first so
   PYHTTPD_TARGETS auto-detection includes modules/md.  See the
   "Python pytest test suites" job in .github/workflows/linux.yml.
@@ -139,12 +135,9 @@ $PERLID is a hash of the "perl -V" output, computed by
 gha-resolve-deps.sh, which also logs that output so a change to it can
 be seen.  The image name is deliberately not used: the runner image is
 rebuilt regularly and its name does not change when perl does, so the
-key outlived a perl upgrade which the modules did not.  Each job then
-restored the modules, travis_before_linux.sh discarded them as
-mismatched against the cached .perlver and rebuilt them, and nothing
-was saved - actions/cache does not save on a hit against the primary
-key - so every job rebuilt every module on every run.  The .perlver
-check remains as a backstop, and now reports what differs.
+key outlived a perl upgrade which the modules did not.  The key has no
+restore-keys fallback, so the modules restored always match the perl
+running the job.
 
 The cached CPAN modules still become gradually stale as versions in
 CPAN move on from whatever was installed for the first build.  Bump
@@ -153,11 +146,9 @@ them and rebuild against current CPAN.
 
 APR and APR-util must stay in a single cache entry.  APR-util's
 buildconf needs APR's *source* tree, which lives in $HOME/build and is
-not cached, so a cached but stale APR-util alongside a cached and
-fresh APR cannot be rebuilt from the cache alone.  This used to be
-handled by always ignoring the cache on such jobs; install_apx() now
-fetches the APR source on demand in that case instead, so no job needs
-to opt out of caching.
+not cached, so APR-util can only be built in a job which also builds
+APR.  $ROOTID covers both, and the entry is saved only once both have
+built, so a restored entry never holds one without the other.
 
 Artifacts
 ---------

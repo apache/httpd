@@ -65,10 +65,6 @@ if test -n "${TEST_NGHTTP2-}"; then
     root="${root} nghttp2-${TEST_NGHTTP2}"
 fi
 
-if test -n "${RUSTLS_VERSION-}"; then
-    root="${root} rustls-${RUSTLS_VERSION}"
-fi
-
 if test -n "$root"; then
     # The compiler and every flag which reaches the build are baked into
     # the libraries, NOTEST_* included: APR adds those to the build too,
@@ -87,11 +83,9 @@ fi
 # The CPAN modules in ~/perl5 are XS builds tied to the system perl, so
 # key that cache on the "perl -V" output rather than on the image name.
 # The image is rebuilt regularly and its name does not change when perl
-# does, so the key stayed valid across a perl upgrade: the modules were
-# restored, travis_before_linux.sh then threw them away as mismatched,
-# and the rebuild was never saved because the primary key had hit - so
-# every job rebuilt them, every run.  The output is logged because it is
-# otherwise impossible to see what changed.
+# does, so the key stayed valid across a perl upgrade and restored
+# modules built for a different perl.  The output is logged because it
+# is otherwise impossible to see what changed.
 perlv=`perl -V`
 echo "::group::perl -V"
 echo "$perlv"
