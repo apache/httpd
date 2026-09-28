@@ -18,6 +18,7 @@ from __future__ import annotations
 import contextlib
 import errno
 import os
+import sys
 import signal
 import socket
 import subprocess
@@ -66,8 +67,14 @@ def _killpg_or_pid(pid: int, sig: int) -> None:
     the parent's process group id (== parent pid), so signalling the group with
     ``os.killpg`` reaches the parent and all its workers. If the process is not
     a group leader (no such pgid) we fall back to signalling the bare pid.
+
+    On Windows there are no process groups; use ``os.kill`` directly.
     """
     if pid <= 0:
+        return
+    if sys.platform == "win32":
+        with contextlib.suppress(OSError):
+            os.kill(pid, sig)
         return
     try:
         os.killpg(pid, sig)
@@ -159,9 +166,11 @@ class HttpdServer:
                     break
                 time.sleep(0.1)
             if _pid_alive(pid):
-                _killpg_or_pid(pid, signal.SIGKILL)
-                with contextlib.suppress(OSError):
-                    os.waitpid(pid, 0)  # reap if it happens to be our child
+                kill_sig = signal.SIGTERM if sys.platform == "win32" else signal.SIGKILL
+                _killpg_or_pid(pid, kill_sig)
+                if sys.platform != "win32":
+                    with contextlib.suppress(OSError):
+                        os.waitpid(pid, 0)  # reap if it happens to be our child
         if pid_file.exists():
             with contextlib.suppress(OSError):
                 pid_file.unlink()
@@ -180,8 +189,11 @@ class HttpdServer:
         # start_new_session=True (setsid) puts httpd in its own process group so
         # the parent and all forked MPM children can be signalled together via
         # os.killpg, guaranteeing no orphaned children survive a failed start.
+        popen_kwargs = {}
+        if sys.platform != "win32":
+            popen_kwargs["start_new_session"] = True
         self.proc = subprocess.Popen(  # noqa: S603 - trusted paths
-            self.args(), start_new_session=True
+            self.args(), **popen_kwargs
         )
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
@@ -214,7 +226,8 @@ class HttpdServer:
             try:
                 proc.wait(timeout=timeout)
             except subprocess.TimeoutExpired:
-                _killpg_or_pid(pgid_pid, signal.SIGKILL)
+                kill_sig = signal.SIGTERM if sys.platform == "win32" else signal.SIGKILL
+                _killpg_or_pid(pgid_pid, kill_sig)
                 with contextlib.suppress(subprocess.TimeoutExpired):
                     proc.wait(timeout=timeout)
         elif proc is not None:

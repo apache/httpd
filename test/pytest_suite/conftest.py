@@ -65,6 +65,27 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=False,
         help="remove all compiled C-module artifacts before building (emulate make clean)",
     )
+    group.addoption(
+        "--conf",
+        action="store",
+        default=None,
+        help="path to the installed httpd.conf (for LoadModule discovery "
+        "when --apxs is not available, e.g. on Windows)",
+    )
+    group.addoption(
+        "--prefix",
+        action="store",
+        default=None,
+        help="server install prefix for resolving relative module paths "
+        "(default: derived from --conf path)",
+    )
+    group.addoption(
+        "--with-perl",
+        action="store",
+        default=None,
+        help="path to the perl interpreter for generated scripts and "
+        "rewrite prg-maps (default: /usr/bin/perl or APACHE_TEST_PERL env)",
+    )
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -114,6 +135,16 @@ def _resolve_paths(
         inherited_conf = sysconfdir / "httpd.conf"
         if httpd_opt is None:
             httpd_opt = str(sbindir / "httpd")
+
+    conf_opt = config.getoption("--conf")
+    prefix_opt = config.getoption("--prefix")
+    if conf_opt is not None and inherited_conf is None:
+        inherited_conf = Path(conf_opt)
+    if prefix_opt is not None:
+        install_prefix = Path(prefix_opt)
+    elif inherited_conf is not None and install_prefix is None:
+        install_prefix = inherited_conf.parent.parent
+
     if httpd_opt is None:
         raise _NoServerError("must pass --httpd or --apxs")
     return Path(httpd_opt), apxs, inherited_conf, install_prefix, defines
@@ -213,6 +244,11 @@ def framework(request: pytest.FixtureRequest):
 
     info = probe(httpd, inherited_conf, install_prefix)
 
+    perl_opt = request.config.getoption("--with-perl")
+    if perl_opt:
+        import os
+        os.environ["APACHE_TEST_PERL"] = perl_opt
+
     # Optional PHP-FPM: if a php-fpm binary was given and mod_proxy_fcgi is
     # available, route htdocs/php/*.php to a managed FPM daemon. The php-fpm
     # path/port are the only PHP-specific inputs -- no version is assumed.
@@ -237,6 +273,14 @@ def framework(request: pytest.FixtureRequest):
         cmodule_loads, _skipped = compile_all(
             cmodules_dir, apxs, info, defines=["APACHE2", "APACHE2_4", *defines]
         )
+    else:
+        from apache_pytest.cmodules import discover
+        modules_dir = (install_prefix / "modules") if install_prefix else httpd.parent
+        cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
+        for mod in cmods:
+            so = modules_dir / f"mod_{mod.name}.so"
+            if so.exists():
+                cmodule_loads.append((mod.symbol, so))
 
     config.generate(cmodule_loads=cmodule_loads)
 
@@ -249,6 +293,18 @@ def framework(request: pytest.FixtureRequest):
             port=fpm_port,
         )
         fpm_mgr.start()
+
+    # Record the error_log size right before this session's httpd starts.
+    # error_log is opened in append mode and t_logs/ is not cleaned between
+    # invocations, so it can carry entries from earlier, unrelated test runs
+    # (possibly hours/days old, with different pids). Tests that need "since
+    # this server session started" (as opposed to "since this individual
+    # test started") must scope their log reads to this offset, not to
+    # position 0 -- see test_proxy_beacon.py.
+    error_log = Path(config.vars["t_logs"]) / "error_log"
+    config.vars["session_log_start"] = str(
+        error_log.stat().st_size if error_log.exists() else 0
+    )
 
     server = HttpdServer(config)
     server.start()

@@ -11,6 +11,7 @@ Perl original: plan tests => ..., \&need_cgi;  (mod_cgid present locally)
 
 import os
 import re
+import sys
 
 import pytest
 
@@ -47,6 +48,7 @@ def _cgi_log(http):
 
 
 @need_cgi()
+@pytest.mark.skipif(sys.platform == "win32", reason="shell CGI scripts not available on Windows")
 def test_cgi(http):
     cgi_log = _cgi_log(http)
     if os.path.exists(cgi_log):

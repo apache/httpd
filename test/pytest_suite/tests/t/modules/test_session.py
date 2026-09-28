@@ -105,7 +105,7 @@ CREATE_SESSION = "action=set&name=test&value=value"
 READ_SESSION = "action=get&name=test"
 
 
-@need_module("session")
+@need_module("session", "test_session")
 @need_min_apache_version("2.3.0")
 def test_session(http):
     # Session directive

@@ -137,7 +137,7 @@ def test_quality_preferences(http):
 @need_cgi()
 def test_query_typemap(http):
     actual = _chomp(http.GET_BODY("/modules/negotiation/query/test?foo"))
-    assert t_cmp(actual, "QUERY_STRING --> foo"), \
+    assert t_cmp(actual.replace("\r", ""), "QUERY_STRING --> foo"), \
         "The type map gives the script the highest quality; query string included"
 
 

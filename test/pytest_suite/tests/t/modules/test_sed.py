@@ -28,7 +28,7 @@ CASES = [
 ]
 
 
-@need_module("sed")
+@need_module("sed", "echo_post")
 @pytest.mark.parametrize("case", CASES, ids=[c["url"] for c in CASES])
 def test_sed(http, case):
     if case["body"] is not None:

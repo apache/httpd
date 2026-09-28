@@ -68,6 +68,19 @@ def test_proxy_beacon(http):
         fh.seek(start)
         loglines = fh.read().splitlines()
 
+    # "added backend" is logged once ever per url for the life of the
+    # (session-scoped) httpd process -- it dedups via ctx->seen in
+    # mod_proxy_beacon (beacon_try_add()/beacon_handle_announce()). Since this
+    # test may run long after server startup, that one-time event can predate
+    # `start` and must be searched for since session start instead. Do NOT
+    # scan from byte 0 of error_log: t_logs/ isn't cleaned between separate
+    # test runs, so the file can carry "added backend" lines from earlier,
+    # unrelated httpd sessions (different pids, possibly hours old).
+    session_start = int(http.vars("session_log_start") or 0)
+    with error_log.open("r", errors="replace") as fh:
+        fh.seek(session_start)
+        session_loglines = fh.read().splitlines()
+
     # Announcements are received and carry a routable url=.
     received = [ln for ln in loglines if "received: BEACON" in ln]
     assert received, "no announcements received by the SUB"
@@ -77,7 +90,7 @@ def test_proxy_beacon(http):
     # Phase 2: the backend was added exactly once (dedup), no add-failure spam.
     # Qualify by balancer://beacon so the capacity-test balancer (below) doesn't
     # perturb these counts.
-    added = [ln for ln in loglines
+    added = [ln for ln in session_loglines
              if "added backend" in ln and "balancer://beacon" in ln]
     assert len(added) == 1, (
         f"backend should be added exactly once; saw {len(added)}: {added}")
@@ -103,7 +116,9 @@ def test_proxy_beacon(http):
 
     # Slot exhaustion: balancer://cap has room for one member but two backends
     # announce to it. Exactly one must be added; the other can never fit.
-    cap_added = [ln for ln in loglines
+    # Same one-time-dedup-event caveat as the balancer://beacon "added" check
+    # above: search since session start, not just this test's window.
+    cap_added = [ln for ln in session_loglines
                  if "added backend" in ln and "balancer://cap" in ln]
     assert len(cap_added) == 1, (
         f"exactly one backend should fit balancer://cap; saw: {cap_added}")

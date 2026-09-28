@@ -22,4 +22,5 @@ def test_pr43738(http):
     for path in ("/modules/ssl/aes128/empty.pfa", "/modules/ssl/aes256/empty.pfa"):
         r = http.POST(path, content="hello world")
         assert t_cmp(r.status_code, 200), "renegotiation on POST works"
-        assert t_cmp(r.text, f"{path}\nhello world"), "request body matches response"
+        assert t_cmp(r.text.replace("\r\n", "\n"), f"{path}\nhello world"), \
+            "request body matches response"

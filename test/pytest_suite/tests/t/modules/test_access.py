@@ -6,11 +6,11 @@ served (GET_OK, i.e. 200) per the access-control logic.
 
 Perl original gated on ``\&need_access`` (the Order/Allow/Deny directives live
 in mod_access_compat on 2.4); gated here with @need_module.
-
-Note: the Perl framework exposes vars->{remote_addr}; the Python config does
-not (framework-API gap), so we fall back to the loopback 127.0.0.1 the test
-server actually connects from.
 """
+
+import sys
+
+import pytest
 
 from apache_pytest import need_module
 
@@ -55,6 +55,8 @@ def _write_htaccess(http, conf):
         f.write(conf)
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="dual-stack localhost makes Allow/Deny unreliable")
 @need_module("mod_access_compat")
 def test_access(http):
     clauses, addr1, localhost_name = _localhost_clauses(http)

@@ -60,6 +60,11 @@ class PhpFpm:
             # Surface PHP errors/warnings to the response for test visibility.
             "catch_workers_output = yes\n"
             "clear_env = no\n"
+            # t/php/arg.php et al require argc/argv in $_SERVER. Under mod_php
+            # this came from extra.conf.in's php_admin_flag, but that's inside
+            # an <IfModule> keyed on a mod_php variant that's never loaded when
+            # running under FPM, so it never applied -- set it here instead.
+            "php_admin_value[register_argc_argv] = On\n"
         )
         return self.conf
 

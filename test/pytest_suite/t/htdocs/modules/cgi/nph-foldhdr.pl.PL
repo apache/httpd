@@ -1,5 +1,6 @@
 # produces output with folded response headers
 
+binmode(STDOUT);
 print "HTTP/1.0 200 OK\r\n";
 
 for (1..50) {

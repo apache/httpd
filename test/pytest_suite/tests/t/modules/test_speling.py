@@ -32,8 +32,8 @@ TESTCASES = [
     ("several0.html", "multiple choice", 300, 404),
 ]
 
-# macOS HFS is case-insensitive but case-preserving, so this would mislead.
-if sys.platform != "darwin":
+# macOS HFS and Windows NTFS are case-insensitive, so this would mislead.
+if sys.platform not in ("darwin", "win32"):
     TESTCASES.append(("GOOD.html", "case", 301, 301))
 
 # (path-prefix, index into the case tuple for the expected status)

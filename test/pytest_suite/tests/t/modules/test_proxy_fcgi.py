@@ -22,6 +22,7 @@ import os
 import re
 import socket
 import struct
+import sys
 import threading
 
 import pytest
@@ -181,6 +182,8 @@ def _run_echo_request(http, address, uri):
     return r, envs
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="mod_proxy_fcgi misparses drive-letter paths as port")
 @need_module("proxy_fcgi")
 def test_fcgi_setenvif(http):
     if not http.have_min_apache_version("2.4.26"):
@@ -203,6 +206,8 @@ def test_fcgi_setenvif(http):
     assert t_cmp(envs.get("REMOTE_ADDR"), None), "ProxyFCGISetEnvIf can unset var"
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="mod_proxy_fcgi misparses drive-letter paths as port")
 @need_module("proxy_fcgi")
 def test_fcgi_generic(http):
     if not http.have_min_apache_version("2.4.26"):
@@ -217,6 +222,8 @@ def test_fcgi_generic(http):
         "GENERIC SCRIPT_FILENAME has neither query string nor proxy: prefix"
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="mod_proxy_fcgi misparses drive-letter paths as port")
 @need_module("proxy_fcgi")
 def test_fcgi_generic_rewrite(http):
     if not (http.have_min_apache_version("2.4.26") and http.have_module("rewrite")):
@@ -232,6 +239,8 @@ def test_fcgi_generic_rewrite(http):
         "GENERIC SCRIPT_FILENAME (rewrite) is correct"
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="mod_proxy_fcgi misparses drive-letter paths as port")
 @need_module("proxy_fcgi")
 def test_fcgi_rewrite_path_info(http):
     if not http.have_module("rewrite"):
@@ -258,6 +267,8 @@ def test_fcgi_rewrite_path_info(http):
         "Default REDIRECT_URL uses original client URL"
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="mod_proxy_fcgi misparses drive-letter paths as port")
 @need_module("proxy_fcgi")
 def test_fcgi_action(http):
     if not http.have_module("actions"):
@@ -286,6 +297,8 @@ def test_fcgi_action(http):
         "Action REDIRECT_URL uses original client URL"
 
 
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="mod_proxy_fcgi misparses drive-letter paths as port")
 @need_module("proxy_fcgi")
 def test_fcgi_default(http):
     http.module("proxy_fcgi")
@@ -297,6 +310,7 @@ def test_fcgi_default(http):
 
 
 @need_module("proxy_fcgi")
+@pytest.mark.skipif(sys.platform == "win32", reason="AF_UNIX not available on Windows")
 @pytest.mark.parametrize("url", [
     "/modules/proxy/fcgi-uds/index.php",
     "/modules/proxy/fcgi-uds-sethandler/index.php",

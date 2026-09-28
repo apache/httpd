@@ -21,9 +21,9 @@ import httpx
 from apache_pytest import need_min_apache_version, need_module
 
 BASIC1 = (
-    "user1:NYSYdf7MU5KpU\n"
-    "user2:KJ7Yxzr1VVzAI\n"
-    "user3:xnpSvZ2iqti/c\n"
+    "user1:$apr1$1Yd.TmyR$s/gcvsI8Ikrgqy6w0fyQW1\n"
+    "user2:$apr1$YOeJr2Nf$.4bJ1bv6ndkOj1ilkaz76/\n"
+    "user3:$apr1$5ygaekD5$XbW3dLYcBJ6KF09QMR9ol0\n"
 )
 GROUPS1 = (
     "user1:user1\n"
