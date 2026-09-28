@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trunk patch: too many
       2.4.x patch: https://github.com/apache/httpd/pull/712.patch
                    (copy file and restore maxNestingDepth)
-      +1 covener, jorton
+      +1 covener, jorton, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
