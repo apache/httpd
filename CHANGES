@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) Fix the tar icon in the documentation so that its background is
+     transparent.  PR 70238.  [Jeffery To <jeffery.to gmail.com>]
+
+  *) mod_ssl: Fix OpenSSL compatibility macros for X509_get0_notBefore,
+     X509_get0_notAfter, and X509_get0_serialNumber with OpenSSL < 1.1.
+     PR 70205.  [Craig Lorentzen <crlorent amazon.com>]
+
   *) mod_cgid, mod_ssl, mod_md: Various hardening fixes.  [Various authors]
 
   *) mod_md: MDServerStatus is now disabled by default.  [Joe Orton]
