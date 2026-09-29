@@ -585,28 +585,45 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
     if (!val.dsize)
         return NULL;
 
+    /* Each field below is read from the fetched record starting at 'offset';
+     * check that it actually fits within the record before reading it, so a
+     * truncated or corrupt datum is rejected rather than causing a read past
+     * the end of the fetched value.  offset is kept <= val.dsize throughout. */
+#define DAV_LOAD_CHECK(needed) \
+    do { if ((needed) > val.dsize - offset) goto corrupt; } while (0)
+
     while (offset < val.dsize) {
         switch (*(val.dptr + offset++)) {
         case DAV_LOCK_DIRECT:
             /* Create and fill a dav_lock_discovery structure */
 
             dp = apr_pcalloc(p, sizeof(*dp));
+            DAV_LOAD_CHECK(sizeof(dp->f));
             memcpy(dp, val.dptr + offset, sizeof(dp->f));
             offset += sizeof(dp->f);
+            DAV_LOAD_CHECK(sizeof(*dp->locktoken));
             dp->locktoken = apr_pmemdup(p, val.dptr + offset, sizeof(*dp->locktoken));
             offset += sizeof(*dp->locktoken);
-            if (*(val.dptr + offset) == '\0') {
+            DAV_LOAD_CHECK(1);
+            if (val.dptr[offset] == '\0') {
                 ++offset;
             }
             else {
+                if (!memchr(val.dptr + offset, '\0', val.dsize - offset)) {
+                    goto corrupt;
+                }
                 dp->owner = apr_pstrdup(p, val.dptr + offset);
                 offset += strlen(dp->owner) + 1;
             }
 
-            if (*(val.dptr + offset) == '\0') {
+            DAV_LOAD_CHECK(1);
+            if (val.dptr[offset] == '\0') {
                 ++offset;
             }
             else {
+                if (!memchr(val.dptr + offset, '\0', val.dsize - offset)) {
+                    goto corrupt;
+                }
                 dp->auth_user = apr_pstrdup(p, val.dptr + offset);
                 offset += strlen(dp->auth_user) + 1;
             }
@@ -640,12 +657,16 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
             /* Create and fill a dav_lock_indirect structure */
 
             ip = apr_pcalloc(p, sizeof(*ip));
+            DAV_LOAD_CHECK(sizeof(*ip->locktoken));
             ip->locktoken = apr_pmemdup(p, val.dptr + offset, sizeof(*ip->locktoken));
             offset += sizeof(*ip->locktoken);
+            DAV_LOAD_CHECK(sizeof(ip->timeout));
             memcpy(&ip->timeout, val.dptr + offset, sizeof(ip->timeout));
             offset += sizeof(ip->timeout);
+            DAV_LOAD_CHECK(sizeof(ip->key.dsize));
             memcpy(&ip->key.dsize, val.dptr + offset, sizeof(ip->key.dsize)); /* length of datum */
             offset += sizeof(ip->key.dsize);
+            DAV_LOAD_CHECK(ip->key.dsize);
             ip->key.dptr = apr_pmemdup(p, val.dptr + offset, ip->key.dsize);
             offset += ip->key.dsize;
 
@@ -688,6 +709,17 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
     }
 
     return NULL;
+
+corrupt:
+    dav_dbm_freedatum(lockdb->info->db, val);
+    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR,
+                         DAV_ERR_LOCK_CORRUPT_DB, 0,
+                         apr_psprintf(p,
+                                     "The lock database was found to be "
+                                     "corrupt; a lock record was truncated "
+                                     "at offset %" APR_SIZE_T_FMT ".",
+                                     offset));
+#undef DAV_LOAD_CHECK
 }
 
 /* resolve <indirect>, returning <*direct> */

@@ -1,0 +1,4 @@
+  *) mod_dav_fs: Validate each lock database record field against the fetched
+     record length while parsing, so a truncated or corrupt record is rejected
+     as DAV_ERR_LOCK_CORRUPT_DB instead of reading past the end of the datum.
+     [arshiya tabasum]
