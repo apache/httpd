@@ -221,7 +221,7 @@ class HttpdTestSetup:
                             open(fpath, 'wb').write(data.replace(b'\r\n', b'\n'))
                     except OSError:
                         pass
-                if re.match(r'.+\.py', fname):
+                if re.search(r'\.(py|cgi)$', fname):
                     if sys.platform == "win32":
                         self._fix_shebang(fpath)
                     st = os.stat(fpath)
