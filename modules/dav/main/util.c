@@ -1042,6 +1042,8 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
         seen_locktoken = 1;
     }
     else if (flags & DAV_LOCKSCOPE_SHARED) {
+        unsigned count = 0;
+
         /*
         ** Strictly speaking, we don't need this loop. Either the first
         ** (and only) lock will be EXCLUSIVE, or none of them will be.
@@ -1051,6 +1053,13 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                 return dav_new_error(p, HTTP_LOCKED, 0, 0,
                                      "The requested resource is already "
                                      "locked exclusively.");
+            }
+            /* Impose a maximum count of shared locks since the lock
+             * list is used in a linear-cost scan in many places. */
+            else if (count++ > DAV_MAX_SHARED_LOCKS) {
+                return dav_new_error(p, HTTP_FORBIDDEN, 0, 0,
+                                     "The maximum shared lock count has "
+                                     "been reached.");
             }
         }
 
