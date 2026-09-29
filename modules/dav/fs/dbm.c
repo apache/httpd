@@ -313,6 +313,12 @@ typedef struct {
 
 } dav_propdb_metadata;
 
+/* Upper bound on the number of distinct namespace URIs recorded in one
+ * property database.  Namespace ids are looked up by walking the table, so
+ * the cost of enumerating properties grows with this; it must also remain
+ * well within the range of the 16-bit ns_count field above. */
+#define DAV_PROPDB_NS_MAX       2048
+
 struct dav_deadprop_rollback {
     apr_datum_t key;
     apr_datum_t value;
@@ -492,6 +498,14 @@ static dav_error * dav_propdb_open(apr_pool_t *pool,
         }
         db->version = m.minor;
         db->ns_count = ntohs(m.ns_count);
+        if (db->ns_count < 0) {
+            dav_dbm_close(db);
+
+            return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
+                                 DAV_ERR_PROP_OPENING, 0,
+                                 "Prop database namespace table is "
+                                 "invalid and cannot be used.");
+        }
 
         dav_dbm_freedatum(db, value);
 
@@ -618,6 +632,13 @@ static dav_error * dav_propdb_map_namespaces(
         long ns_id = (long)apr_hash_get(db->uri_index, uri, uri_len);
 
         if (ns_id == 0) {
+            if (db->ns_count >= DAV_PROPDB_NS_MAX) {
+                return dav_new_error(db->pool, HTTP_REQUEST_ENTITY_TOO_LARGE,
+                                     0, 0,
+                                     "Too many distinct namespaces in "
+                                     "property database.");
+            }
+
             dav_check_bufsize(db->pool, &db->ns_table, uri_len + 1);
             memcpy(db->ns_table.buf + db->ns_table.cur_len, uri, uri_len + 1);
             db->ns_table.cur_len += uri_len + 1;
@@ -679,6 +700,11 @@ static int dav_propdb_exists(dav_db *db, const dav_prop_name *name)
 static const char *dav_get_ns_table_uri(dav_db *db, int ns_id)
 {
     const char *p = db->ns_table.buf + sizeof(dav_propdb_metadata);
+
+    /* An id outside the table denotes no namespace, as for the ":name"
+     * key form handled by the caller. */
+    if (ns_id < 0 || ns_id >= db->ns_count)
+        return "";
 
     while (ns_id--)
         p += strlen(p) + 1;
