@@ -60,7 +60,6 @@ struct h2_mplx {
     apr_uint32_t id;                /* id unique per child */
     conn_rec *c1;                   /* the main connection */
     apr_pool_t *pool;
-    int in_stream_cleanup;
     struct h2_stream *stream0;      /* HTTP/2's stream 0 */
     server_rec *s;                  /* server for master conn */
 

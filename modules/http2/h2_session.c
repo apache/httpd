@@ -99,7 +99,7 @@ static int rst_unprocessed_stream(h2_stream *stream, void *ctx)
                            (!stream->session->remote.accepting
                             && stream->id > stream->session->remote.accepted_max))
                        ); 
-    if (unprocessed && stream->state < H2_SS_CLEANUP) {
+    if (unprocessed) {
         h2_stream_rst(stream, H2_ERR_NO_ERROR);
         return 0;
     }
@@ -269,7 +269,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     
     (void)ngh2;
     stream = get_stream(session, stream_id);
-    if (stream && stream->state < H2_SS_CLEANUP) {
+    if (stream) {
         if (error_code) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(03065), stream, 
@@ -512,7 +512,6 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     h2_stream *stream;
     apr_bucket *b;
     apr_off_t len = length;
-    apr_bucket_brigade *bb;
     
     (void)ngh2;
     (void)source;
@@ -543,31 +542,29 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
-    bb = apr_brigade_create(session->pool,
-                                                session->c1->bucket_alloc);
-    status = h2_stream_read_to(stream, bb, &len, &eos);
+    status = h2_stream_read_to(stream, session->bbtmp, &len, &eos);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c1,
                       H2_STRM_MSG(stream, "send_data_cb, reading stream"));
-        apr_brigade_destroy(bb);
+        apr_brigade_cleanup(session->bbtmp);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     else if (len != (apr_off_t)length) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c1,
                       H2_STRM_MSG(stream, "send_data_cb, wanted %ld bytes, "
                       "got %ld from stream"), (long)length, (long)len);
-        apr_brigade_destroy(bb);
+        apr_brigade_cleanup(session->bbtmp);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
-
+    
     if (padlen) {
-        b = apr_bucket_immortal_create(immortal_zeros, padlen,
+        b = apr_bucket_immortal_create(immortal_zeros, padlen, 
                                        session->c1->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
+        APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
     }
-
-    status = h2_c1_io_append(&session->io, bb);
-    apr_brigade_destroy(bb);
+    
+    status = h2_c1_io_append(&session->io, session->bbtmp);
+    apr_brigade_cleanup(session->bbtmp);
     
     if (status == APR_SUCCESS) {
         stream->out_data_frames++;
@@ -1711,7 +1708,6 @@ static void ev_stream_open(h2_session *session, h2_stream *stream)
 static void ev_stream_closed(h2_session *session, h2_stream *stream)
 {
     apr_bucket *b;
-    apr_bucket_brigade *bb;
     
     if (H2_STREAM_CLIENT_INITIATED(stream->id)
         && (stream->id > session->local.completed_max)) {
@@ -1725,11 +1721,9 @@ static void ev_stream_closed(h2_session *session, h2_stream *stream)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                   H2_STRM_MSG(stream, "adding h2_eos to c1 out"));
     b = h2_bucket_eos_create(session->c1->bucket_alloc, stream);
-    bb = apr_brigade_create(session->pool,
-                                                session->c1->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    h2_c1_io_append(&session->io, bb);
-    apr_brigade_destroy(bb);
+    APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
+    h2_c1_io_append(&session->io, session->bbtmp);
+    apr_brigade_cleanup(session->bbtmp);
 }
 
 static void on_stream_state_enter(void *ctx, h2_stream *stream)
@@ -1767,12 +1761,10 @@ static void on_stream_state_enter(void *ctx, h2_stream *stream)
             break;
         case H2_SS_CLEANUP:
             nghttp2_session_set_stream_user_data(session->ngh2, stream->id, NULL);
-            if (!session->mplx->in_stream_cleanup) {
-                update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
-                h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
-                stream = NULL;
-                ++session->streams_done;
-            }
+            update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
+            h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
+            stream = NULL;
+            ++session->streams_done;
             break;
         default:
             break;

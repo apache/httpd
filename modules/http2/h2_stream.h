@@ -111,7 +111,6 @@ struct h2_stream {
     unsigned int aborted   : 1; /* was aborted */
     unsigned int scheduled : 1; /* stream has been scheduled */
     unsigned int input_closed : 1; /* no more request data/trailers coming */
-    unsigned int mplx_cleanup_done : 1;
     unsigned int push_policy;   /* which push policy to use for this request */
     unsigned int sent_trailers : 1; /* trailers have been submitted */
     unsigned int output_eos : 1; /* output EOS in buffer/sent */
