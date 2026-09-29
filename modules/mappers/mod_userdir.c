@@ -233,11 +233,14 @@ static int translate_userdir(request_rec *r)
     }
 
     /*
-     * If there's no username, it's not for us.  Ignore . and .. as well.
+     * If there's no username, it's not for us.  Ignore . and .. as well,
+     * since they are not usernames but references to the UserDir base
+     * directory and its parent, and would bypass the enabled/disabled
+     * checks below.
      */
     if (user[0] == '\0' ||
-        (user[1] == '.' && (user[2] == '\0' ||
-                            (user[2] == '.' && user[3] == '\0')))) {
+        (user[0] == '.' && (user[1] == '\0' ||
+                            (user[1] == '.' && user[2] == '\0')))) {
         return DECLINED;
     }
     /*
