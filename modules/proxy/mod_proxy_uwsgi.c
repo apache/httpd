@@ -52,6 +52,8 @@ limitations under the License.
 
 
 #define UWSGI_SCHEME "uwsgi"
+
+APLOG_USE_MODULE(proxy_uwsgi);
 #define UWSGI_DEFAULT_PORT 3031
 
 module AP_MODULE_DECLARE_DATA proxy_uwsgi_module;
@@ -401,11 +403,33 @@ static int uwsgi_response(request_rec *r, proxy_conn_rec * backend,
         r->headers_out = apr_table_make(r->pool, 1);
         return HTTP_BAD_GATEWAY;
     }
+    
+    /* Per PEP 3333, WSGI applications must not generate hop-by-hop
+    * headers. Remove any such headers received from the backend.
+    */
+    {
+        static const char *hop_by_hop[] = {
+            "Connection",
+            "Keep-Alive",
+            "Proxy-Authenticate",
+            "Proxy-Authorization",
+            "TE",
+            "Trailer",
+            "Transfer-Encoding",
+            "Upgrade",
+            NULL
+        };
+        int i;
 
-    /* T-E wins over C-L */
-    if (apr_table_get(r->headers_out, "Transfer-Encoding")) {
-        apr_table_unset(r->headers_out, "Content-Length");
-        backend->close = 1;
+        for (i = 0; hop_by_hop[i]; i++) {
+            if (apr_table_get(r->headers_out, hop_by_hop[i])) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                            "uwsgi: removing hop-by-hop header '%s'",
+                            hop_by_hop[i]);
+                apr_table_unset(r->headers_out, hop_by_hop[i]);
+                backend->close = 1;
+            }
+        }
     }
 
     if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
