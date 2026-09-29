@@ -125,7 +125,7 @@ type</td></tr>
 eşler.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliaspreservepath">AliasPreservePath OFF|ON</a></td><td> OFF </td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Map the full path after the alias in a location.</td></tr>
 <tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts can access an area of the
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>K</td></tr><tr><td class="descr" colspan="4">Controls which hosts can access an area of the
 server</td></tr>
 <tr class="odd"><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var>[-<var>port</var>]
 [<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
@@ -411,7 +411,7 @@ t&uuml;r&uuml;n&uuml; belirlerdi.</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
 <tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib compression window size</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
 <tr><td><a href="core.html#directory">&lt;Directory <code>dizin-yolu</code>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
@@ -430,7 +430,7 @@ server</td></tr>
 ... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">Bir d&uuml;zenli ifade ile eşleşen dosya sistemi dizinlerinin i&ccedil;eriklerine uygulanacak bir y&ouml;nerge grubunu sarmalar.</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">B&ouml;l&uuml; &ccedil;izgisi ile biten y&ouml;nlendirmeleri a&ccedil;ar/kapar.</td></tr>
 <tr><td><a href="core.html#documentroot">DocumentRoot <code>dizin-yolu</code></a></td><td> "/usr/local/apache/ +</td><td>sk</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">İstemciye g&ouml;r&uuml;n&uuml;r olan ana belge ağacının k&ouml;k dizinini belirler.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
 <tr class="odd"><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
 <tr><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>skdh</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">&Ouml;nceki bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> veya <code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> b&ouml;l&uuml;m&uuml;n&uuml;n koşulu, &ccedil;alışma anında bir istek tarafından yerine getirilmediği takdirde uygulanacak y&ouml;nergeleri i&ccedil;erir</td></tr>
@@ -551,10 +551,10 @@ y&ouml;nergeleri sarmalar.</td></tr>
     &lt;/IfSection&gt;</a></td><td></td><td>skdh</td><td>&Ccedil;</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen b&ouml;l&uuml;m adının varlığı veya yokluğuna bağlı olarak &ccedil;alıştırılacak y&ouml;nergeleri sarmalar.</td></tr>
 <tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">contains version dependent configuration</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://servername/ </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
-<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
+<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://servername/ </td><td>skdh</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
+<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>skdh</td><td>K</td></tr><tr><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
 that are not explicitly mapped</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Action if no coordinates are given when calling
+<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>skdh</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Action if no coordinates are given when calling
 an imagemap</td></tr>
 <tr><td><a href="core.html#include">Include <code>dosya-yolu</code>|<code>dizin-yolu</code>|<code>joker</code></a></td><td></td><td>skd</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">Sunucu yapılandırma dosyalarının başka dosyaları i&ccedil;ermesini sağlar.
 </td></tr>
@@ -743,7 +743,7 @@ processing</td></tr>
 <tr><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Redirects http: traffic to https: for Managed Domains.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 30s </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Time length for first retry, doubled on every consecutive error.</td></tr>
 <tr><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">The number of errors before a failover to another CA is triggered</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Control if Managed Domain information is added to server-status.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Control if Managed Domain information is added to <code>server-status</code>.</td></tr>
 <tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Enable stapling for certificates not managed by mod_md.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Enable stapling for all or a particular MDomain.</td></tr>
 <tr><td><a href="mod_md.html#mdstaplingkeepresponse">MDStaplingKeepResponse <var>duration</var></a></td><td> 7d </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Controls when old responses should be removed.</td></tr>
@@ -755,10 +755,10 @@ processing</td></tr>
 <tr><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sk</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">Sunucunun URL'lerde ardışık b&ouml;l&uuml; &ccedil;izgilerini birleştirip birleştirmeyeceğini denetler.
 </td></tr>
 <tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sk</td><td>&Ccedil;</td></tr><tr class="odd"><td class="descr" colspan="4">Trailer alanlarının başlığa dahil edilip edilmeyeceğini belirler</td></tr>
-<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
+<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>skdh</td><td>K</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
-<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">File name suffix for the file containing CERN-style
+<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>skdh</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
+<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>skdh</td><td>K</td></tr><tr><td class="descr" colspan="4">File name suffix for the file containing CERN-style
 meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
@@ -781,14 +781,14 @@ directly</td></tr>
 <tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
     [+|-]<code>se&ccedil;enek</code> [[+|-]<code>se&ccedil;enek</code>] ...</a></td><td> FollowSymlinks </td><td>skdh</td><td>&Ccedil;</td></tr><tr class="odd"><td class="descr" colspan="4">Belli bir dizinde ge&ccedil;erli olacak &ouml;zellikleri yapılandırır.
 </td></tr>
-<tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
+<tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>K</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
 <tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini kabuktan aktarır.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ana s&uuml;recin s&uuml;re&ccedil; kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
-<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>skd</td><td>D</td></tr><tr><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
+<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>skd</td><td>K</td></tr><tr><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
 <tr class="odd"><td><a href="core.html#protocol">Protocol <code>protokol</code></a></td><td></td><td>sk</td><td>&Ccedil;</td></tr><tr class="odd"><td class="descr" colspan="4">Dinlenen bir soket i&ccedil;in protokol</td></tr>
 <tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sk</td><td>D</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
@@ -872,7 +872,7 @@ header</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
 <tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
 header for proxied requests</td></tr>
-<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
+<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sk</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
 <tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL On|Off</a></td><td> Off </td><td>skd</td><td>&Ccedil;</td></tr><tr><td class="descr" colspan="4">REDIRECT_URL ortam değişkeninin tamamen nitelenmiş olup
 olmayacağını denetler</td></tr>
 <tr class="odd"><td><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize <code>bayt-sayısı</code></a></td><td> 8192 </td><td>skd</td><td>&Ccedil;</td></tr><tr class="odd"><td class="descr" colspan="4">Veriyi okumakta kullanılacak tampon sayısı</td></tr>
@@ -963,7 +963,7 @@ must succeed for the enclosing directive to not fail.</td></tr>
   bellek t&uuml;ketimine sınırlama getirir.</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <code>sayı</code>|max [<code>sayı</code>|max]</a></td><td></td><td>skdh</td><td>&Ccedil;</td></tr><tr class="odd"><td class="descr" colspan="4">Apache httpd alt s&uuml;re&ccedil;leri tarafından &ccedil;alıştırılabilecek s&uuml;re&ccedil;
   sayısına sınırlama getirir.</td></tr>
-<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interaction between host-level access control and
+<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>K</td></tr><tr><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_runtime +</td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">&Ccedil;ocuk s&uuml;re&ccedil;ler i&ccedil;in eşg&uuml;d&uuml;m verisini saklamakta kullanılan
   dosyanın yerini belirler.</td></tr>
@@ -1191,15 +1191,15 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 <tr><td><a href="mod_unixd.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
   belirler.</td></tr>
 <tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>dizin</em> [<em>dizin</em>] ...</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Kullanıcıya &ouml;zel dizinlerin yeri</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
+<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>k</td><td>K</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
 subprocesses, and the privileges available to subprocesses.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the server runs with enhanced security
+<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>k</td><td>K</td></tr><tr><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>k</td><td>K</td></tr><tr><td class="descr" colspan="4">Determines whether the server runs with enhanced security
 for the virtualhost.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>k</td><td>K</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Bir sanal konağın belge k&ouml;k dizinini devingen olarak yapılandırır.
 </td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın belge k&ouml;k dizinini devingen olarak yapılandırır.
