@@ -1502,10 +1502,23 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                  "%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
 
                 apr_sockaddr_t *pasv_addr;
+                apr_sockaddr_t *ctrl_addr;
+                char *ctrl_ip;
+                const char *pasv_host;
                 apr_port_t pasvport = (p1 << 8) + p0;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01044)
                               "PASV contacting host %d.%d.%d.%d:%d",
                               h3, h2, h1, h0, pasvport);
+
+                /* Reject PASV redirects to a different host than the
+                 * control connection peer, preventing FTP bounce attacks. */
+                pasv_host = apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0);
+                if (apr_socket_addr_get(&ctrl_addr, APR_REMOTE, sock) != APR_SUCCESS
+                    || apr_sockaddr_ip_get(&ctrl_ip, ctrl_addr) != APR_SUCCESS
+                    || strcmp(pasv_host, ctrl_ip) != 0) {
+                    return ftp_proxyerror(r, backend, HTTP_FORBIDDEN,
+                                         "PASV address does not match FTP server");
+                }
 
                 if ((rv = apr_socket_create(&data_sock, backend->addr->family,
                                             SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
@@ -1530,8 +1543,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
                 /* make the connection */
-                err = apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d",
-                                                                     h3, h2, h1, h0),
+                err = apr_sockaddr_info_get(&pasv_addr, pasv_host,
                                             backend->addr->family, pasvport, 0, p);
                 if (APR_SUCCESS != err) {
                     return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
