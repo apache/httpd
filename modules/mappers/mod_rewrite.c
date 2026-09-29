@@ -2007,6 +2007,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
+                    if (ctx->vary_this) {
+                        ctx->vary_this = apr_pstrdup(r->pool, ctx->vary_this);
+                    }
                     ap_destroy_sub_req(rr);
 
                     rewritelog(r, 5, ctx->perdir, "lookahead: path=%s var=%s "
@@ -2042,6 +2045,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
+                    if (ctx->vary_this) {
+                        ctx->vary_this = apr_pstrdup(r->pool, ctx->vary_this);
+                    }
                     ap_destroy_sub_req(rr);
 
                     rewritelog(r, 5, ctx->perdir, "lookahead: path=%s var=%s "
