@@ -59,6 +59,9 @@ extern "C" {
 #define DAV_DO_COPY             0
 #define DAV_DO_MOVE             1
 
+#ifndef DAV_MAX_SHARED_LOCKS
+#define DAV_MAX_SHARED_LOCKS (1024)
+#endif
 
 #if 1
 #define DAV_DEBUG        1
