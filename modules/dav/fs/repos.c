@@ -704,6 +704,42 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
 ** REPOSITORY HOOK FUNCTIONS
 */
 
+/* Is PATHNAME the mod_dav_fs state directory itself, or a file directly
+** within it? Both dav_fs_get_resource() and the fixup hook in mod_dav_fs.c
+** use this; the latter is what catches methods such as GET which mod_dav
+** leaves to the default handler and which therefore never reach the
+** repository provider at all.
+*/
+int dav_fs_is_state_path(apr_pool_t *p, const char *pathname)
+{
+    const char *filename, *dirname;
+    char *path, *parent;
+    apr_size_t len;
+
+    /* make sure the pathname does not have a trailing "/" */
+    path = apr_pstrdup(p, pathname);
+    len = strlen(path);
+    if (len > 1 && path[len - 1] == '/') {
+        path[len - 1] = '\0';
+    }
+
+    filename = apr_filepath_name_get(path);
+    parent = ap_make_dirstr_parent(p, path);
+    /* Strip the trailing slash and extract the leaf directory name. */
+    len = strlen(parent);
+    if (len > 1 && parent[len - 1] == '/') {
+        parent[len - 1] = '\0';
+    }
+    dirname = apr_filepath_name_get(parent);
+#ifdef CASE_BLIND_FILESYSTEM
+    return ap_cstr_casecmp(filename, DAV_FS_STATE_DIR) == 0
+        || ap_cstr_casecmp(dirname, DAV_FS_STATE_DIR) == 0;
+#else
+    return strcmp(filename, DAV_FS_STATE_DIR) == 0
+        || strcmp(dirname, DAV_FS_STATE_DIR) == 0;
+#endif
+}
+
 static dav_error * dav_fs_get_resource(
     request_rec *r,
     const char *root_dir,
@@ -713,8 +749,8 @@ static dav_error * dav_fs_get_resource(
 {
     dav_resource_private *ctx;
     dav_resource *resource;
-    char *s, *parent;
-    const char *filename, *dirname;
+    char *s;
+    const char *filename;
     apr_size_t len;
 
     /* ### optimize this into a single allocation! */
@@ -750,21 +786,7 @@ static dav_error * dav_fs_get_resource(
     }
 
     /* Deny any access to, or within, the state directory. */
-    filename = apr_filepath_name_get(s);
-    parent = ap_make_dirstr_parent(r->pool, s);
-    /* Strip the trailing slash and extract the leaf directory name. */
-    len = strlen(parent);
-    if (len > 1 && parent[len - 1] == '/') {
-        parent[len - 1] = '\0';
-    }
-    dirname = apr_filepath_name_get(parent);
-#ifdef CASE_BLIND_FILESYSTEM
-    if (ap_cstr_casecmp(filename, DAV_FS_STATE_DIR) == 0
-        || ap_cstr_casecmp(dirname, DAV_FS_STATE_DIR) == 0) {
-#else
-    if (strcmp(filename, DAV_FS_STATE_DIR) == 0
-        || strcmp(dirname, DAV_FS_STATE_DIR) == 0) {
-#endif
+    if (dav_fs_is_state_path(r->pool, s)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "access to " DAV_FS_STATE_DIR " state directory "
                       "denied for %s", r->filename);
@@ -2423,5 +2445,5 @@ void dav_fs_register(apr_pool_t *p)
     dav_register_liveprop_group(p, &dav_fs_liveprop_group);
 
     /* register the repository provider */
-    dav_register_provider(p, "filesystem", &dav_fs_provider);
+    dav_register_provider(p, DAV_FS_PROVIDER_NAME, &dav_fs_provider);
 }

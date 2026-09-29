@@ -284,11 +284,51 @@ static const command_rec dav_fs_cmds[] =
     { NULL }
 };
 
+/*
+ * dav_fs_get_resource() refuses the state directory, but only requests
+ * which mod_dav routes through the repository provider ever reach it.
+ * GET is not one of those: mod_dav_fs sets handle_get to false, so
+ * dav_fixups() declines and the default handler serves the file straight
+ * off the filesystem, property database and all. Deny the state directory
+ * here instead, for every method, wherever mod_dav_fs is the provider.
+ */
+static int dav_fs_fixups(request_rec *r)
+{
+    const char *provider_name, *pathname;
+
+    provider_name = dav_get_provider_name(r);
+    if (provider_name == NULL
+        || strcmp(provider_name, DAV_FS_PROVIDER_NAME) != 0) {
+        /* DAV is off here, or another provider owns this space */
+        return DECLINED;
+    }
+
+    if (r->filename == NULL) {
+        return DECLINED;
+    }
+
+    /* as in dav_fs_get_resource(), any path_info is part of the pathname */
+    pathname = (r->path_info && *r->path_info)
+        ? apr_pstrcat(r->pool, r->filename, r->path_info, NULL)
+        : r->filename;
+
+    if (!dav_fs_is_state_path(r->pool, pathname)) {
+        return DECLINED;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10619)
+                  "access to " DAV_FS_STATE_DIR " state directory "
+                  "denied for %s", r->filename);
+    return HTTP_FORBIDDEN;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(dav_fs_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dav_fs_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(dav_fs_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+    /* before mod_dav's fixup, which takes over the request */
+    ap_hook_fixups(dav_fs_fixups, NULL, NULL, APR_HOOK_FIRST);
     
     dav_hook_gather_propsets(dav_fs_gather_propsets, NULL, NULL,
                              APR_HOOK_MIDDLE);
