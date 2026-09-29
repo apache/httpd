@@ -13,13 +13,59 @@
 #   ./run-one-test.sh modules/http2/test_003_get.py         # pyhttpd
 #   ./run-one-test.sh test/modules/http2/test_003_get.py
 #
+# With no arguments, lists all test files (one PATH per line) for grepping;
+# with -l, lists every individual test (PATH::nodeid) instead:
+#   ./run-one-test.sh | grep -i status
+#   ./run-one-test.sh -l | grep -i status
+#
 set -eu
 
 here="$(cd "$(dirname "$0")" && pwd)"
 
-if [ $# -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-    sed -n '3,14p' "$0" | sed 's/^# \{0,1\}//'
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    sed -n '3,19p' "$0" | sed 's/^# \{0,1\}//'
     exit 2
+fi
+
+# No arguments: list every test file as a PATH accepted above; -l: list every
+# test as PATH::nodeid. This is a static scan (no pytest collection, so no
+# built httpd needed); parametrized tests are listed once, without their
+# [param] suffix.
+if [ $# -eq 0 ] || { [ $# -eq 1 ] && [ "$1" = "-l" ]; }; then
+    cd "$here"
+    exec python3 - "${1:-}" pytest_suite modules <<'EOF'
+import ast, os, sys, warnings
+warnings.simplefilter("ignore", SyntaxWarning)
+
+def tests(body, prefix):
+    for n in body:
+        if isinstance(n, ast.ClassDef) and n.name.startswith("Test"):
+            yield from tests(n.body, prefix + n.name + "::")
+        elif (isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+              and n.name.startswith("test")):
+            yield prefix + n.name
+
+per_test = sys.argv[1] == "-l"
+for root in sys.argv[2:]:
+    paths = []
+    for d, dirs, files in os.walk(root):
+        dirs[:] = [x for x in dirs if not x.startswith((".", "__"))]
+        paths += [os.path.join(d, f) for f in files
+                  if f.startswith("test_") and f.endswith(".py")]
+    for p in sorted(paths):
+        rel = os.path.relpath(p, root) if root == "pytest_suite" else p
+        if not per_test:
+            print(rel)
+            continue
+        try:
+            with open(p) as f:
+                tree = ast.parse(f.read(), p)
+        except (OSError, SyntaxError) as e:
+            print(f"run-one-test.sh: skipping {p}: {e}", file=sys.stderr)
+            continue
+        for t in tests(tree.body, rel + "::"):
+            print(t)
+EOF
 fi
 
 arg="$1"; shift
