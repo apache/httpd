@@ -1258,7 +1258,23 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                  * redirect is required here?  We need to walk the URI and
                  * filename in tandem to properly correlate these.
                  */
-                strcpy(seg_name, thisinfo.name);
+                apr_size_t seg_len  = strlen(seg_name);
+                apr_size_t real_len = strlen(thisinfo.name);
+                if (real_len > seg_len) {
+                    /* The canonical name is longer than the copied segment
+                     * (e.g. 8.3 alias -> long name on a case-blind FS).
+                     * The current buffer was sized from the original path and
+                     * does not have room; allocate a replacement that does.
+                     */
+                    apr_size_t prefix_len = seg_name - r->filename;
+                    apr_size_t new_buflen = prefix_len + real_len
+                                           + strlen(r->path_info) + 2;
+                    char *new_buf = apr_palloc(r->pool, new_buflen);
+                    memcpy(new_buf, r->filename, prefix_len);
+                    seg_name = new_buf + prefix_len;
+                    r->filename = new_buf;
+                }
+                memcpy(seg_name, thisinfo.name, real_len + 1);
                 filename_len = strlen(r->filename);
             }
 
