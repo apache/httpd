@@ -1641,6 +1641,9 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
     info->filename = cmd->directive->filename;
     info->line_number = cmd->directive->line_num;
     info->module_index = APLOG_MODULE_INDEX;
+    if (cmd->pool == cmd->temp_pool) {
+        info->flags |= AP_EXPR_FLAG_RESTRICTED_FILE_FUNC;
+    }
     errstring = ap_expr_parse(cmd->pool, cmd->temp_pool, info, arg, NULL);
     if (errstring) {
         return apr_pstrcat(cmd->pool, "SSLRequire: ", errstring, NULL);
