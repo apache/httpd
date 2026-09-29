@@ -805,8 +805,14 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
         return;
     }
 
+    /* Propagate the content type, but never the "trusted" flag: the
+     * type is carried across the redirect for the benefit of AddType
+     * style configuration of the *original* URI, and must not be used
+     * as the handler for the target if no handler is determined for it
+     * by ap_process_request_internal() below.
+     */
     if (r->handler)
-        ap_set_content_type_ex(new, r->content_type, AP_REQUEST_IS_TRUSTED_CT(r));
+        ap_set_content_type_ex(new, r->content_type, 0);
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
         access_status = ap_invoke_handler(new);
