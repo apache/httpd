@@ -44,6 +44,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
+#include "http_log.h"
 #include "http_request.h"  /* for ap_hook_translate_name */
 
 
@@ -234,10 +235,15 @@ static const command_rec mva_commands[] =
  * This really wants to be a nested function
  * but C is too feeble to support them.
  */
-static APR_INLINE void vhost_alias_checkspace(request_rec *r, char *buf,
+static APR_INLINE int vhost_alias_checkspace(request_rec *r, char *buf,
                                              char **pdest, int size)
 {
-    /* XXX: what if size > HUGE_STRING_LEN? */
+    /* Reject expansion if a single segment exceeds the buffer size */
+    if (size >= HUGE_STRING_LEN) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10595)
+                      "VirtualDocumentRoot expansion too large");
+        return HTTP_REQUEST_URI_TOO_LARGE;
+    }
     if (*pdest + size > buf + HUGE_STRING_LEN) {
         **pdest = '\0';
         if (r->filename) {
@@ -248,10 +254,11 @@ static APR_INLINE void vhost_alias_checkspace(request_rec *r, char *buf,
         }
         *pdest = buf;
     }
+    return OK;
 }
 
-static void vhost_alias_interpolate(request_rec *r, const char *name,
-                                    const char *map, const char *uri)
+static int vhost_alias_interpolate(request_rec *r, const char *name,
+                                   const char *map, const char *uri)
 {
     /* 0..9 9..0 */
     enum { MAXDOTS = 19 };
@@ -264,6 +271,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 
     int N, M, Np, Mp, Nd, Md;
     const char *start, *end;
+    int rv;
 
     const char *p;
 
@@ -282,7 +290,9 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     while (*map) {
         if (*map != '%') {
             /* normal characters */
-            vhost_alias_checkspace(r, buf, &dest, 1);
+            if ((rv = vhost_alias_checkspace(r, buf, &dest, 1)) != OK) {
+                return rv;
+            }
             *dest++ = *map++;
             continue;
         }
@@ -291,7 +301,9 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
         /* %% -> % */
         if (*map == '%') {
             ++map;
-            vhost_alias_checkspace(r, buf, &dest, 1);
+            if ((rv = vhost_alias_checkspace(r, buf, &dest, 1)) != OK) {
+                return rv;
+            }
             *dest++ = '%';
             continue;
         }
@@ -299,7 +311,9 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
         if (*map == 'p') {
             ++map;
             /* no. of decimal digits in a short plus one */
-            vhost_alias_checkspace(r, buf, &dest, 7);
+            if ((rv = vhost_alias_checkspace(r, buf, &dest, 7)) != OK) {
+                return rv;
+            }
             dest += apr_snprintf(dest, 7, "%d", ap_get_server_port(r));
             continue;
         }
@@ -359,7 +373,9 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
                 end = end-M+1;
             }
         }
-        vhost_alias_checkspace(r, buf, &dest, end - start);
+        if ((rv = vhost_alias_checkspace(r, buf, &dest, end - start)) != OK) {
+            return rv;
+        }
         for (p = start; p < end; ++p) {
             *dest++ = apr_tolower(*p);
         }
@@ -377,6 +393,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     r->filename = apr_pstrcat(r->pool, docroot, uri, NULL);
     ap_set_context_info(r, NULL, docroot);
     ap_set_document_root(r, docroot);
+    return OK;
 }
 
 static int mva_translate(request_rec *r)
@@ -385,6 +402,7 @@ static int mva_translate(request_rec *r)
     const char *name, *map, *uri;
     mva_mode_e mode;
     const char *cgi;
+    int status;
 
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
                                               &vhost_alias_module);
@@ -425,7 +443,9 @@ static int mva_translate(request_rec *r)
      * canonical_path buffer.
      */
     r->canonical_filename = "";
-    vhost_alias_interpolate(r, name, map, uri);
+    if ((status = vhost_alias_interpolate(r, name, map, uri)) != OK) {
+        return status;
+    }
 
     if (cgi) {
         /* see is_scriptaliased() in mod_cgi */
