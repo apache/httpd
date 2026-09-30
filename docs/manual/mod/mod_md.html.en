@@ -1431,6 +1431,7 @@ MDRenewWindow 10%</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The default was changed to 'off' in 2.4.69</td></tr>
 </table>
             <p>
                 If enabled, adds a section to the

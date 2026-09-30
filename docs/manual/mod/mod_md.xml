@@ -1118,6 +1118,7 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>The default was changed to 'off' in 2.4.69</compatibility>
         <usage>
             <p>
                 If enabled, adds a section to the
