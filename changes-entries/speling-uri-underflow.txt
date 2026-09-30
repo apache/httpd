@@ -1,0 +1,3 @@
+  *) mod_speling: Avoid an out-of-bounds read in the URL/filename check when a
+     mapped file's base name is longer than the request URI.
+     [arshiya tabasum <arshi bugqore.com>]
