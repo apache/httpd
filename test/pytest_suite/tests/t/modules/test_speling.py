@@ -59,3 +59,17 @@ def test_speling(http, prefix, code_idx, case):
     # Only redirect responses carry a corrected-filename body.
     if expected not in (200, 404):
         assert t_cmp(r.text, _REDIRECT_BODY), "Redirect ok"
+
+
+@need_module("mod_speling")
+def test_speling_short_uri_alias(http):
+    """Regression for the check_speling() out-of-bounds read.
+
+    ``Alias /sp-oob`` maps a short URI to a longer, nonexistent base name in
+    a CheckSpelling directory. postgood (the base name) is then longer than
+    r->uri, so r->uri + (urlen - pglen) underflowed and strcmp read before
+    the start of the buffer. The server must answer cleanly (404) instead of
+    crashing or reading out of bounds.
+    """
+    r = http.GET("/sp-oob")
+    assert t_cmp(r.status_code, 404), "short-URI alias must not read OOB"
