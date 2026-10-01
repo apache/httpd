@@ -1538,6 +1538,10 @@ LimitRequestFields    32
       CheckSpelling on
       CheckCaseOnly on
    </Directory>
+   # Point a short URI at a longer, nonexistent base name in a CheckSpelling
+   # directory. This exercised the r->uri + (urlen - pglen) underflow in
+   # check_speling(); the server must answer cleanly rather than read OOB.
+   Alias /sp-oob @SERVERROOT@/htdocs/modules/speling/nocase/nonexistent-long-name.html
 </IfModule>
 
 <IfModule mod_actions.c>
