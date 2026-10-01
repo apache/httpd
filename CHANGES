@@ -16,9 +16,8 @@ Changes with Apache 2.4.69
      (cve.mitre.org)
      Path equivalence: '/./' (single dot directory) vulnerability in
      Apache HTTP Server's mod_userdir module when configured
-     with absolute non-wildcard UserDir directive (the 2nd form
-     in https://httpd.apache.org/docs/2.4/mod/mod_userdir.html#userdir
-     )
+     with absolute non-wildcard UserDir directive (the 2nd form
+     in https://httpd.apache.org/docs/2.4/mod/mod_userdir.html#userdir)
      This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
      Credits: Vlatko Kosturjak, Marlink Cyber
 
@@ -121,7 +120,7 @@ Changes with Apache 2.4.69
   *) SECURITY: CVE-2026-57941: mod_http2 use-after-free / wild write
      via shared session->bbtmp re-entrancy (cve.mitre.org)
      Use After Free vulnerability in Apache HTTP Server's
-     mod_http2 via shared session->bbtmp re-entrancy
+     mod_http2 via shared session->bbtmp re-entrancy
      This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
      Credits: Lucian Nitescu
 
@@ -162,7 +161,7 @@ Changes with Apache 2.4.69
      removed during internal redirect (cve.mitre.org)
      Exposure of Sensitive Information to an Unauthorized Actor
      vulnerability in Apache HTTP Server's mod_session_cookie module.
-      
+
      When SessionCookieRemove changes across internal redirects, the
      session cookie may still be passed to a backend server.
      This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
