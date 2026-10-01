@@ -629,8 +629,8 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
         case AP_FCGI_STDERR: /* Text to log */
             if (clen) {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                              APLOGNO(02507) "%s: Logged from %s: '%s'",
-                              fn, conf->backend, readbuf);
+                              APLOGNO(02507) "%s: Logged from %s: '%.*s'",
+                              fn, conf->backend, (int)readbuflen, readbuf);
             }
 
             if (clen > readbuflen) {
