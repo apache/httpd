@@ -390,7 +390,7 @@ SET(MODULE_LIST
   "modules/metadata/mod_expires+I+Expires header control"
   "modules/metadata/mod_headers+A+HTTP header control"
   "modules/metadata/mod_ident+O+RFC 1413 identity check"
-  "modules/metadata/mod_mime_magic+O+automagically determining MIME type"
+  "modules/metadata/mod_mime_magic+I+automagically determining MIME type"
   "modules/metadata/mod_remoteip+I+translate header contents to an apparent client remote_ip"
   "modules/metadata/mod_setenvif+A+basing ENV vars on headers"
   "modules/metadata/mod_unique_id+I+per-request unique ids"
@@ -410,6 +410,7 @@ SET(MODULE_LIST
   "modules/proxy/mod_proxy_hcheck+I+Apache proxy Health check module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_http+I+Apache proxy HTTP module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_scgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
+  "modules/proxy/mod_proxy_uwsgi+I+Apache proxy SCGI module.  Requires and is enabled by --enable-proxy."
   "modules/proxy/mod_proxy_wstunnel+I+Apache proxy Websocket Tunnel module.  Requires and is enabled by --enable-proxy."
   "modules/http2/mod_proxy_http2+i+Apache proxy HTTP/2 module.  Requires --enable-proxy."
   "modules/proxy/mod_serf+O+Reverse proxy module using Serf"
@@ -609,6 +610,7 @@ IF(LIBXML2_FOUND)
   SET(mod_proxy_html_extra_libs        "${LIBXML2_LIBRARIES};${LIBXML2_ICONV_LIBRARIES}")
 ENDIF()
 SET(mod_proxy_scgi_extra_libs        mod_proxy)
+SET(mod_proxy_uwsgi_extra_libs        mod_proxy)
 SET(mod_proxy_wstunnel_extra_libs    mod_proxy)
 SET(mod_lbmethod_bybusyness_extra_libs mod_proxy)
 SET(mod_lbmethod_bytraffic_extra_libs  mod_proxy)
