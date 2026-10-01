@@ -84,7 +84,7 @@
 #include "ap_expr.h"
 
 /* keep first for compat API */
-#ifndef OPENSSL_API_COMPAT
+#if !defined(OPENSSL_API_COMPAT) && !defined(AP_DEBUG)
 #define OPENSSL_API_COMPAT 0x10101000 /* for ENGINE_ API */
 #endif
 #include "mod_ssl_openssl.h"
