@@ -1257,13 +1257,25 @@ int md_certs_are_equal(const md_cert_t *a, const md_cert_t *b)
 
 int md_cert_is_valid_now(const md_cert_t *cert)
 {
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+    return X509_check_certificate_times(NULL, cert->x509, NULL) == 1;
+#else
     return ((X509_cmp_current_time(X509_get_notBefore(cert->x509)) < 0)
             && (X509_cmp_current_time(X509_get_notAfter(cert->x509)) > 0));
+#endif
 }
 
 int md_cert_has_expired(const md_cert_t *cert)
 {
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+    /* Report expiry only (not a not-yet-valid notBefore), matching the
+     * legacy notAfter-only check below. */
+    int error = 0;
+    X509_check_certificate_times(NULL, cert->x509, &error);
+    return error == X509_V_ERR_CERT_HAS_EXPIRED;
+#else
     return (X509_cmp_current_time(X509_get_notAfter(cert->x509)) <= 0);
+#endif
 }
 
 apr_time_t md_cert_get_not_after(const md_cert_t *cert)
