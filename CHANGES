@@ -1,5 +1,199 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.70
+
 Changes with Apache 2.4.69
+
+  *) SECURITY: CVE-2026-93546: mod_dav_fs namespace overflow
+     (cve.mitre.org)
+     Integer overflow in mod_dav_fs in Apache HTTP Server through
+     2.4.68 allows an authenticated WebDAV client with write access
+     to crash worker processes and persistently corrupt a directory's
+     property database via PROPPATCH requests declaring many XML
+     namespaces.
+     Credits: Zhen Kong
+
+  *) SECURITY: CVE-2026-79768: mod_userdir information disclosure
+     (cve.mitre.org)
+     Path equivalence: '/./' (single dot directory) vulnerability in
+     Apache HTTP Server's mod_userdir module when configured
+     with absolute non-wildcard UserDir directive (the 2nd form
+     in https://httpd.apache.org/docs/2.4/mod/mod_userdir.html#userdir
+     )
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Vlatko Kosturjak, Marlink Cyber
+
+  *) SECURITY: CVE-2026-73637: mod_auth_digest DoS attack
+     (cve.mitre.org)
+     Use after free in mod_auth_digest in Apache Software Foundation
+     Apache HTTP Server before 2.4.69 on all platforms allows an
+     unauthenticated remote client to cause authentication state
+     corruption via concurrent Digest authentication requests when
+     AuthDigestNcCheck is enabled or AuthDigestNonceLifetime is set
+     to 0.
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue.
+     Credits: Zhen Kong
+
+  *) SECURITY: CVE-2026-73636: mod_auth_digest one-time-nonce replay
+     attack (cve.mitre.org)
+     Authentication bypass by capture-replay in mod_auth_digest in
+     Apache Software Foundation Apache HTTP Server 2.4.x on all
+     platforms allows a man-in-the-middle (MITM) attacker to replay
+     captured digest authentication credentials via crafted requests
+     that trigger garbage collection of the client's shared memory
+     entry when AuthDigestNonceLifetime is set to 0.
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue.
+     Credits: Hyojae Lee
+
+  *) SECURITY: CVE-2026-63718: mod_proxy_uwsgi Transfer-Encoding
+     response smuggling (cve.mitre.org)
+     Inconsistent Interpretation of HTTP Requests ('HTTP
+     Request/Response Smuggling') response smuggling vulnerability in
+     Apache HTTP Server via mod_proxy_uwsgi and a crafted uwsgi
+     response with Transfer-Encoding.
+     This issue affects Apache HTTP Server: from 2.4.30 through
+     2.4.68.
+     Credits: Qing Xu
+
+  *) SECURITY: CVE-2026-63686: mod_xml2enc crash on charset
+     conversion failure (cve.mitre.org)
+     A NULL pointer dereference in mod_xml2enc in Apache Software
+     Foundation Apache HTTP Server before 2.4.69 on all platforms
+     allows an untrusted backend server to cause a denial of service
+     via a proxied response with a charset whose conversion partially
+     succeeds then fails.
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue.
+     Credits: Lucian Nitescu
+
+  *) SECURITY: CVE-2026-63292: mod_vhost_alias stack overflow
+     (cve.mitre.org)
+     Stack-based buffer overflow in mod_vhost_alias in Apache
+     Software Foundation Apache HTTP Server through 2.4.68 on all
+     platforms allows a remote client to cause a denial of service or
+     potentially execute arbitrary code via an HTTP request with a
+     Host header exceeding 8192 bytes when VirtualDocumentRoot uses a
+     hostname format specifier and LimitRequestFieldSize is raised
+     above the default.
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue.
+     Credits: Hyojae Lee
+
+  *) SECURITY: CVE-2026-63045: mod_proxy_ftp PASV address handling
+     (cve.mitre.org)
+     Improper validation of FTP PASV reply address in mod_proxy_ftp
+     in Apache Software Foundation Apache HTTP Server through 2.4.68
+     on all platforms allows, in forward proxy configurations, an
+     untrusted FTP server to cause the proxy to open a data
+     connection to an arbitrary third-party host via a crafted PASV
+     response.
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue.
+     Credits: Zhen Kong
+
+  *) SECURITY: CVE-2026-59797: mod_ssl SSLRequire allows .htaccess
+     ap_expr file-function (cve.mitre.org)
+     Improper Privilege Management vulnerability in Apache HTTP
+     Server's mod_ssl via SSLRequire and file-related expressions.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: kimchunbok
+
+  *) SECURITY: CVE-2026-59685: Out-of-Bounds Write in
+     ap_directory_walk() Canonical-Name Rewrite on
+     CASE_BLIND_FILESYSTEM (cve.mitre.org)
+     Out-of-bounds Write vulnerability in Apache HTTP Server on
+     Windows while processing paths with 8.3 names that may grow when
+     expanded.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Dhiraj Mishra
+
+  *) SECURITY: CVE-2026-58415: mod_dav_fs property database read
+     access (cve.mitre.org)
+     Internal state files accessible to external parties in
+     mod_dav_fs in Apache Software Foundation Apache HTTP Server
+     before 2.4.69 on all platforms allows a remote client to read
+     WebDAV dead properties of resources it cannot author via a GET
+     request for the .DAV state directory
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: 이지웅 (kimchunbok)
+
+  *) SECURITY: CVE-2026-57941: mod_http2 use-after-free / wild write
+     via shared session->bbtmp re-entrancy (cve.mitre.org)
+     Use After Free vulnerability in Apache HTTP Server's
+     mod_http2 via shared session->bbtmp re-entrancy
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Lucian Nitescu
+
+  *) SECURITY: CVE-2026-56449: mod_proxy_html: crash in dump_content
+     (cve.mitre.org)
+     Out-of-bounds Write vulnerability in Apache HTTP Server's
+     mod_proxy_html with crafted HTTP response bodies.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Lucian Nitescu
+
+  *) SECURITY: CVE-2026-56154: mod_rewrite use-after-free via
+     %{LA-U:HTTP:...} (cve.mitre.org)
+     Use After Free vulnerability in Apache HTTP Server's mod_rewrite
+     when using lookahead (%{LA-U:HTTP:...})
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Nebula Security (@nebusecurity)
+
+  *) SECURITY: CVE-2026-56153: mod_charset_lite: Heap overflow in
+     finish_partial_char (cve.mitre.org)
+     Out-of-bounds Write vulnerability in Apache HTTP Server's
+     mod_charset_lite.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Bartlomiej Dmitruk at striga.ai
+
+  *) SECURITY: CVE-2026-48005: mod_auth_digest reauthentication
+     attack (cve.mitre.org)
+     Missing authentication checks in mod_auth_digest in Apache
+     Software Foundation Apache HTTP Server before 2.4.69 on all
+     platforms allows an unauthenticated remote client to cause a
+     denial of service (forced re-authentication) via forged
+     Authorization headers when Digest authentication is enabled with
+     AuthDigestNcCheck .
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue.
+     Credits: lokerxx
+
+  *) SECURITY: CVE-2026-47360: mod_session: Session cookie not
+     removed during internal redirect (cve.mitre.org)
+     Exposure of Sensitive Information to an Unauthorized Actor
+     vulnerability in Apache HTTP Server's mod_session_cookie module.
+      
+     When SessionCookieRemove changes across internal redirects, the
+     session cookie may still be passed to a backend server.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: lokerxx
+
+  *) SECURITY: CVE-2026-46729: mod_heartmonitor denial of service
+     (cve.mitre.org)
+     NULL Pointer Dereference vulnerability in Apache HTTP Servers
+     mod_heartmonitor over unicast listener.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.68.
+     Credits: Zhang San
+
+  *) SECURITY: CVE-2026-42528: mod_dav shared lock overflow
+     (cve.mitre.org)
+     A memory calculation bug in mod_dav in Apache httpd 2.4.67 and
+     earlier allows an attacker with permission to create WebDAV
+     locks to crash server child processes.
+     Users are recommended to upgrade to version 2.4.69, which fixes
+     this issue
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-42356: limited RCE for some internal
+     redirects to non-CGI files in CGI directories (cve.mitre.org)
+     Deployment of wrong handler vulnerability in Apache HTTP Server
+     allows the target of some internal redirects from CGI programs
+     to also be treated as CGI and executed. The target must already
+     be in a directory enabled for CGI and have no other extension
+     understood by mod_mime.
+     This issue affects Apache HTTP Server: from 2.4.60 through
+     2.4.68.
+     Credits: Feliks Penconek
 
   *) Fix the tar icon in the documentation so that its background is
      transparent.  PR 70238.  [Jeffery To <jeffery.to gmail.com>]
