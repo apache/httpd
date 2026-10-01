@@ -1,0 +1,3 @@
+  *) mod_authnz_fcgi: Log the content of a FastCGI stderr record using its
+     received length instead of treating the buffer as a C string, avoiding a
+     read past the received bytes.  [arshiya tabasum]
