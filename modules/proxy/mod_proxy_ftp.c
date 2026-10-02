@@ -142,12 +142,15 @@ static const char *ftp_escape_globbingchars(apr_pool_t *p, const char *path, pro
 {
     char *ret;
     char *d;
+    apr_size_t plen;
 
     if (!dconf->ftp_escape_wildcards) {
         return path;
     }
 
-    ret = apr_palloc(p, 2*strlen(path)+sizeof(""));
+    plen = strlen(path);
+    ap_assert(plen <= (APR_SIZE_MAX - sizeof("")) / 2);
+    ret = apr_palloc(p, 2 * plen + sizeof(""));
     for (d = ret; *path; ++path) {
         if (strchr(FTP_GLOBBING_CHARS, *path) != NULL)
             *d++ = '\\';
