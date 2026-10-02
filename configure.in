@@ -820,23 +820,25 @@ dnl Resolve --enable-test-apps after module config stubs have run
 dnl (nghttp2 detection for h2ws happens in modules/http2/config2.m4)
 if test "$enable_test_apps" = "yes" -a -d "./test"; then
 
-  dnl h2ws requires nghttp2
+  AC_MSG_CHECKING([for nghttp2 to build h2ws test client])
   if test "x$ac_cv_nghttp2" != "xyes"; then
+    AC_MSG_RESULT([no])
     AC_MSG_ERROR([--enable-test-apps requires nghttp2 for h2ws client (use --with-nghttp2=PATH)])
   fi
+  AC_MSG_RESULT([yes])
 
-  dnl Test modules require DSO support
+  AC_MSG_CHECKING([for DSO support to build test modules])
   if test "$enable_so" != "yes" -a "$enable_so" != "static"; then
+    AC_MSG_RESULT([no])
     AC_MSG_ERROR([--enable-test-apps requires DSO support (--enable-so)])
   fi
+  AC_MSG_RESULT([yes])
 
-  TEST_MODULES_DIR="$abs_builddir/test/test-modules/.libs"
+  TEST_APPS_SUMMARY="yes (mod_aptest, mod_h1test, mod_h2test, h2ws)"
   other_targets="$other_targets test-apps"
-  AC_MSG_NOTICE([test apps will be built at make time])
 else
-  TEST_MODULES_DIR=""
+  TEST_APPS_SUMMARY="no"
 fi
-APACHE_SUBST(TEST_MODULES_DIR)
 
 PRE_SHARED_CMDS='echo ""'
 POST_SHARED_CMDS='echo ""'
@@ -1162,4 +1164,5 @@ AC_MSG_NOTICE([summary of build options:
     LDFLAGS:        ${APACHE_CONF_SEL_LDFLAGS}
     LIBS:           ${APACHE_CONF_SEL_LIBS}
     C preprocessor: ${APACHE_CONF_SEL_CPP}
+    Test apps:      ${TEST_APPS_SUMMARY}
 ])

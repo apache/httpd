@@ -20,44 +20,43 @@ test: $(bin_PROGRAMS)
 #	$(LINK) $(dbu_OBJECTS) $(PROGRAM_LDADD)
 
 # --- Test module builds (used by --enable-test-apps) ---
+# Builds each module into its source directory, matching apxs -c output locations.
 
-TM = test-modules
+mod_aptest_DIR = $(top_srcdir)/test/pyhttpd/mod_aptest
+mod_aptest_SRC = $(mod_aptest_DIR)/mod_aptest.c
 
-mod_aptest_SRC = $(top_srcdir)/test/pyhttpd/mod_aptest/mod_aptest.c
-
-$(TM)/mod_aptest.slo: $(mod_aptest_SRC)
-	@mkdir -p $(TM)
+$(mod_aptest_DIR)/mod_aptest.slo: $(mod_aptest_SRC)
 	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) \
-	    -c $(mod_aptest_SRC) -o $(TM)/mod_aptest.lo && touch $@
+	    -c $(mod_aptest_SRC) -o $(mod_aptest_DIR)/mod_aptest.lo && touch $@
 
-$(TM)/mod_aptest.la: $(TM)/mod_aptest.slo
+$(mod_aptest_DIR)/mod_aptest.la: $(mod_aptest_DIR)/mod_aptest.slo
 	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version \
-	    $(TM)/mod_aptest.lo
+	    $(mod_aptest_DIR)/mod_aptest.lo
 
-mod_h1test_SRC = $(top_srcdir)/test/modules/http1/mod_h1test/mod_h1test.c
+mod_h1test_DIR = $(top_srcdir)/test/modules/http1/mod_h1test
+mod_h1test_SRC = $(mod_h1test_DIR)/mod_h1test.c
 
-$(TM)/mod_h1test.slo: $(mod_h1test_SRC)
-	@mkdir -p $(TM)
+$(mod_h1test_DIR)/mod_h1test.slo: $(mod_h1test_SRC)
 	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) \
-	    -c $(mod_h1test_SRC) -o $(TM)/mod_h1test.lo && touch $@
+	    -c $(mod_h1test_SRC) -o $(mod_h1test_DIR)/mod_h1test.lo && touch $@
 
-$(TM)/mod_h1test.la: $(TM)/mod_h1test.slo
+$(mod_h1test_DIR)/mod_h1test.la: $(mod_h1test_DIR)/mod_h1test.slo
 	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version \
-	    $(TM)/mod_h1test.lo
+	    $(mod_h1test_DIR)/mod_h1test.lo
 
-mod_h2test_SRC = $(top_srcdir)/test/modules/http2/mod_h2test/mod_h2test.c
+mod_h2test_DIR = $(top_srcdir)/test/modules/http2/mod_h2test
+mod_h2test_SRC = $(mod_h2test_DIR)/mod_h2test.c
 
-$(TM)/mod_h2test.slo: $(mod_h2test_SRC)
-	@mkdir -p $(TM)
+$(mod_h2test_DIR)/mod_h2test.slo: $(mod_h2test_SRC)
 	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) \
-	    -I$(top_srcdir)/test/modules/http2/mod_h2test \
-	    -c $(mod_h2test_SRC) -o $(TM)/mod_h2test.lo && touch $@
+	    -I$(mod_h2test_DIR) \
+	    -c $(mod_h2test_SRC) -o $(mod_h2test_DIR)/mod_h2test.lo && touch $@
 
-$(TM)/mod_h2test.la: $(TM)/mod_h2test.slo
+$(mod_h2test_DIR)/mod_h2test.la: $(mod_h2test_DIR)/mod_h2test.slo
 	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version \
-	    $(TM)/mod_h2test.lo
+	    $(mod_h2test_DIR)/mod_h2test.lo
 
-test-modules: $(TM)/mod_aptest.la $(TM)/mod_h1test.la $(TM)/mod_h2test.la
+test-modules: $(mod_aptest_DIR)/mod_aptest.la $(mod_h1test_DIR)/mod_h1test.la $(mod_h2test_DIR)/mod_h2test.la
 
 h2ws-client:
 	cd clients && $(MAKE) $(MFLAGS) h2ws
@@ -68,6 +67,10 @@ test-apps: test-modules h2ws-client
 
 clean:
 	rm -rf gen test-modules
+	cd clients && $(MAKE) $(MFLAGS) clean
+	rm -rf pyhttpd/mod_aptest/.libs pyhttpd/mod_aptest/*.o pyhttpd/mod_aptest/*.lo pyhttpd/mod_aptest/*.slo pyhttpd/mod_aptest/*.la
+	rm -rf modules/http1/mod_h1test/.libs modules/http1/mod_h1test/*.o modules/http1/mod_h1test/*.lo modules/http1/mod_h1test/*.slo modules/http1/mod_h1test/*.la
+	rm -rf modules/http2/mod_h2test/.libs modules/http2/mod_h2test/*.o modules/http2/mod_h2test/*.lo modules/http2/mod_h2test/*.slo modules/http2/mod_h2test/*.la
 	find . -name __pycache__ | xargs rm -rf
 
 distclean:

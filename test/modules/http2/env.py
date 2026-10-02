@@ -28,16 +28,16 @@ class H2TestSetup(HttpdTestSetup):
         module_dir = self.env.test_modules_dir
         if not module_dir and not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(H2TestSetup))
-            p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
-                            capture_output=True,
-                            cwd=os.path.join(local_dir, 'mod_h2test'))
-
-            rv = p.returncode
-            if rv != 0:
-                log.error(f"compiling md_h2test failed: {p.stderr}")
-                raise Exception(f"compiling md_h2test failed: {p.stderr}")
-
             module_dir = f"{local_dir}/mod_h2test/.libs"
+            if not os.path.exists(f"{module_dir}/mod_h2test.so"):
+                p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
+                                capture_output=True,
+                                cwd=os.path.join(local_dir, 'mod_h2test'))
+
+                rv = p.returncode
+                if rv != 0:
+                    log.error(f"compiling md_h2test failed: {p.stderr}")
+                    raise Exception(f"compiling md_h2test failed: {p.stderr}")
 
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:

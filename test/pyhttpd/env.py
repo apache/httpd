@@ -242,15 +242,15 @@ class HttpdTestSetup:
         module_dir = self.env.test_modules_dir
         if not module_dir and not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
-            p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
-                            capture_output=True,
-                            cwd=os.path.join(local_dir, 'mod_aptest'))
-            rv = p.returncode
-            if rv != 0:
-                log.error(f"compiling mod_aptest failed: {p.stderr}")
-                raise Exception(f"compiling mod_aptest failed: {p.stderr}")
-
             module_dir = os.path.join(local_dir, "mod_aptest", ".libs")
+            if not os.path.exists(os.path.join(module_dir, "mod_aptest.so")):
+                p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
+                                capture_output=True,
+                                cwd=os.path.join(local_dir, 'mod_aptest'))
+                rv = p.returncode
+                if rv != 0:
+                    log.error(f"compiling mod_aptest failed: {p.stderr}")
+                    raise Exception(f"compiling mod_aptest failed: {p.stderr}")
 
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:
