@@ -793,6 +793,14 @@ if test -d "./test"; then
 fi
 APACHE_SUBST(PYTEST3)
 
+dnl Enable building test binaries/modules at make time
+AC_ARG_ENABLE(test-apps,
+APACHE_HELP_STRING(--enable-test-apps,Build test binaries and modules at make time),[
+  enable_test_apps=$enableval
+],[
+  enable_test_apps=no
+])
+
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
 
@@ -807,6 +815,30 @@ APACHE_SUBST(SHLIBPATH_VAR)
 APACHE_SUBST(OS_SPECIFIC_VARS)
 APACHE_SUBST(HTTPD_LIBS)
 APACHE_SUBST(CHECK_TARGETS)
+
+dnl Resolve --enable-test-apps after module config stubs have run
+dnl (nghttp2 detection for h2ws happens in modules/http2/config2.m4)
+if test "$enable_test_apps" = "yes" -a -d "./test"; then
+
+  AC_MSG_CHECKING([for nghttp2 to build h2ws test client])
+  if test "x$ac_cv_nghttp2" != "xyes"; then
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([--enable-test-apps requires nghttp2 for h2ws client (use --with-nghttp2=PATH)])
+  fi
+  AC_MSG_RESULT([yes])
+
+  AC_MSG_CHECKING([for DSO support to build test modules])
+  if test "$enable_so" != "yes" -a "$enable_so" != "static"; then
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([--enable-test-apps requires DSO support (--enable-so)])
+  fi
+  AC_MSG_RESULT([yes])
+
+  TEST_APPS_SUMMARY="yes (mod_aptest, mod_h1test, mod_h2test, h2ws)"
+  other_targets="$other_targets test-apps"
+else
+  TEST_APPS_SUMMARY="no"
+fi
 
 PRE_SHARED_CMDS='echo ""'
 POST_SHARED_CMDS='echo ""'
@@ -1132,4 +1164,5 @@ AC_MSG_NOTICE([summary of build options:
     LDFLAGS:        ${APACHE_CONF_SEL_LDFLAGS}
     LIBS:           ${APACHE_CONF_SEL_LIBS}
     C preprocessor: ${APACHE_CONF_SEL_CPP}
+    Test apps:      ${TEST_APPS_SUMMARY}
 ])
