@@ -6,6 +6,24 @@ from .env import TCPFaker
 
 class _UWSGIFaker(TCPFaker):
 
+    def _read_request(self, conn):
+        """Read the whole uwsgi packet: a 4-byte header whose bytes 1-2
+        give the little-endian size of the data block which follows."""
+        conn.settimeout(5)
+        data = b""
+        while len(data) < 4:
+            chunk = conn.recv(4096)
+            if not chunk:
+                return data
+            data += chunk
+        total = 4 + data[1] + (data[2] * 256)
+        while len(data) < total:
+            chunk = conn.recv(total - len(data))
+            if not chunk:
+                break
+            data += chunk
+        return data
+
     @staticmethod
     def hello(data):
         body = b"Hello"

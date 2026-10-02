@@ -46,12 +46,19 @@ Content-Length: 5
 
 Hello""".encode()
 
+    def _read_request(self, conn):
+        """Read the request httpd sent; a single recv() is enough for the
+        tests which do not inspect it.  A faker which checks the request
+        must read it whole, as its protocol frames it, since one recv()
+        returns only what the stack has delivered so far."""
+        return conn.recv(4096)
+
     def _process(self):
         while not self._done:
             try:
                 c, client_address = self._socket.accept()
                 try:
-                    data = c.recv(4096)
+                    data = self._read_request(c)
                     # capture request to backend
                     self._request = data
                     c.sendall(self._make_response(data))
