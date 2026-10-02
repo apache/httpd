@@ -13,6 +13,7 @@ libexecdir = @libexecdir@
 apr_bindir = @APR_BINDIR@
 apxs = @bindir@/apxs
 apachectl = @sbindir@/apachectl
+pre_built_test_binaries_dir = @TEST_MODULES_DIR@
 
 [httpd]
 version = @HTTPD_VERSION@

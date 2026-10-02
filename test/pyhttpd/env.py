@@ -240,7 +240,7 @@ class HttpdTestSetup:
 
     def _add_aptest(self):
         module_dir = self.env.test_modules_dir
-        if not self.env.isWindows:
+        if not module_dir and not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
             p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
                             capture_output=True,

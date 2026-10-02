@@ -19,8 +19,55 @@ test: $(bin_PROGRAMS)
 # dbu: $(dbu_OBJECTS)
 #	$(LINK) $(dbu_OBJECTS) $(PROGRAM_LDADD)
 
+# --- Test module builds (used by --enable-test-apps) ---
+
+TM = test-modules
+
+mod_aptest_SRC = $(top_srcdir)/test/pyhttpd/mod_aptest/mod_aptest.c
+
+$(TM)/mod_aptest.slo: $(mod_aptest_SRC)
+	@mkdir -p $(TM)
+	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) \
+	    -c $(mod_aptest_SRC) -o $(TM)/mod_aptest.lo && touch $@
+
+$(TM)/mod_aptest.la: $(TM)/mod_aptest.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version \
+	    $(TM)/mod_aptest.lo
+
+mod_h1test_SRC = $(top_srcdir)/test/modules/http1/mod_h1test/mod_h1test.c
+
+$(TM)/mod_h1test.slo: $(mod_h1test_SRC)
+	@mkdir -p $(TM)
+	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) \
+	    -c $(mod_h1test_SRC) -o $(TM)/mod_h1test.lo && touch $@
+
+$(TM)/mod_h1test.la: $(TM)/mod_h1test.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version \
+	    $(TM)/mod_h1test.lo
+
+mod_h2test_SRC = $(top_srcdir)/test/modules/http2/mod_h2test/mod_h2test.c
+
+$(TM)/mod_h2test.slo: $(mod_h2test_SRC)
+	@mkdir -p $(TM)
+	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) \
+	    -I$(top_srcdir)/test/modules/http2/mod_h2test \
+	    -c $(mod_h2test_SRC) -o $(TM)/mod_h2test.lo && touch $@
+
+$(TM)/mod_h2test.la: $(TM)/mod_h2test.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version \
+	    $(TM)/mod_h2test.lo
+
+test-modules: $(TM)/mod_aptest.la $(TM)/mod_h1test.la $(TM)/mod_h2test.la
+
+h2ws-client:
+	cd clients && $(MAKE) $(MFLAGS) h2ws
+
+.PHONY: test-apps test-modules h2ws-client
+
+test-apps: test-modules h2ws-client
+
 clean:
-	rm -rf gen
+	rm -rf gen test-modules
 	find . -name __pycache__ | xargs rm -rf
 
 distclean:

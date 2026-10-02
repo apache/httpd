@@ -25,7 +25,7 @@ class H1TestSetup(HttpdTestSetup):
 
     def _add_h1test(self):
         module_dir = self.env.test_modules_dir
-        if not self.env.isWindows:
+        if not module_dir and not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(H1TestSetup))
             p = subprocess.run([self.env.apxs, '-c', 'mod_h1test.c'],
                                capture_output=True,

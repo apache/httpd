@@ -26,7 +26,7 @@ class H2TestSetup(HttpdTestSetup):
 
     def _add_h2test(self):
         module_dir = self.env.test_modules_dir
-        if not self.env.isWindows:
+        if not module_dir and not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(H2TestSetup))
             p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
                             capture_output=True,
