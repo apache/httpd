@@ -100,9 +100,8 @@ static const char *authz_dbd_prepare(cmd_parms *cmd, void *cfg,
 }
 
 static const command_rec authz_dbd_cmds[] = {
-    AP_INIT_FLAG("AuthzDBDLoginToReferer", ap_set_flag_slot,
-                 (void*)APR_OFFSETOF(authz_dbd_cfg, redirect), ACCESS_CONF,
-                 "Whether to redirect to referer on successful login"),
+    AP_INIT_FLAG_SLOT("AuthzDBDLoginToReferer", authz_dbd_cfg, redirect,
+                     ACCESS_CONF, "Whether to redirect to referer on successful login"),
     AP_INIT_TAKE1("AuthzDBDQuery", authz_dbd_prepare,
                   (void*)APR_OFFSETOF(authz_dbd_cfg, query), ACCESS_CONF,
                   "SQL query for DBD Authz or login"),
