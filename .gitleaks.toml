@@ -1,0 +1,11 @@
+# Gitleaks scanner config to prevent false positives
+# see https://github.com/gitleaks/gitleaks
+[allowlist]
+description = "Global Allowlist"
+
+# Ignore based on any subset of the file path
+paths = [
+# Ignore all authentication tests which do contain
+# embedded test passwords.
+'''test\/modules\/aaa\/*\.py''',
+]
