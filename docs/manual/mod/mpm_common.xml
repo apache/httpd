@@ -135,6 +135,47 @@ will exit.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>IdleTerminationTimeout</name>
+<description>Specify a timeout after which an idle server will terminate
+itself.</description>
+<syntax>IdleTerminationTimeout <var>seconds</var></syntax>
+<default>Disabled, the server never terminates itself</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module><module>worker</module>
+<module>prefork</module></modulelist>
+<compatibility>Available in Apache HTTP Server 2.5.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>IdleTerminationTimeout</directive> directive
+    specifies how many seconds the server should remain idle before
+    shutting itself down. The server is only considered idle while it
+    has no open connections and has served no requests; idle workers
+    alone are not enough, since a connection can be open without
+    occupying a worker, and a request can start and finish between two
+    checks. Setting this value to zero means that the server terminates
+    as soon as it is found to be idle.</p>
+
+    <p>The argument must be a non-negative number of seconds; any other
+    value is a fatal configuration error. The directive may only be used
+    in the global server configuration. If it is not used at all, the
+    server never terminates itself.</p>
+
+    <p>The shutdown is not graceful: nothing is in flight when the
+    timeout expires, so there is nothing left to drain and the server
+    exits immediately. Instead of the usual <code>caught SIGTERM,
+    shutting down</code> message, a notice is logged reading <code>idle
+    timeout reached, shutting down</code>.</p>
+
+    <p>This is primarily useful with systemd socket activation, where
+    the listening sockets belong to the service manager rather than to
+    the server: an idle server can exit and leave the sockets with
+    systemd, which starts it again when the next connection arrives.</p>
+</usage>
+<seealso><module>mod_systemd</module></seealso>
+<seealso><directive module="mpm_common">GracefulShutdownTimeout</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>PidFile</name>
 <description>File where the server records the process ID
 of the daemon</description>
