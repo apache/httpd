@@ -146,8 +146,8 @@ typedef struct digest_config_struct {
 /* Identifies a client entry. This is the value sent to the client in the
  * opaque field of the challenge, and echoed back in its Authorization
  * header; zero is never a valid id, and means "no client". Ids are counted
- * out by client_id_counter, so this must remain the type which the atomics
- * used on it take, and the "%u"/"%x" formats below must match it. */
+ * out by client_generate() from client_list->next_id, and the "%u"/"%x"
+ * formats below must match this type. */
 typedef apr_uint32_t client_id_t;
 
 typedef struct hash_entry {
@@ -159,6 +159,9 @@ typedef struct hash_entry {
                                                  * accepted for this client  */
 } client_entry;
 
+/* The client table, in the shared memory segment. Once initialize_tables()
+ * has set it up, the table, the entries reachable from it and every field
+ * below may only be read or modified with client_lock held. */
 static struct hash_table {
     client_entry  **table;
     unsigned long   tbl_len;
@@ -166,11 +169,10 @@ static struct hash_table {
     unsigned long   num_created;
     unsigned long   num_removed;
     unsigned long   num_renewed;
+    client_id_t     next_id;            /* the last id issued */
 } *client_list;
 
-
-/* struct to hold a parsed Authorization header */
-
+/* Outcome from parsing an Authorization header. */
 enum hdr_sts { NO_HEADER, NOT_DIGEST, INVALID, VALID };
 
 /* Outcome of checking a request's nonce and nonce-count against the state
@@ -181,6 +183,7 @@ enum nonce_state {
     NONCE_BAD_COUNT     /* nonce-count did not increase: possible replay */
 };
 
+/* struct to hold a parsed Authorization header */
 typedef struct digest_header_struct {
     const char           *scheme;
     const char           *realm;
@@ -218,7 +221,6 @@ static unsigned char *secret;
 
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
-static volatile client_id_t  *client_id_counter;
 static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
@@ -301,7 +303,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 {
     unsigned long idx;
     apr_status_t   sts;
-    client_id_t    seed;
 
     /* set up client list */
 
@@ -360,6 +361,15 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     }
     client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
+    /* Start the ids at a random point rather than at 1. This segment does
+     * not survive a restart, but the nonces naming its entries do, since the
+     * secret they are hashed with is retained; ids restarting from 1 too
+     * would hand a returning client's id straight back out, so that client
+     * would be checked against whichever new client now held it. The ids are
+     * not secret - they are sent in the clear as the opaque - this only has
+     * to make them distinct across a restart. */
+    ap_random_insecure_bytes(&client_list->next_id,
+                             sizeof client_list->next_id);
 
     sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
                                  s, ctx, 0);
@@ -368,23 +378,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
         return !OK;
     }
 
-
-    /* setup opaque */
-
-    client_id_counter = rmm_malloc(client_rmm, sizeof *client_id_counter);
-    if (client_id_counter == NULL) {
-        log_error_and_cleanup("failed to allocate shared memory", -1, s);
-        return !OK;
-    }
-    /* Start the ids at a random point rather than at 1. This segment does
-     * not survive a restart, but the nonces naming its entries do, since the
-     * secret they are hashed with is retained; ids restarting from 1 too
-     * would hand a returning client's id straight back out, so that client
-     * would be checked against whichever new client now held it. The ids are
-     * not secret - they are sent in the clear as the opaque - this only has
-     * to make them distinct across a restart. */
-    ap_random_insecure_bytes(&seed, sizeof seed);
-    *client_id_counter = seed;
 
     /* setup one-time-nonce counter */
 
@@ -901,20 +894,16 @@ static unsigned long gc(server_rec *s)
 
 
 /*
- * Add a new client to the list. Returns non-zero if successful, zero
- * otherwise. This triggers the garbage collection if memory is low. (The
- * new entry is not returned: see find_client().)
+ * Add a new client to the list, under a newly issued id. Returns the id if
+ * successful, zero otherwise. This triggers the garbage collection if
+ * memory is low. (The new entry is not returned: see find_client().)
  */
-static int add_client(client_id_t key, client_entry *info, server_rec *s)
+static client_id_t client_generate(request_rec *r)
 {
+    server_rec *s = r->server;
     int bucket;
     client_entry *entry;
-
-    if (!key) {
-        return 0;
-    }
-
-    bucket = key % client_list->tbl_len;
+    client_id_t key;
 
     apr_global_mutex_lock(client_lock);
 
@@ -932,13 +921,22 @@ static int add_client(client_id_t key, client_entry *info, server_rec *s)
         entry = rmm_malloc(client_rmm, sizeof(client_entry));
         if (!entry) {
             apr_global_mutex_unlock(client_lock);
-            return 0;          /* give up; the caller logs this */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
+                          "unable to allocate a client entry - failing the "
+                          "request, since this configuration needs one");
+            return 0;
         }
     }
 
-    /* now add the entry */
+    /* now issue the id and add the entry; the id wraps after 2^32
+     * clients, so skip zero, which means "no client" */
 
-    memcpy(entry, info, sizeof(client_entry));
+    if ((key = ++client_list->next_id) == 0) {
+        key = ++client_list->next_id;
+    }
+    bucket = key % client_list->tbl_len;
+
+    memset(entry, 0, sizeof(client_entry));
     entry->key  = key;
     entry->next = client_list->table[bucket];
     client_list->table[bucket] = entry;
@@ -950,7 +948,7 @@ static int add_client(client_id_t key, client_entry *info, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01768)
                  "allocated new client %u", key);
 
-    return 1;
+    return key;
 }
 
 
@@ -1187,37 +1185,6 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
     gen_nonce_hash(p, nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
 
     return nonce;
-}
-
-
-/*
- * Opaque and hash-table management
- */
-
-/*
- * Generate a new client entry and add it to the list. Returns the key of
- * the new entry, or 0 if it failed. (The entry itself is deliberately not
- * returned: see find_client().)
- */
-static client_id_t client_generate(const request_rec *r)
-{
-    client_id_t op = apr_atomic_inc32(client_id_counter);
-    client_entry new_entry = { 0, NULL, 0, 0 };
-
-    /* The counter wraps after 2^32 clients: skip an id of zero, which means
-     * "no client" and which add_client() would refuse. */
-    if (op == 0) {
-        op = apr_atomic_inc32(client_id_counter);
-    }
-
-    if (!add_client(op, &new_entry, r->server)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
-                      "unable to allocate a client entry - failing the "
-                      "request, since this configuration needs one");
-        return 0;
-    }
-
-    return op;
 }
 
 
