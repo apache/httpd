@@ -146,9 +146,10 @@ typedef struct digest_config_struct {
 /* Identifies a client entry. This is the value sent to the client in the
  * opaque field of the challenge, and echoed back in its Authorization
  * header; zero is never a valid id, and means "no client". Ids are counted
- * out by client_generate() from client_list->next_id, and the "%u"/"%x"
- * formats below must match this type. */
-typedef apr_uint32_t client_id_t;
+ * out by client_generate() from client_list->next_id, and are kept within
+ * 1..CLIENT_ID_MAX so that the opaque can be parsed by apr_strtoi64(). */
+typedef apr_uint64_t client_id_t;
+#define CLIENT_ID_MAX   APR_INT64_MAX
 
 typedef struct hash_entry {
     client_id_t        key;                     /* the key for this entry    */
@@ -366,10 +367,12 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
      * secret they are hashed with is retained; ids restarting from 1 too
      * would hand a returning client's id straight back out, so that client
      * would be checked against whichever new client now held it. The ids are
-     * not secret - they are sent in the clear as the opaque - this only has
-     * to make them distinct across a restart. */
+     * not secret - they are sent in the clear as the opaque - but over a
+     * range of 2^63 neither wrapping the counter nor walking it from a
+     * random start to an id issued before the restart is feasible. */
     ap_random_insecure_bytes(&client_list->next_id,
                              sizeof client_list->next_id);
+    client_list->next_id %= CLIENT_ID_MAX;
 
     sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
                                  s, ctx, 0);
@@ -736,11 +739,11 @@ static int client_exists(client_id_t key, const request_rec *r)
 
     if (found) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01764)
-                      "client %u found", key);
+                      "client %" APR_UINT64_T_FMT " found", key);
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01765)
-                      "client %u not found", key);
+                      "client %" APR_UINT64_T_FMT " not found", key);
     }
 
     return found;
@@ -819,8 +822,8 @@ static enum nonce_state client_update_nonce(const request_rec *r,
 
     if (!known) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
-                      "client %u is no longer known - sending new nonce",
-                      key);
+                      "client %" APR_UINT64_T_FMT " is no longer known - "
+                      "sending new nonce", key);
     }
     else if (state == NONCE_STALE) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
@@ -928,12 +931,9 @@ static client_id_t client_generate(request_rec *r)
         }
     }
 
-    /* now issue the id and add the entry; the id wraps after 2^32
-     * clients, so skip zero, which means "no client" */
+    /* now issue the id, in 1..CLIENT_ID_MAX, and add the entry */
 
-    if ((key = ++client_list->next_id) == 0) {
-        key = ++client_list->next_id;
-    }
+    key = client_list->next_id = client_list->next_id % CLIENT_ID_MAX + 1;
     bucket = key % client_list->tbl_len;
 
     memset(entry, 0, sizeof(client_entry));
@@ -946,7 +946,7 @@ static client_id_t client_generate(request_rec *r)
     apr_global_mutex_unlock(client_lock);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01768)
-                 "allocated new client %u", key);
+                 "allocated new client %" APR_UINT64_T_FMT, key);
 
     return key;
 }
@@ -1069,13 +1069,13 @@ static enum hdr_sts parse_digest_header(request_rec *r,
 
     if (resp->opaque) {
         char *endptr;
-        unsigned long num;
+        apr_int64_t num;
 
-        errno = 0;
-        num = strtoul(resp->opaque, &endptr, 16);
-        if (errno == 0 && *endptr == '\0' && num > 0
-            && num <= APR_UINT32_MAX)
-            resp->opaque_num = (client_id_t)num;
+        num = apr_strtoi64(resp->opaque, &endptr, 16);
+        if (errno || *endptr != '\0' || num <= 0 || num > CLIENT_ID_MAX) {
+            return INVALID;
+        }
+        resp->opaque_num = (client_id_t)num;
     }
 
     return VALID;
@@ -1194,9 +1194,9 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
 
 /* Format a client id as the opaque sent to the client. Never called with
  * zero: the callers check client_generate() for failure first. */
-static const char *ltox(apr_pool_t *p, client_id_t num)
+static const char *client_id_to_opaque(apr_pool_t *p, client_id_t num)
 {
-    return apr_psprintf(p, "%x", num);
+    return apr_psprintf(p, "%" APR_UINT64_T_HEX_FMT, num);
 }
 
 /* Generate a challenge for the client, and return the status which the
@@ -1220,7 +1220,7 @@ static int note_digest_auth_failure(request_rec *r,
             if ((client_key = client_generate(r)) == 0) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
-            opaque = ltox(r->pool, client_key);
+            opaque = client_id_to_opaque(r->pool, client_key);
         }
         /* else this configuration tracks no per-client state, so no entry
          * is allocated and no opaque is sent */
@@ -1234,7 +1234,7 @@ static int note_digest_auth_failure(request_rec *r,
         if ((client_key = client_generate(r)) == 0) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
-        opaque = ltox(r->pool, client_key);
+        opaque = client_id_to_opaque(r->pool, client_key);
         stale = 1;
         client_note_renewed();
     }
@@ -1607,8 +1607,8 @@ static int authenticate_digest_user(request_rec *r)
         else if (resp->auth_hdr_sts == INVALID) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01782)
                           "missing user, realm, nonce, uri, digest, "
-                          "cnonce, or nonce_count in authorization header: %s",
-                          r->uri);
+                          "cnonce, or nonce_count, or invalid opaque, in "
+                          "authorization header: %s", r->uri);
         }
         /* else (resp->auth_hdr_sts == NO_HEADER) */
         return note_digest_auth_failure(r, conf, resp, 0);
@@ -1679,13 +1679,6 @@ static int authenticate_digest_user(request_rec *r)
                           "request-uri <%s>", resp->uri, resp->raw_request_uri);
             return HTTP_BAD_REQUEST;
         }
-    }
-
-    if (resp->opaque && resp->opaque_num == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01787)
-                      "received invalid opaque - got `%s'",
-                      resp->opaque);
-        return note_digest_auth_failure(r, conf, resp, 0);
     }
  
     

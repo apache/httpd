@@ -116,28 +116,32 @@ class TestDigestNcCheck:
         assert r2.response["status"] == 200
 
     def test_digest_035_out_of_range_opaque_is_not_truncated(self, env):
-        # The opaque is a 32-bit client id. A value which would truncate onto
-        # a live id must not select that client. This is observable in the
-        # challenge which comes back: a client the server still knows is
-        # re-challenged with its own opaque, whereas an unknown one is given a
-        # freshly minted opaque and stale=true.
+        # The opaque is a 32- or 64-bit client id. A value which would
+        # truncate onto a live id must not select that client. This is
+        # observable in the challenge which comes back: a client the server
+        # still knows is re-challenged with its own opaque, whereas an unknown
+        # one is given a freshly minted opaque and stale=true.
         challenge = self.challenge(env, "nccheck")
         assert self.authenticate(env, "nccheck", challenge,
                                  nc="00000001").response["status"] == 200
 
-        # 2^32 + the live id, which truncates to the live id in 32 bits
-        crafted = "%x" % ((1 << 32) + int(challenge.opaque, 16))
-        auth = dc.build_authorization(
-            AAATestEnv.DIGEST_USER, challenge, AAATestEnv.DIGEST_PASSWORD,
-            method="GET", uri="/digest/nccheck/secret.txt", nc="00000002",
-            cnonce="trunc-cnonce", opaque=crafted)
-        r = env.curl_get(env.mkurl("http", "aaa", "/digest/nccheck/secret.txt"),
-                         options=["-H", f"Authorization: {auth}"])
-        # AH01787 with the range check in place; AH01776 (nonce hash) if the
-        # opaque were truncated onto the live client instead
-        env.httpd_error_log.ignore_recent(lognos=["AH01787", "AH01776"])
-        assert r.response["status"] == 401
-        new_challenge = dc.DigestChallenge.parse(
-            r.response["header"]["www-authenticate"])
-        assert new_challenge.opaque != crafted, \
-            "an out-of-range opaque was truncated onto a live client id"
+        # 2^bits + the live id, which truncates to the live id in that many
+        # bits; one of the two is out of range whichever width is in use
+        for bits in (32, 64):
+            crafted = "%x" % ((1 << bits) + int(challenge.opaque, 16))
+            auth = dc.build_authorization(
+                AAATestEnv.DIGEST_USER, challenge, AAATestEnv.DIGEST_PASSWORD,
+                method="GET", uri="/digest/nccheck/secret.txt", nc="00000002",
+                cnonce="trunc-cnonce", opaque=crafted)
+            r = env.curl_get(env.mkurl("http", "aaa", "/digest/nccheck/secret.txt"),
+                             options=["-H", f"Authorization: {auth}"])
+            # AH01782 (AH01787 before 64-bit ids) for an opaque out of range,
+            # AH01776 (nonce hash) for one in range but not the opaque the
+            # nonce was issued with
+            env.httpd_error_log.ignore_recent(lognos=["AH01782", "AH01787",
+                                                      "AH01776"])
+            assert r.response["status"] == 401
+            new_challenge = dc.DigestChallenge.parse(
+                r.response["header"]["www-authenticate"])
+            assert new_challenge.opaque != crafted, \
+                f"an opaque 2^{bits} above a live client id was truncated onto it"

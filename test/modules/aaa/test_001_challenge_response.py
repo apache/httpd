@@ -167,7 +167,7 @@ class TestDigestChallengeResponse:
             opaque="not-a-hex-number")
         r = env.curl_get(self.url(env), options=["-H", f"Authorization: {auth}"])
         assert r.response["status"] == 401
-        env.httpd_error_log.ignore_recent(lognos=["AH01787"])
+        env.httpd_error_log.ignore_recent(lognos=["AH01782", "AH01787"])
 
     def test_digest_014_tampered_response_hash(self, env):
         challenge = self.challenge(env)
