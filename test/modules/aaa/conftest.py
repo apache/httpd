@@ -94,6 +94,11 @@ def env(pytestconfig) -> AAATestEnv:
         # AuthDigestProvider intentionally omitted: falls back to "file".
         f'AuthUserFile "{pwfile}"',
     ]))
+    # A request which fails header validation (e.g. no Host on HTTP/1.1)
+    # is answered before the Digest module's post_read_request runs, so it
+    # has no per-request Digest record; an ErrorDocument redirecting it into
+    # a Digest-protected location must not then dereference that record.
+    conf.add('ErrorDocument 400 /digest/default/secret.txt')
     conf.install()
     assert env.apache_restart() == 0
     return env
