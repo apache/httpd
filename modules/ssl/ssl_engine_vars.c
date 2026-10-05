@@ -1033,9 +1033,9 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
 static const char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
 {
 #if OPENSSL_VERSION_NUMBER >= 0x30200000L
-    apr_uint64_t rtt;
+    uint64_t rtt;
     if (SSL_get_handshake_rtt(ssl, &rtt) > 0)
-        return apr_psprintf(p, "%" APR_UINT64_T_FMT, rtt);
+        return apr_psprintf(p, "%" APR_UINT64_T_FMT, (apr_uint64_t)rtt);
 #endif
     return NULL;
 }
