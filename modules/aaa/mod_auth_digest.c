@@ -1302,7 +1302,7 @@ static int note_digest_auth_failure(request_rec *r,
     /* Setup domain, which tells the client which URIs share this
      * protection space, so that it does not send the Authorization header
      * (usually more than 200 bytes) where it is not needed. */
-    if (r->proxyreq || !conf->uri_list) {
+    if (r->proxyreq == PROXYREQ_PROXY || !conf->uri_list) {
         domain = NULL;
     }
     else {
