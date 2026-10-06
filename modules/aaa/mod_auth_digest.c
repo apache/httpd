@@ -199,6 +199,7 @@ typedef struct digest_header_struct {
     client_id_t           opaque_num;
     const char           *message_qop;
     const char           *nonce_count;
+    unsigned long         nc;           /* nonce_count parsed, when valid */
     /* the following fields are not (directly) from the header */
     const char           *raw_request_uri;
     apr_uri_t            *psd_request_uri;
@@ -1078,6 +1079,21 @@ static enum hdr_sts parse_digest_header(request_rec *r,
         resp->opaque_num = (client_id_t)num;
     }
 
+    /* The nonce-count, when present, is 8 hex digits (RFC 7616 3.4); check
+     * it here so it is a well-formed count everywhere it is later used or
+     * echoed, rather than parsed leniently into a wrapped or negative value
+     * or reflected verbatim into the Authentication-Info header. */
+    if (resp->nonce_count != NULL) {
+        int i;
+        for (i = 0; i < 8 && apr_isxdigit(resp->nonce_count[i]); i++) {
+            continue;
+        }
+        if (i != 8 || resp->nonce_count[8] != '\0') {
+            return INVALID;
+        }
+        resp->nc = strtoul(resp->nonce_count, NULL, 16);
+    }
+
     return VALID;
 }
 
@@ -1413,23 +1429,12 @@ static authn_status get_hash(request_rec *r, const char *user,
 static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
                                   const digest_config_rec *conf)
 {
-    unsigned long nc;
-    const char *snc = resp->nonce_count;
-    char *endptr;
-
     if (!conf->check_nc && conf->nonce_lifetime != 0) {
         return OK;              /* nothing is tracked per-client */
     }
 
-    nc = strtol(snc, &endptr, 16);
-    if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01773)
-                      "invalid nc %s received - not a number", snc);
-        return note_digest_auth_failure(r, conf, resp, 0);
-    }
-
     switch (client_update_nonce(r, resp->opaque_num, conf, resp->nonce_time,
-                                nc, resp->nonce)) {
+                                resp->nc, resp->nonce)) {
     case NONCE_ACCEPTED:
         return OK;
 
