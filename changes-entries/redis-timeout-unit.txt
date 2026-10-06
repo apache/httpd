@@ -1,0 +1,3 @@
+  *) mod_socache_redis: Fix the unit of the RedisTimeout passed to the Redis
+     client, which made the read/write timeout practically infinite.
+     PR 70193.  [Christophe JAILLET, Arturo Bernal]
