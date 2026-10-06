@@ -386,6 +386,27 @@ class TestSed:
         assert r.response["status"] == 200
         assert r.response["body"] == b"one MON two\nMON MON\n"
 
+    # The request Content-Length is the length of the body before it was
+    # filtered, so once mod_sed has started reading the body it is removed:
+    # a handler must not find the original length.
+    def test_filters_003_34(self, env):
+        self.configure(env, "s/monday/MONDAYMONDAY/g", input_sed=True,
+                       extra="""
+            <Location "/getline">
+                SetHandler aptest-getline-echo
+                SetInputFilter SED
+            </Location>
+            """)
+        data = "one monday two\nmonday monday\n"
+        r = env.curl_post_data(env.mkurl("http", "test1", "/getline"),
+                               data=data)
+        assert r.response, "no response"
+        assert r.response["status"] == 200
+        assert r.response["body"] == \
+            data.replace("monday", "MONDAYMONDAY").encode()
+        assert "ap-test-content-length" not in r.response["header"], \
+            r.response["header"]
+
     # --- interval expressions ---------------------------------------------
 
     # \{m,n\} repeats a character or a bracket expression.
