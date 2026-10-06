@@ -104,6 +104,10 @@ RedisConnPoolTTL 60
     <p>Valid values for <directive>RedisTimeout</directive> are times
     up to one hour. 0 means no timeout.</p>
 
+    <p>The Redis client has a granularity of whole seconds for the
+    Read/Write timeout. A positive value with a fractional second is
+    rounded up to the next second.</p>
+
     <note><p>This timeout defaults to units of seconds, but accepts
     suffixes for milliseconds (ms), seconds (s), minutes (min), and hours (h).
     </p></note>

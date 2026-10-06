@@ -13,6 +13,7 @@ class SSLTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(SSLTestSetup)))
         self.add_modules(["ssl"])
+        self.add_optional_modules(["socache_redis"])
 
 
 class SSLTestEnv(HttpdTestEnv):

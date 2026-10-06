@@ -55,11 +55,13 @@ typedef struct {
 #endif
 
 #ifndef RD_DEFAULT_SERVER_TTL
+/* In usec. */
 #define RD_DEFAULT_SERVER_TTL    apr_time_from_sec(15)
 #endif
 
 #ifndef RD_DEFAULT_SERVER_RWTO
-#define RD_DEFAULT_SERVER_RWTO    apr_time_from_sec(5)
+/* In seconds */
+#define RD_DEFAULT_SERVER_RWTO    5
 #endif
 
 module AP_MODULE_DECLARE_DATA socache_redis_module;
@@ -449,8 +451,9 @@ static const char *socache_rd_set_rwto(cmd_parms *cmd, void *dummy,
                            " can only be 0 or up to one hour.", NULL);
     }
 
-    /* apr_redis_server_create needs a ttl in usec. */
-    sconf->rwto = rwto;
+    /* apr_redis_server_create needs a rwto in seconds, round up such that
+     * a positive timeout does not become 0. */
+    sconf->rwto = apr_time_sec(rwto + apr_time_from_sec(1) - 1);
 
     return NULL;
 }
