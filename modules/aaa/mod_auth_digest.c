@@ -1515,8 +1515,10 @@ static const char *new_digest(const request_rec *r,
                                                NULL));
 }
 
-static void copy_uri_components(apr_uri_t *dst,
-                                apr_uri_t *src, request_rec *r) {
+static int copy_uri_components(apr_uri_t *dst,
+                               apr_uri_t *src, request_rec *r) {
+    int rv;
+
     if (src->scheme && src->scheme[0] != '\0') {
         dst->scheme = src->scheme;
     }
@@ -1526,7 +1528,9 @@ static void copy_uri_components(apr_uri_t *dst,
 
     if (src->hostname && src->hostname[0] != '\0') {
         dst->hostname = apr_pstrdup(r->pool, src->hostname);
-        ap_unescape_url(dst->hostname);
+        if ((rv = ap_unescape_url(dst->hostname)) != OK) {
+            return rv;
+        }
     }
     else {
         dst->hostname = (char *) ap_get_server_name(r);
@@ -1541,7 +1545,9 @@ static void copy_uri_components(apr_uri_t *dst,
 
     if (src->path && src->path[0] != '\0') {
         dst->path = apr_pstrdup(r->pool, src->path);
-        ap_unescape_url(dst->path);
+        if ((rv = ap_unescape_url(dst->path)) != OK) {
+            return rv;
+        }
     }
     else {
         dst->path = src->path;
@@ -1549,13 +1555,16 @@ static void copy_uri_components(apr_uri_t *dst,
 
     if (src->query && src->query[0] != '\0') {
         dst->query = apr_pstrdup(r->pool, src->query);
-        ap_unescape_url(dst->query);
+        if ((rv = ap_unescape_url(dst->query)) != OK) {
+            return rv;
+        }
     }
     else {
         dst->query = src->query;
     }
 
     dst->hostinfo = src->hostinfo;
+    return OK;
 }
 
 /* These functions return 0 if client is OK, and proper error status
@@ -1631,23 +1640,19 @@ static int authenticate_digest_user(request_rec *r)
          */
         apr_uri_t r_uri, d_uri;
 
-        copy_uri_components(&r_uri, resp->psd_request_uri, r);
-        if (apr_uri_parse(r->pool, resp->uri, &d_uri) != APR_SUCCESS) {
+        if (copy_uri_components(&r_uri, resp->psd_request_uri, r) != OK) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                          "invalid request-uri <%s>", r->unparsed_uri);
+            return HTTP_BAD_REQUEST;
+        }
+        if (apr_uri_parse(r->pool, resp->uri, &d_uri) != APR_SUCCESS
+            || (d_uri.hostname && ap_unescape_url(d_uri.hostname) != OK)
+            || (d_uri.path && ap_unescape_url(d_uri.path) != OK)
+            || (d_uri.query && ap_unescape_url(d_uri.query) != OK)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01783)
                           "invalid uri <%s> in Authorization header",
                           resp->uri);
             return HTTP_BAD_REQUEST;
-        }
-
-        if (d_uri.hostname) {
-            ap_unescape_url(d_uri.hostname);
-        }
-        if (d_uri.path) {
-            ap_unescape_url(d_uri.path);
-        }
-
-        if (d_uri.query) {
-            ap_unescape_url(d_uri.query);
         }
 
         if (r->method_number == M_CONNECT) {
