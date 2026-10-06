@@ -84,3 +84,19 @@ class TestDigestConfigErrors:
     def test_digest_067_shmemsize_units_accepted(self, env):
         r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 64K"])
         assert r.exit_code == 0
+
+    def test_digest_068_shmemsize_trailing_junk_rejected(self, env):
+        # Junk after the unit character must be rejected, not silently
+        # ignored (which read "64Kfoo" as 64K).
+        r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 64Kfoo"])
+        assert r.exit_code != 0
+        assert "AuthDigestShmemSize" in r.stderr
+
+    def test_digest_069_shmemsize_no_room_for_entry_rejected(self, env):
+        # A segment large enough for the table header but with no room for a
+        # single client entry (once rmm overhead is counted) must be
+        # rejected: otherwise every request needing an entry gets a 503 the
+        # config check did not warn about.
+        r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 200"])
+        assert r.exit_code != 0
+        assert "AuthDigestShmemSize" in r.stderr
