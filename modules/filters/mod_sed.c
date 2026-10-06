@@ -462,13 +462,13 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
     apr_bucket_brigade *bbinp;
     sed_expr_config *sed_cfg = &cfg->input;
 
-    if (mode != AP_MODE_READBYTES) {
-        return ap_get_brigade(f->next, bb, mode, block, readbytes);
-    }
-
     if ((sed_cfg == NULL) || (sed_cfg->sed_cmds == NULL)) {
         /* No sed expression */
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
+    }
+
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
+        return APR_ENOTIMPL;
     }
 
     if (!ctx) {
@@ -510,7 +510,9 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
 
         /* read the bytes from next level filter */
         apr_brigade_cleanup(bbinp);
-        status = ap_get_brigade(f->next, bbinp, mode, block, readbytes);
+        status = ap_get_brigade(f->next, bbinp, AP_MODE_READBYTES, block,
+                                mode == AP_MODE_GETLINE ? AP_IOBUFSIZE
+                                                        : readbytes);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -541,6 +543,10 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
                 flush_output_buffer(ctx);
             }
         }
+    }
+
+    if (mode == AP_MODE_GETLINE) {
+        return apr_brigade_split_line(bb, ctx->bb, block, HUGE_STRING_LEN);
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->bb)) {

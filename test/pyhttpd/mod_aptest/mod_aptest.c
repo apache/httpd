@@ -74,6 +74,48 @@ static int aptest_allow_methods(request_rec *r)
     return DECLINED;
 }
 
+/*
+ * Handler "aptest-getline-echo": echo the request body back, reading it
+ * with AP_MODE_GETLINE rather than AP_MODE_READBYTES.
+ */
+static int aptest_getline_echo(request_rec *r)
+{
+    apr_bucket_brigade *bb;
+    apr_status_t rv;
+    int seen_eos = 0;
+
+    if (strcmp(r->handler, "aptest-getline-echo")) {
+        return DECLINED;
+    }
+
+    ap_set_content_type(r, "text/plain");
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    while (!seen_eos) {
+        char *line;
+        apr_size_t len;
+
+        rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,
+                            APR_BLOCK_READ, HUGE_STRING_LEN);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "aptest-getline-echo: reading body failed");
+            return ap_map_http_request_error(rv, HTTP_BAD_REQUEST);
+        }
+        if (!APR_BRIGADE_EMPTY(bb)
+            && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+            seen_eos = 1;
+        }
+        rv = apr_brigade_pflatten(bb, &line, &len, r->pool);
+        if (rv != APR_SUCCESS) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        ap_rwrite(line, len, r);
+        apr_brigade_cleanup(bb);
+    }
+
+    return OK;
+}
+
 /* Install this module into the apache2 infrastructure.
  */
 static void aptest_hooks(apr_pool_t *pool)
@@ -85,6 +127,7 @@ static void aptest_hooks(apr_pool_t *pool)
     ap_hook_post_read_request(aptest_post_read_request, NULL,
                               NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(aptest_allow_methods, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(aptest_getline_echo, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
 
