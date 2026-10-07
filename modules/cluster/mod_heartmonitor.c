@@ -208,7 +208,13 @@ static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, apr_pool_t *pool)
         hmserver.ready = s->ready;
         hmserver.seen = s->seen;
         /* XXX locking for grab() / put() */
-        storage->grab(slotmem, &i);
+        if (storage->grab(slotmem, &i) != APR_SUCCESS) {
+            /* No free slot: don't let put() overwrite another server */
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL, APLOGNO(10633)
+                         "no free slot for %s, increase HeartbeatMaxServers",
+                         s->ip);
+            return APR_SUCCESS;
+        }
         hmserver.id = i;
         storage->put(slotmem, i, (unsigned char *)&hmserver, sizeof(hmserver));
     }

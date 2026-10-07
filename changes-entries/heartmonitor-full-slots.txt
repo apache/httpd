@@ -1,0 +1,3 @@
+  *) mod_heartmonitor: Don't overwrite another server's slot when a new
+     server sends heartbeats after HeartbeatMaxServers slots are in use.
+     [arshiya tabasum <arshi bugqore.com>]
