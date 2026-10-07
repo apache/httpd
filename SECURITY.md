@@ -134,7 +134,7 @@ to:
   which are expensive to evaluate
 
 In configurations supporting in-process scripting language interpreters
-which are not sandboxed, such as `mod_lua` or `mod_php`,
+which are not sandboxed, such as `mod_lua`, `mod_sed` or `mod_php`,
 site authors have exactly equivalent privileges to the user which the
 server runs as.
 
