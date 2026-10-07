@@ -90,8 +90,19 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
                     reason=f'websockets is {ws_version}, need at least {ws_version_min}')
 class TestWebSockets:
 
+    def _build_clients(self, env):
+        clients_dir = os.path.join(os.path.dirname(env.clients_dir), 'clients')
+        p = subprocess.run(['make'], capture_output=True, cwd=clients_dir)
+        rv = p.returncode
+        if rv != 0:
+            log.error(f"compiling test clients failed: {p.stderr}")
+            raise Exception(f"compiling test clients failed: {p.stderr}")
+
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
+        # create the H2ws binary needed in some of the tests
+        self._build_clients(env)
+
         # Apache config that CONNECT proxies a WebSocket server for paths starting
         # with '/ws/'
         # The WebSocket server is started in pytest fixture 'ws_server' below.
