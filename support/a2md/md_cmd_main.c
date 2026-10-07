@@ -186,7 +186,7 @@ static apr_status_t cmd_process(md_cmd_ctx *ctx, const md_cmd_t *cmd)
         }
         if (APR_SUCCESS != (rv = md_reg_create(&ctx->reg, ctx->p, ctx->store,
                                                md_cmd_ctx_get_option(ctx, MD_CMD_OPT_PROXY_URL),
-                                               ctx->ca_file, NULL, apr_time_from_sec(15), 10,
+                                               ctx->ca_file, apr_time_from_sec(15), 10,
                                                0, apr_time_from_sec(5)))) {
             fprintf(stderr, "error %d creating registry from store: %s\n", rv, ctx->base_dir);
             return APR_EINVAL;
@@ -199,7 +199,7 @@ static apr_status_t cmd_process(md_cmd_ctx *ctx, const md_cmd_t *cmd)
         }
         rv = md_acme_create(&ctx->acme, ctx->p, ctx->ca_url, 
                             md_cmd_ctx_get_option(ctx, MD_CMD_OPT_PROXY_URL),
-                            ctx->ca_file, NULL);
+                            ctx->ca_file);
         if (APR_SUCCESS != rv) {
             fprintf(stderr, "error creating acme instance %s (%s)\n", 
                     ctx->ca_url, ctx->base_dir);
