@@ -15,7 +15,7 @@ class MetadataTestSetup(HttpdTestSetup):
         self.add_modules(["mime", "mime_magic", "env", "include"])
         # mod_mime_libmagic needs libmagic at build time, so it must not
         # be a hard requirement; its tests skip when it is absent.
-        self.add_optional_modules(["mime_libmagic"])
+        self.add_optional_modules(["mime_libmagic", "remoteip"])
 
 
 class MetadataTestEnv(HttpdTestEnv):
