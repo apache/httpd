@@ -1,6 +1,9 @@
 ServerName localhost
 ServerRoot "${server_dir}"
 
+DefaultRuntimeDir logs
+PidFile httpd.pid
+
 Include "conf/modules.conf"
 
 DocumentRoot "${server_dir}/htdocs"

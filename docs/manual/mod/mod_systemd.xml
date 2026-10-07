@@ -32,7 +32,7 @@
 <summary>
     <p>This module provides support for systemd integration. It allows
     httpd to be used in a service with the systemd
-    <code>Type=notify</code> (see <a
+    <code>Type=notify</code> or <code>Type=notify-reload</code> (see <a
     href="https://www.freedesktop.org/software/systemd/man/systemd.service.html">systemd.service(5)</a>
     for more information).  The module is activated if loaded.</p>
 
@@ -69,13 +69,90 @@ WantedBy=multi-user.target
    href="https://www.freedesktop.org/software/systemd/man/systemd.kill.html">systemd.kill(5)</a>
    for more information.</p>
     
-   <p>This module does not provide support for Systemd socket activation.</p>
+   <p>A service manager from systemd 253 onwards offers
+   <code>Type=notify-reload</code>, which is worth using in preference.
+   Under <code>Type=notify</code> a <code>systemctl reload</code>
+   returns as soon as the <code>ExecReload</code> command has sent its
+   signal, which is before the new configuration has been read, and it
+   reports success whatever becomes of the restart afterwards.
+   <code>Type=notify-reload</code> instead holds the reload open until
+   the server reports it finished, so the command waits for the new
+   configuration to be in use and fails if it never is.  mod_systemd
+   sends the <code>RELOADING=1</code> notification the protocol expects
+   while the configuration is being read, stamped with the
+   <code>MONOTONIC_USEC</code> the service manager requires, and
+   <code>READY=1</code> once it has been loaded.</p>
+
+    <example>
+    <title>Example of a service unit which reloads synchronously</title>
+    <pre>
+[Service]
+Type=notify-reload
+ReloadSignal=SIGCONT
+ExecStart=/usr/local/apache2/bin/httpd -D FOREGROUND -k start
+ExecReload=/usr/local/apache2/bin/httpd -k graceful
+KillMode=mixed
+    </pre>
+    </example>
+
+   <p>The service manager runs <code>ExecReload</code> first, and sends
+   the signal named by <code>ReloadSignal</code> only once that command
+   has exited successfully.  Keeping <code>ExecReload</code> is what
+   makes the reload safe: <code>httpd -k graceful</code> parses the new
+   configuration in a process of its own and exits without signalling
+   anything if it does not parse, so the reload fails and the running
+   server carries on with the configuration it already has.  Leaving
+   <code>ExecReload</code> out, and letting the service manager signal
+   the server directly, gives up that check: the running parent reads
+   the new configuration itself, and a configuration which does not
+   parse makes it exit, taking the server down.</p>
+
+   <p>The signal sent after <code>ExecReload</code> has run is then
+   redundant, so <code>ReloadSignal</code> should name one httpd does
+   not act on, such as <code>SIGCONT</code>.  It matters that it is set:
+   the default is <code>SIGHUP</code>, which httpd takes as an
+   <em>ungraceful</em> restart, dropping the connections a reload is
+   meant to preserve.  A unit which does leave out
+   <code>ExecReload</code> must set <code>ReloadSignal=SIGUSR1</code>,
+   the signal httpd restarts gracefully on.</p>
+
+   <p>Systemd socket activation is supported if httpd was built with
+   it.  Each <directive module="mpm_common">Listen</directive> port
+   must then be one passed in by systemd; a port which was not is a
+   fatal configuration error rather than one httpd opens for itself.
+   Socket activation is used only if this module is loaded, so it can
+   be built in and left unused.</p>
 
     <p><directive module="core">ExtendedStatus</directive> is
     enabled by default if the module is loaded.  If <directive
     module="core">ExtendedStatus</directive> is not disabled in
     the configuration, run-time load and request statistics are made
     available in the <code>systemctl status</code> output.</p>
+
+    <p>The systemd watchdog is supported.  If the service unit sets
+    <code>WatchdogSec=</code>, the parent process sends the keep-alive
+    notification which tells systemd the server is still alive; a server
+    which stops sending it is terminated and, with a suitable
+    <code>Restart=</code> setting, restarted.  The notification is sent
+    while the configuration is being read and again once it is loaded, so
+    that a reload is covered, and periodically from the parent process
+    while the server runs.</p>
+
+    <p>That periodic notification is sent about every ten seconds, which
+    is how often the parent process runs the hook it is sent from.  A
+    <code>WatchdogSec=</code> of less than twice that cannot be met, and
+    would have systemd terminating a server which is working normally;
+    such a setting is reported as a warning at startup.  Use a
+    <code>WatchdogSec=</code> of at least 20 seconds.</p>
+
+    <example>
+    <title>Adding watchdog supervision to either unit above</title>
+    <pre>
+[Service]
+WatchdogSec=30
+Restart=on-failure
+    </pre>
+    </example>
 </summary>
 
 </modulesynopsis>
