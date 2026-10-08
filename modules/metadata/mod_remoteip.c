@@ -1134,6 +1134,14 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             apr_off_t got, want = ctx->need - ctx->rcvd;
 
             ret = ap_get_brigade(f->next, ctx->bb, ctx->mode, block, want);
+            if (APR_STATUS_IS_EOF(ret)) {
+                /* The peer went away before sending a whole header, as a
+                 * health check may. */
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, ret, f->c, APLOGNO()
+                              "RemoteIPProxyProtocol: connection closed "
+                              "before a complete header was received");
+                return ret;
+            }
             if (ret != APR_SUCCESS) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, f->c, APLOGNO(10184)
                               "failed reading input");
@@ -1156,6 +1164,13 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
 
         while (!ctx->done && !APR_BRIGADE_EMPTY(ctx->bb)) {
             b = APR_BRIGADE_FIRST(ctx->bb);
+
+            if (APR_BUCKET_IS_METADATA(b)) {
+                /* Nothing to copy from EOS or FLUSH; EOF is reported by
+                 * the next read. */
+                apr_bucket_delete(b);
+                continue;
+            }
 
             ret = apr_bucket_read(b, &ptr, &len, block);
             if (APR_STATUS_IS_EAGAIN(ret) && block == APR_NONBLOCK_READ) {

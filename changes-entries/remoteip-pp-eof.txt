@@ -1,0 +1,4 @@
+  *) mod_remoteip: Log a connection closed before a complete PROXY protocol
+     header was received at info level rather than as an error, and fix an
+     undefined memcpy() with a NULL source in that case.  PR 63893.
+     [Joe Orton]
