@@ -32,6 +32,8 @@
 #define H3Q_SCIDLEN 18
 #define H3Q_PKT_BUF 1500
 #define H3Q_RECV_BUDGET 64
+#define H3Q_GSO_SEGS 64       /* kernel UDP_MAX_SEGMENTS */
+#define H3Q_GSO_BYTES 65000
 #define H3Q_RETRY_TOKEN_TIMEOUT (10 * NGTCP2_SECONDS)
 
 struct h3q_engine
@@ -50,6 +52,14 @@ struct h3q_engine
     uint32_t max_streams_bidi;
     size_t max_window;
     uint8_t secret[32];
+    /* GSO batch: equal-size packets to one peer, sent with one sendmsg (Linux). */
+    uint8_t* tx;
+    size_t tx_len;
+    size_t tx_seg;
+    int tx_n;
+    struct sockaddr_storage tx_dst;
+    socklen_t tx_dstlen;
+    unsigned gso : 1;
     unsigned address_validation : 1;
     unsigned early_data : 1;
 };
@@ -101,6 +111,7 @@ struct h3q_stream
 
 ngtcp2_tstamp h3q_now(void);
 void h3q_send(h3q_engine* engine, const ngtcp2_path* path, const uint8_t* buf, size_t len);
+void h3q_tx_flush(h3q_engine* engine);
 h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2_cid* odcid, const ngtcp2_cid* retry_scid, const struct sockaddr* peer, socklen_t peerlen);
 void h3q_conn_flush(h3q_conn* conn);
 void h3q_conn_close(h3q_conn* conn, const ngtcp2_ccerr* ccerr);

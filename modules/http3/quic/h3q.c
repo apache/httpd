@@ -33,6 +33,21 @@
 #include "quic/h3q.h"
 #include "quic/h3q_conn.h"
 
+#ifdef __linux__
+    #include <netinet/udp.h>
+    #include <sys/uio.h>
+    /* Kernel ABI values, for libc headers older than GSO and GRO; old kernels fall back at run time. */
+    #ifndef SOL_UDP
+        #define SOL_UDP 17
+    #endif
+    #ifndef UDP_SEGMENT
+        #define UDP_SEGMENT 103
+    #endif
+    #ifndef UDP_GRO
+        #define UDP_GRO 104
+    #endif
+#endif
+
 #ifdef _WIN32
 typedef int h3q_iolen; /* winsock takes int lengths */
 #else
@@ -62,7 +77,95 @@ static void send_raw(h3q_engine* engine, const struct sockaddr* dst, socklen_t d
 
 void h3q_send(h3q_engine* engine, const ngtcp2_path* path, const uint8_t* buf, size_t len)
 {
-    send_raw(engine, (const struct sockaddr*)path->remote.addr, (socklen_t)path->remote.addrlen, buf, len);
+    const struct sockaddr* dst = (const struct sockaddr*)path->remote.addr;
+    socklen_t dstlen = (socklen_t)path->remote.addrlen;
+    if (!engine->gso)
+    {
+        send_raw(engine, dst, dstlen, buf, len);
+        return;
+    }
+    /* A new peer, a larger packet or a full batch starts a new batch. */
+    if (engine->tx_n && (dstlen != engine->tx_dstlen || memcmp(dst, &engine->tx_dst, (size_t)dstlen) != 0 || len > engine->tx_seg || engine->tx_len + len > H3Q_GSO_BYTES || engine->tx_n == H3Q_GSO_SEGS))
+    {
+        h3q_tx_flush(engine);
+    }
+    if (!engine->tx_n)
+    {
+        memcpy(&engine->tx_dst, dst, (size_t)dstlen);
+        engine->tx_dstlen = dstlen;
+        engine->tx_seg = len;
+    }
+    memcpy(engine->tx + engine->tx_len, buf, len);
+    engine->tx_len += len;
+    engine->tx_n++;
+    if (len < engine->tx_seg)
+    {
+        h3q_tx_flush(engine); /* only the last segment may be shorter */
+    }
+}
+
+void h3q_tx_flush(h3q_engine* engine)
+{
+    if (!engine->tx_n)
+    {
+        return;
+    }
+    const struct sockaddr* dst = (const struct sockaddr*)&engine->tx_dst;
+    int sent = engine->tx_n == 1;
+    if (sent)
+    {
+        send_raw(engine, dst, engine->tx_dstlen, engine->tx, engine->tx_len);
+    }
+#ifdef __linux__
+    else
+    {
+        char ctl[CMSG_SPACE(sizeof(uint16_t))] = {0};
+        struct iovec iov = {.iov_base = engine->tx, .iov_len = engine->tx_len};
+        struct msghdr m = {.msg_name = &engine->tx_dst, .msg_namelen = engine->tx_dstlen, .msg_iov = &iov, .msg_iovlen = 1, .msg_control = ctl, .msg_controllen = sizeof(ctl)};
+        struct cmsghdr* c = CMSG_FIRSTHDR(&m);
+        uint16_t seg = (uint16_t)engine->tx_seg;
+        c->cmsg_level = SOL_UDP;
+        c->cmsg_type = UDP_SEGMENT;
+        c->cmsg_len = CMSG_LEN(sizeof(seg));
+        memcpy(CMSG_DATA(c), &seg, sizeof(seg));
+        /* No GSO in this kernel or device: turn it off and send one by one. */
+        sent = sendmsg(engine->fd, &m, 0) >= 0 || (errno != EIO && errno != EINVAL && errno != ENOPROTOOPT);
+        engine->gso = sent ? 1u : 0u;
+    }
+#endif
+    for (size_t off = 0; !sent && off < engine->tx_len; off += engine->tx_seg)
+    {
+        size_t n = engine->tx_len - off < engine->tx_seg ? engine->tx_len - off : engine->tx_seg;
+        send_raw(engine, dst, engine->tx_dstlen, engine->tx + off, n);
+    }
+    engine->tx_n = 0;
+    engine->tx_len = 0;
+}
+
+/* One read; with GRO the kernel may join datagrams of one peer, and *seg is their size. */
+static int recv_dgram(h3q_engine* engine, uint8_t* buf, size_t cap, struct sockaddr_storage* peer, socklen_t* peerlen, size_t* seg)
+{
+#ifdef __linux__
+    char ctl[CMSG_SPACE(sizeof(int))];
+    struct iovec iov = {.iov_base = buf, .iov_len = cap};
+    struct msghdr m = {.msg_name = peer, .msg_namelen = *peerlen, .msg_iov = &iov, .msg_iovlen = 1, .msg_control = ctl, .msg_controllen = sizeof(ctl)};
+    int n = (int)recvmsg(engine->fd, &m, 0);
+    *peerlen = m.msg_namelen;
+    *seg = n > 0 ? (size_t)n : 0;
+    for (struct cmsghdr* c = CMSG_FIRSTHDR(&m); n > 0 && c; c = CMSG_NXTHDR(&m, c))
+    {
+        int gro = 0;
+        if (c->cmsg_level == SOL_UDP && c->cmsg_type == UDP_GRO && (memcpy(&gro, CMSG_DATA(c), sizeof(gro)), gro > 0))
+        {
+            *seg = (size_t)gro;
+        }
+    }
+    return n;
+#else
+    int n = (int)recvfrom(engine->fd, (char*)buf, (h3q_iolen)cap, 0, (struct sockaddr*)peer, peerlen);
+    *seg = n > 0 ? (size_t)n : 0;
+    return n;
+#endif
 }
 
 /* A peer that offers an unknown version is told which versions we speak. */
@@ -230,6 +333,12 @@ h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size
         return NULL;
     }
     engine->ssl_ctx = cfg->ssl_ctx;
+#ifdef __linux__
+    int on = 1;
+    (void)setsockopt(udp_fd, SOL_UDP, UDP_GRO, &on, sizeof(on)); /* GRO is optional */
+    engine->tx = apr_palloc(engine->pool, H3Q_GSO_BYTES);
+    engine->gso = 1;
+#endif
     return engine;
 }
 
@@ -263,7 +372,8 @@ int h3q_engine_pump(h3q_engine* engine)
     {
         struct sockaddr_storage peer;
         socklen_t peerlen = (socklen_t)sizeof(peer);
-        int n = (int)recvfrom(engine->fd, (char*)buf, (h3q_iolen)sizeof(buf), 0, (struct sockaddr*)&peer, &peerlen);
+        size_t seg = 0;
+        int n = recv_dgram(engine, buf, sizeof(buf), &peer, &peerlen, &seg);
         if (n < 0)
         {
             int why = recv_failed();
@@ -278,9 +388,9 @@ int h3q_engine_pump(h3q_engine* engine)
             continue;
         }
         work = 1;
-        if (n > 0)
+        for (size_t off = 0; off < (size_t)n; off += seg)
         {
-            process_dgram(engine, buf, (size_t)n, &peer, peerlen);
+            process_dgram(engine, buf + off, (size_t)n - off < seg ? (size_t)n - off : seg, &peer, peerlen);
         }
     }
     ngtcp2_tstamp now = h3q_now();

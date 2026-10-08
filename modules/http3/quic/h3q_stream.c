@@ -186,6 +186,10 @@ int h3q_stream_read(h3q_stream* st, unsigned char* buf, size_t read_size, size_t
     /* Consumed bytes give the peer window back. */
     ngtcp2_conn_extend_max_stream_offset(st->conn->qconn, st->id, n);
     ngtcp2_conn_extend_max_offset(st->conn->qconn, n);
+    if (st->rx_len == 0)
+    {
+        h3q_conn_flush(st->conn); /* Send the window now. A blocked peer sends nothing that causes a flush. */
+    }
     return 1;
 }
 

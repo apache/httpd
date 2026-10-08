@@ -360,6 +360,7 @@ void h3q_conn_flush(h3q_conn* conn)
         }
         h3q_send(conn->engine, &ps.path, buf, (size_t)n);
     }
+    h3q_tx_flush(conn->engine);
     /* Without this ngtcp2 never paces and bursts the whole window. */
     ngtcp2_conn_update_pkt_tx_time(conn->qconn, h3q_now());
 }
@@ -459,6 +460,7 @@ void h3q_conn_close(h3q_conn* conn, const ngtcp2_ccerr* ccerr)
         conn->close_until = h3q_now() + 3 * pto;
         conn->close_next = h3q_now() + pto;
         h3q_send(conn->engine, &ps.path, conn->close_pkt, conn->close_len);
+        h3q_tx_flush(conn->engine);
     }
 }
 
@@ -498,6 +500,7 @@ void h3q_conn_resend_close(h3q_conn* conn, const struct sockaddr* peer, socklen_
     conn->close_next = now + ngtcp2_conn_get_pto(conn->qconn);
     ngtcp2_path path = {.remote = {.addr = (ngtcp2_sockaddr*)peer, .addrlen = (ngtcp2_socklen)peerlen}};
     h3q_send(conn->engine, &path, conn->close_pkt, conn->close_len);
+    h3q_tx_flush(conn->engine);
 }
 
 int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const char* reason)

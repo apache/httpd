@@ -1,0 +1,5 @@
+  *) mod_http3: Linux: QUIC packets to one peer now go out in one sendmsg with
+     UDP_SEGMENT (GSO), and reads use UDP_GRO. Without kernel support the
+     module sends one packet at a time. A stream read now sends the new
+     flow-control window at once, so a blocked client does not wait.
+     [Alexander Gerasimov <codeguard gmail.com>]
