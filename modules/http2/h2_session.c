@@ -655,6 +655,10 @@ static int on_frame_not_send_cb(nghttp2_session *ngh2,
         h2_stream_rst(stream, NGHTTP2_PROTOCOL_ERROR);
         return 0;
     }
+    if (stream_id && ngh2_err == NGHTTP2_ERR_STREAM_CLOSED) {
+        /* The stream was closed while this frame was queued. */
+        return 0;
+    }
     return NGHTTP2_ERR_CALLBACK_FAILURE;
 }
 
