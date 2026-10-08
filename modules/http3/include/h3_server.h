@@ -34,6 +34,13 @@
 void h3_child_init(apr_pool_t* pchild, server_rec* s);
 
 /**
+ * Bind the QUIC socket in the parent while it is still privileged (Linux), and
+ * keep it across graceful restarts for the children to inherit.
+ * @param s Main server.
+ */
+void h3_server_post_config(server_rec* s);
+
+/**
  * Child-stopping hook: stop retrying for the QUIC port, then either drain the
  * live connections (graceful) or tear the listener down at once (immediate).
  * No-op if the child never owned the listener.

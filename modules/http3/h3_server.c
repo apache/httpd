@@ -32,6 +32,12 @@
 #include "h3_socket.h"
 #include "mod_http3.h"
 
+#ifdef __linux__
+    #include <stddef.h>
+    #include <stdio.h>
+    #include <sys/un.h>
+#endif
+
 static volatile int child_stopping = 0;
 
 static apr_thread_t* port_acquire_thread = NULL;
@@ -43,13 +49,71 @@ struct port_acquire_args
     h3_server_conf* conf;
 };
 
+#ifdef __linux__
+/* The parent binds the QUIC socket while still privileged and keeps it across restarts. */
+typedef struct
+{
+    apr_pool_t* pool;
+    int fd;
+    apr_port_t port;
+} h3_parent_socket;
+
+static h3_parent_socket* parent_socket(server_rec* s)
+{
+    void* ps = NULL;
+    apr_pool_userdata_get(&ps, "mod_http3.parent_socket", s->process->pool);
+    return ps;
+}
+
+/* The children inherit it; the child that binds this abstract name owns it, and exit releases it. */
+static int owner_lock = -1;
+
+static int own_port(apr_port_t port)
+{
+    struct sockaddr_un a = {.sun_family = AF_UNIX};
+    int n = snprintf(a.sun_path + 1, sizeof(a.sun_path) - 1, "mod_http3.%d", (int)port);
+    if (owner_lock < 0)
+    {
+        owner_lock = socket(AF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC, 0);
+    }
+    return owner_lock >= 0 && bind(owner_lock, (struct sockaddr*)&a, (socklen_t)(offsetof(struct sockaddr_un, sun_path) + 1 + (size_t)n)) == 0;
+}
+#endif
+
+/* Get this child the QUIC socket, or APR_EAGAIN while another child has it. */
+static apr_status_t acquire_port(apr_pool_t* pchild, server_rec* s, h3_server_conf* conf, int* fd)
+{
+#ifdef __linux__
+    h3_parent_socket* ps = parent_socket(s);
+    if (ps && ps->fd >= 0 && ps->port == conf->h3_port)
+    {
+        *fd = ps->fd;
+        return own_port(ps->port) ? APR_SUCCESS : APR_EAGAIN;
+    }
+#endif
+    return h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pchild, fd);
+}
+
+/* Give the port back when this child cannot serve it after all. */
+static void release_port(int fd)
+{
+    h3_socket_close(fd);
+#ifdef __linux__
+    if (owner_lock >= 0)
+    {
+        close(owner_lock);
+        owner_lock = -1;
+    }
+#endif
+}
+
 static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUSED, void* data)
 {
     struct port_acquire_args* args = data;
     while (!child_stopping)
     {
         int udp_fd = -1;
-        apr_status_t rv = h3_socket_open(args->conf->h3_port, args->conf->h3_socket_buffer_size, args->pchild, &udp_fd);
+        apr_status_t rv = acquire_port(args->pchild, args->vhost, args->conf, &udp_fd);
         if (rv == APR_EAGAIN)
         {
             apr_sleep(apr_time_from_msec(H3_PORT_ACQUIRE_RETRY_MS));
@@ -62,13 +126,13 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
         }
         if (child_stopping)
         {
-            h3_socket_close(udp_fd);
+            release_port(udp_fd);
             break;
         }
         if (h3_io_listen_start(args->pchild, args->vhost, args->conf, udp_fd) != APR_SUCCESS)
         {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, args->vhost, "port acquirer: h3_io_listen_start failed");
-            h3_socket_close(udp_fd);
+            release_port(udp_fd);
             break;
         }
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, args->vhost, "port acquirer: pid=%d acquired QUIC port after retrying", h3_getpid());
@@ -110,7 +174,7 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     }
 
     int udp_fd = -1;
-    apr_status_t rv = h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pchild, &udp_fd);
+    apr_status_t rv = acquire_port(pchild, vhost, conf, &udp_fd);
     if (rv == APR_EAGAIN)
     {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, vhost, "h3_child_init: pid=%d port already owned, will keep retrying in background", h3_getpid());
@@ -134,8 +198,47 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     if (h3_io_listen_start(pchild, vhost, conf, udp_fd) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "h3_child_init: h3_io_listen_start failed");
-        h3_socket_close(udp_fd);
+        release_port(udp_fd);
     }
+}
+
+void h3_server_post_config(server_rec* s)
+{
+#ifdef __linux__
+    h3_parent_socket* ps = parent_socket(s);
+    if (!ps)
+    {
+        ps = apr_pcalloc(s->process->pool, sizeof(*ps));
+        ps->fd = -1;
+        apr_pool_userdata_set(ps, "mod_http3.parent_socket", apr_pool_cleanup_null, s->process->pool);
+    }
+    server_rec* vhost = NULL;
+    h3_server_conf* conf = find_h3_server(s, &vhost);
+    if (ps->fd >= 0 && (!conf || conf->h3_port != ps->port))
+    {
+        apr_pool_destroy(ps->pool); /* closes the old socket */
+        ps->pool = NULL;
+        ps->fd = -1;
+    }
+    if (!conf || ps->fd >= 0)
+    {
+        return;
+    }
+    if (apr_pool_create(&ps->pool, s->process->pool) != APR_SUCCESS || h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, ps->pool, &ps->fd) != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, vhost, "mod_http3: binding UDP port %d before the privilege drop failed; the children bind it themselves", (int)conf->h3_port);
+        if (ps->pool)
+        {
+            apr_pool_destroy(ps->pool);
+        }
+        ps->pool = NULL;
+        ps->fd = -1;
+        return;
+    }
+    ps->port = conf->h3_port;
+#else
+    (void)s;
+#endif
 }
 
 void h3_c1_child_stopping(apr_pool_t* p H3_UNUSED, int graceful)
