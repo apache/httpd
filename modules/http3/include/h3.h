@@ -55,6 +55,10 @@
 /* Asked of SO_RCVBUF/SO_SNDBUF on the QUIC socket; the OS may grant less. */
 #define H3_SOCKET_BUFFER_SIZE_DEFAULT (2 * 1024 * 1024)
 #define H3_SOCKET_BUFFER_SIZE_MAX (64UL * 1024 * 1024)
+/* Cap for flow-control window autotuning. The window starts at 1 MiB per connection. */
+#define H3_MAX_WINDOW_DEFAULT (6 * 1024 * 1024)
+#define H3_MAX_WINDOW_MIN (1024UL * 1024)
+#define H3_MAX_WINDOW_MAX (1024UL * 1024 * 1024)
 /* Unset leaves the field 0, which reads as the server's Timeout; the directive itself takes 1 or more. */
 #define H3_STREAM_TIMEOUT_MAX 86400
 

@@ -48,6 +48,7 @@ struct h3q_engine
     void (*stream_acked)(void* user, int64_t stream_id, size_t len);
     uint32_t idle_timeout_secs;
     uint32_t max_streams_bidi;
+    size_t max_window;
     uint8_t secret[32];
     unsigned address_validation : 1;
     unsigned early_data : 1;

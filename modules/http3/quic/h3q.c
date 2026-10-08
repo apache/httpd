@@ -219,6 +219,7 @@ h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size
     engine->stream_acked = cfg->stream_acked;
     engine->idle_timeout_secs = cfg->idle_timeout_secs;
     engine->max_streams_bidi = cfg->max_streams_bidi;
+    engine->max_window = cfg->max_window;
     engine->address_validation = cfg->address_validation;
     engine->early_data = cfg->early_data;
     engine->local_len = (socklen_t)sizeof(engine->local);

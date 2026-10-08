@@ -137,6 +137,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         .stream_acked = h3_stream_acked,
         .idle_timeout_secs = conf->h3_idle_timeout,
         .max_streams_bidi = conf->h3_max_concurrent_streams,
+        .max_window = conf->h3_max_window,
         .early_data = (conf->h3_early_data == H3_FLAG_ON),
         .address_validation = (conf->h3_address_validation != H3_FLAG_OFF),
     };

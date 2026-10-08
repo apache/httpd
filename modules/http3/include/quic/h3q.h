@@ -43,6 +43,8 @@ typedef struct h3q_config
     uint32_t idle_timeout_secs;
     /** Bidirectional streams a client may have open at once. */
     uint32_t max_streams_bidi;
+    /** Cap for flow-control window autotuning, per connection and per stream. */
+    size_t max_window;
     unsigned address_validation : 1;
     /** Accept 0-RTT request data on resumed connections. */
     unsigned early_data : 1;

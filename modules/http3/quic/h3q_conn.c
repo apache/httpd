@@ -235,6 +235,9 @@ h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
     ngtcp2_settings settings;
     ngtcp2_settings_default(&settings);
     settings.initial_ts = h3q_now();
+    /* Autotuning: ngtcp2 doubles a window that the peer fills within a few RTTs. */
+    settings.max_window = engine->max_window;
+    settings.max_stream_window = engine->max_window;
 
     ngtcp2_transport_params params;
     ngtcp2_transport_params_default(&params);
