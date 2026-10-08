@@ -195,7 +195,6 @@ Travis to Github Actions Migration TODO
 TODO list
 ---------
 
-* non-x86 builds
 * MacOS build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
@@ -203,7 +202,14 @@ TODO list
 Known Failures
 --------------
 
-- A few mod_http2 Python tests sometimes fail spuriously.
+- A few mod_http2 Python tests sometimes fail spuriously, e.g.
+  FAILED modules/http2/test_106_shutdown.py::TestShutdown::test_h2_106_02 - AssertionError: failed on 2. request:  * Added test1.tests.httpd.apache.org:5001:127.0.0.1 to DNS cache
+
+- mod_md tests can deadlock pebble v2.10.1 which hangs the test suite,
+  hopefully fixed for a future release. See e.g.
+  https://github.com/letsencrypt/pebble/pull/555
+
+- ERROR at teardown of TestConf.test_md_300_022 - some race condition?
 
 Testing from a Feature Branch
 -----------------------------
@@ -256,6 +262,6 @@ when the commit is mirrored to Github, e.g. a commit message like:
 
    PR: 12345
    Submitted by: Jane Doe <jane example.com>
-   Github: closes #1
+   GitHub: closes #1
 
 will close PR #1 when it's merged.
