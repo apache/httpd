@@ -24,8 +24,9 @@ def env(pytestconfig) -> SystemdTestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = SystemdTestEnv(pytestconfig=pytestconfig)
-    if not env.has_systemd_module:
-        pytest.skip("mod_systemd is not built, configure with --enable-systemd")
+    env.require(env.has_systemd_module, "mod_systemd is not built, configure with --enable-systemd",
+                dep="mod_systemd",
+                detected=f"not found in {env.libexec_dir}")
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()

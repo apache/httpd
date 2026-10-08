@@ -4,6 +4,8 @@ import time
 
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .env import (ForegroundServer, TransientService, MIN_WATCHDOG_SEC,
                   NO_MONITOR_TIMEOUT, WATCHDOG_TIMEOUT, is_watchdog_ping)
 
@@ -187,8 +189,9 @@ class TestSystemdWatchdog:
             env.httpd_error_log.scan_recent(
                 re.compile(r'.*AH10621: .*'), timeout=1)
 
-    @pytest.mark.skipif(not TransientService.is_available(),
-                        reason="no per-user systemd manager")
+    @needs_dependency("systemd --user manager", TransientService.is_available(),
+                      reason="no per-user systemd manager",
+                      detected="systemd-run --user is not usable here")
     def test_systemd_006_10_service_keeps_watchdog_alive(self, env):
         """The real thing: systemd records each keep-alive it receives, and
         the unit stays active rather than failing with Result=watchdog."""

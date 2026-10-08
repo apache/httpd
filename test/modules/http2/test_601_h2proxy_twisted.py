@@ -75,8 +75,10 @@ class TestH2ProxyTwisted:
             pytest.skip(f'needs httpd 2.4.58')
         if sys.platform == "win32":
             pytest.skip("command line too long for Windows (200 parallel curl requests)")
-        if not env.curl_is_at_least('8.0.0'):
-            pytest.skip(f'need at least curl v8.0.0 for this')
+        env.require(env.curl_is_at_least('8.0.0'),
+                    'need at least curl v8.0.0 for this',
+                    dep='curl >= 8.0.0',
+                    detected=f"curl {env.curl_version_str()}")
         count = 200
         fpath = os.path.join(env.gen_dir, "data-100k")
         args = [env.curl, '--parallel', '--parallel-max', '20']
