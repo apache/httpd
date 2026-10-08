@@ -16,6 +16,7 @@
 
 #include <httpd.h>
 
+#include <ap_listen.h>
 #include <http_config.h>
 #include <http_log.h>
 
@@ -50,11 +51,13 @@ struct port_acquire_args
 };
 
 #ifdef __linux__
-/* The parent binds the QUIC socket while still privileged and keeps it across restarts. */
+/* The parent binds the QUIC sockets while still privileged and keeps them across restarts.
+ * One SO_REUSEPORT socket per httpd listener bucket (ListenCoresBucketsRatio), so the kernel hash stays stable when children come and go. */
 typedef struct
 {
     apr_pool_t* pool;
-    int fd;
+    int* fds;
+    int n;
     apr_port_t port;
 } h3_parent_socket;
 
@@ -65,13 +68,13 @@ static h3_parent_socket* parent_socket(server_rec* s)
     return ps;
 }
 
-/* The children inherit it; the child that binds this abstract name owns it, and exit releases it. */
+/* The children inherit them; the child that binds the abstract name of a bucket owns its socket, and exit releases it. */
 static int owner_lock = -1;
 
-static int own_port(apr_port_t port)
+static int own_port(apr_port_t port, int bucket)
 {
     struct sockaddr_un a = {.sun_family = AF_UNIX};
-    int n = snprintf(a.sun_path + 1, sizeof(a.sun_path) - 1, "mod_http3.%d", (int)port);
+    int n = snprintf(a.sun_path + 1, sizeof(a.sun_path) - 1, "mod_http3.%d.%d", (int)port, bucket);
     if (owner_lock < 0)
     {
         owner_lock = socket(AF_UNIX, SOCK_DGRAM | SOCK_CLOEXEC, 0);
@@ -85,13 +88,20 @@ static apr_status_t acquire_port(apr_pool_t* pchild, server_rec* s, h3_server_co
 {
 #ifdef __linux__
     h3_parent_socket* ps = parent_socket(s);
-    if (ps && ps->fd >= 0 && ps->port == conf->h3_port)
+    if (ps && ps->n && ps->port == conf->h3_port)
     {
-        *fd = ps->fd;
-        return own_port(ps->port) ? APR_SUCCESS : APR_EAGAIN;
+        for (int i = 0; i < ps->n; i++)
+        {
+            if (own_port(ps->port, i))
+            {
+                *fd = ps->fds[i];
+                return APR_SUCCESS;
+            }
+        }
+        return APR_EAGAIN;
     }
 #endif
-    return h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pchild, fd);
+    return h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pchild, 0, fd);
 }
 
 /* Give the port back when this child cannot serve it after all. */
@@ -209,22 +219,32 @@ void h3_server_post_config(server_rec* s)
     if (!ps)
     {
         ps = apr_pcalloc(s->process->pool, sizeof(*ps));
-        ps->fd = -1;
         apr_pool_userdata_set(ps, "mod_http3.parent_socket", apr_pool_cleanup_null, s->process->pool);
     }
     server_rec* vhost = NULL;
     h3_server_conf* conf = find_h3_server(s, &vhost);
-    if (ps->fd >= 0 && (!conf || conf->h3_port != ps->port))
+    int n = ap_num_listen_buckets > 0 ? ap_num_listen_buckets : 1;
+    /* ponytail: a new port or bucket count binds again. An old single socket without SO_REUSEPORT blocks this until its children stop. */
+    if (ps->n && (!conf || conf->h3_port != ps->port || n != ps->n))
     {
-        apr_pool_destroy(ps->pool); /* closes the old socket */
+        apr_pool_destroy(ps->pool); /* closes the old sockets */
         ps->pool = NULL;
-        ps->fd = -1;
+        ps->n = 0;
     }
-    if (!conf || ps->fd >= 0)
+    if (!conf || ps->n)
     {
         return;
     }
-    if (apr_pool_create(&ps->pool, s->process->pool) != APR_SUCCESS || h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, ps->pool, &ps->fd) != APR_SUCCESS)
+    int ok = apr_pool_create(&ps->pool, s->process->pool) == APR_SUCCESS;
+    if (ok)
+    {
+        ps->fds = apr_palloc(ps->pool, sizeof(int) * (size_t)n);
+    }
+    for (int i = 0; ok && i < n; i++)
+    {
+        ok = h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, ps->pool, n > 1, &ps->fds[i]) == APR_SUCCESS;
+    }
+    if (!ok)
     {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, vhost, "mod_http3: binding UDP port %d before the privilege drop failed; the children bind it themselves", (int)conf->h3_port);
         if (ps->pool)
@@ -232,9 +252,9 @@ void h3_server_post_config(server_rec* s)
             apr_pool_destroy(ps->pool);
         }
         ps->pool = NULL;
-        ps->fd = -1;
         return;
     }
+    ps->n = n;
     ps->port = conf->h3_port;
 #else
     (void)s;
