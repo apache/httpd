@@ -171,6 +171,10 @@ typedef struct {
  * reached, unknown urls are dropped (rate-limited log) rather than tracked/added. */
 #define BEACON_MAX_MEMBERS      256
 
+/* Cap on datagrams handled per watchdog tick, so a flood can't hold the
+ * watchdog thread in the receive loop; the rest wait for the next tick. */
+#define BEACON_MAX_DRAIN        1024
+
 /* Process-wide watchdog handle, like mod_proxy_hcheck's static watchdog. */
 static ap_watchdog_t *beacon_watchdog;
 
@@ -1072,18 +1076,25 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
     }
     else if (ctx->role == BEACON_ROLE_LISTEN) {
         apr_time_t now;
+        apr_pool_t *ptemp;
+        int n;
 
-        /* Drain the socket every tick (re-enable latency matters). */
-        for (;;) {
+        apr_pool_create(&ptemp, pool);
+        apr_pool_tag(ptemp, "beacon_recv");
+
+        /* Drain the socket every tick (re-enable latency matters), up to
+         * BEACON_MAX_DRAIN datagrams. */
+        for (n = 0; n < BEACON_MAX_DRAIN; n++) {
             char buf[BEACON_MAX_MSG_LEN + 1];
             apr_sockaddr_t from;
             apr_size_t sz = BEACON_MAX_MSG_LEN;
             apr_time_t msg_now;
-            const char *msg_str, *safe;
+            const char *msg_str;
             char url[512];
             apr_int64_t msg_ts = 0;
 
-            from.pool = pool;
+            apr_pool_clear(ptemp);
+            from.pool = ptemp;
             rv = apr_socket_recvfrom(&from, ctx->sock, 0, buf, &sz);
             if (APR_STATUS_IS_EAGAIN(rv)) {
                 break; /* socket drained */
@@ -1107,14 +1118,6 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             buf[sz] = '\0';
             msg_str = buf;
 
-            /* Escape the untrusted payload before it can reach the log: on the
-             * log-only path (no ProxyBeaconBalancer) messages are logged without
-             * MAC verification, so anyone who can reach the listen port could
-             * embed newline/control/ANSI sequences to forge or corrupt error-log
-             * lines.  (On the balancer path, forged messages are dropped at
-             * verification below and `safe` is only logged after it passes.) */
-            safe = ap_escape_logitem(pool, msg_str);
-
             /* Phase 4: verify the MAC and freshness BEFORE logging or acting on
              * the payload, so forged/tampered content is dropped (throttled) and
              * never reaches the INFO log.  A secret is required (enforced at
@@ -1130,8 +1133,16 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
                 }
             }
 
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                         APLOGNO(10584) "mod_proxy_beacon: received: %s", safe);
+            /* Escape the payload before it reaches the log: on the log-only
+             * path (no ProxyBeaconBalancer) it is unverified, so anyone who can
+             * reach the listen port could otherwise embed newline/control/ANSI
+             * sequences to forge or corrupt error-log lines.  Done only after
+             * verification so a rejected datagram allocates nothing. */
+            if (APLOGinfo(s)) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                             APLOGNO(10584) "mod_proxy_beacon: received: %s",
+                             ap_escape_logitem(ptemp, msg_str));
+            }
 
             if (!ctx->balancer_name) {
                 continue;
@@ -1140,9 +1151,10 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             /* Phase 2/3: carries a routable url= -> add the backend (or
              * refresh last-seen / re-enable if previously evicted). */
             if (beacon_parse_url(msg_str, url, sizeof(url))) {
-                beacon_handle_announce(ctx, pool, url, msg_now, msg_ts);
+                beacon_handle_announce(ctx, ptemp, url, msg_now, msg_ts);
             }
         }
+        apr_pool_destroy(ptemp);
 
         /* Phase 3: evict backends that stopped announcing.  Throttle the scan
          * to ~1s (the recv drain above already runs every tick). */
