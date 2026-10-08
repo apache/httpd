@@ -1137,7 +1137,7 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             if (APR_STATUS_IS_EOF(ret)) {
                 /* The peer went away before sending a whole header, as a
                  * health check may. */
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, ret, f->c, APLOGNO()
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, ret, f->c, APLOGNO(10634)
                               "RemoteIPProxyProtocol: connection closed "
                               "before a complete header was received");
                 return ret;
