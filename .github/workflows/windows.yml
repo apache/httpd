@@ -10,6 +10,12 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - 'modules/arch/unix/**'
+      - 'os/unix/**'
+      - server/mpm_unix.c
+      - 'test/modules/arch/linux/**'
+      - 'test/travis_*.sh'
+      - 'test/gha-*.sh'
     tags:
       - 2.*
   pull_request:
@@ -21,6 +27,13 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - changes-entries/*
+      - 'modules/arch/unix/**'
+      - 'os/unix/**'
+      - server/mpm_unix.c
+      - 'test/modules/arch/linux/**'
+      - 'test/travis_*.sh'
+      - 'test/gha-*.sh'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
