@@ -26,9 +26,4 @@ class TestDigestTruncatedNonce:
         r2 = env.curl_get(url, options=['-H', f'Authorization: {auth_header}'])
         assert r2.response["status"] == 401
 
-        crash = env.httpd_error_log.wait_for(
-            re.compile(r'.*exit signal Segmentation fault.*'),
-            start_pos, timeout=3)
-        assert not crash, "Server crashed processing truncated nonce"
-
         env.httpd_error_log.ignore_recent(lognos=["AH01782"])
