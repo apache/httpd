@@ -502,15 +502,14 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
 }
 
 static int remoteip_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
-                               apr_pool_t *ptemp, server_rec *s)
+                                     apr_pool_t *ptemp, server_rec *s)
 {
     remoteip_config_t *conf, *vconf;
     remoteip_addr_info *info;
     server_rec *vs;
     char buf[INET6_ADDRSTRLEN];
 
-    conf = ap_get_module_config(ap_server_conf->module_config,
-                                &remoteip_module);
+    conf = ap_get_module_config(s->module_config, &remoteip_module);
 
     for (info = conf->proxy_protocol_enabled; info; info = info->next) {
         apr_sockaddr_ip_getbuf(buf, sizeof(buf), info->addr);
