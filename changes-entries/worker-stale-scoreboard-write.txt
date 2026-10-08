@@ -1,0 +1,4 @@
+  *) mpm_worker: Do not let the threads of a child process which lost its
+     scoreboard slot update the scoreboard entries of the child which took
+     the slot over.  PR 69933.
+     [Arturo Bernal]
