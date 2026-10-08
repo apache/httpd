@@ -1,0 +1,4 @@
+  *) mod_remoteip: Apply RemoteIP{Trusted,Internal}ProxyList to the virtual host
+     they are configured in, and merge the proxy entries of the main server
+     and of the virtual host, logging a warning when both have some.
+     PR 70207.  [Arturo Bernal]

@@ -176,9 +176,18 @@ static void *merge_remoteip_server_config(apr_pool_t *p, void *globalv,
     config->proxies_header_name = server->proxies_header_name
                                 ? server->proxies_header_name
                                 : global->proxies_header_name;
-    config->proxymatch_ip = server->proxymatch_ip
-                          ? server->proxymatch_ip
-                          : global->proxymatch_ip;
+    if (server->proxymatch_ip && global->proxymatch_ip) {
+        /* Both have entries: merge them. remoteip_modify_request() uses the
+         * first match, so the more specific entries of the vhost go first.
+         */
+        config->proxymatch_ip = apr_array_append(p, server->proxymatch_ip,
+                                                 global->proxymatch_ip);
+    }
+    else {
+        config->proxymatch_ip = server->proxymatch_ip
+                              ? server->proxymatch_ip
+                              : global->proxymatch_ip;
+    }
     return config;
 }
 
@@ -495,8 +504,9 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
 static int remoteip_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                apr_pool_t *ptemp, server_rec *s)
 {
-    remoteip_config_t *conf;
+    remoteip_config_t *conf, *vconf;
     remoteip_addr_info *info;
+    server_rec *vs;
     char buf[INET6_ADDRSTRLEN];
 
     conf = ap_get_module_config(ap_server_conf->module_config,
@@ -511,6 +521,24 @@ static int remoteip_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         apr_sockaddr_ip_getbuf(buf, sizeof(buf), info->addr);
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(03494)
                      "RemoteIPProxyProtocol: disabled on %s:%hu", buf, info->addr->port);
+    }
+
+    /* A vhost with entries of its own got a new array in the config
+     * merge, otherwise it shares the one of the main server. Warn for
+     * this case (temporarily) since the behaviour has changed with
+     * the fix for PR 70207.  */
+    if (conf->proxymatch_ip) {
+        for (vs = s->next; vs; vs = vs->next) {
+            vconf = ap_get_module_config(vs->module_config, &remoteip_module);
+            if (vconf->proxymatch_ip
+                    && vconf->proxymatch_ip != conf->proxymatch_ip) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, vs, APLOGNO(10633)
+                             "RemoteIP proxy entries are configured in both "
+                             "the main server and the virtual host defined "
+                             "at %s:%u, they are merged",
+                             vs->defn_name, vs->defn_line_number);
+            }
+        }
     }
 
     return OK;
@@ -1247,11 +1275,11 @@ static const command_rec remoteip_cmds[] =
                     "Specifies one or more internal (transparent) proxies "
                     "which are trusted to present IP headers"),
     AP_INIT_TAKE1("RemoteIPTrustedProxyList", proxylist_read, 0,
-                  RSRC_CONF | EXEC_ON_READ,
+                  RSRC_CONF,
                   "The filename to read the list of trusted proxies, "
                   "see the RemoteIPTrustedProxy directive"),
     AP_INIT_TAKE1("RemoteIPInternalProxyList", proxylist_read, (void*)1,
-                  RSRC_CONF | EXEC_ON_READ,
+                  RSRC_CONF,
                   "The filename to read the list of internal proxies, "
                   "see the RemoteIPInternalProxy directive"),
     AP_INIT_FLAG("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
