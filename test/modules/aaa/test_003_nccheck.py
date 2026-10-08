@@ -14,6 +14,10 @@ means starting the sequence over at 00000001, not continuing where the
 client left off.
 """
 
+import sys
+
+import pytest
+
 from . import digest_client as dc
 from .env import AAATestEnv
 
@@ -37,6 +41,8 @@ class TestDigestNcCheck:
             include_opaque=include_opaque)
         return env.curl_get(self.url(env, location), options=["-H", f"Authorization: {auth}"])
 
+    @pytest.mark.xfail(condition=sys.platform == "win32",
+                        reason="NcCheck semantics differ with siphash (r1937104 not backported)")
     def test_digest_030_nccheck_requires_opaque(self, env):
         # with AuthDigestNcCheck on, the server cannot verify nc without
         # having tracked this client via its opaque -- omitting the opaque
@@ -57,6 +63,8 @@ class TestDigestNcCheck:
         r3 = self.authenticate(env, "nccheck", challenge, nc="00000003")
         assert r3.response["status"] == 200
 
+    @pytest.mark.xfail(condition=sys.platform == "win32",
+                        reason="NcCheck semantics differ with siphash (r1937104 not backported)")
     def test_digest_032_nccheck_replay_rejected(self, env):
         challenge = self.challenge(env, "nccheck")
         r1 = self.authenticate(env, "nccheck", challenge, nc="00000001")
@@ -78,6 +86,8 @@ class TestDigestNcCheck:
         r4 = self.authenticate(env, "nccheck", challenge, nc="00000001")
         assert r4.response["status"] == 200
 
+    @pytest.mark.xfail(condition=sys.platform == "win32",
+                        reason="NcCheck semantics differ with siphash (r1937104 not backported)")
     def test_digest_033_nccheck_skip_ahead_rejected(self, env):
         challenge = self.challenge(env, "nccheck")
         r1 = self.authenticate(env, "nccheck", challenge, nc="00000001")

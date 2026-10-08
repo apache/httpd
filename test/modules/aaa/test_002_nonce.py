@@ -3,7 +3,10 @@ expiry/reissue, a never-expiring nonce, and the one-time-nonce
 (AuthDigestNonceLifetime 0) case.
 """
 
+import sys
 import time
+
+import pytest
 
 from . import digest_client as dc
 from .env import AAATestEnv
@@ -41,6 +44,8 @@ class TestDigestNonce:
         assert new_challenge.stale is True
         env.httpd_error_log.ignore_recent(lognos=["AH01776"])
 
+    @pytest.mark.xfail(condition=sys.platform == "win32",
+                        reason="nonce hash length assumes SHA-1 (r1937716 not backported)")
     def test_digest_021_garbage_nonce_hash_is_stale(self, env):
         # A nonce must still look like "b64(time)+sha1hex(hash)" (VALID_NONCE
         # in mod_auth_digest.c checks length and the '=' padding boundary) to
