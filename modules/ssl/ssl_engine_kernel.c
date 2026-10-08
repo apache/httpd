@@ -1057,6 +1057,26 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
 }
 #endif
 
+/* Shut the TLS layer of connection C down cleanly and suppress any further
+ * output.  Passing an EOC bucket makes the I/O filter send a close_notify
+ * alert; this is used where a request has failed because the connection
+ * itself has failed, so that the client sees the TLS session being closed
+ * rather than a truncated connection. */
+static void ssl_shutdown_connection(conn_rec *c)
+{
+    apr_bucket_brigade *bb = apr_brigade_create(c->pool, c->bucket_alloc);
+
+    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_flush_create(c->bucket_alloc));
+    APR_BRIGADE_INSERT_TAIL(bb, ap_bucket_eoc_create(c->bucket_alloc));
+    ap_pass_brigade(c->output_filters, bb);
+    apr_brigade_destroy(bb);
+
+    /* The TLS session is gone, so anything written from here on would be
+     * sent in the clear. */
+    c->keepalive = AP_CONN_CLOSE;
+    c->aborted = 1;
+}
+
 int ssl_hook_Access(request_rec *r)
 {
     SSLDirConfigRec *dc         = myDirConfig(r);
@@ -1120,6 +1140,14 @@ int ssl_hook_Access(request_rec *r)
     }
 
     if (ret != DECLINED) {
+        /* A read timeout during the renegotiation or post-handshake
+         * authentication above leaves the connection unusable for the error
+         * response, so no 403 can be sent.  Shut the TLS session down here,
+         * while that is still possible, rather than leaving the client to
+         * see the connection simply disappear. */
+        if (sslconn->read_timedout && !r->connection->master) {
+            ssl_shutdown_connection(r->connection);
+        }
         return ret;
     }
 

@@ -649,6 +649,7 @@ typedef struct {
     const char *verify_error;
     int verify_depth;
     int disabled;
+    int read_timedout;        /* a read from the client hit the timeout */
     enum {
         NON_SSL_OK = 0,        /* is SSL request, or error handling completed */
         NON_SSL_SEND_REQLINE,  /* Need to send the fake request line */
