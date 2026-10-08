@@ -262,4 +262,19 @@
 #endif
 
 
+/* Optional Clang -fbounds-safety. When AP_SUPPORT_FBOUNDS_SAFETY is defined
+ * these expand to Clang bounds annotations; otherwise they are inert. */
+#ifdef AP_SUPPORT_FBOUNDS_SAFETY
+#include <ptrcheck.h>
+#define AP_SIZED_BY(n) __sized_by(n)
+#define AP_SIZED_BY_OR_NULL(n) __sized_by_or_null(n)
+#define AP_COUNTED_BY(n) __counted_by(n)
+#define AP_COUNTED_BY_OR_NULL(n) __counted_by_or_null(n)
+#else
+#define AP_SIZED_BY(n)
+#define AP_SIZED_BY_OR_NULL(n)
+#define AP_COUNTED_BY(n)
+#define AP_COUNTED_BY_OR_NULL(n)
+#endif
+
 #endif /* AP_CONFIG_H */
