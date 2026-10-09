@@ -17,8 +17,10 @@
 #include <httpd.h>
 
 #include <ap_listen.h>
+#include <ap_mpm.h>
 #include <http_config.h>
 #include <http_log.h>
+#include <util_cfgtree.h>
 
 #include <apr_pools.h>
 #include <apr_thread_proc.h>
@@ -36,7 +38,9 @@
 #ifdef __linux__
     #include <stddef.h>
     #include <stdio.h>
+    #include <stdlib.h>
     #include <sys/un.h>
+    #include <unistd.h>
 #endif
 
 static volatile int child_stopping = 0;
@@ -60,6 +64,24 @@ typedef struct
     int n;
     apr_port_t port;
 } h3_parent_socket;
+
+/* The same count as httpd for ListenCoresBucketsRatio: online cores / ratio. Some MPMs count their buckets after post_config.
+ * ponytail: top-level directive only, not one inside <IfModule>. */
+static int listen_buckets(void)
+{
+    for (ap_directive_t* d = ap_conftree; d; d = d->next)
+    {
+        if (ap_have_so_reuseport > 0 && !ap_cstr_casecmp(d->directive, "ListenCoresBucketsRatio"))
+        {
+            long ratio = atol(d->args);
+            long n = ratio > 0 ? sysconf(_SC_NPROCESSORS_ONLN) / ratio : 1;
+            int limit = 1;
+            ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &limit); /* A bucket with no child loses its peers. */
+            return n < 1 ? 1 : n > limit ? limit : (int)n;
+        }
+    }
+    return 1;
+}
 
 static h3_parent_socket* parent_socket(server_rec* s)
 {
@@ -223,7 +245,7 @@ void h3_server_post_config(server_rec* s)
     }
     server_rec* vhost = NULL;
     h3_server_conf* conf = find_h3_server(s, &vhost);
-    int n = ap_num_listen_buckets > 0 ? ap_num_listen_buckets : 1;
+    int n = listen_buckets();
     /* ponytail: a new port or bucket count binds again. An old single socket without SO_REUSEPORT blocks this until its children stop. */
     if (ps->n && (!conf || conf->h3_port != ps->port || n != ps->n))
     {
