@@ -516,6 +516,11 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
         if (status != APR_SUCCESS) {
             return status;
         }
+        /* The body passed on is not the length the request gave.  Only
+         * drop the header after this read: HTTP_IN takes the length from
+         * it on the first.
+         */
+        apr_table_unset(f->r->headers_in, "Content-Length");
         for (b = APR_BRIGADE_FIRST(bbinp); b != APR_BRIGADE_SENTINEL(bbinp);
              b = APR_BUCKET_NEXT(b)) {
             const char *buf = NULL;

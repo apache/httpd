@@ -76,11 +76,16 @@ static int aptest_allow_methods(request_rec *r)
 
 /*
  * Handler "aptest-getline-echo": echo the request body back, reading it
- * with AP_MODE_GETLINE rather than AP_MODE_READBYTES.
+ * with AP_MODE_GETLINE rather than AP_MODE_READBYTES.  The Content-Length
+ * request header left once the body has been read, if any, is returned in
+ * an "AP-Test-Content-Length" response header.
  */
 static int aptest_getline_echo(request_rec *r)
 {
-    apr_bucket_brigade *bb;
+    apr_bucket_brigade *bb, *body;
+    const char *clen;
+    char *data;
+    apr_size_t len;
     apr_status_t rv;
     int seen_eos = 0;
 
@@ -88,12 +93,9 @@ static int aptest_getline_echo(request_rec *r)
         return DECLINED;
     }
 
-    ap_set_content_type(r, "text/plain");
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    body = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     while (!seen_eos) {
-        char *line;
-        apr_size_t len;
-
         rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,
                             APR_BLOCK_READ, HUGE_STRING_LEN);
         if (rv != APR_SUCCESS) {
@@ -105,13 +107,25 @@ static int aptest_getline_echo(request_rec *r)
             && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
             seen_eos = 1;
         }
-        rv = apr_brigade_pflatten(bb, &line, &len, r->pool);
+        rv = apr_brigade_pflatten(bb, &data, &len, r->pool);
+        if (rv == APR_SUCCESS) {
+            rv = apr_brigade_write(body, NULL, NULL, data, len);
+        }
         if (rv != APR_SUCCESS) {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        ap_rwrite(line, len, r);
         apr_brigade_cleanup(bb);
     }
+
+    clen = apr_table_get(r->headers_in, "Content-Length");
+    if (clen) {
+        apr_table_setn(r->headers_out, "AP-Test-Content-Length", clen);
+    }
+    ap_set_content_type(r, "text/plain");
+    if (apr_brigade_pflatten(body, &data, &len, r->pool) != APR_SUCCESS) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    ap_rwrite(data, len, r);
 
     return OK;
 }
