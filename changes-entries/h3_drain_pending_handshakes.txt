@@ -1,0 +1,4 @@
+  *) mod_http3: Fixed a graceful restart that never ended: a handshake still
+     pending when the child started to drain did not finish or time out, so
+     the old child kept its connection count and the port.
+     [Alexander Gerasimov <codeguard gmail.com>]
