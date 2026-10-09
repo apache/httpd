@@ -19,7 +19,10 @@ class TestH2ProxyTwisted:
         assert env.apache_restart() == 0
 
     @pytest.mark.parametrize("name", [
-        "data-1k", "data-10k", "data-100k", "data-1m",
+        "data-1k", "data-10k", "data-100k",
+        pytest.param("data-1m", marks=pytest.mark.xfail(
+            condition=sys.platform == "win32",
+            reason="H2 proxy upload fails for 1MB on 2.4.x Windows")),
     ])
     def test_h2_601_01_echo_uploads(self, env, name):
         fpath = os.path.join(env.gen_dir, name)
