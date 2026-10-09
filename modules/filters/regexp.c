@@ -113,6 +113,10 @@ static int regerr(sed_commands_t *commands, int err)
         comperr(commands, "First number exceeds second in \\{ \\}: %s");
         break;
 
+    case 47:
+        comperr(commands, "\\{ \\} not allowed here: %s");
+        break;
+
     case 49:
         comperr(commands, "[ ] imbalance: %s");
         break;
@@ -133,11 +137,11 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
                   char *ep, char *endbuf, int seof)
 {
     int c;
-    int eof = seof;
+    int eof = (unsigned char)seof;
     char *lastep;
     int cclcnt;
     char bracket[NBRA], *bracketp;
-    int closed;
+    int closed; /* bit n set once group n has been closed */
     int neg;
     int lc;
     int i, cflg;
@@ -178,6 +182,7 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
             *ep++ = CDOT;
             continue;
 
+        case '\0':
         case '\n':
             SEDCOMPILE_ERROR(36);
             commands->cp = sp;
@@ -226,6 +231,8 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
                         PLACE('-');
                         break;
                     }
+                    if (c == '\0' || c == '\n')
+                        SEDCOMPILE_ERROR(49);
                     if ((c & 0200) && iflag) {
                         iflag = 0;
                         if (&ep[32] >= endbuf)
@@ -281,12 +288,24 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
                     SEDCOMPILE_ERROR(42);
                 *ep++ = CKET;
                 *ep++ = *--bracketp;
-                closed++;
+                closed |= 1 << *bracketp;
                 continue;
 
             case '{':
                 if (lastep == (char *) 0)
                     goto defchar;
+                /* _advance() only implements a range on these, and
+                 * not twice over. */
+                switch (*lastep & ~STAR) {
+                case CCHR:
+                case CDOT:
+                case CCL:
+                case CXCL:
+                case NCCL:
+                    break;
+                default:
+                    SEDCOMPILE_ERROR(47);
+                }
                 *lastep |= RNGE;
                 cflg = 0;
             nlim:
@@ -297,9 +316,9 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
                         i = 10 * i + c - '0';
                     else
                         SEDCOMPILE_ERROR(16);
+                    if (i >= 255)
+                        SEDCOMPILE_ERROR(11);
                 } while (((c = GETC()) != '\\') && (c != ','));
-                if (i >= 255)
-                    SEDCOMPILE_ERROR(11);
                 *ep++ = i;
                 if (c == ',') {
                     if (cflg++)
@@ -320,6 +339,7 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
                     SEDCOMPILE_ERROR(46);
                 continue;
 
+            case '\0':
             case '\n':
                 SEDCOMPILE_ERROR(36);
 
@@ -329,7 +349,7 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
 
             default:
                 if (c >= '1' && c <= '9') {
-                    if ((c -= '1') >= closed)
+                    if (!(closed & (1 << (c -= '1'))))
                         SEDCOMPILE_ERROR(25);
                     *ep++ = CBACK;
                     *ep++ = c;

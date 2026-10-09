@@ -72,11 +72,22 @@ class TestSed:
         return os.path.join(env.server_dir, "htdocs", "test1",
                             name).replace(os.sep, "/")
 
-    def configure(self, env, exprs, extra="", input_sed=False):
+    def configure(self, env, exprs, extra="", input_sed=False, fails=False):
         if isinstance(exprs, str):
             exprs = [exprs]
         directive = "InputSed" if input_sed else "OutputSed"
-        lines = "\n".join(f'            {directive} "{e}"' for e in exprs)
+        lines = [f'            {directive} "{e}"'
+                 for e in exprs if isinstance(e, str)]
+        # A directive given as bytes may hold bytes which are not UTF-8, so
+        # it goes into a file of its own, written as-is.
+        raw = [e for e in exprs if isinstance(e, bytes)]
+        if raw:
+            path = os.path.join(env.server_dir, "conf", "sed-raw.conf")
+            with open(path, "wb") as f:
+                f.writelines(directive.encode() + b' "' + e + b'"\n'
+                             for e in raw)
+            lines.append(f'            Include "{path}"')
+        lines = "\n".join(lines)
         conf = HttpdConf(env, extras={
             f"test1.{env.http_tld}": f"""
             <Location "/">
@@ -91,6 +102,9 @@ class TestSed:
         })
         conf.add_vhost_test1()
         conf.install()
+        if fails:
+            assert env.apache_restart() != 0, f"{exprs}: accepted"
+            return
         assert env.apache_restart() == 0
 
     def get(self, env, path="/sed.html", options=None):
@@ -356,3 +370,94 @@ class TestSed:
                                data="one monday two")
         assert r.response, "no response"
         assert r.response["body"] == b"one MON two\n"
+
+    # --- interval expressions ---------------------------------------------
+
+    # \{m,n\} repeats a character or a bracket expression.
+    @pytest.mark.parametrize("expr, out", [
+        (r"s/e\{2\}/X/",
+         "one monday two\nthrX sunday four\nmonday monday monday\n"),
+        (r"s/[a-z]\{6\}/X/",
+         "one X two\nthree X four\nX monday monday\n"),
+    ])
+    def test_filters_003_31(self, env, expr, out):
+        assert self.body(env, expr).decode() == out
+
+    # The matcher only implements \{m,n\} for those, so applied to anything
+    # else -- a group, a backreference, the start of a group or a second
+    # interval -- the expression is rejected rather than compiled into
+    # something the matcher cannot run.
+    @pytest.mark.parametrize("expr", [
+        r"s/\(a\)\{1,2\}/X/",
+        r"s/\(a\)\1\{1,2\}/X/",
+        r"s/\(\{1\}a\)/X/",
+        r"s/a\{1\}\{2,30\}/X/",
+    ])
+    def test_filters_003_32(self, env, expr):
+        self.configure(env, expr, fails=True)
+        assert "not allowed here" in env.apachectl_stderr, \
+            env.apachectl_stderr
+
+    # --- backreferences to groups -----------------------------------------
+
+    # A backreference may only refer to a group which has been closed; one
+    # inside the group it refers to is rejected.
+    @pytest.mark.parametrize("expr", [
+        r"s/\(\(a*\)\1\)/X/",
+        r"s/\(\(\)\1*\)/X/",
+        r"s/\(a\1\)/X/",
+    ])
+    def test_filters_003_35(self, env, expr):
+        self.configure(env, expr, fails=True)
+        assert "out of range" in env.apachectl_stderr, env.apachectl_stderr
+
+    # A backreference to a closed group, even with a later group still open.
+    def test_filters_003_36(self, env):
+        assert self.body(env, r"s/\(\(mo\)n\2*\)day/[\2]/").decode() == \
+            "one [mo] two\nthree sunday four\n[mo] monday monday\n"
+
+    # --- bracket expressions ----------------------------------------------
+
+    # A bracket expression which ends after a range's "-" is rejected, on
+    # its own or following a longer directive.
+    @pytest.mark.parametrize("exprs", [
+        ["s/[a-"],
+        ["s/aaaa]*/b/", "s/[a-"],
+    ])
+    def test_filters_003_39(self, env, exprs):
+        self.configure(env, exprs, fails=True)
+        assert "imbalance" in env.apachectl_stderr, env.apachectl_stderr
+
+    # --- unterminated expressions -----------------------------------------
+
+    # A regular expression without its closing delimiter is rejected, and
+    # is not completed from what an earlier, longer directive left behind.
+    @pytest.mark.parametrize("exprs", [
+        ["s/a"],
+        ["s/aaaa/b/", "s/a"],
+    ])
+    def test_filters_003_40(self, env, exprs):
+        self.configure(env, exprs, fails=True)
+        assert "missing delimiter" in env.apachectl_stderr, \
+            env.apachectl_stderr
+
+    # --- delimiters -------------------------------------------------------
+
+    # Any byte other than backslash and newline can be the delimiter,
+    # including one with the high bit set.
+    def test_filters_003_41(self, env):
+        assert self.body(env, [b"s\xe9monday\xe9MON\xe9",
+                               b"\\\xe9sunday\xe9s\xe9u\xe9U\xe9"]).decode() \
+            == "one MON two\nthree sUnday four\nMON monday monday\n"
+
+    # An interval count is rejected as too large however many digits it
+    # has, rather than wrapping around.
+    @pytest.mark.parametrize("expr", [
+        r"s/o\{255\}/X/",
+        r"s/o\{4294967298\}/X/",
+        r"s/o\{1,4294967298\}/X/",
+    ])
+    def test_filters_003_45(self, env, expr):
+        self.configure(env, expr, fails=True)
+        assert "Range endpoint too large" in env.apachectl_stderr, \
+            env.apachectl_stderr
