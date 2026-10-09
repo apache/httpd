@@ -25,6 +25,8 @@
 #ifndef _DAV_FS_REPOS_H_
 #define _DAV_FS_REPOS_H_
 
+#include "apr_global_mutex.h"
+
 /* the name this repository provider is registered under */
 #define DAV_FS_PROVIDER_NAME            "filesystem"
 
@@ -72,6 +74,16 @@ void dav_dbm_close(dav_db *db);
 
 /* where is the lock database located? */
 const char *dav_get_lockdb_path(const request_rec *r);
+
+/* Per-server configuration (lock database path and the global mutex that
+ * serializes access to it; backported from trunk / PR #395). */
+typedef struct {
+    const char *lockdb_path;
+    apr_global_mutex_t *lockdb_mutex;
+} dav_fs_server_conf;
+
+/* Returns the server configuration for the request. */
+const dav_fs_server_conf *dav_fs_get_server_conf(const request_rec *r);
 
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);

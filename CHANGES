@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.70
 
+  *) mod_dav_fs: Serialize lock database access with a global mutex so
+     concurrent LOCK requests cannot race on the shared DBM record
+     (lost locks, duplicate exclusive locks, Berkeley DB corruption).
+     Backport of r1914438 (PR #395).  [Manfred Kaiser (AUT-milCERT)]
+
 Changes with Apache 2.4.69
 
   *) SECURITY: CVE-2026-93546: mod_dav_fs namespace overflow

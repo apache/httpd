@@ -18,18 +18,26 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
+#include "http_core.h"
+#include "util_mutex.h"
 #include "apr_strings.h"
+#include "apr_global_mutex.h"
 
 #include "mod_dav.h"
 #include "repos.h"
 
-/* per-server configuration */
-typedef struct {
-    const char *lockdb_path;
+/* The dav_fs_server_conf type lives in repos.h so lock.c can see it. */
 
-} dav_fs_server_conf;
+static const char dav_fs_mutexid[] = "dav_fs-lockdb";
+
+static apr_global_mutex_t *dav_fs_lockdb_mutex;
 
 extern module AP_MODULE_DECLARE_DATA dav_fs_module;
+
+const dav_fs_server_conf *dav_fs_get_server_conf(const request_rec *r)
+{
+    return ap_get_module_config(r->server->module_config, &dav_fs_module);
+}
 
 const char *dav_get_lockdb_path(const request_rec *r)
 {
@@ -123,8 +131,64 @@ static int dav_fs_fixups(request_rec *r)
     return HTTP_FORBIDDEN;
 }
 
+static int dav_fs_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                             apr_pool_t *ptemp)
+{
+    if (ap_mutex_register(pconf, dav_fs_mutexid, NULL, APR_LOCK_DEFAULT, 0))
+        return !OK;
+    return OK;
+}
+
+static void dav_fs_child_init(apr_pool_t *p, server_rec *s)
+{
+    apr_status_t rv;
+
+    rv = apr_global_mutex_child_init(&dav_fs_lockdb_mutex,
+                                     apr_global_mutex_lockfile(dav_fs_lockdb_mutex),
+                                     p);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     APLOGNO(10488) "child init failed for mutex");
+    }
+}
+
+static apr_status_t dav_fs_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                       apr_pool_t *ptemp, server_rec *base_server)
+{
+    server_rec *s;
+    apr_status_t rv;
+
+    /* Ignore first pass through the config. */
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
+        return OK;
+
+    rv = ap_global_mutex_create(&dav_fs_lockdb_mutex, NULL, dav_fs_mutexid, NULL,
+                                base_server, p, 0);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, base_server,
+                     APLOGNO(10489) "could not create lock mutex");
+        return !OK;
+    }
+
+    for (s = base_server; s; s = s->next) {
+        dav_fs_server_conf *conf;
+
+        conf = ap_get_module_config(s->module_config, &dav_fs_module);
+
+        /* Mutex is common across all vhosts, but could have one per
+         * vhost if required. */
+        conf->lockdb_mutex = dav_fs_lockdb_mutex;
+    }
+
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(dav_fs_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(dav_fs_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(dav_fs_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+
     /* before mod_dav's fixup, which takes over the request */
     ap_hook_fixups(dav_fs_fixups, NULL, NULL, APR_HOOK_FIRST);
 
