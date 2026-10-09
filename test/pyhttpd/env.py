@@ -814,10 +814,18 @@ class HttpdTestEnv:
 
     def _win_stop(self) -> int:
         if self._httpd_proc is not None:
-            log.debug("stopping httpd (terminate parent)")
-            self._httpd_proc.terminate()
+            import ctypes
+            log.debug("stopping httpd (signal shutdown event)")
+            event_name = f"ap{self._httpd_proc.pid}_shutdown"
+            handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
+            if handle:
+                ctypes.windll.kernel32.SetEvent(handle)
+                ctypes.windll.kernel32.CloseHandle(handle)
+            else:
+                log.warning(f"cannot open {event_name}, falling back to terminate")
+                self._httpd_proc.terminate()
             try:
-                self._httpd_proc.wait(timeout=10)
+                self._httpd_proc.wait(timeout=30)
             except subprocess.TimeoutExpired:
                 self._httpd_proc.kill()
                 self._httpd_proc.wait(timeout=5)
@@ -826,10 +834,27 @@ class HttpdTestEnv:
             log.warning("port still in use after stop")
         return 0
 
+    def _win_signal_restart(self, cmd: str) -> int:
+        import ctypes
+        if self._httpd_proc is None:
+            log.error("no httpd process to signal")
+            return -1
+        event_name = f"ap{self._httpd_proc.pid}_restart"
+        handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
+        if not handle:
+            log.error(f"cannot open event {event_name}")
+            return -1
+        ctypes.windll.kernel32.SetEvent(handle)
+        ctypes.windll.kernel32.CloseHandle(handle)
+        timeout = timedelta(seconds=10)
+        if not self.is_live(self._http_base, timeout=timeout):
+            log.warning(f"server not live after '{cmd}' within {timeout}")
+            return -1
+        return 0
+
     def apache_reload(self):
         if self.isWindows:
-            self._win_stop()
-            return self._win_start()
+            return self._win_signal_restart("graceful")
         r = self._run_apachectl("graceful")
         if r.exit_code == 0:
             timeout = timedelta(seconds=10)
