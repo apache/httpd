@@ -269,6 +269,15 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
     }
     apr_allocator_owner_set(allocator, session_pool);
     apr_pool_tag(session_pool, "h3_session");
+    /* Workers allocate from stream subpools while this thread makes its own: share the allocator safely. */
+    apr_thread_mutex_t* alloc_mutex = NULL;
+    if (apr_thread_mutex_create(&alloc_mutex, APR_THREAD_MUTEX_DEFAULT, session_pool) != APR_SUCCESS)
+    {
+        apr_pool_destroy(session_pool);
+        h3q_conn_free(conn);
+        return APR_EGENERAL;
+    }
+    apr_allocator_mutex_set(allocator, alloc_mutex);
 
     h3_session* session = NULL;
     if (h3_session_create(&session, io->server, conn, session_pool) != APR_SUCCESS)
