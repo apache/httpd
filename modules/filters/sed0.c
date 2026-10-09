@@ -295,6 +295,10 @@ swit:
         case '{':
             commands->rep->command = BCOM;
             commands->rep->negfl = !(commands->rep->negfl);
+            if (commands->depth >= SED_DEPTH) {
+                command_errf(commands, SEDERR_TMOMES);
+                return -1;
+            }
             commands->cmpend[commands->depth++] = &commands->rep->lb1;
             commands->rep = alloc_reptr(commands);
             commands->rep->ad1 = p;
@@ -528,6 +532,10 @@ jtcommon:
 
         case 's':
             commands->rep->command = SCOM;
+            if (*commands->cp == '\0') {
+                command_errf(commands, SEDERR_CGMES, commands->linebuf);
+                return -1;
+            }
             commands->sseof = *commands->cp++;
             commands->rep->re1 = p;
             p = comple(commands, &compargs, (char *) 0, commands->rep->re1,
@@ -645,6 +653,10 @@ jtcommon:
 
         case 'y':
             commands->rep->command = YCOM;
+            if (*commands->cp == '\0') {
+                command_errf(commands, SEDERR_CGMES, commands->linebuf);
+                return -1;
+            }
             commands->sseof = *commands->cp++;
             commands->rep->re1 = p;
             p = ycomp(commands, commands->rep->re1);
@@ -839,8 +851,13 @@ static char *address(sed_commands_t *commands, char *expbuf,
     rcp = commands->cp;
     lno = 0;
 
-    while(*rcp >= '0' && *rcp <= '9')
-        lno = lno*10 + *rcp++ - '0';
+    while(*rcp >= '0' && *rcp <= '9') {
+        if (lno > (APR_INT64_MAX - (*rcp - '0')) / 10) {
+            *status = APR_EGENERAL;
+            return NULL;
+        }
+        lno = lno*10 + (*rcp++ - '0');
+    }
 
     if(rcp > commands->cp) {
         if (expbuf > &commands->respace[RESIZE-3]) {
@@ -954,7 +971,7 @@ static char *ycomp(sed_commands_t *commands, char *expbuf)
             sp++;
             c = '\n';
         }
-        cint = (int) c;
+        cint = (unsigned char) c;
         if((ep[cint] = *tsp++) == '\\' && *tsp == 'n') {
             ep[cint] = '\n';
             tsp++;
@@ -996,6 +1013,8 @@ static char *comple(sed_commands_t *commands, sed_comp_args *compargs,
     char *p;
 
     p = sed_compile(commands, compargs, ep + 1, x3, x4);
+    if(p == NULL)
+        return NULL;
     if(p == ep + 1)
         return(ep);
     *ep = compargs->circf;

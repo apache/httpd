@@ -452,6 +452,19 @@ class TestSed:
         assert self.body(env, r"s/\(\(mo\)n\2*\)day/[\2]/").decode() == \
             "one [mo] two\nthree sunday four\n[mo] monday monday\n"
 
+    # --- blocks -----------------------------------------------------------
+
+    # Blocks nest up to 20 deep.  Each } goes in its own directive: the
+    # rest of a line after } is not read.
+    def test_filters_003_37(self, env):
+        assert self.body(env, ["{" * 20 + "s/monday/MON/"] + ["}"] * 20) \
+            .decode() == "one MON two\nthree sunday four\nMON monday monday\n"
+
+    # Any deeper is rejected.
+    def test_filters_003_38(self, env):
+        self.configure(env, ["{" * 21 + "p"] + ["}"] * 21, fails=True)
+        assert "too many {'s" in env.apachectl_stderr, env.apachectl_stderr
+
     # --- bracket expressions ----------------------------------------------
 
     # A bracket expression which ends after a range's "-" is rejected, on
@@ -486,6 +499,30 @@ class TestSed:
                                b"\\\xe9sunday\xe9s\xe9u\xe9U\xe9"]).decode() \
             == "one MON two\nthree sUnday four\nMON monday monday\n"
 
+    # An s or y command which ends before its delimiter is rejected.
+    @pytest.mark.parametrize("expr", ["s", "/monday/s", "y", "/monday/y"])
+    def test_filters_003_42(self, env, expr):
+        self.configure(env, expr, fails=True)
+        assert "command garbled" in env.apachectl_stderr, \
+            env.apachectl_stderr
+
+    # y maps bytes with the high bit set like any other.
+    def test_filters_003_43(self, env):
+        self.write_bytes(env, "latin1.html", b"caf\xe9 na\xefve\n")
+        assert self.body(env, [b"y/\xe9\xef/ei/"], path="/latin1.html") == \
+            b"cafe naive\n"
+
+    # A regular expression which no longer fits once the compiled script
+    # has filled its buffer exactly, here with the names of r commands, is
+    # rejected without writing past the buffer.  Only a memory checker sees
+    # the difference.
+    def test_filters_003_44(self, env):
+        self.configure(env, [f"r {'A' * 998}"] * 10 + ["r 123456789",
+                                                       "/x/p"],
+                       fails=True)
+        assert "too much command text" in env.apachectl_stderr, \
+            env.apachectl_stderr
+
     # An interval count is rejected as too large however many digits it
     # has, rather than wrapping around.
     @pytest.mark.parametrize("expr", [
@@ -497,3 +534,14 @@ class TestSed:
         self.configure(env, expr, fails=True)
         assert "Range endpoint too large" in env.apachectl_stderr, \
             env.apachectl_stderr
+
+    # A line number too large for a 64-bit count is rejected rather than
+    # wrapping around; one which fits, but which no document reaches, is
+    # accepted.
+    def test_filters_003_46(self, env):
+        self.configure(env, "99999999999999999999p", fails=True)
+        assert "command garbled" in env.apachectl_stderr, \
+            env.apachectl_stderr
+
+    def test_filters_003_47(self, env):
+        assert self.body(env, "9223372036854775807d").decode() == DOC
