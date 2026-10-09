@@ -1452,22 +1452,21 @@ static char *terminate_description(autoindex_config_rec *d, char *desc,
     }
     for (x = 0; desc[x] && ((maxsize > 0) || (desc[x] == '<')); x++) {
         if (desc[x] == '<') {
-            while (desc[x] != '>') {
-                if (!desc[x]) {
-                    maxsize = 0;
-                    break;
-                }
+            while (desc[x] && desc[x] != '>') {
                 ++x;
+            }
+            if (!desc[x]) {
+                break;
             }
         }
         else if (desc[x] == '&') {
             /* entities like &auml; count as one character */
             --maxsize;
-            for ( ; desc[x] != ';'; ++x) {
-                if (desc[x] == '\0') {
-                     maxsize = 0;
-                     break;
-                }
+            for ( ; desc[x] && desc[x] != ';'; ++x) {
+                ;
+            }
+            if (!desc[x]) {
+                break;
             }
         }
         else {
