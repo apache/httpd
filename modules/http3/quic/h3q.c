@@ -44,12 +44,13 @@ h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size
     }
     engine->peer_addr_ex_index = -1;
 
-    engine->ssl_ctx = h3q_tls_ctx_create(cfg, err, errlen);
-    if (!engine->ssl_ctx)
+    if (!cfg->ssl_ctx || !SSL_CTX_up_ref(cfg->ssl_ctx))
     {
+        h3q_tls_error(err, errlen, "no TLS context to serve from");
         h3q_engine_destroy(engine);
         return NULL;
     }
+    engine->ssl_ctx = cfg->ssl_ctx;
 
     BIO_METHOD* bm = BIO_meth_new(BIO_TYPE_FILTER | BIO_get_new_index(), "h3q_peer_addr");
     if (!bm)

@@ -1,0 +1,23 @@
+  *) mod_http3: Load the HTTP/3 certificate and key in post_config, while
+     httpd still runs privileged, so a root-only key no longer fails in the
+     unprivileged child and both mod_ssl and mod_http3 read the same files.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: A host with "h3" in Protocols now serves HTTP/3 with the
+     certificate mod_ssl resolved for it (SSLCertificateFile and mod_md
+     alike), the way mod_http2 rides mod_ssl. H3CertificatePath and
+     H3CertificateKeyPath are removed; drop them from existing configurations.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: Select the HTTP/3 certificate by SNI, so each virtual host on
+     a shared port serves its own certificate instead of the first host's.
+     Names are matched as httpd matches virtual hosts, wildcard ServerAlias
+     included.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: Give every virtual host its own mod_http3 configuration
+     (AP_MODULE_FLAG_ALWAYS_MERGE). A host without H3 directives used to share
+     the main server's, so per-host settings such as H3AltSvc and
+     H3AltSvcMaxAge were silently ignored and hosts could not carry their own
+     certificate.
+     [Alexander Gerasimov <codeguard gmail.com>]
