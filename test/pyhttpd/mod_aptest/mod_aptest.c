@@ -24,6 +24,8 @@
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
+#include <util_filter.h>
+#include <mod_core.h>
 
 static void aptest_hooks(apr_pool_t *pool);
 
@@ -130,6 +132,32 @@ static int aptest_getline_echo(request_rec *r)
     return OK;
 }
 
+/*
+ * Handler "aptest-prebuilt": answer with the status given in the query by
+ * writing a ready-made final response bucket, not by leaving it to the
+ * header filter, followed by a body.
+ */
+static int aptest_prebuilt_handler(request_rec *r)
+{
+    apr_bucket_brigade *bb;
+    int status = HTTP_OK;
+
+    if (!r->handler || strcmp(r->handler, "aptest-prebuilt")) {
+        return DECLINED;
+    }
+    if (r->args && !strncmp(r->args, "status=", 7)) {
+        status = atoi(r->args + 7);
+    }
+    r->status = status;
+    ap_set_content_type(r, "text/plain");
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    ap_basic_http_header(r, bb);
+    apr_brigade_puts(bb, NULL, NULL, "SHOULD-NOT-BE-SENT\n");
+    APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(r->connection->bucket_alloc));
+    ap_pass_brigade(r->output_filters, bb);
+    return OK;
+}
+
 /* Install this module into the apache2 infrastructure.
  */
 static void aptest_hooks(apr_pool_t *pool)
@@ -142,6 +170,7 @@ static void aptest_hooks(apr_pool_t *pool)
                               NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(aptest_allow_methods, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(aptest_getline_echo, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_handler(aptest_prebuilt_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
 
