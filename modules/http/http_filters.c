@@ -1001,7 +1001,7 @@ static apr_status_t validate_status_line(request_rec *r)
         if (len < 3
             || apr_strtoi64(r->status_line, &end, 10) != r->status
             || (end - 3) != r->status_line
-            || (len >= 4 && ! apr_isspace(r->status_line[3]))) {
+            || (len >= 4 && r->status_line[3] != ' ')) {
             r->status_line = NULL;
             return APR_EGENERAL;
         }
@@ -1386,10 +1386,10 @@ static void merge_response_headers(request_rec *r, const char **protocol)
     if (!apr_is_empty_array(r->content_languages)) {
         int i;
         char *token;
-        char **languages = (char **)(r->content_languages->elts);
         const char *field = apr_table_get(r->headers_out, "Content-Language");
 
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
+            char **languages = (char **)(r->content_languages->elts);
             for (i = 0; i < r->content_languages->nelts; ++i) {
                 if (!ap_cstr_casecmp(token, languages[i]))
                     break;

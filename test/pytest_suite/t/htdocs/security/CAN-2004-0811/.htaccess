@@ -1,0 +1,3 @@
+AuthType Basic
+AuthName authany
+require valid-user

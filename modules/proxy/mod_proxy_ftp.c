@@ -657,9 +657,9 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
 
         {
             apr_size_t n = strlen(ctx->buffer);
-            if (ctx->buffer[n-1] == CRLF[1])  /* strip trailing '\n' */
+            if (n > 0 && ctx->buffer[n-1] == CRLF[1])  /* strip trailing '\n' */
                 ctx->buffer[--n] = '\0';
-            if (ctx->buffer[n-1] == CRLF[0])  /* strip trailing '\r' if present */
+            if (n > 0 && ctx->buffer[n-1] == CRLF[0])  /* strip trailing '\r' if present */
                 ctx->buffer[--n] = '\0';
         }
 
@@ -675,7 +675,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             *(link_ptr++) = '\0';
             str = apr_psprintf(p, "%s <a href=\"%s\">%s %s</a>\n",
                                ap_escape_html(p, ctx->buffer),
-                               ap_escape_uri(p, filename),
+                               ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
                                ap_escape_html(p, filename),
                                ap_escape_html(p, link_ptr));
         }
@@ -721,13 +721,13 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || ctx->buffer[0] == 'd') {
                 str = apr_psprintf(p, "%s <a href=\"%s/\">%s</a>\n",
                                    ap_escape_html(p, ctx->buffer),
-                                   ap_escape_uri(p, filename),
+                                   ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
                                    ap_escape_html(p, filename));
             }
             else {
                 str = apr_psprintf(p, "%s <a href=\"%s\">%s</a>\n",
                                    ap_escape_html(p, ctx->buffer),
-                                   ap_escape_uri(p, filename),
+                                   ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
                                    ap_escape_html(p, filename));
             }
         }
@@ -740,11 +740,19 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
 
             str = apr_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, ctx->buffer, re_result[2].rm_so)),
-                              "<a href=\"", ap_escape_uri(p, filename), "\">",
+                              "<a href=\"",
+                              ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
+                              "\">",
                               ap_escape_html(p, filename), "</a>\n", NULL);
         }
         else {
-            strcat(ctx->buffer, "\n"); /* re-append the newline */
+            /* re-append the newline, unless an over-long line already
+             * filled the buffer up to its last byte */
+            apr_size_t n = strlen(ctx->buffer);
+            if (n + 1 < sizeof(ctx->buffer)) {
+                ctx->buffer[n] = '\n';
+                ctx->buffer[n + 1] = '\0';
+            }
             str = ap_escape_html(p, ctx->buffer);
         }
 
@@ -1204,10 +1212,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         time_t secs;
 
         /* Look for a number, preceded by whitespace */
-        while (*secs_str)
+        while (*secs_str) {
             if ((secs_str==ftpmessage || apr_isspace(secs_str[-1])) &&
                 apr_isdigit(secs_str[0]))
                 break;
+            secs_str++;
+        }
         if (*secs_str != '\0') {
             secs = atol(secs_str);
             apr_table_addn(r->headers_out, "Retry-After",
@@ -1492,10 +1502,23 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                  "%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
 
                 apr_sockaddr_t *pasv_addr;
+                apr_sockaddr_t *ctrl_addr;
+                char *ctrl_ip;
+                const char *pasv_host;
                 apr_port_t pasvport = (p1 << 8) + p0;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01044)
                               "PASV contacting host %d.%d.%d.%d:%d",
                               h3, h2, h1, h0, pasvport);
+
+                /* Reject PASV redirects to a different host than the
+                 * control connection peer, preventing FTP bounce attacks. */
+                pasv_host = apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0);
+                if (apr_socket_addr_get(&ctrl_addr, APR_REMOTE, sock) != APR_SUCCESS
+                    || apr_sockaddr_ip_get(&ctrl_ip, ctrl_addr) != APR_SUCCESS
+                    || strcmp(pasv_host, ctrl_ip) != 0) {
+                    return ftp_proxyerror(r, backend, HTTP_FORBIDDEN,
+                                         "PASV address does not match FTP server");
+                }
 
                 if ((rv = apr_socket_create(&data_sock, backend->addr->family,
                                             SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
@@ -1520,8 +1543,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
                 /* make the connection */
-                err = apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d",
-                                                                     h3, h2, h1, h0),
+                err = apr_sockaddr_info_get(&pasv_addr, pasv_host,
                                             backend->addr->family, pasvport, 0, p);
                 if (APR_SUCCESS != err) {
                     return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY,
@@ -1870,7 +1892,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     r->status = HTTP_OK;
-    r->status_line = "200 OK";
+    r->status_line = ap_get_status_line(r->status);
 
     apr_rfc822_date(dates, r->request_time);
     apr_table_setn(r->headers_out, "Date", dates);

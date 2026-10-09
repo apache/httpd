@@ -714,12 +714,12 @@ static void ssl_register_hooks(apr_pool_t *p)
 {
     /* ssl_hook_ReadReq needs to use the BrowserMatch settings so must
      * run after mod_setenvif's post_read_request hook. */
-    static const char *pre_prr[] = { "mod_setenvif.c", NULL };
+    static const char *const pre_prr[] = { "mod_setenvif.c", NULL };
     /* The ssl_init_Module post_config hook should run before mod_proxy's
      * for the ssl proxy main configs to be merged with vhosts' before being
      * themselves merged with mod_proxy's in proxy_hook_section_post_config.
      */
-    static const char *b_pc[] = { "mod_proxy.c", NULL};
+    static const char *const b_pc[] = { "mod_proxy.c", NULL};
 
 
     ssl_io_filter_register(p);

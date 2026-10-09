@@ -1256,13 +1256,25 @@ int md_certs_are_equal(const md_cert_t *a, const md_cert_t *b)
 
 int md_cert_is_valid_now(const md_cert_t *cert)
 {
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+    return X509_check_certificate_times(NULL, cert->x509, NULL) == 1;
+#else
     return ((X509_cmp_current_time(X509_get_notBefore(cert->x509)) < 0)
             && (X509_cmp_current_time(X509_get_notAfter(cert->x509)) > 0));
+#endif
 }
 
 int md_cert_has_expired(const md_cert_t *cert)
 {
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+    /* Report expiry only (not a not-yet-valid notBefore), matching the
+     * legacy notAfter-only check below. */
+    int error = 0;
+    X509_check_certificate_times(NULL, cert->x509, &error);
+    return error == X509_V_ERR_CERT_HAS_EXPIRED;
+#else
     return (X509_cmp_current_time(X509_get_notAfter(cert->x509)) <= 0);
+#endif
 }
 
 apr_time_t md_cert_get_not_after(const md_cert_t *cert)
@@ -2226,7 +2238,7 @@ apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
     const ASN1_INTEGER *serial;
     BIGNUM *bn;
     int i = -1, sder_len;
-    unsigned char *ucp, sbuf[256];
+    unsigned char *ucp, *sbuf;
 
     *pari_cert_id = NULL;
     s_aki = X509_get_ext_d2i(cert->x509, NID_authority_key_identifier, &i, NULL);
@@ -2253,6 +2265,10 @@ apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
     }
     memset(&ser_buf, 0, sizeof(ser_buf));
     bn = ASN1_INTEGER_to_BN(serial, NULL);
+    if (!bn) {
+        return APR_EINVAL;
+    }
+    sbuf = apr_pcalloc(p, BN_num_bytes(bn));
     sder_len = BN_bn2bin(bn, sbuf);
     BN_free(bn);
     if (sder_len < 1)

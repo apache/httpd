@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 570" width="460" height="570">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 10px; }
+      .title { font-size: 12px; font-weight: bold; fill: #333; }
+      .subtitle { font-size: 9px; fill: #666; font-style: italic; }
+      .label { font-size: 9px; fill: #555; }
+      .small { font-size: 8px; fill: #666; font-style: italic; }
+      rect.process { fill: #e8e8e8; stroke: #333; stroke-width: 1.2; rx: 4; ry: 4; }
+      polygon.decision { fill: #fff8dc; stroke: #333; stroke-width: 1.2; }
+      rect.terminal { fill: #d4edda; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.redirect { fill: #f8d7da; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.phase-box { fill: #fafafa; stroke: #888; stroke-width: 1.2; rx: 8; ry: 8; }
+      line, path { stroke: #333; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+  </defs>
+
+  <text x="230" y="18" text-anchor="middle" class="title">How mod_rewrite Processes a Request</text>
+  <text x="230" y="32" text-anchor="middle" class="subtitle">Simplified overview — see Technical Details for full processing model</text>
+
+  <!-- Start: request arrives -->
+  <rect class="terminal" x="145" y="44" width="170" height="26"/>
+  <text x="230" y="61" text-anchor="middle" fill="#333">Request arrives</text>
+  <line x1="230" y1="70" x2="230" y2="96"/>
+
+  <!-- RewriteEngine On? -->
+  <polygon class="decision" points="230,96 340,116 230,136 120,116"/>
+  <text x="230" y="114" text-anchor="middle" fill="#333">RewriteEngine</text>
+  <text x="230" y="126" text-anchor="middle" fill="#333">On?</text>
+
+  <!-- No → pass through -->
+  <line x1="120" y1="116" x2="55" y2="116"/>
+  <text x="78" y="109" class="label">No</text>
+  <rect class="terminal" x="10" y="104" width="90" height="24"/>
+  <text x="55" y="120" text-anchor="middle" fill="#333">Pass through</text>
+
+  <!-- Yes → get first/next rule -->
+  <line x1="230" y1="136" x2="230" y2="162"/>
+  <text x="238" y="150" class="label">Yes</text>
+
+  <!-- Get next rule -->
+  <rect class="process" x="165" y="162" width="130" height="24"/>
+  <text x="230" y="178" text-anchor="middle" fill="#333">Get next rule</text>
+  <line x1="230" y1="186" x2="230" y2="212"/>
+
+  <!-- More rules? -->
+  <polygon class="decision" points="230,212 320,230 230,248 140,230"/>
+  <text x="230" y="228" text-anchor="middle" fill="#333">Any rules</text>
+  <text x="230" y="240" text-anchor="middle" fill="#333">left?</text>
+
+  <!-- No rules left → done -->
+  <line x1="320" y1="230" x2="395" y2="230"/>
+  <text x="335" y="223" class="label">No</text>
+  <rect class="terminal" x="355" y="218" width="95" height="24"/>
+  <text x="403" y="234" text-anchor="middle" fill="#333">URL unchanged</text>
+
+  <!-- Yes → pattern match -->
+  <line x1="230" y1="248" x2="230" y2="276"/>
+  <text x="238" y="262" class="label">Yes</text>
+
+  <!-- Pattern matches? -->
+  <polygon class="decision" points="230,276 330,296 230,316 130,296"/>
+  <text x="230" y="294" text-anchor="middle" fill="#333">Pattern</text>
+  <text x="230" y="306" text-anchor="middle" fill="#333">matches?</text>
+
+  <!-- No → loop back to next rule -->
+  <path d="M 130,296 C 90,296 85,240 85,210 C 85,185 100,178 165,178"/>
+  <text x="93" y="286" class="label">No</text>
+
+  <!-- Yes → check conditions -->
+  <line x1="230" y1="316" x2="230" y2="344"/>
+  <text x="238" y="330" class="label">Yes</text>
+
+  <!-- Conditions met? -->
+  <polygon class="decision" points="230,344 330,364 230,384 130,364"/>
+  <text x="230" y="362" text-anchor="middle" fill="#333">RewriteCond</text>
+  <text x="230" y="374" text-anchor="middle" fill="#333">passes?</text>
+
+  <!-- No → loop back to next rule -->
+  <path d="M 130,364 C 70,364 65,240 65,210 C 65,180 85,175 165,175"/>
+  <text x="93" y="356" class="label">No</text>
+
+  <!-- Yes → substitute -->
+  <line x1="230" y1="384" x2="230" y2="410"/>
+  <text x="238" y="398" class="label">Yes</text>
+
+  <!-- Apply substitution -->
+  <rect class="process" x="145" y="410" width="170" height="28"/>
+  <text x="230" y="428" text-anchor="middle" fill="#333">Apply substitution</text>
+  <line x1="230" y1="438" x2="230" y2="464"/>
+
+  <!-- [L] / [END] flag? -->
+  <polygon class="decision" points="230,464 320,482 230,500 140,482"/>
+  <text x="230" y="480" text-anchor="middle" fill="#333">[L] or [END]</text>
+  <text x="230" y="492" text-anchor="middle" fill="#333">flag?</text>
+
+  <!-- No → loop back to next rule (continue processing) -->
+  <path d="M 140,482 C 50,482 45,240 45,205 C 45,175 70,170 165,172"/>
+  <text x="56" y="472" class="label">No — try</text>
+  <text x="56" y="482" class="label">next rule</text>
+
+  <!-- Yes → done with new URL -->
+  <line x1="230" y1="500" x2="230" y2="520"/>
+  <text x="238" y="512" class="label">Yes</text>
+
+  <rect class="terminal" x="150" y="520" width="160" height="26"/>
+  <text x="230" y="537" text-anchor="middle" fill="#333">URL rewritten — done</text>
+
+</svg>

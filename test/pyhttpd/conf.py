@@ -69,7 +69,8 @@ class HttpdConf(object):
             # In fact it should go in the corresponding VirtualHost... Not sure how to do that.
             l = "SSLEngine On"
         else:
-            if line != "":
+            # conflict with the SSL_TLS_SNI
+            if line.lstrip().startswith("TLS"):
                 l = line.replace("TLS", "SSL")
             else:
                 l = line
@@ -175,7 +176,7 @@ class HttpdConf(object):
         if domains[0] in self._extras:
             self.add(self._extras[domains[0]])
         return self
-                  
+
     def end_vhost(self):
         self._indents -= 1
         self.add("</VirtualHost>")
@@ -196,7 +197,7 @@ class HttpdConf(object):
                 f"ProxyPassReverse /h2proxy/ https://{host}.{self.env.http_tld}:self.env.https_port/",
             ])
         return self
-    
+
     def add_vhost_test1(self, proxy_self=False, h2proxy_self=False):
         domain = f"test1.{self.env.http_tld}"
         self.start_vhost(domains=[domain, f"www1.{self.env.http_tld}"],

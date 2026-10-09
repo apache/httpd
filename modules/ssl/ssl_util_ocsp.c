@@ -133,7 +133,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
             apr_size_t wlen = remain;
 
             rv = apr_socket_send(sd, wbuf, &wlen);
-            wbuf += remain;
+            wbuf += wlen;
             remain -= wlen;
         } while (rv == APR_SUCCESS && remain > 0);
 

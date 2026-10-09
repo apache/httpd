@@ -32,7 +32,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe &agrave; base de nom d'h&ocirc;te (nom ou
 adresse IP)</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>access_compat_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_access_compat.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible dans la version 2.3 du serveur HTTP Apache
@@ -116,7 +116,7 @@ d'environnement</var>
 [<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Limit</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
     <p>La directive <code class="directive">Allow</code> permet de d&eacute;finir quels
@@ -247,7 +247,7 @@ d'environnement</var>
 [<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Limit</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
     <p>Cette directive permet de restreindre l'acc&egrave;s au serveur en
@@ -267,7 +267,7 @@ les directives <code class="directive">Allow</code> et
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>Order Deny,Allow</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Limit</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
 
@@ -423,7 +423,7 @@ et l'authentification utilisateur</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>Satisfy All</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Affect&eacute; par <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> &agrave; partir de la version
 2.0.51</td></tr>

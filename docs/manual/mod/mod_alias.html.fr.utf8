@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre diff&eacute;rentes parties du syst&egrave;me de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
@@ -97,7 +95,7 @@ syst&egrave;me de fichiers</a></li>
 <h2 id="order">Chronologie du traitement <a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
 
     <p>Les alias et redirections apparaissant dans diff&eacute;rents contextes
-    sont trait&eacute;s comme les autres directives en respectant les <a href="../sections.html#mergin">r&egrave;gles de fusion</a> standards. Par
+    sont trait&eacute;s comme les autres directives en respectant les <a href="../sections.html#merging">r&egrave;gles de fusion</a> standards. Par
     contre, ils sont trait&eacute;s selon une chronologie particuli&egrave;re
     lorsqu'ils apparaissent dans le m&ecirc;me contexte (par exemple, dans la
     m&ecirc;me section <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>).</p>
@@ -139,7 +137,7 @@ Alias "/foo" "/gaq"</pre>
 de fichiers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Alias [<var>chemin URL</var>]
 <var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>

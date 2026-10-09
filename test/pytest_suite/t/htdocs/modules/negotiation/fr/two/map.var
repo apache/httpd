@@ -1,0 +1,21 @@
+URI: index.html
+
+URI: index.en.html
+Content-Type: text/html
+Content-Language: en
+
+URI: index.de.html
+Content-Type: text/html
+Content-Language: de
+
+URI: index.fr.html
+Content-Type: text/html
+Content-Language: fr
+
+URI: index.fu.html
+Content-Type: text/html
+Content-Language: fu
+
+URI: index.zh-TW.html
+Content-Type: text/html
+Content-Language: zh-TW

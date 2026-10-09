@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933137:1933948 (outdated) -->
+<!-- English Revision: 1933948 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -190,6 +190,30 @@ seront affichés.</dd>
 <dd>Exécute httpd en mode debug. Un seul processus sera démarré, et le
 serveur ne rendra pas la main à la console.</dd>
 
+</dl>
+</section>
+
+<section id="files"><title>Fichier</title>
+
+<p>Les chemins par défaut listés ci-après peuvent être modifiés à la compilation
+ou à l’aide de différents arguments de ligne de commande et directives de
+configuration. Consulter votre installation locale pour les emplacements réels.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/conf/httpd.conf</code></dt>
+<dd>Fichier de configuration globale du serveur.</dd>
+
+<dt><code>/usr/local/apache2/conf/mime.types</code></dt>
+<dd>Correspondances de types MIME par défaut.</dd>
+
+<dt><code>/usr/local/apache2/logs/error_log</code></dt>
+<dd>Fichier du journal des erreurs.</dd>
+
+<dt><code>/usr/local/apache2/logs/access_log</code></dt>
+<dd>Fichier du journal des accès</dd>
+
+<dt><code>/usr/local/apache2/logs/httpd.pid</code></dt>
+<dd>Fichier contenant l’ID du processus du démon en cours d’exécution.</dd>
 </dl>
 
 <p>Les arguments suivants ne sont disponibles que sur la <a

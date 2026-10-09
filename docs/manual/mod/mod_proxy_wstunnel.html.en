@@ -31,7 +31,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>proxy_wstunnel_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_proxy_wstunnel.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.5 and later</td></tr></table>
@@ -109,7 +109,7 @@ WebSocket always happens.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.48 and later</td></tr>
 </table>

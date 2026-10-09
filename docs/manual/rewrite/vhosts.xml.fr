@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933072:1934664 (outdated) -->
+<!-- English Revision: 1934664 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -17,7 +17,7 @@
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressor implied.
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
@@ -35,7 +35,7 @@ href="../mod/mod_rewrite.html">documentation de référence</a> du module
 virtuels dynamiquement configurés en utilisant
 <module>mod_rewrite</module>.</p>
 
-<note type="warning">L'utilisation de <module>mod_rewrite</module> n'est pas la
+<note type="warning">L'utilisation de <module>mod_rewrite</module> n'est en général pas la
 meilleure méthode pour configurer des serveurs virtuels. Vous devez dans un
 premier temps tenter de résoudre votre problème via ces  <a
 href="../vhosts/mass.html">d'autres méthodes</a> avant d'avoir recours à
@@ -48,12 +48,11 @@ il'utilisation de <module>mod_rewrite</module></a>.</note>
 <seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
 <seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>
-<seealso><a href="access.html">Contrôle d'accès</a></seealso>
-<!--<seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>-->
-<seealso><a href="proxy.html">Serveurs mandataires</a></seealso>
+<seealso><a href="htaccess.html">Réécritures dans un contexte de répertoire</a></seealso>
+<seealso><a href="flags.html">Drapeaux de la règle RewriteRule</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avancées</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Détails techniques</a></seealso>
 
 <section id="per-hostname">
 
@@ -68,9 +67,10 @@ correspondance</a></seealso>
     créer de nouvelle section VirtualHost.</p>
 
     <p>Dans cet exemple, nous supposons que nous utilisons le nom d'hôte
-    <code>www.<strong>SITE</strong>.example.com</code> pour chaque
+    <code><strong>SITE</strong>.example.com</code> pour chaque
     utilisateur, et que nous servons leur contenu depuis
-    <code>/home/<strong>SITE</strong>/www</code>.</p>
+    <code>/home/<strong>SITE</strong>/www</code>. Nous souhaitons cependant que
+    <code>www.example.com</code> n'apparaisse pas dans cette mise en correspondance.</p>
     </dd>
 
     <dt>Solution :</dt>
@@ -83,8 +83,8 @@ RewriteEngine on
 RewriteMap    lowercase int:tolower
 
 RewriteCond   %{HTTP_HOST} !^www\.
-RewriteCond   "${lowercase:%{<strong>HTTP_HOST</strong>}}"   "^www\.<strong>([^.]+)</strong>\.example\.com$"
-RewriteRule   "^(.*)" "/home/<strong>%1</strong>/www$1"
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1
 </highlight></dd>
 
 <dt>Discussion</dt>
@@ -107,6 +107,9 @@ références arrières <code>%1</code>, <code>%2</code>, etc..., alors que
 les contenus des parenthèses utilisées dans une directive <directive
 module="mod_rewrite">RewriteRule</directive> le sont dans les
 références arrières <code>$1</code>, <code>$2</code>, etc...</p>
+
+<p>La première directive <code>RewriteCond</code> vérifie si le nom d'hôte
+commence par <code>www.</code> et si c'est le cas, la réécriture est annulée.</p>
 
 <p>
 Comme c'est le cas pour de nombreuses techniques discutées dans ce
@@ -159,10 +162,10 @@ RewriteEngine On
 
 # un nom de serveur extrait d'un en-tête Host: peut être dans n'importe
 # quelle casse
-RewriteMap  lowercase  int:tolower
+RewriteMap  lowercase  "int:tolower"
 
 ## on s'occupe tout d'abord des documents normaux :<br />
-# permet à Alias "/icons/" de fonctionner - répéter pour les autres
+# permet à Alias /icons/ de fonctionner - répéter pour les autres
 RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
 # permet aux CGIs de fonctionner
 RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
@@ -200,7 +203,7 @@ www.client-N.example.com  /www/clients/N<br />
 <highlight language="config">
 RewriteEngine on
 
-RewriteMap   lowercase  int:tolower
+RewriteMap   lowercase  "int:tolower"
 
 # définit le fichier de correspondances
 RewriteMap   vhost      "txt:/www/conf/vhost.map"

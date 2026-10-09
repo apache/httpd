@@ -1,0 +1,55 @@
+# NameVirtualHost sections for :core.  All virtual hosts ending in :core
+# will be converted to a set of NVH'es on the same dynamic port, so they
+# are collected here.
+
+MaxMemFree 1
+
+<VirtualHost strict-default:core>
+      ServerName default-strict
+      <IfVersion >= 2.4.49>
+          # StrictHostCheck can only be configure globally or in a "default" vhost
+          StrictHostCheck  ON
+      </IfVersion>
+</VirtualHost>
+<VirtualHost strict-nvh:core>
+      ServerName nvh-strict
+      ServerAlias nvh-strict-alias
+      # Implicitly StrictHostCheck ON from default VH above
+</VirtualHost>
+
+# MergeSlashes 
+<IfVersion >= 2.4.39>
+   <VirtualHost merge-default:core>
+         ServerName merge-default
+         <Directory @DocumentRoot@/authz_core/>
+             require all granted
+         </Directory>
+         <LocationMatch ^/authz_core/a/b/c/index.html>
+             require all denied 
+         </LocationMatch>
+   </virtualHost>
+   <VirtualHost merge-disabled:core>
+         ServerName merge-disabled
+         MergeSlashes OFF
+         <Directory @DocumentRoot@/authz_core/>
+             require all granted
+         </Directory>
+         <LocationMatch ^/authz_core/a/b/c/index.html>
+             require all denied 
+         </LocationMatch>
+         <LocationMatch ^/authz_core/a//b/c/index.html>
+             require all denied 
+         </LocationMatch>
+         <Location /authz_core/a/b/d>
+             require all denied 
+         </Location>
+          <ifModule rewrite_module>
+         <Location /CVE-2020-1927/>
+            RewriteEngine ON
+            RewriteCond %{REQUEST_URI} (.+)/$
+            RewriteRule ^ %1 [L]
+         </Location>
+          </ifModule>
+   </virtualHost>
+</IfVersion>
+

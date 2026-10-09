@@ -125,7 +125,7 @@ typedef enum {
     SP_VERYDIFFERENT = 6
 } sp_reason;
 
-static const char *sp_reason_str[] =
+static const char *const sp_reason_str[] =
 {
     "identical",
     "miscapitalized",

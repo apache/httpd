@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_host.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authz_host.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe bas&eacute;es sur l'h&ocirc;te (nom ou adresse
 IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -66,6 +64,8 @@ de la version 2.4.19 du serveur HTTP Apache</td></tr></table>
 <li><a href="../howto/auth.html">Authentification, autorisation et
 contr&ocirc;le d'acc&egrave;s</a></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+<li><a href="mod_authz_core.html#authzresults">&Eacute;tats des r&eacute;sultats
+d&rsquo;autorisation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">

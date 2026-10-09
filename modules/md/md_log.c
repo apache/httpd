@@ -22,7 +22,7 @@
 
 #define LOG_BUFFER_LEN  1024
 
-static const char *level_names[] = {
+static const char *const level_names[] = {
     "emergency",
     "alert",
     "crit",

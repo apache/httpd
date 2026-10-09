@@ -333,7 +333,7 @@
 <div class="directive-section"><h2 id="globallog"><span id="GlobalLog">GlobalLog</span> 지시어 <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Sets filename and format of log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>GlobalLog<var>file</var>|<var>pipe</var>
+<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>

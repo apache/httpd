@@ -99,7 +99,7 @@ static int rst_unprocessed_stream(h2_stream *stream, void *ctx)
                            (!stream->session->remote.accepting
                             && stream->id > stream->session->remote.accepted_max))
                        ); 
-    if (unprocessed) {
+    if (unprocessed && stream->state < H2_SS_CLEANUP) {
         h2_stream_rst(stream, H2_ERR_NO_ERROR);
         return 0;
     }
@@ -269,7 +269,7 @@ static int on_stream_close_cb(nghttp2_session *ngh2, int32_t stream_id,
     
     (void)ngh2;
     stream = get_stream(session, stream_id);
-    if (stream) {
+    if (stream && stream->state < H2_SS_CLEANUP) {
         if (error_code) {
             ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                           H2_STRM_LOG(APLOGNO(03065), stream, 
@@ -512,6 +512,7 @@ static int on_send_data_cb(nghttp2_session *ngh2,
     h2_stream *stream;
     apr_bucket *b;
     apr_off_t len = length;
+    apr_bucket_brigade *bb;
     
     (void)ngh2;
     (void)source;
@@ -542,29 +543,31 @@ static int on_send_data_cb(nghttp2_session *ngh2,
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     
-    status = h2_stream_read_to(stream, session->bbtmp, &len, &eos);
+    bb = apr_brigade_create(session->pool,
+                                                session->c1->bucket_alloc);
+    status = h2_stream_read_to(stream, bb, &len, &eos);
     if (status != APR_SUCCESS) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c1,
                       H2_STRM_MSG(stream, "send_data_cb, reading stream"));
-        apr_brigade_cleanup(session->bbtmp);
+        apr_brigade_destroy(bb);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
     else if (len != (apr_off_t)length) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, status, session->c1,
                       H2_STRM_MSG(stream, "send_data_cb, wanted %ld bytes, "
                       "got %ld from stream"), (long)length, (long)len);
-        apr_brigade_cleanup(session->bbtmp);
+        apr_brigade_destroy(bb);
         return NGHTTP2_ERR_CALLBACK_FAILURE;
     }
-    
+
     if (padlen) {
-        b = apr_bucket_immortal_create(immortal_zeros, padlen, 
+        b = apr_bucket_immortal_create(immortal_zeros, padlen,
                                        session->c1->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
+        APR_BRIGADE_INSERT_TAIL(bb, b);
     }
-    
-    status = h2_c1_io_append(&session->io, session->bbtmp);
-    apr_brigade_cleanup(session->bbtmp);
+
+    status = h2_c1_io_append(&session->io, bb);
+    apr_brigade_destroy(bb);
     
     if (status == APR_SUCCESS) {
         stream->out_data_frames++;
@@ -1416,7 +1419,7 @@ static void on_stream_output(void *ctx, h2_stream *stream)
 }
 
 
-static const char *StateNames[] = {
+static const char *const StateNames[] = {
     "INIT",      /* H2_SESSION_ST_INIT */
     "DONE",      /* H2_SESSION_ST_DONE */
     "IDLE",      /* H2_SESSION_ST_IDLE */
@@ -1536,7 +1539,42 @@ static void h2_session_ev_remote_goaway(h2_session *session, int arg, const char
         session->remote.accepting = 0;
         session->remote.shutdown = 1;
         cleanup_unprocessed_streams(session);
-        transit(session, "remote goaway", H2_SESSION_ST_DONE);
+        if (arg == 0 && session->open_streams > 0) {
+            /* Graceful client GOAWAY while we are still processing streams it
+             * sent us. Do NOT go to DONE here: that makes h2_c1_run() put the
+             * connection into CONN_STATE_LINGER and the MPM close it, which
+             * runs h2_mplx_c1_destroy() and h2_c2_abort()s any stream whose
+             * secondary connection (c2) has not yet flushed its response onto
+             * c1 -- silently dropping that response. The window between a c2
+             * finishing its output and signalling done is small, but an async
+             * MPM that hands c1 back to a fresh worker between events (e.g.
+             * mpm_motorz) drives the close into it far more often than
+             * mpm_event, whose scheduling happens to let c2 drain first.
+             *
+             * Instead keep the session running. The remaining streams complete
+             * normally, their output is written, and once open_streams reaches
+             * 0 we finish from the IDLE state below (or via NO_MORE_STREAMS),
+             * i.e. only after every c2 is done and flushed. This also honors
+             * RFC 9113: a peer's GOAWAY does not abort streams at or below its
+             * last-stream-id, it just stops new ones.
+             *
+             * Liveness: keeping the session running here does NOT risk pinning
+             * c1 open indefinitely on a slow or wedged c2. While draining we
+             * return to ST_BUSY/ST_WAIT and poll the mplx with session->s->timeout
+             * (see h2_session_process()), and each c2 runs its request under the
+             * same server Timeout. A c2 that stops making progress is aborted by
+             * its own timeout, which drops open_streams and lets us reach IDLE
+             * and finish. The new dependency this introduces -- relative to the
+             * old straight-to-DONE behaviour -- is exactly that c1 teardown now
+             * waits on c2 progress/timeout instead of racing ahead of it; that
+             * is the point of the fix, and it is bounded by Timeout. */
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, session->c1,
+                          H2_SSSN_MSG(session,
+                          "remote goaway, draining open streams"));
+        }
+        else {
+            transit(session, "remote goaway", H2_SESSION_ST_DONE);
+        }
     }
 }
 
@@ -1673,6 +1711,7 @@ static void ev_stream_open(h2_session *session, h2_stream *stream)
 static void ev_stream_closed(h2_session *session, h2_stream *stream)
 {
     apr_bucket *b;
+    apr_bucket_brigade *bb;
     
     if (H2_STREAM_CLIENT_INITIATED(stream->id)
         && (stream->id > session->local.completed_max)) {
@@ -1686,9 +1725,11 @@ static void ev_stream_closed(h2_session *session, h2_stream *stream)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, session->c1,
                   H2_STRM_MSG(stream, "adding h2_eos to c1 out"));
     b = h2_bucket_eos_create(session->c1->bucket_alloc, stream);
-    APR_BRIGADE_INSERT_TAIL(session->bbtmp, b);
-    h2_c1_io_append(&session->io, session->bbtmp);
-    apr_brigade_cleanup(session->bbtmp);
+    bb = apr_brigade_create(session->pool,
+                                                session->c1->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    h2_c1_io_append(&session->io, bb);
+    apr_brigade_destroy(bb);
 }
 
 static void on_stream_state_enter(void *ctx, h2_stream *stream)
@@ -1726,10 +1767,12 @@ static void on_stream_state_enter(void *ctx, h2_stream *stream)
             break;
         case H2_SS_CLEANUP:
             nghttp2_session_set_stream_user_data(session->ngh2, stream->id, NULL);
-            update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
-            h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
-            stream = NULL;
-            ++session->streams_done;
+            if (!session->mplx->in_stream_cleanup) {
+                update_child_status(session, SERVER_BUSY_WRITE, "done", stream);
+                h2_mplx_c1_stream_cleanup(session->mplx, stream, &session->open_streams);
+                stream = NULL;
+                ++session->streams_done;
+            }
             break;
         default:
             break;
@@ -1944,6 +1987,24 @@ apr_status_t h2_session_process(h2_session *session, int async,
 
         case H2_SESSION_ST_IDLE:
             ap_assert(session->open_streams == 0);
+            if (session->remote.shutdown) {
+                /* The client sent a GOAWAY and all streams it sent us have now
+                 * been processed and their output written (open_streams == 0).
+                 * It will not open new streams, so there is nothing to wait
+                 * for: send our GOAWAY and finish. Reaching DONE only now -- as
+                 * opposed to when the client's GOAWAY arrived -- guarantees the
+                 * connection is closed only after every c2 is done and flushed,
+                 * which is what keeps async handoff (e.g. mpm_motorz) from
+                 * dropping the last response under HTTP/2 connection churn.
+                 * (Checked before the want_read assert below: after receiving a
+                 * GOAWAY nghttp2 may no longer want to read.) */
+                if (!session->local.shutdown) {
+                    h2_session_shutdown(session, 0, "done", 0);
+                }
+                transit(session, "remote goaway, streams drained",
+                        H2_SESSION_ST_DONE);
+                break;
+            }
             ap_assert(nghttp2_session_want_read(session->ngh2));
             if (!h2_session_want_send(session)) {
                 /* Give any new incoming request a short grace period to

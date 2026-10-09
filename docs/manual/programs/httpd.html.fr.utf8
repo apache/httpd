@@ -28,8 +28,6 @@
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/httpd.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
      <p><code class="program"><a href="../programs/httpd.html">httpd</a></code> est le programme du serveur HTTP d'Apache. Il
      a &eacute;t&eacute; con&ccedil;u pour fonctionner sous forme de processus d&eacute;mon
@@ -44,6 +42,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#files">Fichier</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">D&eacute;marrer Apache httpd</a></li><li><a href="../stopping.html">Arr&ecirc;ter Apache httpd</a></li><li><a href="../configuring.html">Fichiers de configuration</a></li><li><a href="../platform/">Documentations sp&eacute;cifiques aux
 plates-formes</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -185,6 +184,30 @@ seront affich&eacute;s.</dd>
 <dd>Ex&eacute;cute httpd en mode debug. Un seul processus sera d&eacute;marr&eacute;, et le
 serveur ne rendra pas la main &agrave; la console.</dd>
 
+</dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="files">Fichier <a title="Lien permanent" href="#files" class="permalink">&para;</a></h2>
+
+<p>Les chemins par d&eacute;faut list&eacute;s ci-apr&egrave;s peuvent &ecirc;tre modifi&eacute;s &agrave; la compilation
+ou &agrave; l&rsquo;aide de diff&eacute;rents arguments de ligne de commande et directives de
+configuration. Consulter votre installation locale pour les emplacements r&eacute;els.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/conf/httpd.conf</code></dt>
+<dd>Fichier de configuration globale du serveur.</dd>
+
+<dt><code>/usr/local/apache2/conf/mime.types</code></dt>
+<dd>Correspondances de types MIME par d&eacute;faut.</dd>
+
+<dt><code>/usr/local/apache2/logs/error_log</code></dt>
+<dd>Fichier du journal des erreurs.</dd>
+
+<dt><code>/usr/local/apache2/logs/access_log</code></dt>
+<dd>Fichier du journal des acc&egrave;s</dd>
+
+<dt><code>/usr/local/apache2/logs/httpd.pid</code></dt>
+<dd>Fichier contenant l&rsquo;ID du processus du d&eacute;mon en cours d&rsquo;ex&eacute;cution.</dd>
 </dl>
 
 <p>Les arguments suivants ne sont disponibles que sur la <a href="../platform/windows.html">plate-forme Windows</a> :</p>

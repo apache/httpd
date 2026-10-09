@@ -22,6 +22,8 @@
 #include <apr_strings.h>
 #include <apr_buckets.h>
 
+#include <httpd.h>
+
 #include "md.h"
 #include "md_http.h"
 #include "md_log.h"
@@ -168,8 +170,8 @@ static int curlify_headers(void *baton, const char *key, const char *value)
     curlify_hdrs_ctx *ctx = baton;
     const char *s;
     
-    if (strchr(key, '\r') || strchr(key, '\n')
-        || strchr(value, '\r') || strchr(value, '\n')) {
+    if (ap_strchr_c(key, '\r') || ap_strchr_c(key, '\n')
+        || ap_strchr_c(value, '\r') || ap_strchr_c(value, '\n')) {
         ctx->rv = APR_EINVAL;
         return 0;
     }
@@ -273,7 +275,7 @@ static apr_status_t internals_setup(md_http_request_t *req)
         
     internals->response = apr_pcalloc(req->pool, sizeof(md_http_response_t));
     internals->response->req = req;
-    internals->response->status = 400;
+    internals->response->status = HTTP_BAD_REQUEST;
     internals->response->headers = apr_table_make(req->pool, 5);
     internals->response->body = apr_brigade_create(req->pool, req->bucket_alloc);
     

@@ -204,6 +204,8 @@ AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg,
  * @param prefix An optional prefix to add to the returned names.  AP_REG_MATCH
  * is the recommended prefix.
  * @param upper If non zero, uppercase the names
+ * @return number of regex backrefernces returned, -1 for error
+ *         for successful match, AP_REG_NOMATCH otherwise
  */
 AP_DECLARE(int) ap_regname(const ap_regex_t *preg,
                            apr_array_header_t *names, const char *prefix,

@@ -561,7 +561,7 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 <div class="directive-section"><h2 id="globallog">Directive <span id="GlobalLog">GlobalLog</span> <a title="Lien permanent" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le nom et le format du fichier journal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GlobalLog<var>file</var>|<var>pipe</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>
@@ -650,7 +650,7 @@ journal</td></tr>
     sp&eacute;cifi&eacute;, c'est le Common Log Format qui sera utilis&eacute;.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log</pre>
+TransferLog "logs/access_log"</pre>
 </div>
 
 </div>

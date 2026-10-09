@@ -976,7 +976,7 @@ static void map_link(link_ctx *ctx)
              * to work, we need to use the proxy uri */
             int path_start = ctx->link_start + ctx->rbu_len;
             link_len -= ctx->rbu_len;
-            need_len = ctx->psu_len + link_len;
+            need_len = ctx->psu_len + link_len + 1;
             if (need_len > sizeof(buffer))
                 goto out;
             memcpy(buffer, ctx->p_server_uri, ctx->psu_len);

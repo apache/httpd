@@ -30,6 +30,10 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
+            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
+            documentaci&oacute;n para comprobar si se han producido cambios
+            recientemente.</div>
 
 	<p>En sistemas con m&uacute;ltiples usuarios, cada usuario puede tener un website 
     en su directorio home usando la directiva <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>. Los visitantes de una URL 

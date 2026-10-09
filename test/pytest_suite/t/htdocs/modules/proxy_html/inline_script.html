@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inline Script Test</title>
+  <style>
+    body { background: url('http://a.example.com/bg.png'); }
+  </style>
+  <script>
+    var url = 'http://a.example.com/data.json';
+    window.location.href = 'http://a.example.com/redirect.html';
+  </script>
+</head>
+<body onload="fetch('http://a.example.com/api')">
+  <a href="#" onclick="window.open('http://a.example.com/popup.html')">Click</a>
+</body>
+</html>

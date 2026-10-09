@@ -32,6 +32,7 @@
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/prefork.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">A&ccedil;ıklama:</a></th><td>Evresiz &ouml;n &ccedil;atallamalı HTTP sunucusu oluşturur</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Mod&uuml;l&nbsp;Betimleyici:</a></th><td>mpm_prefork_module</td></tr>

@@ -126,7 +126,7 @@ particulier</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers au type de
 contenu sp&eacute;cifi&eacute;</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>chemin URL</var>]
-<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du syst&egrave;me
+<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du syst&egrave;me
 de fichiers</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Met en correspondance des URLs avec le syst&egrave;me de fichiers
@@ -134,7 +134,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliaspreservepath">AliasPreservePath OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Associer le chemin entier &agrave; l'alias dans une section location.</td></tr>
 <tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>h&ocirc;te</var>|env=[!]<var>variable
 d'environnement</var>
-[<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sp&eacute;cifie quels h&ocirc;tes peuvent acc&eacute;der &agrave; une certaine zone du
+[<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td></td></tr><tr><td class="descr" colspan="4">Sp&eacute;cifie quels h&ocirc;tes peuvent acc&eacute;der &agrave; une certaine zone du
 serveur</td></tr>
 <tr class="odd"><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var>[-<var>port</var>]
 [<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports autoris&eacute;s &agrave; se <code>CONNECT</code>er &agrave; travers le
@@ -144,10 +144,10 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint l'acc&egrave;s aux m&eacute;thodes HTTP sp&eacute;cifi&eacute;es</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>type directive</var>
-[<var>type directive</var>] ...</a></td><td> None &agrave; partir de la +</td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types de directives autoris&eacute;es dans les fichiers
+[<var>type directive</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types de directives autoris&eacute;es dans les fichiers
 <code>.htaccess</code></td></tr>
 <tr class="odd"><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></td></tr>
+[<var>directive</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>utilisateur</var> [<var>utilisateur</var>]
 ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit la liste des identifiants utilisateur autoris&eacute;s &agrave;
 acc&eacute;der sans v&eacute;rification du mot de passe</td></tr>
@@ -314,8 +314,7 @@ de requ&ecirc;te <code>Referer</code> est pr&eacute;sent</td></tr>
 rediriger l'utilisateur apr&egrave;s une connexion r&eacute;ussie</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit le type de fichier de base de donn&eacute;es contenant
 la liste des groupes d'utilisateurs</td></tr>
-<tr><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
-Param&egrave;tres-Require</var>&gt;
+<tr><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe des directives repr&eacute;sentant une extension d'un
 fournisseur d'autorisation de base qui pourra &ecirc;tre r&eacute;f&eacute;renc&eacute;e &agrave; l'aide
@@ -348,7 +347,7 @@ contenu de l'en-t&ecirc;te HTTP User-Agent sans tenir compte de la
 casse</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre les entr&eacute;es du journal dans un tampon en m&eacute;moire
 avant de les &eacute;crire sur disque</td></tr>
-<tr><td><a href="mod_buffer.html#buffersize">BufferSize entier</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale en octets du filtre par tampon</td></tr>
+<tr><td><a href="mod_buffer.html#buffersize">BufferSize entier</a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale en octets du filtre par tampon</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>secondes</var></a></td><td> 3600 (une heure) </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La dur&eacute;e par d&eacute;faut de mise en cache d'un document
 lorsqu'aucune date d'expiration n'a &eacute;t&eacute; sp&eacute;cifi&eacute;e.</td></tr>
 <tr><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajoute un en-t&ecirc;te X-Cache-Detail &agrave; la r&eacute;ponse.</td></tr>
@@ -492,7 +491,7 @@ autre type de m&eacute;dia n'avait &eacute;t&eacute; trouv&eacute;.
 <tr class="odd"><td><a href="core.html#define">Define <var>nom-param&egrave;tre</var> [<var>valeur-param&egrave;tre</var>]</a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Permet de d&eacute;finir une variable</td></tr>
 <tr><td><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Comment l'en-t&ecirc;te sortant ETag doit &ecirc;tre modifi&eacute; au cours
 de la compression</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du fragment que zlib devra comprimer en une seule
+<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du fragment que zlib devra compresser en une seule
 fois</td></tr>
 <tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>valeur</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Le niveau de compression que nous appliquons &agrave; la
 sortie</td></tr>
@@ -507,7 +506,7 @@ compression</td></tr>
 <tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>valeur</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille de la fen&ecirc;tre de compression zlib</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>h&ocirc;te</var>|env=[!]<var>variable
 d'environnement</var>
-[<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit quels h&ocirc;tes ne sont pas autoris&eacute;s &agrave; acc&eacute;der au
+[<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</a></td><td></td><td>dh</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit quels h&ocirc;tes ne sont pas autoris&eacute;s &agrave; acc&eacute;der au
 serveur</td></tr>
 <tr><td><a href="core.html#directory">&lt;Directory <var>chemin r&eacute;pertoire</var>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Regroupe un ensemble de directives qui ne s'appliquent
@@ -530,7 +529,7 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
 fin"</td></tr>
 <tr><td><a href="core.html#documentroot">DocumentRoot <var>chemin r&eacute;pertoire</var></a></td><td> "/usr/local/apache/ +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Racine principale de l'arborescence des documents visible
 depuis Internet</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine si les privil&egrave;ges requis par dtrace sont
+<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine si les privil&egrave;ges requis par dtrace sont
 activ&eacute;s.</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enregistre toutes les entr&eacute;es dans le journal des
 erreurs</td></tr>
@@ -594,7 +593,7 @@ n'est pas trouv&eacute;</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>type m&eacute;dium</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Force le type de m&eacute;dium sp&eacute;cifi&eacute; dans le champ d'en-t&ecirc;te
 HTTP Content-Type pour les fichiers correspondants</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>nom-fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit le nom de fichier du journal l&eacute;gal</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
+<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">D&eacute;finit le nom et le format du fichier journal</td></tr>
@@ -688,12 +687,12 @@ pr&eacute;sence ou l'absence d'une section particuli&egrave;re</td></tr>
 <tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>op&eacute;rateur</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Contient des portions de configuration d&eacute;pendantes de la
 version</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://nom_serveur/ +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Valeur par d&eacute;faut de la directive <code>base</code> des
+<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://nom_serveur/ +</td><td>svdh</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Valeur par d&eacute;faut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
-<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action &agrave; entreprendre par d&eacute;faut lorsqu'un fichier imagemap
+<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td></td></tr><tr><td class="descr" colspan="4">Action &agrave; entreprendre par d&eacute;faut lorsqu'un fichier imagemap
 est invoqu&eacute; avec des coordonn&eacute;es qui ne correspondent &agrave; aucune
 cible</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action &agrave; entreprendre si aucune coordonn&eacute;e n'est fournie
+<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Action &agrave; entreprendre si aucune coordonn&eacute;e n'est fournie
 lorsqu'on invoque un fichier imagemap</td></tr>
 <tr><td><a href="core.html#include">Include <var>chemin-fichier</var>|<var>chemin-r&eacute;pertoire</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
@@ -947,8 +946,8 @@ inactifs</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 30s </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente avant de r&eacute;essayer, doubl&eacute; &agrave; chaque erreur
 	cons&eacute;cutive</td></tr>
 <tr><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
-	sont ajout&eacute;s ou non &agrave; server-status.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
+	sont ajout&eacute;s ou non &agrave; <code>server-status</code>.</td></tr>
 <tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Active l'agrafage pour les certificats non g&eacute;r&eacute;s par
 	mod_md.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'agrafage pour un ou plusieurs domaines.</td></tr>
@@ -966,10 +965,10 @@ inactifs</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine si les donn&eacute;es suppl&eacute;mentaires (trailers) sont
 fusionn&eacute;es avec les en-t&ecirc;tes</td></tr>
-<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>r&eacute;pertoire</var></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Le nom du r&eacute;pertoire o&ugrave; trouver les fichiers de
+<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>r&eacute;pertoire</var></a></td><td> .web </td><td>svdh</td><td></td></tr><tr><td class="descr" colspan="4">Le nom du r&eacute;pertoire o&ugrave; trouver les fichiers de
 m&eacute;tainformations dans le style du CERN</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active le traitement des m&eacute;tafichiers du CERN</td></tr>
-<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffixe</var></a></td><td> .meta </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Suffixe du fichier contenant les m&eacute;tainformations dans le
+<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Active le traitement des m&eacute;tafichiers du CERN</td></tr>
+<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffixe</var></a></td><td> .meta </td><td>svdh</td><td></td></tr><tr><td class="descr" colspan="4">Suffixe du fichier contenant les m&eacute;tainformations dans le
 style du CERN</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>chemin-fichier</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active la d&eacute;termination du type MIME en se basant sur le
 contenu du fichier et en utilisant le fichier magique
@@ -1000,7 +999,7 @@ connexion SSL &agrave; la demande</td></tr>
 <tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> FollowSymlinks </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit les fonctionnalit&eacute;s disponibles pour un r&eacute;pertoire
 particulier</td></tr>
-<tr><td><a href="mod_access_compat.html#order"> Order <var>ordre</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit le statut d'acc&egrave;s par d&eacute;faut et l'ordre dans lequel
+<tr><td><a href="mod_access_compat.html#order"> Order <var>ordre</var></a></td><td> Deny,Allow </td><td>dh</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;finit le statut d'acc&egrave;s par d&eacute;faut et l'ordre dans lequel
 les directives <code class="directive">Allow</code> et
 <code class="directive">Deny</code> sont &eacute;valu&eacute;es.</td></tr>
 <tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>commande-sed</var></a></td><td></td><td>dh</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Commande sed pour le filtrage des contenus de type
@@ -1010,7 +1009,7 @@ r&eacute;ponse</td></tr>
 shell</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>nom fichier</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ficher dans lequel le serveur enregistre l'identificateur
 de processus du d&eacute;mon</td></tr>
-<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">Fait un compromis entre d'une part l'efficacit&eacute; et la
+<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td></td></tr><tr><td class="descr" colspan="4">Fait un compromis entre d'une part l'efficacit&eacute; et la
 vitesse de traitement et d'autre part la s&eacute;curit&eacute; &agrave; l'encontre des codes
 malicieux supportant les privil&egrave;ges.</td></tr>
 <tr class="odd"><td><a href="core.html#protocol">Protocol <var>protocole</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Protocole pour une socket d'&eacute;coute</td></tr>
@@ -1124,7 +1123,7 @@ mod_status</td></tr>
 mandat&eacute;es</td></tr>
 <tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information fournie dans l'en-t&ecirc;te de r&eacute;ponse HTTP
 <code>Via</code> pour les requ&ecirc;tes mandat&eacute;es</td></tr>
-<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Demande &agrave; ce module de laisser <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sv</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Demande &agrave; ce module de laisser <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
 g&eacute;rer la requ&ecirc;te</td></tr>
 <tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">V&eacute;rifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifi&eacute;e</td></tr>
@@ -1220,7 +1219,7 @@ pas.</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit l'URL de base pour les r&eacute;&eacute;critures au niveau
 r&eacute;pertoire</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>cha&icirc;ne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
+      <em>TestString</em> [!]<em>CondPattern</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
 la r&eacute;&eacute;criture soit effectu&eacute;e
 </td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou d&eacute;sactive l'ex&eacute;cution du
@@ -1231,14 +1230,14 @@ recherche de mots-cl&eacute;s</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure certaines options sp&eacute;ciales
 pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Mod&egrave;le</em> <em>Substitution</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
+      [!]<em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le temps CPU allou&eacute; aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
 <tr><td><a href="core.html#rlimitmem">RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite la m&eacute;moire allou&eacute;e aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>nombre</var>|max [<var>nombre</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le nombre de processus qui peuvent &ecirc;tre initi&eacute;s par
 les processus initi&eacute;s par les processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interaction entre le contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te
+<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td></td></tr><tr><td class="descr" colspan="4">Interaction entre le contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te
 et l'authentification utilisateur</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>chemin fichier</var></a></td><td> logs/apache_runtime +</td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin du fichier o&ugrave; sont stock&eacute;es les donn&eacute;es concernant
 la coordination des processus enfants</td></tr>
@@ -1530,17 +1529,17 @@ requ&ecirc;tes</td></tr>
 <tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>nom-r&eacute;pertoire</em> [<em>nom-r&eacute;pertoire</em>] ...
 </a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Chemin des r&eacute;pertoires propres &agrave; un
 utilisateur</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le serveur virtuel peut ex&eacute;cuter des
+<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le serveur virtuel peut ex&eacute;cuter des
 sous-processus, et d&eacute;finit les privil&egrave;ges disponibles pour ces
 dernier.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privil&egrave;ges au choix aux sous-processus cr&eacute;&eacute;s
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privil&egrave;ges au choix aux sous-processus cr&eacute;&eacute;s
 par un serveur virtuel.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">D&eacute;finit l'identifiant du groupe sous lequel s'ex&eacute;cute un
+<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>identifiant-groupe-unix</var></a></td><td></td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;finit l'identifiant du groupe sous lequel s'ex&eacute;cute un
 serveur virtuel.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privil&egrave;ge</var> [[+-]?nom-privil&egrave;ge] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privil&egrave;ges &agrave; un serveur virtuel.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le serveur s'ex&eacute;cute avec une s&eacute;curit&eacute; avanc&eacute;e
+<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>nom-privil&egrave;ge</var> [[+-]?nom-privil&egrave;ge] ...</a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">Assigne des privil&egrave;ges &agrave; un serveur virtuel.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td></td></tr><tr><td class="descr" colspan="4">D&eacute;termine si le serveur s'ex&eacute;cute avec une s&eacute;curit&eacute; avanc&eacute;e
 pour les serveurs virtuels.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit l'identifiant utilisateur sous lequel s'ex&eacute;cute un
+<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>identifiant-utilisateur-unix</var></a></td><td></td><td>v</td><td></td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit l'identifiant utilisateur sous lequel s'ex&eacute;cute un
 serveur virtuel.</td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>r&eacute;pertoire-interpol&eacute;</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet une configuration dynamique de la racine des
 documents d'un serveur virtuel donn&eacute;</td></tr>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933419 -->
+<!-- English Revision: 1938528 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -83,7 +83,9 @@
     <ul>
       <li>La directive <directive
       module="mod_reqtimeout">RequestReadTimeout</directive> permet de
-      limiter le temps que met le client pour envoyer sa requête.</li>
+      limiter le temps que met le client pour terminer la négociation TLS et
+      envoyer sa requête. En particulier, la phase <code>handshake</code> met
+      hors délai les clients qui se figent lors de la négociation TLS.</li>
 
       <li>La valeur de la directive
       <directive module="core">TimeOut</directive> doit être diminuée sur les

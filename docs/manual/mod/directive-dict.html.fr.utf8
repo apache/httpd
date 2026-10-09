@@ -30,8 +30,6 @@
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document d&eacute;crit les termes utilis&eacute;s pour d&eacute;crire chaque <a href="directives.html">directive de configuration</a> d'Apache.</p>
 </div>
@@ -39,7 +37,7 @@
 <li><img alt="" src="../images/down.gif"> <a href="#Syntax">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#Default">D&eacute;faut</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#Context">Contexte</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#Override">Surcharge/&Eacute;crasement</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Override">Surcharge .htaccess</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#Status">Statut</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#Module">Module</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#Compatibility">Compatibilit&eacute;</a></li>
@@ -81,11 +79,11 @@
 
       <dt><em>chemin-URL</em></dt>
 
-      <dd>La partie de l'<em>url</em> qui suit le protocole et le nom
-      d'h&ocirc;te comme dans <code>/chemin/vers/fichier.html</code>. Le
-      <em>chemin-URL</em> repr&eacute;sente la ressource vue du web, et est
-      diff&eacute;rente de la repr&eacute;sentation de cette m&ecirc;me ressource vue du
-      syst&egrave;me de fichiers.</dd>
+      <dd>La partie de l'URL qui suit le protocole, le nom d'h&ocirc;te et un port
+      optionnel, et pr&eacute;c&egrave;de la cha&icirc;ne de param&egrave;tres &mdash;&nbsp;par exemple,
+      <code>/path/to/file.html</code>. <em>chemin-URL</em> repr&eacute;sente la
+      ressource vue depuis le web, et est diff&eacute;rente de la repr&eacute;sentation de
+      cette m&ecirc;me ressource vue depuis le syst&egrave;me de fichiers.</dd>
 
       <dt><em>chemin-fichier</em></dt>
 
@@ -141,6 +139,7 @@
       d'Apache. Notez qu'elle peut &ecirc;tre diff&eacute;rente d'une variable
       d'environnement du syst&egrave;me d'exploitation. Voir la <a href="../env.html">documentation sur les variables d'environnement</a>
       pour plus de d&eacute;tails.</dd>
+
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -202,15 +201,15 @@
     <p>Les lieux de d&eacute;finition valides pour une directive r&eacute;sultent en
     fait d'un
     OU logique de tous les contextes sp&eacute;cifi&eacute;s. En d'autres termes, une
-    directive sp&eacute;cifi&eacute;e comme valide dans "<code>configuration globale,
+    directive sp&eacute;cifi&eacute;e comme valide dans "<code>configuration globale, 
     .htaccess</code>" peut &ecirc;tre utilis&eacute;e dans le fichier
     <code>httpd.conf</code> et dans les fichiers <code>.htaccess</code>,
     mais pas dans un conteneur <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="Override">Surcharge/&Eacute;crasement <a title="Lien permanent" href="#Override" class="permalink">&para;</a></h2>
+<h2 id="Override">Surcharge .htaccess <a title="Lien permanent" href="#Override" class="permalink">&para;</a></h2>
 
-    <p>Ce terme indique quelle autorisation de surcharge ("override") doit &ecirc;tre
+    <p>Ce terme indique quelle autorisation de surcharge doit &ecirc;tre
     active pour que la directive puisse &ecirc;tre trait&eacute;e lorsqu'elle
     appara&icirc;t dans un fichier <code>.htaccess</code>. Si le <a href="#Context">context</a> de la directive ne lui permet pas
     d'appara&icirc;tre dans un fichier <code>.htaccess</code>, aucun contexte
@@ -264,7 +263,7 @@
 
       <dt>Exp&eacute;rimental</dt>
 
-      <dd>Le statut "Exp&eacute;rimental" indique que la directive fait partie
+      <dd>Le statut "Experimental" indique que la directive fait partie
       du kit Apache, mais que vous l'utilisez &agrave; vos risques et p&eacute;rils.
       La directive est document&eacute;e &agrave; titre d'exhaustivit&eacute;, et n'est pas
       obligatoirement support&eacute;e. Le module qui fournit la directive peut

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 420" width="500" height="420">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 10px; fill: #333; }
+      .title { font-size: 12px; font-weight: bold; }
+      .col-title { font-size: 11px; font-weight: bold; fill: #444; }
+      .label { font-size: 9px; fill: #555; }
+      .small { font-size: 8px; fill: #666; font-style: italic; }
+      .first { font-size: 9px; font-weight: bold; fill: #069; }
+      rect.mod-rewrite { fill: #e0f0ff; stroke: #069; stroke-width: 1.4; rx: 4; ry: 4; }
+      rect.mod-alias { fill: #fff0e0; stroke: #c60; stroke-width: 1.4; rx: 4; ry: 4; }
+      rect.phase-label { fill: #f5f5f5; stroke: #999; stroke-width: 0.8; rx: 3; ry: 3; }
+      rect.terminal { fill: #d4edda; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.col-box { fill: #fafafa; stroke: #888; stroke-width: 1; rx: 6; ry: 6; }
+      line { stroke: #333; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+      .divider { stroke: #ccc; stroke-width: 1; stroke-dasharray: 4,3; marker-end: none; }
+    </style>
+  </defs>
+
+  <text x="250" y="18" text-anchor="middle" class="title">Module Processing Order: mod_rewrite vs mod_alias</text>
+
+  <!-- Divider line -->
+  <line x1="250" y1="34" x2="250" y2="400" class="divider"/>
+
+  <!-- ==================== LEFT COLUMN: Server Context ==================== -->
+  <rect class="col-box" x="20" y="34" width="210" height="360"/>
+  <text x="125" y="52" text-anchor="middle" class="col-title">Server / VirtualHost Context</text>
+
+  <!-- Request arrives -->
+  <rect class="terminal" x="65" y="64" width="120" height="22"/>
+  <text x="125" y="79" text-anchor="middle">Request arrives</text>
+  <line x1="125" y1="86" x2="125" y2="112"/>
+
+  <!-- Phase label: URL-to-filename -->
+  <rect class="phase-label" x="45" y="112" width="160" height="18"/>
+  <text x="125" y="124" text-anchor="middle" class="label">URL-to-filename translation phase</text>
+  <line x1="125" y1="130" x2="125" y2="152"/>
+
+  <!-- mod_rewrite FIRST -->
+  <rect class="mod-rewrite" x="55" y="152" width="140" height="28"/>
+  <text x="125" y="170" text-anchor="middle">mod_rewrite</text>
+  <text x="200" y="170" class="first">← FIRST</text>
+  <line x1="125" y1="180" x2="125" y2="210"/>
+
+  <!-- mod_alias second -->
+  <rect class="mod-alias" x="55" y="210" width="140" height="28"/>
+  <text x="125" y="228" text-anchor="middle">mod_alias</text>
+  <text x="200" y="228" class="label">second</text>
+  <line x1="125" y1="238" x2="125" y2="268"/>
+
+  <!-- Consequence note -->
+  <text x="40" y="278" class="small">RewriteRule matches first.</text>
+  <text x="40" y="290" class="small">If it rewrites, Redirect</text>
+  <text x="40" y="302" class="small">never sees the request.</text>
+
+  <!-- Content -->
+  <line x1="125" y1="268" x2="125" y2="320"/>
+  <rect class="terminal" x="75" y="320" width="100" height="22"/>
+  <text x="125" y="335" text-anchor="middle">Content</text>
+
+  <!-- ==================== RIGHT COLUMN: Per-Directory Context ==================== -->
+  <rect class="col-box" x="270" y="34" width="210" height="360"/>
+  <text x="375" y="52" text-anchor="middle" class="col-title">Per-Directory Context</text>
+  <text x="375" y="63" text-anchor="middle" class="small">(.htaccess / &lt;Directory&gt;)</text>
+
+  <!-- Request arrives -->
+  <rect class="terminal" x="315" y="74" width="120" height="22"/>
+  <text x="375" y="89" text-anchor="middle">Request arrives</text>
+  <line x1="375" y1="96" x2="375" y2="122"/>
+
+  <!-- Phase label: URL-to-filename -->
+  <rect class="phase-label" x="295" y="122" width="160" height="18"/>
+  <text x="375" y="134" text-anchor="middle" class="label">URL-to-filename translation phase</text>
+  <line x1="375" y1="140" x2="375" y2="162"/>
+
+  <!-- mod_alias FIRST -->
+  <rect class="mod-alias" x="305" y="162" width="140" height="28"/>
+  <text x="375" y="180" text-anchor="middle">mod_alias</text>
+  <text x="450" y="180" class="first">← FIRST</text>
+  <line x1="375" y1="190" x2="375" y2="218"/>
+
+  <!-- Phase label: Fixup -->
+  <rect class="phase-label" x="295" y="218" width="160" height="18"/>
+  <text x="375" y="230" text-anchor="middle" class="label">Fixup phase (later)</text>
+  <line x1="375" y1="236" x2="375" y2="258"/>
+
+  <!-- mod_rewrite second -->
+  <rect class="mod-rewrite" x="305" y="258" width="140" height="28"/>
+  <text x="375" y="276" text-anchor="middle">mod_rewrite</text>
+  <text x="450" y="276" class="label">second</text>
+  <line x1="375" y1="286" x2="375" y2="316"/>
+
+  <!-- Consequence note -->
+  <text x="290" y="326" class="small">Redirect runs first.</text>
+  <text x="290" y="338" class="small">If it matches, RewriteRule</text>
+  <text x="290" y="350" class="small">in .htaccess never fires.</text>
+
+  <!-- Content -->
+  <line x1="375" y1="316" x2="375" y2="360"/>
+  <rect class="terminal" x="325" y="360" width="100" height="22"/>
+  <text x="375" y="375" text-anchor="middle">Content</text>
+
+  <!-- Bottom note -->
+  <text x="250" y="412" text-anchor="middle" class="small">The order reversal between contexts is a common source of confusion. Choose one module per task.</text>
+
+</svg>

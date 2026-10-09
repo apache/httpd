@@ -65,6 +65,144 @@ have no effect in <glossary ref="perdirectory">per-directory context</glossary>,
 of how you might use them.</p>
 </section>
 
+<section id="flag_quickref"><title>Flag Quick Reference</title>
+
+<p>Flags can be combined: <code>[R=301,L]</code>, <code>[P,QSA]</code>,
+<code>[E=VAR:val,L]</code>. This table groups them by purpose, ordered
+by how commonly each is used.</p>
+
+<table border="1" style="zebra">
+<columnspec><column width=".12"/><column width=".22"/><column width=".38"/><column width=".28"/></columnspec>
+<tr>
+  <th>Flag</th>
+  <th>Purpose</th>
+  <th>Effect</th>
+  <th>Common combos</th>
+</tr>
+
+<tr><td colspan="4"><em><strong>Flow Control</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_l">[L]</a></td>
+  <td>Last rule</td>
+  <td>Stop processing rules (this pass)</td>
+  <td>[R=301,L]  [F]  [G]</td>
+</tr>
+<tr>
+  <td><a href="#flag_end">[END]</a></td>
+  <td>Full stop</td>
+  <td>Stop all rewrite processing (no re-entry in .htaccess)</td>
+  <td>[R=301,END]</td>
+</tr>
+<tr>
+  <td><a href="#flag_s">[S=N]</a></td>
+  <td>Skip</td>
+  <td>Skip next N rules (if/else logic)</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_n">[N]</a></td>
+  <td>Next (loop)</td>
+  <td>Restart ruleset from the top (caution: loop risk)</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_c">[C]</a></td>
+  <td>Chain</td>
+  <td>Tie rule to the next; if this fails, skip chained rules</td>
+  <td></td>
+</tr>
+
+<tr><td colspan="4"><em><strong>Redirection and Proxying</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_r">[R=code]</a></td>
+  <td>Redirect</td>
+  <td>External redirect (default 302). Consider Redirect/RedirectMatch for simple cases</td>
+  <td>[R=301,L]  [R=302,L]</td>
+</tr>
+<tr>
+  <td><a href="#flag_p">[P]</a></td>
+  <td>Proxy</td>
+  <td>Reverse proxy to target (requires <module>mod_proxy</module>)</td>
+  <td>[P,QSA]</td>
+</tr>
+
+<tr><td colspan="4"><em><strong>Access Control</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_f">[F]</a></td>
+  <td>Forbidden</td>
+  <td>Return 403 (implies [L])</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_g">[G]</a></td>
+  <td>Gone</td>
+  <td>Return 410 (implies [L])</td>
+  <td></td>
+</tr>
+
+<tr><td colspan="4"><em><strong>URL / Query String</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_qsa">[QSA]</a></td>
+  <td>Query string append</td>
+  <td>Append original query string to substitution</td>
+  <td>[QSA,L]  [P,QSA]</td>
+</tr>
+<tr>
+  <td><a href="#flag_qsd">[QSD]</a></td>
+  <td>Query string discard</td>
+  <td>Drop original query string entirely</td>
+  <td>[R=301,QSD,L]</td>
+</tr>
+<tr>
+  <td><a href="#flag_b">[B]</a></td>
+  <td>Escape backrefs</td>
+  <td>Re-encode special chars in backreferences</td>
+  <td>[B,PT]</td>
+</tr>
+<tr>
+  <td><a href="#flag_ne">[NE]</a></td>
+  <td>No escape</td>
+  <td>Don't escape special chars in output (pass #, ? through)</td>
+  <td>[R=301,NE,L]</td>
+</tr>
+
+<tr><td colspan="4"><em><strong>Metadata and Handlers</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_e">[E]</a></td>
+  <td>Set env var</td>
+  <td>Set an environment variable</td>
+  <td>[E=VAR:val,L]</td>
+</tr>
+<tr>
+  <td><a href="#flag_t">[T]</a></td>
+  <td>MIME type</td>
+  <td>Force content type</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_h">[H]</a></td>
+  <td>Handler</td>
+  <td>Force a content handler</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_pt">[PT]</a></td>
+  <td>Pass through</td>
+  <td>Pass result to next handler (needed with Alias/ScriptAlias)</td>
+  <td>[PT,L]</td>
+</tr>
+
+<tr><td colspan="4"><em><strong>Cookie</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_co">[CO]</a></td>
+  <td>Set cookie</td>
+  <td>Set an HTTP cookie on the response</td>
+  <td>[CO=name:val:.domain,R=302,L]</td>
+</tr>
+</table>
+
+</section>
+
 <section id="flag_b"><title>B (escape backreferences)</title>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
@@ -211,6 +349,13 @@ follows:</p>
 <example>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </example>
+
+<note type="warning">
+<title>Security Warning</title>
+<p>Exercise care when constructing the argument from backreferences or other
+variable expansion.  If any part of the argument is derived from user input,
+a malicious request may include delimeters or other unexpected values.</p>
+</note>
 
 <p>If a literal ':' character is needed in any of the cookie fields, an 
 alternate syntax is available.  To opt-in to the alternate syntax, the cookie 

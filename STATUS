@@ -29,7 +29,9 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.68  : In development
+    2.4.70  : In development
+    2.4.69  : Released on October 01, 2026
+    2.4.68  : Released on June 08, 2026
     2.4.67  : Released on May 04, 2026
     2.4.66  : Released on December 04, 2025
     2.4.65  : Released on July 23, 2025
@@ -149,11 +151,11 @@ CURRENT RELEASE NOTES:
     . mod_proxy_http2
     . mod_md
     . documentation
-    . non-Unix build
+    . non-Unix build, and cmake-based build
     . non-Unix, single-platform code
     . routine APLOGNO() backports
     . .gdbinit
-    . CI configuration and scripts
+    . Tests, CI configuration and scripts
     . mod_tls
 
 RELEASE SHOWSTOPPERS:
@@ -162,64 +164,45 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: update to v2.0.39
-     https://github.com/apache/httpd/pull/602 should have been applied!
-     trunk patch: https://svn.apache.org/r1931949
-     2.4.x patch: svn merge -c 1931949 ^/httpd/httpd/trunk .
-     +1: icing, steffenal, covener
 
-  *) mod_dav_fs: Fix missing 404 with DELETE race
-     trunk patch: https://svn.apache.org/r1926172
-     2.4.x patch: svn merge -c 1926172 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/583
-     +1: jorton, rpluem, covener
-
-  *) mod_unixd: sync with trunk.
-     trunk patch: https://svn.apache.org/r1617196
-                  https://svn.apache.org/r1617201
-                  https://svn.apache.org/r1618778
-                  https://svn.apache.org/r1897269
-                  https://svn.apache.org/r1927804
-     2.4.x patch: svn merge -c 1617196,1617201,1618778,1897269,1927804,1930444 ^/httpd/httpd/trunk .
-                  (or https://github.com/apache/httpd/pull/588)
-     +1: jorton, rpluem, covener
+------------------------------------------------------------------------
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) core: Add millisecond time formatting for ErrorLogFormat
-     trunk patch: https://svn.apache.org/r1931452
-                  https://svn.apache.org/r1931453
-     2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/599
-     +1: jorton, covener
+  *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
+     announcement -- backends self-register as balancer members over UDP.
+     trunk patch: https://svn.apache.org/r1934995
+                  https://svn.apache.org/r1935040
+                  https://svn.apache.org/r1935556
+     2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
+     +1: jim, 
 
-  *) Fix compatibility with OpenSSL 4.0
-     trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
-     2.4.x patch: https://github.com/apache/httpd/pull/642
-     +1: jorton, 
+  *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
+     (multi-poller scale-out with new PollersPerChild directive, async
+     keep-alive/HTTP/2 handoff, concurrency hardening, motorz test suite).
+     trunk patch: https://svn.apache.org/r1934868
+     2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
+     +1: jim, 
 
-  *) Fix build failure with gcc 16.1.1 in maintainer-mode. Apparently such warnings were
-     tolorated with 15.2.1, but not anymore.
-     trunk patch: https://svn.apache.org/r1934594
-                  https://svn.apache.org/r1934597
-     2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
-
-  *) Update to mod_http2 v2.0.40
-     trunk patch: https://svn.apache.org/r1934628
-     2.4.x patch: svn merge -c 1934628 ^/httpd/httpd/trunk .
-     +1: icing, covener
-
-  *) Update to mod_http2 v2.0.41
-     trunk patch: https://svn.apache.org/r1934678
-     2.4.x patch: svn merge -c 1934678 ^/httpd/httpd/trunk .
-     +1: icing, covener
-
-  *) Update to mod_http2 v2.0.42
-     trunk patch: https://svn.apache.org/r1934743
-     2.4.x patch: svn merge -c 1934743 ^/httpd/httpd/trunk .
-     +1: icing, covener
+  *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
+     MONOTONIC_USEC on reload, fix graceful restart with socket
+     activation and the status line; add a systemd test suite.
+     trunk patch: https://svn.apache.org/r1909769
+                  https://svn.apache.org/r1928356
+                  https://svn.apache.org/r1937596
+                  https://svn.apache.org/r1937597
+                  https://svn.apache.org/r1937598
+                  https://svn.apache.org/r1937599
+                  https://svn.apache.org/r1937600
+                  https://svn.apache.org/r1937601
+                  https://svn.apache.org/r1937602
+                  https://svn.apache.org/r1937635
+                  https://svn.apache.org/r1937644
+                  https://svn.apache.org/r1937646
+                  https://svn.apache.org/r1937647
+     2.4.x patch: https://github.com/apache/httpd/pull/773.patch
+     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]

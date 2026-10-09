@@ -1,0 +1,16 @@
+[project]
+name = "httpd-pyhttpd-tests"
+version = "0.1.0"
+requires-python = ">=3.9"
+dependencies = [
+    "pytest>=7.0",
+    "cryptography",
+    "filelock",
+    "python-multipart",
+    "pyopenssl",
+    "packaging",
+    "websockets",
+]
+
+[tool.uv]
+package = false

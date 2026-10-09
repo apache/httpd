@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule ^(.*)$ /modules/rewrite/$1 [P,L]

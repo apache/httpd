@@ -1,0 +1,17 @@
+<?php
+
+        function check_dirname($path)
+        {
+                print "dirname($path) == " . dirname($path) . "\n";
+        }
+
+        check_dirname("/foo/");
+        check_dirname("/foo");
+        check_dirname("/foo/bar");
+        check_dirname("d:\\foo\\bar.inc");
+        check_dirname("/");
+        check_dirname(".../foo");
+        check_dirname("./foo");
+        check_dirname("foobar///");
+        check_dirname("c:\\foo");
+?>

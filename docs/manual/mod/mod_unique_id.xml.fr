@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932665:1933511 (outdated) -->
+<!-- English Revision: 1933511 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -73,11 +73,15 @@ identifiant unique pour chaque requête</description>
       <li>Les temps des machines sont synchronisés via NTP ou tout autre
       protocole de synchronisation du temps en réseau.</li>
 
-      <li>Les nom d'hôtes des machines sont tous différents, de façon à
-      ce que le module puisse recevoir une adresse IP différente pour
-      chaque machine du cluster en effectuant une recherche sur le nom
-      d'hôte.</li>
     </ul>
+
+    <note><title>Changements à partir de la version 2.4.29</title>
+    <p>Dans les versions précédentes, l’unicité nécessitait aussi que chaque
+    machine ait une adresse IP distincte. Depuis la version 2.4.29, le module
+    utilise un générateur de nombres pseudo-aléatoires cryptographique (PRNG)
+    ensemencé au démarrage, tout en supprimant l’adresse IP et le PID de
+    l’identifiant et en ne nécessitant plus de noms d’hôte distincts ou de
+    délai au démarrage.</p></note>
 
     <p>Au vu des caractéristiques actuelles du système d'exploitation,
     nous supposerons que les pids (identifiants processus) sont codés
@@ -85,15 +89,14 @@ identifiant unique pour chaque requête</description>
     pour un pid, la correction est triviale mais doit être effectuée
     dans le code.</p>
 
-    <p>Ces hypothèses posées, à un instant donné, nous pouvons
-    distinguer tout processus httpd sur toute machine du cluster de tous
-    les autres processus httpd. Pour ce faire, il suffit d'utiliser
-    l'adresse IP de la machine et le pid du processus httpd. Un
-    processus httpd peut traiter plusieurs requêtes simultanément si
-    vous utilisez un module MPM multi-threadé. Pour identifier les
-    threads, Apache httpd utilise en interne un index de threads. Ainsi,
-    afin de générer des identifiants uniques pour chaque requête, il
-    suffit d'effectuer une distinction en fonction du temps.</p>
+    <p>Ces hypothèses posées, à un instant donné, nous pouvons distinguer tout
+    processus httpd sur toute machine du cluster de tous les autres processus
+    httpd. La valeur racine générée par PRNG et l’index des threads permettent
+    d’accomplir cette tâche. Un processus httpd peut traiter plusieurs requêtes
+    simultanément si vous utilisez un module MPM multi-threadé. Pour identifier
+    les threads, Apache httpd utilise en interne un index de threads. Ainsi,
+    afin de générer des identifiants uniques pour chaque requête, il suffit
+    d'effectuer une distinction en fonction du temps.</p>
 
     <p>Pour déterminer le temps, nous utiliserons un repère de temps
     Unix (les secondes écoulées depuis le 1er janvier 1970 UTC), et un
@@ -175,26 +178,24 @@ identifiant unique pour chaque requête</description>
     redémarrage.</p>
 
     <!-- FIXME: thread_index is unsigned int, so not always 32bit.-->
-    <p>La variable d'environnement <code>UNIQUE_ID</code> est construite par
-    codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid sur 32 bits,
-    repère de temps sur 32 bits, compteur 16 bits et index de threads sur
-    32 bits) en utilisant l'alphabet <code>[A-Za-z0-9_-]</code>
-    (<code>[A-Za-z0-9@-]</code>) avant la version 2.4.47) d'une manière
-    similaire à celle du codage MIME base64, et sa valeur se
-    présente sous la forme d'une chaîne de 24 caractères.
-    L'alphabet MIME base64 est en fait <code>[A-Za-z0-9+/]</code> ; cependant,
-    les caractères <code>+</code> et <code>/</code> nécessitent un
-    codage particulier dans les URLs, ce qui rend leur utilisation peu commode.
-    Toutes les valeurs sont codées dans l'ordre des octets d'une adresse
-    réseau de façon à ce que le codage soit comparable
-    entre des architectures où l'ordre des octets est différent.
-    L'ordre réel de codage est : repère de temps, adresse IP, pid,
-    compteur. Cet ordre de codage possède un but précis, mais il
-    faut souligner que les applications n'ont aucun intérêt
-    à entrer dans les détails de ce codage. Les applications
-    doivent se contenter de traiter la variable <code>UNIQUE_ID</code> comme un
-    symbole opaque, qui peut être comparé avec d'autres
-    <code>UNIQUE_ID</code>s en ne testant que leur égalité.</p>
+    <p>Depuis la version 2.4.29, la variable d'environnement
+    <code>UNIQUE_ID</code> est construite par codage d’une valeur de 160 bits
+    (32 bits pour l’horodatage, 80 bits pour la racine PRNG, 16 bits pour le
+    compteur et 32 bits pour l’index des threads)) en utilisant l'alphabet
+    <code>[A-Za-z0-9_-]</code> d'une manière similaire à celle du codage MIME
+    base64 (avant la version 2.4.47, <code>[A-Za-z0-9@-]</code>), et sa valeur
+    se présente sous la forme d'une chaîne de 27 caractères. L'alphabet MIME
+    base64 est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caractères
+    <code>+</code> et <code>/</code> nécessitent un codage particulier dans les
+    URLs, ce qui rend leur utilisation peu commode. Toutes les valeurs sont
+    codées dans l'ordre des octets d'une adresse réseau de façon à ce que le
+    codage soit comparable entre des architectures où l'ordre des octets est
+    différent. L'ordre réel de codage est : horodatage, racine, compteur, index
+    des threads. Cet ordre de codage possède un but précis, mais il faut
+    souligner que les applications n'ont aucun intérêt à entrer dans les détails
+    de ce codage. Les applications doivent se contenter de traiter la variable
+    <code>UNIQUE_ID</code> comme un symbole opaque, qui peut être comparé avec
+    d'autres <code>UNIQUE_ID</code>s en ne testant que leur égalité.</p>
 
     <p>L'ordre a été choisi de façon à ce qu'il soit possible de
     modifier le codage dans le futur sans avoir à se préoccuper de
@@ -217,12 +218,7 @@ identifiant unique pour chaque requête</description>
     machines du cluster (seule la synchronisation NTP est requise, ce
     qui représente une charge très faible), et aucune communication
     entre les processus httpd n'est nécessaire (la communication est
-    implicite et incluse dans le pid assigné par le noyau). Dans des
-    situations très spécifiques, l'identifiant peut être raccourci, mais
-    dans ce cas, d'avantage d'informations doivent être admises (par
-    exemple, les 32 bits de l'adresse IP sont excessifs pour la plupart
-    des sites, mais il n'existe pas de valeur de remplacement portable
-    plus courte).</p>
+    implicite dans la graine PRNG assignée au démarrage)..</p>
 </section>
 
 

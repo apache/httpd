@@ -1,0 +1,1 @@
+<?php readfile("../hello.txt"); ?>

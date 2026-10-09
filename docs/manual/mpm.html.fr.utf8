@@ -166,7 +166,7 @@ DSO (Dynamic Shared Object) <a title="Lien permanent" href="#dynamic" class="per
     modifiant la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> concern&eacute;e, sans avoir &agrave;
     recompiler le serveur.</p>
 
-    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+    <pre class="prettyprint lang-config">LoadModule mpm_event_module modules/mod_mpm_event.so</pre>
 
 
     <p>Toute tentative de charger plusieurs modules MPM via la directive

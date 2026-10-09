@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932368:1934416 (outdated) -->
+<!-- English Revision: 1934416 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -81,7 +81,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
       particuliers, vous pouvez utiliser la directive <directive
       module="mod_filter">AddOutputFilterByType</directive>. Dans l'exemple
       suivant, l'activation de la compression est restreinte aux fichiers html
-      de la documentation d'Apache :</p>
+      de la documentation d'Apache httpd :</p>
 
       <highlight language="config">
 &lt;Directory "/your-server-root/manual"&gt;
@@ -155,8 +155,8 @@ Header set Vary *
     RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
     RewriteRule "^(.*)\.css"              "$1.css.br" [QSA]
 
-    # Sert des fichiers JS compressés par brotli, s'ils existent
-    # et si le client supporte brotli.
+    # Servir des fichiers JS compressés par brotli, s’ils existent
+    # et si le client accepte brotli.
     RewriteCond "%{HTTP:Accept-encoding}" "br"
     RewriteCond "%{LA-U:REQUEST_FILENAME}.br" "-s"
     RewriteRule "^(.*)\.js"               "$1.js.br" [QSA]
@@ -183,6 +183,7 @@ Header set Vary *
 <description>Enregistre le taux de compression dans une note à des fins de
 journalisation</description>
 <syntax>BrotliFilterNote [<var>type</var>] <var>notename</var></syntax>
+<default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -251,8 +252,24 @@ CustomLog "logs/brotli_log" brotli
     <p>La directive <directive>BrotliCompressionQuality</directive> permet de
     spécifier la qualité de la compression (une valeur entre 0 et
     11). Les valeurs les plus hautes correspondent à une compression de
-    meilleure qualité mais plus lente.
+    meilleure qualité mais plus lente. La valeur par défaut 5 est un bon
+    compromis pour du contenu dynamique.
   </p>
+
+  <example><title>Compression rapide pour du contenu dynamique</title>
+    <highlight language="config">
+# La valeur de qualité 4 est à peu près équivalente à gzip niveau 6
+BrotliCompressionQuality 4
+    </highlight>
+    </example>
+
+    <example><title>Compression maximale pour les ressources statiques</title>
+    <highlight language="config">
+# Meilleur taux de compression mais très lent — ne convient qu’à la mise en
+# cache
+BrotliCompressionQuality 11
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -267,8 +284,26 @@ CustomLog "logs/brotli_log" brotli
 <usage>
     <p>La directive <directive>BrotliCompressionWindow</directive> permet de
     spécifier la taille de la fenêtre de compression glissante brotli (une
-    valeur comprise entre 10 et 24). Une taille de fenêtre plus grande peut
-    améliorer la qualité de la compression mais consomme d'avantage de mémoire.</p>
+    valeur comprise entre 10 et 24, représentant une fenêtre de
+    2^<var>value</var> octets. Par exemple, 18 (la valeur par défaut) donne une
+    fenêtre de 256 Ko, alors que 24 en donne une de 16 Mo. Une taille de fenêtre
+    plus grande peut améliorer la qualité de la compression mais consomme
+    d'avantage de mémoire.</p>
+
+    <example><title>Fenêtre modérée pour une utilisation raisonnable de mémoire</title>
+    <highlight language="config">
+# fenêtre de 1 Mo (2^20 octets)
+BrotliCompressionWindow 20
+    </highlight>
+    </example>
+
+    <example><title>Fenêtre maximale pour la meilleure compression</title>
+    <highlight language="config">
+# fenêtre de 16 Mo (2^24 octets) — nécessite une quantité de mémoire
+# significative pour chaque connexion
+BrotliCompressionWindow 24
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -283,9 +318,21 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>La directive <directive>BrotliCompressionMaxInputBlock</directive> permet
-    de spécifier la taille maximale du bloc de données en entrée entre 16 et 24,
-    sachant que plus cette taille sera grande, plus grande sera la quantité de
-    mémoire consommée.</p>
+    de spécifier la taille maximale du bloc de données en entrée sous la forme
+    de 2 élevé à une puissance égale à <var>value</var>. Cette dernière doit
+    être comprise entre 16 et 24, ce qui représente des blocs de 64 Ko à 16 Mo.
+    Des blocs de taille plus grande peuvent améliorer la compression, mais
+    nécessitent davantage de mémoire. Lorsque cette directive n’est pas définie,
+    la taille de bloc est automatiquement calculée en fonction de la valeur de
+    qualité définie.
+    </p>
+
+    <example><title>Blocs en entrée de taille définie à 1 Mo</title>
+    <highlight language="config">
+# 2^20 = blocs de 1 Mo
+BrotliCompressionMaxInputBlock 20
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 

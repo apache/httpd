@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933954:1934664 (outdated) -->
+<!-- English Revision: 1934664 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,6 +28,14 @@
   <title>Guide pour le module Apache mod_rewrite</title>
 
 <summary>
+<p><em>Le point fort de mod_rewrite réside dans le fait qu'il possède toutes les
+capacités de configuration et la flexibilité de Sendmail ;mais c'est aussi son
+point faible.</em>
+-- Brian Behlendorf</p>
+
+<p><em>Malgré la multitude d'exemples et de documentations, mod_rewrite est de
+la magie noire. De la magie noire très "cool", mais de la magie noire
+quand-même.</em></p>
 
        <p><module>mod_rewrite</module> permet de modifier les requêtes
        entrantes dynamiquement, en fonction de règles manipulant des <a
@@ -35,54 +43,50 @@
        ainsi relier des URLs arbitraires à votre propre structure d'URLs
        interne comme vous le souhaitez.</p>
 
-      <p>Il fournit un
-      mécanisme de manipulation d'URL particulièrement souple et
-      puissant en supportant un nombre illimité de règles et de
-      conditions attachées à chaque règle. Les manipulations d'URLs
-      peuvent dépendre de tests variés : les URLs peuvent
-      être finement caractérisées en fonction de variables du serveur,
-      de variables d'environnement, d'en-têtes HTTP, de repères
-      temporels, de recherches dans des bases de données
-      externes, ou même de requêtes vers des bases de données externes
-      et de différents gestionnaires ou programmes externes.</p>
+<p>Ce guide est un complément du <a href="../mod/mod_rewrite.html">manuel de
+référence</a> avec des exemples commentés, des explications conceptuelles et des
+conseils pratiques. Il est organisé comme suit :</p>
 
-      <p>Les règles de réécriture peuvent agir sur l'ensemble des URLs (la partie chemin
-      et la chaîne de paramètres) et peuvent être utilisées dans le contexte du serveur principal
-      (<code>httpd.conf</code>), mais aussi dans le contexte des
-      serveurs virtuels (sections <directive
-      type="section" module="core">VirtualHost</directive>), ou dans le      
-      <glossary ref="perdirectory">contexte des répertoires</glossary> (fichiers <code>.htaccess</code> et blocs
-      <code>&lt;Directory&gt;</code>. Le résultat
-      réécrit peut conduire vers d'autres règles à un
-      traitement secondaire interne, une redirection vers une requête
-      externe ou même l'envoi vers un serveur mandataire, en fonction
-      des  <a href="flags.html">drapeaux</a> que vous attachez aux
-      règles</p>
+<dl>
+<dt><a href="intro.html">Introduction</a></dt>
+<dd>Concepts de base : syntaxe des expressions rationnelles, les bases des
+directives RewriteRule et RewriteCond et la manière dont mod_rewrite s'insère
+dans le cycle de vie du traitement des requêtes.</dd>
 
-	<p><module>mod_rewrite</module> étant très puissant, il peut par
-	conséquent être très complexe. Ce guide
-	complète la <a
-      href="../mod/mod_rewrite.html">documentation de
-      référence du module mod_rewrite</a>, et est sensé alléger un
-      peu cette complexité, et présenter des exemples largement
-      commentés, ainsi que des situations courantes que vous
-      pourrez traiter avec <module>mod_rewrite</module>. Mais nous voulons aussi vous
-      montrer des situations où vous ne devrez pas utiliser
-      <module>mod_rewrite</module>, et lui préférer d'autres
-      fonctionnalités standard d'Apache, évitant ainsi
-      d'entrer dans une complexité inutile.</p>
+<dt><a href="htaccess.html">Réécritures en fonction du répertoire</a></dt>
+<dd>Les principales différences entre l'utilisation des règles de réécriture au
+niveau de la configuration globale du serveur et leur utilisation dans un
+contexte de <glossary ref="perdirectory">répertoire</glossary>, y compris la
+suppression du chemin, RewriteBase et la gestion du bouclage par le drapeau [L].</dd>
 
-<ul>
-<li><a href="../mod/mod_rewrite.html">documentation de
-référence de mod_rewrite</a></li>
-<li><a href="intro.html">Introduction aux expressions rationnelles et à
-mod_rewrite</a></li>
-<li><a href="rewritemap.html">Utilisation de  RewriteMap</a></li>
-<li><a href="avoid.html">Quand <strong>NE PAS</strong> utiliser mod_rewrite</a></li>
-<li><a href="remapping.html">Using mod_rewrite for redirection and remapping of URLs</a></li>
-<li><a href="vhosts.html">Dynamic virtual hosts with mod_rewrite</a></li>
-<li><a href="tech.html">Détails techniques</a></li>
-</ul>
+<dt><a href="flags.html">Drapeaux des règles de réécriture</a></dt>
+<dd>Une référence complète de tous les drapeaux qui peuvent modifier le
+comportement d'une règle de réécriture avec des exemples pour chacun d'entre
+eux.</dd>
+
+<dt><a href="rewritemap.html">Utiliser RewriteMap</a></dt>
+<dd>Comment utiliser des sources de recherche externes &mdash; fichiers texte,
+bases de données DBM, requêtes SQL et fonctions internes &mdash; pour piloter
+vos règles de réécriture.</dd>
+
+<dt><a href="remapping.html">Redirection et remappage</a></dt>
+<dd>Des recettes pour les tâches courantes : redirection HTTPS, noms d'hôte
+canoniques, normalisation des barres obliques de fin, routage du contrôleur
+frontal, et plus encore.</dd>
+
+<dt><a href="vhosts.html">Serveurs virtuels dynamiques</a></dt>
+<dd>Utilisation de mod_rewrite pour associer dynamiquement les noms d'hôte aux
+racines de document sans devoir créer des blocs VirtualHost individuels.</dd>
+
+<dt><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></dt>
+<dd>De nombreuses tâches courantes sont accomplies de manière bien plus efficace
+avec des directives plus simples. Ce document vous propose des solutions de
+remplacement et vous indique quand il est préférable de les utiliser.</dd>
+
+<dt><a href="tech.html">Détails techniques</a></dt>
+<dd>Comment mod_rewrite s'insère dans les phases de traitement des requêtes par
+httpd et l'ordre dans lequel les règles et les conditions sont évaluées.</dd>
+</dl>
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Documentation de
@@ -94,5 +98,4 @@ avec le système de fichiers</a></seealso>
 <seealso><a href="../glossary.html">Glossaire</a></seealso>
 
 </manualpage>
-
 

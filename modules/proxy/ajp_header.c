@@ -21,7 +21,7 @@
 
 APLOG_USE_MODULE(proxy_ajp);
 
-static const char *response_trans_headers[] = {
+static const char *const response_trans_headers[] = {
     "Content-Type",
     "Content-Language",
     "Content-Length",

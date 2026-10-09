@@ -25,7 +25,7 @@
 <name>mod_proxy_wstunnel</name>
 <description>Websockets support module for
 <module>mod_proxy</module></description>
-<status>Extension</status>
+<status>Deprecated</status>
 <sourcefile>mod_proxy_wstunnel.c</sourcefile>
 <identifier>proxy_wstunnel_module</identifier>
 <compatibility>Available in httpd 2.4.5 and later</compatibility>

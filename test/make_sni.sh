@@ -90,7 +90,7 @@ if [ $# -gt 0 ]; then
     NAMES=$*
 fi
 
-if ! openssl version | grep -q OpenSSL; then
+if ! openssl version | grep -Eq 'LibreSSL|OpenSSL'; then
     echo Aborted - your openssl is very old or misconfigured.
     exit 1
 fi

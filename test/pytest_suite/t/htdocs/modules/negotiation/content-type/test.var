@@ -1,0 +1,26 @@
+URI: test
+
+# NOTE: When adding new cases, pad out bodies with spaces so that they're of
+# equal length. mod_negotiation will prefer shorter bodies if all else is equal,
+# which is confusing. We just want the first acceptable alternate to win for
+# these tests.
+
+URI: test.txt
+Content-Type: text/plain
+Body:---
+text/plain---
+
+URI: test.html
+Content-Type: text/html
+Body:---
+text/html ---
+
+URI: test.jpg
+Content-Type: image/jpeg
+Body:---
+image/jpeg---
+
+URI: test.gif
+Content-Type: image/gif
+Body:---
+image/gif ---

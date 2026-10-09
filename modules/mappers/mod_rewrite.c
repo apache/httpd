@@ -2018,6 +2018,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
+                    if (ctx->vary_this) {
+                        ctx->vary_this = apr_pstrdup(r->pool, ctx->vary_this);
+                    }
                     ap_destroy_sub_req(rr);
 
                     rewritelog(r, 5, ctx->perdir, "lookahead: path=%s var=%s "
@@ -2053,6 +2056,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
+                    if (ctx->vary_this) {
+                        ctx->vary_this = apr_pstrdup(r->pool, ctx->vary_this);
+                    }
                     ap_destroy_sub_req(rr);
 
                     rewritelog(r, 5, ctx->perdir, "lookahead: path=%s var=%s "
@@ -3682,8 +3688,6 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         int in_htaccess = cmd->pool == cmd->temp_pool;
         unsigned int flags = newcond->flags & CONDFLAG_NOVARY ?
                              AP_EXPR_FLAG_DONT_VARY : 0;
-        /* Use restricted ap_expr() parser in htaccess context. */
-        if (in_htaccess) flags |= AP_EXPR_FLAG_RESTRICTED;
         newcond->expr = ap_expr_parse_cmd(cmd, a2, flags, &err, NULL);
         if (err)
             return apr_psprintf(cmd->pool, "RewriteCond: cannot compile "
@@ -4193,7 +4197,7 @@ static cond_return_type apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ct
     case CONDPAT_LU_URL:
         if (*input && subreq_ok(r)) {
             rsub = ap_sub_req_lookup_uri(input, r, NULL);
-            if (rsub->status < 400) {
+            if (rsub->status < HTTP_BAD_REQUEST) {
                 rc = COND_RC_MATCH;
             }
             rewritelog(r, 5, NULL, "RewriteCond URI (-U check: "
@@ -4210,7 +4214,7 @@ static cond_return_type apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ct
                 return COND_RC_STATUS_SET;
             }
             rsub = ap_sub_req_lookup_file(input, r, NULL);
-            if (rsub->status < 300 &&
+            if (rsub->status < HTTP_MULTIPLE_CHOICES &&
                 /* double-check that file exists since default result is 200 */
                 apr_stat(&sb, rsub->filename, APR_FINFO_MIN,
                          r->pool) == APR_SUCCESS) {

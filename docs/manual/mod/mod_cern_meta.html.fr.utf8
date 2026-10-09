@@ -32,7 +32,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>La s&eacute;mantique des m&eacute;tafichiers du serveur httpd du
 CERN</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>cern_meta_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_cern_meta.c</td></tr></table>
 <h3>Sommaire</h3>
@@ -70,7 +70,7 @@ m&eacute;tainformations dans le style du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MetaDir .web</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
     <p>Sp&eacute;cifie le nom du r&eacute;pertoire dans lequel Apache pourra trouver
@@ -98,7 +98,7 @@ m&eacute;tainformations dans le style du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MetaFiles off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
     <p>Active ou d&eacute;sactive le traitement des m&eacute;tafichiers pour certains
@@ -114,7 +114,7 @@ style du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MetaSuffix .meta</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
     <p>Sp&eacute;cifie le suffixe du fichier contenant les m&eacute;tainformations.

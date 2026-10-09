@@ -30,7 +30,6 @@ typedef struct {
     struct h2_session *session;
     apr_bucket_brigade *output;
 
-    int is_tls;
     int unflushed;
     apr_time_t cooldown_usecs;
     apr_int64_t warmup_size;
@@ -40,7 +39,6 @@ typedef struct {
     apr_int64_t bytes_read;
     apr_int64_t bytes_written;
     
-    int buffer_output;
     apr_off_t buffered_len;
     apr_off_t flush_threshold;
     unsigned int is_flushed : 1;

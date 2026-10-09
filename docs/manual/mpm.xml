@@ -140,7 +140,7 @@ two features.</p>
     for the MPM instead of by rebuilding the server.</p>
 
     <highlight language="config">
-    LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+    LoadModule mpm_event_module modules/mod_mpm_event.so
     </highlight>
 
     <p>Attempting to <directive module="mod_so">LoadModule</directive>

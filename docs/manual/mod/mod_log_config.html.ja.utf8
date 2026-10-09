@@ -398,7 +398,7 @@
 <div class="directive-section"><h2 id="globallog"><span id="GlobalLog">GlobalLog</span> ディレクティブ <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Sets filename and format of log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GlobalLog<var>file</var>|<var>pipe</var>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>

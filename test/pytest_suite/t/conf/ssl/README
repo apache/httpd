@@ -1,0 +1,17 @@
+certs/
+     client_revoked.crt  - client certificate that has been revoked
+     client_ok.crt       - valid client certificate
+     client_snakeoil.crt - valid client certificate (different DN from above)
+     server.crt          - the server certificate
+     ca-bundle.crt       - the test server CA certificate, used to
+                           sign above certs
+
+keys/ - private keys for above certificates
+     client_revoked.pem
+     client_ok.pem     
+     client_snakeoil.pem
+     server.pem         
+
+crl/
+     ca-bundle.crl       - certificate revocation list (client_revoked.crt)
+

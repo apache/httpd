@@ -31,6 +31,10 @@
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
+            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
+            documentaci&oacute;n para comprobar si se han producido cambios
+            recientemente.</div>
 
 <p>Los Server Side Includes (Inclusiones en la parte Servidor) facilitan un m&eacute;todo para a&ntilde;adir contenido din&aacute;mico a documentos HTML existentes.</p>
 </div>

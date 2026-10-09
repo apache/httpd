@@ -76,7 +76,7 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
 
 
 /* Patterns to match in ap_make_content_type() */
-static const char *needcset[] = {
+static const char *const needcset[] = {
     "text/plain",
     "text/html",
     NULL
@@ -2349,7 +2349,9 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     }
 
     status_line = r->status_line;
-    if (status_line == NULL) {
+    if (status_line == NULL
+        || (strlen(status_line) > 4
+            && *ap_scan_http_field_content(status_line + 4))) {
         status_line = ap_get_status_line_ex(r->pool, r->status);
     }
     response_line = apr_pstrcat(r->pool,

@@ -748,6 +748,9 @@ static int hm_handler(request_rec *r)
     hm_server_t hmserver;
     char *ip;
     hm_ctx_t *ctx;
+    const char *val;
+    char *endptr;
+    long port_long;
 
     if (strcmp(r->handler, "heartbeat")) {
         return DECLINED;
@@ -756,11 +759,27 @@ static int hm_handler(request_rec *r)
         return HTTP_METHOD_NOT_ALLOWED;
     }
 
-    len = MAX_MSG_LEN;
     ctx = ap_get_module_config(r->server->module_config,
             &heartmonitor_module);
 
-    buf = apr_pcalloc(r->pool, MAX_MSG_LEN);
+    /* Check if module is active */
+    if (!ctx || !ctx->active) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10561)
+                      "Heartbeat monitoring not active");
+        return HTTP_SERVICE_UNAVAILABLE;
+    }
+
+    /* Validate Content-Length before reading */
+    if (r->remaining > MAX_MSG_LEN) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10562)
+                      "Heartbeat message too large: %" APR_OFF_T_FMT " bytes (max %d)",
+                      r->remaining, MAX_MSG_LEN);
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+
+    len = MAX_MSG_LEN;
+    /* Allocate buffer with space for null terminator */
+    buf = apr_pcalloc(r->pool, MAX_MSG_LEN + 1);
     input_brigade = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
     status = ap_get_brigade(r->input_filters, input_brigade, AP_MODE_READBYTES, APR_BLOCK_READ, MAX_MSG_LEN);
     if (status != APR_SUCCESS) {
@@ -772,13 +791,49 @@ static int hm_handler(request_rec *r)
     buf[len] = '\0';
     tbl = apr_table_make(r->pool, 10);
     qs_to_table(buf, tbl, r->pool);
+
+    /* Validate required parameters - prevent NULL pointer dereference */
+    if (apr_table_get(tbl, "busy") == NULL ||
+        apr_table_get(tbl, "ready") == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10563)
+                      "Missing required parameters: busy and/or ready");
+        return HTTP_BAD_REQUEST;
+    }
+
     apr_sockaddr_ip_get(&ip, r->connection->client_addr);
     hmserver.ip = ip;
     hmserver.port = 80;
-    if (apr_table_get(tbl, "port") != NULL)
-        hmserver.port = atoi(apr_table_get(tbl, "port"));
-    hmserver.busy = atoi(apr_table_get(tbl, "busy"));
-    hmserver.ready = atoi(apr_table_get(tbl, "ready"));
+
+    /* Validate and parse port with proper bounds checking */
+    val = apr_table_get(tbl, "port");
+    if (val != NULL) {
+        port_long = strtol(val, &endptr, 10);
+        if (*endptr == '\0' && port_long > 0 && port_long <= 65535) {
+            hmserver.port = (unsigned int)port_long;
+        }
+        else {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10564)
+                          "Invalid port value: %s, using default 80", val);
+        }
+    }
+
+    /* Parse busy and ready with validation */
+    val = apr_table_get(tbl, "busy");
+    hmserver.busy = (int)strtol(val, &endptr, 10);
+    if (*endptr != '\0') {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10565)
+                      "Invalid busy value: %s, using 0", val);
+        hmserver.busy = 0;
+    }
+
+    val = apr_table_get(tbl, "ready");
+    hmserver.ready = (int)strtol(val, &endptr, 10);
+    if (*endptr != '\0') {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10566)
+                      "Invalid ready value: %s, using 0", val);
+        hmserver.ready = 0;
+    }
+
     hmserver.seen = apr_time_now();
     hm_update_stat(ctx, &hmserver, r->pool);
 

@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_remoteip.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP du client
 pour la requ&ecirc;te par l'adresse IP pr&eacute;sent&eacute;e par un mandataire ou un
 r&eacute;partiteur de charge via les en-t&ecirc;tes de la requ&ecirc;te.
@@ -51,8 +49,8 @@ r&eacute;partiteur de charge via les en-t&ecirc;tes de la requ&ecirc;te.
     l'en-t&ecirc;te de requ&ecirc;te configur&eacute; via la directive
     <code class="directive"><a href="#remoteipheader">RemoteIPHeader</a></code>.</p>
 
-    <p>Ce module impl&eacute;mente aussi la partie serveur du <a href="http://blog.haproxy.com/haproxy/proxy-protocol/">protocole PROXY</a>
-    de HAProxy via la directive <code class="directive"><a href="#remoteipproxyprotocol">RemoteIPProxyProtocol</a></code>.</p>
+    <p>Ce module impl&eacute;mente aussi la partie serveur du <a href="https://www.haproxy.org/download/3.1/doc/proxy-protocol.txt">protocole
+    PROXY</a> de HAProxy via la directive <code class="directive"><a href="#remoteipproxyprotocol">RemoteIPProxyProtocol</a></code>.</p>
 
     <p>Une fois sa valeur modifi&eacute;e comme indiqu&eacute;, cette adresse IP client est
     utilis&eacute;e pour la fonctionnalit&eacute; <code class="directive"><a href="../mod/mod_authz_core.html#require">Require ip</a></code> de <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> ;
@@ -60,7 +58,8 @@ r&eacute;partiteur de charge via les en-t&ecirc;tes de la requ&ecirc;te.
     les cha&icirc;nes de formatage <code>%a</code> des modules
     <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> et <code class="module"><a href="../mod/core.html">core</a></code>.  L'adresse IP
     client sous-jacente de la connexion est enregistr&eacute;e via la cha&icirc;ne de
-    formatage <code>%{c}a</code>.  </p>
+    formatage <code>%{c}a</code> et via la variable
+    <code>CONN_REMOTE_ADDR</code> dans les <a href="../expr.html">expressions</a>.</p>
 
     <div class="warning">Il est essentiel de n'activer cette
     fonctionnalit&eacute; que pour les requ&ecirc;tes en provenance des serveurs
@@ -87,7 +86,7 @@ r&eacute;partiteur de charge via les en-t&ecirc;tes de la requ&ecirc;te.
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 <li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
 <li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
-<li><a href="http://www.haproxy.org/download/1.8/doc/proxy-protocol.txt">Proxy Protocol
+<li><a href="https://www.haproxy.org/download/3.1/doc/proxy-protocol.txt">Proxy Protocol
 Spec</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

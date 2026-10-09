@@ -151,7 +151,7 @@ two features.</p>
     updating the <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directive
     for the MPM instead of by rebuilding the server.</p>
 
-    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+    <pre class="prettyprint lang-config">LoadModule mpm_event_module modules/mod_mpm_event.so</pre>
 
 
     <p>Attempting to <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>

@@ -1,0 +1,2 @@
+<!--#set var="x" value="-->" -->
+<!--#echo encoding="none" var="x" -->

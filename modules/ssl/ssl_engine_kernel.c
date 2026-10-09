@@ -1120,8 +1120,10 @@ int ssl_hook_Access(request_rec *r)
     if ((dc->nOptions & SSL_OPT_FAKEBASICAUTH) == 0 && dc->szUserName) {
         char *val = ssl_var_lookup(r->pool, r->server, r->connection,
                                    r, (char *)dc->szUserName);
-        if (val && val[0])
+        if (val && val[0]) {
             r->user = val;
+            r->ap_auth_type = "ClientCert";
+        }
         else
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02227)
                           "Failed to set r->user to '%s'", dc->szUserName);
@@ -1254,7 +1256,7 @@ int ssl_hook_UserCheck(request_rec *r)
     }
 
     if (!sslconn->client_dn) {
-        X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
+        const X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
         char *cp = X509_NAME_oneline(name, NULL, 0);
         sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
         OPENSSL_free(cp);
@@ -1778,7 +1780,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLDirConfigRec *dc = myDirConfigFromConn(c);
-    X509_NAME *ca_name, *issuer, *ca_issuer;
+    const X509_NAME *ca_name, *issuer, *ca_issuer;
     X509_INFO *info;
     X509 *ca_cert;
     STACK_OF(X509_NAME) *ca_list;
@@ -2193,7 +2195,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
 cleanup:
     if (our_data && cert) X509_free(cert);
     if (our_data && key) EVP_PKEY_free(key);
-    return APR_SUCCESS;
+    return rv;
 }
   
 /*

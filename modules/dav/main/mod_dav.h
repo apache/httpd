@@ -59,6 +59,9 @@ extern "C" {
 #define DAV_DO_COPY             0
 #define DAV_DO_MOVE             1
 
+#ifndef DAV_MAX_SHARED_LOCKS
+#define DAV_MAX_SHARED_LOCKS (1024)
+#endif
 
 #if 1
 #define DAV_DEBUG        1
@@ -1792,7 +1795,7 @@ DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx);
 DAV_DECLARE_NONSTD(void) dav_prop_commit(dav_prop_ctx *ctx);
 DAV_DECLARE_NONSTD(void) dav_prop_rollback(dav_prop_ctx *ctx);
 
-#define DAV_PROP_CTX_HAS_ERR(dpc)  ((dpc).err && (dpc).err->status >= 300)
+#define DAV_PROP_CTX_HAS_ERR(dpc)  ((dpc).err && (dpc).err->status >= HTTP_MULTIPLE_CHOICES)
 
 
 /* --------------------------------------------------------------------

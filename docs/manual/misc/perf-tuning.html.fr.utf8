@@ -28,8 +28,6 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 
     <p>Apache 2.x est un serveur web &agrave; usage g&eacute;n&eacute;ral, con&ccedil;u dans un but
@@ -771,7 +769,7 @@
 
       
 
-      <p>Comme discut&eacute; dans <a href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+      <p>Comme discut&eacute; dans <a href="https://datatracker.ietf.org/doc/html/draft-ietf-http-connection-00">
       draft-ietf-http-connection-00.txt</a> section 8, pour impl&eacute;menter de
       mani&egrave;re <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
       les deux directions d'une communication ind&eacute;pendamment (rappelez-vous
@@ -838,7 +836,7 @@
       d&eacute;conseill&eacute;. En particulier, comme les connexions persistantes en
       pipeline de HTTP/1.1 commencent &agrave; &ecirc;tre utilis&eacute;es,
       <code>lingering_close</code> devient une absolue n&eacute;cessit&eacute; (et les
-      <a href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      <a href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       connexions en pipeline sont plus rapides</a> ; vous avez donc tout
       int&eacute;r&ecirc;t &agrave; les supporter).</p>
 

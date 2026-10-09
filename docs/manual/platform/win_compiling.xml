@@ -23,7 +23,7 @@
 <manualpage metafile="win_compiling.xml.meta">
   <parentdocument href="./">Platform Specific Notes</parentdocument>
 
-  <title>Compiling Apache for Microsoft Windows</title>
+  <title>Compiling Apache httpd for Microsoft Windows</title>
 
   <summary>
 

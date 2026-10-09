@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933924 -->
+<!-- English Revision: 1938528 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -41,6 +41,8 @@ pour fournir le moteur de chiffrement.</p>
 <p>D'autres détails, discussions et exemples sont fournis dans la <a
 href="../ssl/">documentation SSL</a>.</p>
 </summary>
+
+<seealso><directive module="mod_reqtimeout">RequestReadTimeout</directive></seealso>
 
 <section id="envvars"><title>Variables d'environnement</title>
 
@@ -366,6 +368,30 @@ Require valid-user
 
 </section>
 
+<section id="timeouts"><title>Délais de connexion et de négociation</title>
+
+<p>Il peut arriver qu’un client ouvre une connexion TLS, reçoive le certificat
+du serveur, puis se fige sans terminer la négociation ou envoyer une requête.
+Les délais HTTP comme <directive module="core">TimeOut</directive> ne gèrent pas
+cette situation correctement, et la connexion peut alors rester ouverte
+indéfiniment.</p>
+
+<p>Pour limiter le temps que peut mettre un client pour terminer la négociation
+TLS, chargez le module <module>mod_reqtimeout</module> et configurez la
+phase <code>handshake</code> de la directive <directive
+module="mod_reqtimeout">RequestReadTimeout</directive> :</p>
+
+<highlight language="config">
+RequestReadTimeout handshake=5
+</highlight>
+
+<p>La phase <code>handshake</code> est désactivée par défaut et est disponible à
+partir de la version 2.4.39. Voir la documentation de la directive <directive
+module="mod_reqtimeout">RequestReadTimeout</directive> pour les détails et plus
+d’exemples.</p>
+
+</section>
+
 <directivesynopsis>
 <name>SSLPassPhraseDialog</name>
 <description>Méthode utilisée pour entrer le mot de passe pour les clés
@@ -429,7 +455,7 @@ cette demande peut être formulée parmi les trois suivantes :</p>
     Ici, un programme externe est appelé au démarrage du serveur pour
     chaque fichier de clé privée chiffré.Il est appelé avec deux
     arguments (le premier est de la forme
-    ``<code>nom-serveur:port</code>'', le second
+``<code>nom-serveur:port</code>'', le second
     est ``<code>RSA</code>'', ``<code>DSA</code>'', ``<code>ECC</code>''
     ou un index entier commençant à 3 si plus de 3 clés ont été
     configurées), qui

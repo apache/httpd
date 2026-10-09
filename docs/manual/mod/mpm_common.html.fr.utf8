@@ -32,8 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une s&eacute;rie de directives impl&eacute;ment&eacute;es par plusieurs
 modules multi-processus (MPM)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr></table>
@@ -472,16 +470,36 @@ simultan&eacute;ment</td></tr>
     vous l'augmentez, vous devez aussi augmenter la valeur de la
     directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
-    <p>Pour les serveur thread&eacute;s et hybrides (utilisant <em>par
-    exemple</em> <code class="module"><a href="../mod/event.html">event</a></code> ou <code class="module"><a href="../mod/worker.html">worker</a></code>),
+    <p>Pour les serveur thread&eacute;s et hybrides (utilisant <em>par exemple</em>
+    <code class="module"><a href="../mod/event.html">event</a></code> ou <code class="module"><a href="../mod/worker.html">worker</a></code>),
     <code class="directive">MaxRequestWorkers</code> d&eacute;finit alors le nombre total de
-    threads qui seront disponibles pour servir les clients. Dans le
-    cas des MPMs hybrides, la valeur par d&eacute;faut est <code>16</code>
-    (directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multipli&eacute; par la valeur
-    <code>25</code> (directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Par cons&eacute;quent, pour affecter &agrave; la
+    threads qui seront disponibles pour servir les clients. Pour les MPMs
+    hybrides et thread&eacute;s, la valeur par d&eacute;faut est <code>16</code> (directive
+    <code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multipli&eacute; par la
+    valeur <code>25</code> (directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Par cons&eacute;quent, pour affecter &agrave; la
     directive <code class="directive">MaxRequestWorkers</code> une valeur qui requiert
-    plus de 16 processus, vous devez aussi augmenter la valeur de la
-    directive <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+    plus de 16 processus, vous devez aussi augmenter la valeur de la directive
+    <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+
+    <p>Pour les MPMs thread&eacute;s et hybrides, la valeur de la directive
+    <code class="directive">MaxRequestWorkers</code> doit sup&eacute;rieure ou &eacute;gale &agrave; celle de
+    la directive <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> et
+    doit &ecirc;tre un multiple entier de cette derni&egrave;re. Si elle n&rsquo;est pas un
+    multiple de cette derni&egrave;re, le serveur l&rsquo;arrondit par le bas au d&eacute;marrage au
+    multiple le plus proche et journalise un avertissement.</p>
+
+    <div class="example"><h3>Avertissement&nbsp;: MaxRequestWorkers trop petit</h3><p><code>
+    WARNING: MaxRequestWorkers of 10 is less than ThreadsPerChild
+    of 25, increasing to 25. MaxRequestWorkers must be at least as
+    large as the number of threads in a single server.
+    </code></p></div>
+
+    <div class="example"><h3>Avertissement&nbsp;: MaxRequestWorkers n&rsquo;est pas un multiple de
+    ThreadsPerChild</h3><p><code>
+    WARNING: MaxRequestWorkers of 90 is not an integer multiple of
+    ThreadsPerChild of 25, decreasing to nearest multiple 75, for a
+    maximum of 3 servers.
+    </code></p></div>
 
     <p>Le nom de la directive <code class="directive">MaxRequestWorkers</code>
     &eacute;tait <code class="directive">MaxClients</code> avant la version 2.3.13. Cet
@@ -914,6 +932,11 @@ enfant</td></tr>
     <p>La valeur de la directive <code class="directive">ThreadsPerChild</code> doit
     &ecirc;tre sup&eacute;rieure ou &eacute;gale &agrave; 1. Une valeur inf&eacute;rieure &agrave; 1 sera automatiquement
     augment&eacute;e &agrave; 1 et un avertissement sera journalis&eacute;.</p>
+
+    <p>La valeur de la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> doit &ecirc;tre un multiple
+    entier de celle de la directive <code class="directive">ThreadsPerChild</code>. Voir
+    la directive <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>
+    pour les d&eacute;tails.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

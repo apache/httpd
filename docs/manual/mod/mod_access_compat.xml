@@ -25,7 +25,7 @@
 <name>mod_access_compat</name>
 <description>Group authorizations based on host (name or IP
 address)</description>
-<status>Extension</status>
+<status>Deprecated</status>
 <sourcefile>mod_access_compat.c</sourcefile>
 <identifier>access_compat_module</identifier>
 <compatibility>Available in Apache HTTP Server 2.3 as a compatibility module with

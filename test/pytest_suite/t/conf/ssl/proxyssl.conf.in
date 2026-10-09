@@ -1,0 +1,125 @@
+<IfModule @ssl_module@>
+
+<IfModule mod_proxy.c>
+
+    #here we can test http <-> https
+    <VirtualHost proxy_http_https>
+        #these are not on by default in the 1.x based mod_ssl
+        <IfDefine APACHE2>
+            SSLProxyEngine On
+
+            SSLProxyProtocol All
+            SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+
+            SSLProxyMachineCertificateFile @SSLCA@/asf/proxy/client_ok.pem
+            #SSLProxyMachineCertificatePath @SSLCA@/asf/proxy
+
+            SSLProxyCACertificateFile @SSLCA@/asf/certs/ca.crt
+            SSLProxyCACertificatePath @ServerRoot@/conf/ssl
+            SSLProxyCARevocationFile @SSLCA@/asf/crl/ca-bundle.crl
+            <IfVersion >= 2.3.15>
+                SSLProxyCARevocationCheck chain
+            </IfVersion>
+            SSLProxyVerify on
+            SSLProxyVerifyDepth 10
+        </IfDefine>
+
+
+        ProxyPass        / https://@proxyssl_url@/
+        ProxyPassReverse / https://@proxyssl_url@/
+    </VirtualHost>
+
+
+    #here we can test https <-> https
+    <VirtualHost proxy_https_https>
+        SSLEngine on
+
+        #these are not on by default in the 1.x based mod_ssl
+        <IfDefine APACHE2>
+            SSLProxyEngine On
+            # ensure that client_ok.pem is picked first:
+            SSLProxyMachineCertificateFile @SSLCA@/asf/proxy/client_ok.pem
+            SSLProxyMachineCertificatePath @SSLCA@/asf/proxy
+            SSLProxyCACertificateFile @SSLCA@/asf/certs/ca.crt
+            SSLProxyVerify on
+            SSLProxyCARevocationPath @SSLCA@/asf/crl
+            <IfVersion >= 2.3.15>
+                SSLProxyCARevocationCheck chain
+            </IfVersion>
+        </IfDefine>
+
+
+        ProxyPass        / https://@proxyssl_url@/
+        ProxyPassReverse / https://@proxyssl_url@/
+
+        ProxyPass /proxy/wsoc wss://localhost:@proxy_https_https_port@/modules/lua/websockets.lua  
+    </VirtualHost>
+
+    #here we can test http <-> https using SSLProxyMachine* inside <Proxy>
+    <VirtualHost proxy_http_https_proxy_section>
+        #these are not on by default in the 1.x based mod_ssl
+        <IfDefine APACHE2>
+            SSLProxyEngine On
+
+            SSLProxyProtocol All
+            SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+
+            SSLProxyCACertificateFile @SSLCA@/asf/certs/ca.crt
+            SSLProxyCACertificatePath @ServerRoot@/conf/ssl
+            SSLProxyCARevocationFile @SSLCA@/asf/crl/ca-bundle.crl
+            <IfVersion >= 2.3.15>
+                SSLProxyCARevocationCheck chain
+            </IfVersion>
+            SSLProxyVerify on
+            SSLProxyVerifyDepth 10
+        </IfDefine>
+
+
+        ProxyPass        / https://@proxyssl_url@/
+        ProxyPassReverse / https://@proxyssl_url@/
+        <IfDefine APACHE2>
+            <Proxy https://@proxyssl_url@>
+                SSLProxyMachineCertificateFile @SSLCA@/asf/proxy/client_ok.pem
+                #SSLProxyMachineCertificatePath @SSLCA@/asf/proxy
+            </Proxy>
+        </IfDefine>
+    </VirtualHost>
+
+
+    #here we can test https <-> https using SSLProxyMachine* inside <Proxy>
+    <VirtualHost proxy_https_https_proxy_section>
+        SSLEngine on
+
+        #these are not on by default in the 1.x based mod_ssl
+        <IfDefine APACHE2>
+            SSLProxyEngine On
+            SSLProxyCACertificateFile @SSLCA@/asf/certs/ca.crt
+            SSLProxyVerify on
+            SSLProxyCARevocationPath @SSLCA@/asf/crl
+            <IfVersion >= 2.3.15>
+                SSLProxyCARevocationCheck chain
+            </IfVersion>
+        </IfDefine>
+
+
+        ProxyPass        / https://@proxyssl_url@/
+        ProxyPassReverse / https://@proxyssl_url@/
+        <IfDefine APACHE2>
+            <Proxy https://@proxyssl_url@>
+                # ensure that client_ok.pem is picked first:
+                SSLProxyMachineCertificateFile @SSLCA@/asf/proxy/client_ok.pem
+                SSLProxyMachineCertificatePath @SSLCA@/asf/proxy
+            </Proxy>
+        </IfDefine>
+    </VirtualHost>
+
+    #here we can test https <-> http
+    <VirtualHost proxy_https_http>
+        SSLEngine on
+
+        ProxyPass        / http://@servername@:@port@/
+        ProxyPassReverse / http://@servername@:@port@/
+    </VirtualHost>
+</IfModule>
+
+</IfModule>

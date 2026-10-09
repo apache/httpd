@@ -21,6 +21,7 @@ test: $(bin_PROGRAMS)
 
 clean:
 	rm -rf gen
+	find . -name __pycache__ | xargs rm -rf
 
 distclean:
 	rm -f pyhttpd/config.ini

@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Personnalisation des en-t&ecirc;tes de requ&ecirc;tes et de r&eacute;ponses
 HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -66,7 +64,7 @@ tardif</a></li>
 
     <p>La chronologie du traitement est importante et est affect&eacute;e par
     l'ordre d'apparition des directives dans le fichier de configuration
-    et par leur placement dans les <a href="../sections.html#mergin">sections de configuration</a>. Ainsi,
+    et par leur placement dans les <a href="../sections.html#merging">sections de configuration</a>. Ainsi,
     ces deux directives ont un effet diff&eacute;rent si leur ordre est invers&eacute;
     :</p>
 
@@ -331,7 +329,10 @@ Header always set X-Foo "baz"</pre>
     nom. Lorsqu'une nouvelle valeur est ainsi ajout&eacute;e, elle est s&eacute;par&eacute;e
     de celles qui sont d&eacute;j&agrave; pr&eacute;sentes par une virgule. Il s'agit de la
     m&eacute;thode HTTP standard permettant d'affecter plusieurs valeurs &agrave; un
-    en-t&ecirc;te.</dd>
+    en-t&ecirc;te. Notez que l&rsquo;en-t&ecirc;te <code>Set-Cookie</code> est une exception&nbsp;: la
+    <a href="https://www.rfc-editor.org/rfc/rfc6265">RFC 6265</a> pr&eacute;conise plusieurs en-t&ecirc;tes <code>Set-Cookie</code> au lieu
+    de plusieurs valeurs s&eacute;par&eacute;es par des virgules. Utilisez <code>add</code> au
+    lieu de <code>append</code> pour <code>Set-Cookie</code>.</dd>
 
     <dt><code>echo</code></dt>
     <dd>Les en-t&ecirc;tes de la requ&ecirc;te poss&eacute;dant le nom sp&eacute;cifi&eacute; sont

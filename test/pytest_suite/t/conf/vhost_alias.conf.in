@@ -1,0 +1,9 @@
+<IfModule mod_vhost_alias.c>
+
+    <VirtualHost _default_:mod_vhost_alias>
+        UseCanonicalName Off
+        VirtualDocumentRoot @SERVERROOT@/htdocs/modules/vhost_alias/%2/%1.4/%-2/%2+
+        VirtualScriptAlias @SERVERROOT@/htdocs/modules/vhost_alias/%0
+    </VirtualHost>
+
+</IfModule>

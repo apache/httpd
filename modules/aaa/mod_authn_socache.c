@@ -111,7 +111,7 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, plog, APLOGNO(02612)
                         "failed to create mod_socache_shmcb socache "
                         "instance: %s", errmsg);
-            return 500;
+            return 500; /* An HTTP status would be a misnomer! */
         }
     }
 

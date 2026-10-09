@@ -445,6 +445,11 @@ static apr_status_t finish_partial_char(charset_filter_ctx_t *ctx,
      */
 
     do {
+        if (ctx->saved >= sizeof(ctx->buf)) {
+            ctx->ees = EES_LIMIT;
+            rv = APR_INCOMPLETE;
+            break;
+        }
         ctx->buf[ctx->saved] = **cur_str;
         ++ctx->saved;
         ++*cur_str;

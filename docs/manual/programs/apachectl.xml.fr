@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933137:1933948 (outdated) -->
+<!-- English Revision: 1933948 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -166,6 +166,21 @@ devez éditer votre fichier de configuration et y inclure les
 directives appropriées, puis utiliser la commande de démarrage normale
 <code>apachectl start</code>.</dd>
 
+</dl>
+
+</section>
+
+<section id="files"><title>Fichiers</title>
+
+<p>Les chemins de fichiers listés ci-après peuvent être modifiés à la
+compilation. Consultez votre installation locale pour les emplacements réels.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/bin/envvars</code></dt>
+<dd>Fichier de définitions de variables d’environnement alimenté au démarrage.</dd>
+
+<dt><code>/usr/local/apache2/bin/httpd</code></dt>
+<dd>Le binaire httpd invoqué par apachectl.</dd>
 </dl>
 
 </section>

@@ -32,8 +32,6 @@
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ex&eacute;cution des scripts CGI en fonction du
 type de m&eacute;dia ou de la m&eacute;thode de requ&ecirc;te.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -73,19 +71,17 @@ contenu particulier</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Le modificateur <code>virtual</code> et le passage de
-gestionnaire ont &eacute;t&eacute; introduits dans Apache 2.1</td></tr>
+gestionnaire ont &eacute;t&eacute; introduits dans Apache httpd 2.1</td></tr>
 </table>
-    <p>Cette directive ajoute une action qui va activer <var>script
-    cgi</var> lorsque <var>type d'action</var> est d&eacute;clench&eacute; par la
-    requ&ecirc;te. <var>script cgi</var> est un chemin URL vers une ressource
-    qui a &eacute;t&eacute; d&eacute;sign&eacute;e comme script CGI &agrave; l'aide des directives
-    <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. <var>type d'action</var>
-    peut &ecirc;tre soit un <a href="../handler.html">gestionnaire</a>, soit
-    un <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type de contenu MIME</a>. L'URL
-    et le chemin du document correspondant sont envoy&eacute;s en utilisant
-    les variables d'environnement CGI standards <code>PATH_INFO</code>
-    et <code>PATH_TRANSLATED</code>. Le gestionnaire utilis&eacute; pour cette
-    requ&ecirc;te particuli&egrave;re est transmis &agrave; l'aide de la variable
+    <p>Cette directive ajoute une action qui va activer <var>script cgi</var>
+    lorsque <var>type d'action</var> est d&eacute;clench&eacute; par la requ&ecirc;te. <var>script
+    cgi</var> est un chemin URL vers une ressource qui a &eacute;t&eacute; d&eacute;sign&eacute;e comme
+    script CGI &agrave; l'aide des directives <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. <var>type d'action</var> peut &ecirc;tre
+    soit un <a href="../handler.html">gestionnaire</a>, soit un <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type de contenu MIME</a>. L'URL et le chemin du
+    document correspondant sont envoy&eacute;s en utilisant les variables
+    d'environnement CGI standards <a class="glossarylink" href="../glossary.html#pathinfo" title="voir glossaire">PATH_INFO</a>
+    et <code>PATH_TRANSLATED</code>. Le gestionnaire utilis&eacute; pour cette requ&ecirc;te
+    particuli&egrave;re est transmis &agrave; l'aide de la variable
     <code>REDIRECT_HANDLER</code>.</p>
 
     <div class="example"><h3>Exemple : type MIME</h3><pre class="prettyprint lang-config"># Requests for files of a particular MIME content type:

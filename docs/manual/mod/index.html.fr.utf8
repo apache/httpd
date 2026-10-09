@@ -101,7 +101,7 @@ la charge des serveurs d'arri&egrave;re-plan</dd>
 l'authentification et l'autorisation httpd.</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Permet d'utiliser un annuaire LDAP pour l'authentification
 HTTP de base.</dd>
-<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Autorisation basique</dd>
+<dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Socle d'autorisation</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Autorisation en groupe et reconnaissance d'identit&eacute; avec base
 SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Autorisation bas&eacute;e sur les groupes &agrave; l'aide de fichiers

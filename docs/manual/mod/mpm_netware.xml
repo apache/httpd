@@ -60,7 +60,9 @@
     ones and launching new ones. On the NetWare OS it is highly
     recommended that this directive remain set to 0. This allows worker
     threads to continue servicing requests indefinitely.</p>
+
 </summary>
+<seealso><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and
     ports Apache httpd uses</a>
 </seealso>

@@ -79,9 +79,9 @@
     (plateformes thread&eacute;es seulement).</p>
     
     <p>Les valeurs valides pour <code class="directive">RedisConnPoolTTL</code> sont des
-    dur&eacute;es limit&eacute;es &agrave; 1 heure . 0 signifie aucune limite.</p>
+    dur&eacute;es limit&eacute;es &agrave; 1 heure. 0 signifie aucune limite.</p>
 
-    <div class="note"><p>Par d&eacute;faut, l'unit&eacute; de ces valeurs est la secondes, mais on peut
+    <div class="note"><p>Par d&eacute;faut, l'unit&eacute; de ces valeurs est la seconde, mais on peut
     sp&eacute;cifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),
     en minutes (min) ou en heures (h).
     </p></div>
@@ -109,9 +109,9 @@ serveur(s) Redis.</td></tr>
     sur la connexion avec le(s) serveur(s) Redis.</p>
     
     <p>Les valeurs valides pour <code class="directive">RedisTimeout</code> sont des
-    dur&eacute;es limit&eacute;es &agrave; 1 heure . 0 signifie aucune limite.</p>
+    dur&eacute;es limit&eacute;es &agrave; 1 heure. 0 signifie aucune limite.</p>
 
-    <div class="note"><p>Par d&eacute;faut, l'unit&eacute; de ces valeurs est la secondes, mais on peut
+    <div class="note"><p>Par d&eacute;faut, l'unit&eacute; de ces valeurs est la seconde, mais on peut
     sp&eacute;cifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),
     en minutes (min) ou en heures (h).
     </p></div>

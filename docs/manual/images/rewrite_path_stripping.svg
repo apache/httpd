@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 780" width="520" height="780">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 10px; }
+      .title { font-size: 12px; font-weight: bold; fill: #333; }
+      .phase { font-size: 11px; font-weight: bold; fill: #444; }
+      .label { font-size: 9px; fill: #555; }
+      .small { font-size: 8px; fill: #666; font-style: italic; }
+      .mono { font-family: "Courier New", Courier, monospace; font-size: 10px; fill: #333; }
+      .mono-bold { font-family: "Courier New", Courier, monospace; font-size: 10px; font-weight: bold; fill: #0a5; }
+      .mono-dim { font-family: "Courier New", Courier, monospace; font-size: 10px; fill: #999; }
+      rect.process { fill: #e8e8e8; stroke: #333; stroke-width: 1.2; rx: 4; ry: 4; }
+      polygon.decision { fill: #fff8dc; stroke: #333; stroke-width: 1.2; }
+      rect.terminal { fill: #d4edda; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.redirect { fill: #f8d7da; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.phase-box { fill: #fafafa; stroke: #888; stroke-width: 1.2; rx: 8; ry: 8; }
+      rect.url-box { fill: #eef6ff; stroke: #369; stroke-width: 1; rx: 3; ry: 3; }
+      line, path { stroke: #333; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+      .no-arrow { marker-end: none; }
+    </style>
+  </defs>
+
+  <text x="260" y="18" text-anchor="middle" class="title">Per-Directory Path Stripping and RewriteBase</text>
+
+  <!-- ==================== Incoming request ==================== -->
+  <rect class="terminal" x="150" y="34" width="220" height="26"/>
+  <text x="260" y="51" text-anchor="middle" fill="#333">Incoming request</text>
+  <line x1="260" y1="60" x2="260" y2="80"/>
+
+  <!-- URL display -->
+  <rect class="url-box" x="115" y="80" width="290" height="24"/>
+  <text x="135" y="96" class="mono-dim">/app/</text>
+  <text x="170" y="96" class="mono-bold">products/widget</text>
+  <text x="345" y="96" class="label">← full URL-path</text>
+  <line x1="260" y1="104" x2="260" y2="130"/>
+
+  <!-- ==================== Strip directory prefix ==================== -->
+  <rect class="process" x="160" y="130" width="200" height="28"/>
+  <text x="260" y="148" text-anchor="middle" fill="#333">Strip directory prefix</text>
+  <line x1="260" y1="158" x2="260" y2="178"/>
+
+  <!-- Annotation: what the prefix is -->
+  <text x="375" y="140" class="small">Prefix = URL path to</text>
+  <text x="375" y="151" class="small">.htaccess directory</text>
+  <text x="375" y="162" class="small">(here: /app/)</text>
+
+  <!-- Stripped result -->
+  <rect class="url-box" x="145" y="178" width="230" height="24"/>
+  <text x="165" y="195" class="mono-bold">products/widget</text>
+  <text x="325" y="195" class="label">← no leading /</text>
+  <line x1="260" y1="202" x2="260" y2="228"/>
+
+  <!-- ==================== Pattern matching ==================== -->
+  <rect class="process" x="150" y="228" width="220" height="28"/>
+  <text x="260" y="246" text-anchor="middle" fill="#333">RewriteRule pattern matches</text>
+  <line x1="260" y1="256" x2="260" y2="276"/>
+
+  <!-- Show the rule -->
+  <text x="260" y="272" text-anchor="middle" class="small">e.g. RewriteRule "^products/(.+)$" "shop.php?item=$1"</text>
+  <line x1="260" y1="278" x2="260" y2="302"/>
+
+  <!-- ==================== Apply substitution ==================== -->
+  <rect class="process" x="160" y="302" width="200" height="28"/>
+  <text x="260" y="320" text-anchor="middle" fill="#333">Apply substitution</text>
+  <line x1="260" y1="330" x2="260" y2="358"/>
+
+  <!-- ==================== Decision: what kind of result? ==================== -->
+  <polygon class="decision" points="260,358 375,383 260,408 145,383"/>
+  <text x="260" y="380" text-anchor="middle" fill="#333">Substitution</text>
+  <text x="260" y="392" text-anchor="middle" fill="#333">type?</text>
+
+  <!-- ===== Right branch: absolute URI (http://...) → external redirect ===== -->
+  <line x1="375" y1="383" x2="455" y2="383"/>
+  <text x="385" y="375" class="label">http(s)://</text>
+  <rect class="redirect" x="420" y="397" width="90" height="30"/>
+  <text x="465" y="411" text-anchor="middle" fill="#333">External</text>
+  <text x="465" y="422" text-anchor="middle" fill="#333">redirect</text>
+  <line x1="455" y1="383" x2="455" y2="397" style="marker-end: none;"/>
+  <text x="420" y="440" class="small">302 response</text>
+  <text x="420" y="451" class="small">(no subrequest)</text>
+
+  <!-- ===== Left branch: starts with / → absolute path, skip RewriteBase ===== -->
+  <line x1="145" y1="383" x2="65" y2="383"/>
+  <text x="85" y="375" class="label">starts with /</text>
+  <line x1="65" y1="383" x2="65" y2="580" style="marker-end: none;"/>
+  <path d="M 65,580 L 65,600 L 180,600"/>
+  <text x="25" y="440" class="small">Absolute path:</text>
+  <text x="25" y="451" class="small">RewriteBase</text>
+  <text x="25" y="462" class="small">not applied</text>
+
+  <!-- ===== Down branch: relative → prepend RewriteBase ===== -->
+  <line x1="260" y1="408" x2="260" y2="440"/>
+  <text x="268" y="425" class="label">relative</text>
+
+  <!-- Relative substitution result -->
+  <rect class="url-box" x="140" y="440" width="240" height="24"/>
+  <text x="160" y="457" class="mono-bold">shop.php?item=widget</text>
+  <text x="335" y="457" class="label">← relative</text>
+  <line x1="260" y1="464" x2="260" y2="490"/>
+
+  <!-- ==================== Prepend RewriteBase ==================== -->
+  <rect class="process" x="150" y="490" width="220" height="28"/>
+  <text x="260" y="508" text-anchor="middle" fill="#333">Prepend RewriteBase</text>
+  <line x1="260" y1="518" x2="260" y2="540"/>
+
+  <!-- Annotation -->
+  <text x="385" y="496" class="small">Default: URL path to</text>
+  <text x="385" y="507" class="small">.htaccess directory</text>
+  <text x="385" y="518" class="small">Or: explicit RewriteBase</text>
+
+  <!-- Combined result -->
+  <rect class="url-box" x="115" y="540" width="290" height="24"/>
+  <text x="135" y="557" class="mono-dim">/app/</text>
+  <text x="170" y="557" class="mono-bold">shop.php?item=widget</text>
+  <text x="350" y="557" class="label">← full path</text>
+  <line x1="260" y1="564" x2="260" y2="590"/>
+
+  <!-- ==================== Internal subrequest (both relative and / paths merge here) ==================== -->
+  <rect class="process" x="140" y="590" width="240" height="28"/>
+  <text x="260" y="608" text-anchor="middle" fill="#333">Issue internal subrequest</text>
+  <line x1="260" y1="618" x2="260" y2="640"/>
+
+  <!-- Final URL -->
+  <rect class="url-box" x="100" y="640" width="320" height="24"/>
+  <text x="120" y="657" class="mono">/app/shop.php?item=widget</text>
+  <line x1="260" y1="664" x2="260" y2="685"/>
+
+  <!-- Next pass -->
+  <rect class="terminal" x="180" y="685" width="160" height="26"/>
+  <text x="260" y="702" text-anchor="middle" fill="#333">Re-enters request cycle</text>
+
+  <!-- ==================== Legend ==================== -->
+  <text x="20" y="740" class="small">Three possible substitution outcomes:</text>
+  <text x="20" y="752" class="small">• Relative (e.g. "shop.php") → RewriteBase prepended → subrequest</text>
+  <text x="20" y="764" class="small">• Absolute path (e.g. "/other/page") → used as-is → subrequest</text>
+  <text x="20" y="776" class="small">• Absolute URI (e.g. "http://...") → external redirect (no subrequest)</text>
+
+</svg>

@@ -542,16 +542,16 @@ static const char *get_time_or_size(rotate_config_t *config,
     char *ptr = NULL;
     /* Byte multiplier */
     unsigned int mult = 1;
-    if ((ptr = strchr(arg, 'B')) != NULL) { /* Found KB size */
+    if ((ptr = strchr((char *)arg, 'B')) != NULL) { /* Found KB size */
         mult = 1;
     }
-    else if ((ptr = strchr(arg, 'K')) != NULL) { /* Found KB size */
+    else if ((ptr = strchr((char *)arg, 'K')) != NULL) { /* Found KB size */
         mult = 1024;
     }
-    else if ((ptr = strchr(arg, 'M')) != NULL) { /* Found MB size */
+    else if ((ptr = strchr((char *)arg, 'M')) != NULL) { /* Found MB size */
         mult = 1024 * 1024;
     }
-    else if ((ptr = strchr(arg, 'G')) != NULL) { /* Found GB size */
+    else if ((ptr = strchr((char *)arg, 'G')) != NULL) { /* Found GB size */
         mult = 1024 * 1024 * 1024;
     }
     if (ptr) { /* rotation based on file size */

@@ -51,6 +51,17 @@ configured to be passed at full speed before throttling to the
 specified rate limit.  This value is optional, and is set using
 the environment variable <code>rate-initial-burst</code>.</p>
 
+<div class="warning"><h3>Resource consumption</h3>
+<p>Rate limiting is implemented by sleeping between writes to the client,
+so each rate-limited response occupies a server thread (or process) for
+the entire, deliberately prolonged, duration of the transfer. This applies
+to all MPMs, including <code class="module"><a href="../mod/event.html">event</a></code>. A modest number of slow,
+rate-limited downloads can exhaust the server's available workers and
+prevent other requests from being served. Use this module with caution,
+limit it to the resources that need it, and size
+<code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> accordingly.</p>
+</div>
+
 <div class="example"><h3>Example Configuration</h3><pre class="prettyprint lang-config">&lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400 

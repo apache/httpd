@@ -406,7 +406,7 @@ CGI program</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">パス末尾のスラッシュでリダイレクトするかどうかのオンオフをトグルさせる</td></tr>
 <tr><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">ウェブから見えるメインのドキュメントツリーになる
 ディレクトリ</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">エラーログにすべての入力データをダンプ</td></tr>
 <tr class="odd"><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">エラーログにすべての出力データをダンプ</td></tr>
 <tr><td><a href="core.html#else" id="E" name="E">&lt;Else&gt; ... &lt;/Else&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply only if the condition of a
@@ -460,7 +460,7 @@ network</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">すべてのマッチするファイルが指定の MIME コンテントタイプで
 送られるようにする</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Forensic ログのファイル名を設定する</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
+<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
@@ -531,10 +531,10 @@ if file exists at startup</td></tr>
 presence or absence of a specific section directive</td></tr>
 <tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">バージョン依存の設定を入れる</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://servername/ </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
-<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
+<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://servername/ </td><td>svdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
+<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
 that are not explicitly mapped</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action if no coordinates are given when calling
+<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td> formatted </td><td>svdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Action if no coordinates are given when calling
 an imagemap</td></tr>
 <tr><td><a href="core.html#include">Include <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバ設定ファイル中から他の設定ファイルを取り込む</td></tr>
 <tr class="odd"><td><a href="core.html#includeoptional">IncludeOptional <var>file-path</var>|<var>directory-path</var>|<var>wildcard</var></a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Includes other configuration files from within
@@ -712,7 +712,7 @@ simultaneously</td></tr>
 <tr><td><a href="mod_md.html#mdrequirehttps">MDRequireHttps off|temporary|permanent</a></td><td> off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Redirects http: traffic to https: for Managed Domains.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 30s </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Time length for first retry, doubled on every consecutive error.</td></tr>
 <tr><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The number of errors before a failover to another CA is triggered</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Control if Managed Domain information is added to server-status.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Control if Managed Domain information is added to <code>server-status</code>.</td></tr>
 <tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Enable stapling for certificates not managed by mod_md.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable stapling for all or a particular MDomain.</td></tr>
 <tr><td><a href="mod_md.html#mdstaplingkeepresponse">MDStaplingKeepResponse <var>duration</var></a></td><td> 7d </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Controls when old responses should be removed.</td></tr>
@@ -724,10 +724,10 @@ simultaneously</td></tr>
 <tr><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls whether the server merges consecutive slashes in URLs.
 </td></tr>
 <tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether trailers are merged into headers</td></tr>
-<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
+<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>svdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
-<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">File name suffix for the file containing CERN-style
+<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
+<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>svdh</td><td>D</td></tr><tr><td class="descr" colspan="4">File name suffix for the file containing CERN-style
 meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
@@ -756,7 +756,7 @@ or specified mutexes</td></tr>
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">シェルからの環境変数を渡す</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">デーモンのプロセス ID
 をサーバが記録するためのファイル</td></tr>
-<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
+<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>D</td></tr><tr><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
 <tr class="odd"><td><a href="core.html#protocol">Protocol <var>protocol</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Protocol for a listening socket</td></tr>
 <tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">エコーサーバの有効無効を設定します。</td></tr>
@@ -828,7 +828,7 @@ header</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされたリクエストのネットワークタイムアウト</td></tr>
 <tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたリクエストの <code>Via</code> HTTP 応答ヘッダ
 により提供される情報</td></tr>
-<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
+<tr class="odd"><td><a href="mod_proxy_wstunnel.html#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp On|Off</a></td><td> On </td><td>sv</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Instructs this module to let <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> handle the request</td></tr>
 <tr><td><a href="core.html#qualifyredirecturl" id="Q" name="Q">QualifyRedirectURL On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
 <tr class="odd"><td><a href="core.html#readbuffersize" id="R" name="R">ReadBufferSize <var>bytes</var></a></td><td> 8192 </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the buffers used to read data</td></tr>
@@ -1123,15 +1123,15 @@ Certificate verification</td></tr>
 <tr><td><a href="mod_unixd.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
 <tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ユーザ専用ディレクトリの位置</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
+<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
 subprocesses, and the privileges available to subprocesses.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines whether the server runs with enhanced security
+<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>v</td><td>D</td></tr><tr><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the server runs with enhanced security
 for the virtualhost.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>v</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root

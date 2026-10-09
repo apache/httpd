@@ -1036,6 +1036,12 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
             poffs = pathp - tmpstr_orig;
             l1 = strlen(pathp);
             pathe = str + poffs + l1;
+            /*
+             * RFC 6265 § 5.3 7): Only the last path= should be meaningful
+             * so reset anything previously found.
+             */
+            newpath = NULL;
+            pdiff = 0;
             if (conf->interpolate_env == 1) {
                 ent = (struct proxy_alias *)rconf->cookie_paths->elts;
             }
@@ -1056,6 +1062,12 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
             doffs = domainp - tmpstr_orig;
             l1 = strlen(domainp);
             domaine = str + doffs + l1;
+            /*
+             * RFC 6265 § 5.3 4): Only the last domain= should be meaningful
+             * so reset anything previously found.
+             */
+            newdomain = NULL;
+            ddiff = 0;
             if (conf->interpolate_env == 1) {
                 ent = (struct proxy_alias *)rconf->cookie_domains->elts;
             }

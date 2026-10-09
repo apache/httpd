@@ -23,9 +23,25 @@ def pytest_generate_tests(metafunc):
         metafunc.fixturenames.append('tmp_ct')
         metafunc.parametrize('repeat', range(count))
 
+
 @pytest.fixture(autouse=True, scope="function")
 def _function_scope(env, request):
     env.set_current_test_name(request.node.name)
     yield
+    env.check_error_log()
     env.set_current_test_name(None)
 
+
+@pytest.fixture(autouse=True, scope="module")
+def _module_scope(env):
+    yield
+    env.check_error_log()
+
+
+@pytest.fixture(autouse=True, scope="package")
+def _package_scope(env):
+    env.httpd_error_log.clear_ignored_matches()
+    env.httpd_error_log.clear_ignored_lognos()
+    yield
+    assert env.apache_stop() == 0
+    env.check_error_log()

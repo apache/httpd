@@ -92,119 +92,126 @@
       Les directives suivantes sont autoris&eacute;es dans les fichiers .htaccess, sous
       r&eacute;serve que la surcharge soit autoris&eacute;e dans la configuration du serveur.
     </p>
-  <table class="qref"><tr><td><a href="core.html#else">&lt;Else&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Contient des directives qui ne s'appliquent que si la
+  <table class="qref"><tr><td><a href="mod_deflate.html#deflateinflatelimitrequestbody">DeflateInflateLimitRequestBody</a></td><td class="module"><a href="mod_deflate.html">mod_deflate</a></td></tr>
+<tr><td colspan="2" class="descr">Taille maximale des corps de requ&ecirc;te d&eacute;compress&eacute;s</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflateinflateratioburst">DeflateInflateRatioBurst</a></td><td class="module"><a href="mod_deflate.html">mod_deflate</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Nombre maximal de fois que le ratio de d&eacute;compression d'un
+corps de requ&ecirc;te peut &ecirc;tre d&eacute;pass&eacute;</td></tr>
+<tr><td><a href="mod_deflate.html#deflateinflateratiolimit">DeflateInflateRatioLimit</a></td><td class="module"><a href="mod_deflate.html">mod_deflate</a></td></tr>
+<tr><td colspan="2" class="descr">Ratio de d&eacute;compression maximum pour les corps de requ&ecirc;tes</td></tr>
+<tr class="odd"><td><a href="core.html#else">&lt;Else&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Contient des directives qui ne s'appliquent que si la
 condition correspondant &agrave; la section <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#elseif">&lt;ElseIf&gt;</a></code> pr&eacute;c&eacute;dente n'est pas satisfaite par la
 requ&ecirc;te &agrave; l'ex&eacute;cution</td></tr>
-<tr class="odd"><td><a href="core.html#elseif">&lt;ElseIf&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Contient des directives qui ne s'appliquent que si la
+<tr><td><a href="core.html#elseif">&lt;ElseIf&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Contient des directives qui ne s'appliquent que si la
 condition correspondante est satisfaite par une requ&ecirc;te &agrave; l'ex&eacute;cution,
 alors que la condition correspondant &agrave; la section <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> ou <code class="directive">&lt;ElseIf&gt;</code> pr&eacute;c&eacute;dente ne l'&eacute;tait pas.</td></tr>
-<tr><td><a href="core.html#files">&lt;Files&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Contient des directives qui s'appliquent aux fichiers
+<tr class="odd"><td><a href="core.html#files">&lt;Files&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Contient des directives qui s'appliquent aux fichiers
 pr&eacute;cis&eacute;s</td></tr>
-<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Contient des directives qui s'appliquent &agrave; des fichiers
+<tr><td><a href="core.html#filesmatch">&lt;FilesMatch&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Contient des directives qui s'appliquent &agrave; des fichiers
 sp&eacute;cifi&eacute;s sous la forme d'expressions rationnelles</td></tr>
-<tr><td><a href="core.html#if">&lt;If&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Contient des directives qui ne s'appliquent que si une
+<tr class="odd"><td><a href="core.html#if">&lt;If&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Contient des directives qui ne s'appliquent que si une
 condition est satisfaite au cours du traitement d'une
 requ&ecirc;te</td></tr>
-<tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Contient des directives qui ne s'appliqueront que si un
+<tr><td><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Contient des directives qui ne s'appliqueront que si un
 test retourne "vrai" au d&eacute;marrage du serveur</td></tr>
-<tr><td><a href="core.html#ifdirective">&lt;IfDirective&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Regroupe des directives dont le traitement est conditionn&eacute; par la
-pr&eacute;sence ou l'absence d'une directive particuli&egrave;re</td></tr>
-<tr class="odd"><td><a href="core.html#iffile">&lt;IfFile&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Regroupe des directives qui ne seront trait&eacute;es que si un fichier
-existe au d&eacute;marrage</td></tr>
-<tr><td><a href="core.html#ifmodule">&lt;IfModule&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Contient des directives qui ne s'appliquent qu'en fonction
-de la pr&eacute;sence ou de l'absence d'un module sp&eacute;cifique</td></tr>
-<tr class="odd"><td><a href="core.html#ifsection">&lt;IfSection&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td><a href="core.html#ifdirective">&lt;IfDirective&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Regroupe des directives dont le traitement est conditionn&eacute; par la
+pr&eacute;sence ou l'absence d'une directive particuli&egrave;re</td></tr>
+<tr><td><a href="core.html#iffile">&lt;IfFile&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Regroupe des directives qui ne seront trait&eacute;es que si un fichier
+existe au d&eacute;marrage</td></tr>
+<tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Contient des directives qui ne s'appliquent qu'en fonction
+de la pr&eacute;sence ou de l'absence d'un module sp&eacute;cifique</td></tr>
+<tr><td><a href="core.html#ifsection">&lt;IfSection&gt;</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Regroupe des directives dont le traitement est conditionn&eacute; par la
 pr&eacute;sence ou l'absence d'une section particuli&egrave;re</td></tr>
-<tr><td><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></td><td class="module"><a href="mod_version.html">mod_version</a></td></tr>
-<tr><td colspan="2" class="descr">Contient des portions de configuration d&eacute;pendantes de la
+<tr class="odd"><td><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></td><td class="module"><a href="mod_version.html">mod_version</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Contient des portions de configuration d&eacute;pendantes de la
 version</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">limite la taille maximale du corps de la requ&ecirc;te HTTP
+<tr><td><a href="core.html#limitrequestbody">LimitRequestBody</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">limite la taille maximale du corps de la requ&ecirc;te HTTP
 envoy&eacute;e par le client</td></tr>
-<tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">D&eacute;finit la taille maximale du corps d'une requ&ecirc;te au format
+<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">D&eacute;finit la taille maximale du corps d'une requ&ecirc;te au format
 XML</td></tr>
-<tr class="odd"><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB</a></td><td class="module"><a href="mod_logio.html">mod_logio</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Permet d'enregistrer le d&eacute;lai avant le premier octet (time
+<tr><td><a href="mod_logio.html#logiotrackttfb">LogIOTrackTTFB</a></td><td class="module"><a href="mod_logio.html">mod_logio</a></td></tr>
+<tr><td colspan="2" class="descr">Permet d'enregistrer le d&eacute;lai avant le premier octet (time
 to first byte - TTFB)</td></tr>
-<tr><td><a href="mod_lua.html#luacodecache">LuaCodeCache</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Configure le cache de code compil&eacute;.</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase access_checker du
+<tr class="odd"><td><a href="mod_lua.html#luacodecache">LuaCodeCache</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Configure le cache de code compil&eacute;.</td></tr>
+<tr><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase access_checker du
 traitement de la requ&ecirc;te</td></tr>
-<tr><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase auth_checker du
+<tr class="odd"><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase auth_checker du
 traitement de la requ&ecirc;te</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase check_user_id du
+<tr><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase check_user_id du
 traitement de la requ&ecirc;te</td></tr>
-<tr><td><a href="mod_lua.html#luahookfixups">LuaHookFixups</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase de correction du
+<tr class="odd"><td><a href="mod_lua.html#luahookfixups">LuaHookFixups</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase de correction du
 traitement de la requ&ecirc;te</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase insert_filter du
+<tr><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase insert_filter du
 traitement de la requ&ecirc;te</td></tr>
-<tr><td><a href="mod_lua.html#luahooklog">LuaHookLog</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Permet une insertion dans la phase de journalisation du
+<tr class="odd"><td><a href="mod_lua.html#luahooklog">LuaHookLog</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Permet une insertion dans la phase de journalisation du
 traitement d'une requ&ecirc;te</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase map_to_storage du
+<tr><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase map_to_storage du
 traitement de la requ&ecirc;te</td></tr>
-<tr><td><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase de pr&eacute;-traduction du
+<tr class="odd"><td><a href="mod_lua.html#luahookpretranslate">LuaHookPreTranslate</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase de pr&eacute;-traduction du
 traitement d'une requ&ecirc;te</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e &agrave; la phase du nom de
+<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e &agrave; la phase du nom de
 traduction du traitement de la requ&ecirc;te</td></tr>
-<tr><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase type_checker du
+<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la phase type_checker du
 traitement de la requ&ecirc;te</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Contr&ocirc;le la mani&egrave;re dont les sections de configuration
+<tr><td><a href="mod_lua.html#luainherit">LuaInherit</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Contr&ocirc;le la mani&egrave;re dont les sections de configuration
 parentes sont fusionn&eacute;es dans les enfants</td></tr>
-<tr><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Ajoute un r&eacute;pertoire au package.cpath de lua</td></tr>
-<tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Ajoute un r&eacute;pertoire au package.path de lua</td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la gestion rapide du
+<tr class="odd"><td><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Met en correspondance un chemin avec un gestionnaire lua</td></tr>
+<tr><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Ajoute un r&eacute;pertoire au package.cpath de lua</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Ajoute un r&eacute;pertoire au package.path de lua</td></tr>
+<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Fournit un point d'entr&eacute;e pour la gestion rapide du
 traitement de la requ&ecirc;te</td></tr>
-<tr><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr><td colspan="2" class="descr">Sp&eacute;cifie le chemin de base pour la r&eacute;solution des chemins
+<tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Sp&eacute;cifie le chemin de base pour la r&eacute;solution des chemins
 relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code></td></tr>
-<tr class="odd"><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par d&eacute;faut est once</td></tr>
-<tr><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Limite le temps CPU allou&eacute; aux processus initi&eacute;s par les
+<tr><td><a href="mod_lua.html#luascope">LuaScope</a></td><td class="module"><a href="mod_lua.html">mod_lua</a></td></tr>
+<tr><td colspan="2" class="descr">Une valeur parmi once, request, conn, thread -- la valeur par d&eacute;faut est once</td></tr>
+<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limite le temps CPU allou&eacute; aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Limite la m&eacute;moire allou&eacute;e aux processus initi&eacute;s par les
+<tr><td><a href="core.html#rlimitmem">RLimitMEM</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">Limite la m&eacute;moire allou&eacute;e aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
-<tr><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr><td colspan="2" class="descr">Limite le nombre de processus qui peuvent &ecirc;tre initi&eacute;s par
+<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Limite le nombre de processus qui peuvent &ecirc;tre initi&eacute;s par
 les processus initi&eacute;s par les processus enfants d'Apache httpd</td></tr>
-<tr class="odd"><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">D&eacute;finit un pied de page pour les documents g&eacute;n&eacute;r&eacute;s par le
+<tr><td><a href="core.html#serversignature">ServerSignature</a></td><td class="module"><a href="core.html">core</a></td></tr>
+<tr><td colspan="2" class="descr">D&eacute;finit un pied de page pour les documents g&eacute;n&eacute;r&eacute;s par le
 serveur</td></tr>
-<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Message d'erreur affich&eacute; lorsqu'une erreur SSI
+<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Message d'erreur affich&eacute; lorsqu'une erreur SSI
 survient</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Configuration du format d'affichage des dates</td></tr>
-<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
-<tr><td colspan="2" class="descr">Cha&icirc;ne &agrave; afficher lorsqu'on tente d'extraire le contenu
+<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr><td colspan="2" class="descr">Configuration du format d'affichage des dates</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></td><td class="module"><a href="mod_include.html">mod_include</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Cha&icirc;ne &agrave; afficher lorsqu'on tente d'extraire le contenu
 d'une variable non d&eacute;finie</td></tr>
 </table></div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top"></a></div><div class="section"><h2><a name="override-authconfig">AuthConfig</a></h2>
     <p>

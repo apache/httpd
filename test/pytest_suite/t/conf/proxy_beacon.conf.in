@@ -1,0 +1,115 @@
+#t/TEST -proxy_beacon
+#
+# Config for mod_proxy_beacon (UDP backend announcement).
+#
+# Backends announce themselves to the reverse proxy over UDP datagrams:
+#
+#   - reverse proxy (main server): ProxyBeaconListen  -- binds, receives
+#   - backend (vhost proxy_beacon): ProxyBeaconAddress -- sends to the proxy
+#
+# Phase 1 proved the channel (the receiver logs each BEACON).  Phase 2 adds the
+# announcing backend as a member of balancer://beacon and enables it, so a
+# request to /beacon on the proxy routes to the dynamically-added backend.
+# Phase 3 evicts a backend that stops announcing.  Phase 4 authenticates the
+# channel with a pre-shared secret (ProxyBeaconSecret): the proxy drops any
+# announcement that isn't validly signed and fresh.
+#
+# Everything runs in this single test instance over loopback UDP, driven by the
+# mod_watchdog singleton thread.  The backend advertises the MAIN server's
+# origin (@SERVERNAME@:@PORT@), which serves the framework's index.html
+# ("welcome to <servername>:<port>"); routing /beacon/index.html through the
+# proxy must return that body, proving the added member serves traffic.
+#
+# Two backends send to the SAME proxy port: one with the matching secret (must be
+# added + serve), and a decoy with a WRONG secret advertising an unroutable URL
+# (must be rejected and never added) -- proving authentication works.
+
+<IfModule mod_proxy_beacon.c>
+<IfModule mod_proxy_balancer.c>
+
+    # Received-beacon + balancer add/route logging in the error_log.
+    LogLevel proxy_beacon:info proxy_balancer:debug
+
+    # Reverse proxy == receiver.  ProxyBeaconListen with NO argument inherits the
+    # server's own address and port (here the main server's @PORT@), so the UDP
+    # beacon socket shares the server's TCP service port -- UDP and TCP are
+    # independent port spaces, so this does not collide with the TCP listener.
+    # Backends therefore beacon to the proxy at its real service endpoint.
+    ProxyBeaconListen
+    ProxyBeaconBalancer beacon
+
+    # Phase 4: require announcements to be signed with this shared secret.
+    # Unsigned / wrong-secret / stale messages are dropped before being acted on.
+    ProxyBeaconSecret  beacon-test-shared-secret
+
+    # Phase 3: disable a backend that hasn't announced in 1s.  Combined with the
+    # backend's 4s announce interval below, this guarantees an eviction gap
+    # (announce -> stale after ~1s -> evicted -> next announce re-enables).
+    ProxyBeaconTimeout 1
+
+    # An initially-empty balancer with spare slots for runtime members.
+    <Proxy balancer://beacon>
+        ProxySet growth=10
+    </Proxy>
+    ProxyPass /beacon balancer://beacon
+
+    # Legit backend == sender: send to the proxy, advertise its routable origin
+    # (the main server here), sign with the MATCHING secret, announce every 4s.
+    <VirtualHost proxy_beacon>
+        ProxyBeaconAddress   127.0.0.1:@PORT@
+        ProxyBeaconAdvertise http://@SERVERNAME@:@PORT@
+        ProxyBeaconSecret    beacon-test-shared-secret
+        # Announce every 4s.  With the proxy's 1s ProxyBeaconTimeout this leaves
+        # a ~3s window each cycle where the member is stale and gets evicted, then
+        # the next announcement re-enables it -- exercising the full Phase-3
+        # add -> evict -> re-enable lifecycle in a single-instance test.
+        ProxyBeaconInterval  4
+    </VirtualHost>
+
+    # Phase 4 negative case: a rogue backend sending to the SAME proxy port with a
+    # WRONG secret, advertising an unroutable decoy URL.  Its announcements must
+    # be rejected (bad MAC) and the decoy must NEVER become a balancer member.
+    <VirtualHost proxy_beacon_bad>
+        ProxyBeaconAddress   127.0.0.1:@PORT@
+        ProxyBeaconAdvertise http://127.0.0.1:1
+        ProxyBeaconSecret    wrong-secret
+        ProxyBeaconInterval  1
+    </VirtualHost>
+
+    #
+    # Capacity / slot-exhaustion scenario (separate, second receiver + balancer).
+    # balancer://cap has room for exactly ONE runtime member (growth=1).  Two
+    # backends announce distinct URLs to it: one wins the slot, the other can
+    # never be added.  The failed add must be retried on a long backoff, NOT on
+    # every announcement -- so there must be no per-interval add-failure storm.
+    #
+    Define BEACON_CAP_PORT @NextAvailablePort@
+
+    # Second receiver lives on its own vhost so it has a distinct bind port.
+    <VirtualHost proxy_beacon_cap>
+        ProxyBeaconListen  127.0.0.1:${BEACON_CAP_PORT}
+        ProxyBeaconBalancer cap
+        ProxyBeaconSecret  beacon-test-shared-secret
+        ProxyBeaconTimeout 0
+        <Proxy balancer://cap>
+            ProxySet growth=1
+        </Proxy>
+        ProxyPass /cap balancer://cap
+    </VirtualHost>
+
+    # Two backends competing for the single cap slot (announce every 1s).
+    <VirtualHost proxy_beacon_cap1>
+        ProxyBeaconAddress   127.0.0.1:${BEACON_CAP_PORT}
+        ProxyBeaconAdvertise http://127.0.0.2:18081
+        ProxyBeaconSecret    beacon-test-shared-secret
+        ProxyBeaconInterval  1
+    </VirtualHost>
+    <VirtualHost proxy_beacon_cap2>
+        ProxyBeaconAddress   127.0.0.1:${BEACON_CAP_PORT}
+        ProxyBeaconAdvertise http://127.0.0.2:18082
+        ProxyBeaconSecret    beacon-test-shared-secret
+        ProxyBeaconInterval  1
+    </VirtualHost>
+
+</IfModule>
+</IfModule>
