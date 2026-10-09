@@ -103,8 +103,14 @@ class TestSed:
         conf.add_vhost_test1()
         conf.install()
         if fails:
-            assert env.apache_restart() != 0, f"{exprs}: accepted"
-            return
+            # Check the configuration with httpd -t, which reports the error
+            # on stderr on every platform; the server is not restarted.
+            r = env.run([os.path.join(env.bin_dir, "httpd"),
+                         "-d", env.server_dir,
+                         "-f", os.path.join(env.server_dir, "conf",
+                                            "httpd.conf"), "-t"])
+            assert r.exit_code != 0, f"{exprs}: accepted"
+            return r.stderr
         assert env.apache_restart() == 0
 
     def get(self, env, path="/sed.html", options=None):
@@ -430,9 +436,8 @@ class TestSed:
         r"s/a\{1\}\{2,30\}/X/",
     ])
     def test_filters_003_32(self, env, expr):
-        self.configure(env, expr, fails=True)
-        assert "not allowed here" in env.apachectl_stderr, \
-            env.apachectl_stderr
+        err = self.configure(env, expr, fails=True)
+        assert "not allowed here" in err, err
 
     # --- backreferences to groups -----------------------------------------
 
@@ -444,8 +449,8 @@ class TestSed:
         r"s/\(a\1\)/X/",
     ])
     def test_filters_003_35(self, env, expr):
-        self.configure(env, expr, fails=True)
-        assert "out of range" in env.apachectl_stderr, env.apachectl_stderr
+        err = self.configure(env, expr, fails=True)
+        assert "out of range" in err, err
 
     # A backreference to a closed group, even with a later group still open.
     def test_filters_003_36(self, env):
@@ -462,8 +467,8 @@ class TestSed:
 
     # Any deeper is rejected.
     def test_filters_003_38(self, env):
-        self.configure(env, ["{" * 21 + "p"] + ["}"] * 21, fails=True)
-        assert "too many {'s" in env.apachectl_stderr, env.apachectl_stderr
+        err = self.configure(env, ["{" * 21 + "p"] + ["}"] * 21, fails=True)
+        assert "too many {'s" in err, err
 
     # --- bracket expressions ----------------------------------------------
 
@@ -474,8 +479,8 @@ class TestSed:
         ["s/aaaa]*/b/", "s/[a-"],
     ])
     def test_filters_003_39(self, env, exprs):
-        self.configure(env, exprs, fails=True)
-        assert "imbalance" in env.apachectl_stderr, env.apachectl_stderr
+        err = self.configure(env, exprs, fails=True)
+        assert "imbalance" in err, err
 
     # --- unterminated expressions -----------------------------------------
 
@@ -486,9 +491,8 @@ class TestSed:
         ["s/aaaa/b/", "s/a"],
     ])
     def test_filters_003_40(self, env, exprs):
-        self.configure(env, exprs, fails=True)
-        assert "missing delimiter" in env.apachectl_stderr, \
-            env.apachectl_stderr
+        err = self.configure(env, exprs, fails=True)
+        assert "missing delimiter" in err, err
 
     # --- delimiters -------------------------------------------------------
 
@@ -502,9 +506,8 @@ class TestSed:
     # An s or y command which ends before its delimiter is rejected.
     @pytest.mark.parametrize("expr", ["s", "/monday/s", "y", "/monday/y"])
     def test_filters_003_42(self, env, expr):
-        self.configure(env, expr, fails=True)
-        assert "command garbled" in env.apachectl_stderr, \
-            env.apachectl_stderr
+        err = self.configure(env, expr, fails=True)
+        assert "command garbled" in err, err
 
     # y maps bytes with the high bit set like any other.
     def test_filters_003_43(self, env):
@@ -517,11 +520,9 @@ class TestSed:
     # rejected without writing past the buffer.  Only a memory checker sees
     # the difference.
     def test_filters_003_44(self, env):
-        self.configure(env, [f"r {'A' * 998}"] * 10 + ["r 123456789",
-                                                       "/x/p"],
-                       fails=True)
-        assert "too much command text" in env.apachectl_stderr, \
-            env.apachectl_stderr
+        err = self.configure(env, [f"r {'A' * 998}"] * 10
+                             + ["r 123456789", "/x/p"], fails=True)
+        assert "too much command text" in err, err
 
     # An interval count is rejected as too large however many digits it
     # has, rather than wrapping around.
@@ -531,17 +532,15 @@ class TestSed:
         r"s/o\{1,4294967298\}/X/",
     ])
     def test_filters_003_45(self, env, expr):
-        self.configure(env, expr, fails=True)
-        assert "Range endpoint too large" in env.apachectl_stderr, \
-            env.apachectl_stderr
+        err = self.configure(env, expr, fails=True)
+        assert "Range endpoint too large" in err, err
 
     # A line number too large for a 64-bit count is rejected rather than
     # wrapping around; one which fits, but which no document reaches, is
     # accepted.
     def test_filters_003_46(self, env):
-        self.configure(env, "99999999999999999999p", fails=True)
-        assert "command garbled" in env.apachectl_stderr, \
-            env.apachectl_stderr
+        err = self.configure(env, "99999999999999999999p", fails=True)
+        assert "command garbled" in err, err
 
     def test_filters_003_47(self, env):
         assert self.body(env, "9223372036854775807d").decode() == DOC
