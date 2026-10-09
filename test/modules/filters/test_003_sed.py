@@ -371,6 +371,21 @@ class TestSed:
         assert r.response, "no response"
         assert r.response["body"] == b"one MON two\n"
 
+    # A handler which reads the request body with AP_MODE_GETLINE, not
+    # AP_MODE_READBYTES, still gets it filtered.
+    def test_filters_003_33(self, env):
+        self.configure(env, "s/monday/MON/g", input_sed=True, extra="""
+            <Location "/getline">
+                SetHandler aptest-getline-echo
+                SetInputFilter SED
+            </Location>
+            """)
+        r = env.curl_post_data(env.mkurl("http", "test1", "/getline"),
+                               data="one monday two\nmonday monday\n")
+        assert r.response, "no response"
+        assert r.response["status"] == 200
+        assert r.response["body"] == b"one MON two\nMON MON\n"
+
     # --- interval expressions ---------------------------------------------
 
     # \{m,n\} repeats a character or a bracket expression.
