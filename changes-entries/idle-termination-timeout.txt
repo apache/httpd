@@ -1,0 +1,5 @@
+  *) mpm_event, mpm_prefork, mpm_worker: Add IdleTerminationTimeout
+     directive, which terminates the server once it has had no open
+     connections and served no requests for the given number of seconds.
+     Github #529.
+     [Alex/AT <85214814+AlexAT users.noreply.github.com>]
