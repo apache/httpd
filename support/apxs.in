@@ -652,6 +652,9 @@ if ($opt_i or $opt_e) {
             } else {
                 # replace already existing LoadModule line
                 $content =~ s|^(.*\n)#?\s*$lmd_re[^\n]*\n|$1$c$lmd\n|s;
+                # the above only reaches the last entry, disable the other
+                # active ones as well
+                $content =~ s|^([ \t]*$lmd_re)|#$1|mg if ($opt_A);
             }
             $lmd =~ m|LoadModule\s+(.+?)_module.*|;
             notice("[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]");
