@@ -1,0 +1,3 @@
+  *) mod_http2: Send only HTTP/2 error codes in GOAWAY frames. The APR status
+     of a connection timeout or error was sent instead.
+     PR 70212.  [Arturo Bernal]
