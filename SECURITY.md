@@ -24,10 +24,16 @@ Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html)
 
 ## Model scope
 
-If an issue is reported against an aspect of the security model which
-is not documented here, it MUST be accompanied by a clear description
-of that aspect of the model, showing why a trust boundary exists and how
-it is violated.
+Every vulnerability report MUST begin by either:
+
+a) clearly identifying the aspect of this security model which is
+violated by the reported bug, or
+
+b) succinctly describing a trust boundary which is not covered by this
+document, supported by references (such as the httpd documentation),
+and showing how it is violated by the reported bug.
+
+Reports which invent contrived trust boundaries will be rejected.
 
 Any security vulnerability SHOULD be reproducible:
 
@@ -138,19 +144,20 @@ which are not sandboxed, such as `mod_lua`, `mod_sed` or `mod_php`,
 site authors have exactly equivalent privileges to the user which the
 server runs as.
 
-## Dependent Services
+## Trusted Services
 
-Many configurations depend on backend servers or services which are
-trusted entities.
+Attacks from servers and services which are implicitly or explicitly
+trusted in the httpd configuration are outside the scope of the
+security model.
 
-Services used for authentication or caching privileged/protected data
-are trusted not to attack the web server. Examples of trusted services
-include, but are not limited to:
+Examples of trusted services include, but are not limited to:
 
+* Services used for caching privileged or protected data
 * Database or LDAP servers used for authentication via `mod_ldap` or `mod_dbd`
 * Redis/Valkey, or Memcache servers used for the `mod_ssl` session cache
 * OCSP servers used for client certificate verification, or server certificate "stapling"
-* ACME servers used for issuing certificate in `mod_md`.
+* ACME servers used for issuing certificate in `mod_md`
+* PROXY protocol intermediaries used with `mod_remoteip`
 
 Backend servers are those accessed in a reverse proxy (or gateway)
 configuration, typically via HTTP or AJP (see
