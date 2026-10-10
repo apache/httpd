@@ -1,0 +1,2 @@
+  *) core: Reject invalid non-numeric values of LimitXMLRequestBody, as
+     LimitRequestBody does. PR 69975
