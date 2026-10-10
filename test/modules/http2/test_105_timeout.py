@@ -159,7 +159,7 @@ class TestTimeout:
             time.sleep(2)
             try:
                 piper.send("0123456789\n")
-            except BrokenPipeError:
+            except (BrokenPipeError, OSError):
                 break
         piper.close()
         assert piper.response, f'{piper}'

@@ -1,6 +1,7 @@
 #
 # mod-h2 test suite
 # check HTTP/2 timeout behaviour
+import sys
 #
 import time
 from threading import Thread
@@ -21,6 +22,8 @@ class TestShutdown:
         conf.install()
         assert env.apache_restart() == 0
 
+    @pytest.mark.skipif(sys.platform == "win32",
+                        reason="mpm_winnt restarts child process on reload, killing in-flight h2 streams")
     def test_h2_106_01(self, env):
         url = env.mkurl("https", "cgi", "/necho.py")
         lines = 100000

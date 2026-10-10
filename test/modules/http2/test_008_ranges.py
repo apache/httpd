@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import sys
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -119,6 +120,8 @@ class TestRanges:
         assert found, f'request not found in {self.LOGFILE}'
 
     # send a paced curl download that aborts in the middle of the transfer
+    @pytest.mark.xfail(condition=sys.platform == "win32",
+                        reason="bytes_tx_O not counted on aborted H2 transfer on 2.4.x Windows")
     def test_h2_008_03(self, env, repeat):
         path = '/data-100m'
         url = env.mkurl("https", "test1", f'{path}?03broken')

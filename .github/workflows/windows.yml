@@ -10,6 +10,12 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - 'modules/arch/unix/**'
+      - 'os/unix/**'
+      - server/mpm_unix.c
+      - 'test/modules/arch/linux/**'
+      - 'test/travis_*.sh'
+      - 'test/gha-*.sh'
     tags:
       - 2.*
   pull_request:
@@ -21,6 +27,13 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - changes-entries/*
+      - 'modules/arch/unix/**'
+      - 'os/unix/**'
+      - server/mpm_unix.c
+      - 'test/modules/arch/linux/**'
+      - 'test/travis_*.sh'
+      - 'test/gha-*.sh'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -33,13 +46,13 @@ jobs:
       matrix:
         include:
           - name: Default
-            triplet: x64-windows
+            triplet: x64-windows-release
             arch: x64
-            build-type: Debug
+            build-type: Release
             generator: "Ninja"
 
     runs-on: windows-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     name: ${{ matrix.name }}
     env: 
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
@@ -60,19 +73,57 @@ jobs:
               core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Install dependencies
-        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl
+        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
 
       - uses: actions/checkout@v6
 
       - name: Configure CMake
         run: |
             cmake --version
-            cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
+            cmake -B ${{github.workspace}}/build `
                 -G "${{ matrix.generator }}" `
+                -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
+                -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} `
                 -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
-                "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib"
+                "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib" `
+                -DNGHTTP2_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
+                -DNGHTTP2_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/nghttp2.lib `
+                -DJANSSON_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
+                -DJANSSON_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/jansson.lib `
+                -DENABLE_MIME_MAGIC=A `
+                -DBUILD_TEST_MODULES=true
 
       - name: Build
         run: |
-            cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
+            cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }} -- -j 1
+
+      - name: Install
+        run: |
+            cmake --install ${{github.workspace}}/build --config ${{ matrix.build-type }}
+
+      - name: Install Tools for tests
+        env:
+          VCPKG_DIR: C:\vcpkg
+          VCPKG_TRIPLET: ${{ matrix.triplet }}
+        run: |
+            ${{github.workspace}}\test\pyhttpd\install_tools.bat "C:\Program Files (x86)\HTTPD"
+
+      - name: Check httpd
+        run: |
+            $env:PATH = "C:\Program Files (x86)\HTTPD\bin;C:\vcpkg\installed\x64-windows\bin;$env:PATH"
+            & "C:\Program Files (x86)\HTTPD\bin\httpd.exe" -V
+            & "C:\Program Files (x86)\HTTPD\bin\httpd.exe" -t -f "C:\Program Files (x86)\HTTPD\conf\httpd.conf"
+
+      - name: Test httpd
+        run: |
+            ${{github.workspace}}\test\pyhttpd\runtests.bat --httpd "C:\Program Files (x86)\HTTPD\bin\httpd.exe" --conf "C:\Program Files (x86)\HTTPD\conf\httpd.conf" -vvvv -x
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: |
+            C:\Program Files (x86)\HTTPD\logs\
+            ${{github.workspace}}\test\gen\apache\logs\
