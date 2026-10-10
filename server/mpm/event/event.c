@@ -199,6 +199,9 @@ static fd_queue_info_t *worker_queue_info;
 
 static apr_thread_mutex_t *timeout_mutex;
 
+static int idle_termination_timeout = -1; /* never terminate by default */
+static int idle_termination_remaining;
+
 module AP_MODULE_DECLARE_DATA mpm_event_module;
 
 /* forward declare */
@@ -444,6 +447,8 @@ typedef struct event_retained_data {
      */
     int *idle_spawn_rate;
     int hold_off_on_exponential_spawning;
+
+    int idle_timeout; /* did we time out? */
 } event_retained_data;
 static event_retained_data *retained;
 
@@ -3242,6 +3247,7 @@ static void perform_idle_server_maintenance(int child_bucket,
 {
     int num_buckets = retained->mpm->num_buckets;
     int idle_thread_count = 0;
+    int total_thread_count = 0;
     process_score *ps;
     int free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
@@ -3292,6 +3298,7 @@ static void perform_idle_server_maintenance(int child_bucket,
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
                     ++child_threads_active;
                 }
+                ++total_thread_count;
             }
             active_thread_count += child_threads_active;
             if (child_threads_active == threads_per_child) {
@@ -3337,6 +3344,21 @@ static void perform_idle_server_maintenance(int child_bucket,
     AP_DEBUG_ASSERT(retained->active_daemons <= retained->total_daemons
                     && retained->total_daemons <= retained->max_daemon_used
                     && retained->max_daemon_used <= server_limit);
+
+    if (idle_termination_timeout >= 0) {
+        if (idle_thread_count == total_thread_count) {
+            /* we are completely idle, decrease and check the timer */
+            if (--idle_termination_remaining < 0) {
+                /* the termination timeout has expired, inform us we want to terminate immediately */
+                retained->mpm->shutdown_pending = 1;
+                retained->mpm->is_ungraceful = 1;
+                retained->idle_timeout = 1;
+            }
+        } else {
+            /* not idle, reset the timer */
+            idle_termination_remaining = idle_termination_timeout;
+        }
+    }
 
     if (idle_thread_count > max_spare_threads / num_buckets) {
         /*
@@ -3783,8 +3805,15 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
             ap_remove_pid(pconf, ap_pid_fname);
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
-                         ap_server_conf, APLOGNO(00491) "caught SIGTERM, shutting down");
+
+            /* log message depends on if we are terminating by signal or by idle timeout */
+            if (!retained->idle_timeout) {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00491)
+                            "caught SIGTERM, shutting down");
+            } else {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00491)
+                            "idle timeout reached, shutting down");
+            }
         }
 
         return DONE;
@@ -4481,6 +4510,17 @@ static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_idle_termination_timeout (cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    idle_termination_timeout = atoi(arg);
+    idle_termination_remaining = idle_termination_timeout;
+    return NULL;
+}
 
 static const command_rec event_cmds[] = {
     LISTEN_COMMANDS,
@@ -4504,6 +4544,8 @@ static const command_rec event_cmds[] = {
     AP_INIT_TAKE1("AsyncRequestWorkerFactor", set_worker_factor, NULL, RSRC_CONF,
                   "How many additional connects will be accepted per idle "
                   "worker thread"),
+    AP_INIT_TAKE1("IdleTerminationTimeout", set_idle_termination_timeout, NULL, RSRC_CONF,
+                  "Number of seconds to terminate in when the server is idle"),
     AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
     {NULL}
 };
