@@ -204,6 +204,29 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/773.patch
      +1: jorton,
 
+  *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
+     type, and serialize lock database access with a global mutex since
+     apr_dbm does not provide thread-safe locking.
+     trunk patch: https://svn.apache.org/r1912571
+                  https://svn.apache.org/r1912718
+                  https://svn.apache.org/r1914438
+     2.4.x patch: https://github.com/apache/httpd/pull/399.patch
+     +1: jorton,
+
+  *) mod_remoteip: Various fixes and improvements from trunk.
+     trunk patch: https://svn.apache.org/r1874344
+                  https://svn.apache.org/r1933436
+                  https://svn.apache.org/r1936258
+                  https://svn.apache.org/r1936357
+                  https://svn.apache.org/r1936366
+                  https://svn.apache.org/r1938292
+                  https://svn.apache.org/r1938908
+                  https://svn.apache.org/r1938909
+                  https://svn.apache.org/r1938927
+                  https://svn.apache.org/r1938928
+     2.4.x patch: https://github.com/apache/httpd/pull/819.patch
+     +1: jorton, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
