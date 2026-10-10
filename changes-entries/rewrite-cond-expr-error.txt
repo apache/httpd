@@ -1,0 +1,3 @@
+  *) mod_rewrite: Do not let the negation of a RewriteCond expr turn an
+     expression evaluation error into a successful condition.
+     PR 70169.  [Arturo Bernal]

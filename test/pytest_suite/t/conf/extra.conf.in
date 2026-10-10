@@ -319,6 +319,14 @@
    RewriteCond expr !false
    RewriteRule ^/modules/rewrite/expr/shouldredir/notfalse$ /dummy [R=303]
 
+   # More operands than the ap_expr recursion limit makes the evaluation fail
+   # with an error, which is neither true nor false, with or without negation.
+   RewriteCond expr "!(true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true)"
+   RewriteRule ^/modules/rewrite/expr/notgone/bangerror$ - [G]
+
+   RewriteCond expr "not (true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true && true)"
+   RewriteRule ^/modules/rewrite/expr/notgone/noterror$ - [G]
+
    <Location /modules/rewrite/>
       Header always set rewritten-query "expr=%{QUERY_STRING}"
    </Location>
