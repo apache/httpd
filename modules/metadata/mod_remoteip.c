@@ -176,9 +176,18 @@ static void *merge_remoteip_server_config(apr_pool_t *p, void *globalv,
     config->proxies_header_name = server->proxies_header_name
                                 ? server->proxies_header_name
                                 : global->proxies_header_name;
-    config->proxymatch_ip = server->proxymatch_ip
-                          ? server->proxymatch_ip
-                          : global->proxymatch_ip;
+    if (server->proxymatch_ip && global->proxymatch_ip) {
+        /* Both have entries: merge them. remoteip_modify_request() uses the
+         * first match, so the more specific entries of the vhost go first.
+         */
+        config->proxymatch_ip = apr_array_append(p, server->proxymatch_ip,
+                                                 global->proxymatch_ip);
+    }
+    else {
+        config->proxymatch_ip = server->proxymatch_ip
+                              ? server->proxymatch_ip
+                              : global->proxymatch_ip;
+    }
     return config;
 }
 
@@ -493,14 +502,14 @@ static const char *remoteip_disable_networks(cmd_parms *cmd, void *d,
 }
 
 static int remoteip_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
-                               apr_pool_t *ptemp, server_rec *s)
+                                     apr_pool_t *ptemp, server_rec *s)
 {
-    remoteip_config_t *conf;
+    remoteip_config_t *conf, *vconf;
     remoteip_addr_info *info;
+    server_rec *vs;
     char buf[INET6_ADDRSTRLEN];
 
-    conf = ap_get_module_config(ap_server_conf->module_config,
-                                &remoteip_module);
+    conf = ap_get_module_config(s->module_config, &remoteip_module);
 
     for (info = conf->proxy_protocol_enabled; info; info = info->next) {
         apr_sockaddr_ip_getbuf(buf, sizeof(buf), info->addr);
@@ -511,6 +520,24 @@ static int remoteip_hook_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         apr_sockaddr_ip_getbuf(buf, sizeof(buf), info->addr);
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, APLOGNO(03494)
                      "RemoteIPProxyProtocol: disabled on %s:%hu", buf, info->addr->port);
+    }
+
+    /* A vhost with entries of its own got a new array in the config
+     * merge, otherwise it shares the one of the main server. Warn for
+     * this case (temporarily) since the behaviour has changed with
+     * the fix for PR 70207.  */
+    if (conf->proxymatch_ip) {
+        for (vs = s->next; vs; vs = vs->next) {
+            vconf = ap_get_module_config(vs->module_config, &remoteip_module);
+            if (vconf->proxymatch_ip
+                    && vconf->proxymatch_ip != conf->proxymatch_ip) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, vs, APLOGNO(10633)
+                             "RemoteIP proxy entries are configured in both "
+                             "the main server and the virtual host defined "
+                             "at %s:%u, they are merged",
+                             vs->defn_name, vs->defn_line_number);
+            }
+        }
     }
 
     return OK;
@@ -616,12 +643,12 @@ static int remoteip_modify_request(request_rec *r)
             ++parse_remote;
         }
 
-        eos = parse_remote + strlen(parse_remote) - 1;
-        while (eos >= parse_remote && *eos == ' ') {
-            *(eos--) = '\0';
+        eos = parse_remote + strlen(parse_remote);
+        while (eos > parse_remote && eos[-1] == ' ') {
+            *--eos = '\0';
         }
 
-        if (eos < parse_remote) {
+        if (eos == parse_remote) {
             if (remote) {
                 *(remote + strlen(remote)) = ',';
             }
@@ -813,7 +840,7 @@ static remoteip_parse_status_t remoteip_process_v1_header(conn_rec *c,
     else if (strcmp(word, "TCP6") == 0) {
 #if APR_HAVE_IPV6
         family = APR_INET6;
-        valid_addr_chars = "0123456789abcdefABCDEF:";
+        valid_addr_chars = "0123456789abcdefABCDEF:.";
 #else
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(03498)
                       "RemoteIPProxyProtocol: Unable to parse v6 address - APR is not compiled with IPv6 support");
@@ -931,6 +958,12 @@ static int remoteip_hook_pre_connection(conn_rec *c, void *csd)
     return OK;
 }
 
+/** Return length for a v2 protocol header. */
+static apr_size_t remoteip_get_v2_len(proxy_header *hdr)
+{
+    return ntohs(hdr->v2.len);
+}
+
 /* Binary format:
  * <sig><cmd><proto><addr-len><addr>
  * sig = \x0D \x0A \x0D \x0A \x00 \x0D \x0A \x51 \x55 \x49 \x54 \x0A
@@ -948,9 +981,21 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     apr_status_t ret;
 
     switch (hdr->v2.ver_cmd & 0xF) {
+        case 0x00: /* LOCAL command */
+            /* keep local connection address for LOCAL */
+            conn_conf->client_addr = c->client_addr;
+            conn_conf->client_ip = c->client_ip;
+            return HDR_DONE;
         case 0x01: /* PROXY command */
             switch (hdr->v2.fam) {
                 case 0x11:  /* TCPv4 */
+                    if (remoteip_get_v2_len(hdr) < sizeof(hdr->v2.addr.ip4)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10597)
+                                      "RemoteIPProxyProtocol: address length "
+                                      "%" APR_SIZE_T_FMT " too short for TCPv4",
+                                      remoteip_get_v2_len(hdr));
+                        return HDR_ERROR;
+                    }
                     ret = apr_sockaddr_info_get(&conn_conf->client_addr, NULL,
                                                 APR_INET,
                                                 ntohs(hdr->v2.addr.ip4.src_port),
@@ -968,6 +1013,13 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
 
                 case 0x21:  /* TCPv6 */
 #if APR_HAVE_IPV6
+                    if (remoteip_get_v2_len(hdr) < sizeof(hdr->v2.addr.ip6)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10598)
+                                      "RemoteIPProxyProtocol: address length "
+                                      "%" APR_SIZE_T_FMT " too short for TCPv6",
+                                      remoteip_get_v2_len(hdr));
+                        return HDR_ERROR;
+                    }
                     ret = apr_sockaddr_info_get(&conn_conf->client_addr, NULL,
                                                 APR_INET6,
                                                 ntohs(hdr->v2.addr.ip6.src_port),
@@ -1012,12 +1064,6 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     }
 
     return HDR_DONE;
-}
-
-/** Return length for a v2 protocol header. */
-static apr_size_t remoteip_get_v2_len(proxy_header *hdr)
-{
-    return ntohs(hdr->v2.len);
 }
 
 /** Determine if this is a v1 or v2 PROXY header.
@@ -1088,6 +1134,14 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
             apr_off_t got, want = ctx->need - ctx->rcvd;
 
             ret = ap_get_brigade(f->next, ctx->bb, ctx->mode, block, want);
+            if (APR_STATUS_IS_EOF(ret)) {
+                /* The peer went away before sending a whole header, as a
+                 * health check may. */
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, ret, f->c, APLOGNO(10634)
+                              "RemoteIPProxyProtocol: connection closed "
+                              "before a complete header was received");
+                return ret;
+            }
             if (ret != APR_SUCCESS) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, ret, f->c, APLOGNO(10184)
                               "failed reading input");
@@ -1110,6 +1164,13 @@ static apr_status_t remoteip_input_filter(ap_filter_t *f,
 
         while (!ctx->done && !APR_BRIGADE_EMPTY(ctx->bb)) {
             b = APR_BRIGADE_FIRST(ctx->bb);
+
+            if (APR_BUCKET_IS_METADATA(b)) {
+                /* Nothing to copy from EOS or FLUSH; EOF is reported by
+                 * the next read. */
+                apr_bucket_delete(b);
+                continue;
+            }
 
             ret = apr_bucket_read(b, &ptr, &len, block);
             if (APR_STATUS_IS_EAGAIN(ret) && block == APR_NONBLOCK_READ) {
@@ -1228,11 +1289,11 @@ static const command_rec remoteip_cmds[] =
                     "Specifies one or more internal (transparent) proxies "
                     "which are trusted to present IP headers"),
     AP_INIT_TAKE1("RemoteIPTrustedProxyList", proxylist_read, 0,
-                  RSRC_CONF | EXEC_ON_READ,
+                  RSRC_CONF,
                   "The filename to read the list of trusted proxies, "
                   "see the RemoteIPTrustedProxy directive"),
     AP_INIT_TAKE1("RemoteIPInternalProxyList", proxylist_read, (void*)1,
-                  RSRC_CONF | EXEC_ON_READ,
+                  RSRC_CONF,
                   "The filename to read the list of internal proxies, "
                   "see the RemoteIPInternalProxy directive"),
     AP_INIT_FLAG("RemoteIPProxyProtocol", remoteip_enable_proxy_protocol, NULL,
