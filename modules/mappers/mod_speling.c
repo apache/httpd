@@ -103,15 +103,12 @@ static void *create_mconfig_for_directory(apr_pool_t *p, char *dir)
  */
 static const command_rec speling_cmds[] =
 {
-    AP_INIT_FLAG("CheckSpelling", ap_set_flag_slot,
-                  (void*)APR_OFFSETOF(spconfig, enabled), OR_OPTIONS,
-                 "whether or not to fix miscapitalized/misspelled requests"),
-    AP_INIT_FLAG("CheckCaseOnly", ap_set_flag_slot,
-                  (void*)APR_OFFSETOF(spconfig, check_case_only), OR_OPTIONS,
-                 "whether or not to fix only miscapitalized requests"),
-    AP_INIT_FLAG("CheckBasenameMatch", ap_set_flag_slot,
-                  (void*)APR_OFFSETOF(spconfig, check_basename_match), OR_OPTIONS,
-                 "whether or not to fix files with the same base name"),
+    AP_INIT_FLAG_SLOT("CheckSpelling", spconfig, enabled, OR_OPTIONS,
+                      "whether or not to fix miscapitalized/misspelled requests"),
+    AP_INIT_FLAG_SLOT("CheckCaseOnly", spconfig, check_case_only, OR_OPTIONS,
+                      "whether or not to fix only miscapitalized requests"),
+    AP_INIT_FLAG_SLOT("CheckBasenameMatch", spconfig, check_basename_match, OR_OPTIONS,
+                      "whether or not to fix files with the same base name"),
     { NULL }
 };
 
