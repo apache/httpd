@@ -1,2 +1,0 @@
-  *) mod_remoteip: Fix crash with PROXY v2 LOCAL command and
-     RemoteIPProxyProtocol enabled.  [Joe Orton]
