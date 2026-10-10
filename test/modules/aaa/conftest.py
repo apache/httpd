@@ -94,6 +94,26 @@ def env(pytestconfig) -> AAATestEnv:
         # AuthDigestProvider intentionally omitted: falls back to "file".
         f'AuthUserFile "{pwfile}"',
     ]))
+    # A request which fails header validation (e.g. no Host on HTTP/1.1)
+    # is answered before the Digest module's post_read_request runs, so it
+    # has no per-request Digest record; an ErrorDocument redirecting it into
+    # a Digest-protected location must not then dereference that record.
+    conf.add('ErrorDocument 400 /digest/default/secret.txt')
+    # A reverse-proxied location which authenticates with Digest at the
+    # proxy (so the backend is never reached and need not be reachable).
+    # The challenge is an origin-style WWW-Authenticate, so AuthDigestDomain
+    # applies to it just as for a non-proxied location.
+    conf.add([
+        'ProxyPass "/pxdomain/" "http://127.0.0.1:1/unused/"',
+        '<Location "/pxdomain/">',
+        '    AuthType Digest',
+        f'    AuthName "{AAATestEnv.REALM}"',
+        '    AuthDigestProvider file',
+        f'    AuthUserFile "{pwfile}"',
+        '    AuthDigestDomain "/pxdomain/"',
+        '    Require valid-user',
+        '</Location>',
+    ])
     conf.install()
     assert env.apache_restart() == 0
     return env
