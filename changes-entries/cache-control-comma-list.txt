@@ -1,0 +1,5 @@
+  *) mod_cache: Parse comma separated Cache-Control directives again. A
+     directive without an argument followed by another one, e.g.
+     "private, no-store", was taken as a single token, so such responses
+     were stored and reused.
+     [Arturo Bernal]
