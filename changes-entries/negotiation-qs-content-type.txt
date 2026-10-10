@@ -1,0 +1,2 @@
+  *) mod_negotiation: Do not send the "qs" source quality parameter of the selected
+     variant in the Content-Type of a response negotiated by MultiViews. PR 53595
