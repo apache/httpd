@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import time
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -154,14 +155,25 @@ class TestRanges:
         url = env.mkurl("https", "test1", f'/data-100m?[0-{count-1}]')
         r = env.curl_get(url, 5, options=['--http2', '-H', f'Range: bytes=0-{4096}'])
         assert r.exit_code == 0, f'{r}'
-        stats = self.get_server_status(env)
-        # amount reported is larger than (count *4k), the net payload
-        # but does not exceed an additional 4k
-        assert (4*count)+1 <= int(stats['Total kBytes'])
-        assert (4*(count+1))+1 > int(stats['Total kBytes'])
+        # The scoreboard is updated as each stream is cleaned up, which can lag
+        # the client finishing; poll server-status until the counts settle.
+        # Every status request is itself counted, so the expected access total
+        # grows by one for each extra poll we have to make.
         # total requests is now at 1 from the start, plus the stat check,
         # plus the count transfers we did.
-        assert (2+count) == int(stats['Total Accesses'])
+        expected = 2 + count
+        for _ in range(10):
+            stats = self.get_server_status(env)
+            accesses = int(stats['Total Accesses'])
+            if accesses >= expected:
+                break
+            expected += 1
+            time.sleep(0.1)
+        assert expected == accesses, f'{stats}'
+        # amount reported is larger than (count *4k), the net payload
+        # but does not exceed an additional 4k
+        assert (4*count)+1 <= int(stats['Total kBytes']), f'{stats}'
+        assert (4*(count+1))+1 > int(stats['Total kBytes']), f'{stats}'
 
     def get_server_status(self, env):
         status_url = env.mkurl("https", "test1", '/status?auto')
