@@ -8,6 +8,7 @@ checkgid_LTFLAGS=""
 htcacheclean_LTFLAGS=""
 httxt2dbm_LTFLAGS=""
 fcgistarter_LTFLAGS=""
+a2md_LTFLAGS=""
 
 AC_ARG_ENABLE(static-support,APACHE_HELP_STRING(--enable-static-support,Build a statically linked version of the support binaries),[
 if test "$enableval" = "yes" ; then
@@ -21,6 +22,7 @@ if test "$enableval" = "yes" ; then
   APR_ADDTO(htcacheclean_LTFLAGS, [-static])
   APR_ADDTO(httxt2dbm_LTFLAGS, [-static])
   APR_ADDTO(fcgistarter_LTFLAGS, [-static])
+  APR_ADDTO(a2md_LTFLAGS, [-static])
 fi
 ])
 
@@ -114,17 +116,40 @@ fi
 ])
 APACHE_SUBST(fcgistarter_LTFLAGS)
 
-# Configure or check which of the non-portable support programs can be enabled.
+AC_ARG_ENABLE(static-a2md,APACHE_HELP_STRING(--enable-static-a2md,Build a statically linked version of a2md),[
+if test "$enableval" = "yes" ; then
+  APR_ADDTO(a2md_LTFLAGS, [-static])
+else
+  APR_REMOVEFROM(a2md_LTFLAGS, [-static])
+fi
+])
+APACHE_SUBST(a2md_LTFLAGS)
 
-NONPORTABLE_SUPPORT=""
+dnl # --enable-a2md option is parsed here so that the flag is visible in --help.
+dnl # The actual library check is deferred to support/a2md/config2.m4, which
+dnl # runs after modules/md/config2.m4 has populated ac_cv_openssl, ac_cv_curl,
+dnl # and ac_cv_jansson.
+AC_ARG_ENABLE(a2md,APACHE_HELP_STRING(--enable-a2md,Build the a2md command-line tool (requires mod_md dependencies)),[
+  enable_a2md="$enableval"
+],[
+  enable_a2md="auto"
+])
+
+# Configure or check which of the optional sbin support programs can be
+# enabled.  support/a2md/config2.m4 may append to these lists; the
+# EXTRA_CHECK_BINARIES are symlinked into check/bin for the test suite.
+
+EXTRA_SBIN_PROGRAMS=""
+EXTRA_CHECK_BINARIES=""
 case $host in
     *mingw*)
         ;;
     *)
-        NONPORTABLE_SUPPORT="checkgid fcgistarter"
+        EXTRA_SBIN_PROGRAMS="checkgid fcgistarter"
         ;;
 esac
-APACHE_SUBST(NONPORTABLE_SUPPORT)
+APACHE_SUBST(EXTRA_SBIN_PROGRAMS)
+APACHE_SUBST(EXTRA_CHECK_BINARIES)
 
 # Configure the ulimit -n command used by apachectl.
 

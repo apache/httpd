@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1933136 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="a2md.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>a2md - Show and manipulate Apache Managed Domains</title>
+
+<summary>
+    <p>The <program>a2md</program> utility can be used to configure and update
+    managed domains with the mod_md module for Apache HTTP Server.
+    Managed Domains are virtual hosts which automatically obtain and renew
+    TLS certificates from an ACME server.</p>
+</summary>
+
+<section id="synopsis"><title>Synopsis</title>
+    <p><code><strong>a2md</strong> [<strong>options</strong>]
+    {<strong>acme | add | update | drive | list | store</strong>}
+    [<strong>cmd_options</strong>] [<strong>args</strong>]</code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+        <dt><code>{-a|--acme} <var>arg</var></code></dt>
+        <dd>The url of the ACME server directory</dd>
+
+        <dt><code>{-d|--dir} <var>arg</var></code></dt>
+        <dd>Directory for file data</dd>
+
+        <dt><code>{-h|--help}</code></dt>
+        <dd>Print usage information</dd>
+
+        <dt><code>{-j|--json}</code></dt>
+        <dd>Produce JSON output</dd>
+
+        <dt><code>{-p|--proxy} <var>arg</var></code></dt>
+        <dd>Use the HTTP proxy url</dd>
+
+        <dt><code>{-q|--quiet}</code></dt>
+        <dd>Produce less output</dd>
+
+        <dt><code>{-t|--terms} <var>arg</var></code></dt>
+        <dd>You agree to the terms of services (url)</dd>
+
+        <dt><code>{-v|--verbose}</code></dt>
+        <dd>Produce more output</dd>
+
+        <dt><code>{-V|--version}</code></dt>
+        <dd>Print version</dd>
+
+    </dl>
+</section>
+
+<section id="acme_command"><title>ACME server commands</title>
+    <p><code><strong>a2md acme</strong>
+    {newreg | delreg | agree | authz | validate}
+    [opts] [args]</code></p>
+
+    <p>Play with the ACME server. For most of the commands you need to specify
+    the url of the ACME server directory.</p>
+
+    <dl>
+        <dt><code><strong>newreg</strong> <var>contact-uri</var> [<var>contact-uri</var> ...]</code></dt>
+        <dd>Register a new account at ACME server with given <var>contact-uri</var> (email)</dd>
+
+        <dt><code><strong>delreg</strong> <var>account</var></code></dt>
+        <dd>Delete an existing ACME <var>account</var></dd>
+
+        <dt><code><strong>agree</strong> <var>account</var></code></dt>
+        <dd>Agree to ACME terms of service</dd>
+
+        <dt><code><strong>authz</strong> <var>account</var> <var>domain</var></code></dt>
+        <dd>Request a new authorization for an <var>account</var> and <var>domain</var></dd>
+
+        <dt><code><strong>validate</strong> <var>account</var></code></dt>
+        <dd>Validate <var>account</var> existence</dd>
+
+    </dl>
+</section>
+
+<section id="add_command"><title>Managed domain addition</title>
+    <p><code><strong>a2md add</strong>
+    [opts] domain [domain ...]</code></p>
+
+    <p>Adds a new managed domain. Must not overlap with existing domains.</p>
+</section>
+
+<section id="update_command"><title>Updating managed domain</title>
+    <p><code><strong>a2md update</strong>
+    <var>name</var> [opts] {domains | ca | account | contacts | agreement}</code></p>
+
+    <p>Update a managed domain's properties, where <var>name</var> belongs
+    to managed domain which will be updated.</p>
+
+    <p>URL of ACME server can be also updated if <code>-a|--acme</code> option is present.</p>
+
+    <dl>
+        <dt><code><strong>domains</strong> <var>dname</var> [<var>dname</var> ...]</code></dt>
+        <dd>Update domain where <var>dname</var> is domain name which will be updated.</dd>
+
+        <dt><code><strong>ca</strong> <var>url</var> [<var>proto</var>]</code></dt>
+        <dd>The <var>URL</var> where the CA offers its service.
+        Currently only the ACME (LetsEncrypt) <var>proto</var> is implemented.</dd>
+
+        <dt><code><strong>account</strong></code></dt>
+        <dd>Account name on corresponding ACME server.</dd>
+
+        <dt><code><strong>contacts</strong> <var>email</var> [<var>email</var> ...]</code></dt>
+        <dd>Contact address which will be used by ACME server to inform about renewals
+        or changed terms of service.</dd>
+
+        <dt><code><strong>agreement</strong> <var>URI</var></code></dt>
+        <dd>URI pointing to terms of service of ACME server.</dd>
+
+    </dl>
+</section>
+
+<section id="drive_command"><title>Drive managed domains</title>
+    <p><code><strong>a2md drive</strong>
+    [<var>md ...</var>] [<var>options ...</var>]</code></p>
+
+    <p>Drive all or the mentioned managed domains toward completeness</p>
+
+    <dl>
+        <dt><code>{-c|--challenge} <var>arg</var></code></dt>
+        <dd>Which challenge type to use</dd>
+
+        <dt><code>{-f|--force} <var>arg</var></code></dt>
+        <dd>Force driving the managed domain, even when it seems valid</dd>
+
+        <dt><code>{-r|--reset} <var>arg</var></code></dt>
+        <dd>Reset any staging data for the managed domain</dd>
+    </dl>
+</section>
+
+<section id="list_command"><title>List managed domamins</title>
+    <p><code><strong>a2md list</strong></code></p>
+
+    <p>List all managed domamins</p>
+</section>
+
+<section id="store_command"><title>Manipulating MD store</title>
+    <p><code><strong>a2md store</strong>
+    {add | remove | list | update}
+    [<var>opts</var>] [<var>args</var>]</code></p>
+
+    <p>Manipulate the MD store</p>
+
+    <dl>
+        <dt><code><strong>add</strong> <var>dns</var> [<var>dns</var> ...]</code></dt>
+        <dd>Add a new managed domain dns with all the additional domain names</dd>
+
+        <dt><code><strong>remove</strong> [{-f | --force}] <var>name</var> [<var>name</var> ...]</code></dt>
+        <dd>Remove the managed domains <var>name</var> from the store.
+        When <code>-f</code> or <code>--force</code> option is specified, force managed domain removal
+        - be silent about missing domains</dd>
+
+        <dt><code><strong>list</strong></code></dt>
+        <dd>List all managed domains in the store</dd>
+
+        <dt><code><strong>update</strong> <var>name</var>
+        [<var>domains</var> <var>dname</var> [<var>dname</var> ...]]</code></dt>
+        <dd>If <var>domains</var> cmd is specified followed by one or
+        more domains, MD store will be updated with those domains.
+        The URL of the ACME server can be also updated if <code>-a</code> or
+        <code>--acme</code> option is present.</dd>
+
+    </dl>
+</section>
+
+</manualpage>

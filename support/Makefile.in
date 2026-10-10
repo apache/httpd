@@ -4,7 +4,7 @@ DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 CLEAN_TARGETS = suexec
 
 bin_PROGRAMS = htpasswd htdigest htdbm ab logresolve httxt2dbm
-sbin_PROGRAMS = htcacheclean rotatelogs $(NONPORTABLE_SUPPORT)
+sbin_PROGRAMS = htcacheclean rotatelogs $(EXTRA_SBIN_PROGRAMS)
 TARGETS  = $(bin_PROGRAMS) $(sbin_PROGRAMS)
 
 PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
@@ -87,3 +87,8 @@ httxt2dbm: $(httxt2dbm_OBJECTS)
 fcgistarter_OBJECTS = fcgistarter.lo
 fcgistarter: $(fcgistarter_OBJECTS)
 	$(LINK) $(fcgistarter_LTFLAGS) $(fcgistarter_OBJECTS) $(PROGRAM_LDADD)
+
+# a2md is only built and installed when configure added a2md/a2md to
+# EXTRA_SBIN_PROGRAMS (mod_md dependencies curl, jansson and openssl found).
+a2md/a2md:
+	cd a2md && $(MAKE) $(MFLAGS) a2md

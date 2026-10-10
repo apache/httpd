@@ -124,9 +124,15 @@ AC_DEFUN([APACHE_CHECK_CURL],[
     CPPFLAGS="$saved_CPPFLAGS"
     LIBS="$saved_LIBS"
     LDFLAGS="$saved_LDFLAGS"
+
+    dnl cache MOD_LDFLAGS, MOD_CFLAGS
+    ap_curl_mod_cflags=$MOD_CFLAGS
+    ap_curl_mod_ldflags=$MOD_LDFLAGS
   ])
   if test "x$ac_cv_curl" = "xyes"; then
     AC_DEFINE(HAVE_CURL, 1, [Define if curl is available])
+    APR_ADDTO(MOD_LDFLAGS, [$ap_curl_mod_ldflags])
+    APR_ADDTO(MOD_CFLAGS, [$ap_curl_mod_cflags])
   fi
 ])
 
