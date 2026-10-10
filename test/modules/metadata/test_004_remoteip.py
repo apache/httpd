@@ -57,7 +57,10 @@ class TestRemoteIp:
             '-H', f"X-Forwarded-For: {self.CLIENT}, {self.CDN}"])
         assert r.response["status"] == 200
         with open(log_path) as f:
-            assert f.read().strip() == f"{self.CLIENT} {proxies}"
+            lines = [l.strip() for l in f if l.strip()
+                     and not l.startswith(f"{self.PEER} -")]
+            assert len(lines) == 1, f"expected 1 test line, got {lines}"
+            assert lines[0] == f"{self.CLIENT} {proxies}"
 
     WARNING = r".*both the main server and the virtual host"
 
@@ -116,7 +119,10 @@ class TestRemoteIp:
             '-H', f"X-Forwarded-For: {self.CLIENT}, {self.CDN}"])
         assert r.response["status"] == 200
         with open(log_path) as f:
-            assert f.read().strip() == f"{self.CLIENT} {proxies}"
+            lines = [l.strip() for l in f if l.strip()
+                     and not l.startswith(f"{self.PEER} -")]
+            assert len(lines) == 1, f"expected 1 test line, got {lines}"
+            assert lines[0] == f"{self.CLIENT} {proxies}"
 
     # -- PROXY protocol --------------------------------------------------
 
@@ -144,12 +150,12 @@ class TestRemoteIp:
         conf = HttpdConf(env, extras={
             "base": [
                 f"Listen {env.http_port2}",
-                f'CustomLog logs/{self.LOG_FILE} "%a"',
             ]
         })
         conf.start_vhost(domains=[f"test1.{env.http_tld}"], port=env.http_port2,
                          doc_root="htdocs/test1")
-        conf.add(["RemoteIPProxyProtocol On"])
+        conf.add(["RemoteIPProxyProtocol On",
+                  f'CustomLog logs/{self.LOG_FILE} "%a"'])
         conf.end_vhost()
         conf.install()
         assert env.apache_restart() == 0
