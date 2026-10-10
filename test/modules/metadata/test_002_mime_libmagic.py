@@ -18,8 +18,9 @@ class TestMimeLibmagic:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        if not env.has_libmagic_module:
-            pytest.skip("mod_mime_libmagic is not built")
+        env.require(env.has_libmagic_module, "mod_mime_libmagic is not built",
+                    dep="mod_libmagic",
+                    detected=f"not found in {env.libexec_dir}")
         write_samples(os.path.join(env.server_dir, "htdocs", "test1", "libmagic"))
         conf = HttpdConf(env, extras={
             'base': "MimeLibmagic On",
@@ -62,8 +63,9 @@ class TestMimeLibmagicCharset:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        if not env.has_libmagic_module:
-            pytest.skip("mod_mime_libmagic is not built")
+        env.require(env.has_libmagic_module, "mod_mime_libmagic is not built",
+                    dep="mod_libmagic",
+                    detected=f"not found in {env.libexec_dir}")
         write_samples(os.path.join(env.server_dir, "htdocs", "test1", "libmagic"))
         conf = HttpdConf(env, extras={
             'base': """

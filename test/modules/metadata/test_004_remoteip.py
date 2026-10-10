@@ -5,12 +5,14 @@ import time
 
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from pyhttpd.conf import HttpdConf
 from .env import MetadataTestEnv
 
 
-@pytest.mark.skipif(condition=not MetadataTestEnv.has_shared_module("remoteip"),
-                    reason="mod_remoteip not available")
+@needs_dependency("mod_remoteip", MetadataTestEnv.has_shared_module("remoteip"),
+                  reason="mod_remoteip not available")
 class TestRemoteIp:
     LOG_FILE = "test_remoteip.log"
     PEER = "127.0.0.1"

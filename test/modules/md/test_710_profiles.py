@@ -4,6 +4,8 @@ import os
 from datetime import timedelta
 
 import pytest
+
+from pyhttpd.depends import needs_dependency
 from pyhttpd.certs import CertificateSpec
 
 from pyhttpd.env import HttpdTestEnv
@@ -12,8 +14,9 @@ from .md_env import MDTestEnv
 from .md_conf import MDConf
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestProfiles:
 
     @pytest.fixture(autouse=True, scope='class')

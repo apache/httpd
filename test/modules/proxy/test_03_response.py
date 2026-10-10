@@ -143,8 +143,9 @@ class TestProxyResponse:
 
     # a trailing empty RemoteIPHeader token must not underflow the trim pointer
     def test_proxy_03_005(self, env):
-        if not env.has_shared_module("remoteip"):
-            pytest.skip("need mod_remoteip for this")
+        env.require(env.has_shared_module("remoteip"), "need mod_remoteip for this",
+                    dep="mod_remoteip",
+                    detected=f"no mod_remoteip.so in {env.libexec_dir}")
 
         r = env.curl_get(env.mkurl("http", "test1", "/forwarded"), options=[
             '-H', 'X-Forwarded-For: 192.0.2.1,',

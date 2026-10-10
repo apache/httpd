@@ -4,6 +4,8 @@ from threading import Thread
 
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from pyhttpd.conf import HttpdConf
 from .env import SSLTestEnv
 
@@ -43,8 +45,8 @@ class SilentRedis:
         self._socket.close()
 
 
-@pytest.mark.skipif(condition=not SSLTestEnv.has_shared_module("socache_redis"),
-                    reason="mod_socache_redis not available")
+@needs_dependency("mod_socache_redis", SSLTestEnv.has_shared_module("socache_redis"),
+                  reason="mod_socache_redis not available")
 class TestSocacheRedis:
 
     @pytest.fixture(autouse=True, scope='class')

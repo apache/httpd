@@ -46,8 +46,9 @@ class TestCompare:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        if not env.has_libmagic_module:
-            pytest.skip("mod_mime_libmagic is not built")
+        env.require(env.has_libmagic_module, "mod_mime_libmagic is not built",
+                    dep="mod_libmagic",
+                    detected=f"not found in {env.libexec_dir}")
         for vhost in ["test1", "test2"]:
             write_samples(os.path.join(env.server_dir, "htdocs", vhost, "cmp"))
         # No MimeMagicFile in the main server, so test2 inherits no

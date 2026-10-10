@@ -93,6 +93,52 @@ For example, most tests in test/modules/md require an installation
 of 'pebble', an ACME test server, and look for it in $PATH.
 
 
+Strict optional dependencies
+----------------------------
+A skip is convenient locally and dangerous in CI: a run that was meant
+to cover SSL, HTTP/2 and mod_md stays green while quietly covering none
+of them, because the machine was misconfigured. Strict mode turns that
+silence into a failure.
+
+> pytest --strict-optional
+> PYHTTPD_STRICT_OPTIONAL=1 pytest
+
+Both are off by default, so nothing changes unless you ask for it. The
+env var is the one to set in CI; the flag is the one to use by hand.
+
+Not every skip becomes a failure. Skips come in two kinds:
+
+  - "does not apply here" -- wrong MPM, httpd too old, STRESS_TEST not
+    set, $SSL selects a different TLS module. These always skip, in
+    strict mode too, and a test gated on both kinds skips rather than
+    fails.
+
+  - "something we expected to be installed is missing" -- curl, nghttp,
+    h2load, the 'websockets' and 'multipart' python packages, mod_ssl,
+    mod_tls, mod_md, a2md, the ACME test server, an OCSP responder.
+    These fail under strict mode.
+
+The OCSP responder is the one judgement call in that split. pebble
+serves no OCSP, boulder does, so with ACME=pebble the stapling tests
+have nothing to talk to. That is a property of the environment rather
+than of this machine's packages, and a pipeline that is meant to cover
+OCSP stapling and runs pebble has lost that coverage silently -- which
+is the thing strict mode exists to catch. So it fails, and the message
+names ACME=pebble as what was detected. Run ACME=boulder to cover
+stapling, or leave strict mode off.
+
+A strict failure is raised during test setup, so pytest reports it as
+ERROR rather than FAILED; the exit code is non-zero either way. The
+message is prefixed '[strict-optional]' so it greps cleanly out of a CI
+log, and names the dependency, what was expected, what was found
+instead, and how to switch strict mode back off.
+
+curl is the one dependency gated for the suite as a whole rather than
+test by test: apache_restart() proves the server came up by making a
+curl request, so without curl nothing under test/modules/ can run. That
+gate lives in the root conftest.py.
+
+
 Workings
 --------
 All tests start httpd on their own and try hard to shut it down
@@ -167,6 +213,39 @@ Add the files '__init__.py', 'conftest.py' and a first
 simplest example. 'test/modules/http2' shows how you load
 other modules. 'test/modules/md' checks and starts external
 processes (an ACME test server).
+
+If your test needs something that may not be installed, say
+so with the decorator from 'pyhttpd.depends'. It takes the
+condition itself, so it works on a method, a class or a
+module-level 'pytestmark':
+
+    from pyhttpd.depends import needs_dependency
+
+    @needs_dependency("a2md", MDTestEnv.has_a2md(),
+                      reason="no a2md available")
+    class TestStore:
+
+For the tools the suite gates on most often there are ready
+made versions of that decorator, which probe the tool once
+and cache the answer:
+
+    @H2TestEnv.needs_nghttp()             # and (assets=True)
+    @H2TestEnv.needs_h2load("1.41.0")
+    @HttpdTestEnv.needs_multipart()
+
+For a check that can only be made once the test is running,
+'env.require()' does the same job from inside the body:
+
+    env.require(env.curl_is_at_least('8.0.0'),
+                'need at least curl v8.0.0 for this',
+                dep='curl',
+                detected=f"curl {env.curl_version_str()}")
+
+Both skip normally and fail under strict mode; see "Strict
+optional dependencies" above. When the reason is instead
+"this test does not apply here", keep using a plain
+'pytest.mark.skipif' or 'pytest.skip()' -- those never
+become failures.
 
 
 Infrastructure

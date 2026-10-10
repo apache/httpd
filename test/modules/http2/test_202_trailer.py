@@ -14,7 +14,7 @@ def setup_data(env):
 # The trailer tests depend on "nghttp" as no other client seems to be able to send those
 # rare things.
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
-@pytest.mark.skipif(not H2TestEnv().has_nghttp(), reason="nghttp not available")
+@H2TestEnv.needs_nghttp()
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
