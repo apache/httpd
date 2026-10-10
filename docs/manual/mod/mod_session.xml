@@ -426,7 +426,11 @@ AuthName "realm"
     </example>
 
     <p>Where a key is set to the empty string, that key will be removed from the
-    session.</p>
+    session. If a key named <code>expiry</code> is present and set to an integer,
+    and <directive>SessionMaxAge</directive> is not set, the session expiry time
+    is set to that value (in addition to the key/value pair being added to the
+    session data); the expiry time is a count of microseconds since the UNIX
+    epoch.</p>
 
 </usage>
 </directivesynopsis>
