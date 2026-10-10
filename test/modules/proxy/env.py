@@ -71,7 +71,8 @@ class ProxyTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(ProxyTestSetup)))
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
-                          "proxy_connect", "proxy_uwsgi", "lbmethod_byrequests",
+                          "proxy_connect", "proxy_uwsgi", "proxy_fcgi",
+                          "lbmethod_byrequests",
                           "remoteip"])
 
 
@@ -86,8 +87,8 @@ class ProxyTestEnv(HttpdTestEnv):
         self._d_mixed = f"mixed.{self.http_tld}"
 
         self.add_httpd_log_modules(
-            ["proxy", "proxy_http", "proxy_balancer", "lbmethod_byrequests",
-             "ssl"])
+            ["proxy", "proxy_http", "proxy_fcgi", "proxy_balancer",
+             "lbmethod_byrequests", "ssl"])
         self.add_cert_specs([
             CertificateSpec(domains=[
                 self._d_forward, self._d_reverse, self._d_mixed
