@@ -12,7 +12,7 @@ class DavTestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(DavTestSetup)))
-        self.add_modules(["dav", "dav_fs", "alias"])
+        self.add_modules(["dav", "dav_fs", "alias", "authn_file"])
 
 
 class DavTestEnv(HttpdTestEnv):
