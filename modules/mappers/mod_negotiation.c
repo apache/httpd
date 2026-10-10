@@ -3068,6 +3068,41 @@ static int handle_map_file(request_rec *r)
     return OK;
 }
 
+/* The "qs" parameter of a variant's media type is only its source quality
+ * for the selection, see get_entry(), and does not belong in the
+ * Content-Type of the response.  Return content_type without it, all
+ * other parameters are kept as they are.
+ */
+static const char *strip_source_quality(apr_pool_t *p,
+                                        const char *content_type)
+{
+    const char *line = content_type;
+    char *stripped;
+    int found = 0;
+
+    if (!ap_strcasestr(content_type, "qs")) {
+        return content_type;
+    }
+
+    stripped = ap_get_token(p, &line, 0);
+    while (*line == ';') {
+        const char *param = line++;
+        const char *name = ap_get_token(p, &line, 1);
+        apr_size_t len = strcspn(name, "= \t");
+
+        if (len == 2 && name[len] && !ap_cstr_casecmpn(name, "qs", 2)) {
+            found = 1;
+        }
+        else {
+            stripped = apr_pstrcat(p, stripped,
+                                   apr_pstrmemdup(p, param, line - param),
+                                   NULL);
+        }
+    }
+
+    return found ? apr_pstrcat(p, stripped, line, NULL) : content_type;
+}
+
 static int handle_multi(request_rec *r)
 {
     negotiation_state *neg;
@@ -3123,6 +3158,14 @@ static int handle_multi(request_rec *r)
 
     /* now do a "fast redirect" ... promotes the sub_req into the main req */
     ap_internal_fast_redirect(sub_req, r);
+
+    if (r->content_type) {
+        const char *type = strip_source_quality(r->pool, r->content_type);
+
+        if (type != r->content_type) {
+            ap_set_content_type_ex(r, type, AP_REQUEST_IS_TRUSTED_CT(r));
+        }
+    }
 
     /* give no advise for time on this subrequest.  Perhaps we
      * should tally the last mtime among all variants, and date
