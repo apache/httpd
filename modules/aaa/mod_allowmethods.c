@@ -53,6 +53,24 @@ typedef struct am_conf_t {
 
 module AP_MODULE_DECLARE_DATA allowmethods_module;
 
+/* Publish the configured methods for the Allow field of the 405 response.
+ * TRACE is left out, it is added by the core according to TraceEnable.
+ */
+static void am_publish_allowed(request_rec *r, ap_method_mask_t allowed)
+{
+    int m;
+
+    ap_allow_methods(r, 1, NULL);
+    for (m = 0; m < METHODS; m++) {
+        const char *name;
+
+        if (m != M_TRACE && (allowed & (AP_METHOD_BIT << m))
+            && (name = ap_method_name_of(r->pool, m)) != NULL) {
+            ap_allow_methods(r, 0, name, NULL);
+        }
+    }
+}
+
 static int am_check_access(request_rec *r)
 {
     int method = r->method_number;
@@ -77,6 +95,7 @@ static int am_check_access(request_rec *r)
                   r->filename ? "" : "uri ",
                   r->filename ? r->filename : r->uri);
 
+    am_publish_allowed(r, conf->allowed);
     return HTTP_METHOD_NOT_ALLOWED;
 }
 
