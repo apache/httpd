@@ -587,32 +587,52 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
                                   const char *size_str)
 {
     char *endptr;
-    long  size, min;
+    apr_off_t size;
+    apr_size_t min;
 
-    size = strtol(size_str, &endptr, 10);
-    while (apr_isspace(*endptr)) endptr++;
-    if (*endptr == '\0' || *endptr == 'b' || *endptr == 'B') {
-        ;
+    if (apr_strtoff(&size, size_str, &endptr, 10) != APR_SUCCESS || size < 0) {
+        return apr_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
+                          size_str, NULL);
     }
-    else if (*endptr == 'k' || *endptr == 'K') {
+    if (*endptr == 'k' || *endptr == 'K') {
+        if (size > APR_INT64_MAX / 1024) {
+            return "AuthDigestShmemSize value is too large";
+        }
         size *= 1024;
+        endptr++;
     }
     else if (*endptr == 'm' || *endptr == 'M') {
-        size *= 1048576;
+        if (size > APR_INT64_MAX / (1024 * 1024)) {
+            return "AuthDigestShmemSize value is too large";
+        }
+        size *= 1024 * 1024;
+        endptr++;
     }
-    else {
+    else if (*endptr == 'b' || *endptr == 'B') {
+        endptr++;
+    }
+    while (apr_isspace(*endptr)) {
+        endptr++;
+    }
+    if (*endptr != '\0') {
         return apr_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
                           size_str, NULL);
     }
 
-    min = sizeof(*client_list) + sizeof(client_entry*) + sizeof(client_entry);
-    if (size < min) {
+    /* The segment must hold three separate rmm allocations -- the client
+     * list with at least one bucket, the one-time-nonce counter, and at
+     * least one client entry -- each with its rmm overhead. */
+    min = apr_rmm_overhead_get(3)
+          + sizeof(*client_list) + sizeof(client_entry *)
+          + sizeof(*otn_counter)
+          + sizeof(client_entry);
+    if (size < (apr_off_t)min) {
         return apr_psprintf(cmd->pool, "size in AuthDigestShmemSize too small: "
-                           "%ld < %ld", size, min);
+                           "%" APR_OFF_T_FMT " < %" APR_SIZE_T_FMT, size, min);
     }
 
-    shmem_size  = size;
-    num_buckets = NUM_BUCKETS(size);
+    shmem_size  = (apr_size_t)size;
+    num_buckets = NUM_BUCKETS(shmem_size);
     if (num_buckets == 0) {
         num_buckets = 1;
     }
