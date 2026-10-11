@@ -168,6 +168,7 @@ static struct hash_table {
     unsigned long   num_renewed;
     client_id_t     next_id;            /* the last id issued (the random
                                          * initial seed is never issued)  */
+    apr_uint64_t    otn_counter;        /* the last one-time nonce ordinal */
 } *client_list;
 
 /* Outcome from parsing an Authorization header. */
@@ -215,7 +216,6 @@ static unsigned char *secret;
 
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
-static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
 static const char     *client_shm_filename;
@@ -358,6 +358,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     ap_random_insecure_bytes(&client_list->next_id,
                              sizeof client_list->next_id);
     client_list->next_id %= CLIENT_ID_MAX;
+    client_list->otn_counter = 0;
 
     sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
                                  s, ctx, 0);
@@ -365,13 +366,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return !OK;
     }
-
-    otn_counter = rmm_malloc(client_rmm, sizeof(*otn_counter));
-    if (otn_counter == NULL) {
-        log_error_and_cleanup("failed to allocate shared memory", -1, s);
-        return !OK;
-    }
-    *otn_counter = 0;
 
     return OK;
 }
@@ -594,12 +588,11 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
                           size_str, NULL);
     }
 
-    /* The segment must hold three separate rmm allocations -- the client
-     * list with at least one bucket, the one-time-nonce counter, and at
-     * least one client entry -- each with its rmm overhead. */
-    min = apr_rmm_overhead_get(3)
+    /* The segment must hold two separate rmm allocations -- the client
+     * list with at least one bucket, and at least one client entry -- each
+     * with its rmm overhead. */
+    min = apr_rmm_overhead_get(2)
           + sizeof(*client_list) + sizeof(client_entry *)
-          + sizeof(*otn_counter)
           + sizeof(client_entry);
     if (size < (apr_off_t)min) {
         return apr_psprintf(cmd->pool, "size in AuthDigestShmemSize too small: "
@@ -1201,10 +1194,15 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         t.time = now;
     }
     else {
-        /* Nonces are ordered by this counter rather than by time; the +1
-         * is because apr_atomic_inc32() returns the previous value, and a
-         * nonce time of zero means "no nonce used yet" in a client entry. */
-        t.time = apr_atomic_inc32(otn_counter) + 1;
+        /* One-time nonces are ordered by this counter rather than by time.
+         * It is 64-bit and issued under the lock rather than with 32-bit
+         * atomics: a counter which wrapped would re-issue ordinals below
+         * those already recorded, locking every established client out. A
+         * nonce time of zero means "no nonce used yet" in a client entry,
+         * so the first value handed out is 1. */
+        apr_global_mutex_lock(client_lock);
+        t.time = ++client_list->otn_counter;
+        apr_global_mutex_unlock(client_lock);
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(p, nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
