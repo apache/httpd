@@ -108,7 +108,6 @@ typedef struct digest_config_struct {
     char        *uri_list;
 } digest_config_rec;
 
-
 #define DFLT_ALGORITHM  "MD5"
 
 #define DFLT_NONCE_LIFE apr_time_from_sec(300)
@@ -140,9 +139,6 @@ typedef struct digest_config_struct {
 #error the secret is too short to key siphash
 #endif
 
-
-/* client list definitions */
-
 /* Identifies a client entry. This is the value sent to the client in the
  * opaque field of the challenge, and echoed back in its Authorization
  * header; zero is never a valid id, and means "no client". Ids are counted
@@ -170,7 +166,8 @@ static struct hash_table {
     unsigned long   num_created;
     unsigned long   num_removed;
     unsigned long   num_renewed;
-    client_id_t     next_id;            /* the last id issued */
+    client_id_t     next_id;            /* the last id issued (the random
+                                         * initial seed is never issued)  */
 } *client_list;
 
 /* Outcome from parsing an Authorization header. */
@@ -209,17 +206,12 @@ typedef struct digest_header_struct {
     const char           *ha1;
 } digest_header_rec;
 
-
-/* (mostly) nonce stuff */
-
 typedef union time_union {
     apr_time_t    time;
     unsigned char arr[sizeof(apr_time_t)];
 } time_rec;
 
 static unsigned char *secret;
-
-/* client-list, opaque, and one-time-nonce stuff */
 
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
@@ -240,13 +232,9 @@ static const char     *client_shm_filename;
 static apr_size_t shmem_size  = DEF_SHMEM_SIZE;
 static unsigned long num_buckets = DEF_NUM_BUCKETS;
 
-
 module AP_MODULE_DECLARE_DATA auth_digest_module;
 
-/*
- * initialization code
- */
-
+/* Initialization. */
 static apr_status_t cleanup_tables(void *not_used)
 {
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(01756)
@@ -305,10 +293,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 {
     unsigned long idx;
     apr_status_t   sts;
-
-    /* set up client list */
-
-    /* Create the shared memory segment */
 
     client_shm = NULL;
     client_rmm = NULL;
@@ -382,19 +366,13 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
         return !OK;
     }
 
-
-    /* setup one-time-nonce counter */
-
     otn_counter = rmm_malloc(client_rmm, sizeof(*otn_counter));
     if (otn_counter == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
     }
     *otn_counter = 0;
-    /* no lock here */
 
-
-    /* success */
     return OK;
 }
 
@@ -469,10 +447,7 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
     }
 }
 
-/*
- * configuration code
- */
-
+/* Configuration handling. */
 static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 {
     digest_config_rec *conf = apr_pcalloc(p, sizeof *conf);
@@ -662,9 +637,7 @@ static const command_rec digest_cmds[] =
     {NULL}
 };
 
-
-/*
- * client list code
+/* The client list.
  *
  * Each client is assigned a number, which is transferred in the opaque
  * field of the WWW-Authenticate and Authorization headers. The number
@@ -748,7 +721,6 @@ static client_entry *find_client(client_id_t key)
     return entry;
 }
 
-
 /* Determine whether the client identified by key is still known. */
 static int client_exists(client_id_t key, const request_rec *r)
 {
@@ -770,7 +742,6 @@ static int client_exists(client_id_t key, const request_rec *r)
     return found;
 }
 
-
 /* Note that a client entry was created to replace one which had been
  * garbage collected. */
 static void client_note_renewed(void)
@@ -779,7 +750,6 @@ static void client_note_renewed(void)
     client_list->num_renewed++;
     apr_global_mutex_unlock(client_lock);
 }
-
 
 /* Check the nonce generated at nonce_time, and the nonce-count nc sent
  * with it, against the state tracked for the client identified by key, and
@@ -861,7 +831,6 @@ static enum nonce_state client_update_nonce(const request_rec *r,
     return state;
 }
 
-
 /* A simple garbage-collecter to remove unused clients. It removes the
  * last entry in each bucket and updates the counters. Returns the
  * number of removed entries.
@@ -915,7 +884,6 @@ static unsigned long gc(server_rec *s)
 
     return num_removed;
 }
-
 
 /*
  * Add a new client to the list, under a newly issued id. Returns the id if
@@ -971,11 +939,6 @@ static client_id_t client_generate(request_rec *r)
 
     return key;
 }
-
-
-/*
- * Authorization header parser code
- */
 
 /* Parse the Authorization header, if it exists, into resp; returns the
  * status of the header. */
@@ -1117,7 +1080,6 @@ static enum hdr_sts parse_digest_header(request_rec *r,
     return VALID;
 }
 
-
 /* Create the per-request Digest record describing request r, store it on
  * store's request_config, and parse r's Authorization header into it. */
 static digest_header_rec *make_digest_rec(request_rec *store, request_rec *r)
@@ -1180,7 +1142,6 @@ static digest_header_rec *get_digest_rec(request_rec *r)
     return resp;
 }
 
-
 /* Writes the hash part of the server nonce to hash, which must be of
  * minimum size (NONCE_HASH_LEN+1). */
 static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
@@ -1226,7 +1187,6 @@ static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
 #endif
 }
 
-
 /* The nonce has the format b64(time)+hash .
  */
 static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
@@ -1252,10 +1212,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
     return nonce;
 }
 
-
-/*
- * Authorization challenge generation code (for WWW-Authenticate)
- */
+/* Authorization challenge generation (for WWW-Authenticate). */
 
 /* Format a client id as the opaque sent to the client. Never called with
  * zero: the callers check client_generate() for failure first. */
@@ -1370,11 +1327,9 @@ static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
     return OK;
 }
 
-
-/*
- * Authorization header verification code
- */
-
+/* Look up the stored HA1 hash, md5(user:realm:password), for user through
+ * the configured authn providers. Returns the provider's authn_status and,
+ * on success, the hash in *rethash. */
 static authn_status get_hash(request_rec *r, const char *user,
                              digest_config_rec *conf, const char **rethash)
 {
@@ -1406,7 +1361,6 @@ static authn_status get_hash(request_rec *r, const char *user,
             provider = current_provider->provider;
             apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, current_provider->provider_name);
         }
-
 
         /* We expect the password to be md5 hash of user:realm:password */
         auth_result = provider->get_realm_hash(r, user, ap_auth_name(r),
@@ -1514,9 +1468,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     return OK;
 }
 
-/* The actual MD5 code... whee */
-
-/* RFC-2617 */
+/* Compute the response digest expected for request r (RFC 2617). */
 static const char *new_digest(const request_rec *r,
                               digest_header_rec *resp)
 {
@@ -1630,9 +1582,7 @@ static int authenticate_digest_user(request_rec *r)
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
                                                       &auth_digest_module);
 
-
-    /* check for existence and syntax of Auth header */
-
+    /* Check for existence and syntax of the Auth header. */
     if (resp->auth_hdr_sts != VALID) {
         if (resp->auth_hdr_sts == NOT_DIGEST) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01781)
@@ -1711,8 +1661,6 @@ static int authenticate_digest_user(request_rec *r)
             return HTTP_BAD_REQUEST;
         }
     }
- 
-    
 
     if (!realm) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02533)
@@ -1839,12 +1787,10 @@ static int add_auth_info(request_rec *r)
     }
     /* else nonce never expires, hence no nextnonce */
 
-
     {
         const char *resp_dig, *ha1, *a2, *ha2;
 
-        /* calculate rspauth attribute
-         */
+        /* Calculate the rspauth attribute. */
         ha1 = resp->ha1;
 
         a2 = apr_pstrcat(r->pool, ":", resp->uri, NULL);
@@ -1859,8 +1805,7 @@ static int add_auth_info(request_rec *r)
                                                          resp->message_qop : "",
                                                        ":", ha2, NULL));
 
-        /* assemble Authentication-Info header
-         */
+        /* Assemble the Authentication-Info header. */
         ai = apr_pstrcat(r->pool,
                          "rspauth=\"", resp_dig, "\"",
                          nextnonce,
@@ -1905,7 +1850,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_note_auth_failure(hook_note_digest_auth_failure, NULL, NULL,
                               APR_HOOK_MIDDLE);
-
 }
 
 AP_DECLARE_MODULE(auth_digest) =
