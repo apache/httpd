@@ -93,10 +93,12 @@ class TestDigestConfigErrors:
         assert "AuthDigestShmemSize" in r.stderr
 
     def test_digest_069_shmemsize_no_room_for_entry_rejected(self, env):
-        # A segment large enough for the table header but with no room for a
-        # single client entry (once rmm overhead is counted) must be
-        # rejected: otherwise every request needing an entry gets a 503 the
-        # config check did not warn about.
-        r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 200"])
+        # A size which would hold the table and an entry by their bare
+        # struct sizes, but not once the per-allocation rmm overhead is
+        # counted, must be rejected: otherwise every request needing an
+        # entry gets a 503 the config check did not warn about. 120 bytes is
+        # above those struct sizes but below the overhead-aware minimum on
+        # both 32- and 64-bit.
+        r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 120"])
         assert r.exit_code != 0
         assert "AuthDigestShmemSize" in r.stderr
