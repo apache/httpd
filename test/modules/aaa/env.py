@@ -16,7 +16,7 @@ class AAATestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(AAATestSetup)))
         self.add_modules(["auth_digest", "authn_file", "authn_core",
-                          "authz_core", "authz_user"])
+                          "authz_core", "authz_user", "proxy", "proxy_http"])
 
 
 class AAATestEnv(HttpdTestEnv):
