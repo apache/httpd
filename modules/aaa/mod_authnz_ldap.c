@@ -369,7 +369,10 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
 static apr_status_t authnz_ldap_cleanup_connection_close(void *param)
 {
     util_ldap_connection_t *ldc = param;
-    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, ldc->r, "Release ldc %pp", ldc);
+    /* NULL ldc->r implies some kind of mismanagement/reuse but the close is tolerant */
+    if (ldc->r) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, ldc->r, "Release ldc %pp", ldc);
+    }
     util_ldap_connection_close(ldc);
     return APR_SUCCESS;
 }
