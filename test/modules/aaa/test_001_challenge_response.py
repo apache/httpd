@@ -178,3 +178,20 @@ class TestDigestChallengeResponse:
         r = env.curl_get(self.url(env), options=["-H", f"Authorization: {auth}"])
         assert r.response["status"] == 401
         env.httpd_error_log.ignore_recent(lognos=["AH01794"])
+
+    def test_digest_015_uri_bad_escaping_rejected(self, env):
+        # The Authorization uri= is compared against the request-target after
+        # %-decoding both. A uri= that fails to decode -- an encoded NUL or
+        # slash -- must be rejected, not silently truncated at the bad octet
+        # so that its prefix matches the request-target.
+        challenge = self.challenge(env)
+        for bad_uri in ["/digest/default/secret.txt%00ignored",
+                        "/digest/default%2fsecret.txt"]:
+            auth = dc.build_authorization(
+                AAATestEnv.DIGEST_USER, challenge, AAATestEnv.DIGEST_PASSWORD,
+                method="GET", uri=bad_uri)
+            r = env.curl_get(self.url(env),
+                             options=["-H", f"Authorization: {auth}"])
+            assert r.response["status"] == 400, \
+                f"uri={bad_uri!r} was not rejected"
+        env.httpd_error_log.ignore_recent(lognos=["AH01783"])
