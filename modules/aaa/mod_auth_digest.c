@@ -1082,6 +1082,21 @@ static enum hdr_sts parse_digest_header(request_rec *r,
 }
 
 
+/* Create the per-request Digest record describing request r, store it on
+ * store's request_config, and parse r's Authorization header into it. */
+static digest_header_rec *make_digest_rec(request_rec *store, request_rec *r)
+{
+    digest_header_rec *resp = apr_pcalloc(store->pool, sizeof(*resp));
+
+    resp->raw_request_uri = r->unparsed_uri;
+    resp->psd_request_uri = &r->parsed_uri;
+    resp->method = r->method;
+    ap_set_module_config(store->request_config, &auth_digest_module, resp);
+
+    resp->auth_hdr_sts = parse_digest_header(r, resp);
+    return resp;
+}
+
 /* Set up the per-request record: this is the place to get the request-uri
  * (before any subrequests etc are initiated), to initialize the
  * request_config, and to parse the Authorization header.
@@ -1097,22 +1112,36 @@ static enum hdr_sts parse_digest_header(request_rec *r,
  */
 static int init_digest_request(request_rec *r)
 {
-    digest_header_rec *resp;
-
     if (!ap_is_initial_req(r)) {
         return DECLINED;
     }
 
-    resp = apr_pcalloc(r->pool, sizeof(digest_header_rec));
-    resp->raw_request_uri = r->unparsed_uri;
-    resp->psd_request_uri = &r->parsed_uri;
-    resp->needed_auth = 0;
-    resp->method = r->method;
-    ap_set_module_config(r->request_config, &auth_digest_module, resp);
-
-    resp->auth_hdr_sts = parse_digest_header(r, resp);
-
+    make_digest_rec(r, r);
     return DECLINED;
+}
+
+/* Return the Digest record shared across this request tree, which lives on
+ * the initial request. init_digest_request creates it in post_read_request;
+ * a request which never ran that hook (one rejected before it and brought
+ * here by an ErrorDocument or other internal redirect) has none, so create
+ * it now rather than dereferencing NULL. */
+static digest_header_rec *get_digest_rec(request_rec *r)
+{
+    request_rec *mainreq = r;
+    digest_header_rec *resp;
+
+    while (mainreq->main != NULL) {
+        mainreq = mainreq->main;
+    }
+    while (mainreq->prev != NULL) {
+        mainreq = mainreq->prev;
+    }
+
+    resp = ap_get_module_config(mainreq->request_config, &auth_digest_module);
+    if (resp == NULL) {
+        resp = make_digest_rec(mainreq, r);
+    }
+    return resp;
 }
 
 
@@ -1288,28 +1317,14 @@ static int note_digest_auth_failure(request_rec *r,
 
 static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
 {
-    request_rec *mainreq;
     digest_header_rec *resp;
     digest_config_rec *conf;
 
     if (ap_cstr_casecmp(auth_type, "Digest"))
         return DECLINED;
 
-    /* get the client response and mark */
-
-    mainreq = r;
-    while (mainreq->main != NULL) {
-        mainreq = mainreq->main;
-    }
-    while (mainreq->prev != NULL) {
-        mainreq = mainreq->prev;
-    }
-    resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-                                                      &auth_digest_module);
+    resp = get_digest_rec(r);
     resp->needed_auth = 1;
-
-
-    /* get our conf */
 
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
                                                       &auth_digest_module);
@@ -1556,7 +1571,6 @@ static int authenticate_digest_user(request_rec *r)
 {
     digest_config_rec *conf;
     digest_header_rec *resp;
-    request_rec       *mainreq;
     const char        *t;
     int                res;
     authn_status       return_code;
@@ -1574,23 +1588,10 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-
-    /* get the client response and mark */
-
-    mainreq = r;
-    while (mainreq->main != NULL) {
-        mainreq = mainreq->main;
-    }
-    while (mainreq->prev != NULL) {
-        mainreq = mainreq->prev;
-    }
-    resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-                                                      &auth_digest_module);
+    resp = get_digest_rec(r);
     resp->needed_auth = 1;
 
     realm = ap_auth_name(r);
-
-    /* get our conf */
 
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
                                                       &auth_digest_module);
