@@ -1,0 +1,5 @@
+  *) core: Add ap_size_parameter_parse() to parse a configuration value as an
+     apr_off_t, rejecting trailing characters and overflow. Use it for
+     LimitRequestBody, ScriptLogLength, ScriptLogBuffer, DavQuota, BufferSize,
+     AuthFormSize and the Cache*FileSize, Cache*ReadSize, Cache*ReadTime and
+     CacheSocache*Time directives, which accepted such values before.

@@ -1153,7 +1153,14 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, const char 
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
                                                   &cgid_module);
 
-    conf->logbytes = atol(arg);
+    apr_off_t bytes;
+
+    if (ap_size_parameter_parse(arg, &bytes) != APR_SUCCESS
+            || bytes < 0 || bytes > LONG_MAX) {
+        return "ScriptLogLength must be a non-negative integer.";
+    }
+
+    conf->logbytes = (long)bytes;
     return NULL;
 }
 
@@ -1163,7 +1170,14 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char 
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
                                                   &cgid_module);
 
-    conf->bufbytes = atoi(arg);
+    apr_off_t bytes;
+
+    if (ap_size_parameter_parse(arg, &bytes) != APR_SUCCESS
+            || bytes < 0 || bytes > INT_MAX) {
+        return "ScriptLogBuffer must be a non-negative integer.";
+    }
+
+    conf->bufbytes = (int)bytes;
     return NULL;
 }
 

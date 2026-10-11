@@ -1264,7 +1264,7 @@ static const char *set_cache_max(cmd_parms *parms, void *in_struct_ptr,
 {
     cache_socache_dir_conf *dconf = (cache_socache_dir_conf *) in_struct_ptr;
 
-    if (apr_strtoff(&dconf->max, arg, NULL, 10) != APR_SUCCESS
+    if (ap_size_parameter_parse(arg, &dconf->max) != APR_SUCCESS
             || dconf->max < 1024 || dconf->max > APR_UINT32_MAX) {
         return "CacheSocacheMaxSize argument must be a integer representing "
                "the max size of a cached entry (headers and body), at least 1024 "
@@ -1280,7 +1280,7 @@ static const char *set_cache_maxtime(cmd_parms *parms, void *in_struct_ptr,
     cache_socache_dir_conf *dconf = (cache_socache_dir_conf *) in_struct_ptr;
     apr_off_t seconds;
 
-    if (apr_strtoff(&seconds, arg, NULL, 10) != APR_SUCCESS || seconds < 0) {
+    if (ap_size_parameter_parse(arg, &seconds) != APR_SUCCESS || seconds < 0) {
         return "CacheSocacheMaxTime argument must be the maximum amount of time in seconds to cache an entry.";
     }
     dconf->maxtime = apr_time_from_sec(seconds);
@@ -1294,7 +1294,7 @@ static const char *set_cache_mintime(cmd_parms *parms, void *in_struct_ptr,
     cache_socache_dir_conf *dconf = (cache_socache_dir_conf *) in_struct_ptr;
     apr_off_t seconds;
 
-    if (apr_strtoff(&seconds, arg, NULL, 10) != APR_SUCCESS || seconds < 0) {
+    if (ap_size_parameter_parse(arg, &seconds) != APR_SUCCESS || seconds < 0) {
         return "CacheSocacheMinTime argument must be the minimum amount of time in seconds to cache an entry.";
     }
     dconf->mintime = apr_time_from_sec(seconds);
@@ -1307,7 +1307,7 @@ static const char *set_cache_readsize(cmd_parms *parms, void *in_struct_ptr,
 {
     cache_socache_dir_conf *dconf = (cache_socache_dir_conf *) in_struct_ptr;
 
-    if (apr_strtoff(&dconf->readsize, arg, NULL, 10) != APR_SUCCESS
+    if (ap_size_parameter_parse(arg, &dconf->readsize) != APR_SUCCESS
             || dconf->readsize < 0) {
         return "CacheSocacheReadSize argument must be a non-negative integer representing the max amount of data to cache in go.";
     }
@@ -1321,7 +1321,7 @@ static const char *set_cache_readtime(cmd_parms *parms, void *in_struct_ptr,
     cache_socache_dir_conf *dconf = (cache_socache_dir_conf *) in_struct_ptr;
     apr_off_t milliseconds;
 
-    if (apr_strtoff(&milliseconds, arg, NULL, 10) != APR_SUCCESS
+    if (ap_size_parameter_parse(arg, &milliseconds) != APR_SUCCESS
             || milliseconds < 0) {
         return "CacheSocacheReadTime argument must be a non-negative integer representing the max amount of time taken to cache in go.";
     }

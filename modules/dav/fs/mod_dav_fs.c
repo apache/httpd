@@ -262,8 +262,9 @@ static const char *dav_fs_cmd_quota(cmd_parms *cmd, void *config,
         conf->quota = DAV_FS_QUOTA_OFF;
     else if (!strcasecmp(bytes, "None"))
         conf->quota = DAV_FS_QUOTA_NONE;
-    else
-        conf->quota = atol(bytes);
+    else if (ap_size_parameter_parse(bytes, &conf->quota) != APR_SUCCESS
+             || conf->quota < 0)
+        return "DAVquota must be Off, None, or a size in bytes.";
 
     return NULL;
 }
