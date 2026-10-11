@@ -2,6 +2,7 @@ import inspect
 import logging
 import os
 import socket
+import sys
 from threading import Thread
 
 from pyhttpd.certs import CertificateSpec
@@ -45,13 +46,14 @@ Content-Type: text/html
 Content-Length: 5
 
 Hello""".encode()
-
+    
     def _process(self):
+        _read_buffer = 8192 if sys.platform == "win32" else 4096
         while not self._done:
             try:
                 c, client_address = self._socket.accept()
                 try:
-                    data = c.recv(4096)
+                    data = c.recv(_read_buffer)
                     # capture request to backend
                     self._request = data
                     c.sendall(self._make_response(data))

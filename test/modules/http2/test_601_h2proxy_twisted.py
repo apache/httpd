@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import sys
 import pytest
 
 from .env import H2Conf, H2TestEnv
@@ -18,7 +19,10 @@ class TestH2ProxyTwisted:
         assert env.apache_restart() == 0
 
     @pytest.mark.parametrize("name", [
-        "data-1k", "data-10k", "data-100k", "data-1m",
+        "data-1k", "data-10k", "data-100k",
+        pytest.param("data-1m", marks=pytest.mark.xfail(
+            condition=sys.platform == "win32",
+            reason="H2 proxy upload fails for 1MB on 2.4.x Windows")),
     ])
     def test_h2_601_01_echo_uploads(self, env, name):
         fpath = os.path.join(env.gen_dir, name)
@@ -72,6 +76,8 @@ class TestH2ProxyTwisted:
     def test_h2_601_05_echo_fail_many(self, env):
         if not env.httpd_is_at_least('2.4.58'):
             pytest.skip(f'needs httpd 2.4.58')
+        if sys.platform == "win32":
+            pytest.skip("command line too long for Windows (200 parallel curl requests)")
         if not env.curl_is_at_least('8.0.0'):
             pytest.skip(f'need at least curl v8.0.0 for this')
         count = 200

@@ -25,32 +25,37 @@ class H2TestSetup(HttpdTestSetup):
         self._setup_data_1k_1m()
 
     def _add_h2test(self):
-        local_dir = os.path.dirname(inspect.getfile(H2TestSetup))
-        p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
-                           capture_output=True,
-                           cwd=os.path.join(local_dir, 'mod_h2test'))
-        rv = p.returncode
-        if rv != 0:
-            log.error(f"compiling md_h2test failed: {p.stderr}")
-            raise Exception(f"compiling md_h2test failed: {p.stderr}")
+        module_dir = self.env.test_modules_dir
+        if not self.env.isWindows:
+            local_dir = os.path.dirname(inspect.getfile(H2TestSetup))
+            p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
+                            capture_output=True,
+                            cwd=os.path.join(local_dir, 'mod_h2test'))
+
+            rv = p.returncode
+            if rv != 0:
+                log.error(f"compiling md_h2test failed: {p.stderr}")
+                raise Exception(f"compiling md_h2test failed: {p.stderr}")
+
+            module_dir = f"{local_dir}/mod_h2test/.libs"
 
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:
             # load our test module which is not installed
-            fd.write(f"LoadModule h2test_module   \"{local_dir}/mod_h2test/.libs/mod_h2test.so\"\n")
+            fd.write(f"LoadModule h2test_module   \"{module_dir}/mod_h2test.so\"\n")
 
     def _setup_data_1k_1m(self):
         s90 = "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678\n"
-        with open(os.path.join(self.env.gen_dir, "data-1k"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-1k"), 'w', newline='') as f:
             for i in range(10):
                 f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.env.gen_dir, "data-10k"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-10k"), 'w', newline='') as f:
             for i in range(100):
                 f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.env.gen_dir, "data-100k"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-100k"), 'w', newline='') as f:
             for i in range(1000):
                 f.write(f"{i:09d}-{s90}")
-        with open(os.path.join(self.env.gen_dir, "data-1m"), 'w') as f:
+        with open(os.path.join(self.env.gen_dir, "data-1m"), 'w', newline='') as f:
             for i in range(10000):
                 f.write(f"{i:09d}-{s90}")
         test1_docs = os.path.join(self.env.server_docs_dir, 'test1')
