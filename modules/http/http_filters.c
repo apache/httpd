@@ -144,11 +144,10 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 ctx->state = BODY_CHUNK_PART;
             }
             ctx->remaining = 0;
-            /* The maximum number of bits that can be handled in a
-             * chunk size is in theory sizeof(apr_off_t)*8-1 since
-             * off_t is signed, but use -4 to avoid undefined
-             * behaviour when bitshifting left. */
-            ctx->chunkbits = sizeof(apr_off_t) * 8 - 4;
+            /* Allow all positive apr_off_t values, including those using
+             * the last hexadecimal digit. Check that digit before shifting.
+             */
+            ctx->chunkbits = sizeof(apr_off_t) * 8;
             ctx->chunk_used = 0;
             ctx->chunk_bws = 0;
         }
@@ -239,10 +238,15 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 return APR_EINVAL;
             }
 
+            /* Shifting into the sign bit of apr_off_t is undefined. A
+             * smaller prefix leaves room for any final hex digit. */
+            if (ctx->remaining >= ((apr_off_t)1 <<
+                                   (sizeof(apr_off_t) * 8 - 5))) {
+                return APR_ENOSPC;
+            }
             ctx->remaining = (ctx->remaining << 4) | xvalue;
             if (ctx->remaining < 0) {
-                /* Overflow - should be unreachable since the
-                 * chunkbits limit will be reached first. */
+                /* Unreachable after the pre-shift check. */
                 return APR_ENOSPC;
             }
         }
