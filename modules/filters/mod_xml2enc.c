@@ -369,7 +369,10 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         apr_brigade_length(ctx->bbsave, 0, &ctx->bblen);
         if ((ctx->bblen < BUF_MIN) && (ctx->bblen != -1)) {
             APR_BRIGADE_DO(b, ctx->bbsave) {
-                if (APR_BUCKET_IS_EOS(b)) {
+                /* An error bucket ends the data too (e.g. the backend
+                 * failed mid-body), and it can't be set aside below.
+                 */
+                if (APR_BUCKET_IS_EOS(b) || AP_BUCKET_IS_ERROR(b)) {
                     ctx->flags |= ENC_SEEN_EOS;
                     break;
                 }
@@ -391,7 +394,17 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
         ctx->buf = apr_palloc(f->r->pool, (apr_size_t)(ctx->bblen+1));
         ctx->bytes = (apr_size_t)ctx->bblen;
         rv = apr_brigade_flatten(ctx->bbsave, ctx->buf, &ctx->bytes);
-        ap_assert(rv == APR_SUCCESS);
+        if (rv != APR_SUCCESS) {
+            /* e.g. a CGI script timed out: get out of the way and leave
+             * the failed read to the rest of the chain.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO()
+                          "xml2enc: failed reading data to sniff");
+            ap_remove_output_filter(f);
+            rv = ap_pass_brigade(f->next, ctx->bbsave);
+            apr_brigade_cleanup(ctx->bbsave);
+            return rv;
+        }
         ctx->buf[ctx->bytes] = 0;
         sniff_encoding(f->r, ctx);
 
@@ -459,13 +472,38 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                 buf = fixbuf;
                 bytes = BUFLEN;
                 rv = apr_brigade_flatten(bb, buf, &bytes);
-                ap_assert(rv == APR_SUCCESS);
+                if (rv != APR_SUCCESS) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r, APLOGNO()
+                                  "xml2enc: error reading data");
+                    return rv;
+                }
                 if (bytes == insz) {
                     /* this is only what we've already tried to convert.
                      * The brigade is exhausted.
-                     * Save remaining data for next time round
                      */
-          
+                    APR_BRIGADE_DO(b, bb) {
+                        if (APR_BUCKET_IS_EOS(b) || AP_BUCKET_IS_ERROR(b)) {
+                            break;
+                        }
+                    }
+                    if (b != APR_BRIGADE_SENTINEL(bb)) {
+                        /* The data ends here (EOS, or an error bucket which
+                         * can't be set aside anyway), so nothing will come
+                         * to complete the sequence.  Drop it and pass on
+                         * the rest.
+                         */
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r, APLOGNO()
+                                      "xml2enc: Discarding %" APR_SIZE_T_FMT
+                                      " unconverted bytes at end of data", bytes);
+                        rv = apr_brigade_partition(bb, bytes, &bstart);
+                        while (b = APR_BRIGADE_FIRST(bb), b != bstart) {
+                            apr_bucket_delete(b);
+                        }
+                        insz = 0;
+                        continue;
+                    }
+
+                    /* Save remaining data for next time round */
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01437)
                                   "xml2enc: Setting aside %" APR_SIZE_T_FMT
                                   " unconverted bytes", bytes);
@@ -504,10 +542,12 @@ static apr_status_t xml2enc_ffunc(ap_filter_t* f, apr_bucket_brigade* bb)
                     apr_status_t rv2;
                     if (ctx->bytes == ctx->bblen) {
                         /* nothing was converted last time!
-                         * break out of this loop! 
+                         * break out of this loop!
+                         * buf belongs to bdestroy, which is destroyed below,
+                         * so the bytes must be copied rather than referenced.
                          */
-                        b = apr_bucket_transient_create(buf+(bytes - insz), insz,
-                                                        bb->bucket_alloc);
+                        b = apr_bucket_heap_create(buf+(bytes - insz), insz,
+                                                   NULL, bb->bucket_alloc);
                         APR_BRIGADE_INSERT_HEAD(bb, b);
                         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r, APLOGNO(01440)
                                       "xml2enc: reinserting %" APR_SIZE_T_FMT
