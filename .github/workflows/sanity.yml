@@ -1,6 +1,8 @@
 # Quick checks against the source which need nothing built, and so do
 # not belong in the build matrix: there they would spend twenty seconds
-# installing packages to run a one second check.
+# installing packages to run a one second check.  Everything here is
+# sequential and quick, so the 1-vCPU ubuntu-slim runner (15 minute
+# job limit) is enough.
 
 name: Sanity
 
@@ -31,7 +33,7 @@ concurrency:
 
 jobs:
   aplogno:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 5
     steps:
     - uses: actions/checkout@v6
@@ -41,7 +43,7 @@ jobs:
         TEST_LOGNO: 1
 
   buildconf:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 5
     steps:
     - uses: actions/checkout@v6
@@ -52,7 +54,7 @@ jobs:
       run: ./buildconf --with-apr=/usr/bin/apr-1-config --with-errors
 
   docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 5
     steps:
     - uses: actions/checkout@v6
