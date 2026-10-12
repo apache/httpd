@@ -213,16 +213,21 @@ class MDTestEnv(HttpdTestEnv):
     def check_acme(self):
         if self._acme_server_ok:
             return True
-        if self._acme_server_down:
-            pytest.skip(msg="ACME server not running")
-            return False
-        if self.is_live(self.acme_url, timeout=timedelta(seconds=0.5)):
-            self._acme_server_ok = True
-            return True
-        else:
+        if not self._acme_server_down:
+            if self.is_live(self.acme_url, timeout=timedelta(seconds=0.5)):
+                self._acme_server_ok = True
+                return True
             self._acme_server_down = True
-            pytest.fail(msg="ACME server not running", pytrace=False)
-            return False
+        # Both the first test to notice and every one after it report the
+        # same way: a configured-but-unreachable ACME server is a missing
+        # dependency, so skip, or fail under --strict-optional. Previously
+        # the first failed and the rest skipped, and both calls passed the
+        # 'msg' keyword that pytest removed in 8.0, raising TypeError.
+        self.require(False, "ACME server not running",
+                     dep="ACME test server",
+                     detected=f"ACME={self.get_acme_server()}, "
+                              f"no response from {self.acme_url}")
+        return False
 
     def get_ca_pem_file(self, hostname: str) -> Optional[str]:
         pem_file = super().get_ca_pem_file(hostname)

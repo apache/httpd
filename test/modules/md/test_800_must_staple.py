@@ -2,13 +2,16 @@
 import time
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .md_conf import MDConf
 from .md_cert_util import MDCertUtil
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestMustStaple:
     domain = None
 
@@ -53,7 +56,9 @@ class TestMustStaple:
         assert 'ocsp' not in stat or stat['ocsp'] == "no response sent"
 
     # MD that must staple and toggle off again
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_800_003(self, env):
         self.configure_httpd(env, self.domain, "MDMustStaple on")
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
@@ -69,7 +74,9 @@ class TestMustStaple:
         assert not cert1.get_must_staple()
 
     # MD that must staple
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     @pytest.mark.skipif(MDTestEnv.get_ssl_module() != "mod_ssl", reason="only for mod_ssl")
     def test_md_800_004(self, env):
         # mod_ssl stapling is off, expect no stapling

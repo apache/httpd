@@ -1,11 +1,13 @@
 import os
 import pytest
 
+from pyhttpd.env import HttpdTestEnv
+
 from .env import H1Conf
 
 
-# The trailer tests depend on "nghttp" as no other client seems to be able to send those
-# rare things.
+# These upload to the cgi handler, which parses the multipart body.
+@HttpdTestEnv.needs_multipart()
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')

@@ -9,7 +9,7 @@ from typing import Tuple, List
 import packaging.version
 
 import pytest
-import websockets
+from pyhttpd.depends import needs_dependency
 from pyhttpd.result import ExecResult
 from pyhttpd.ws_util import WsFrameReader, WsFrame
 
@@ -18,8 +18,18 @@ from .env import H2Conf, H2TestEnv
 
 log = logging.getLogger(__name__)
 
-ws_version = packaging.version.parse(websockets.version.version)
 ws_version_min = packaging.version.Version('10.4')
+
+# ws_server.py, which these tests run as a subprocess, needs this too. The
+# import is guarded so that an absent package is reported as the missing
+# optional dependency it is, rather than failing collection of the whole
+# module - which took the rest of the http2 suite's reporting with it.
+try:
+    import websockets
+    ws_version = packaging.version.parse(websockets.version.version)
+except ImportError:
+    websockets = None
+    ws_version = None
 
 
 def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
@@ -86,8 +96,13 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
 @pytest.mark.skipif(condition=not H2TestEnv().httpd_is_at_least("2.4.60"),
                     reason=f'need at least httpd 2.4.60 for this')
-@pytest.mark.skipif(condition=ws_version < ws_version_min,
-                    reason=f'websockets is {ws_version}, need at least {ws_version_min}')
+@needs_dependency(f"websockets >= {ws_version_min}",
+                  ws_version is not None and ws_version >= ws_version_min,
+                  reason=(f'websockets is {ws_version}, need at least {ws_version_min}'
+                          if ws_version is not None
+                          else 'no websockets python package available'),
+                  detected=(f"websockets {ws_version}" if ws_version is not None
+                            else "python package 'websockets' not installed"))
 class TestWebSockets:
 
     @pytest.fixture(autouse=True, scope='class')

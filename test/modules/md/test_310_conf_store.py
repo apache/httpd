@@ -2,6 +2,8 @@
 import time
 
 import pytest
+
+from pyhttpd.depends import needs_dependency
 import os
 
 from .md_conf import MDConf
@@ -12,9 +14,10 @@ MS_PER_DAY = SEC_PER_DAY * 1000
 NS_PER_DAY = MS_PER_DAY * 1000
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_a2md(), reason="no a2md available")
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("a2md", MDTestEnv.has_a2md(), reason="no a2md available")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestConf:
 
     @pytest.fixture(autouse=True, scope='class')

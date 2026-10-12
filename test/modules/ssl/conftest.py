@@ -22,6 +22,11 @@ def env(pytestconfig) -> SSLTestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = SSLTestEnv(pytestconfig=pytestconfig)
+    # setup_httpd() raises outright when a required module is not built,
+    # which is neither a skip nor a useful failure. mod_ssl being absent is
+    # a missing dependency, so report it as one before we get there.
+    env.require(env.has_mod_ssl(), "no mod_ssl available", dep="mod_ssl",
+                detected=f"no mod_ssl.so in {env.libexec_dir}")
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
@@ -30,8 +35,8 @@ def env(pytestconfig) -> SSLTestEnv:
 
 @pytest.fixture(autouse=True, scope="package")
 def require_openssl(env):
-    if not env.has_tool("openssl"):
-        pytest.skip("openssl not installed")
+    env.require(env.has_tool("openssl"), "openssl not installed",
+                dep="openssl", detected="no openssl on $PATH")
 
 
 @pytest.fixture(autouse=True, scope="package")

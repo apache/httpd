@@ -2,11 +2,14 @@ import time
 
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .env import MONITOR_STATUS, MONITOR_TIMEOUT, TransientService, http_responds
 
-pytestmark = pytest.mark.skipif(
-    not TransientService.is_available(),
-    reason="no per-user systemd manager to run a transient service under")
+pytestmark = needs_dependency(
+    "systemd --user manager", TransientService.is_available(),
+    reason="no per-user systemd manager to run a transient service under",
+    detected="systemd-run --user is not usable here")
 
 
 class TestSystemdService:

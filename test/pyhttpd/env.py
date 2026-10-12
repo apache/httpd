@@ -305,6 +305,93 @@ class HttpdTestEnv:
         path = os.path.join(cls.LIBEXEC_DIR, f"mod_{name}.so")
         return os.path.isfile(path)
 
+    @classmethod
+    def has_mod_ssl(cls):
+        """Whether mod_ssl is installed.
+
+        Not the same question as get_ssl_module(), which only reports which
+        TLS module $SSL selected for this run. A test that is "only for
+        mod_ssl" is not applicable under SSL=mod_tls and should skip; a test
+        that needs mod_ssl to be installed at all has a real dependency.
+        """
+        return cls.has_shared_module("ssl")
+
+    _nghttp_gate = {}
+
+    @classmethod
+    def needs_nghttp(cls, assets: bool = False):
+        """A marker gating a test, class or module on the nghttp client.
+
+        nghttp is the only client that can drive PUSH, trailers and explicit
+        frame padding, so the tests that use it have no fallback. It is named
+        unconditionally in config.ini, which says nothing about whether it is
+        installed, so the binary has to be run to find out.
+
+        :param assets: also require the '-a' asset-fetching support, which
+            nghttp only has when built against libxml2
+        """
+        from .depends import needs_dependency
+        if assets not in cls._nghttp_gate:
+            env = HttpdTestEnv()
+            ok = env.has_nghttp_get_assets() if assets else env.has_nghttp()
+            if assets:
+                reason = "nghttp not available or misses -a (needs libxml2)"
+            else:
+                reason = "nghttp not available"
+            cls._nghttp_gate[assets] = needs_dependency(
+                "nghttp", ok, reason=reason,
+                detected=f"tried to run {env._nghttp}")
+        return cls._nghttp_gate[assets]
+
+    _h2load_gate = {}
+
+    @classmethod
+    def needs_h2load(cls, minv: str = None, reason: str = None):
+        """A marker gating a test, class or module on the h2load client.
+
+        :param minv: also require at least this h2load version. 1.41.0 is
+            the one that matters here, it brought --connect-to.
+        :param reason: skip reason, when the default wording is too vague
+            about what the version is needed for.
+        """
+        from .depends import needs_dependency
+        key = (minv, reason)
+        if key not in cls._h2load_gate:
+            env = HttpdTestEnv()
+            if minv is None:
+                ok = env.has_h2load()
+                dep = "h2load"
+                default_reason = "h2load not available"
+            else:
+                ok = env.h2load_is_at_least(minv)
+                dep = f"h2load >= {minv}"
+                default_reason = f"h2load unavailable or older than {minv}"
+            found = env.h2load_version_str()
+            cls._h2load_gate[key] = needs_dependency(
+                dep, ok, reason=reason or default_reason,
+                detected=(f"h2load {found}" if found is not None
+                          else f"tried to run {env._h2load}"))
+        return cls._h2load_gate[key]
+
+    _multipart_gate = None
+
+    @classmethod
+    def needs_multipart(cls):
+        """A marker gating a test, class or module on the multipart package.
+
+        The CGI helpers in htdocs/cgi/ parse file uploads with it. They
+        import it only for a multipart/ body, so this belongs on the tests
+        that upload a file, not on everything that touches a CGI.
+        """
+        from .depends import needs_dependency
+        if cls._multipart_gate is None:
+            cls._multipart_gate = needs_dependency(
+                "multipart", cls.has_python_package('multipart'),
+                reason="no multipart python package available",
+                detected="python package 'multipart' not installed "
+                         "(pip install python-multipart)")
+        return cls._multipart_gate
+
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
         self._config_ini = os.getenv("PYHTTPD_CONFIG",
@@ -375,6 +462,10 @@ class HttpdTestEnv:
         self._https_base = f"https://{self._httpd_addr}:{self.https_port}"
 
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
+        # imported here, not at module scope, to keep env.py free of a
+        # top-level pytest dependency: it is also built outside pytest runs
+        from .depends import strict_optional_enabled
+        self._strict_optional = strict_optional_enabled(pytestconfig)
         self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
         self._httpd_env = {}
@@ -394,6 +485,7 @@ class HttpdTestEnv:
         self._curl_headerfiles_n = 0
         self._curl_version = None
         self._h2load_version = None
+        self._nghttp_version = None
         self._current_test = None
 
     def add_httpd_conf(self, lines: List[str]):
@@ -649,6 +741,31 @@ class HttpdTestEnv:
     def set_current_test_name(self, val) -> None:
         self._current_test = val
 
+    def require(self, condition: bool, reason: str,
+                dep: str = None, detected=None) -> None:
+        """Skip, or fail under strict-optional mode, on a missing dependency.
+
+        The in-test counterpart of the @needs_dependency decorator, for
+        checks that can only be made once a test is running. Use it instead
+        of a bare pytest.skip() whenever the reason is "something we expected
+        to be installed is not", and a plain pytest.skip() when the reason is
+        "this test does not apply here".
+
+        :param condition: truthy if the dependency is present
+        :param reason: skip reason, also the "reason" line when strict
+        :param dep: short dependency name for the strict message
+        :param detected: what was found instead, for the strict message
+        """
+        import pytest
+        if condition:
+            return
+        if self._strict_optional:
+            from .depends import strict_failure_message
+            pytest.fail(strict_failure_message(
+                dep or reason, expected=reason, detected=detected,
+                where=self.current_test_name), pytrace=False)
+        pytest.skip(reason)
+
     @property
     def apachectl_stderr(self) -> str:
         return self._apachectl_stderr
@@ -678,76 +795,118 @@ class HttpdTestEnv:
         hv = self._versiontuple(self.get_httpd_version())
         return hv >= self._versiontuple(minv)
 
+    @staticmethod
+    def _run_version(args):
+        """Run a --version style command, returning its stdout or None.
+
+        None means the binary is not there or would not run, which callers
+        must distinguish from "ran fine but is too old". config.ini/default
+        may just be the bare command name ("h2load"), not a verified path,
+        so catching OSError here is what keeps an uninstalled tool from
+        crashing collection with FileNotFoundError.
+        """
+        try:
+            p = subprocess.run(args, capture_output=True, text=True)
+        except OSError:
+            return None
+        return p.stdout if p.returncode == 0 else None
+
+    def _probe_h2load(self):
+        """The h2load version tuple, or None when h2load is unusable."""
+        if self._h2load_version is None:
+            self._h2load_version = False  # probed, not found
+            out = self._run_version([self._h2load, '--version']) if self._h2load else None
+            if out is not None:
+                m = re.match(r'h2load nghttp2/(\S+)', out.strip())
+                if m:
+                    self._h2load_version = self._versiontuple(m.group(1))
+        return self._h2load_version or None
+
     def has_h2load(self):
-        if self._h2load == "":
-            return False
-        # config.ini/default may just be the bare command name ("h2load"),
-        # not a verified path -- confirm it actually resolves so
-        # h2load_is_at_least() below doesn't crash with FileNotFoundError
-        # (breaking test collection) when the tool isn't installed.
-        if os.path.dirname(self._h2load):
-            return os.path.isfile(self._h2load) and os.access(self._h2load, os.X_OK)
-        return self.has_tool(self._h2load)
+        return self._probe_h2load() is not None
+
+    def h2load_version_str(self):
+        """'1.41.0', or None when h2load is absent. For strict messages."""
+        v = self._probe_h2load()
+        return None if v is None else ".".join(str(n) for n in v)
 
     def h2load_is_at_least(self, minv):
-        if not self.has_h2load():
-            return False
-        if self._h2load_version is None:
-            p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
-            if p.returncode != 0:
-                return False
-            s = p.stdout.strip()
-            m = re.match(r'h2load nghttp2/(\S+)', s)
-            if m:
-                self._h2load_version = self._versiontuple(m.group(1))
-        if self._h2load_version is not None:
-            return self._h2load_version >= self._versiontuple(minv)
-        return False
+        v = self._probe_h2load()
+        return v is not None and v >= self._versiontuple(minv)
+
+    def _probe_curl(self):
+        """The curl version tuple, or None when curl is unusable."""
+        if self._curl_version is None:
+            self._curl_version = False  # probed, not found
+            out = self._run_version([self._curl, '-V']) if self._curl else None
+            if out is not None:
+                for l in out.splitlines():
+                    m = re.match(r'curl ([0-9.]+)[- ].*', l)
+                    if m:
+                        self._curl_version = self._versiontuple(m.group(1))
+                        break
+        return self._curl_version or None
+
+    def has_curl(self):
+        return self._probe_curl() is not None
+
+    def curl_version_str(self):
+        """'8.4.0', or None when curl is absent. For strict messages."""
+        v = self._probe_curl()
+        return None if v is None else ".".join(str(n) for n in v)
 
     def curl_is_at_least(self, minv):
-        if self._curl_version is None:
-            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
-            if p.returncode != 0:
-                return False
-            for l in p.stdout.splitlines():
-                m = re.match(r'curl ([0-9.]+)[- ].*', l)
-                if m:
-                    self._curl_version = self._versiontuple(m.group(1))
-                    break
-        if self._curl_version is not None:
-            return self._curl_version >= self._versiontuple(minv)
-        return False
+        v = self._probe_curl()
+        return v is not None and v >= self._versiontuple(minv)
 
     def curl_is_less_than(self, version):
-        if self._curl_version is None:
-            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
-            if p.returncode != 0:
-                return False
-            for l in p.stdout.splitlines():
-                m = re.match(r'curl ([0-9.]+)[- ].*', l)
+        v = self._probe_curl()
+        return v is not None and v < self._versiontuple(version)
+
+    def curl_is_8_1_x(self):
+        """Whether curl is one of the 8.1.x releases.
+
+        Those mishandle TLS renegotiation; 8.0.x and 8.2.0+ are both fine.
+        Returns False when curl is absent, so combine it with has_curl() when
+        the test also needs curl to exist at all.
+        """
+        v = self._probe_curl()
+        return (v is not None
+                and self._versiontuple('8.1.0') <= v < self._versiontuple('8.2.0'))
+
+    def _probe_nghttp(self):
+        """The nghttp version tuple, or None when nghttp is unusable.
+
+        config.ini always names a binary, so the name alone proves nothing
+        about whether nghttp is installed: it has to be run. 'nghttp
+        --version' prints 'nghttp2/1.64.0', the nghttp2 library version.
+        """
+        if self._nghttp_version is None:
+            self._nghttp_version = False  # probed, not found
+            out = self._run_version([self._nghttp, '--version']) if self._nghttp else None
+            if out is not None:
+                m = re.search(r'nghttp2/(\S+)', out.strip())
                 if m:
-                    self._curl_version = self._versiontuple(m.group(1))
-                    break
-        if self._curl_version is not None:
-            return self._curl_version < self._versiontuple(version)
-        return False
+                    self._nghttp_version = self._versiontuple(m.group(1))
+        return self._nghttp_version or None
 
     def has_nghttp(self):
-        if self._nghttp == "":
-            return False
-        if os.path.dirname(self._nghttp):
-            return os.path.isfile(self._nghttp) and os.access(self._nghttp, os.X_OK)
-        return self.has_tool(self._nghttp)
+        return self._probe_nghttp() is not None
+
+    def nghttp_version_str(self):
+        """'1.64.0', or None when nghttp is absent. For strict messages."""
+        v = self._probe_nghttp()
+        return None if v is None else ".".join(str(n) for n in v)
+
+    def nghttp_is_at_least(self, minv):
+        v = self._probe_nghttp()
+        return v is not None and v >= self._versiontuple(minv)
 
     def has_nghttp_get_assets(self):
         if not self.has_nghttp():
             return False
-        args = [self._nghttp, "-a"]
-        p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        rv = p.returncode
-        if rv != 0:
-            return False
-        return p.stderr == ""
+        p = subprocess.run([self._nghttp, "-a"], capture_output=True, text=True)
+        return p.returncode == 0 and p.stderr == ""
 
     def get_apxs_var(self, name: str) -> str:
         p = subprocess.run([self._apxs, "-q", name], capture_output=True, text=True)

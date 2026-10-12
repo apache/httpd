@@ -7,6 +7,8 @@ import re
 from datetime import timedelta
 
 import pytest
+
+from pyhttpd.depends import needs_dependency
 from pyhttpd.certs import CertificateSpec
 
 from .md_conf import MDConf
@@ -14,9 +16,10 @@ from .md_cert_util import MDCertUtil
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_a2md(), reason="no a2md available")
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("a2md", MDTestEnv.has_a2md(), reason="no a2md available")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestDrivev2:
 
     @pytest.fixture(autouse=True, scope='class')

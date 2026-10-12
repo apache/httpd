@@ -10,6 +10,15 @@ import pytest
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 from pyhttpd.env import HttpdTestEnv
+from pyhttpd.depends import apply_gate, strict_optional_enabled
+
+# pyhttpd.depends provides --strict-optional and the needs_dependency marker.
+# pytest_plugins is only honoured in the rootdir conftest, and there is no
+# pytest.ini in this tree, so this is the only place it can be declared.
+pytest_plugins = ["pyhttpd.depends"]
+
+# Everything below test/modules/ drives a real httpd.
+MODULES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'modules')
 
 
 def _has_ipv6():
@@ -148,6 +157,29 @@ def pytest_configure(config):
         _generate_config_ini(config)
 
 
+def pytest_collection_modifyitems(config, items):
+    """Gate the integration suite on the clients the framework itself needs.
+
+    curl is not an optional dependency of the individual test cases that
+    call curl_get(): apache_restart() proves the server came up with
+    is_live(), and is_live() is a curl request. Without curl every test
+    that starts an httpd dies in fixture setup, which is neither a skip nor
+    a useful failure. So it is gated once here for the whole of
+    test/modules/ rather than test by test.
+
+    Tests outside that directory - the strict-mode self-test - run no httpd
+    and are left alone.
+    """
+    env = HttpdTestEnv()
+    if env.has_curl():
+        return
+    missing = [("curl", "no curl available", f"tried to run {env.curl}")]
+    strict = strict_optional_enabled(config)
+    for item in items:
+        if str(item.path).startswith(MODULES_DIR):
+            apply_gate(item, missing, strict)
+
+
 def pytest_generate_tests(metafunc):
     if "repeat" in metafunc.fixturenames:
         count = int(metafunc.config.getoption("repeat"))
@@ -199,6 +231,6 @@ def _package_scope(env, request):
         warnings.warn("--archive option was empty, skipping archiving")
     if archive_dir:
         fspath = str(request.fspath)
-        parts = fspath.split('modules/')
-        package_name = parts[1].split('/')[0]
-        env.archive_logs(package_name, archive_dir)
+        if 'modules/' in fspath:
+            package_name = fspath.split('modules/')[1].split('/')[0]
+            env.archive_logs(package_name, archive_dir)

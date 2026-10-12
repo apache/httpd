@@ -389,6 +389,8 @@ Release
 test/__pycache__
 test/*/__pycache__
 test/*/*/__pycache__
+__pycache__/
+*.pyc
 
 # make check
 check

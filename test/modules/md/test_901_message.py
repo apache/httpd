@@ -5,14 +5,17 @@ import os
 import time
 from datetime import timedelta
 import pytest
+
+from pyhttpd.depends import needs_dependency
 from pyhttpd.certs import CertificateSpec
 
 from .md_conf import MDConf
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestMessage:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -214,7 +217,9 @@ class TestMessage:
         assert nlines[0].strip() == f"['{self.mcmd}', '{self.mlog}', 'expiring', '{domain}']"
 
     # MD, check messages from stapling
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_901_020(self, env):
         domain = self.test_domain
         domains = [domain]
