@@ -13,7 +13,7 @@ class GeneratorsTestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(GeneratorsTestSetup)))
-        self.add_modules(["cgid", "include", "headers"])
+        self.add_modules(["cgid", "include", "headers", "autoindex"])
 
 
 class GeneratorsTestEnv(HttpdTestEnv):
