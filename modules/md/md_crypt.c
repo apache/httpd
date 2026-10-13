@@ -205,9 +205,10 @@ static int pem_passwd(char *buf, int size, int rwflag, void *baton)
 /* date time things */
 
 /* Get the apr time (micro seconds, since 1970) from an ASN1 time, as stored in X509
- * certificates. OpenSSL now has a utility function, but other *SSL derivatives have
- * not caught up yet or chose to ignore. An alternative is implemented, we prefer
- * however the *SSL to maintain such things.
+ * certificates. Where available (OpenSSL >= 1.1.1), convert it directly via
+ * ASN1_TIME_to_tm() rather than as an offset from the current time, since the
+ * latter samples "now" twice and is racy by up to a second. Older OpenSSL/LibreSSL
+ * builds keep their existing conversions below.
  */
 static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
 {
@@ -250,6 +251,33 @@ static apr_time_t md_asn1_time_get(const ASN1_TIME* time)
     t.tm_sec  = (str[i++] - '0') * 10;
     t.tm_sec += (str[i++] - '0');
     
+    if (APR_SUCCESS == apr_time_exp_gmt_get(&ts, &t)) {
+        return ts;
+    }
+    return 0;
+#elif OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
+    /* Convert the ASN1_TIME directly to an absolute calendar time. Do not
+     * reconstruct it as "now + diff-from-now": ASN1_TIME_diff() samples
+     * the current time itself, independently of the apr_time_now() call
+     * below, so if the wall clock ticks over a second between the two
+     * reads the result is off by one second. That race is real, not
+     * theoretical: it intermittently broke exact-timestamp comparisons
+     * in test/modules/md/test_920_status.py. */
+    struct tm exp_tm;
+    apr_time_exp_t t;
+    apr_time_t ts;
+
+    if (!ASN1_TIME_to_tm(time, &exp_tm)) {
+        return 0;
+    }
+    memset(&t, 0, sizeof(t));
+    t.tm_sec  = exp_tm.tm_sec;
+    t.tm_min  = exp_tm.tm_min;
+    t.tm_hour = exp_tm.tm_hour;
+    t.tm_mday = exp_tm.tm_mday;
+    t.tm_mon  = exp_tm.tm_mon;
+    t.tm_year = exp_tm.tm_year;
+
     if (APR_SUCCESS == apr_time_exp_gmt_get(&ts, &t)) {
         return ts;
     }
