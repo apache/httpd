@@ -1,0 +1,4 @@
+  *) mod_deflate: Read the gzip extra-field (FEXTRA) length as unsigned so a
+     length byte with the high bit set is no longer sign-extended, fixing
+     inflation of gzip streams that carry an extra field.
+     [arshiya tabasum <arshi bugqore.com>]
