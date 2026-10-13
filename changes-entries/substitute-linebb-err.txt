@@ -1,0 +1,6 @@
+  *) mod_substitute: Fix a use-after-free when a line longer than
+     SubstituteMaxLineLength is seen.  On that error the filter left
+     buckets in its saved-line brigade without setting them aside; behind
+     a reverse proxy those reference the backend connection's buffers,
+     which are freed before the filter is called again with the EOS.
+     [Alejandro Pacheco <alepacheco99 gmail.com>]
