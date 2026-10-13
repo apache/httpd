@@ -969,10 +969,13 @@ apr_status_t h2_stream_end_headers(h2_stream *stream, int eos, size_t raw_bytes)
         }
     }
 
-    if (req->scheme && (req->path && req->path[0] != '/')) {
+    if (req->scheme && (req->path && req->path[0] != '/')
+        && !(is_http_or_https && !strcmp(req->path, "*")
+             && !strcmp(req->method, "OPTIONS"))) {
         /* We still have a scheme, which means we need to pass an absolute URI into
          * our HTTP protocol handling and the missing '/' at the start will prevent
-         * us from doing so (as it then confuses path and authority). */
+         * us from doing so (as it then confuses path and authority).
+         * The asterisk-form of OPTIONS is no URI path and passed as is. */
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, stream->session->c1,
                       H2_STRM_LOG(APLOGNO(10379), stream, "Request :scheme '%s' and "
                       "path '%s' do not allow creating an absolute URL. Failing "
