@@ -1,0 +1,4 @@
+  *) mod_http2: Fix a use-after-free of the response and trailer metadata
+     bucket data in HTTP/2 output processing: the bucket was destroyed
+     before its data, which is read afterwards and kept in stream->response
+     for the life of the stream.  [arshiya tabasum <arshi bugqore.com>]
