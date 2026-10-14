@@ -59,6 +59,8 @@
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
+#include <limits.h>     /* for LONG_MAX */
+
 #if defined(RLIMIT_CPU) || defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS) || defined (RLIMIT_NPROC)
 #include "unixd.h"
 #endif
@@ -3914,16 +3916,29 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
                                           const char *arg)
 {
     core_dir_config *conf = conf_;
+    apr_uint64_t max = AP_MAX_LIMIT_XML_BODY;
+    apr_off_t limit;
+    char *errp;
 
-    conf->limit_xml_body = atol(arg);
-    if (conf->limit_xml_body < 0)
+    if (APR_SUCCESS != apr_strtoff(&limit, arg, &errp, 10)) {
+        return "LimitXMLRequestBody argument is not parsable.";
+    }
+    if (*errp || limit < 0) {
         return "LimitXMLRequestBody requires a non-negative integer.";
+    }
 
-    /* zero is AP_MAX_LIMIT_XML_BODY (implicitly) */
-    if ((apr_size_t)conf->limit_xml_body > AP_MAX_LIMIT_XML_BODY)
+    /* zero is AP_MAX_LIMIT_XML_BODY (implicitly), and limit_xml_body is
+     * a long, which is narrower than apr_size_t on some platforms.
+     */
+    if (max > LONG_MAX) {
+        max = LONG_MAX;
+    }
+    if ((apr_uint64_t)limit > max) {
         return apr_psprintf(cmd->pool, "LimitXMLRequestBody must not exceed "
-                            "%" APR_SIZE_T_FMT, AP_MAX_LIMIT_XML_BODY);
+                            "%" APR_UINT64_T_FMT, max);
+    }
 
+    conf->limit_xml_body = (long)limit;
     return NULL;
 }
 
