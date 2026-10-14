@@ -227,6 +227,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/819.patch
      +1: jorton, 
 
+  *) module_authnz_ldap: fix 2.4.69 crashes on Windows. PR 70261
+     Trunk version of patch:
+        https://svn.apache.org/r1939088
+        https://svn.apache.org/r1939105
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/842.diff
+     Can be applied via apply_backport_pr.sh 842
+     +1: covener
+
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
