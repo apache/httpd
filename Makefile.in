@@ -167,7 +167,7 @@ docs:
 	fi
 
 update-changes:
-	@find changes-entries -type f | while read -r i ; do \
+	@find changes-entries -type f ! -name template.txt | while read -r i ; do \
 	    cp CHANGES CHANGES.tmp ; \
 	    awk -v fname="$$i" 'BEGIN{done = 0; active = 0} \
 	                    done == 0 && active == 0 && /^Changes with Apache /{ active = 1; print; next}; \
