@@ -251,11 +251,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     httpd-std.conf points to conf.)
 
   * If any request gets through ap_process_request_internal() and is
-    scheduled to be served by the core handler, without a flag that this 
-    r->filename was tested by dir/file_walk, we need to 500 at the very 
+    scheduled to be served by the core handler, without a flag that this
+    r->filename was tested by dir/file_walk, we need to 500 at the very
     end of the ap_process_request_internal() processing so sub_req-esters
-    know this request cannot be run.  This provides authors of older 
-    modules better compatibility, while still improving the security and 
+    know this request cannot be run.  This provides authors of older
+    modules better compatibility, while still improving the security and
     robustness of 2.0.
 
     Status: still need to decide where this goes, OtherBill comments...
@@ -313,7 +313,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     Reasons include sole-function servers that need to die if
     an external dependency (e.g., a database) fails, et cetera.
     Perhaps something in the (ever more abused) scoreboard?
-      
+
       On the other hand, we already have a pipe that goes between parent
       and child for graceful shutdown events, along with an API that
       can be used to send a message down that pipe.  In threaded MPMs,
@@ -324,7 +324,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
   * Allow the DocumentRoot directive within <Location > scopes?  This
     allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
-    by a <Directory /somepath/foo> to become simply 
+    by a <Directory /somepath/foo> to become simply
     <Location /foo/> DocumentRoot /somefile/foo (IMHO a bit more legible
     and in-your-face.)  DocumentRoot unset would be accepted [and would
     not permit content to be served, only virtual resources such as
@@ -334,10 +334,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
 
   * Win32: Rotatelogs sometimes is not terminated when Apache
-    goes down hard.  FirstBill was looking at possibly tracking the 
+    goes down hard.  FirstBill was looking at possibly tracking the
     child's-child processes in the parent process.
-      stoddard: Shared scoreboard might offer a good way for the parent 
-      to keep track of 'other child' processes and whack them if the child 
+      stoddard: Shared scoreboard might offer a good way for the parent
+      to keep track of 'other child' processes and whack them if the child
       goes down.
       Other thoughts on walking the process chain using the NT kernel
       have also been proposed on APR.
@@ -348,7 +348,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     Common logging API.
 
   * Platforms that do not support fork (primarily Win32 and AS/400)
-    Architect start-up code that avoids initializing all the modules 
+    Architect start-up code that avoids initializing all the modules
     in the parent process on platforms that do not support fork.
 
   * There are still a number of places in the code where we are
@@ -357,10 +357,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
   * Mass vhosting version of suEXEC.
 
-  * All DBMs suffer from confusion in support/dbmmanage (perl script) since 
+  * All DBMs suffer from confusion in support/dbmmanage (perl script) since
     the dbmmanage employs the first-matched dbm format.  This is not
     necessarily the library that Apache was built with.  Aught to
-    rewrite dbmmanage upon installation to bin/ with the proper library 
+    rewrite dbmmanage upon installation to bin/ with the proper library
     for predictable mod_auth_dbm administration.
       Questions; htdbm exists, time to kill dbmmanage, or does it remain
                  useful as a perl dbm management example?  If we keep it,
@@ -374,8 +374,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       - is it possible to remove the DAV: namespace stuff from util_xml?
 
   * ap_core_translate() and its use by mod_mmap_static and mod_file_cache
-    are a bit wonky.  The function should probably be exposed as a utility 
-    function (such as ap_translate_url2fs() or ap_validate_fs_url() or 
+    are a bit wonky.  The function should probably be exposed as a utility
+    function (such as ap_translate_url2fs() or ap_validate_fs_url() or
     something).  Another approach would be a new hook phase after
     "translate" which would allow the module to munge what the
     translation has decided to do.
@@ -403,23 +403,23 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       chrisd: Is this done, by any chance?  See r92598 and r93358.
 
   * Scoreboard structures could be changed in the future such that
-    proper alignment is not maintained, leading to segfaults on 
+    proper alignment is not maintained, leading to segfaults on
     some systems.  Cliff posted a patch to deal with this issue but
     later recanted. See this message to dev@apr.apache.org:
       Message-ID:
         <Pine.LNX.4.44.0203011354090.16457-200000@deepthought.cs.virginia.edu>
 
   * APXS either needs to be fixed completely for use when apr is out of tree,
-    or it should drop query mode altogether, and we just grow an 
-    httpd-config or similar arrangement. 
+    or it should drop query mode altogether, and we just grow an
+    httpd-config or similar arrangement.
     To quote a discussion in STATUS earlier:
 
         thommay: this doesn't fix all the problems with apxs and out of
-                 tree apr/apr-util, but it's a good start. There's still the 
-                 query cases; but I'm beginning to think that in these cases 
+                 tree apr/apr-util, but it's a good start. There's still the
+                 query cases; but I'm beginning to think that in these cases
                  the app should be querying ap{r,u}-config directly
         deprecate -q:  add htpd-config: gstein, pquerna, minfrin, pgollucci
-        other: 
+        other:
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
@@ -477,13 +477,13 @@ WISH LIST
     byterange stuff doesn't want the rest of the code to see the
     multipart content-type; the other code should still think it is
     dealing with the <orig_ct> stuff.
-      Status: Greg volunteers to investigate (esp. since he was most 
+      Status: Greg volunteers to investigate (esp. since he was most
               likely the one to break it :-)
 
 EXPERIMENTAL MODULES:
 
     Experimental modules should eventually be be promoted to fully supported
     status or removed from the repository entirely (ie, the
-    'experiment' failed). This section tracks what needs to happen to 
+    'experiment' failed). This section tracks what needs to happen to
     get the modules promoted to fully supported status.
 
