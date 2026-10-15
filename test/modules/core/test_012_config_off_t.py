@@ -7,7 +7,7 @@ from pyhttpd.conf import HttpdConf
 # size and time directives parsed with ap_size_parameter_parse(), which can
 # not be negative
 DIRECTIVES = [
-    "LimitRequestBody",
+    "LimitRequestBody", "LimitXMLRequestBody",
     "ScriptLogLength", "ScriptLogBuffer",
     "CacheMinFileSize", "CacheMaxFileSize", "CacheReadSize", "CacheReadTime",
     "CacheSocacheMaxTime", "CacheSocacheMinTime", "CacheSocacheReadSize",
