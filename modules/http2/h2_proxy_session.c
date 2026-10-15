@@ -266,7 +266,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
         
-        h2_proxy_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_proxy_util_frame_print(frame, buffer, AP_ARRAY_LEN(buffer));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03341)
                       "h2_proxy_session(%s): recv FRAME[%s]",
                       session->id, buffer);
@@ -355,7 +355,7 @@ static int before_frame_send(nghttp2_session *ngh2,
     if (APLOGcdebug(session->c)) {
         char buffer[256];
 
-        h2_proxy_util_frame_print(frame, buffer, sizeof(buffer)/sizeof(buffer[0]));
+        h2_proxy_util_frame_print(frame, buffer, AP_ARRAY_LEN(buffer));
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c, APLOGNO(03343)
                       "h2_proxy_session(%s): sent FRAME[%s]",
                       session->id, buffer);
@@ -813,7 +813,7 @@ static apr_status_t session_start(h2_proxy_session *session)
     settings[1].value = (1 << session->window_bits_stream) - 1;
     
     rv = nghttp2_submit_settings(session->ngh2, NGHTTP2_FLAG_NONE, settings, 
-                                 H2_ALEN(settings));
+                                 AP_ARRAY_LEN(settings));
     
     /* If the connection window is larger than our default, trigger a WINDOW_UPDATE */
     add_conn_window = ((1 << session->window_bits_connection) - 1 -
@@ -1202,7 +1202,7 @@ static const char *const StateNames[] = {
 
 static const char *state_name(h2_proxys_state state)
 {
-    if (state >= (sizeof(StateNames)/sizeof(StateNames[0]))) {
+    if (state >= AP_ARRAY_LEN(StateNames)) {
         return "unknown";
     }
     return StateNames[state];
