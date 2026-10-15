@@ -1,0 +1,3 @@
+  *) mod_cgid: Raise the limit on the number of environment variables
+     passed to a script from 256 to APACHE_ARG_MAX (4096 on most
+     platforms).  PR 70270.  [Joe Orton]

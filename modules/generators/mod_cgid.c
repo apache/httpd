@@ -192,8 +192,6 @@ typedef struct {
 } cgid_rlimit_t;
 #endif
 
-#define ENV_COUNT_MAX (256)
-
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
     unsigned long conn_id; /* connection id; daemon uses this as a hash value
@@ -532,7 +530,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
 
     /* Sanity check the structure received. */
-    if (req->env_count > ENV_COUNT_MAX
+    if (req->env_count > APACHE_ARG_MAX
         || req->filename_len == 0 || req->filename_len > APR_PATH_MAX
         || req->argv0_len == 0 || req->argv0_len > APR_PATH_MAX
         || req->uri_len == 0 || req->uri_len > APR_PATH_MAX
@@ -613,6 +611,9 @@ static apr_status_t send_req(int fd, apr_file_t *errpipe, request_rec *r,
     req.conn_id = r->connection->id;
     for (req.env_count = 0; env[req.env_count]; req.env_count++) {
         continue;
+    }
+    if (req.env_count > APACHE_ARG_MAX) {
+        return APR_ENOSPC;
     }
     req.filename_len = strlen(r->filename);
     req.argv0_len = strlen(argv0);
