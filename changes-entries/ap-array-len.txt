@@ -1,0 +1,2 @@
+  *) core: Add AP_ARRAY_LEN() macro for determining the number of
+     elements in a fixed-size array. [Arturo Bernal]
