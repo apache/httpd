@@ -617,6 +617,7 @@
  *                          options
  * 20120211.144 (2.4.72-dev) Add the optional function ap_authn_cache_store_env()
  *                           to mod_auth.h
+ * 20120211.145 (2.4.72-dev) Add ap_size_parameter_parse() to httpd.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -624,7 +625,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20120211
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 144                 /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 145                 /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
