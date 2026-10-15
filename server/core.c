@@ -3900,14 +3900,17 @@ static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
                                       const char *arg)
 {
     core_dir_config *conf = conf_;
-    char *errp;
+    apr_off_t limit;
+    apr_status_t rv;
 
-    if (APR_SUCCESS != apr_strtoff(&conf->limit_req_body, arg, &errp, 10)) {
+    rv = ap_size_parameter_parse(arg, &limit);
+    if (rv == APR_ERANGE) {
         return "LimitRequestBody argument is not parsable.";
     }
-    if (*errp || conf->limit_req_body < 0) {
+    if (rv != APR_SUCCESS || limit < 0) {
         return "LimitRequestBody requires a non-negative integer.";
     }
+    conf->limit_req_body = limit;
 
     return NULL;
 }

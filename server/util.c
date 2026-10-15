@@ -2773,6 +2773,23 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     *timeout = (apr_interval_time_t)check;
     return APR_SUCCESS;
 }
+
+AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
+                                                 apr_off_t *value)
+{
+    apr_off_t parsed;
+    char *end;
+
+    if (apr_strtoff(&parsed, parameter, &end, 10) != APR_SUCCESS) {
+        return APR_ERANGE;
+    }
+    if (end == parameter || *end != '\0') {
+        return APR_EINVAL;
+    }
+
+    *value = parsed;
+    return APR_SUCCESS;
+}
 #undef CHECK_OVERFLOW
 
 AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str)
