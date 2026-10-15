@@ -3921,12 +3921,13 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
     core_dir_config *conf = conf_;
     apr_uint64_t max = AP_MAX_LIMIT_XML_BODY;
     apr_off_t limit;
-    char *errp;
+    apr_status_t rv;
 
-    if (APR_SUCCESS != apr_strtoff(&limit, arg, &errp, 10)) {
+    rv = ap_size_parameter_parse(arg, &limit);
+    if (rv == APR_ERANGE) {
         return "LimitXMLRequestBody argument is not parsable.";
     }
-    if (*errp || limit < 0) {
+    if (rv != APR_SUCCESS || limit < 0) {
         return "LimitXMLRequestBody requires a non-negative integer.";
     }
 

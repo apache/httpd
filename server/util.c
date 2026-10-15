@@ -2778,12 +2778,19 @@ AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
                                                  apr_off_t *value)
 {
     apr_off_t parsed;
+    apr_status_t rv;
     char *end;
 
-    if (apr_strtoff(&parsed, parameter, &end, 10) != APR_SUCCESS) {
+    /* Check for no conversion before the status: some libc implementations
+     * set EINVAL when no digits are present. */
+    rv = apr_strtoff(&parsed, parameter, &end, 10);
+    if (end == parameter) {
+        return APR_EINVAL;
+    }
+    if (rv != APR_SUCCESS) {
         return APR_ERANGE;
     }
-    if (end == parameter || *end != '\0') {
+    if (*end != '\0') {
         return APR_EINVAL;
     }
 

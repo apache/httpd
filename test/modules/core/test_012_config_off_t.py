@@ -7,7 +7,7 @@ from pyhttpd.conf import HttpdConf
 # size and time directives parsed with ap_size_parameter_parse(), which can
 # not be negative
 DIRECTIVES = [
-    "LimitRequestBody",
+    "LimitRequestBody", "LimitXMLRequestBody",
     "ScriptLogLength", "ScriptLogBuffer",
     "CacheMinFileSize", "CacheMaxFileSize", "CacheReadSize", "CacheReadTime",
     "CacheSocacheMaxTime", "CacheSocacheMinTime", "CacheSocacheReadSize",
@@ -63,3 +63,24 @@ class TestConfigOffT:
         else:
             assert r.exit_code != 0, f"{value} was accepted"
             assert "CacheSocacheMaxSize" in r.stderr, f"{r.stderr}"
+
+    # LimitRequestBody reports invalid syntax (APR_EINVAL) and a number
+    # which does not fit (APR_ERANGE) differently. A value without digits
+    # is invalid syntax regardless of the status returned by the
+    # underlying strto*() implementation: FreeBSD and musl set EINVAL
+    # there, glibc does not.
+    @pytest.mark.parametrize("value, error", [
+        ["abc", "requires a non-negative integer"],
+        ["+", "requires a non-negative integer"],
+        ["-", "requires a non-negative integer"],
+        ["abc123", "requires a non-negative integer"],
+        ["123abc", "requires a non-negative integer"],
+        ["12.3", "requires a non-negative integer"],
+        ["9223372036854775808", "argument is not parsable"],
+        ["-9223372036854775809", "argument is not parsable"],
+        ["9" * 40, "argument is not parsable"],
+    ])
+    def test_core_012_005(self, env, value, error):
+        r = self.check_config(env, "LimitRequestBody", value)
+        assert r.exit_code != 0, f"{value} was accepted"
+        assert f"LimitRequestBody {error}" in r.stderr, f"{r.stderr}"
