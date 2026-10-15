@@ -19,6 +19,9 @@ class TestRoundtripv2:
         env.APACHE_CONF_SRC = "data/test_roundtrip"
         env.clear_store()
         MDConf(env).install()
+        env.httpd_error_log.add_ignored_lognos(["AH10045"])
+        yield
+        env.httpd_error_log.remove_ignored_lognos(["AH10045"])
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
