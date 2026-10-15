@@ -159,8 +159,8 @@ static apr_status_t journald_error_log(const ap_errorlog_info *info,
     const server_rec *s = info->s;
     const request_rec *r = info->r;
     apr_pool_t *pool;
-    const char *log_name = (s && s->error_fname && *s->error_fname) ?
-                            s->error_fname : "error_log";
+    const char *log_name = (s && s->errorlog_provider_argument && *s->errorlog_provider_argument)
+                            ? s->errorlog_provider_argument : "error_log";
 
     pool = journald_info_get_pool(info);
     if (!pool) {
