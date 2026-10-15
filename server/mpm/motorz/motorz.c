@@ -1302,7 +1302,7 @@ static int motorz_setup_pollset(motorz_poller_t *poller)
      * it MUST be thread-safe. All the preferred backends below
      * (kqueue/port/epoll) support APR_POLLSET_THREADSAFE.
      */
-    for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
+    for (i = 0; i < AP_ARRAY_LEN(good_methods); i++) {
         rv = apr_pollset_create_ex(&poller->pollset,
                                   512,
                                   poller->pool,

@@ -512,7 +512,7 @@ static apr_status_t submission(server_rec *s, apr_pool_t *p, const char *ct_exe,
     args[i++] = apr_pstrcat(p, "--ct_server_public_key=", log_cfg->public_key_pem, NULL);
     args[i++] = "upload";
     args[i++] = NULL;
-    ap_assert(i == sizeof args / sizeof args[0]);
+    ap_assert(i == AP_ARRAY_LEN(args));
 
     rv = ctutil_run_to_log(p, s, args, "log client");
 
