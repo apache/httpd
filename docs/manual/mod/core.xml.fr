@@ -782,12 +782,16 @@ CGIVar REQUEST_URI current-uri
   </highlight>
 
   <note><title>Note</title>
-  <p>Dans tous les cas, la variable d’environnement CGI <code>REQUEST_URI</code>
-  contient l’URI complet, y compris la chaîne de paramètres. Cela est différent
-  pour la variable de serveur <code>%{REQUEST_URI}</code> utilisée dans
+  <p>Dans le mode <code>original-uri</code> (par défaut), la variable
+  d’environnement CGI <code>REQUEST_URI</code> contient l’URI original de la
+  ligne de requête, y compris la chaîne de paramètres si elle est présente.
+  Avec <code>current-uri</code>, <code>REQUEST_URI</code> est définie à partir
+  de l’URI actuellement traitée, et la chaîne de paramètres reste disponible
+  séparément dans <code>QUERY_STRING</code>. Cela est différent pour la
+  variable de serveur <code>%{REQUEST_URI}</code> utilisée dans
   <module>mod_rewrite</module> et les expressions de <a
-  href="../expr.html">ap_expr</a>, qui ne contient que la partie chemin (pas la
-  chaîne de paramètres).</p></note>
+  href="../expr.html">ap_expr</a>, qui ne contient que la partie chemin (sans
+  la chaîne de paramètres).</p></note>
 </usage>
 </directivesynopsis>
 
