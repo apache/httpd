@@ -157,6 +157,31 @@ AP_DECLARE(int) ap_scan_script_header_err_brigade_ex(request_rec *r,
                                                      int module_index);
 
 /**
+ * Read headers output from a script like
+ * ap_scan_script_header_err_brigade_ex(), with a limit on the size of the
+ * header lines. A header line is read into a buffer of line_size bytes, so it
+ * can be at most line_size - 3 bytes long, without its line break.
+ * @param r The current request
+ * @param bb The brigade from which to read
+ * @param buffer Empty when calling the function.  On output, if there was an
+ *               error, the string that cause the error is stored here. If it
+ *               is not NULL, it must have room for line_size bytes.
+ * @param module_index The module index to be used for logging
+ * @param line_size The size of the buffer to read a header line into.
+ *                  MAX_STRING_LEN is what
+ *                  ap_scan_script_header_err_brigade_ex() uses.
+ * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR or other 5xx status
+ *         code on failure, or a conditional status code (HTTP_NOT_MODIFIED or
+ *         HTTP_PRECONDITION_FAILED) to indicate that the script's response does
+ *         not meet the request's conditions
+ */
+AP_DECLARE(int) ap_scan_script_header_err_brigade_limit(request_rec *r,
+                                                        apr_bucket_brigade *bb,
+                                                        char *buffer,
+                                                        int module_index,
+                                                        apr_size_t line_size);
+
+/**
  * Read headers strings from a script, ensuring that the output is valid.  If
  * the output is valid, then the headers are added to the headers out of the
  * current request. If the request method is GET or HEAD and the script's
