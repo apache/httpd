@@ -163,6 +163,14 @@ class TestRanges:
         # plus the count transfers we did.
         assert (2+count) == int(stats['Total Accesses'])
 
+    # an unsatisfiable range gets 416 with the complete length (RFC 9110, 15.5.17)
+    def test_h2_008_05(self, env):
+        url = env.mkurl("https", "test1", "/data-100m")
+        r = env.curl_get(url, 5, options=['--http2', '-H', 'Range: bytes=999999999999-'])
+        assert r.response["protocol"] == "HTTP/2"
+        assert r.response["status"] == 416
+        assert r.response["header"].get("content-range") == f"bytes */{100*1024*1024}"
+
     def get_server_status(self, env):
         status_url = env.mkurl("https", "test1", '/status?auto')
         r = env.curl_get(status_url, 5)
