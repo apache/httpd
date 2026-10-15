@@ -110,7 +110,6 @@ class HttpdTestSetup:
         self._make_htdocs()
 
         self._add_aptest()
-        self._build_clients()
         self.env.clear_curl_headerfiles()
 
     def _make_dirs(self):
@@ -256,20 +255,6 @@ class HttpdTestSetup:
         with open(modules_conf, 'a') as fd:
             # load our test module
             fd.write(f"LoadModule aptest_module   \"{module_dir}/mod_aptest.so\"\n")
-
-    def _build_clients(self):
-        if self.env.test_modules_dir:
-            return
-        clients_dir = os.path.join(
-            os.path.dirname(os.path.dirname(inspect.getfile(HttpdTestSetup))),
-            'clients')
-        p = subprocess.run(['make'], capture_output=True, cwd=clients_dir)
-        rv = p.returncode
-        if rv != 0:
-            log.error(f"compiling test clients failed: {p.stderr}")
-            raise Exception(f"compiling test clients failed: {p.stderr}")
-
-
 class HttpdTestEnv:
 
     LIBEXEC_DIR = None
