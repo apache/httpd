@@ -150,7 +150,7 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t *arr,
             *((const char **) apr_array_push(arr)) = apr_pstrndup(r->pool,
                     (const char *) buffer + val, *slider - val);
             (*slider)++;
-            if (buffer[*slider] == '\n') {
+            if (*slider < buffer_len && buffer[*slider] == '\n') {
                 (*slider)++;
             }
             val = *slider;
@@ -209,7 +209,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
             len = colon;
             if (key == *slider) {
                 (*slider)++;
-                if (buffer[*slider] == '\n') {
+                if (*slider < buffer_len && buffer[*slider] == '\n') {
                     (*slider)++;
                 }
                 return APR_SUCCESS;
@@ -227,7 +227,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
                     + key, len - key), apr_pstrmemdup(r->pool,
                     (const char *) buffer + colon, *slider - colon));
             (*slider)++;
-            if (buffer[*slider] == '\n') {
+            if (*slider < buffer_len && buffer[*slider] == '\n') {
                 (*slider)++;
             }
             key = *slider;
