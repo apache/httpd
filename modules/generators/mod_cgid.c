@@ -1667,7 +1667,8 @@ static int cgid_handler(request_rec *r)
 #ifdef HAVE_FDPASSING
     b = cgi_bucket_create(r, dc->timeout, tempsock, script_err, c->bucket_alloc);
     if (b == NULL)
-        return HTTP_INTERNAL_SERVER_ERROR; /* should call log_scripterror() w/ _UNAVAILABLE? */
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, 0, NULL,
+                               "could not create CGI bucket");
 #else
     b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
 #endif

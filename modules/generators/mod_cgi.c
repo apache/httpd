@@ -639,7 +639,8 @@ static int cgi_handler(request_rec *r)
 #if APR_FILES_AS_SOCKETS
     b = cgi_bucket_create(r, dc->timeout, script_in, script_err, c->bucket_alloc);
     if (b == NULL)
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, 0, NULL,
+                               "could not create CGI bucket");
 #else
     b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
 #endif
