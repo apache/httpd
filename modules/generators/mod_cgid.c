@@ -192,7 +192,9 @@ typedef struct {
 } cgid_rlimit_t;
 #endif
 
-#define ENV_COUNT_MAX (256)
+/* Sanity bound on the length of one environment variable value
+ * received by the daemon. */
+#define ENV_VAL_MAX (128 * 1024)
 
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
@@ -504,7 +506,8 @@ static apr_status_t sock_writev(int fd, int auxfd, request_rec *r, int count, ..
     return APR_SUCCESS;
 }
 
-static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
+static apr_status_t get_req(int fd, server_rec *main_server, request_rec *r,
+                            char **argv0, char ***env,
                             int *errfd, cgid_req_t *req)
 {
     int i;
@@ -532,11 +535,11 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
 
     /* Sanity check the structure received. */
-    if (req->env_count > ENV_COUNT_MAX
+    if (req->env_count > APACHE_ARG_MAX
         || req->filename_len == 0 || req->filename_len > APR_PATH_MAX
         || req->argv0_len == 0 || req->argv0_len > APR_PATH_MAX
-        || req->uri_len == 0 || req->uri_len > APR_PATH_MAX
-        || req->args_len > APR_PATH_MAX) {
+        || req->uri_len == 0 || req->uri_len > main_server->limit_req_line
+        || req->args_len > main_server->limit_req_line) {
         return APR_EINVAL;
     }
 
@@ -573,7 +576,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
         if ((stat = sock_read(fd, &curlen, sizeof(curlen))) != APR_SUCCESS) {
             return stat;
         }
-        if (curlen > APR_PATH_MAX) {
+        if (curlen > ENV_VAL_MAX) {
             return APR_EINVAL;
         }
         environ[i] = apr_pcalloc(r->pool, curlen + 1);
@@ -613,6 +616,9 @@ static apr_status_t send_req(int fd, apr_file_t *errpipe, request_rec *r,
     req.conn_id = r->connection->id;
     for (req.env_count = 0; env[req.env_count]; req.env_count++) {
         continue;
+    }
+    if (req.env_count > APACHE_ARG_MAX) {
+        return APR_ENOSPC;
     }
     req.filename_len = strlen(r->filename);
     req.argv0_len = strlen(argv0);
@@ -846,7 +852,8 @@ static int cgid_server(void *data)
         r = apr_pcalloc(ptrans, sizeof(request_rec));
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
         r->pool = ptrans;
-        stat = get_req(sd2, r, &argv0, &env, &errfileno, &cgid_req);
+        stat = get_req(sd2, main_server, r,
+                       &argv0, &env, &errfileno, &cgid_req);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, stat,
                          main_server, APLOGNO(01248)
