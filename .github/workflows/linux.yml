@@ -521,3 +521,50 @@ jobs:
           test/perl-framework/t/logs/error_log
           test/pytest_suite/t/logs/error_log
           test/gen/apache/logs/error_log
+
+  # Builds against the distro's own APR/APR-util, rather than from source
+  # like the job above, so this also exercises those packaged versions.
+  # musl's libc differs from glibc in ways the job above cannot catch, e.g.
+  # strtoll() behaviour for input with no digits (see ap_size_parameter_parse()).
+  alpine-musl:
+    runs-on: ubuntu-latest
+    container: alpine:3.24
+    timeout-minutes: 15
+    steps:
+    - name: Install build dependencies
+      run: |
+        apk add --no-cache build-base autoconf automake libtool pkgconf \
+          apr-dev apr-util-dev pcre2-dev nghttp2-dev python3 curl uv
+    - uses: actions/checkout@v6
+    # apr-dev/apr-util-dev ship apr-1-config/apu-1-config and the headers,
+    # but not the build/*.m4 autoconf macros buildconf needs in apr-config
+    # mode; fetch just those three files from the matching source release.
+    - name: Fetch the APR/APR-util autoconf macros
+      run: |
+        mkdir -p /usr/share/build-1 /tmp/aprsrc
+        apr_version=$(apr-1-config --version)
+        apu_version=$(apu-1-config --version)
+        curl -fsSL "https://archive.apache.org/dist/apr/apr-${apr_version}.tar.gz" | tar -xz -C /tmp/aprsrc
+        curl -fsSL "https://archive.apache.org/dist/apr/apr-util-${apu_version}.tar.gz" | tar -xz -C /tmp/aprsrc
+        cp "/tmp/aprsrc/apr-${apr_version}/build/apr_common.m4" \
+           "/tmp/aprsrc/apr-${apr_version}/build/find_apr.m4" \
+           "/tmp/aprsrc/apr-util-${apu_version}/build/find_apu.m4" \
+           /usr/share/build-1/
+    - name: buildconf, configure, make
+      run: |
+        ./buildconf --with-apr=apr-1-config
+        ./configure --with-apr=/usr/bin/apr-1-config --with-apr-util=/usr/bin/apu-1-config \
+          --enable-mods-shared=reallyall --with-mpm=event
+        make -j$(nproc)
+        make install
+    # Only the core suite for now (see README.ci); the full pyhttpd/perl
+    # suites need more packages than this job installs.
+    - name: Run the core pytest suite
+      run: make check-all-pytest PYTEST_ARGS="--only=pyhttpd" PYHTTPD_TARGETS=modules/core
+    - uses: actions/upload-artifact@v7
+      if: failure()
+      with:
+        name: error_log-alpine-musl
+        path: |
+          config.log
+          test/gen/apache/logs/error_log
