@@ -502,7 +502,8 @@ static apr_status_t sock_writev(int fd, int auxfd, request_rec *r, int count, ..
     return APR_SUCCESS;
 }
 
-static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
+static apr_status_t get_req(int fd, server_rec *main_server, request_rec *r,
+                            char **argv0, char ***env,
                             int *errfd, cgid_req_t *req)
 {
     int i;
@@ -533,8 +534,8 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     if (req->env_count > APACHE_ARG_MAX
         || req->filename_len == 0 || req->filename_len > APR_PATH_MAX
         || req->argv0_len == 0 || req->argv0_len > APR_PATH_MAX
-        || req->uri_len == 0 || req->uri_len > APR_PATH_MAX
-        || req->args_len > APR_PATH_MAX) {
+        || req->uri_len == 0 || req->uri_len > main_server->limit_req_line
+        || req->args_len > main_server->limit_req_line) {
         return APR_EINVAL;
     }
 
@@ -847,7 +848,8 @@ static int cgid_server(void *data)
         r = apr_pcalloc(ptrans, sizeof(request_rec));
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
         r->pool = ptrans;
-        stat = get_req(sd2, r, &argv0, &env, &errfileno, &cgid_req);
+        stat = get_req(sd2, main_server, r,
+                       &argv0, &env, &errfileno, &cgid_req);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, stat,
                          main_server, APLOGNO(01248)
