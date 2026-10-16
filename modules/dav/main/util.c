@@ -577,11 +577,20 @@ DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
         }
 
         if (!strncmp(val, "Second-", 7)) {
+            apr_int64_t secs;
+            char *end;
+
             val += 7;
-            /* ### We need to handle overflow better:
-             * ### timeout will be <= 2^32 - 1
-             */
-            expires = atol(val);
+            secs = apr_strtoi64(val, &end, 10);
+            if (end == val || (*end && *end != ',') || secs < 0) {
+                /* not a valid Second-xxx value, try the next one */
+                continue;
+            }
+            /* RFC 4918: the timeout MUST NOT be greater than 2^32 - 1 */
+            if (secs > APR_UINT32_MAX) {
+                secs = APR_UINT32_MAX;
+            }
+            expires = (time_t)secs;
             now     = time(NULL);
             return now + expires;
         }
