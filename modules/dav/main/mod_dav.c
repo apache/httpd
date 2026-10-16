@@ -1698,6 +1698,8 @@ static int dav_method_search(request_rec *r)
 /* handle the OPTIONS method */
 static int dav_method_options(request_rec *r)
 {
+    core_server_config *conf =
+        ap_get_core_module_config(r->server->module_config);
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     const dav_hooks_binding *binding_hooks = DAV_GET_HOOKS_BINDING(r);
@@ -1829,7 +1831,9 @@ static int dav_method_options(request_rec *r)
         apr_table_addn(methods, "HEAD", "");
         apr_table_addn(methods, "POST", "");
         apr_table_addn(methods, "DELETE", "");
-        apr_table_addn(methods, "TRACE", "");
+        if (conf->trace_enable != AP_TRACE_DISABLE) {
+            apr_table_addn(methods, "TRACE", "");
+        }
         apr_table_addn(methods, "PROPFIND", "");
         apr_table_addn(methods, "PROPPATCH", "");
         apr_table_addn(methods, "COPY", "");
