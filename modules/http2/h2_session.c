@@ -62,7 +62,16 @@ static void on_stream_state_enter(void *ctx, h2_stream *stream);
 static void on_stream_state_event(void *ctx, h2_stream *stream, h2_stream_event_t ev);
 static void on_stream_event(void *ctx, h2_stream *stream, h2_stream_event_t ev);
 static apr_status_t h2_session_shutdown(h2_session *session, int error,
-                                        const char *msg, int force_close);
+                                        uint32_t h2_error, const char *msg,
+                                        int force_close);
+
+/* The error code of a GOAWAY frame is one of RFC 9113, section 7. The
+ * reasons for a shutdown are APR or nghttp2 status values that must not
+ * end up on the wire. */
+static uint32_t h2_error_from_status(int status)
+{
+    return status? H2_ERR_INTERNAL_ERROR : H2_ERR_NO_ERROR;
+}
 
 static int h2_session_status_from_apr_status(apr_status_t rv)
 {
@@ -789,7 +798,8 @@ static apr_status_t h2_session_shutdown_notice(h2_session *session)
 }
 
 static apr_status_t h2_session_shutdown(h2_session *session, int error, 
-                                        const char *msg, int force_close)
+                                        uint32_t h2_error, const char *msg,
+                                        int force_close)
 {
     apr_status_t status = APR_SUCCESS;
     
@@ -827,14 +837,15 @@ static apr_status_t h2_session_shutdown(h2_session *session, int error,
     if (!session->c1->aborted) {
         nghttp2_submit_goaway(session->ngh2, NGHTTP2_FLAG_NONE, 
                               session->local.accepted_max, 
-                              error, (uint8_t*)msg, msg? strlen(msg):0);
+                              h2_error, (uint8_t*)msg, msg? strlen(msg):0);
         status = nghttp2_session_send(session->ngh2);
         if (status == APR_SUCCESS) {
             status = h2_c1_io_assure_flushed(&session->io);
         }
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                       H2_SSSN_LOG(APLOGNO(03069), session, 
-                                  "sent GOAWAY, err=%d, msg=%s"), error, msg? msg : "");
+                                  "sent GOAWAY, err=%u, status=%d, msg=%s"),
+                      (unsigned int)h2_error, error, msg? msg : "");
     }
     h2_session_dispatch_event(session, H2_SESSION_EV_LOCAL_GOAWAY, error, msg);
     return status;
@@ -1592,7 +1603,7 @@ static void h2_session_ev_conn_error(h2_session *session, int arg, const char *m
                           H2_SSSN_LOG(APLOGNO(03401), session, 
                           "conn error -> shutdown, remote.emitted=%d"),
                           (int)session->remote.emitted_count);
-            h2_session_shutdown(session, arg, msg, 0);
+            h2_session_shutdown(session, arg, h2_error_from_status(arg), msg, 0);
             break;
     }
 }
@@ -1603,7 +1614,7 @@ static void h2_session_ev_proto_error(h2_session *session, int arg, const char *
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, session->c1,
                       H2_SSSN_LOG(APLOGNO(03402), session, 
                       "proto error -> shutdown"));
-        h2_session_shutdown(session, arg, msg, 0);
+        h2_session_shutdown(session, arg, h2_error_from_status(arg), msg, 0);
     }
 }
 
@@ -1611,7 +1622,7 @@ static void h2_session_ev_conn_timeout(h2_session *session, int arg, const char 
 {
     transit(session, msg, H2_SESSION_ST_DONE);
     if (!session->local.shutdown) {
-        h2_session_shutdown(session, arg, msg, 1);
+        h2_session_shutdown(session, arg, H2_ERR_NO_ERROR, msg, 1);
     }
 }
 
@@ -1646,13 +1657,13 @@ static void h2_session_ev_bad_client(h2_session *session, int arg, const char *m
 {
     transit(session, msg, H2_SESSION_ST_DONE);
     if (!session->local.shutdown) {
-        h2_session_shutdown(session, arg, msg, 1);
+        h2_session_shutdown(session, arg, (uint32_t)arg, msg, 1);
     }
 }
 
 static void h2_session_ev_pre_close(h2_session *session, int arg, const char *msg)
 {
-    h2_session_shutdown(session, arg, msg, 1);
+    h2_session_shutdown(session, arg, H2_ERR_NO_ERROR, msg, 1);
 }
 
 static void h2_session_ev_no_more_streams(h2_session *session)
@@ -1670,7 +1681,7 @@ static void h2_session_ev_no_more_streams(h2_session *session)
                 else {
                     /* We are no longer accepting new streams.
                      * Time to leave. */
-                    h2_session_shutdown(session, 0, "done", 0);
+                    h2_session_shutdown(session, 0, H2_ERR_NO_ERROR, "done", 0);
                     transit(session, "c1 done after goaway", H2_SESSION_ST_DONE);
                 }
             }
@@ -1895,7 +1906,8 @@ apr_status_t h2_session_process(h2_session *session, int async,
         if (!h2_protocol_is_acceptable_c1(c, session->r, 1)) {
             const char *msg = nghttp2_strerror(NGHTTP2_INADEQUATE_SECURITY);
             update_child_status(session, SERVER_BUSY_READ, msg, NULL);
-            h2_session_shutdown(session, APR_EINVAL, msg, 1);
+            h2_session_shutdown(session, APR_EINVAL, H2_ERR_INADEQUATE_SECURITY,
+                                msg, 1);
         }
         else {
             update_child_status(session, SERVER_BUSY_READ, "init", NULL);
@@ -1999,7 +2011,7 @@ apr_status_t h2_session_process(h2_session *session, int async,
                  * (Checked before the want_read assert below: after receiving a
                  * GOAWAY nghttp2 may no longer want to read.) */
                 if (!session->local.shutdown) {
-                    h2_session_shutdown(session, 0, "done", 0);
+                    h2_session_shutdown(session, 0, H2_ERR_NO_ERROR, "done", 0);
                 }
                 transit(session, "remote goaway, streams drained",
                         H2_SESSION_ST_DONE);
