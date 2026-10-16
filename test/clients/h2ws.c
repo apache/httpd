@@ -973,7 +973,7 @@ int main(int argc, char *argv[])
     struct uri uri;
     struct h2_session session;
     struct ws_stream *stream;
-    char ch;
+    int ch;
 
     cmd = argv[0];
     while((ch = getopt(argc, argv, "c:vh")) != -1) {
