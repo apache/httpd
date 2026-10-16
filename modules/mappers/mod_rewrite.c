@@ -1001,6 +1001,14 @@ static int prefix_stat(request_rec *r, const char *path, apr_pool_t *pool, rewri
     char *statpath;
     apr_status_t rv;
 
+    /* On Windows, apr_filepath_root() with APR_FILEPATH_TRUENAME contacts the
+     * host of a UNC path. Check UNCList first, like for the other file checks.
+     */
+    if (ap_stat_check(path, pool) != APR_SUCCESS) {
+        rewritelog(r, 4, NULL, "prefix_stat: refusing to stat path='%s'", path);
+        return 0;
+    }
+
     rv = apr_filepath_root(&root, &curpath, APR_FILEPATH_TRUENAME, pool);
 
     if (rv != APR_SUCCESS) {
