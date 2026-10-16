@@ -1,0 +1,2 @@
+  *) mod_dav: Do not list TRACE in the Allow field of an OPTIONS response when
+     TraceEnable is off. PR 70264
