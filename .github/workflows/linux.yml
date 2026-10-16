@@ -521,7 +521,7 @@ jobs:
     - name: Install build dependencies
       run: |
         apk add --no-cache build-base autoconf automake libtool pkgconf \
-          apr-dev apr-util-dev pcre2-dev nghttp2-dev python3 curl
+          apr-dev apr-util-dev pcre2-dev nghttp2-dev python3 curl uv
     - uses: actions/checkout@v6
     # apr-dev/apr-util-dev ship apr-1-config/apu-1-config and the headers,
     # but not the build/*.m4 autoconf macros buildconf needs in apr-config
@@ -544,10 +544,6 @@ jobs:
           --enable-mods-shared=reallyall --with-mpm=event
         make -j$(nproc)
         make install
-    - name: Install uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
     # Only the core suite for now (see README.ci); the full pyhttpd/perl
     # suites need more packages than this job installs.
     - name: Run the core pytest suite
