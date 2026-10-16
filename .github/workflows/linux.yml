@@ -515,7 +515,7 @@ jobs:
   # strtoll() behaviour for input with no digits (see ap_size_parameter_parse()).
   alpine-musl:
     runs-on: ubuntu-latest
-    container: alpine:3.20
+    container: alpine:3.24
     timeout-minutes: 15
     steps:
     - name: Install build dependencies
