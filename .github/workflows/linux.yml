@@ -144,6 +144,19 @@ jobs:
               TEST_PYTEST=1
               TEST_MD=1
           # -------------------------------------------------------------------------
+          # As above, on a 64-bit ARM runner.
+          - name: Python pytest test suites, 64-bit ARM
+            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
+            os: ubuntu-24.04-arm
+            pkgs: nghttp2-client
+            env: |
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--with-crypto"
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              TEST_MD=1
+          # -------------------------------------------------------------------------
           # Test against a newer nghttp2 than in the Ubuntu images.
           - name: mod_http2 w/nghttp2 1.68.0
             config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event
