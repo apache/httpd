@@ -192,6 +192,10 @@ typedef struct {
 } cgid_rlimit_t;
 #endif
 
+/* Sanity bound on the length of one environment variable value
+ * received by the daemon. */
+#define ENV_VAL_MAX (128 * 1024)
+
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
     unsigned long conn_id; /* connection id; daemon uses this as a hash value
@@ -572,7 +576,7 @@ static apr_status_t get_req(int fd, server_rec *main_server, request_rec *r,
         if ((stat = sock_read(fd, &curlen, sizeof(curlen))) != APR_SUCCESS) {
             return stat;
         }
-        if (curlen > APR_PATH_MAX) {
+        if (curlen > ENV_VAL_MAX) {
             return APR_EINVAL;
         }
         environ[i] = apr_pcalloc(r->pool, curlen + 1);

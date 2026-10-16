@@ -24,6 +24,7 @@ class TestCgid:
         conf = HttpdConf(env, extras={
             'base': textwrap.dedent(f"""
             LogLevel cgid:trace1
+            LimitRequestLine 16384
             <Directory "{env.server_docs_dir}/cgi/ssi">
                 Options +Includes
                 AcceptPathInfo On
@@ -152,6 +153,15 @@ class TestCgid:
         assert r.response["status"] == 503
         # the daemon sees the aborted connection as a read error
         env.httpd_error_log.ignore_recent(lognos=["AH10245", "AH01248"])
+
+    def test_generators_001_15_long_query(self, env):
+        """A 5000-character request URI, with a query string longer
+        than PATH_MAX, reaches the script."""
+        path = "/arglen.py"
+        query = "x=" + "y" * (5000 - len(path) - len("?x="))
+        r = self.get(env, "cgi", f"{path}?{query}")
+        assert r.response["status"] == 200
+        assert int(r.response["body"]) == len(query)
 
     def test_generators_001_10_ssi_exec_cgi(self, env):
         """#exec cgi= runs the script with the document's query string."""
