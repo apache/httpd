@@ -222,9 +222,9 @@ typedef struct event_conn_state_t event_conn_state_t;
 
 /*
  * The chain of connections to be shutdown by a worker thread (deferred),
- * linked list updated atomically.
+ * linked list protected by timeout_mutex.
  */
-static event_conn_state_t *volatile defer_linger_chain;
+static event_conn_state_t *defer_linger_chain;
 
 struct event_conn_state_t {
     /** APR_RING of expiration timeouts */
@@ -904,15 +904,11 @@ static int defer_lingering_close(event_conn_state_t *cs)
     cs->pub.state = CONN_STATE_LINGER;
     apr_atomic_inc32(&lingering_count);
     cs->deferred_linger = 1;
-    for (;;) {
-        event_conn_state_t *chain = cs->chain = defer_linger_chain;
-        if (apr_atomic_casptr((void *)&defer_linger_chain, cs,
-                              chain) != chain) {
-            /* Race lost, try again */
-            continue;
-        }
-        return 1;
-    }
+    apr_thread_mutex_lock(timeout_mutex);
+    cs->chain = defer_linger_chain;
+    defer_linger_chain = cs;
+    apr_thread_mutex_unlock(timeout_mutex);
+    return 1;
 }
 
 /* Close the connection and release its resources (ptrans), either because an
@@ -1952,6 +1948,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     struct process_score *ps = ap_get_scoreboard_process(process_slot);
     int closed = 0;
     int have_idle_worker = 0;
+    int have_deferred_linger;
     apr_time_t last_log;
 
     last_log = apr_time_now();
@@ -2402,10 +2399,12 @@ do_maintenance:
          * worker(s); thus a NULL here means it will stay so while the listener
          * waits (possibly indefinitely) in poll().
          */
-        if (defer_linger_chain) {
+        apr_thread_mutex_lock(timeout_mutex);
+        have_deferred_linger = defer_linger_chain != NULL;
+        apr_thread_mutex_unlock(timeout_mutex);
+        if (have_deferred_linger) {
             get_worker(&have_idle_worker, 0, &workers_were_busy);
             if (have_idle_worker
-                    && defer_linger_chain /* re-test */
                     && push2worker(NULL, NULL, NULL) == APR_SUCCESS) {
                 have_idle_worker = 0;
             }
@@ -2559,16 +2558,18 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
 
         /* If there are deferred lingering closes, handle them now. */
         while (!workers_may_exit) {
+            /* Another worker can close and recycle the head's pool as soon
+             * as it is removed, so keep the head and chain read together. */
+            apr_thread_mutex_lock(timeout_mutex);
             cs = defer_linger_chain;
+            if (cs) {
+                defer_linger_chain = cs->chain;
+                cs->chain = NULL;
+            }
+            apr_thread_mutex_unlock(timeout_mutex);
             if (!cs) {
                 break;
             }
-            if (apr_atomic_casptr((void *)&defer_linger_chain, cs->chain,
-                                  cs) != cs) {
-                /* Race lost, try again */
-                continue;
-            }
-            cs->chain = NULL;
             AP_DEBUG_ASSERT(cs->pub.state == CONN_STATE_LINGER);
 
             worker_sockets[thread_slot] = csd = cs->pfd.desc.s;
