@@ -53,7 +53,7 @@ struct h2_stream;
  * The magic PRIamble of RFC 7540 that is always sent when starting
  * a h2 communication.
  */
-extern const char *H2_MAGIC_TOKEN;
+extern const char *const H2_MAGIC_TOKEN;
 
 #define H2_ERR_NO_ERROR             (0x00)
 #define H2_ERR_PROTOCOL_ERROR       (0x01)
