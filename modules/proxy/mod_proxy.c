@@ -161,6 +161,29 @@ static const char *set_worker_param(apr_pool_t *p,
             return "Smax must be a positive number";
         worker->s->smax = ival;
     }
+    else if (!strcasecmp(key, "maxbusy")) {
+        /* Hard limit on the number of requests concurrently active
+         * against this worker, across all children. 0 (the default)
+         * means no limit. Only meaningful for a BalancerMember: the
+         * admission table it is checked against is only consulted from
+         * mod_proxy_balancer, see ap_proxy_try_reserve_worker().
+         */
+        apr_off_t off;
+
+        if (!worker->balancer) {
+            return "MaxBusy is only valid for a BalancerMember";
+        }
+        if (ap_size_parameter_parse(val, &off) != APR_SUCCESS || off < 0) {
+            return "MaxBusy must be a non-negative integer";
+        }
+        /* The live admission counter is a 32-bit atomic (see
+         * ap_proxy_try_reserve_worker()); reject what it cannot hold
+         * rather than silently truncate it. */
+        if (off > APR_UINT32_MAX) {
+            return "MaxBusy must not exceed 4294967295";
+        }
+        worker->s->maxbusy = (apr_size_t)off;
+    }
     else if (!strcasecmp(key, "acquire")) {
         /* Acquire timeout in given unit (default is milliseconds).
          * If set this will be the maximum time to
@@ -1384,6 +1407,26 @@ static int proxy_handler(request_rec *r)
 
     do {
         char *url = uri;
+
+        if (worker) {
+            /* Entering this iteration at all means the previous one left
+             * the worker unusable and attempts remain (see the loop
+             * condition below): a failover to a different worker is
+             * about to be attempted via the next ap_proxy_pre_request()
+             * call. The worker being abandoned is no longer handling
+             * this proxied request, so release its maxbusy admission
+             * reservation now rather than leaving it counted as busy for
+             * as long as the eventual successful attempt takes to
+             * complete. A no-op if it held no reservation (maxbusy == 0,
+             * or none could be obtained). This does not touch
+             * worker->s->busy (the bybusyness load-balancing metric),
+             * which keeps its original, unconditional request-pool
+             * lifetime.
+             */
+            apr_pool_cleanup_run(r->pool, worker,
+                                 ap_proxy_release_worker_reservation);
+        }
+
         /* Try to obtain the most suitable worker */
         access_status = ap_proxy_pre_request(&worker, &balancer, r, conf, &url);
         if (access_status != OK) {
@@ -3172,6 +3215,12 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_proxy_strmatch_path = apr_strmatch_precompile(pconf, "path=", 0);
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 
+    /* Create (or, after the first restart in this process's lifetime,
+     * reuse) the maxbusy admission table before any child is forked;
+     * see the function's own comment for why this must outlive a
+     * graceful restart. */
+    ap_proxy_admission_table_init(main_s);
+
     for (; s; s = s->next) {
         int rc, i;
         proxy_server_conf *sconf =
@@ -3187,6 +3236,13 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             }
         }
     }
+
+    /* Pre-registering every maxbusy BalancerMember's admission slot (so
+     * the request path only ever looks one up, never creates one) needs
+     * balancer->s->sname, which is not final until mod_proxy_balancer's
+     * own post_config runs -- see ap_proxy_admission_table_check()'s own
+     * comment. It is called from there, not here.
+     */
 
     return OK;
 }
