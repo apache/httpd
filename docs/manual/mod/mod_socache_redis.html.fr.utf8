@@ -105,11 +105,15 @@ serveur(s) Redis.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_socache_redis</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.39 du serveur HTTP Apache.</td></tr>
 </table>
-    <p>Cette directive permet de d&eacute;finir la dur&eacute;e maximale de lecture/&eacute;criture
+    <p>Cette directive permet de d&eacute;finir la d&eacute;lai de lecture/&eacute;criture
     sur la connexion avec le(s) serveur(s) Redis.</p>
     
     <p>Les valeurs valides pour <code class="directive">RedisTimeout</code> sont des
     dur&eacute;es limit&eacute;es &agrave; 1 heure. 0 signifie aucune limite.</p>
+
+    <p>Le d&eacute;lai de lecture/&eacute;criture du client Redis est pr&eacute;cis &agrave; la seconde
+    pr&egrave;s. Une valeur positive avec une partie fractionnaire est arrondie &agrave; la
+    seconde sup&eacute;rieure.</p>
 
     <div class="note"><p>Par d&eacute;faut, l'unit&eacute; de ces valeurs est la seconde, mais on peut
     sp&eacute;cifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),
