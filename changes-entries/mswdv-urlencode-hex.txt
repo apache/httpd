@@ -1,0 +1,4 @@
+  *) mod_dav: Fix the percent-encoding of the lock owner in the
+     X-MSDAVEXT_ERROR header (MS-WDV). A hex digit "A" was encoded as ":",
+     and bytes above 0x7f, e.g. in UTF-8 user names, were encoded wrongly.
+     PR 69999. [Arturo Bernal]
