@@ -1,0 +1,3 @@
+  *) mod_autoindex: Stop reading (and writing) one byte past the end of a
+     file description when it ends inside an unterminated "&" entity or "<"
+     tag, as a ScanHTMLTitles title can.  [arshiya tabasum]
