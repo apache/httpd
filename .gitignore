@@ -58,6 +58,7 @@ Release
 /.kdev_include_paths
 /.cproject
 /.project
+/dist/
 
 # /built/
 /built/
