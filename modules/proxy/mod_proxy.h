@@ -472,7 +472,15 @@ typedef struct {
     apr_size_t      recv_buffer_size;
     apr_size_t      io_buffer_size;
     apr_size_t      elected;    /* Number of times the worker was elected */
-    apr_size_t      busy;       /* busyness factor */
+    apr_size_t      busy;       /* busyness factor; a load-balancing metric
+                                 * only, reset by some lbmethods' reset() */
+    apr_size_t      maxbusy;    /* Hard limit on concurrently active requests
+                                 * to this worker, across all children; 0
+                                 * (the default) means no limit. This is
+                                 * configuration, not live state: the live
+                                 * admission count it is checked against
+                                 * lives outside this per-generation shared
+                                 * memory, see ap_proxy_try_reserve_worker(). */
     apr_size_t      response_field_size; /* Size of proxy response buffer in bytes. */
     apr_port_t      port;
     apr_off_t       transferred;/* Number of bytes transferred to remote */

@@ -22,6 +22,7 @@
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_atomic.h"
+#include "apr_shm.h"
 #include "http_core.h"
 #include "proxy_util.h"
 #include "ajp.h"
@@ -1453,7 +1454,17 @@ static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
             }
 
             if (PROXY_WORKER_IS_SPARE(worker)) {
-                if (PROXY_WORKER_IS_USABLE(worker)) {
+                /* Capacity-eligible, not merely usable: the replacement
+                 * loop below only examines the first unusable_workers
+                 * entries of this array by position (one spare per
+                 * unusable worker it replaces), so a saturated spare
+                 * left in the array at an early index would silently
+                 * hide a later, available one from ever being examined,
+                 * even though a usable hot spare is supposed to replace
+                 * every unusable worker of its lbset.
+                 */
+                if (PROXY_WORKER_IS_USABLE(worker)
+                    && ap_proxy_worker_has_capacity(worker)) {
                     APR_ARRAY_PUSH(spares, proxy_worker *) = worker;
                 }
             }
@@ -1463,8 +1474,18 @@ static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
                 }
             }
             else if (PROXY_WORKER_IS_USABLE(worker)) {
-              if (is_best(worker, best_worker, baton)) {
-                best_worker = worker;
+              if (ap_proxy_worker_has_capacity(worker)) {
+                if (is_best(worker, best_worker, baton)) {
+                  best_worker = worker;
+                }
+              }
+              else {
+                  /* At its maxbusy limit: not a candidate right now, but
+                   * not an error either. Treat it like an unusable worker
+                   * so a spare/standby can still be picked instead, and
+                   * so the balancer-timeout retry in find_best_worker()
+                   * re-evaluates it once capacity may have freed up. */
+                  unusable_workers++;
               }
             }
             else {
@@ -1476,7 +1497,8 @@ static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
         for (i = 0; (i < spares->nelts) && (i < unusable_workers); i++) {
           worker = APR_ARRAY_IDX(spares, i, proxy_worker *);
 
-          if (is_best(worker, best_worker, baton)) {
+          if (ap_proxy_worker_has_capacity(worker)
+              && is_best(worker, best_worker, baton)) {
             best_worker = worker;
           }
         }
@@ -1486,7 +1508,8 @@ static proxy_worker *proxy_balancer_get_best_worker(proxy_balancer *balancer,
             for (i = 0; i < standbys->nelts; i++) {
               worker = APR_ARRAY_IDX(standbys, i, proxy_worker *);
 
-              if (is_best(worker, best_worker, baton)) {
+              if (ap_proxy_worker_has_capacity(worker)
+                  && is_best(worker, best_worker, baton)) {
                 best_worker = worker;
               }
             }
@@ -5660,6 +5683,590 @@ PROXY_DECLARE(void) ap_proxy_increment_busy_count(proxy_worker *worker)
     }
 #endif
 }
+
+/* Cross-generation maxbusy admission table.
+ *
+ * worker->s->reserved would live in proxy_worker_shared, in the
+ * per-generation segment that mod_slotmem_shm names after the current
+ * MPM generation (modules/slotmem/mod_slotmem_shm.c). A graceful restart
+ * therefore starts every worker's hard-cap counter back at zero while
+ * old-generation requests may still be holding reservations, defeating
+ * the "global across all children" guarantee maxbusy documents (and,
+ * with BalancerPersist On, persisting and restoring a stale count can
+ * even wedge a worker at a phantom reservation forever).
+ *
+ * A plain module-static pointer does not survive a graceful restart
+ * either, unlike the scoreboard's: mod_so ties the dlopen() of a
+ * LoadModule'd .so to cmd->pool (modules/core/mod_so.c, dso_load()),
+ * which chains up to pconf, and reset_process_pconf() (server/main.c)
+ * destroys and recreates pconf on every restart, graceful included.
+ * APR's dlopen() wrapper (dso/unix/dso.c) passes no RTLD_NODELETE, so
+ * when that destruction drops mod_proxy.so's dlopen refcount to zero,
+ * the library is genuinely unmapped and reloaded with fresh, zeroed
+ * static storage before LoadModule processes the new config -- verified
+ * empirically for this change: a trivial static int in this file reset
+ * to its initial value across a real `-k graceful`, in the same parent
+ * PID with the same /proc/<pid>/stat starttime and the very same
+ * virtual address for both the static and the mod_proxy.so mapping.
+ *
+ * The actual owner of the admission segment is therefore not a
+ * mod_proxy static at all, but an entry retained via httpd's own
+ * ap_retained_data_get()/_create() (include/http_config.h: "Store data
+ * which will be retained across unload/load of modules"), the same API
+ * this file already uses for proxy_start_time, backed by
+ * main_s->process->pool -- created once in the parent before the first
+ * post_config and never destroyed or recreated by a restart, graceful
+ * or not, unlike pconf. This is also the pattern mod_cgid uses
+ * (modules/generators/mod_cgid.c, cgid_init()) to keep its daemon
+ * handle across a restart. The module-static pointer below is only a
+ * same-process-call fast-path cache, re-synchronized from the retained
+ * data on every post_config (i.e. on every reload of this DSO), never
+ * treated as authoritative storage. ap_retained_data_create() stores
+ * its pointer with apr_pool_userdata_set(), not _setn(), internally
+ * (server/config.c): the key here is a string literal living in this
+ * DSO's own .rodata, and APR's own documentation for
+ * apr_pool_userdata_setn() (include/apr_pools.h) explicitly warns this
+ * is unsafe "if a static string is used as a userdata key in a DSO and
+ * the DSO could be unloaded and reloaded between the _setn() and the
+ * _get()" -- exactly this module's situation -- and says
+ * apr_pool_userdata_set() "MUST" be used instead, since it copies the
+ * key bytes into the pool rather than trusting the literal's address to
+ * remain valid. ap_retained_data_create() already satisfies this
+ * requirement, so mod_proxy itself never calls apr_pool_userdata_* for
+ * this purpose directly.
+ *
+ * Slots are claimed by a compound identity, not by a single 32-bit
+ * hash. worker->s->hash.{def,fnv} alone identify a *worker URL*, but
+ * maxbusy is a BalancerMember property, and ap_proxy_get_worker_ex()
+ * resolves a BalancerMember against its own balancer's worker list, while
+ * ap_proxy_find_workershm()/ap_proxy_share_worker() give every balancer
+ * its own worker slotmem segment -- confirmed by inspection and by a
+ * live test (two <Proxy> blocks balancing the same backend URL with
+ * different maxbusy= values get two distinct proxy_worker_shared
+ * records, at different shared-memory addresses). A table keyed only by
+ * worker->s->hash.fnv would silently merge their admission counts
+ * because that hash is derived purely from the backend URL.
+ *
+ * balancer->s->hash is not enough either: it is derived purely from
+ * balancer->s->name (ap_proxy_define_balancer()), the bare
+ * "balancer://foo" text, which is identical for the same balancer name
+ * defined in two different <VirtualHost>s. What actually distinguishes
+ * them is balancer->s->sname, built in balancer_post_config()
+ * (mod_proxy_balancer.c) as proxy_server_conf::id + "_" + the balancer's
+ * safe name, where conf->id in turn comes from make_server_id(), httpd's
+ * own mechanism for a stable per-server/vhost identity -- the same
+ * string httpd already relies on to re-attach the per-balancer worker
+ * slotmem segment across a restart (ap_proxy_initialize_balancer(),
+ * storage->attach(&balancer->wslot, balancer->s->sname, ...)). Hashing
+ * sname instead of the bare name is therefore what distinguishes two
+ * vhosts that happen to define the same balancer name, using the same
+ * identity convention httpd itself already depends on for that exact
+ * purpose, rather than inventing a separate server-ID mechanism.
+ *
+ * The slot stores both hashes of worker->balancer->s->sname and both
+ * hashes of worker->s->hash, and a lookup only accepts a slot whose
+ * stored identity matches on all four fields, so an accidental
+ * collision on any single 32-bit value still falls through to the next
+ * candidate slot instead of aliasing two different BalancerMembers.
+ *
+ * Slot *lookup* is lock-free (admission_slot_lookup()): since slots are
+ * never reclaimed for the lifetime of the admission segment, an empty
+ * slot along an identity's own open-addressing probe chain proves no
+ * slot for it exists, because insertion always claims the first empty
+ * slot along that same chain. Slot *creation* (admission_slot_for(),
+ * when no slot exists yet) is guarded by the existing process-global
+ * proxy_mutex (mod_proxy.c) instead: without it, one process could mark
+ * a slot claimed and be descheduled before writing its identity fields,
+ * and a second process, seeing claimed==1 with not-yet-visible identity,
+ * could fall through and claim a *second* slot for the very same
+ * BalancerMember, splitting its reservations across two counters and
+ * defeating maxbusy -- reproduced with a temporary, deliberately widened
+ * publication window before this fix. The lock is held only for the
+ * brief in-memory work of re-checking and publishing a slot, never
+ * across a lookup of an already-published slot (the steady-state case)
+ * and never across any backend I/O.
+ */
+
+#define PROXY_ADMISSION_USERDATA_KEY "proxy_admission_state"
+#define PROXY_ADMISSION_MAGIC        0x50414d54UL /* "PAMT" */
+#define PROXY_ADMISSION_VERSION      1
+
+typedef struct {
+    volatile apr_uint32_t claimed;      /* 0 = free, 1 = claimed */
+    apr_uint32_t sname_def;  /* hash of worker->balancer->s->sname: this
+                              * *balancer instance*, including which
+                              * server/vhost it was configured in */
+    apr_uint32_t sname_fnv;
+    apr_uint32_t worker_def; /* hash of worker->s->hash: which worker
+                              * within that balancer */
+    apr_uint32_t worker_fnv;
+    volatile apr_uint32_t count;        /* reservations currently held */
+} proxy_admission_slot_t;
+
+/* Header stored in process-pool userdata, identifying and owning the
+ * admission segment. Versioned so that a DSO reloaded from a changed
+ * binary (an admin swapping the module file between a `graceful -k` and
+ * the subsequent config reload picking it up) can detect an incompatible
+ * layout instead of reinterpreting old bytes as a new structure.
+ */
+typedef struct {
+    apr_uint32_t magic;
+    apr_uint32_t version;
+    apr_size_t struct_size;
+    apr_size_t slot_size;
+    apr_shm_t *shm;
+    proxy_admission_slot_t *base;
+    apr_uint32_t capacity;
+} proxy_admission_state_t;
+
+/* Per-process cache of the state above, re-synchronized from process-pool
+ * userdata on every call to ap_proxy_admission_table_init() (i.e. on
+ * every post_config of this DSO instance); never authoritative.
+ */
+static proxy_admission_state_t *proxy_admission_cache = NULL;
+
+PROXY_DECLARE(void) ap_proxy_admission_table_init(server_rec *main_s)
+{
+    server_rec *s;
+    apr_uint32_t n = 0;
+    apr_size_t size;
+    apr_status_t rv;
+    proxy_admission_state_t *state;
+
+    /* ap_retained_data_get()/_create(), not apr_pool_userdata_* directly:
+     * this is httpd's own purpose-built API for exactly this situation
+     * (include/http_config.h: "Store data which will be retained across
+     * unload/load of modules"), already relied on elsewhere in this file
+     * for proxy_start_time. ap_retained_data_create() stores the pointer
+     * with apr_pool_userdata_set() internally (server/config.c), so the
+     * _set()-not-_setn() requirement explained above is already handled
+     * by the API itself.
+     */
+    state = ap_retained_data_get(PROXY_ADMISSION_USERDATA_KEY);
+    if (state) {
+        if (state->magic == PROXY_ADMISSION_MAGIC
+            && state->version == PROXY_ADMISSION_VERSION
+            && state->struct_size == sizeof(*state)
+            && state->slot_size == sizeof(proxy_admission_slot_t)) {
+            /* Compatible state from an earlier load of this DSO in this
+             * same process lifetime: reuse it, do not reset live
+             * admission counts that in-flight old-generation requests
+             * may still hold.
+             */
+            proxy_admission_cache = state;
+            return;
+        }
+        /* Incompatible state: almost certainly a changed mod_proxy.so
+         * binary reloaded mid-lifetime (e.g. a package upgrade applied
+         * between a `graceful` and the config reload it triggers), since
+         * the magic/version/sizes are otherwise stable for a given
+         * build. There may still be old-generation children relying on
+         * the OLD segment's layout and content; leaving their memory
+         * alone and simply refusing to enforce maxbusy for the NEW
+         * generation (rather than reinterpreting or freeing memory a
+         * concurrently-running old generation might still reference) is
+         * the safe choice here. The old apr_shm_t itself is never
+         * explicitly destroyed either, for the same reason: it is a
+         * segment of process->pool, cleaned up (if ever) only when that
+         * pool itself goes away at final shutdown.
+         */
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, main_s, APLOGNO(10636)
+                     "incompatible proxy maxbusy admission state found "
+                     "after a module reload; maxbusy will not be "
+                     "enforced for the new generation");
+        proxy_admission_cache = NULL;
+        return;
+    }
+
+    for (s = main_s; s; s = s->next) {
+        proxy_server_conf *conf = ap_get_module_config(s->module_config,
+                                                       &proxy_module);
+        int i;
+        if (!conf || !conf->balancers) {
+            continue;
+        }
+        for (i = 0; i < conf->balancers->nelts; i++) {
+            proxy_balancer *b = &APR_ARRAY_IDX(conf->balancers, i,
+                                               proxy_balancer);
+            if (b->workers) {
+                n += (apr_uint32_t)b->workers->nelts;
+            }
+        }
+    }
+    /* Headroom for BalancerMembers a later config reload adds within the
+     * same (long-lived) process lifetime, without a cold restart, using
+     * the same convention ap_proxy_lb_workers() already uses for the
+     * analogous problem (the scoreboard cannot be resized across a
+     * reconfiguration either): a fixed number of extra slots,
+     * PROXY_DYNAMIC_BALANCER_LIMIT, rather than a multiplier of the
+     * current count. If enough *new* BalancerMembers accumulate across
+     * reloads to exceed this table's capacity,
+     * ap_proxy_admission_table_check() below fails startup for them
+     * (rather than admission_slot_for() silently failing closed at
+     * request time) until the process is restarted cold -- the same
+     * limitation ServerLimit already has across a graceful restart.
+     */
+    n = n + PROXY_DYNAMIC_BALANCER_LIMIT;
+    size = (apr_size_t)n * sizeof(proxy_admission_slot_t);
+
+    state = ap_retained_data_create(PROXY_ADMISSION_USERDATA_KEY,
+                                    sizeof(*state));
+    rv = apr_shm_create(&state->shm, size, NULL, main_s->process->pool);
+    if (rv != APR_SUCCESS || !state->shm) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, main_s, APLOGNO(10637)
+                     "could not allocate the proxy maxbusy admission "
+                     "table; maxbusy will not be enforced");
+        return;
+    }
+    state->base = apr_shm_baseaddr_get(state->shm);
+    memset(state->base, 0, size);
+    state->capacity = n;
+    state->magic = PROXY_ADMISSION_MAGIC;
+    state->version = PROXY_ADMISSION_VERSION;
+    state->struct_size = sizeof(*state);
+    state->slot_size = sizeof(proxy_admission_slot_t);
+
+    proxy_admission_cache = state;
+}
+
+/* Forward declaration: defined further below, needed here because every
+ * statically configured BalancerMember with maxbusy != 0 is now
+ * pre-registered (admission_slot_for() creates its slot) from this
+ * function, rather than lazily on its first request. See the big
+ * comment above this table for why pre-registration is possible at all
+ * (every such worker is known by post_config time; the balancer-manager
+ * dynamic-worker-add path, b_wyes/b_nwrkr below, does not expose a
+ * maxbusy field and so cannot create a worker needing a slot later) and
+ * why it is preferable (no slot can ever be created from the request
+ * path, and therefore no two generations' request paths can race to
+ * create one -- see the proxy_mutex discussion above).
+ */
+static volatile apr_uint32_t *admission_slot_for(proxy_worker *worker);
+
+/* Any hard maxbusy configured anywhere is a promise this process cannot
+ * keep if its slot cannot be pre-registered; call this once per server,
+ * after balancer->s->sname and every worker's shared memory are final
+ * (i.e. at the end of mod_proxy_balancer's post_config, not mod_proxy's:
+ * the admission identity is keyed by sname, which does not exist yet
+ * when mod_proxy's own post_config runs). Turns an unrepresentable
+ * maxbusy member into a startup failure instead of a silently-unenforced
+ * limit or a worker that would return 503 forever once the table fills.
+ */
+PROXY_DECLARE(apr_status_t) ap_proxy_admission_table_check(server_rec *main_s)
+{
+    server_rec *s;
+
+    for (s = main_s; s; s = s->next) {
+        proxy_server_conf *conf = ap_get_module_config(s->module_config,
+                                                       &proxy_module);
+        int i;
+        if (!conf || !conf->balancers) {
+            continue;
+        }
+        for (i = 0; i < conf->balancers->nelts; i++) {
+            proxy_balancer *b = &APR_ARRAY_IDX(conf->balancers, i,
+                                               proxy_balancer);
+            int j;
+            if (!b->workers) {
+                continue;
+            }
+            for (j = 0; j < b->workers->nelts; j++) {
+                proxy_worker *worker = APR_ARRAY_IDX(b->workers, j,
+                                                     proxy_worker *);
+                if (worker->s && worker->s->maxbusy
+                    && !admission_slot_for(worker)) {
+                    ap_log_error(APLOG_MARK, APLOG_EMERG, 0, main_s,
+                                 APLOGNO(10638)
+                                 "BalancerMember %s in balancer %s "
+                                 "configures maxbusy, but the maxbusy "
+                                 "admission table could not be created; "
+                                 "refusing to start rather than silently "
+                                 "not enforcing it",
+                                 worker->s->name, b->s->name);
+                    return APR_EGENERAL;
+                }
+            }
+        }
+    }
+    return APR_SUCCESS;
+}
+
+/* Hash worker's compound admission identity: which balancer instance
+ * (including the server/vhost it is configured in) and which worker
+ * within it. See the comment above this table for why both components
+ * are needed and why sname rather than balancer->s->hash.
+ */
+static void admission_identity(proxy_worker *worker, apr_uint32_t *sdef,
+                               apr_uint32_t *sfnv, apr_uint32_t *wdef,
+                               apr_uint32_t *wfnv)
+{
+    *sdef = ap_proxy_hashfunc(worker->balancer->s->sname,
+                              PROXY_HASHFUNC_DEFAULT);
+    *sfnv = ap_proxy_hashfunc(worker->balancer->s->sname,
+                              PROXY_HASHFUNC_FNV);
+    *wdef = worker->s->hash.def;
+    *wfnv = worker->s->hash.fnv;
+}
+
+/* Lock-free lookup of an already-published slot for this identity.
+ * Returns NULL if none exists yet -- never creates or mutates the
+ * table, so this is safe for read-only/observability callers (e.g.
+ * rendering balancer-manager) and correctly reports 0 reservations for
+ * a worker that was never reserved, including every maxbusy=0 worker,
+ * which must never consume a table entry. See the comment above this
+ * table for why stopping at the first free slot on this identity's own
+ * probe chain is correct (slots are never reclaimed).
+ */
+static volatile apr_uint32_t *admission_slot_lookup(apr_uint32_t sdef,
+                                                     apr_uint32_t sfnv,
+                                                     apr_uint32_t wdef,
+                                                     apr_uint32_t wfnv)
+{
+    apr_uint32_t probe, i, start, capacity;
+    proxy_admission_slot_t *base;
+
+    if (!proxy_admission_cache || !proxy_admission_cache->base) {
+        return NULL;
+    }
+    base = proxy_admission_cache->base;
+    capacity = proxy_admission_cache->capacity;
+
+    probe = wfnv;
+    probe = (probe * 16777619u) ^ wdef;
+    probe = (probe * 16777619u) ^ sfnv;
+    probe = (probe * 16777619u) ^ sdef;
+    start = probe % capacity;
+    i = start;
+    do {
+        if (!apr_atomic_read32(&base[i].claimed)) {
+            return NULL;
+        }
+        if (base[i].sname_def == sdef && base[i].sname_fnv == sfnv
+            && base[i].worker_def == wdef && base[i].worker_fnv == wfnv) {
+            return &base[i].count;
+        }
+        i = (i + 1) % capacity;
+    } while (i != start);
+
+    return NULL;
+}
+
+/* admission_slot_lookup() for a worker, resolving its identity first.
+ * Read-only, like admission_slot_lookup() itself: used by every
+ * request-path caller (ap_proxy_worker_has_capacity(),
+ * ap_proxy_try_reserve_worker(), ap_proxy_release_worker_reservation()),
+ * none of
+ * which may create a slot -- see the comment above this table for why
+ * creation is confined to ap_proxy_admission_table_check() at
+ * post_config time, before any request is ever served.
+ */
+static volatile apr_uint32_t *admission_slot_lookup_for(proxy_worker *worker)
+{
+    apr_uint32_t sdef, sfnv, wdef, wfnv;
+
+    if (!worker->balancer) {
+        return NULL;
+    }
+    admission_identity(worker, &sdef, &sfnv, &wdef, &wfnv);
+    return admission_slot_lookup(sdef, sfnv, wdef, wfnv);
+}
+
+/* Find this worker's admission slot, creating it under proxy_mutex if
+ * none exists yet. Called only from ap_proxy_admission_table_check() at
+ * post_config time (see the comment above this table): every
+ * statically configured maxbusy BalancerMember is pre-registered there,
+ * before any child is forked or any request served, so this never runs
+ * concurrently with itself or with a request-path lookup, and the
+ * request path itself never calls this function. Returns NULL if the
+ * table was never created, or is full: the post_config caller then
+ * fails startup rather than silently dropping the hard limit for a
+ * member it cannot represent.
+ */
+static volatile apr_uint32_t *admission_slot_for(proxy_worker *worker)
+{
+    apr_uint32_t sdef, sfnv, wdef, wfnv, probe, i, start, capacity;
+    proxy_admission_slot_t *base;
+    volatile apr_uint32_t *slot;
+
+    if (!proxy_admission_cache || !proxy_admission_cache->base
+        || !worker->balancer) {
+        return NULL;
+    }
+
+    admission_identity(worker, &sdef, &sfnv, &wdef, &wfnv);
+
+    slot = admission_slot_lookup(sdef, sfnv, wdef, wfnv);
+    if (slot) {
+        return slot;
+    }
+
+    base = proxy_admission_cache->base;
+    capacity = proxy_admission_cache->capacity;
+
+    apr_global_mutex_lock(proxy_mutex);
+
+    /* Re-check under the lock: another process may have created this
+     * exact slot between the lock-free lookup above and acquiring the
+     * lock.
+     */
+    slot = admission_slot_lookup(sdef, sfnv, wdef, wfnv);
+    if (slot) {
+        apr_global_mutex_unlock(proxy_mutex);
+        return slot;
+    }
+
+    probe = wfnv;
+    probe = (probe * 16777619u) ^ wdef;
+    probe = (probe * 16777619u) ^ sfnv;
+    probe = (probe * 16777619u) ^ sdef;
+    start = probe % capacity;
+    i = start;
+    do {
+        if (!apr_atomic_read32(&base[i].claimed)) {
+            /* Fully initialize the slot, including the count, before
+             * publishing it, so a concurrent lock-free reader can never
+             * observe claimed==1 with incomplete or stale identity.
+             * Only one process can reach here at a time (proxy_mutex),
+             * so a plain store for claimed is enough; apr_atomic_set32()
+             * is used anyway for the same cross-process visibility
+             * apr_atomic_read32() already relies on in the lock-free
+             * readers.
+             */
+            base[i].sname_def = sdef;
+            base[i].sname_fnv = sfnv;
+            base[i].worker_def = wdef;
+            base[i].worker_fnv = wfnv;
+            base[i].count = 0;
+            apr_atomic_set32(&base[i].claimed, 1);
+            slot = &base[i].count;
+            break;
+        }
+        i = (i + 1) % capacity;
+    } while (i != start);
+
+    apr_global_mutex_unlock(proxy_mutex);
+
+    if (!slot) {
+        /* Table full: every slot already belongs to some other
+         * BalancerMember. Logged every time, not just once, since from
+         * here on maxbusy silently stops being enforced for this
+         * worker, which operators must not have to discover by noticing
+         * a concurrency anomaly instead of a log line.
+         */
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(10639)
+                     "proxy maxbusy admission table is full; maxbusy "
+                     "cannot be enforced for worker %s", worker->s->name);
+    }
+    return slot;
+}
+
+PROXY_DECLARE(apr_size_t) ap_proxy_get_reserved_count(proxy_worker *worker)
+{
+    volatile apr_uint32_t *slot = admission_slot_lookup_for(worker);
+    return slot ? (apr_size_t)apr_atomic_read32((apr_uint32_t *)slot) : 0;
+}
+
+PROXY_DECLARE(int) ap_proxy_worker_has_capacity(proxy_worker *worker)
+{
+    apr_uint32_t limit = (apr_uint32_t)worker->s->maxbusy;
+    volatile apr_uint32_t *slot;
+
+    if (!limit) {
+        return 1;
+    }
+    slot = admission_slot_lookup_for(worker);
+    if (!slot) {
+        /* Fail closed: a maxbusy worker with no pre-registered slot
+         * means ap_proxy_admission_table_check() either never ran for
+         * it or the table could not represent it, either of which
+         * should already have failed startup -- but a worker this
+         * function cannot identify is one whose reservations this
+         * process cannot account for either, so treat it as saturated
+         * rather than silently drop the hard limit.
+         */
+        return 0;
+    }
+    return apr_atomic_read32((apr_uint32_t *)slot) < limit;
+}
+
+PROXY_DECLARE(int) ap_proxy_try_reserve_worker(proxy_worker *worker)
+{
+    apr_uint32_t limit = (apr_uint32_t)worker->s->maxbusy;
+    volatile apr_uint32_t *slot;
+    apr_uint32_t val, old;
+
+    /* maxbusy == 0 means unlimited: succeed without touching the
+     * admission table at all, so the default/common case pays no
+     * atomic-op cost.
+     */
+    if (!limit) {
+        return 1;
+    }
+
+    slot = admission_slot_lookup_for(worker);
+    if (!slot) {
+        return 0; /* fail closed: see ap_proxy_worker_has_capacity() */
+    }
+
+    val = apr_atomic_read32((apr_uint32_t *)slot);
+    while (val < limit) {
+        old = val;
+        val = apr_atomic_cas32((apr_uint32_t *)slot, val + 1, old);
+        if (val == old) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_release_worker_reservation(void *worker_)
+{
+    proxy_worker *worker = worker_;
+    volatile apr_uint32_t *slot;
+    apr_uint32_t val, old;
+
+    /* This releases only the maxbusy admission reservation. The busy
+     * load-balancing metric (ap_proxy_decrement_busy_count()) is a
+     * separate, independent cleanup with its own unconditional
+     * request-pool lifetime, exactly as in unpatched trunk; it is not
+     * touched here, and a caller abandoning this worker for a failover
+     * attempt must not release it early (see proxy_handler() in
+     * mod_proxy.c, which releases a reservation -- not busy -- the
+     * moment it commits to trying another worker).
+     *
+     * The slot is found by the worker's stable identity hash, the same
+     * one ap_proxy_try_reserve_worker() used, never by consulting
+     * worker->s->maxbusy (which may have changed since the reservation
+     * was made, e.g. across a graceful config reload).
+     *
+     * This function MUST be called exactly once for each successful,
+     * finite ap_proxy_try_reserve_worker() return, and never otherwise:
+     * calling it for a worker that was never actually reserved by this
+     * attempt would release another, unrelated caller's reservation,
+     * not a harmless no-op, because every maxbusy != 0 BalancerMember
+     * has its slot pre-registered at post_config and retained for the
+     * parent process's lifetime -- a worker with maxbusy != 0 therefore
+     * always HAS a slot here, whether or not this particular caller holds
+     * a reservation in it. The lookup below returning NULL only happens
+     * for a maxbusy == 0 worker, which never had a slot registered in
+     * the first place and for which no cleanup is ever installed.
+     */
+    slot = admission_slot_lookup_for(worker);
+    if (!slot) {
+        return APR_SUCCESS;
+    }
+
+    val = apr_atomic_read32((apr_uint32_t *)slot);
+    while (val > 0) {
+        old = val;
+        val = apr_atomic_cas32((apr_uint32_t *)slot, val - 1, old);
+        if (val == old) {
+            break;
+        }
+    }
+    return APR_SUCCESS;
+}
+
 
 PROXY_DECLARE(apr_size_t) ap_proxy_get_busy_count(proxy_worker *worker)
 {
