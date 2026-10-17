@@ -3,11 +3,14 @@
 Covers default-language selection, explicit variant requests, Accept-Language
 obedience (plain + compressed + typemap), quality-rating preferences, a
 non-existent highest-quality fallback, a typemap query-string case, and
-Accept content-type negotiation (with 406 cases).
+Accept content-type negotiation (with 406 cases), and the source quality
+("qs") of a variant not showing up in the Content-Type of the response.
 
 Perl original used ``need_module('negotiation') && need_cgi &&
 need_module('mime')``.
 """
+
+import re
 
 import pytest
 
@@ -153,3 +156,39 @@ def test_content_type(http, accept, expected):
     else:
         assert t_cmp(r.status_code, 406), \
             f"expect Not Acceptable for Accept: {accept}"
+
+
+XML = "application/xhtml+xml"
+
+# "qs" only decides between variants, the other parameters are kept
+QS_PARAMS = [
+    ("after", "text/html;charset=utf-8"),
+    ("before", "text/html;charset=utf-8"),
+    ("quoted", 'application/example;foo="a;b";q=0.7;bar="c, d"'),
+]
+
+
+def _content_type(resp):
+    assert resp.status_code == 200
+    return re.sub(r";\s+", ";", resp.headers["content-type"])
+
+
+@need_module("negotiation", "mime")
+@pytest.mark.parametrize("path", ["doc", "typemap.var"])
+@pytest.mark.parametrize("accept,expected", [
+    (f"text/html, {XML}", XML),
+    ("text/html", "text/html"),
+    (f"text/html, {XML};q=0.5", "text/html"),
+])
+def test_source_quality(http, path, accept, expected):
+    r = http.GET(f"/modules/negotiation/qs/{path}", headers={"Accept": accept})
+    assert t_cmp(_content_type(r), expected), \
+        "qs selects the variant but is not sent in Content-Type"
+
+
+@need_module("negotiation", "mime")
+@pytest.mark.parametrize("name,expected", QS_PARAMS, ids=[n for n, _ in QS_PARAMS])
+def test_source_quality_parameters(http, name, expected):
+    r = http.GET(f"/modules/negotiation/qs/{name}", headers={"Accept": "*/*"})
+    assert t_cmp(_content_type(r), expected), \
+        "only qs is removed from the Content-Type"

@@ -135,6 +135,15 @@
         LanguagePriority zh-TW fr fu en de 
     </Directory>
 
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/qs>
+        Options +MultiViews
+        AddType text/html;qs=0.9 .html
+        AddType application/xhtml+xml;qs=1.0 .xhtml
+        AddType "text/html;charset=utf-8;qs=0.8" .qsafter
+        AddType "text/html;QS=0.8;charset=utf-8" .qsbefore
+        AddType "application/example;foo=\"a;b\";q=0.7;qs=0.5;bar=\"c, d\"" .quoted
+    </Directory>
+
    <IfDefine APACHE2>
        <IfModule @CGI_MODULE@>
             <Directory @SERVERROOT@/htdocs/modules/negotiation/query>
