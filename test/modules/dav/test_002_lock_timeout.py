@@ -1,6 +1,7 @@
 import glob
 import os
 import re
+import time
 import pytest
 
 from pyhttpd.conf import HttpdConf
@@ -18,7 +19,8 @@ class TestLockTimeout:
     def _class_scope(self, env):
         dav_dir = os.path.join(env.gen_dir, 'dav-lock')
         os.makedirs(dav_dir, exist_ok=True)
-        for name in ['a.txt', 'b.txt', 'c.txt', 'd.txt']:
+        for name in ['a.txt', 'b.txt', 'c.txt', 'd.txt',
+                     'e.txt', 'f.txt', 'g.txt']:
             with open(os.path.join(dav_dir, name), 'w') as fd:
                 fd.write('hello\n')
         for fpath in glob.glob(os.path.join(env.gen_dir, 'davlock-timeout*')):
@@ -63,15 +65,24 @@ class TestLockTimeout:
         return m.group(1)
 
     # an ordinary Second-xxx timeout is used as given, and the lock is held
-    @pytest.mark.parametrize("name, timeout, low, high", [
-        ("a.txt", "Second-600", 590, 600),
+    @pytest.mark.parametrize("name, timeout, expect", [
+        ("a.txt", "Second-600", 600),
         # too large to add to the current time: capped at the RFC 4918
         # maximum of 2^32 - 1 rather than wrapping to an expired lock
-        ("b.txt", "Second-9223372036854775807", 4294967285, 4294967295),
+        ("b.txt", "Second-9223372036854775807", 4294967295),
         # a malformed value is skipped in favour of the next TimeType
-        ("d.txt", "Second-abc, Second-60", 50, 60),
+        ("d.txt", "Second-abc, Second-60", 60),
+        # boundaries of the RFC 4918 maximum
+        ("e.txt", "Second-4294967295", 4294967295),
+        ("f.txt", "Second-4294967296", 4294967295),
+        # fits a signed 32-bit time_t, but now + timeout does not
+        ("g.txt", "Second-2147483647", 2147483647),
     ])
-    def test_dav_002_01(self, env, name, timeout, low, high):
+    def test_dav_002_01(self, env, name, timeout, expect):
+        # with a signed 32-bit time_t the expiry is further capped so
+        # that it still fits; accept either result
+        high = expect
+        low = min(expect, 2**31 - 1 - int(time.time())) - 10
         r = self._lock(env, name, timeout)
         assert r.response["status"] == 200
         m = re.match(r'Second-(\d+)$', self._timeout(r))
