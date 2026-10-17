@@ -1,0 +1,3 @@
+  *) mod_md: Fix a race in md_asn1_time_get() that could report a
+     certificate's notBefore/notAfter time off by one second,
+     intermittently breaking exact-timestamp checks.
