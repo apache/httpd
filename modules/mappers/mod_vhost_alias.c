@@ -244,7 +244,10 @@ static APR_INLINE int vhost_alias_checkspace(request_rec *r, char *buf,
                       "VirtualDocumentRoot expansion too large");
         return HTTP_REQUEST_URI_TOO_LARGE;
     }
-    if (*pdest + size > buf + HUGE_STRING_LEN) {
+    /* Reserve one byte for the terminating NUL: dest must never reach
+     * buf + HUGE_STRING_LEN, or the '\0' written here and at the end of
+     * vhost_alias_interpolate() lands one byte past the buffer. */
+    if (*pdest + size >= buf + HUGE_STRING_LEN) {
         **pdest = '\0';
         if (r->filename) {
             r->filename = apr_pstrcat(r->pool, r->filename, buf, NULL);
