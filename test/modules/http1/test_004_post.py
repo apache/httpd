@@ -3,6 +3,7 @@ import email.parser
 import inspect
 import json
 import os
+import socket
 import sys
 
 import pytest
@@ -54,3 +55,24 @@ class TestPost:
 
     def test_h1_004_05(self, env):
         r = self.curl_upload_and_verify(env, "data-1k", ["-vvv", "-H", "Expect: 100-continue"])
+
+    @pytest.mark.parametrize("size", [
+        "8000000000000000",
+        "ffffffffffffffff",
+        "00000000000000008000000000000000",
+    ])
+    def test_h1_004_chunk_size_overflow(self, env, size):
+        request = (f"POST / HTTP/1.1\r\nHost: localhost\r\n"
+                   f"Transfer-Encoding: chunked\r\n\r\n{size}\r\n0\r\n\r\n").encode("ascii")
+        with socket.create_connection(("localhost", int(env.http_port))) as sock:
+            sock.settimeout(5)
+            sock.sendall(request)
+            sock.shutdown(socket.SHUT_WR)
+            response = bytearray()
+            while b"\r\n" not in response and len(response) < 256:
+                data = sock.recv(256 - len(response))
+                if not data:
+                    break
+                response.extend(data)
+            status_line = response.split(b"\r\n", 1)[0]
+        assert status_line.startswith(b"HTTP/1.1 413 "), status_line
