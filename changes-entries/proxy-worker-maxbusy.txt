@@ -1,0 +1,4 @@
+  *) mod_proxy: Add a "maxbusy" BalancerMember parameter, a hard limit on the
+     number of requests concurrently active against a worker across all
+     child processes, distinct from the per-child connection pool size
+     controlled by "max".  [Arturo Bernal]
