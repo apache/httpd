@@ -2,12 +2,12 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1855701 -->
+<!-- English Revision: 1938833 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
- this work for additional information regarding copyright ownership.
+this work for additional information regarding copyright ownership.
  The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
@@ -101,11 +101,15 @@ serveur(s) Redis.</description>
 <compatibility>Disponible à partir de la version 2.4.39 du serveur HTTP Apache.</compatibility>
 
 <usage>
-    <p>Cette directive permet de définir la durée maximale de lecture/écriture
+    <p>Cette directive permet de définir la délai de lecture/écriture
     sur la connexion avec le(s) serveur(s) Redis.</p>
     
     <p>Les valeurs valides pour <directive>RedisTimeout</directive> sont des
     durées limitées à 1 heure. 0 signifie aucune limite.</p>
+
+    <p>Le délai de lecture/écriture du client Redis est précis à la seconde
+    près. Une valeur positive avec une partie fractionnaire est arrondie à la
+    seconde supérieure.</p>
 
     <note><p>Par défaut, l'unité de ces valeurs est la seconde, mais on peut
     spécifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),

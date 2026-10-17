@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934245 -->
+<!-- English Revision: 1938712 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,7 +46,7 @@
 
     <p>Le module <module>mod_cgid</module> doit être utilisé à la place
     du module <module>mod_cgi</module> lorsqu'on utilise un module MPM
-    multi-threadé sous Unix. Vus de l'utilisateur, les deux modules
+    multi-threadé sous UNIX. Vus de l'utilisateur, les deux modules
     sont pratiquement identiques.</p>
 
     <p>À des fins de compatibilité ascendante, le gestionnaire
