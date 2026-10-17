@@ -1147,6 +1147,34 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     per process in the active MPM. In the Prefork MPM, this is always 1;
     while with other MPMs, it is controlled by the
     <directive>ThreadsPerChild</directive> directive.</td></tr>
+    <tr><td>maxbusy</td>
+        <td>0</td>
+        <td>Maximum number of requests that may be concurrently active
+    against this <directive module="mod_proxy_balancer">BalancerMember</directive>,
+    counted across all child processes of this <code>httpd</code>
+    instance. Unlike <code>max</code>, which bounds the size of the
+    per-child connection pool, <code>maxbusy</code> is a single global
+    limit on in-flight requests, and only applies to a balancer member.
+    While a member is at its <code>maxbusy</code> limit, the balancer
+    treats it as temporarily unavailable and selects another member with
+    spare capacity instead, the same way it already does for a member
+    that is disabled or in an error state; the balancer's own
+    <code>timeout</code> parameter (set on the
+    <directive module="mod_proxy_balancer">Proxy balancer://...</directive>
+    block, not on an individual member, and unrelated to a member's own
+    backend connection timeout) applies if no member currently has
+    capacity. A request only fails with
+    <code>HTTP_SERVICE_UNAVAILABLE</code> if no member becomes available
+    before that balancer timeout elapses, or immediately if none is
+    configured. The default, 0, means no limit. With
+    <directive module="mod_proxy">BalancerPersist</directive> on, a worker's
+    persisted shared state survives a restart as-is; changing only
+    <code>maxbusy</code> in the configuration does not replace that
+    persisted value, the same as for other worker parameters such as
+    <code>loadfactor</code> or <code>smax</code>. A full stop and start is
+    required for a configuration-only <code>maxbusy</code> change to take
+    effect in that case.
+    </td></tr>
     <tr><td>smax</td>
         <td>max</td>
         <td>Retained connection pool entries above this limit are freed
