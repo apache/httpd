@@ -56,7 +56,7 @@ static int h2_protocol_propose(conn_rec *c, request_rec *r,
 {
     int proposed = 0;
     int is_tls = ap_ssl_conn_is_ssl(c);
-    const char **protos = is_tls? h2_protocol_ids_tls : h2_protocol_ids_clear;
+    const char *const *protos = is_tls? h2_protocol_ids_tls : h2_protocol_ids_clear;
     
     if (!h2_mpm_supported()) {
         return DECLINED;
@@ -155,8 +155,8 @@ static int h2_protocol_switch(conn_rec *c, request_rec *r, server_rec *s,
                               const char *protocol)
 {
     int found = 0;
-    const char **protos = ap_ssl_conn_is_ssl(c)? h2_protocol_ids_tls : h2_protocol_ids_clear;
-    const char **p = protos;
+    const char *const *protos = ap_ssl_conn_is_ssl(c)? h2_protocol_ids_tls : h2_protocol_ids_clear;
+    const char *const *p = protos;
     
     (void)s;
     if (!h2_mpm_supported()) {
