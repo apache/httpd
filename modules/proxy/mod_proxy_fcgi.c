@@ -29,6 +29,7 @@ typedef struct {
 
 typedef struct {
     char *dirwalk_uri_path;
+    const char *local_redirect; /* URI path of a CGI local redirect response */
 } fcgi_req_config_t;
 
 /* We will assume FPM, but still differentiate */
@@ -593,6 +594,48 @@ static int handle_headers(request_rec *r, int *state,
     return 0;
 }
 
+/* What the CGI response headers did to the request, see local_redirect(). */
+typedef struct {
+    int nheaders;
+    int nerr_headers;
+    const char *content_type;
+    const char *status_line;
+} resp_snapshot;
+
+static void snapshot_response(request_rec *r, resp_snapshot *snap)
+{
+    snap->nheaders = apr_table_elts(r->headers_out)->nelts;
+    snap->nerr_headers = apr_table_elts(r->err_headers_out)->nelts;
+    snap->content_type = r->content_type;
+    snap->status_line = r->status_line;
+}
+
+/*
+ * Returns the local URI path of a CGI Local Redirect Response (RFC 3875,
+ * 6.2.2), which is a response without a status or a content type and with
+ * nothing but a Location of a URI path in its headers.
+ */
+static const char *local_redirect(request_rec *r, const resp_snapshot *before)
+{
+    resp_snapshot now;
+    const char *location;
+
+    snapshot_response(r, &now);
+    if (r->status != HTTP_OK
+            || now.status_line != before->status_line
+            || now.content_type != before->content_type
+            || now.nheaders != before->nheaders + 1
+            || now.nerr_headers != before->nerr_headers) {
+        return NULL;
+    }
+
+    location = apr_table_get(r->headers_out, "Location");
+    if (location && location[0] == '/' && location[1] != '/') {
+        return location;
+    }
+    return NULL;
+}
+
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              request_rec *r, apr_pool_t *setaside_pool,
                              apr_uint16_t request_id, const char **err,
@@ -601,6 +644,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0, ignore_body = 0;
+    int redirected = 0;
     apr_status_t rv = APR_SUCCESS;
     int script_error_status = HTTP_OK;
     conn_rec *c = r->connection;
@@ -828,10 +872,34 @@ recv_again:
 
                         if (st == 1) {
                             int status;
+                            const char *location;
+                            resp_snapshot before;
                             seen_end_of_headers = 1;
 
+                            snapshot_response(r, &before);
                             status = ap_scan_script_header_err_brigade_ex(r, ob,
                                 NULL, APLOG_MODULE_INDEX);
+
+                            /* A local redirect is done by fcgi_request_status()
+                             * once the response is complete and the connection
+                             * to the backend is released, so read and drop the
+                             * rest of it like the body of a 304. */
+                            if (status == OK
+                                    && (location = local_redirect(r, &before))) {
+                                fcgi_req_config_t *rconf =
+                                    ap_get_module_config(r->request_config,
+                                                         &proxy_fcgi_module);
+
+                                if (rconf == NULL) {
+                                    rconf = apr_pcalloc(r->pool, sizeof(*rconf));
+                                    ap_set_module_config(r->request_config,
+                                                         &proxy_fcgi_module,
+                                                         rconf);
+                                }
+                                rconf->local_redirect = location;
+                                apr_table_unset(r->headers_out, "Location");
+                                redirected = ignore_body = 1;
+                            }
 
                             /* FCGI has its own body framing mechanism which we don't
                              * match against any provided Content-Length, so let the
@@ -942,7 +1010,7 @@ recv_again:
                 } else {
                     /* XXX what if we haven't seen end of the headers yet? */
 
-                    if (script_error_status == HTTP_OK) {
+                    if (script_error_status == HTTP_OK && !redirected) {
                         b = apr_bucket_eos_create(c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(ob, b);
 
@@ -1384,10 +1452,42 @@ static const char *cmd_setenv(cmd_parms *cmd, void *in_dconf,
 
     return NULL;
 }
+
+/*
+ * Does the local redirect found by dispatch() once the request to the backend
+ * is complete, on the request_status hook.
+ */
+static int fcgi_request_status(int *status, request_rec *r)
+{
+    fcgi_req_config_t *rconf = ap_get_module_config(r->request_config,
+                                                    &proxy_fcgi_module);
+
+    if (*status == OK && rconf && rconf->local_redirect) {
+        const char *location = rconf->local_redirect;
+
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10635)
+                      "Internal redirect to %s", location);
+
+        r->status_line = NULL;
+        if (r->method_number != M_GET) {
+            /* keep HEAD, which is passed around as M_GET, too */
+            r->method = "GET";
+            r->method_number = M_GET;
+        }
+        apr_table_unset(r->headers_in, "Content-Length");
+        ap_internal_redirect_handler(location, r);
+        return OK;
+    }
+
+    return DECLINED;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_fcgi_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_fcgi_canon, NULL, NULL, APR_HOOK_FIRST);
+    APR_OPTIONAL_HOOK(proxy, request_status, fcgi_request_status, NULL, NULL,
+                      APR_HOOK_MIDDLE);
 }
 
 static const command_rec command_table[] = {
