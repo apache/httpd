@@ -884,6 +884,8 @@ LimitRequestFields    32
   Alias /modules/ldap/group @DocumentRoot@
   Alias /modules/ldap/refer @DocumentRoot@
   Alias /modules/ldap/search @DocumentRoot@
+  Alias /modules/ldap/subreq @DocumentRoot@
+  Alias /modules/ldap/target @DocumentRoot@
 
   # Simple user lookup
   <Location /modules/ldap/simple>
@@ -923,6 +925,40 @@ LimitRequestFields    32
      AuthLDAPBindPassword mod_authnz_ldap
      Require ldap-search cn=Subgroup
   </Location>
+
+  # Subrequest issued from the fixups phase (mod_rewrite -U) into a second
+  # per-dir config with identical LDAP settings. A subrequest only re-runs
+  # authn/authz when its per-dir config differs from the parent's, and at
+  # mod_rewrite's fixup the parent still holds the LDAP connection it used
+  # for authz. On platforms where APR_THREAD_MUTEX_DEFAULT is recursive
+  # (Windows) the subrequest used to be handed the parent's connection, and
+  # the parent's cleanup then ran against an already released connection.
+  <IfModule mod_rewrite.c>
+  <Location /modules/ldap/subreq>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-subreq@httpd.apache.org
+     AuthBasicProvider ldap
+     Require ldap-group cn=Group One,dc=example,dc=com
+     RewriteEngine On
+     RewriteCond /modules/ldap/target/foobar.html -U
+     RewriteRule ^ - [E=LDAP_SUBREQ:ok]
+     <IfModule mod_headers.c>
+        Header set X-LDAP-Subreq "%{LDAP_SUBREQ}e"
+     </IfModule>
+  </Location>
+  <Location /modules/ldap/target>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-target@httpd.apache.org
+     AuthBasicProvider ldap
+     Require ldap-group cn=Group One,dc=example,dc=com
+  </Location>
+  </IfModule>
 
 </IfDefine>
 

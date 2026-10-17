@@ -27,6 +27,8 @@ CASES = [
     ("/modules/ldap/refer/", "alpha", "Alpha", 401),
     ("/modules/ldap/refer/", "beta", "Beta", 200),
     ("/modules/ldap/search/", "unchecked", "unchecked", 200),
+    ("/modules/ldap/subreq/foobar.html", "delta", "Delta", 200),
+    ("/modules/ldap/target/foobar.html", "delta", "Delta", 200),
 ]
 
 
@@ -46,3 +48,18 @@ def test_ldap(http, url, username, password, expected):
         r = http.GET(url)
     creds = f"{username}/{password}" if username else "no credentials"
     assert t_cmp(r.status_code, expected), f"test for {url} with {creds}"
+
+
+@need_module("authnz_ldap", "rewrite", "headers")
+def test_ldap_fixups_subrequest(http):
+    """A mod_rewrite -U subrequest from the parent's fixups phase lands in a
+    second per-dir config with the same LDAP settings, so its own LDAP authn
+    and authz run while the parent still holds its authz connection. The
+    parent must complete, and the header proves the subrequest succeeded."""
+    if not _ldap_configured(http):
+        pytest.skip("LDAP testing not configured (run with --defines LDAP)")
+    r = http.GET("/modules/ldap/subreq/foobar.html",
+                 auth=httpx.BasicAuth("delta", "Delta"))
+    assert t_cmp(r.status_code, 200), "parent request with nested LDAP subrequest"
+    assert t_cmp(r.headers.get("x-ldap-subreq"), "ok"), \
+        "subrequest into second LDAP per-dir config did not succeed"
