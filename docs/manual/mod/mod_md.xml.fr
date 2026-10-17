@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1936207:1938721 (outdated) -->
+<!-- English Revision: 1938721 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1367,6 +1367,8 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>La valeur par défaut est « off » à partir de la version
+	2.4.69 du serveur HTTP Apache</compatibility>
         <usage>
 	    <p>Si cette directive est activée, une section est ajoutée au
 	    gestionnaire « <code>server-status</code> » de
