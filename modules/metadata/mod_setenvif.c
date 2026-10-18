@@ -602,6 +602,13 @@ static int match_headers(request_rec *r)
             }
 
         }
+        else {
+            /* ap_expr_exec_re() below may point val at the string its
+             * regex matched, so the next header rule must look up its
+             * value again rather than reuse val and val_len.
+             */
+            last_name = NULL;
+        }
 
         /*
          * A NULL value indicates that the header field or special entity
