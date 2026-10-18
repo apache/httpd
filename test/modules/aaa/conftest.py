@@ -90,6 +90,14 @@ def env(pytestconfig) -> AAATestEnv:
         f'AuthUserFile "{pwfile}"',
         'AuthDigestDomain "/digest/domain/" "https://mirror.example.org/other/"',
     ]))
+    # Tracks clients like "nccheck", but with a domain; a client crossing
+    # between the two is still the same user (test_015).
+    conf.add(_digest_dir(docs, "nccheck-domain", [
+        'AuthDigestProvider file',
+        f'AuthUserFile "{pwfile}"',
+        'AuthDigestNcCheck On',
+        'AuthDigestDomain "/digest/nccheck-domain/"',
+    ]))
     conf.add(_digest_dir(docs, "noprovider", [
         # AuthDigestProvider intentionally omitted: falls back to "file".
         f'AuthUserFile "{pwfile}"',
@@ -114,6 +122,19 @@ def env(pytestconfig) -> AAATestEnv:
         '    Require valid-user',
         '</Location>',
     ])
+    # A second server with the same realm but its own accounts, on its own
+    # port so that the main server keeps the rest. The main server's
+    # <Directory> sections apply here too; this one overrides the password
+    # file for the nccheck location.
+    conf.add(f'Listen {env.http_port2}')
+    conf.start_vhost(domains=[f"aaa2.{env.http_tld}"], port=env.http_port2,
+                     doc_root=docs)
+    conf.add(_digest_dir(docs, "nccheck", [
+        'AuthDigestProvider file',
+        f'AuthUserFile "{env.digest_pwfile2}"',
+        'AuthDigestNcCheck On',
+    ]))
+    conf.end_vhost()
     conf.install()
     assert env.apache_restart() == 0
     return env

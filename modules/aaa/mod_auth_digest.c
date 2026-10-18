@@ -154,6 +154,9 @@ typedef struct hash_entry {
                                                  * for last_nonce_time       */
     apr_time_t         last_nonce_time;         /* nonce of the last request
                                                  * accepted for this client  */
+    apr_uint64_t       owner;                   /* owner_hash() of the user
+                                                 * who first used this entry,
+                                                 * zero until then           */
 } client_entry;
 
 /* The client table, in the shared memory segment. Once initialize_tables()
@@ -179,7 +182,8 @@ enum hdr_sts { NO_HEADER, NOT_DIGEST, INVALID, VALID };
 enum nonce_state {
     NONCE_ACCEPTED,     /* recorded as the latest used by this client */
     NONCE_STALE,        /* already used, or the client is unknown */
-    NONCE_BAD_COUNT     /* nonce-count did not increase: possible replay */
+    NONCE_BAD_COUNT,    /* nonce-count did not increase: possible replay */
+    NONCE_NOT_OWNER     /* the entry quoted belongs to another user */
 };
 
 /* struct to hold a parsed Authorization header */
@@ -220,7 +224,7 @@ static apr_global_mutex_t *client_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
 static const char     *client_shm_filename;
 
-#define DEF_SHMEM_SIZE  8192L           /* ~ 140 entries */
+#define DEF_SHMEM_SIZE  8192L           /* ~ 120 entries */
 #define HASH_DEPTH      5
 /* Buckets for a given segment size, so that the default and
  * AuthDigestShmemSize cannot disagree. */
@@ -724,6 +728,38 @@ static void client_note_renewed(void)
     apr_global_mutex_unlock(client_lock);
 }
 
+/* Identifies the authenticated user of r, within the origin server and
+ * realm, for binding a client entry to. A keyed hash, so that it is
+ * fixed-size in shared memory and a username colliding with another's
+ * cannot be found. Never zero.
+ *
+ * AuthDigestDomain is deliberately not part of this: a client keeps one
+ * nonce and opaque per server and realm whatever domains it was given, so
+ * sections of one realm which differ in their domain would make every
+ * crossing between them a stale challenge and a fresh entry. */
+static apr_uint64_t owner_hash(request_rec *r)
+{
+    const char *realm = ap_auth_name(r);
+    const char *msg = apr_psprintf(r->pool, "%s:%" APR_SIZE_T_FMT ":%s:%s",
+                                   r->server->server_hostname,
+                                   (apr_size_t)strlen(realm), realm, r->user);
+    apr_uint64_t owner;
+#if DIGEST_SIPHASH_NONCE
+    owner = apr_siphash24(msg, strlen(msg), secret);
+#else
+    unsigned char sha1[APR_SHA1_DIGESTSIZE];
+    apr_sha1_ctx_t ctx;
+
+    apr_sha1_init(&ctx);
+    apr_sha1_update_binary(&ctx, secret, SECRET_LEN);
+    apr_sha1_update_binary(&ctx, (const unsigned char *) msg, strlen(msg));
+    apr_sha1_final(sha1, &ctx);
+    memcpy(&owner, sha1, sizeof(owner));
+#endif
+    /* zero is reserved for an entry nobody has used yet */
+    return owner ? owner : 1;
+}
+
 /* Check the nonce generated at nonce_time, and the nonce-count nc sent
  * with it, against the state tracked for the client identified by key, and
  * record them if acceptable.
@@ -743,8 +779,13 @@ static void client_note_renewed(void)
  * Must only be called for a request which is fully verified - both the
  * response digest and the nonce - so that a request which fails to
  * authenticate cannot alter the state tracked for the client whose opaque
- * it quotes. */
-static enum nonce_state client_update_nonce(const request_rec *r,
+ * it quotes.
+ *
+ * The opaque is public, so a verified request from anybody with an account
+ * on the realm could otherwise do so too. An entry is bound to the user
+ * who first used it, and a request from another user quoting it is
+ * NONCE_NOT_OWNER, leaving the entry alone. */
+static enum nonce_state client_update_nonce(request_rec *r,
                                             client_id_t key,
                                             const digest_config_rec *conf,
                                             apr_time_t nonce_time,
@@ -755,12 +796,16 @@ static enum nonce_state client_update_nonce(const request_rec *r,
     unsigned long tracked = 0;
     enum nonce_state state;
     int known;
+    apr_uint64_t owner = owner_hash(r);
 
     apr_global_mutex_lock(client_lock);
     client = find_client(key);
     known = (client != NULL);
     if (!known) {
         state = NONCE_STALE;
+    }
+    else if (client->owner && client->owner != owner) {
+        state = NONCE_NOT_OWNER;
     }
     else {
         tracked = client->nonce_count;
@@ -780,6 +825,7 @@ static enum nonce_state client_update_nonce(const request_rec *r,
         if (state == NONCE_ACCEPTED) {
             client->last_nonce_time = nonce_time;
             client->nonce_count     = nc;
+            client->owner           = owner;
         }
     }
     apr_global_mutex_unlock(client_lock);
@@ -788,6 +834,12 @@ static enum nonce_state client_update_nonce(const request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
                       "client %" APR_UINT64_T_FMT " is no longer known - "
                       "sending new nonce", key);
+    }
+    else if (state == NONCE_NOT_OWNER) {
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                      "user %s: client %" APR_UINT64_T_FMT " belongs to "
+                      "another user - sending new nonce and opaque",
+                      r->user, key);
     }
     else if (state == NONCE_STALE) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
@@ -1402,6 +1454,15 @@ static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
     case NONCE_STALE:
         /* the credentials were good, so the client can silently retry with
          * the nonce from this challenge */
+        return note_digest_auth_failure(r, conf, resp, 1);
+
+    case NONCE_NOT_OWNER:
+        /* likewise, but with an entry of its own rather than the one it
+         * quoted: dropping the opaque has the challenge issue a new one.
+         * Both forms go, since the record is shared with any later
+         * request in this tree. */
+        resp->opaque = NULL;
+        resp->opaque_num = 0;
         return note_digest_auth_failure(r, conf, resp, 1);
 
     default:
