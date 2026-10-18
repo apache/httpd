@@ -1123,6 +1123,14 @@ static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
                            const digest_config_rec *conf,
                            const char *realm)
 {
+    /* The time field of a nonce is a timestamp, or with one-time nonces
+     * an ordinal from otn_counter; hashing in which it is keeps a nonce
+     * minted as one from verifying as the other, which a realm with both
+     * lifetimes configured would otherwise allow: a timestamp read as an
+     * ordinal is far beyond any the counter will reach, and once recorded
+     * as a client's last nonce used, every genuine one-time nonce after
+     * it is stale. */
+    char kind = (conf->nonce_lifetime == 0) ? 'o' : 't';
 #if DIGEST_SIPHASH_NONCE
     unsigned char mac[APR_SIPHASH_DSIZE];
     const char *msg;
@@ -1134,8 +1142,8 @@ static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
      * realm ending in what another realm's timestamp begins with would
      * hash the same. An absent opaque is the empty string, which is what
      * the challenge side passes for it too. */
-    msg = apr_psprintf(p, "%" APR_SIZE_T_FMT ":%s:%s:%s",
-                       (apr_size_t)strlen(realm), realm, timestr,
+    msg = apr_psprintf(p, "%" APR_SIZE_T_FMT ":%s:%s:%c:%s",
+                       (apr_size_t)strlen(realm), realm, timestr, kind,
                        opaque ? opaque : "");
 
     apr_siphash24_auth(mac, msg, strlen(msg), secret);
@@ -1150,6 +1158,7 @@ static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
     apr_sha1_update_binary(&ctx, (const unsigned char *) realm, strlen(realm));
 
     apr_sha1_update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
+    apr_sha1_update_binary(&ctx, (const unsigned char *) &kind, 1);
     if (opaque) {
         apr_sha1_update_binary(&ctx, (const unsigned char *) opaque,
                              strlen(opaque));
