@@ -2364,13 +2364,16 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                const char *default_time_unit);
 
 /**
- * Parse a configuration parameter as a base 10 apr_off_t. The whole parameter
- * has to be a number, there must not be any other character after it. What
+ * Parse a configuration parameter as a base 10 apr_off_t. The number may be
+ * followed by a single optional suffix, 'b'/'B' (bytes), 'k'/'K' (multiply
+ * by 1024), 'm'/'M' (multiply by 1024*1024) or 'g'/'G' (multiply by
+ * 1024*1024*1024); there must not be any other character after it. What
  * values are acceptable is up to the caller.
  * @param parameter The string containing the number.
  * @param value The parsed value, only set on success.
- * @return APR_SUCCESS, APR_EINVAL if the parameter is not a number, or
- *         APR_ERANGE if the number does not fit in an apr_off_t.
+ * @return APR_SUCCESS, APR_EINVAL if the parameter is not a number with
+ *         optional suffix, or APR_ERANGE if the value does not fit in an
+ *         apr_off_t.
  */
 AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
                                                  apr_off_t *value);
