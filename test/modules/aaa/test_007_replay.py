@@ -34,8 +34,8 @@ import time
 from . import digest_client as dc
 from .env import AAATestEnv
 
-# See the note in test_003_nccheck.py: a failed nc check is not reported as
-# stale, since it is a distinct failure mode from an invalid/expired nonce.
+# A failed nc check is reported as stale (the digest verified, so the
+# credentials are good): the client retries silently on the fresh nonce.
 NC_FAILED = "AH01774"
 NONCE_HASH_INVALID = "AH01776"
 PASSWORD_MISMATCH = "AH01794"
@@ -156,7 +156,7 @@ class TestDigestReplay:
         assert r.response["status"] == 401
         env.httpd_error_log.ignore_recent(lognos=[NC_FAILED])
         fresh = dc.DigestChallenge.parse(r.response["header"]["www-authenticate"])
-        assert fresh.stale is False
+        assert fresh.stale is True
         assert fresh.opaque == challenge.opaque, \
             "the client keeps its identity across a re-challenge"
         assert fresh.nonce != challenge.nonce

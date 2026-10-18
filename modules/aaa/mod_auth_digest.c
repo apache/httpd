@@ -821,10 +821,9 @@ static enum nonce_state client_update_nonce(request_rec *r,
                       "new nonce", r->user, nonce);
     }
     else if (state == NONCE_BAD_COUNT) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01774)
-                      "Warning, possible replay attack: nonce-count check "
-                      "failed: %lu is not above %lu for nonce %s", nc,
-                      tracked, nonce);
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01774)
+                      "user %s: nonce-count %lu is not above %lu for nonce "
+                      "%s - sending new nonce", r->user, nc, tracked, nonce);
     }
 
     return state;
@@ -1426,8 +1425,12 @@ static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
         return OK;
 
     case NONCE_STALE:
+    case NONCE_BAD_COUNT:
         /* the credentials were good, so the client can silently retry with
-         * the nonce from this challenge */
+         * the nonce from this challenge. A nonce-count which has not
+         * increased is what concurrent requests from one client look like
+         * when they arrive out of order, and a replay gains nothing from
+         * the stale flag, having no way to answer the new nonce. */
         return note_digest_auth_failure(r, conf, resp, 1);
 
     case NONCE_NOT_OWNER:
@@ -1438,10 +1441,9 @@ static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
         resp->opaque = NULL;
         resp->opaque_num = 0;
         return note_digest_auth_failure(r, conf, resp, 1);
-
-    default:
-        return note_digest_auth_failure(r, conf, resp, 0);
     }
+
+    return HTTP_INTERNAL_SERVER_ERROR; /* not reached */
 }
 
 static int check_nonce(request_rec *r, digest_header_rec *resp,
@@ -1758,11 +1760,14 @@ static int authenticate_digest_user(request_rec *r)
         }
     }
 
-    /* Note: the nonce is checked before the nonce-count so that the
-     * nonce-count state is only ever updated for a request which is using
-     * a nonce this server issued, and so that a request using an expired
-     * nonce gets a "stale=true" challenge (and hence a silent retry with a
-     * fresh nonce-count) rather than being reported as a replay. */
+    /* The nonce and nonce-count are checked only after the digest has been
+     * verified above, so the stale=true they can answer with never reveals
+     * whether the credentials were right. The nonce is checked before the
+     * nonce-count so that the nonce-count state is only ever updated for a
+     * request which is using a nonce this server issued, and so that a
+     * request using an expired nonce gets a "stale=true" challenge (and
+     * hence a silent retry with a fresh nonce-count) rather than being
+     * reported as a replay. */
     if ((res = check_nonce(r, resp, conf))) {
         return res;
     }
