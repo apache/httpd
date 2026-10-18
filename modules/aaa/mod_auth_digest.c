@@ -555,35 +555,15 @@ static const char *set_uri_list(cmd_parms *cmd, void *config, const char *uri)
 static const char *set_shmem_size(cmd_parms *cmd, void *config,
                                   const char *size_str)
 {
-    char *endptr;
     apr_off_t size;
     apr_size_t min;
+    apr_status_t rv;
 
-    if (apr_strtoff(&size, size_str, &endptr, 10) != APR_SUCCESS || size < 0) {
-        return apr_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
-                          size_str, NULL);
+    rv = ap_size_parameter_parse(size_str, &size);
+    if (rv == APR_ERANGE) {
+        return "AuthDigestShmemSize value is too large";
     }
-    if (*endptr == 'k' || *endptr == 'K') {
-        if (size > APR_INT64_MAX / 1024) {
-            return "AuthDigestShmemSize value is too large";
-        }
-        size *= 1024;
-        endptr++;
-    }
-    else if (*endptr == 'm' || *endptr == 'M') {
-        if (size > APR_INT64_MAX / (1024 * 1024)) {
-            return "AuthDigestShmemSize value is too large";
-        }
-        size *= 1024 * 1024;
-        endptr++;
-    }
-    else if (*endptr == 'b' || *endptr == 'B') {
-        endptr++;
-    }
-    while (apr_isspace(*endptr)) {
-        endptr++;
-    }
-    if (*endptr != '\0') {
+    if (rv != APR_SUCCESS || size < 0) {
         return apr_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
                           size_str, NULL);
     }
