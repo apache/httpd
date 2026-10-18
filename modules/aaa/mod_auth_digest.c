@@ -1658,7 +1658,7 @@ static int authenticate_digest_user(request_rec *r)
         else if (
             /* check hostname matches, if present */
             (d_uri.hostname && d_uri.hostname[0] != '\0'
-              && strcasecmp(d_uri.hostname, r_uri.hostname))
+              && ap_cstr_casecmp(d_uri.hostname, r_uri.hostname))
             /* check port matches, if present */
             || (d_uri.port_str && d_uri.port != r_uri.port)
             /* check that server-port is default port if no port present */
