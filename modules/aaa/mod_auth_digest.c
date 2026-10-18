@@ -1262,14 +1262,14 @@ static int note_digest_auth_failure(request_rec *r,
     else if (!client_exists(resp->opaque_num, r)) {
         /* We have no record of this client: its entry may have been
          * garbage collected, the segment may have been recreated by a
-         * restart, or the opaque may never have been issued by us.
-         * Nothing was wrong with the credentials, so the challenge is
-         * stale and an RFC-compliant client retries silently. */
+         * restart, or the opaque may never have been issued by us. It gets
+         * a new entry; whether the challenge is stale is the caller's
+         * call, since credentials which failed are no less wrong for the
+         * opaque being unknown. */
         if ((client_key = client_generate(r)) == 0) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
         opaque = client_id_to_opaque(r->pool, client_key);
-        stale = 1;
         client_note_renewed();
     }
     else {
