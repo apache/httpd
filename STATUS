@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1937646
                   https://svn.apache.org/r1937647
      2.4.x patch: https://github.com/apache/httpd/pull/773.patch
-     +1: jorton,
+     +1: jorton, covener
 
   *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
      type, and serialize lock database access with a global mutex since
@@ -219,7 +219,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1912718
                   https://svn.apache.org/r1914438
      2.4.x patch: https://github.com/apache/httpd/pull/399.patch
-     +1: jorton,
+     +1: jorton, covener
+     covener: docs need fixup for "2.5.1" 
 
   *) mod_remoteip: Various fixes and improvements from trunk.
      trunk patch: https://svn.apache.org/r1874344
@@ -233,8 +234,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1938927
                   https://svn.apache.org/r1938928
      2.4.x patch: https://github.com/apache/httpd/pull/819.patch
-     +1: jorton, 
+     +1: jorton, covener
 
+   *) ab: remove SVN keywords in copyright msg
+      trunk patch:   https://svn.apache.org/r1939247
+     +1: covener
+     covener: trivial patch probably needs to manually re-applied due to the 
+              keyword expansion.
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
