@@ -693,15 +693,6 @@ static int client_exists(client_id_t key, const request_rec *r)
     return found;
 }
 
-/* Note that a client entry was created to replace one which had been
- * garbage collected. */
-static void client_note_renewed(void)
-{
-    apr_global_mutex_lock(client_lock);
-    client_list->num_renewed++;
-    apr_global_mutex_unlock(client_lock);
-}
-
 /* Identifies the authenticated user of r, within the origin server and
  * realm, for binding a client entry to. A keyed hash, so that it is
  * fixed-size in shared memory and a username colliding with another's
@@ -830,12 +821,17 @@ static enum nonce_state client_update_nonce(request_rec *r,
 }
 
 /* A simple garbage-collecter to remove unused clients. It removes the
- * last entry in each bucket and updates the counters. Returns the
- * number of removed entries.
+ * last entry in each bucket and updates the counters, returning the
+ * number of removed entries in *num_removed. The result is the first
+ * failure to free an entry, if any, for the caller to log once the lock
+ * is released.
  */
-static unsigned long gc(server_rec *s)
+static apr_status_t gc(unsigned long *num_removed)
 {
-    unsigned long num_removed = 0, idx;
+    apr_status_t rv = APR_SUCCESS;
+    unsigned long idx;
+
+    *num_removed = 0;
 
     /* garbage collect one entry from each bucket */
 
@@ -865,35 +861,37 @@ static unsigned long gc(server_rec *s)
 
             *victim = entry->next;
             err = rmm_free(client_rmm, entry);
-            num_removed++;
+            (*num_removed)++;
 
-            if (err) {
-                /* Nothing we can really do but log... */
-                ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO(10007)
-                             "Failed to free auth_digest client allocation");
+            if (err && rv == APR_SUCCESS) {
+                rv = err;
             }
         }
     }
 
-    /* update counters and log */
+    /* update counters */
 
-    client_list->num_entries -= num_removed;
-    client_list->num_removed += num_removed;
+    client_list->num_entries -= *num_removed;
+    client_list->num_removed += *num_removed;
 
-    return num_removed;
+    return rv;
 }
 
 /*
- * Add a new client to the list, under a newly issued id. Returns the id if
- * successful, zero otherwise. This triggers the garbage collection if
- * memory is low. (The new entry is not returned: see find_client().)
+ * Add a new client to the list, under a newly issued id; renewed is set
+ * when it replaces an entry which had been garbage collected. Returns the
+ * id if successful, zero otherwise. This triggers the garbage collection
+ * if memory is low. (The new entry is not returned: see find_client().)
  */
-static client_id_t client_generate(request_rec *r)
+static client_id_t client_generate(request_rec *r, int renewed)
 {
     server_rec *s = r->server;
     int bucket;
     client_entry *entry;
-    client_id_t key;
+    client_id_t key = 0;
+    int ran_gc = 0;
+    unsigned long gc_removed = 0, created, removed, renewals;
+    apr_status_t gc_rv = APR_SUCCESS;
 
     apr_global_mutex_lock(client_lock);
 
@@ -901,36 +899,52 @@ static client_id_t client_generate(request_rec *r)
 
     entry = rmm_malloc(client_rmm, sizeof(client_entry));
     if (!entry) {
-        unsigned long num_removed = gc(s);
+        gc_rv = gc(&gc_removed);
+        ran_gc = 1;
+        entry = rmm_malloc(client_rmm, sizeof(client_entry));
+    }
+
+    if (entry) {
+        /* now issue the id, in 1..CLIENT_ID_MAX, and add the entry */
+
+        key = client_list->next_id = client_list->next_id % CLIENT_ID_MAX + 1;
+        bucket = key % client_list->tbl_len;
+
+        memset(entry, 0, sizeof(client_entry));
+        entry->key  = key;
+        entry->next = client_list->table[bucket];
+        client_list->table[bucket] = entry;
+        client_list->num_created++;
+        client_list->num_entries++;
+        client_list->num_renewed += !!renewed;
+    }
+
+    /* for logging after the lock is released */
+    created  = client_list->num_created;
+    removed  = client_list->num_removed;
+    renewals = client_list->num_renewed;
+
+    apr_global_mutex_unlock(client_lock);
+
+    if (gc_rv) {
+        /* Nothing we can really do but log... */
+        ap_log_error(APLOG_MARK, APLOG_ERR, gc_rv, s, APLOGNO(10007)
+                     "Failed to free auth_digest client allocation");
+    }
+    if (ran_gc) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01766)
                      "gc'd %lu client entries. Total new clients: "
                      "%lu; Total removed clients: %lu; Total renewed clients: "
-                     "%lu", num_removed,
-                     client_list->num_created - client_list->num_renewed,
-                     client_list->num_removed, client_list->num_renewed);
-        entry = rmm_malloc(client_rmm, sizeof(client_entry));
-        if (!entry) {
-            apr_global_mutex_unlock(client_lock);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
-                          "unable to allocate a client entry - failing the "
-                          "request, since this configuration needs one");
-            return 0;
-        }
+                     "%lu", gc_removed, created - renewals, removed,
+                     renewals);
     }
 
-    /* now issue the id, in 1..CLIENT_ID_MAX, and add the entry */
-
-    key = client_list->next_id = client_list->next_id % CLIENT_ID_MAX + 1;
-    bucket = key % client_list->tbl_len;
-
-    memset(entry, 0, sizeof(client_entry));
-    entry->key  = key;
-    entry->next = client_list->table[bucket];
-    client_list->table[bucket] = entry;
-    client_list->num_created++;
-    client_list->num_entries++;
-
-    apr_global_mutex_unlock(client_lock);
+    if (!key) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
+                      "unable to allocate a client entry - failing the "
+                      "request, since this configuration needs one");
+        return 0;
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01768)
                  "allocated new client %" APR_UINT64_T_FMT, key);
@@ -1249,7 +1263,7 @@ static int note_digest_auth_failure(request_rec *r,
     if (resp->opaque == NULL) {
         /* new client */
         if (conf->check_nc || conf->nonce_lifetime == 0) {
-            if ((client_key = client_generate(r)) == 0) {
+            if ((client_key = client_generate(r, 0)) == 0) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
             opaque = client_id_to_opaque(r->pool, client_key);
@@ -1264,11 +1278,10 @@ static int note_digest_auth_failure(request_rec *r,
          * a new entry; whether the challenge is stale is the caller's
          * call, since credentials which failed are no less wrong for the
          * opaque being unknown. */
-        if ((client_key = client_generate(r)) == 0) {
+        if ((client_key = client_generate(r, 1)) == 0) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
         opaque = client_id_to_opaque(r->pool, client_key);
-        client_note_renewed();
     }
     else {
         /* Note that the nonce-count tracked for this client is left alone
