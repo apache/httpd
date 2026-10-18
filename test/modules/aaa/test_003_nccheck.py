@@ -69,12 +69,14 @@ class TestDigestNcCheck:
         r2 = self.authenticate(env, "nccheck", challenge, nc="00000002")
         assert r2.response["status"] == 200
 
-        # replay an already-used nc -> rejected, and NOT reported as stale
-        # (this is a distinct failure mode from an invalid/expired nonce).
+        # replay an already-used nc -> rejected, and reported as stale: the
+        # digest verified, so the credentials are good, and a client which
+        # sent requests out of nonce-count order retries silently on the
+        # fresh nonce rather than being told its password was wrong.
         r3 = self.authenticate(env, "nccheck", challenge, nc="00000001")
         assert r3.response["status"] == 401
         new_challenge = dc.DigestChallenge.parse(r3.response["header"]["www-authenticate"])
-        assert new_challenge.stale is False
+        assert new_challenge.stale is True
         env.httpd_error_log.ignore_recent(lognos=["AH01774"])
 
         # recovery: the rejected attempt handed out a fresh challenge for
