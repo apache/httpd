@@ -238,39 +238,12 @@ static unsigned long num_buckets = DEF_NUM_BUCKETS;
 
 module AP_MODULE_DECLARE_DATA auth_digest_module;
 
-/* Initialization. */
-static apr_status_t cleanup_tables(void *not_used)
+/* Logs a failure to set up the client table, returning the hook result. */
+static int init_failed(server_rec *s, apr_status_t rv, const char *msg)
 {
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(01756)
-                  "cleaning up shared memory");
-
-    if (client_rmm) {
-        apr_rmm_destroy(client_rmm);
-        client_rmm = NULL;
-    }
-
-    if (client_shm) {
-        apr_shm_destroy(client_shm);
-        client_shm = NULL;
-    }
-
-    if (client_lock) {
-        apr_global_mutex_destroy(client_lock);
-        client_lock = NULL;
-    }
-
-    client_list = NULL;
-
-    return APR_SUCCESS;
-}
-
-static void log_error_and_cleanup(char *msg, apr_status_t sts, server_rec *s)
-{
-    ap_log_error(APLOG_MARK, APLOG_ERR, sts, s, APLOGNO(01760)
-                 "%s - all nonce-count checking and one-time nonces "
-                 "disabled", msg);
-
-    cleanup_tables(NULL);
+    ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(01760)
+                 "%s - cannot track Digest clients", msg);
+    return !OK;
 }
 
 /* RMM helper functions that behave like single-step malloc/free. */
@@ -323,11 +296,10 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     }
 
     if (APR_SUCCESS != sts) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, sts, s, APLOGNO(01762)
-                     "Failed to create shared memory segment on file %s",
-                     client_shm_filename);
-        log_error_and_cleanup("failed to initialize shm", sts, s);
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return init_failed(s, sts, apr_psprintf(ctx, "failed to create "
+                                                "shared memory segment on "
+                                                "file %s",
+                                                client_shm_filename));
     }
 
     sts = apr_rmm_init(&client_rmm,
@@ -335,15 +307,13 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
                        apr_shm_baseaddr_get(client_shm),
                        shmem_size, ctx);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to initialize rmm", sts, s);
-        return !OK;
+        return init_failed(s, sts, "failed to initialize rmm");
     }
 
     client_list = rmm_malloc(client_rmm, sizeof(*client_list) +
                                          sizeof(client_entry *) * num_buckets);
     if (!client_list) {
-        log_error_and_cleanup("failed to allocate shared memory", -1, s);
-        return !OK;
+        return init_failed(s, 0, "failed to allocate shared memory");
     }
     client_list->table = (client_entry**) (client_list + 1);
     for (idx = 0; idx < num_buckets; idx++) {
@@ -367,8 +337,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
                                  s, ctx, 0);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
-        return !OK;
+        return init_failed(s, sts, "failed to create lock (client_lock)");
     }
 
     return OK;
@@ -422,6 +391,10 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     return initialize_tables(s, p);
 }
 
+/* A failure here is logged and the child carries on with the handles it
+ * inherited: nothing is torn down, since the shared memory and above all
+ * the mutex are shared with every other child, and this child has no
+ * fallback for serving Digest requests without them. */
 static void initialize_child(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
@@ -432,7 +405,8 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                          apr_shm_baseaddr_get(client_shm),
                          p);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to attach to rmm", sts, s);
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO()
+                     "failed to attach to rmm in child");
         return;
     }
 
@@ -440,8 +414,8 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                                       apr_global_mutex_lockfile(client_lock),
                                       p);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
-        return;
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO()
+                     "failed to initialize lock (client_lock) in child");
     }
 }
 
