@@ -1101,7 +1101,7 @@ static digest_header_rec *make_digest_rec(request_rec *store, request_rec *r)
  * updated here: the state of an authenticated client must not be altered
  * by a request which has not (yet) been authenticated, or a replayed or
  * bogus request quoting the client's opaque would be able to rewind that
- * state. See check_and_update_nc().
+ * state. See check_and_record_nonce().
  *
  * Note that this must be called after mod_proxy had its go so that
  * r->proxyreq is set correctly.
@@ -1144,7 +1144,6 @@ static digest_header_rec *get_digest_rec(request_rec *r)
  * minimum size (NONCE_HASH_LEN+1). */
 static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
                            const char *timestr, const char *opaque,
-                           const server_rec *server,
                            const digest_config_rec *conf,
                            const char *realm)
 {
@@ -1197,7 +1196,6 @@ static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
 /* The nonce has the format b64(time)+hash .
  */
 static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
-                             const server_rec *server,
                              const digest_config_rec *conf,
                              const char *realm)
 {
@@ -1219,7 +1217,7 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         apr_global_mutex_unlock(client_lock);
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
-    gen_nonce_hash(p, nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
+    gen_nonce_hash(p, nonce+NONCE_TIME_LEN, nonce, opaque, conf, realm);
 
     return nonce;
 }
@@ -1286,7 +1284,7 @@ static int note_digest_auth_failure(request_rec *r,
 
     /* Setup nonce */
 
-    nonce = gen_nonce(r->pool, r->request_time, opaque, r->server, conf, ap_auth_name(r));
+    nonce = gen_nonce(r->pool, r->request_time, opaque, conf, ap_auth_name(r));
 
     /* Setup domain, which tells the client which URIs share this
      * protection space, so that it does not send the Authorization header
@@ -1456,7 +1454,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
     apr_base64_decode_binary(nonce_time.arr, resp->nonce);
-    gen_nonce_hash(r->pool, hash, resp->nonce, resp->opaque, r->server, conf,
+    gen_nonce_hash(r->pool, hash, resp->nonce, resp->opaque, conf,
                    ap_auth_name(r));
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
@@ -1686,14 +1684,7 @@ static int authenticate_digest_user(request_rec *r)
         }
     }
 
-    if (!realm) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02533)
-                      "realm mismatch - got `%s' but no realm specified",
-                      resp->realm);
-        return note_digest_auth_failure(r, conf, resp, 0);
-    }
-
-    if (!resp->realm || strcmp(resp->realm, realm)) {
+    if (strcmp(resp->realm, realm)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01788)
                       "realm mismatch - got `%s' but expected `%s'",
                       resp->realm, realm);
@@ -1748,10 +1739,7 @@ static int authenticate_digest_user(request_rec *r)
     else {
         /* RFC 2617 (or 7616)-style Digest hash calculation. */
         const char *exp_digest = new_digest(r, resp);
-        if (!exp_digest) {
-            /* we failed to allocate a client struct */
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
+
         if (!ap_memeq_timingsafe(exp_digest, resp->digest, MD5_DIGEST_LEN)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01794)
                           "user %s: password mismatch: %s", r->user,
@@ -1803,13 +1791,13 @@ static int add_auth_info(request_rec *r)
         if ((r->request_time - resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
             nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"",
                                    gen_nonce(r->pool, r->request_time,
-                                             resp->opaque, r->server, conf, ap_auth_name(r)),
+                                             resp->opaque, conf, ap_auth_name(r)),
                                    "\"", NULL);
         }
     }
     else if (conf->nonce_lifetime == 0 && resp->opaque_num) {
-        const char *nonce = gen_nonce(r->pool, 0, resp->opaque, r->server,
-                                      conf, ap_auth_name(r));
+        const char *nonce = gen_nonce(r->pool, 0, resp->opaque, conf,
+                                      ap_auth_name(r));
         nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"", nonce, "\"", NULL);
     }
     /* else nonce never expires, hence no nextnonce */
