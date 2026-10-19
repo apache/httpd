@@ -1463,13 +1463,25 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     apr_time_t dt;
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
+    int len;
 
+    /* The decoder stops at the first byte which is not base64, so a
+     * nonce of the right shape can still decode to fewer bytes than the
+     * time field holds, leaving the rest of it unset. VALID_NONCE()
+     * bounds what it can decode to at most sizeof(nonce_time.arr). */
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    apr_base64_decode_binary(nonce_time.arr, resp->nonce);
+    len = apr_base64_decode_binary(nonce_time.arr, resp->nonce);
     gen_nonce_hash(r->pool, hash, resp->nonce, resp->opaque, conf,
                    ap_auth_name(r));
     resp->nonce[NONCE_TIME_LEN] = tmp;
+
+    if (len != sizeof(nonce_time.arr)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+                      "invalid nonce %s received - time is not base64",
+                      resp->nonce);
+        return note_digest_auth_failure(r, conf, resp, 1);
+    }
     resp->nonce_time = nonce_time.time;
 
     if (!ap_memeq_timingsafe(hash, resp->nonce+NONCE_TIME_LEN, NONCE_HASH_LEN)) {
