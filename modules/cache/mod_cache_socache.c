@@ -936,6 +936,38 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
 
     sobj->body_offset = slider;
 
+    /* The headers and the body share one entry, so when only the headers of
+     * a revalidated entry are updated the body recalled by open_entity()
+     * has to be carried over to the new buffer.
+     */
+    if (sobj->body && !sobj->newbody) {
+        apr_off_t len;
+        apr_size_t flen;
+
+        rv = apr_brigade_length(sobj->body, 1, &len);
+        if (rv != APR_SUCCESS || len < 0
+                || (apr_size_t)len >= sobj->buffer_len - sobj->body_offset) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(10642)
+                    "cached body didn't fit in buffer: %s", sobj->name);
+            apr_pool_destroy(sobj->pool);
+            sobj->pool = NULL;
+            return APR_EGENERAL;
+        }
+
+        flen = (apr_size_t)len;
+        rv = apr_brigade_flatten(sobj->body,
+                                 (char *)sobj->buffer + sobj->body_offset,
+                                 &flen);
+        if (rv != APR_SUCCESS || flen != (apr_size_t)len) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, APLOGNO(10643)
+                    "cached body unreadable: %s", sobj->name);
+            apr_pool_destroy(sobj->pool);
+            sobj->pool = NULL;
+            return APR_EGENERAL;
+        }
+        sobj->body_length = len;
+    }
+
     return APR_SUCCESS;
 }
 
