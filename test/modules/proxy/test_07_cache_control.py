@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 
 import pytest
@@ -131,6 +132,12 @@ class TestCacheControl:
     def test_proxy_07_002(self, env, index):
         cc = ", ".join(CASES[index][0])
         r1 = self.get(env, index)
+        # The cache entry for r1 is committed by the CACHE_SAVE filter on
+        # the EOS-only pass that follows the body, which can still be
+        # running server side for an instant after the body itself has
+        # already reached this process. Give it room to land before relying
+        # on it, instead of risking a spurious backend hit on r2.
+        time.sleep(0.1)
         r2 = self.get(env, index)
         assert self.backend_hits(index) == 1, f"Cache-Control: {cc} not cached"
         assert r2["header"]["x-cache"].startswith("HIT")
@@ -145,6 +152,9 @@ class TestCacheControl:
         r1 = self.get(env, index)
         assert r1["header"]["x-secret"] == "s"
         assert r1["header"]["set-cookie"] == "a=b"
+        # See test_proxy_07_002: give the CACHE_SAVE filter's commit time
+        # to land before asserting on it.
+        time.sleep(0.1)
         r2 = self.get(env, index)
         assert self.backend_hits(index) == 1, f"Cache-Control: {cc} not cached"
         assert r2["header"]["x-cache"].startswith("HIT")
