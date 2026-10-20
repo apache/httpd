@@ -21,7 +21,7 @@ class TestStore:
     # verify expected binary version
     def test_md_001_001(self, env: MDTestEnv):
         r = env.run([env.a2md_bin, "-V"])
-        m = re.match(r'version: (\d+\.\d+\.\d+)(-git)?$', r.stdout)
+        m = re.match(r'version: (\d+\.\d+\.\d+)(-(git|dev))?$', r.stdout)
         assert m, f"expected version info in '{r.stdout}'"
 
     # verify that store is clean
