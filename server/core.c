@@ -5248,6 +5248,17 @@ static int default_handler(request_rec *r)
             return HTTP_FORBIDDEN;
         }
 
+        /* r->finfo was populated by the directory walk's stat() on the
+         * pathname, which can race with a rename(2) replacing the file
+         * before it is opened here. Refresh it from the now-open file
+         * descriptor so that Last-Modified, ETag, Content-Length and the
+         * byte range actually sent all describe the same inode, instead
+         * of mixing stale directory-walk metadata with the content of
+         * whatever file the name happened to refer to by the time it
+         * was opened.
+         */
+        apr_file_info_get(&r->finfo, APR_FINFO_MIN | APR_FINFO_IDENT, fd);
+
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
         ap_set_etag_fd(r, fd);
