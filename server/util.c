@@ -2777,7 +2777,10 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
 AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
                                                  apr_off_t *value)
 {
-    apr_off_t parsed;
+    /* The maximum apr_off_t value. */
+    const apr_off_t off_max = sizeof(apr_off_t) == 8 ? APR_INT64_MAX
+                                                     : APR_INT32_MAX;
+    apr_off_t parsed, multiplier = 1;
     apr_status_t rv;
     char *end;
 
@@ -2790,11 +2793,32 @@ AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
     if (rv != APR_SUCCESS) {
         return APR_ERANGE;
     }
+
+    if (*end == 'k' || *end == 'K') {
+        multiplier = 1024;
+        end++;
+    }
+    else if (*end == 'm' || *end == 'M') {
+        multiplier = 1024 * 1024;
+        end++;
+    }
+    else if (*end == 'g' || *end == 'G') {
+        multiplier = 1024 * 1024 * 1024;
+        end++;
+    }
+    else if (*end == 'b' || *end == 'B') {
+        end++;
+    }
     if (*end != '\0') {
         return APR_EINVAL;
     }
 
-    *value = parsed;
+    if (parsed > off_max / multiplier
+        || parsed < (-off_max - 1) / multiplier) {
+        return APR_ERANGE;
+    }
+
+    *value = parsed * multiplier;
     return APR_SUCCESS;
 }
 #undef CHECK_OVERFLOW

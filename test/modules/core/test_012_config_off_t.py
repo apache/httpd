@@ -28,7 +28,9 @@ class TestConfigOffT:
                         "-f", os.path.join(env.server_dir, 'conf', 'httpd.conf')])
 
     @pytest.mark.parametrize("directive", DIRECTIVES)
-    @pytest.mark.parametrize("value", ["0", "1", "123", "1000000", "00123"])
+    @pytest.mark.parametrize("value", ["0", "1", "123", "1000000", "00123",
+                                       "512b", "512B", "1k", "1K", "2m", "2M",
+                                       "1g", "1G"])
     def test_core_012_001(self, env, directive, value):
         r = self.check_config(env, directive, value)
         assert r.exit_code == 0, f"{r.stderr}"
@@ -36,7 +38,8 @@ class TestConfigOffT:
     # only a whole decimal number is valid
     @pytest.mark.parametrize("directive", DIRECTIVES)
     @pytest.mark.parametrize("value", [
-        "abc", "abc123", "123abc", "123foo456", "12.3", "0x10", "1K", "+", "-",
+        "abc", "abc123", "123abc", "123foo456", "12.3", "0x10", "1kb", "k",
+        "+", "-",
     ])
     def test_core_012_002(self, env, directive, value):
         r = self.check_config(env, directive, value)
@@ -45,7 +48,8 @@ class TestConfigOffT:
 
     # a number the directive does not accept, or too large to be stored
     @pytest.mark.parametrize("directive", DIRECTIVES)
-    @pytest.mark.parametrize("value", ["-1", "9223372036854775808", "9" * 40])
+    @pytest.mark.parametrize("value", ["-1", "9223372036854775808", "9" * 40,
+                                       "8589934592g"])
     def test_core_012_003(self, env, directive, value):
         r = self.check_config(env, directive, value)
         assert r.exit_code != 0, f"{value} was accepted"
