@@ -437,6 +437,7 @@ IF(BUILD_TEST_MODULES)
     "test/modules/http2/mod_h2test/mod_h2test+A+Http/2 Test module. Useful only for developers and testing purposes."
     "test/pytest_suite/c-modules/authany/mod_authany+A+Test module. Useful only for developers and testing purposes."
     "test/pytest_suite/c-modules/client_add_filter/mod_client_add_filter+A+Test module. Useful only for developers and testing purposes."
+    "test/pytest_suite/c-modules/custom_response/mod_custom_response+A+Test module. Useful only for developers and testing purposes."
     "test/pytest_suite/c-modules/eat_post/mod_eat_post+A+Test module. Useful only for developers and testing purposes."
     "test/pytest_suite/c-modules/echo_post/mod_echo_post+A+Test module. Useful only for developers and testing purposes."
     "test/pytest_suite/c-modules/echo_post_chunk/mod_echo_post_chunk+A+Test module. Useful only for developers and testing purposes."
@@ -484,7 +485,7 @@ IF(BUILD_TEST_MODULES)
       mod_echo_post_chunk mod_fold mod_input_body_filter mod_list_modules
       mod_memory_track mod_nntp_like mod_random_chunk mod_test_apr_uri
       mod_test_pass_brigade mod_test_rwrite mod_test_session
-      mod_test_utilities mod_test_ssl)
+      mod_test_utilities mod_test_ssl mod_custom_response)
     SET(${pytest_mod}_extra_defines ${PYTEST_CMODULE_DEFINES})
   ENDFOREACH()
   SET(mod_test_session_extra_libs mod_session)
