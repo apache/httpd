@@ -1218,6 +1218,8 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
     int idx = ap_index_of_response(status);
     char *custom_response;
     const char *location = apr_table_get(r->headers_out, "Location");
+    core_request_config *reqconf =
+                ap_get_core_module_config(r->request_config);
 
     /* At this point, we are starting the response over, so we have to reset
      * this value.
@@ -1272,7 +1274,11 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_encoding = NULL;
         r->clength = 0;
 
-        if (apr_table_get(r->subprocess_env,
+        if (reqconf->response_code_cts && reqconf->response_code_cts[idx]) {
+            /* registered with ap_custom_response_ct(), sent as is below */
+            ap_set_content_type_ex(r, reqconf->response_code_cts[idx], 0);
+        }
+        else if (apr_table_get(r->subprocess_env,
                           "suppress-error-charset") != NULL) {
             core_request_config *request_conf =
                         ap_get_core_module_config(r->request_config);

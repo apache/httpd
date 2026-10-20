@@ -1,0 +1,2 @@
+  *) core: Add ap_custom_response_ct() to send a custom text response with
+     a Content-Type other than text/html. PR 69430.
