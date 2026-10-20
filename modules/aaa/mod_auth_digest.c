@@ -108,6 +108,15 @@ typedef struct digest_config_struct {
     char        *uri_list;
 } digest_config_rec;
 
+/* Whether state is tracked per client under conf: a one-time nonce is
+ * retired by its use, and AuthDigestNcCheck needs the last nonce-count. A
+ * client is issued an opaque iff so, since the opaque is the key to that
+ * state. */
+static int tracks_clients(const digest_config_rec *conf)
+{
+    return conf->check_nc || conf->nonce_lifetime == 0;
+}
+
 #define DFLT_ALGORITHM  "MD5"
 
 #define DFLT_NONCE_LIFE apr_time_from_sec(300)
@@ -181,7 +190,8 @@ enum hdr_sts { NO_HEADER, NOT_DIGEST, INVALID, VALID };
  * tracked for its client. */
 enum nonce_state {
     NONCE_ACCEPTED,     /* recorded as the latest used by this client */
-    NONCE_STALE,        /* already used, or the client is unknown */
+    NONCE_UNKNOWN,      /* the client has no entry (garbage collected?) */
+    NONCE_STALE,        /* one-time nonce already used */
     NONCE_BAD_COUNT,    /* nonce-count did not increase: possible replay */
     NONCE_NOT_OWNER     /* the entry quoted belongs to another user */
 };
@@ -749,38 +759,41 @@ static apr_uint64_t owner_hash(request_rec *r)
  * The opaque is public, so a verified request from anybody with an account
  * on the realm could otherwise do so too. An entry is bound to the user
  * who first used it, and a request from another user quoting it is
- * NONCE_NOT_OWNER, leaving the entry alone. */
+ * NONCE_NOT_OWNER, leaving the entry alone.
+ *
+ * The nonce-count last used by the client is returned in *tracked_nc (zero
+ * if the client is unknown or not this user's), for the caller to log. */
 static enum nonce_state client_update_nonce(request_rec *r,
                                             client_id_t key,
                                             const digest_config_rec *conf,
                                             apr_time_t nonce_time,
                                             unsigned long nc,
-                                            const char *nonce)
+                                            unsigned long *tracked_nc)
 {
     client_entry *client;
-    unsigned long tracked = 0;
     enum nonce_state state;
-    int known;
     apr_uint64_t owner = owner_hash(r);
+
+    *tracked_nc = 0;
 
     apr_global_mutex_lock(client_lock);
     client = find_client(key);
-    known = (client != NULL);
-    if (!known) {
-        state = NONCE_STALE;
+    if (client == NULL) {
+        state = NONCE_UNKNOWN;
     }
     else if (client->owner && client->owner != owner) {
         state = NONCE_NOT_OWNER;
     }
     else {
-        tracked = client->nonce_count;
+        *tracked_nc = client->nonce_count;
         if (conf->nonce_lifetime == 0) {
             /* one-time nonce: usable until it has been used */
             state = (nonce_time > client->last_nonce_time)
                     ? NONCE_ACCEPTED : NONCE_STALE;
         }
         else if (nonce_time > client->last_nonce_time
-                 || (nonce_time == client->last_nonce_time && nc > tracked)) {
+                 || (nonce_time == client->last_nonce_time
+                     && nc > *tracked_nc)) {
             state = NONCE_ACCEPTED;
         }
         else {
@@ -794,28 +807,6 @@ static enum nonce_state client_update_nonce(request_rec *r,
         }
     }
     apr_global_mutex_unlock(client_lock);
-
-    if (!known) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
-                      "client %" APR_UINT64_T_FMT " is no longer known - "
-                      "sending new nonce", key);
-    }
-    else if (state == NONCE_NOT_OWNER) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
-                      "user %s: client %" APR_UINT64_T_FMT " belongs to "
-                      "another user - sending new nonce and opaque",
-                      r->user, key);
-    }
-    else if (state == NONCE_STALE) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
-                      "user %s: one-time-nonce %s already used - sending "
-                      "new nonce", r->user, nonce);
-    }
-    else if (state == NONCE_BAD_COUNT) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01774)
-                      "user %s: nonce-count %lu is not above %lu for nonce "
-                      "%s - sending new nonce", r->user, nc, tracked, nonce);
-    }
 
     return state;
 }
@@ -1115,7 +1106,7 @@ static digest_header_rec *make_digest_rec(request_rec *store, request_rec *r)
  * updated here: the state of an authenticated client must not be altered
  * by a request which has not (yet) been authenticated, or a replayed or
  * bogus request quoting the client's opaque would be able to rewind that
- * state. See check_and_record_nonce().
+ * state. See check_nonce().
  *
  * Note that this must be called after mod_proxy had its go so that
  * r->proxyreq is set correctly.
@@ -1262,7 +1253,7 @@ static int note_digest_auth_failure(request_rec *r,
 
     if (resp->opaque == NULL) {
         /* new client */
-        if (conf->check_nc || conf->nonce_lifetime == 0) {
+        if (tracks_clients(conf)) {
             if ((client_key = client_generate(r, 0)) == 0) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
@@ -1411,9 +1402,17 @@ static authn_status get_hash(request_rec *r, const char *user,
     return auth_result;
 }
 
-/* Check the nonce and nonce-count of a fully verified request against the
- * state tracked for its client, record them, and generate a new challenge
- * if they are not acceptable.
+/* Check the nonce of a fully verified request, record its use, and
+ * generate a new challenge if it is not acceptable.
+ *
+ * This runs only once the response digest has been verified, so the
+ * stale=true it answers with never reveals whether the credentials were
+ * right. The nonce itself is checked first - that this server issued it,
+ * for this opaque and realm, and that it is within its lifetime - and only
+ * then its use by the client, so that the state tracked for a client is
+ * altered only by a request using a nonce this server issued, and a request
+ * using an expired nonce gets a stale challenge (and hence a silent retry
+ * with a fresh nonce-count) rather than being refused as a replay.
  *
  * The nonce-count is counted by the client per-nonce (RFC 7616 3.4.3), so
  * the count tracked here is tied to the nonce it was counted for: a request
@@ -1423,47 +1422,13 @@ static authn_status get_hash(request_rec *r, const char *user,
  * which turn out not to need authentication, and this server never sees
  * those.
  */
-static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
-                                  const digest_config_rec *conf)
-{
-    if (!conf->check_nc && conf->nonce_lifetime != 0) {
-        return OK;              /* nothing is tracked per-client */
-    }
-
-    switch (client_update_nonce(r, resp->opaque_num, conf, resp->nonce_time,
-                                resp->nc, resp->nonce)) {
-    case NONCE_ACCEPTED:
-        return OK;
-
-    case NONCE_STALE:
-    case NONCE_BAD_COUNT:
-        /* the credentials were good, so the client can silently retry with
-         * the nonce from this challenge. A nonce-count which has not
-         * increased is what concurrent requests from one client look like
-         * when they arrive out of order, and a replay gains nothing from
-         * the stale flag, having no way to answer the new nonce. */
-        return note_digest_auth_failure(r, conf, resp, 1);
-
-    case NONCE_NOT_OWNER:
-        /* likewise, but with an entry of its own rather than the one it
-         * quoted: dropping the opaque has the challenge issue a new one.
-         * Both forms go, since the record is shared with any later
-         * request in this tree. */
-        resp->opaque = NULL;
-        resp->opaque_num = 0;
-        return note_digest_auth_failure(r, conf, resp, 1);
-    }
-
-    return HTTP_INTERNAL_SERVER_ERROR; /* not reached */
-}
-
 static int check_nonce(request_rec *r, digest_header_rec *resp,
                        const digest_config_rec *conf)
 {
-    apr_time_t dt;
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
     int len;
+    unsigned long tracked_nc;
 
     /* The decoder stops at the first byte which is not base64, so a
      * nonce of the right shape can still decode to fewer bytes than the
@@ -1491,15 +1456,16 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
         return note_digest_auth_failure(r, conf, resp, 1);
     }
 
-    dt = r->request_time - nonce_time.time;
-    if (conf->nonce_lifetime > 0 && dt < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01777)
-                      "invalid nonce %s received - user attempted "
-                      "time travel", resp->nonce);
-        return note_digest_auth_failure(r, conf, resp, 1);
-    }
-
     if (conf->nonce_lifetime > 0) {
+        apr_time_t dt = r->request_time - nonce_time.time;
+
+        if (dt < 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01777)
+                          "invalid nonce %s received - user attempted "
+                          "time travel", resp->nonce);
+            return note_digest_auth_failure(r, conf, resp, 1);
+        }
+
         if (dt > conf->nonce_lifetime) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0,r, APLOGNO(01778)
                           "user %s: nonce expired (%.2f seconds old "
@@ -1509,10 +1475,57 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
             return note_digest_auth_failure(r, conf, resp, 1);
         }
     }
-    /* else (lifetime <= 0) => never expires by time; a one-time nonce is
-     * retired by use, in check_and_record_nonce() */
 
-    return OK;
+    if (!tracks_clients(conf)) {
+        return OK;              /* a timed nonce, not counted: that's all */
+    }
+
+    /* A one-time nonce is retired by its use, and with AuthDigestNcCheck
+     * the count must rise: both are checked against, and recorded in, the
+     * state tracked for the client. */
+    switch (client_update_nonce(r, resp->opaque_num, conf, nonce_time.time,
+                                resp->nc, &tracked_nc)) {
+    case NONCE_ACCEPTED:
+        return OK;
+
+    case NONCE_UNKNOWN:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
+                      "client %" APR_UINT64_T_FMT " is no longer known - "
+                      "sending new nonce", resp->opaque_num);
+        break;
+
+    case NONCE_STALE:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
+                      "user %s: one-time-nonce %s already used - sending "
+                      "new nonce", r->user, resp->nonce);
+        break;
+
+    case NONCE_BAD_COUNT:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01774)
+                      "user %s: nonce-count %lu is not above %lu for nonce "
+                      "%s - sending new nonce", r->user, resp->nc, tracked_nc,
+                      resp->nonce);
+        break;
+
+    case NONCE_NOT_OWNER:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+                      "user %s: client %" APR_UINT64_T_FMT " belongs to "
+                      "another user - sending new nonce and opaque",
+                      r->user, resp->opaque_num);
+        /* dropping the opaque has the challenge issue this user an entry of
+         * its own rather than the one it quoted. Both forms go, since the
+         * record is shared with any later request in this tree. */
+        resp->opaque = NULL;
+        resp->opaque_num = 0;
+        break;
+    }
+
+    /* the credentials were good, so the client can silently retry with the
+     * nonce from this challenge. A nonce-count which has not increased is
+     * what concurrent requests from one client look like when they arrive
+     * out of order, and a replay gains nothing from the stale flag, having
+     * no way to answer the new nonce. */
+    return note_digest_auth_failure(r, conf, resp, 1);
 }
 
 /* Compute the response digest expected for request r (RFC 2617). */
@@ -1605,7 +1618,6 @@ static int authenticate_digest_user(request_rec *r)
     digest_config_rec *conf;
     digest_header_rec *resp;
     const char        *t;
-    int                res;
     authn_status       return_code;
     const char *realm;
 
@@ -1773,19 +1785,9 @@ static int authenticate_digest_user(request_rec *r)
         }
     }
 
-    /* The nonce and nonce-count are checked only after the digest has been
-     * verified above, so the stale=true they can answer with never reveals
-     * whether the credentials were right. The nonce is checked before the
-     * nonce-count so that the nonce-count state is only ever updated for a
-     * request which is using a nonce this server issued, and so that a
-     * request using an expired nonce gets a "stale=true" challenge (and
-     * hence a silent retry with a fresh nonce-count) rather than being
-     * reported as a replay. */
-    if ((res = check_nonce(r, resp, conf))) {
-        return res;
-    }
-
-    return check_and_record_nonce(r, resp, conf);
+    /* Only now that the digest is verified is the nonce checked; see
+     * check_nonce() for why. */
+    return check_nonce(r, resp, conf);
 }
 
 /* Authentication-Info header code. */
