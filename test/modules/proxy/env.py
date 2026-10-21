@@ -57,6 +57,17 @@ Hello""".encode()
                     # capture request to backend
                     self._request = data
                     c.sendall(self._make_response(data))
+                    # Half-close for an orderly FIN instead of letting the
+                    # OS tear the socket down under us. An abrupt close()
+                    # right after sendall() can, depending on the platform's
+                    # TCP stack and buffering, surface to the peer as a
+                    # reset rather than a clean end of the response, which
+                    # httpd's proxy and cache code treat as an aborted
+                    # connection and a reason to discard the cache entry.
+                    try:
+                        c.shutdown(socket.SHUT_WR)
+                    except OSError:
+                        pass
                 finally:
                     c.close()
             except socket.timeout:
