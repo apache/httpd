@@ -910,7 +910,10 @@ AP_DECLARE(apr_status_t) ap_duplicate_listeners(apr_pool_t *p, server_rec *s,
                                 duplr->bind_addr);
                     return stat;
                 }
-                make_sock(p, duplr, 1);
+                stat = make_sock(p, duplr, 1);
+                if (stat != APR_SUCCESS) {
+                    return stat;
+                }
             }
 #if AP_NONBLOCK_WHEN_MULTI_LISTEN
             use_nonblock = (ap_listeners && ap_listeners->next);
