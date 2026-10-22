@@ -63,7 +63,7 @@ static void h2_c1_io_bb_log(conn_rec *c, int stream_id, int level,
 {
     char buffer[16 * 1024];
     const char *line = "(null)";
-    int bmax = sizeof(buffer)/sizeof(buffer[0]);
+    int bmax = AP_ARRAY_LEN(buffer);
     int off = 0;
     apr_bucket *b;
     

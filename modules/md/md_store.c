@@ -25,6 +25,7 @@
 #include <apr_fnmatch.h>
 #include <apr_hash.h>
 #include <apr_strings.h>
+#include <ap_config.h>
 
 #include "md.h"
 #include "md_crypt.h"
@@ -61,7 +62,7 @@ static const char *const GROUP_NAME[] = {
 
 const char *md_store_group_name(unsigned int group)
 {
-    if (group < sizeof(GROUP_NAME)/sizeof(GROUP_NAME[0])) {
+    if (group < AP_ARRAY_LEN(GROUP_NAME)) {
         return GROUP_NAME[group];
     }
     return "UNKNOWN";

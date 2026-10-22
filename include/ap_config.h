@@ -261,5 +261,11 @@
 #define AP_FN_ATTR_NONNULL(x)
 #endif
 
+/**
+ * Return the number of elements in an array.
+ *
+ * @note The argument must be an array, not a pointer.
+ */
+#define AP_ARRAY_LEN(a) (sizeof(a) / sizeof((a)[0]))
 
 #endif /* AP_CONFIG_H */

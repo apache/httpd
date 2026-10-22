@@ -25,6 +25,7 @@
 #include <apr_hash.h>
 #include <apr_strings.h>
 #include <apr_tables.h>
+#include <ap_config.h>
 
 #include "md.h"
 #include "md_crypt.h"
@@ -579,7 +580,7 @@ static const cha_type CHA_TYPES[] = {
     { MD_AUTHZ_TYPE_TLSALPN01,  cha_tls_alpn_01_setup,  cha_teardown_dir },
     { MD_AUTHZ_TYPE_DNS01,      cha_dns_01_setup,       cha_dns_01_teardown },
 };
-static const apr_size_t CHA_TYPES_LEN = (sizeof(CHA_TYPES)/sizeof(CHA_TYPES[0]));
+static const apr_size_t CHA_TYPES_LEN = AP_ARRAY_LEN(CHA_TYPES);
 
 typedef struct {
     apr_pool_t *p;

@@ -2701,7 +2701,7 @@ static void setup_threads_runtime(void)
      */
     pollset_flags = APR_POLLSET_THREADSAFE | APR_POLLSET_NOCOPY |
                     APR_POLLSET_WAKEABLE | APR_POLLSET_NODEFAULT;
-    for (i = 0; i < sizeof(good_methods) / sizeof(good_methods[0]); i++) {
+    for (i = 0; i < AP_ARRAY_LEN(good_methods); i++) {
         rv = apr_pollset_create_ex(&event_pollset, pollset_size + 1, pruntime,
                                    pollset_flags, good_methods[i]);
         if (rv == APR_SUCCESS) {
