@@ -36,7 +36,7 @@ def pytest_ignore_collect(collection_path, config):
         return True
 
 def pytest_report_header(config, start_path):
-    env = HttpdTestEnv()
+    env = HttpdTestEnv(pytestconfig=config)
     return f"[apache httpd: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 
 def pytest_addoption(parser):
@@ -152,9 +152,9 @@ test_src_dir = {test_dir}
 
 
 def pytest_configure(config):
-    httpd_opt = config.getoption("--httpd", default=None)
-    if httpd_opt and sys.platform == "win32":
-        _generate_config_ini(config)
+    # --httpd/--conf overrides are now applied in memory by
+    # HttpdTestEnv._apply_cli_overrides(); config.ini is never rewritten.
+    pass
 
 
 def pytest_collection_modifyitems(config, items):

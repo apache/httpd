@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 
 def pytest_report_header(config, start_path):
-    env = SSLTestEnv()
+    env = SSLTestEnv(pytestconfig=config)
     return f"mod_ssl [apache: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 
 
