@@ -199,6 +199,10 @@ static fd_queue_info_t *worker_queue_info;
 
 static apr_thread_mutex_t *timeout_mutex;
 
+static int idle_termination_timeout = -1; /* never terminate by default */
+static apr_time_t idle_termination_since; /* when the server went quiet */
+static unsigned long idle_termination_accesses; /* requests counted then */
+
 module AP_MODULE_DECLARE_DATA mpm_event_module;
 
 /* forward declare */
@@ -444,6 +448,8 @@ typedef struct event_retained_data {
      */
     int *idle_spawn_rate;
     int hold_off_on_exponential_spawning;
+
+    int idle_timeout; /* did we time out? */
 } event_retained_data;
 static event_retained_data *retained;
 
@@ -836,6 +842,16 @@ static void just_die(int sig)
 
 static int child_fatal;
 
+/* The parent and mod_status see this count only through the scoreboard,
+ * and the listener can sleep for a whole keepalive timeout without
+ * passing through its queue maintenance, so publish it where it changes
+ * rather than there. */
+static void publish_connection_count(void)
+{
+    ap_scoreboard_image->parent[ap_child_slot].connections =
+        apr_atomic_read32(&connection_count);
+}
+
 static apr_status_t decrement_connection_count(void *cs_)
 {
     int is_last_connection;
@@ -859,6 +875,7 @@ static apr_status_t decrement_connection_count(void *cs_)
      * now accept new connections.
      */
     is_last_connection = !apr_atomic_dec32(&connection_count);
+    publish_connection_count();
     if (listener_is_wakeable
             && ((is_last_connection && listener_may_exit)
                 || should_enable_listensocks())) {
@@ -1067,6 +1084,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             return;
         }
         apr_atomic_inc32(&connection_count);
+        publish_connection_count();
         apr_pool_cleanup_register(c->pool, cs, decrement_connection_count,
                                   apr_pool_cleanup_null);
         ap_set_module_config(c->conn_config, &mpm_event_module, cs);
@@ -2392,6 +2410,17 @@ do_maintenance:
             apr_thread_mutex_unlock(timeout_mutex);
             ps->keep_alive = 0;
         }
+        else {
+            /* No queue maintenance was due, but the counts above are what
+             * the parent and mod_status see, and a connection can sit in a
+             * queue for as long as its timeout without either.  Publish
+             * them on every pass instead of only when a queue expires. */
+            ps->wait_io = apr_atomic_read32(waitio_q->total);
+            ps->write_completion = apr_atomic_read32(write_completion_q->total);
+            ps->keep_alive = apr_atomic_read32(keepalive_q->total);
+            ps->lingering_close = apr_atomic_read32(&lingering_count);
+            ps->suspended = apr_atomic_read32(&suspended_count);
+        }
 
         /* If there are some lingering closes to defer (to a worker), schedule
          * them now. We might wakeup a worker spuriously if another one empties
@@ -3237,11 +3266,45 @@ static void startup_children(int number_to_start)
     }
 }
 
+/* Whether the server has nothing whatever to do.  An idle worker count is
+ * not enough on its own: this MPM hands a connection back to the listener
+ * between requests, so open connections occupy no worker, and a request
+ * which starts and finishes between two calls here leaves every worker
+ * idle at both of them. */
+static int server_is_idle(int workers_busy)
+{
+    unsigned long accesses = 0;
+    apr_uint32_t connections = 0;
+    int i, j;
+
+    for (i = 0; i < server_limit; i++) {
+        process_score *ps = ap_get_scoreboard_process(i);
+
+        if (ps->pid == 0) {
+            continue;
+        }
+        connections += ps->connections;
+        for (j = 0; j < thread_limit; j++) {
+            accesses += ap_scoreboard_image->servers[i][j].access_count;
+        }
+    }
+
+    if (workers_busy || connections
+        || accesses != idle_termination_accesses) {
+        idle_termination_accesses = accesses;
+        idle_termination_since = 0;
+        return 0;
+    }
+
+    return 1;
+}
+
 static void perform_idle_server_maintenance(int child_bucket,
                                             int *max_daemon_used)
 {
     int num_buckets = retained->mpm->num_buckets;
     int idle_thread_count = 0;
+    int total_thread_count = 0;
     process_score *ps;
     int free_length = 0;
     int free_slots[MAX_SPAWN_RATE];
@@ -3292,6 +3355,7 @@ static void perform_idle_server_maintenance(int child_bucket,
                 if (status >= SERVER_READY && status < SERVER_GRACEFUL) {
                     ++child_threads_active;
                 }
+                ++total_thread_count;
             }
             active_thread_count += child_threads_active;
             if (child_threads_active == threads_per_child) {
@@ -3337,6 +3401,20 @@ static void perform_idle_server_maintenance(int child_bucket,
     AP_DEBUG_ASSERT(retained->active_daemons <= retained->total_daemons
                     && retained->total_daemons <= retained->max_daemon_used
                     && retained->max_daemon_used <= server_limit);
+
+    if (idle_termination_timeout >= 0
+        && server_is_idle(idle_thread_count != total_thread_count)) {
+        if (!idle_termination_since) {
+            idle_termination_since = apr_time_now();
+        }
+        if (apr_time_now() - idle_termination_since
+            >= apr_time_from_sec(idle_termination_timeout)) {
+            /* terminate immediately: nothing is going on to wait for */
+            retained->mpm->shutdown_pending = 1;
+            retained->mpm->is_ungraceful = 1;
+            retained->idle_timeout = 1;
+        }
+    }
 
     if (idle_thread_count > max_spare_threads / num_buckets) {
         /*
@@ -3783,8 +3861,16 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         if (!child_fatal) {
             /* cleanup pid file on normal shutdown */
             ap_remove_pid(pconf, ap_pid_fname);
-            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
-                         ap_server_conf, APLOGNO(00491) "caught SIGTERM, shutting down");
+
+            /* log message depends on if we are terminating by signal or by idle timeout */
+            if (!retained->idle_timeout) {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(00491)
+                            "caught SIGTERM, shutting down");
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf, APLOGNO(10620)
+                            "idle timeout reached, shutting down");
+            }
         }
 
         return DONE;
@@ -4026,6 +4112,9 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
 
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
+    idle_termination_timeout = -1;
+    idle_termination_since = 0;
+    idle_termination_accesses = 0;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     max_spare_threads = DEFAULT_MAX_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
     server_limit = DEFAULT_SERVER_LIMIT;
@@ -4481,6 +4570,25 @@ static const char *set_worker_factor(cmd_parms * cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_idle_termination_timeout(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    char *end;
+    long secs;
+
+    if (err != NULL) {
+        return err;
+    }
+
+    secs = strtol(arg, &end, 10);
+    if (*arg == '\0' || *end != '\0' || secs < 0 || secs > APR_INT32_MAX) {
+        return "IdleTerminationTimeout must be a non-negative number of "
+               "seconds";
+    }
+
+    idle_termination_timeout = (int)secs;
+    return NULL;
+}
 
 static const command_rec event_cmds[] = {
     LISTEN_COMMANDS,
@@ -4504,6 +4612,8 @@ static const command_rec event_cmds[] = {
     AP_INIT_TAKE1("AsyncRequestWorkerFactor", set_worker_factor, NULL, RSRC_CONF,
                   "How many additional connects will be accepted per idle "
                   "worker thread"),
+    AP_INIT_TAKE1("IdleTerminationTimeout", set_idle_termination_timeout, NULL, RSRC_CONF,
+                  "Number of seconds to terminate in when the server is idle"),
     AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
     {NULL}
 };
