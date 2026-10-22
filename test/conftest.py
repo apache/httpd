@@ -152,9 +152,16 @@ test_src_dir = {test_dir}
 
 
 def pytest_configure(config):
-    # --httpd/--conf overrides are now applied in memory by
-    # HttpdTestEnv._apply_cli_overrides(); config.ini is never rewritten.
-    pass
+    httpd_opt = config.getoption("--httpd", default=None)
+    if not httpd_opt:
+        return
+    ini_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "pyhttpd", "config.ini")
+    if not os.path.isfile(ini_path):
+        # No build-generated config.ini (typical on Windows without
+        # autoconf) — generate one from --httpd/--conf so the framework
+        # has something to read.
+        _generate_config_ini(config)
 
 
 def pytest_collection_modifyitems(config, items):
