@@ -15,6 +15,7 @@
  */
 
 #include "mod_proxy.h"
+#include "proxy_util.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
@@ -343,7 +344,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
             ap_proxy_retry_worker_fn("BALANCER", *worker, r->server);
         }
 
-        if (PROXY_WORKER_IS_USABLE(*worker)) {
+        if (PROXY_WORKER_IS_USABLE(*worker) && ap_proxy_worker_has_capacity(*worker)) {
             server->worker = *worker;
             if (server->seen < LBM_HEARTBEAT_MAX_LASTSEEN) {
                 apr_uint32_t ready = (apr_uint32_t)server->ready;

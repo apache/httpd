@@ -214,51 +214,59 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
             if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
                 continue;
             if (*(worker->s->route) && strcmp(worker->s->route, route) == 0) {
-                if (PROXY_WORKER_IS_USABLE(worker)) {
-                    return worker;
-                } else {
+                int usable = PROXY_WORKER_IS_USABLE(worker);
+
+                if (!usable) {
                     /*
                      * If the worker is in error state run
                      * retry on that worker. It will be marked as
                      * operational if the retry timeout is elapsed.
                      * The worker might still be unusable, but we try
-                     * anyway.
+                     * anyway. Never done merely for a saturated maxbusy
+                     * worker below: it was never in error, so there is
+                     * nothing to retry.
                      */
                     ap_proxy_retry_worker_fn("BALANCER", worker, r->server);
-                    if (PROXY_WORKER_IS_USABLE(worker)) {
-                            return worker;
-                    } else {
+                    usable = PROXY_WORKER_IS_USABLE(worker);
+                }
+
+                if (usable && ap_proxy_worker_has_capacity(worker)) {
+                    return worker;
+                }
+
+                /*
+                 * The sticky target is unreachable: either genuinely
+                 * unusable (error or disabled, already retried above),
+                 * or healthy but at its maxbusy limit. Both cases follow
+                 * the same existing redirect semantics -- a saturated
+                 * worker participates exactly like an unusable one here,
+                 * without itself being marked in error -- in case it has
+                 * a redirection set use that redirection worker. This
+                 * enables to safely remove the member from the
+                 * balancer. Of course you will need some kind of
+                 * session replication between those two remote.
+                 * Also check that we haven't gone thru all the
+                 * balancer members by means of redirects.
+                 * This should avoid redirect cycles.
+                 */
+                if ((*worker->s->redirect)
+                    && (recursion < balancer->workers->nelts)) {
+                    proxy_worker *rworker = NULL;
+                    rworker = find_route_worker(balancer, worker->s->redirect,
+                                                r, recursion + 1);
+                    /* Check if the redirect worker is usable */
+                    if (rworker && !PROXY_WORKER_IS_USABLE(rworker)) {
                         /*
-                         * We have a worker that is unusable.
-                         * It can be in error or disabled, but in case
-                         * it has a redirection set use that redirection worker.
-                         * This enables to safely remove the member from the
-                         * balancer. Of course you will need some kind of
-                         * session replication between those two remote.
-                         * Also check that we haven't gone thru all the
-                         * balancer members by means of redirects.
-                         * This should avoid redirect cycles.
+                         * If the worker is in error state run
+                         * retry on that worker. It will be marked as
+                         * operational if the retry timeout is elapsed.
+                         * The worker might still be unusable, but we try
+                         * anyway.
                          */
-                        if ((*worker->s->redirect)
-                            && (recursion < balancer->workers->nelts)) {
-                            proxy_worker *rworker = NULL;
-                            rworker = find_route_worker(balancer, worker->s->redirect,
-                                                        r, recursion + 1);
-                            /* Check if the redirect worker is usable */
-                            if (rworker && !PROXY_WORKER_IS_USABLE(rworker)) {
-                                /*
-                                 * If the worker is in error state run
-                                 * retry on that worker. It will be marked as
-                                 * operational if the retry timeout is elapsed.
-                                 * The worker might still be unusable, but we try
-                                 * anyway.
-                                 */
-                                ap_proxy_retry_worker_fn("BALANCER", rworker, r->server);
-                            }
-                            if (rworker && PROXY_WORKER_IS_USABLE(rworker))
-                                return rworker;
-                        }
+                        ap_proxy_retry_worker_fn("BALANCER", rworker, r->server);
                     }
+                    if (rworker && PROXY_WORKER_IS_USABLE(rworker))
+                        return rworker;
                 }
             }
         }
@@ -398,6 +406,56 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
 
     return candidate;
 
+}
+
+/* Pick a worker via the balancer's load-balancing method and atomically
+ * reserve a maxbusy admission slot on it. If the chosen candidate's last
+ * slot is taken by another process in the (tiny) race window between
+ * selection and reservation, retry with a fresh selection; the lbmethod
+ * will now see that worker as saturated via ap_proxy_worker_has_capacity()
+ * and route around it. Bounded by the number of workers in the balancer,
+ * since under normal operation at most one retry is ever needed and this
+ * is purely a safety net against pathological contention.
+ *
+ * This is independent of find_best_worker()'s own retry loop, which
+ * already handles the case where *no* worker currently has capacity at
+ * all (reusing the balancer Timeout mechanism); this helper only retries
+ * when the lbmethod *did* find an apparently-usable candidate that lost
+ * its last slot to someone else a moment later.
+ *
+ * Returns the reserved worker (the caller must register
+ * ap_proxy_release_worker_reservation() on it), or NULL if no worker could
+ * be selected and reserved (already logged).
+ */
+static proxy_worker *find_and_reserve_worker(proxy_balancer *balancer,
+                                             request_rec *r)
+{
+    proxy_worker *runtime;
+    int tries;
+
+    for (tries = 0; tries <= balancer->workers->nelts; tries++) {
+        runtime = find_best_worker(balancer, r);
+        if (!runtime) {
+            if (balancer->workers->nelts) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01170)
+                              "%s: All workers are in error state or "
+                              "unavailable (disabled, or at their maxbusy "
+                              "limit)", balancer->s->name);
+            } else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01171)
+                              "%s: No workers in balancer",
+                              balancer->s->name);
+            }
+            return NULL;
+        }
+        if (ap_proxy_try_reserve_worker(runtime)) {
+            return runtime;
+        }
+    }
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10640)
+                  "%s: could not reserve a worker (all candidates reached "
+                  "MaxBusy while retrying)", balancer->s->name);
+    return NULL;
 }
 
 static int balancer_fixup(request_rec *r, proxy_worker *worker, char **url)
@@ -547,7 +605,8 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         }
         if (member_of) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01167)
-                          "%s: All workers are in error state for route (%s)",
+                          "%s: All workers are in error state or "
+                          "unavailable for route (%s)",
                           (*balancer)->s->name, route);
 #if APR_HAS_THREADS
             if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
@@ -567,38 +626,69 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
                       (*balancer)->s->name);
     }
 #endif
-    if (!*worker) {
-        runtime = find_best_worker(*balancer, r);
-        if (!runtime) {
-            if ((*balancer)->workers->nelts) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01170)
-                              "%s: All workers are in error state",
-                              (*balancer)->s->name);
-            } else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01171)
-                              "%s: No workers in balancer",
-                              (*balancer)->s->name);
+    if (*worker) {
+        /* A sticky-session target was found. Reserve its maxbusy slot;
+         * if that fails (it is at its limit), treat it exactly like an
+         * unusable sticky worker: nofailover (sticky_force) means 503,
+         * otherwise fail over to the normal load-balancing path below,
+         * same as the existing "all workers for this route are in error"
+         * failover, including BALANCER_ROUTE_CHANGED.
+         */
+        if (!ap_proxy_try_reserve_worker(*worker)) {
+            if ((*balancer)->s->sticky_force) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10641)
+                              "%s: sticky worker (%s) is at its MaxBusy "
+                              "limit (%" APR_SIZE_T_FMT ") and nofailover "
+                              "is set",
+                              (*balancer)->s->name, (*worker)->s->name,
+                              (*worker)->s->maxbusy);
+                return HTTP_SERVICE_UNAVAILABLE;
             }
+            apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
+            *worker = NULL;
+        }
+    }
 
+    if (!*worker) {
+        runtime = find_and_reserve_worker(*balancer, r);
+        if (!runtime) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
-        if (*(*balancer)->s->sticky && runtime) {
+        if (*(*balancer)->s->sticky) {
             /*
              * This balancer has sticky sessions and the client either has not
-             * supplied any routing information or all workers for this route
+             * supplied any routing information, or all workers for this route
              * including possible redirect and hotstandby workers are in error
-             * state, but we have found another working worker for this
-             * balancer where we can send the request. Thus notice that we have
-             * changed the route to the backend.
+             * state or at their MaxBusy limit, but we have found another
+             * working worker for this balancer where we can send the
+             * request. Thus notice that we have changed the route to the
+             * backend.
              */
             apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
         }
         *worker = runtime;
     }
 
+    /* The busy counter is a load-balancing metric only (used by
+     * bybusyness); exactly as in unpatched trunk, it is incremented and
+     * its release registered unconditionally, independent of maxbusy.
+     */
     ap_proxy_increment_busy_count(*worker);
     apr_pool_cleanup_register(r->pool, *worker, ap_proxy_decrement_busy_count,
                               apr_pool_cleanup_null);
+
+    /* The maxbusy admission reservation above (if any was actually taken;
+     * none is for an unlimited worker) is a separate concern with its own
+     * cleanup, released independently -- possibly much earlier, by
+     * proxy_handler() in mod_proxy.c the moment it abandons this worker
+     * for a failover attempt, rather than only at the end of the whole
+     * request like the busy counter above.
+     */
+    if ((*worker)->s->maxbusy) {
+        apr_pool_cleanup_register(r->pool, *worker,
+                                  ap_proxy_release_worker_reservation,
+                                  apr_pool_cleanup_null);
+    }
 
     /* Add balancer/worker info to env. */
     apr_table_setn(r->subprocess_env,
@@ -851,6 +941,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_time_t tstamp;
     apr_array_header_t *ids;
     int idx;
+    server_rec *main_s = s; /* 's' below is consumed by s = s->next */
 
     /* balancer_post_config() will be called twice during startup.  So, don't
      * set up the static data the 1st time through. */
@@ -1036,6 +1127,19 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             }
         }
         s = s->next;
+    }
+
+    /* Every balancer->s->sname above is now final and every worker's
+     * shared memory is attached, so every statically configured maxbusy
+     * BalancerMember can be identified: pre-register its admission slot
+     * now, once, under proxy_mutex, instead of racing to create it from
+     * the request path later. See ap_proxy_admission_table_check()'s own
+     * comment for why this is both possible (no maxbusy worker can be
+     * created any other way) and preferable (no request-time creation
+     * race, old or new generation).
+     */
+    if (ap_proxy_admission_table_check(main_s) != APR_SUCCESS) {
+        return !OK;
     }
 
     return OK;
@@ -1539,6 +1643,12 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
                 ap_rprintf(r,
                            "          <httpd:busy>%" APR_SIZE_T_FMT "</httpd:busy>\n",
                            ap_proxy_get_busy_count(worker));
+                ap_rprintf(r,
+                           "          <httpd:maxbusy>%" APR_SIZE_T_FMT "</httpd:maxbusy>\n",
+                           worker->s->maxbusy);
+                ap_rprintf(r,
+                           "          <httpd:reserved>%" APR_SIZE_T_FMT "</httpd:reserved>\n",
+                           ap_proxy_get_reserved_count(worker));
                 ap_rprintf(r, "          <httpd:lbset>%d</httpd:lbset>\n",
                            worker->s->lbset);
                 /* End proxy_worker_stat */

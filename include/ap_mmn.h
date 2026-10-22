@@ -739,6 +739,14 @@
  * 20211221.31 (2.5.1-dev) Add ap_*_timingsafe() to httpd.h
  * 20211221.32 (2.5.1-dev) Add ap_cstr_stripws() to httpd.h
  * 20211221.33 (2.5.1-dev) Add ap_size_parameter_parse() to httpd.h
+ * 20211221.34 (2.5.1-dev) Add maxbusy to proxy_worker_shared, and
+ *                          ap_proxy_admission_table_init(),
+ *                          ap_proxy_admission_table_check(),
+ *                          ap_proxy_get_reserved_count(),
+ *                          ap_proxy_worker_has_capacity(),
+ *                          ap_proxy_try_reserve_worker() and
+ *                          ap_proxy_release_worker_reservation() to
+ *                          proxy_util.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -746,7 +754,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 33             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 34             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
