@@ -288,4 +288,31 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
                          apr_interval_time_t timeout, apr_interval_time_t start_delay, 
                          apr_interval_time_t max_delay, int backoff);
 
+/**
+ * Callback to tell md_util_try_with_retry_after() to stop waiting, e.g.
+ * because the process is shutting down. Return non-zero to cancel.
+ */
+typedef int md_util_interrupt_fn(void *baton);
+
+/**
+ * Register the callback polled by md_util_try_with_retry_after() while it
+ * waits. Not set by default, so a waiting a2md is not interrupted.
+ */
+void md_util_interrupt_set(md_util_interrupt_fn *fn, void *baton);
+
+/**
+ * Like md_util_try(), but honours a server given Retry-After. *retry_at is
+ * the local time before which fn should not be called again. It is read
+ * before every call, so fn may set it, and is waited for at most until the
+ * timeout, then fn is called a last time. May be NULL. The waits end early
+ * and APR_EINTR is returned, without calling fn again, when the callback
+ * set by md_util_interrupt_set() asks for it.
+ */
+apr_status_t md_util_try_with_retry_after(md_util_try_fn *fn, void *baton,
+                                          int ignore_errs,
+                                          apr_interval_time_t timeout,
+                                          apr_interval_time_t start_delay,
+                                          apr_interval_time_t max_delay,
+                                          int backoff, apr_time_t *retry_at);
+
 #endif /* md_util_h */
