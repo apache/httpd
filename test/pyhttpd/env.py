@@ -316,6 +316,19 @@ class HttpdTestEnv:
         """
         return cls.has_shared_module("ssl")
 
+    _directives = None
+
+    def has_directive(self, name: str) -> bool:
+        if HttpdTestEnv._directives is None:
+            httpd_bin = os.path.join(self._bin_dir, 'httpd')
+            try:
+                p = subprocess.run([httpd_bin, '-L'],
+                                   capture_output=True, text=True)
+                HttpdTestEnv._directives = p.stdout
+            except Exception:
+                HttpdTestEnv._directives = ""
+        return name in HttpdTestEnv._directives
+
     _nghttp_gate = {}
 
     @classmethod
