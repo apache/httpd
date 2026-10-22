@@ -281,8 +281,24 @@ AP_DECLARE(apr_size_t) ap_get_limit_xml_body(const request_rec *r);
  * @param status The status for which the custom response should be used
  * @param string The custom response.  This can be a static string, a file
  *               or a URL
+ * @note A static string is sent as text/html, use ap_custom_response_ct() to
+ *       send it with another Content-Type.
  */
 AP_DECLARE(void) ap_custom_response(request_rec *r, int status, const char *string);
+
+/**
+ * Install a custom response for a given status, and the Content-Type to send
+ * it with. A plain text response is otherwise sent as text/html.
+ * @param r The current request
+ * @param status The status for which the custom response should be used
+ * @param string The custom response. The Content-Type is only used if this
+ *               is a static string, not a file or a URL
+ * @param content_type The Content-Type of the custom response, or NULL for
+ *                     the default
+ */
+AP_DECLARE(void) ap_custom_response_ct(request_rec *r, int status,
+                                       const char *string,
+                                       const char *content_type);
 
 /**
  * Check if the current request is beyond the configured max. number of redirects or subrequests
@@ -441,6 +457,11 @@ typedef struct {
     /** Should addition of charset= be suppressed for this request?
      */
     int suppress_charset;
+
+    /** Content-Types registered via ap_custom_response_ct(), indexed like
+     * response_code_strings, or NULL
+     */
+    const char **response_code_cts;
 } core_request_config;
 
 /* Standard entries that are guaranteed to be accessible via
