@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #endif
 
+#include <limits.h>             /* for INT_MAX */
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -479,13 +481,16 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
 #define HTTP_UNSET (-HTTP_OK)
 #define SCRIPT_LOG_MARK  __FILE__,__LINE__,module_index
 
-AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
-                                       int (*getsfunc) (char *, int, void *),
-                                       void *getsfunc_data,
-                                       int module_index)
+/* Scan the headers read by getsfunc using lines of up to bufsize bytes,
+ * the buffer being the caller's if there is one. */
+static int scan_script_header_err(request_rec *r, char *buffer,
+                                  apr_size_t bufsize,
+                                  int (*getsfunc) (char *, int, void *),
+                                  void *getsfunc_data, int module_index)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
+    int len;
     apr_size_t p;
     int cgi_status = HTTP_UNSET;
     apr_table_t *merge;
@@ -496,7 +501,19 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
     if (buffer) {
         *buffer = '\0';
     }
-    w = buffer ? buffer : x;
+    if (bufsize > INT_MAX) {
+        bufsize = INT_MAX;
+    }
+    if (buffer) {
+        w = buffer;
+    }
+    else if (bufsize > sizeof(x)) {
+        w = apr_palloc(r->pool, bufsize);
+    }
+    else {
+        w = x;
+    }
+    len = bufsize > 1 ? (int)bufsize - 1 : 1;
 
     /* temporary place to hold headers to merge in later */
     merge = apr_table_make(r->pool, 10);
@@ -512,7 +529,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
 
     while (1) {
 
-        int rv = (*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data);
+        int rv = (*getsfunc) (w, len, getsfunc_data);
         if (rv == 0) {
             const char *msg = "Premature end of script headers";
             if (first_header)
@@ -627,7 +644,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
         if (!(l = strchr(w, ':'))) {
             if (!buffer) {
                 /* Soak up all the script output - may save an outright kill */
-                while ((*getsfunc)(w, MAX_STRING_LEN - 1, getsfunc_data) > 0) {
+                while ((*getsfunc)(w, len, getsfunc_data) > 0) {
                     continue;
                 }
             }
@@ -751,6 +768,15 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
     return OK;
 }
 
+AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
+                                       int (*getsfunc) (char *, int, void *),
+                                       void *getsfunc_data,
+                                       int module_index)
+{
+    return scan_script_header_err(r, buffer, MAX_STRING_LEN, getsfunc,
+                                  getsfunc_data, module_index);
+}
+
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
                                        int (*getsfunc) (char *, int, void *),
                                        void *getsfunc_data)
@@ -830,8 +856,9 @@ AP_DECLARE(int) ap_scan_script_header_err_brigade(request_rec *r,
                                                   apr_bucket_brigade *bb,
                                                   char *buffer)
 {
-    return ap_scan_script_header_err_core_ex(r, buffer, getsfunc_BRIGADE, bb,
-                                             APLOG_MODULE_INDEX);
+    return ap_scan_script_header_err_brigade_limit(r, bb, buffer,
+                                                   APLOG_MODULE_INDEX,
+                                                   MAX_STRING_LEN);
 }
 
 AP_DECLARE(int) ap_scan_script_header_err_brigade_ex(request_rec *r,
@@ -839,8 +866,19 @@ AP_DECLARE(int) ap_scan_script_header_err_brigade_ex(request_rec *r,
                                                      char *buffer,
                                                      int module_index)
 {
-    return ap_scan_script_header_err_core_ex(r, buffer, getsfunc_BRIGADE, bb,
-                                             module_index);
+    return ap_scan_script_header_err_brigade_limit(r, bb, buffer,
+                                                   module_index,
+                                                   MAX_STRING_LEN);
+}
+
+AP_DECLARE(int) ap_scan_script_header_err_brigade_limit(request_rec *r,
+                                                        apr_bucket_brigade *bb,
+                                                        char *buffer,
+                                                        int module_index,
+                                                        apr_size_t line_size)
+{
+    return scan_script_header_err(r, buffer, line_size, getsfunc_BRIGADE, bb,
+                                  module_index);
 }
 
 

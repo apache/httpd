@@ -1,0 +1,3 @@
+  *) mod_proxy_fcgi: Honor the responsefieldsize parameter of the worker for
+     the size of the response header lines, so that lines larger than the
+     default of 8192 bytes are supported.  PR 64919.  [Arturo Bernal]
