@@ -689,6 +689,7 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
     size_t offs = 0;
     const char *p;
     const char *q;
+    const char *end = buf + len;
     char *header;
     char *content;
     ap_regmatch_t pmatch[2];
@@ -699,8 +700,8 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
         header = NULL;
         content = NULL;
         p = buf+offs+pmatch[1].rm_eo;
-        while (!apr_isalpha(*++p));
-        for (q = p; apr_isalnum(*q) || (*q == '-'); ++q);
+        while (++p < end && !apr_isalpha(*p));
+        for (q = p; q < end && (apr_isalnum(*q) || (*q == '-')); ++q);
         header = apr_pstrmemdup(r->pool, p, q-p);
         if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
             ret = apr_palloc(r->pool, sizeof(meta));
@@ -713,22 +714,22 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
                               pmatch[0].rm_eo - pmatch[0].rm_so);
             /* if it doesn't contain "content", ignore, don't crash! */
             if (p != NULL) {
-                while (*p) {
+                while (p < end && *p) {
                     p += 7;
-                    while (apr_isspace(*p))
+                    while (p < end && apr_isspace(*p))
                         ++p;
                     /* XXX Should we search for another content= pattern? */
-                    if (*p != '=')
+                    if (p >= end || *p != '=')
                         break;
-                    while (*p && apr_isspace(*++p));
-                    if ((*p == '\'') || (*p == '"')) {
+                    while (++p < end && apr_isspace(*p));
+                    if (p < end && ((*p == '\'') || (*p == '"'))) {
                         delim = *p++;
-                        for (q = p; *q && *q != delim; ++q);
+                        for (q = p; q < end && *q != delim; ++q);
                         /* No terminating delimiter found? Skip the bogus directive */
-                        if (*q != delim)
+                        if (q >= end || *q != delim)
                            break;
                     } else {
-                        for (q = p; *q && !apr_isspace(*q) && (*q != '>'); ++q);
+                        for (q = p; q < end && !apr_isspace(*q) && (*q != '>'); ++q);
                     }
                     content = apr_pstrmemdup(r->pool, p, q-p);
                     break;
