@@ -78,13 +78,18 @@
         <td>Delay in microseconds between when the request arrived and the
         last byte of the request body was read (finished upload).
         Only available if <directive>LogIOTrackTTFU</directive> is set to
-        ON.<br />
-        Available in Apache 2.4.34 and later</td></tr>
+        ON. If tracking is not enabled, or the last byte of the request
+        body was never read (for example, the request was aborted before
+        the upload finished), the value logged is <code>-</code>.<br />
+        Available in Apache 2.5.1 and later</td></tr>
 
     <tr><td><code>%^FB</code></td>
         <td>Delay in microseconds between when the request arrived and the
         first byte of the response headers are written.  Only available if
-        <directive>LogIOTrackTTFB</directive> is set to ON.<br />
+        <directive>LogIOTrackTTFB</directive> is set to ON. If tracking is
+        not enabled, or the first byte of the response headers was never
+        written (for example, the request was aborted before any response
+        headers were written), the value logged is <code>-</code>.<br />
         Available in Apache 2.4.13 and later</td></tr>
     </table>
 
@@ -106,7 +111,7 @@ upload)</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
-<compatibility>Apache HTTP Server 2.4.34 and later</compatibility>
+<compatibility>Apache HTTP Server 2.5.1 and later</compatibility>
 
 <usage>
     <p>This directive configures whether this module tracks the delay
