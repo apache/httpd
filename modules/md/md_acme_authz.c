@@ -111,6 +111,38 @@ static int copy_challenge_error(void *baton, size_t index, md_json_t *json)
     return 1;
 }
 
+typedef struct {
+    apr_pool_t *p;
+    md_acme_authz_t *authz;
+    md_json_t *json;
+} authz_get_ctx;
+
+static apr_status_t on_authz_got(md_acme_t *acme, apr_pool_t *p, const apr_table_t *hdrs,
+                                 md_json_t *body, void *baton)
+{
+    authz_get_ctx *ctx = baton;
+
+    (void)acme;
+    (void)p;
+    ctx->json = md_json_clone(ctx->p, body);
+    ctx->authz->retry_at = md_acme_retry_after(hdrs);
+    return APR_SUCCESS;
+}
+
+static apr_status_t authz_get_json(md_json_t **pjson, md_acme_authz_t *authz,
+                                   md_acme_t *acme, apr_pool_t *p)
+{
+    authz_get_ctx ctx;
+    apr_status_t rv;
+
+    ctx.p = p;
+    ctx.authz = authz;
+    ctx.json = NULL;
+    rv = md_acme_GET(acme, authz->url, NULL, on_authz_got, NULL, NULL, 1, &ctx);
+    *pjson = (APR_SUCCESS == rv)? ctx.json : NULL;
+    return rv;
+}
+
 apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_pool_t *p)
 {
     md_json_t *json;
@@ -131,7 +163,8 @@ apr_status_t md_acme_authz_update(md_acme_authz_t *authz, md_acme_t *acme, apr_p
     err = "unable to parse response";
     log_level = MD_LOG_ERR;
     
-    if (APR_SUCCESS == (rv = md_acme_get_json(&json, acme, authz->url, 1, p))
+    authz->retry_at = 0;
+    if (APR_SUCCESS == (rv = authz_get_json(&json, authz, acme, p))
         && (s = md_json_gets(json, MD_KEY_STATUS, NULL))) {
             
         authz->domain = md_json_gets(json, MD_KEY_IDENTIFIER, MD_KEY_VALUE, NULL); 
@@ -215,8 +248,8 @@ static apr_status_t authz_http_set(md_acme_t *acme, apr_pool_t *p, const apr_tab
     
     (void)acme;
     (void)p;
-    (void)hdrs;
     (void)body;
+    ctx->authz->retry_at = md_acme_retry_after(hdrs);
     md_log_perror(MD_LOG_MARK, MD_LOG_TRACE1, 0, ctx->p, "updated authz %s", ctx->authz->url);
     return APR_SUCCESS;
 }

@@ -2341,6 +2341,31 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
 AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str);
 
 /**
+ * Parse the value of a Retry-After header field (RFC 9110, section 10.2.3),
+ * which is either a number of seconds or an HTTP-date. Leading and trailing
+ * whitespace is ignored. Anything else, such as a sign, a fraction, a list
+ * of values, a time zone other than GMT or text after the date, is invalid.
+ * An HTTP-date is accepted in the three formats of RFC 9110, section 5.6.7.
+ * The day name is checked for its syntax only. A delay too large for an
+ * apr_interval_time_t is saturated to APR_INT64_MAX.
+ *
+ * An HTTP-date is relative to the clock of the server that sent it. To
+ * be independent of any difference to the local clock, the delay is computed
+ * against the Date header field of the same response, if given.
+ * @param delay The parsed delay, never negative
+ * @param value The field value to parse
+ * @param date The value of the Date header field of the response, or NULL.
+ *             It is ignored if it is not a valid HTTP-date.
+ * @param now The local time to measure an HTTP-date against if date is not
+ *            usable, also to resolve a two digit year
+ * @return APR_SUCCESS, or APR_EINVAL if value is not valid
+ */
+AP_DECLARE(apr_status_t) ap_parse_retry_after(apr_interval_time_t *delay,
+                                              const char *value,
+                                              const char *date,
+                                              apr_time_t now);
+
+/**
  * Parse a given timeout parameter string into an apr_interval_time_t value.
  * The unit of the time interval is given as postfix string to the numeric
  * string. Currently the following units are understood (case insensitive):

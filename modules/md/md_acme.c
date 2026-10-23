@@ -168,12 +168,267 @@ apr_status_t md_acme_init(apr_pool_t *p, const char *base,  int init_ssl)
     return init_ssl? md_crypt_init(p) : APR_SUCCESS;
 }
 
+#ifdef MD_A2MD_BUILD
+/* a2md does not link httpd, so it cannot call ap_parse_retry_after(). This is
+ * the same code, keep both in sync. */
+/* HTTP-date as in RFC 9110, section 5.6.7: IMF-fixdate, rfc850-date or
+ * asctime-date. Unlike apr_date_parse_http() the whole value must match. */
+static int ra_digits(const char *s, int n)
+{
+    int v = 0;
+
+    while (n-- > 0) {
+        if (*s < '0' || *s > '9') {
+            return -1;
+        }
+        v = v * 10 + (*s++ - '0');
+    }
+    return v;
+}
+
+static int ra_month(const char *s)
+{
+    static const char months[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
+    int i;
+
+    for (i = 0; i < 12; ++i) {
+        if (!memcmp(s, months + 3 * i, 3)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/* day-name, or day-name-l if len is more than 3, must match case sensitively */
+static int ra_day_name(const char *s, apr_size_t len)
+{
+    static const char *const names[] = {
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    };
+    int i;
+
+    for (i = 0; i < 7; ++i) {
+        if (strlen(names[i]) == len ? !memcmp(s, names[i], len)
+                                    : (len == 3 && !memcmp(s, names[i], 3))) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static int ra_time_of_day(const char *s, int *h, int *m, int *sec)
+{
+    if (s[2] != ':' || s[5] != ':') {
+        return 0;
+    }
+    *h = ra_digits(s, 2);
+    *m = ra_digits(s + 3, 2);
+    *sec = ra_digits(s + 6, 2);
+    /* a leap second, 60, is syntactically valid */
+    return *h >= 0 && *h < 24 && *m >= 0 && *m < 60 && *sec >= 0 && *sec <= 60;
+}
+
+static apr_int64_t ra_days_from_civil(apr_int64_t y, int m, int d)
+{
+    apr_int64_t era, yoe, doy;
+
+    y -= m <= 2;
+    era = (y >= 0 ? y : y - 399) / 400;
+    yoe = y - era * 400;
+    doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
+    return era * 146097 + yoe * 365 + yoe / 4 - yoe / 100 + doy - 719468;
+}
+
+static int ra_date_ok(int year, int mon, int mday)
+{
+    static const int days[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    int leap = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+
+    return mday >= 1 && mday <= days[mon] + (mon == 1 && leap);
+}
+
+/* The year of t, using the proleptic Gregorian calendar. */
+static apr_int64_t ra_year_of(apr_time_t t)
+{
+    apr_int64_t secs = t / APR_USEC_PER_SEC;
+    apr_int64_t days, era, doe, yoe, doy;
+
+    if (t % APR_USEC_PER_SEC < 0) {
+        --secs;
+    }
+    days = secs / 86400;
+    if (secs % 86400 < 0) {
+        --days;
+    }
+    days += 719468;
+    era = (days >= 0 ? days : days - 146096) / 146097;
+    doe = days - era * 146097;
+    yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    return yoe + era * 400 + ((5 * doy + 2) / 153 >= 10);
+}
+
+static int ra_http_date(const char *s, apr_size_t len, apr_time_t now,
+                        apr_time_t *when)
+{
+    int year, mon, mday, h, m, sec;
+    const char *tod;
+    apr_size_t comma;
+
+    if (len == 29 && s[3] == ',') {
+        /* IMF-fixdate: Sun, 06 Nov 1994 08:49:37 GMT */
+        if (!ra_day_name(s, 3) || s[4] != ' ' || s[7] != ' ' || s[11] != ' '
+            || s[16] != ' ' || memcmp(s + 25, " GMT", 4)) {
+            return 0;
+        }
+        mday = ra_digits(s + 5, 2);
+        mon = ra_month(s + 8);
+        year = ra_digits(s + 12, 4);
+        tod = s + 17;
+    }
+    else if (len == 24 && s[3] == ' ') {
+        /* asctime-date: Sun Nov  6 08:49:37 1994 */
+        if (!ra_day_name(s, 3) || s[7] != ' ' || s[10] != ' ' || s[19] != ' ') {
+            return 0;
+        }
+        mon = ra_month(s + 4);
+        mday = s[8] == ' ' ? ra_digits(s + 9, 1) : ra_digits(s + 8, 2);
+        year = ra_digits(s + 20, 4);
+        tod = s + 11;
+    }
+    else {
+        /* rfc850-date: Sunday, 06-Nov-94 08:49:37 GMT */
+        for (comma = 6; comma <= 9 && comma < len && s[comma] != ','; ++comma)
+            ;
+        if (comma > 9 || len != comma + 24 || !ra_day_name(s, comma)
+            || s[comma + 1] != ' ' || s[comma + 4] != '-' || s[comma + 8] != '-'
+            || s[comma + 11] != ' ' || memcmp(s + comma + 20, " GMT", 4)) {
+            return 0;
+        }
+        mday = ra_digits(s + comma + 2, 2);
+        mon = ra_month(s + comma + 5);
+        year = ra_digits(s + comma + 9, 2);
+        tod = s + comma + 12;
+        if (year >= 0) {
+            /* two digit year: not more than 50 years in the future */
+            apr_int64_t now_year = ra_year_of(now);
+
+            /* keep the arithmetic below in range for any clock */
+            if (now_year < 1970) {
+                now_year = 1970;
+            }
+            else if (now_year > 9999) {
+                now_year = 9999;
+            }
+            year += now_year / 100 * 100;
+            while (year + 100 <= now_year + 50) {
+                year += 100;
+            }
+            while (year > now_year + 50) {
+                year -= 100;
+            }
+        }
+    }
+    if (year < 0 || mon < 0 || mday < 0 || !ra_date_ok(year, mon, mday)
+        || !ra_time_of_day(tod, &h, &m, &sec)) {
+        return 0;
+    }
+    *when = apr_time_from_sec(ra_days_from_civil(year, mon + 1, mday) * 86400
+                              + h * 3600 + m * 60 + sec);
+    return 1;
+}
+
+static const char *ra_trim(const char *s, apr_size_t *len)
+{
+    while (*s == ' ' || *s == '\t') {
+        ++s;
+    }
+    *len = strlen(s);
+    while (*len && (s[*len - 1] == ' ' || s[*len - 1] == '\t')) {
+        --*len;
+    }
+    return s;
+}
+
+static apr_status_t retry_after_parse(apr_interval_time_t *delay, const char *value,
+                                      const char *date, apr_time_t now)
+{
+    apr_size_t len, dlen;
+    apr_time_t when, ref = now;
+
+    if (!value) {
+        return APR_EINVAL;
+    }
+    value = ra_trim(value, &len);
+    if (!len) {
+        return APR_EINVAL;
+    }
+
+    if (*value >= '0' && *value <= '9') {
+        const apr_int64_t max = APR_INT64_MAX / APR_USEC_PER_SEC;
+        apr_int64_t secs = 0;
+        apr_size_t i;
+
+        for (i = 0; i < len; ++i) {
+            if (value[i] < '0' || value[i] > '9') {
+                return APR_EINVAL;
+            }
+            if (secs <= (max - (value[i] - '0')) / 10) {
+                secs = secs * 10 + (value[i] - '0');
+            }
+            else {
+                secs = max + 1;
+            }
+        }
+        *delay = secs > max ? APR_INT64_MAX : apr_time_from_sec(secs);
+        return APR_SUCCESS;
+    }
+
+    if (!ra_http_date(value, len, now, &when)) {
+        return APR_EINVAL;
+    }
+    if (date) {
+        date = ra_trim(date, &dlen);
+        if (!ra_http_date(date, dlen, now, &ref)) {
+            ref = now;
+        }
+    }
+    if (when <= ref) {
+        *delay = 0;
+    }
+    else if (ref < 0 && when > APR_INT64_MAX + ref) {
+        *delay = APR_INT64_MAX;
+    }
+    else {
+        *delay = when - ref;
+    }
+    return APR_SUCCESS;
+}
+#else
+#define retry_after_parse ap_parse_retry_after
+#endif
+
+apr_time_t md_acme_retry_after(const struct apr_table_t *headers)
+{
+    const char *value = headers? apr_table_get(headers, "Retry-After") : NULL;
+    const char *date = headers? apr_table_get(headers, "Date") : NULL;
+    apr_time_t now = apr_time_now();
+    apr_interval_time_t delay;
+
+    if (!value || APR_SUCCESS != retry_after_parse(&delay, value, date, now)) {
+        return 0;
+    }
+    return (now > 0 && delay > APR_INT64_MAX - now)? APR_INT64_MAX : now + delay;
+}
+
 static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t *res)
 {
     const char *ctype;
     md_json_t *problem = NULL;
     apr_status_t rv;
 
+    /* e.g. rateLimited, RFC 8555 6.6 */
+    req->result->retry_at = md_acme_retry_after(req->resp_hdrs);
     ctype = apr_table_get(req->resp_hdrs, "content-type");
     ctype = md_util_parse_ct(res->req->pool, ctype);
     if (ctype && !strcmp(ctype, "application/problem+json")) {
@@ -490,6 +745,7 @@ void md_acme_report_result(md_acme_t *acme, apr_status_t rv, struct md_result_t 
     else {
         md_result_problem_set(result, acme->last->status, acme->last->problem, 
                               acme->last->detail, acme->last->subproblems);
+        result->retry_at = acme->last->retry_at;
     }
 }
 

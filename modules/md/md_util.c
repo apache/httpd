@@ -1045,9 +1045,65 @@ apr_status_t md_util_abs_http_uri_check(apr_pool_t *p, const char *uri, const ch
 
 /* try and retry for a while **********************************************************************/
 
+static md_util_interrupt_fn *interrupt_fn;
+static void *interrupt_baton;
+
+void md_util_interrupt_set(md_util_interrupt_fn *fn, void *baton)
+{
+    interrupt_fn = fn;
+    interrupt_baton = baton;
+}
+
+static int interrupted(void)
+{
+    return interrupt_fn && interrupt_fn(interrupt_baton);
+}
+
+/* Sleep in slices, so a long Retry-After does not delay a shutdown. */
+static apr_status_t interruptible_sleep(apr_interval_time_t duration)
+{
+    const apr_interval_time_t slice = apr_time_from_msec(100);
+
+    while (duration > 0) {
+        if (interrupted()) {
+            return APR_EINTR;
+        }
+        apr_sleep(duration < slice? duration : slice);
+        duration -= slice;
+    }
+    return interrupted()? APR_EINTR : APR_SUCCESS;
+}
+
+static apr_status_t try_loop(md_util_try_fn *fn, void *baton, int ignore_errs,
+                             apr_interval_time_t timeout,
+                             apr_interval_time_t start_delay,
+                             apr_interval_time_t max_delay, int backoff,
+                             apr_time_t *retry_at, int interruptible);
+
 apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs, 
                          apr_interval_time_t timeout, apr_interval_time_t start_delay, 
                          apr_interval_time_t max_delay, int backoff)
+{
+    return try_loop(fn, baton, ignore_errs, timeout, start_delay, max_delay,
+                    backoff, NULL, 0);
+}
+
+apr_status_t md_util_try_with_retry_after(md_util_try_fn *fn, void *baton,
+                                          int ignore_errs,
+                                          apr_interval_time_t timeout,
+                                          apr_interval_time_t start_delay,
+                                          apr_interval_time_t max_delay,
+                                          int backoff, apr_time_t *retry_at)
+{
+    return try_loop(fn, baton, ignore_errs, timeout, start_delay, max_delay,
+                    backoff, retry_at, 1);
+}
+
+static apr_status_t try_loop(md_util_try_fn *fn, void *baton, int ignore_errs,
+                             apr_interval_time_t timeout,
+                             apr_interval_time_t start_delay,
+                             apr_interval_time_t max_delay, int backoff,
+                             apr_time_t *retry_at, int interruptible)
 {
     apr_status_t rv;
     apr_time_t now = apr_time_now();
@@ -1056,21 +1112,40 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
     apr_interval_time_t nap_max = max_delay? max_delay : apr_time_from_sec(10);
     apr_interval_time_t left;
     int i = 0;
-    
+
     while (1) {
+        /* A hint beyond the deadline is waited for only until the deadline, so
+         * that a server cannot make us give up before the timeout is over. */
+        if (retry_at && *retry_at > now) {
+            apr_interval_time_t wait = (*retry_at < giveup? *retry_at : giveup) - now;
+
+            if (interruptible) {
+                if (APR_SUCCESS != (rv = interruptible_sleep(wait))) break;
+            }
+            else {
+                apr_sleep(wait);
+            }
+        }
+        else if (interruptible && interrupted()) {
+            rv = APR_EINTR;
+            break;
+        }
         if (APR_SUCCESS == (rv = fn(baton, i++))) {
             break;
         }
         else if (!APR_STATUS_IS_EAGAIN(rv) && !ignore_errs) {
             break;
         }
-        
+
         now = apr_time_now();
         if (now > giveup) {
             rv = APR_TIMEUP;
             break;
         }
-        
+        if (retry_at && *retry_at > now && now < giveup) {
+            continue;
+        }
+
         left = giveup - now;
         if (nap_duration > left) {
             nap_duration = left;
@@ -1078,11 +1153,17 @@ apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,
         if (nap_duration > nap_max) {
             nap_duration = nap_max;
         }
-        
-        apr_sleep(nap_duration);
+
+        if (interruptible) {
+            if (APR_SUCCESS != (rv = interruptible_sleep(nap_duration))) break;
+        }
+        else {
+            apr_sleep(nap_duration);
+        }
         if (backoff) {
             nap_duration *= 2;
-        } 
+        }
+        now = apr_time_now();
     }
     return rv;
 }
