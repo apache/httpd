@@ -6,4 +6,16 @@
         VirtualScriptAlias @SERVERROOT@/htdocs/modules/vhost_alias/%0
     </VirtualHost>
 
+    <IfModule mod_headers.c>
+        # Fixed-length literals so the test can size the Host header to land
+        # the expansion exactly on the interpolation buffer boundary.
+        <VirtualHost _default_:vhost_alias_bounds>
+            # The Host headers are several KB, past the global limit
+            LimitRequestFieldSize 8190
+            UseCanonicalName Off
+            VirtualDocumentRoot /vhost-alias-bounds/%1/%0/end
+            Header always set X-Document-Root "expr=%{DOCUMENT_ROOT}"
+        </VirtualHost>
+    </IfModule>
+
 </IfModule>
