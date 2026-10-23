@@ -52,20 +52,18 @@ static int num_pollers = 0;
  *
  * When motorz advertises AP_MPMQ_IS_ASYNC=1, mod_http2 hands the master (c1)
  * connection back to the MPM between requests; motorz then re-dispatches it on
- * a fresh worker thread when its socket is readable. This previously raced
- * mod_http2's stream lifecycle under rapid HTTP/2 connection churn: motorz
- * could drive the c1 close/cleanup faster than a just-finished stream's
- * secondary (c2) worker called c2_prod_done(), so the stream was still
- * "running" at cleanup and its in-flight response got aborted -- the client
- * saw a dropped request.
+ * a fresh worker thread when its socket is readable.
  *
- * That race is now FIXED in mod_http2 (h2_session.c): a graceful client GOAWAY
- * with streams still in flight no longer transits the session straight to DONE;
- * the session keeps running until those streams' c2s have finished and flushed
- * (open_streams == 0), and only then -- from the IDLE state -- sends our GOAWAY
- * and closes. The c1 connection is therefore handed to LINGER only after every
- * c2 is done, so async handoff is lossless under churn. The full analysis,
- * reproduction recipe, and the fix are in MOTORZ.README ("HTTP/2 async
+ * This used to drop responses under rapid HTTP/2 connection churn. The cause
+ * was in motorz, not mod_http2: a secondary (c2) connection is created as a
+ * copy of c1, so it shared c1's conn_state_t. A c2 worker that finished after
+ * c1 had parked the connection (state ASYNC_WAITIO) wrote its end-of-request
+ * state into that shared struct -- LINGER if the c2 had been aborted, which is
+ * harmless for a response already sent. The next dispatch then found LINGER,
+ * skipped process_connection and lingering-closed a live connection, so the
+ * client's next request was lost. motorz_pre_connection() gives every
+ * secondary connection a private conn_state_t, as mpm_event does. The
+ * analysis and reproduction recipe are in MOTORZ.README ("HTTP/2 async
  * handoff").
  *
  * This remains a single flip point: set to 0 to fall back to the old workaround
@@ -1506,7 +1504,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
     switch(query_code){
     case AP_MPMQ_IS_ASYNC:
         /* See MOTORZ_ENABLE_ASYNC at the top of this file: async HTTP/2 handoff
-         * is disabled pending a mod_http2 c1/c2 close-ordering fix. */
+         * is enabled. */
         *result = MOTORZ_ENABLE_ASYNC;
         break;
     case AP_MPMQ_CAN_SUSPEND:
@@ -2932,6 +2930,27 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+/* A secondary (e.g. mod_http2 c2) connection is created as a copy of its
+ * master, so it points at the master's conn_state_t. It is processed on its
+ * own thread and writes its state when a request ends (c->cs->state =
+ * WRITE_COMPLETION, or LINGER if it was aborted), which would clobber the
+ * state the master parked in the MPM (e.g. ASYNC_WAITIO) and make the next
+ * dispatch lingering-close a live connection. Give it a private state, and
+ * keep it from inheriting the master's motorz_conn_t, as mpm_event does.
+ */
+static int motorz_pre_connection(conn_rec *c, void *csd)
+{
+    if (c->master && (!c->cs || c->cs == c->master->cs)) {
+        conn_state_t *cs = apr_pcalloc(c->pool, sizeof(*cs));
+
+        cs->state = CONN_STATE_PROCESSING;
+        cs->sense = CONN_SENSE_DEFAULT;
+        c->cs = cs;
+        ap_set_module_config(c->conn_config, &mpm_motorz_module, NULL);
+    }
+    return OK;
+}
+
 static void motorz_hooks(apr_pool_t *p)
 {
     /* Our open_logs hook function must run before the core's, or stderr
@@ -2954,6 +2973,8 @@ static void motorz_hooks(apr_pool_t *p)
                                  APR_HOOK_MIDDLE);
     ap_hook_pre_read_request(motorz_pre_read_request, NULL, NULL,
                              APR_HOOK_MIDDLE);
+    ap_hook_pre_connection(motorz_pre_connection, NULL, NULL,
+                           APR_HOOK_REALLY_FIRST);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)

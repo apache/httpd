@@ -104,9 +104,9 @@ the changes made on this branch, so a failure points straight at what broke:
    motorz *does* return the c1 connection to MPM monitoring (async hand-back)
    and that HTTP/2 connection churn (`h2load -n 10000 -c 50 -m 1`) still drops
    **0** requests. This is the regression test for the dropped-request bug,
-   which is now fixed in mod_http2 (c1 is closed only after every c2 is done and
-   flushed); see MOTORZ.README "HTTP/2 async handoff" for the close-ordering
-   issue and the fix.
+   which was fixed in motorz (secondary connections now get their own
+   `conn_state_t`, see `motorz_pre_connection()`); see MOTORZ.README "HTTP/2
+   async handoff" for the root cause.
 
 Runs h2-over-TLS when ssl/http2/openssl/h2-curl are present, else an
 HTTP/1.1-only subset.
@@ -158,9 +158,9 @@ keeping them fast.
 ### Async is enabled; the suite asserts it is on
 
 motorz reports `AP_MPMQ_IS_ASYNC = 1` (`MOTORZ_ENABLE_ASYNC 1` in `motorz.c`).
-The HTTP/2 churn bug it used to expose is fixed in mod_http2 (a graceful client
-GOAWAY no longer tears the session down while a stream's c2 is still finishing;
-see MOTORZ.README "HTTP/2 async handoff"). Consequences the suite asserts:
+The HTTP/2 churn bug it used to expose is fixed in motorz (a secondary
+connection no longer shares its master's `conn_state_t`; see MOTORZ.README
+"HTTP/2 async handoff"). Consequences the suite asserts:
 mod_http2 requests `CONN_STATE_ASYNC_WAITIO` of an async MPM, so the WAITIO arm
 trace `AH10557` **does** appear, and h2 **does** log "returning to mpm c1
 monitoring" — while the churn run stays at 0 dropped requests. The suite drives

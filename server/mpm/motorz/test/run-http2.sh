@@ -6,8 +6,9 @@
 # a large multi-frame body, and h2load load (incl. high-churn n=.. c=50 m=1)
 # with zero dropped requests. Also asserts that the async HTTP/2 handoff is
 # ENABLED (MOTORZ_ENABLE_ASYNC 1): CONN_STATE_ASYNC_WAITIO arms and c1 is
-# returned to MPM monitoring, while churn stays lossless thanks to the mod_http2
-# c1/c2 close-ordering fix -- see MOTORZ.README "HTTP/2 async handoff". With
+# returned to MPM monitoring, while churn stays lossless thanks to secondary
+# connections having their own conn_state_t (motorz_pre_connection()) -- see
+# MOTORZ.README "HTTP/2 async handoff". With
 # global trace8 it inspects the motorz connection state-machine traces.
 #
 # Usage:   server/mpm/motorz/test/run-http2.sh
@@ -168,11 +169,10 @@ if command -v h2load >/dev/null 2>&1; then
     assert_eq 0 "${failed:-x}" "h2load: 0 failed (rate-limited / idle connections)"
 
     # --- churn regression: NO RESPONSE LOSS under max connection churn -------
-    # This is the workload the mod_http2 c1/c2 close-ordering fix targets
+    # This is the workload the secondary-connection conn_state_t fix targets
     # (MOTORZ.README "HTTP/2 async handoff"): many short connections, one stream
-    # each (-m 1), so each client sends a graceful GOAWAY right after its single
-    # request -- the exact path that used to abort a just-finished c2 and drop
-    # its response.
+    # each (-m 1). A just-finished c2 used to overwrite the parked master's
+    # state with LINGER, so the next request on that connection was lost.
     #
     # We assert on RESPONSE LOSS (started - succeeded), NOT on h2load's "failed"
     # total. Those are different: failed = (total - started) + (started -
@@ -200,7 +200,7 @@ if command -v h2load >/dev/null 2>&1; then
         started_total=$(( started_total + ${started:-0} ))
     done
     echo "      total response-loss=$resp_lost_total over started=$started_total (expected 0)"
-    assert_eq 0 "$resp_lost_total" "h2 churn: 0 dropped responses on started connections (close-ordering fix)"
+    assert_eq 0 "$resp_lost_total" "h2 churn: 0 dropped responses on started connections (secondary conn_state fix)"
 else
     echo "-- h2load: SKIPPED (h2load not on PATH; install nghttp2 for full load coverage)"
 fi
@@ -230,11 +230,10 @@ echo "$states" | grep -q "processing"        && pass "saw CONN_STATE_PROCESSING"
 
 echo "-- async HTTP/2 handoff is ENABLED (MOTORZ_ENABLE_ASYNC 1)"
 # motorz reports AP_MPMQ_IS_ASYNC=1 / AP_MPMQ_CAN_WAITIO=1, so mod_http2 takes
-# the async c1 hand-back path. This is only safe because of the mod_http2
-# c1/c2 close-ordering fix (h2_session_ev_remote_goaway / ST_IDLE draining):
-# the c1 connection is closed only after every secondary connection (c2) has
-# finished and flushed, so connection churn stays lossless (asserted above and
-# in smoke.sh). See MOTORZ.README "HTTP/2 async handoff". Consequences asserted
+# the async c1 hand-back path. This is only safe because a secondary
+# connection (c2) has its own conn_state_t (motorz_pre_connection()): it can no
+# longer overwrite the state the parked c1 connection is waiting in, so
+# connection churn stays lossless (asserted above and in smoke.sh). See MOTORZ.README "HTTP/2 async handoff". Consequences asserted
 # here, inverted from the async-off era:
 #   - the CONN_STATE_ASYNC_WAITIO arm trace (AH10557) DOES appear when a client
 #     opens an h2 connection and then idles: mod_http2 requests WAITIO of an

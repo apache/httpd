@@ -13,9 +13,9 @@
 #         h2 c2 connections set clogging_input_filters unconditionally.
 #   3. async HTTP/2 handoff is ENABLED (MOTORZ_ENABLE_ASYNC 1): motorz reports
 #      AP_MPMQ_IS_ASYNC=1, so mod_http2 hands the c1 connection back to the MPM
-#      between requests. The mod_http2 c1/c2 close-ordering fix
-#      (h2_session_ev_remote_goaway / ST_IDLE draining) keeps this lossless: c1
-#      is closed only after every stream's c2 has finished and flushed. The
+#      between requests. Giving each secondary connection its own
+#      conn_state_t (motorz_pre_connection()) keeps this lossless: a finishing
+#      c2 can no longer overwrite the state of the parked c1. The
 #      check is a churn regression test: many short h2 connections, asserting 0
 #      dropped requests. (See MOTORZ.README "HTTP/2 async handoff" for the full
 #      analysis and the fix.)
@@ -147,9 +147,9 @@ if [ "$H2" -eq 1 ]; then
     # ---- change #3: async enabled -> still no dropped requests under churn -
     # With MOTORZ_ENABLE_ASYNC=1, motorz advertises itself async and mod_http2
     # takes the c1 hand-back path ("returning to mpm c1 monitoring"). The
-    # mod_http2 c1/c2 close-ordering fix (h2_session_ev_remote_goaway /
-    # ST_IDLE draining) must keep this lossless under connection churn -- the
-    # workload that used to drop ~0.2-3% of requests. See MOTORZ.README.
+    # private conn_state_t for secondary connections (motorz_pre_connection())
+    # must keep this lossless under connection churn -- the workload that used
+    # to drop ~0.2-3% of requests. See MOTORZ.README.
     echo "-- [#3 async-churn] motorz advertises async; h2 churn stays lossless"
     mon=$(grep -c 'returning to mpm c1 monitoring' "$RUNDIR/logs/error_log")
     assert_gt "$mon" 0 "h2 returns to MPM c1 monitoring (IS_ASYNC=1)"
