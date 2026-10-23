@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <errno.h>
+#include <limits.h>
 #include "mod_proxy.h"
 #include "mod_watchdog.h"
 #include "ap_slotmem.h"
@@ -35,6 +37,14 @@ module AP_MODULE_DECLARE_DATA proxy_hcheck_module;
 #else
 #define HC_USE_THREADS 0
 #endif
+
+/*
+ * What a health check will take from a backend.  The backend is not trusted to
+ * be well behaved (it may be broken, or compromised), and a check runs in a
+ * long-lived thread and pool of the watchdog child.
+ */
+#define HC_MAX_HEADER_FIELDS    100              /* response header fields */
+#define HC_MAX_BODY             (1024 * 1024)    /* body kept for a condition */
 
 typedef struct {
     char *name;
@@ -89,6 +99,21 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     ctx->conditions = apr_table_make(p, 10);
     ctx->hcworkers = apr_hash_make(p);
     return ctx;
+}
+
+/* A whole number >= 0 and < INT_MAX; atoi() would take "abc" as 0. */
+static int hc_parse_count(const char *val, int *out)
+{
+    char *end;
+    apr_int64_t v;
+
+    errno = 0;
+    v = apr_strtoi64(val, &end, 10);
+    if (errno || end == val || *end || v < 0 || v >= INT_MAX) {
+        return 0;
+    }
+    *out = (int)v;
+    return 1;
 }
 
 static ap_watchdog_t *watchdog;
@@ -180,9 +205,8 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         }
     }
     else if (!strcasecmp(key, "hcpasses")) {
-        ival = atoi(val);
-        if (ival < 0)
-            return "Passes must be a positive value";
+        if (!hc_parse_count(val, &ival))
+            return "Passes must be a whole number, 0 or more";
         if (worker) {
             worker->s->passes = ival;
         } else {
@@ -190,9 +214,8 @@ static const char *set_worker_hc_param(apr_pool_t *p,
         }
     }
     else if (!strcasecmp(key, "hcfails")) {
-        ival = atoi(val);
-        if (ival < 0)
-            return "Fails must be a positive value";
+        if (!hc_parse_count(val, &ival))
+            return "Fails must be a whole number, 0 or more";
         if (worker) {
             worker->s->fails = ival;
         } else {
@@ -328,10 +351,9 @@ static const char *set_hc_tpsize (cmd_parms *cmd, void *dummy, const char *arg)
     if (err)
         return err;
 
-    tpsize = atoi(arg);
-    if (tpsize < 0)
+    if (!hc_parse_count(arg, &tpsize))
         return "Invalid ProxyHCTPsize parameter. Parameter must be "
-               ">= 0";
+               "a whole number >= 0";
     return NULL;
 }
 #endif
@@ -459,16 +481,33 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
             if (!method) { /* did we fall thru? If not, we are GET */
                 method = "GET";
             }
-            req = apr_psprintf(p,
-                               "%s %s%s%s %s\r\n"
-                               "Host: %s:%d\r\n"
-                               "\r\n",
-                               method,
-                               (wctx->path ? wctx->path : ""),
-                               (wctx->path && *hc->s->hcuri ? "/" : "" ),
-                               (*hc->s->hcuri ? hc->s->hcuri : ""),
-                               protocol,
-                               hc->s->hostname_ex, (int)hc->s->port);
+            {
+                /* The request target is the worker's path and hcuri, joined by
+                 * exactly one slash, and always starts with one. */
+                const char *path = wctx->path ? wctx->path : "";
+                const char *uri = hc->s->hcuri;
+                apr_size_t plen = strlen(path);
+                const char *target;
+
+                while (plen && path[plen - 1] == '/') {
+                    plen--;
+                }
+                while (*uri == '/') {
+                    uri++;
+                }
+                if (*uri) {
+                    target = apr_psprintf(p, "%.*s/%s", (int)plen, path, uri);
+                }
+                else {
+                    target = plen ? apr_pstrmemdup(p, path, plen) : "/";
+                }
+                req = apr_psprintf(p,
+                                   "%s %s %s\r\n"
+                                   "Host: %s:%d\r\n"
+                                   "\r\n",
+                                   method, target, protocol,
+                                   hc->s->hostname_ex, (int)hc->s->port);
+            }
             break;
 
         default:
@@ -491,6 +530,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         apr_status_t rv;
         const char *url = worker->s->name;
         wctx_t *wctx = apr_pcalloc(ctx->p, sizeof(wctx_t));
+        proxy_worker **key;
 
         port = (worker->s->port ? worker->s->port
                                 : ap_proxy_port_of_scheme(worker->s->scheme));
@@ -530,11 +570,16 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         wctx->w = worker;
         create_hcheck_req(wctx, hc, ctx->p);
         hc->context = wctx;
-        apr_hash_set(ctx->hcworkers, &worker, sizeof worker, hc);
+        /* apr_hash_set() keeps the key pointer as is, not a copy of the key,
+         * so it must outlive the hash: not the address of our argument. */
+        key = apr_palloc(ctx->p, sizeof *key);
+        *key = worker;
+        apr_hash_set(ctx->hcworkers, key, sizeof *key, hc);
     }
-    /* This *could* have changed via the Balancer Manager */
-    /* TODO */
-    if (hc->s->method != worker->s->method) {
+    /* The method and the URI could have been changed via the Balancer Manager;
+     * the request is pre-formatted from both, so rebuild it when either did. */
+    if (hc->s->method != worker->s->method
+            || strcmp(hc->s->hcuri, worker->s->hcuri)) {
         wctx_t *wctx = hc->context;
         port = (worker->s->port ? worker->s->port
                                 : ap_proxy_port_of_scheme(worker->s->scheme));
@@ -543,6 +588,7 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
                      worker, worker->s->scheme, worker->s->hostname_ex,
                      (int)port);
         hc->s->method = worker->s->method;
+        PROXY_STRNCPY(hc->s->hcuri, worker->s->hcuri);
         create_hcheck_req(wctx, hc, ctx->p);
     }
     return hc;
@@ -608,6 +654,18 @@ static int hc_get_backend(const char *proxy_function, proxy_conn_rec **backend,
             return !OK;
         }
         (*backend)->is_ssl = 1;
+        /*
+         * Name the host as a proxied request to this worker would (see
+         * ap_proxy_determine_connection()): ap_proxy_connection_create_ex()
+         * passes it on to mod_ssl, which then sends it as the SNI and checks
+         * the certificate against it.  Without it the probe would neither
+         * pick the right virtual host on the backend nor notice a
+         * certificate for another name.
+         */
+        if (!(*backend)->ssl_hostname) {
+            (*backend)->ssl_hostname = apr_pstrdup((*backend)->scpool,
+                                                   hc->s->hostname_ex);
+        }
     }
 
     return hc_determine_connection(proxy_function, *backend, ctx->s);
@@ -724,12 +782,36 @@ static int hc_send(request_rec *r, const char *out, apr_bucket_brigade *bb)
     return (rv) ? !OK : OK;
 }
 
-static int hc_read_headers(request_rec *r)
+/*
+ * Make the next read fit in the time left of the check's overall deadline: a
+ * per-read socket timeout alone never ends a backend that keeps sending.
+ * Returns 0 if there is no time left.
+ */
+static int hc_time_left(apr_socket_t *sock, apr_time_t deadline)
+{
+    apr_interval_time_t left = deadline - apr_time_now();
+    apr_interval_time_t cur;
+
+    if (left <= 0) {
+        return 0;
+    }
+    if (apr_socket_timeout_get(sock, &cur) != APR_SUCCESS || cur < 0
+            || left < cur) {
+        apr_socket_timeout_set(sock, left);
+    }
+    return 1;
+}
+
+static int hc_read_headers(request_rec *r, apr_socket_t *sock,
+                           apr_time_t deadline)
 {
     char buffer[HUGE_STRING_LEN];
-    int len;
+    int len, fields = 0;
     const char *ct;
 
+    if (!hc_time_left(sock, deadline)) {
+        return !OK;
+    }
     len = ap_getline(buffer, sizeof(buffer), r, 1);
     if (len <= 0) {
         return !OK;
@@ -765,8 +847,16 @@ static int hc_read_headers(request_rec *r)
     }
 
     /* OK, 1st line is OK... scarf in the headers */
-    while ((len = ap_getline(buffer, sizeof(buffer), r, 1)) > 0) {
+    while (hc_time_left(sock, deadline)
+           && (len = ap_getline(buffer, sizeof(buffer), r, 1)) > 0) {
         char *value;
+
+        if (++fields > HC_MAX_HEADER_FIELDS || len >= sizeof(buffer) - 1) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(10639)
+                         "Health check response has too many header fields "
+                         "or a header line that is too long");
+            return !OK;
+        }
         ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, r->server, "%.*s",
                      len, buffer);
         if (!(value = strchr(buffer, ':'))) {
@@ -779,6 +869,12 @@ static int hc_read_headers(request_rec *r)
         ap_cstr_stripws(value);
         apr_table_add(r->headers_out, buffer, value);
     }
+    if (len != 0) {
+        /* EOF, an error, or out of time before the blank line that ends the
+         * headers: the response is truncated, not a (healthy) one without
+         * more headers. */
+        return !OK;
+    }
 
     /* Set the Content-Type for the request if set */
     if ((ct = apr_table_get(r->headers_out, "Content-Type")) != NULL)
@@ -787,14 +883,26 @@ static int hc_read_headers(request_rec *r)
     return OK;
 }
 
-static int hc_read_body(request_rec *r, apr_bucket_brigade *bb)
+/*
+ * Read the response body to its end.  It is kept (in r->kept_body, for the
+ * expression to look at) only if retain is set, and then only up to
+ * HC_MAX_BODY; otherwise it is read and dropped.
+ */
+static int hc_read_body(request_rec *r, apr_bucket_brigade *bb,
+                        apr_socket_t *sock, apr_time_t deadline, int retain)
 {
     apr_status_t rv = APR_SUCCESS;
     int seen_eos = 0;
+    apr_off_t kept = 0;
 
     do {
         apr_size_t len = HUGE_STRING_LEN;
 
+        if (!hc_time_left(sock, deadline)) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(10640)
+                         "Health check response body not complete in time");
+            return !OK;
+        }
         apr_brigade_cleanup(bb);
         rv = ap_get_brigade(r->proto_input_filters, bb, AP_MODE_READBYTES,
                             APR_BLOCK_READ, len);
@@ -818,6 +926,19 @@ static int hc_read_body(request_rec *r, apr_bucket_brigade *bb)
             if (APR_BUCKET_IS_FLUSH(bucket)) {
                 apr_bucket_delete(bucket);
                 continue;
+            }
+            if (!retain) {
+                apr_bucket_delete(bucket);
+                continue;
+            }
+            kept += (bucket->length != (apr_size_t)-1) ? bucket->length : 0;
+            if (kept > HC_MAX_BODY) {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server, APLOGNO(10641)
+                             "Health check response body is larger than %d "
+                             "bytes, too much to evaluate a condition on",
+                             HC_MAX_BODY);
+                apr_brigade_cleanup(bb);
+                return !OK;
             }
             APR_BUCKET_REMOVE(bucket);
             APR_BRIGADE_INSERT_TAIL(r->kept_body, bucket);
@@ -846,6 +967,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
     wctx_t *wctx;
     hc_condition_t *cond;
     apr_bucket_brigade *bb;
+    apr_time_t deadline;
 
     wctx = (wctx_t *)hc->context;
     if (!wctx->req || !wctx->method) {
@@ -868,17 +990,22 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
+    /* The whole exchange gets the time a single read is allowed. */
+    deadline = apr_time_now() + (hc->s->timeout_set ? hc->s->timeout
+                                                    : ctx->s->timeout);
+
     if ((status = hc_send(r, wctx->req, bb)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
-    if ((status = hc_read_headers(r)) != OK) {
+    if ((status = hc_read_headers(r, backend->sock, deadline)) != OK) {
         return backend_cleanup("HCOH", backend, ctx->s, status);
     }
     if (!r->header_only) {
         apr_table_t *saved_headers_in = r->headers_in;
         r->headers_in = apr_table_copy(r->pool, r->headers_out);
         ap_proxy_pre_http_request(backend->connection, r);
-        status = hc_read_body(r, bb);
+        status = hc_read_body(r, bb, backend->sock, deadline,
+                              *worker->s->hcexpr != '\0');
         r->headers_in = saved_headers_in;
         if (status != OK) {
             return backend_cleanup("HCOH", backend, ctx->s, status);
@@ -1006,6 +1133,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             now = apr_time_now();
             balancer = (proxy_balancer *)conf->balancers->elts;
             for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+                PROXY_THREAD_LOCK(balancer);
                 workers = (proxy_worker **)balancer->workers->elts;
                 for (n = 0; n < balancer->workers->nelts; n++, workers++) {
                     worker = *workers;
@@ -1013,6 +1141,7 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
                         worker->s->updated = now;
                     }
                 }
+                PROXY_THREAD_UNLOCK(balancer);
             }
 #if HC_USE_THREADS
             if (tpsize && hctp == NULL) {
@@ -1042,12 +1171,22 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
             {
                 balancer = (proxy_balancer *)conf->balancers->elts;
                 for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
-                    /* Have any new balancers or workers been added dynamically? */
+                    apr_array_header_t *members;
+
+                    /* Have any new balancers or workers been added dynamically?
+                     * Request threads add them too (under this lock), growing
+                     * the array and possibly moving it, so look at the list
+                     * only with the lock held and work from a copy of it; a
+                     * check can take long and must not hold the lock.
+                     */
+                    PROXY_THREAD_LOCK(balancer);
                     ap_proxy_sync_balancer(balancer, s, conf);
+                    members = apr_array_copy(pool, balancer->workers);
+                    PROXY_THREAD_UNLOCK(balancer);
 
                     now = apr_time_now();
-                    workers = (proxy_worker **)balancer->workers->elts;
-                    for (n = 0; n < balancer->workers->nelts; n++, workers++) {
+                    workers = (proxy_worker **)members->elts;
+                    for (n = 0; n < members->nelts; n++, workers++) {
                         worker = *workers;
                         if (!PROXY_WORKER_IS(worker, PROXY_WORKER_STOPPED) &&
                             (worker->s->method != NONE) &&
@@ -1084,9 +1223,34 @@ static apr_status_t hc_watchdog_callback(int state, void *data,
 
 #if HC_USE_THREADS
                             if (hctp) {
-                                apr_thread_pool_push(hctp, hc_check, (void *)baton,
-                                                     APR_THREAD_TASK_PRIORITY_NORMAL,
-                                                     NULL);
+                                apr_status_t prv;
+
+                                prv = apr_thread_pool_push(hctp, hc_check,
+                                                           (void *)baton,
+                                                           APR_THREAD_TASK_PRIORITY_NORMAL,
+                                                           NULL);
+                                if (prv == APR_NOTFOUND || prv == APR_ENOMEM) {
+                                    /* The task was not queued: nothing will
+                                     * run this check or release its pool, and
+                                     * worker->s->updated would stay 0, which
+                                     * stops all further checks of the worker.
+                                     */
+                                    ap_log_error(APLOG_MARK, APLOG_ERR, prv, s,
+                                                 APLOGNO(10642) "Cannot queue "
+                                                 "health check of %s",
+                                                 worker->s->name);
+                                    worker->s->updated = now;
+                                    apr_pool_destroy(ptemp);
+                                }
+                                else if (prv != APR_SUCCESS) {
+                                    /* Queued, but no thread could be created
+                                     * for it (yet): it runs when one is, and
+                                     * must not be freed here. */
+                                    ap_log_error(APLOG_MARK, APLOG_WARNING, prv, s,
+                                                 APLOGNO(10643) "Cannot start a "
+                                                 "thread for the health check "
+                                                 "of %s", worker->s->name);
+                                }
                             }
                             else
 #endif
