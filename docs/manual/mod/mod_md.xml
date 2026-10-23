@@ -968,7 +968,7 @@ MDRequireHttps permanent
 
     <directivesynopsis>
         <name>MDCertificateKeyFile</name>
-        <description>Specify a static private key for for the static cerrtificate.</description>
+        <description>Specify a static private key for the static certificate.</description>
         <syntax>MDCertificateKeyFile <var>path-to-file</var></syntax>
         <contextlist>
             <context>server config</context>

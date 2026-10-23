@@ -1027,7 +1027,7 @@ to the httpd process.</description>
     the process will <em>not</em> begin to exit if the accept() error is
     ECONNREFUSED, ECONNABORTED, or ECONNRESET.</p>
  
-    <note>Some third-party firwewall software components may inject errors
+    <note>Some third-party firewall software components may inject errors
     into accept() processing, using return codes not specified by the 
     operating system.</note>
 </usage>
