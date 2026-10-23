@@ -107,7 +107,7 @@ to the reverse proxy over unicast UDP datagrams</description>
     <highlight language="config">
 # Receive backend announcements on the cluster network interface (UDP).
 ProxyBeaconListen 0.0.0.0:5555
-ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconBalancer  cluster
 
 # A backend is dropped from rotation if it does not announce for 30 seconds.
@@ -126,7 +126,7 @@ ProxyPassReverse "/" "balancer://cluster/"
 # Announce this backend's routable origin to the proxy every 10 seconds (UDP).
 ProxyBeaconAddress   proxy.example.com:5555
 ProxyBeaconAdvertise http://10.0.0.5:8080
-ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconInterval  10
     </highlight>
 
@@ -446,7 +446,7 @@ is taken out of rotation</description>
 <directivesynopsis>
 <name>ProxyBeaconSecret</name>
 <description>Pre-shared secret used to authenticate announcements</description>
-<syntax>ProxyBeaconSecret <em>secret</em></syntax>
+<syntax>ProxyBeaconSecret <em>secret</em>|hex:<em>key</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -474,11 +474,16 @@ is taken out of rotation</description>
     silently rejected (and logged), which appears as the backend never joining
     the balancer.</p>
 
-    <p>The secret must be at least 16 characters; shorter values are rejected
-    when the configuration is read. The MAC key is derived from it with a fast
-    hash and the authentication tag is 64 bits, so anyone who captures a single
-    announcement can test passphrase guesses offline at full speed: use a long
-    random value, not a memorable password.</p>
+    <p>Use a random key. Generate one with <code>openssl rand -hex 16</code>
+    and configure it as <code>hex:</code> followed by the 32 hex digits; that
+    value is used directly as the 128-bit MAC key, so there is nothing to guess.
+    Any other value is treated as a passphrase: it must be at least 16
+    characters, and the MAC key is derived from it with a fast hash. Because the
+    authentication tag is 64 bits, anyone who captures a single announcement can
+    test passphrase guesses offline at full speed, so a passphrase protects only
+    as well as it is random and long. A value that begins with <code>hex:</code>
+    is always read as a key and is rejected if it is not exactly 32 hex
+    digits.</p>
 
     <note type="warning"><title>The secret is a membership credential</title>
     <p>A valid MAC proves only that the sender holds the secret. It does not

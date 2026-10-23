@@ -208,9 +208,10 @@ Authentication (ProxyBeaconSecret, REQUIRED):
   genuine sub-second announcements always advance. seq= is NOT used for replay
   (it resets when a backend restarts); the wall-clock ts= does not.
 
-  The secret must be at least 16 characters.  The key is MD5(passphrase) and the
-  tag is 64 bits: a captured announcement permits offline guessing at full speed,
-  so the secret should be long and random.  A valid MAC shows possession of the
+  "hex:<32 hex digits>" is the 128-bit SipHash key itself (openssl rand -hex 16):
+  no passphrase, nothing to guess.  Any other value is a passphrase of at least 16
+  characters; the key is then MD5(passphrase) and the tag is 64 bits, so a
+  captured announcement permits offline guessing at full speed.  A valid MAC shows possession of the
   secret, nothing more: every holder can register any reachable origin, speak for
   other members and consume slots/records.  The secret is a membership-
   administrator credential, not a boundary between partially trusted workloads.

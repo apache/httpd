@@ -80,7 +80,7 @@ httpd -l   | grep mod_proxy_beacon     # static build
 ```apache
 # Receive backend announcements on the cluster-facing interface (UDP/5555).
 ProxyBeaconListen   0.0.0.0:5555
-ProxyBeaconSecret   "a-long-random-shared-cluster-secret"
+ProxyBeaconSecret   "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconBalancer cluster
 
 # Drop a backend from rotation if it goes silent for 30s; re-add on next beacon.
@@ -101,7 +101,7 @@ ProxyPassReverse "/" "balancer://cluster/"
 # Announce this backend's routable origin to the proxy every 10s (UDP).
 ProxyBeaconAddress   proxy.example.com:5555
 ProxyBeaconAdvertise http://10.0.0.5:8080
-ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconInterval  10
 ```
 
@@ -125,7 +125,7 @@ as an enabled member of `balancer://cluster` on the proxy. Stop one, and after
 | `ProxyBeaconListen [addr][:port]` | — | **Marks this server as the receiver.** Binds a UDP socket. `addr`/`port` are optional and inherited from the server's own `Listen`/`ServerName` when omitted (see note below). |
 | `ProxyBeaconBalancer name` | — | Balancer that announced backends are added to. Bare name (`cluster`); a leading `balancer://` is stripped. Must already exist with spare `growth`. |
 | `ProxyBeaconTimeout interval` | `0` (no eviction) | Seconds of silence before a member is disabled. `0` = add-only, never auto-remove. Set to a small multiple of the backends' interval to get self-healing. |
-| `ProxyBeaconSecret secret` | — (**required**) | Shared cluster secret; **same value on proxy and all backends**, at least 16 characters (long and random). The server fails to start if a participating server omits it or it is too short. |
+| `ProxyBeaconSecret secret` | — (**required**) | Shared cluster secret; **same value on proxy and all backends**, either `hex:` + 32 hex digits (a random key: `openssl rand -hex 16`) or a passphrase of at least 16 characters (weaker: guessable offline from one captured packet). The server fails to start if a participating server omits it or it is invalid. |
 | `ProxyBeaconMaxSkew interval` | `30` | Anti-replay freshness window: reject announcements whose signed timestamp is more than this far from now (either direction). Sub-second values (`500ms`) are honoured. |
 
 **Inheriting the listen address:** because UDP and TCP are separate port spaces,

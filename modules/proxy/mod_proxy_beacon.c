@@ -168,6 +168,8 @@ typedef struct {
 #define BEACON_MAC_HEXLEN  (APR_SIPHASH_DSIZE * 2)
 /* Shortest ProxyBeaconSecret accepted. */
 #define BEACON_MIN_SECRET_LEN   16
+/* A secret of this form is used directly as the MAC key (no passphrase). */
+#define BEACON_HEXKEY_PREFIX    "hex:"
 #define BEACON_MAXSKEW_DEFAULT  apr_time_from_sec(30)
 
 /* Max announcement datagram we accept.  Our messages are a few hundred bytes;
@@ -409,6 +411,11 @@ static const char *beacon_set_timeout(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static int beacon_hexval(char c)
+{
+    return apr_isdigit(c) ? c - '0' : apr_tolower(c) - 'a' + 10;
+}
+
 static const char *beacon_set_secret(cmd_parms *cmd, void *dummy, const char *arg)
 {
     beacon_ctx_t *ctx = ap_get_module_config(cmd->server->module_config,
@@ -419,6 +426,29 @@ static const char *beacon_set_secret(cmd_parms *cmd, void *dummy, const char *ar
     }
     if (!*arg) {
         return "ProxyBeaconSecret: empty secret";
+    }
+    /* hex:<32 hex digits> is the key itself: a random 128-bit key has no
+     * passphrase to guess, so it needs no key derivation. */
+    if (!strncmp(arg, BEACON_HEXKEY_PREFIX, sizeof(BEACON_HEXKEY_PREFIX) - 1)) {
+        const char *h = arg + sizeof(BEACON_HEXKEY_PREFIX) - 1;
+        int i;
+
+        if (strlen(h) != 2 * sizeof(ctx->mac_key)) {
+            return apr_psprintf(cmd->pool,
+                                "ProxyBeaconSecret: hex: needs exactly %d hex "
+                                "digits (e.g. from 'openssl rand -hex %d')",
+                                (int)(2 * sizeof(ctx->mac_key)),
+                                (int)sizeof(ctx->mac_key));
+        }
+        for (i = 0; i < (int)sizeof(ctx->mac_key); i++) {
+            if (!apr_isxdigit(h[2 * i]) || !apr_isxdigit(h[2 * i + 1])) {
+                return "ProxyBeaconSecret: hex: value has a non-hex digit";
+            }
+            ctx->mac_key[i] = (unsigned char)
+                ((beacon_hexval(h[2 * i]) << 4) | beacon_hexval(h[2 * i + 1]));
+        }
+        ctx->has_secret = 1;
+        return NULL;
     }
     /* The MAC key is derived from the passphrase with a fast hash, so anyone who
      * captures one announcement can test guesses offline at full speed; only a
