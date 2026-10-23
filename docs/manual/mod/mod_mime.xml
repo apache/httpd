@@ -700,7 +700,7 @@ a matching file with MultiViews</description>
     never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
-    and filters to participate in Multviews, but will exclude unknown
+    and filters to participate in MultiViews, but will exclude unknown
     files:</p>
 
     <highlight language="config">
