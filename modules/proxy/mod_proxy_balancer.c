@@ -1270,6 +1270,7 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
             (*val == '1' && *(val+1) == '\0') &&
             (val = apr_table_get(params, "b_nwrkr"))) {
             char *ret;
+            const char *flags;
             proxy_worker *nworker;
             nworker = ap_proxy_get_worker(r->pool, bsel, conf, val);
             if (!nworker && storage->num_free_slots(bsel->wslot)) {
@@ -1285,6 +1286,15 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
                     unsigned int index;
                     proxy_worker_shared *shm;
                     PROXY_COPY_CONF_PARAMS(nworker, conf);
+                    /* Optional status flags to create the worker with (set
+                     * before ap_proxy_share_worker() copies it to shm, so a
+                     * creator such as mod_proxy_beacon never leaves a window
+                     * in which the worker exists without its mark). */
+                    if ((flags = apr_table_get(params, "b_nwrkr_flags"))) {
+                        for (; *flags; flags++) {
+                            ap_proxy_set_wstatus(*flags, 1, nworker);
+                        }
+                    }
                     if ((rv = storage->grab(bsel->wslot, &index)) != APR_SUCCESS) {
                         ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01195)
                                       "worker slotmem_grab failed");

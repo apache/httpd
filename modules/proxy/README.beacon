@@ -72,7 +72,8 @@ Adding/removing members (reuses the balancer-manager path):
   UI calls. The receiver synthesizes a minimal request_rec (no real client
   request exists in the watchdog thread; see beacon_make_fake_request) and calls:
 
-    add     b=<name> b_nwrkr=<url> b_wyes=1     (worker created, disabled)
+    add     b=<name> b_nwrkr=<url> b_wyes=1 b_nwrkr_flags=B
+                                                (worker created, disabled, marked)
     enable  b=<name> w=<url> w_status_D=0       (cleared -> serves traffic)
     evict   b=<name> w=<url> w_status_D=1       (disabled -> out of rotation)
 

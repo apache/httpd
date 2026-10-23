@@ -228,6 +228,8 @@ def test_equivalent_spellings_are_one_member(http):
     "http://127.0.0.8:8083/#frag",          # fragment
     "http://user:pw@127.0.0.8:8083",        # userinfo
     "http://127.0.0.8:0",                   # port 0
+    "http://127.0.0.8:-80",                 # strtol sign wraps to port 65456
+    "http://127.0.0.8:+80",
 ]))
 def test_non_origin_urls_are_rejected(http, n, url):
     lines = inject(http, [url], f"http://127.0.0.3:{18100 + n}")

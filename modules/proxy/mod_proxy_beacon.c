@@ -157,7 +157,7 @@ typedef struct {
     apr_interval_time_t  max_skew;     /* ProxyBeaconMaxSkew (replay window); 0 = default */
     apr_uint64_t         reject_count; /* listener: dropped-since-last-log counter */
     apr_time_t           last_reject_log; /* listener: reject-log rate limiter */
-    int                  open_failed;     /* STARTING: socket open/listen/dial failed permanently */
+    int                  open_failed;     /* socket open failed; retried with back-off */
     int                  reconciled;      /* listener: adopted pre-existing members as owner */
     apr_pool_t          *open_pool;       /* socket + address of the current open attempt */
     apr_time_t           next_open_try;   /* when to retry a failed open (0 = not scheduled) */
@@ -171,7 +171,7 @@ typedef struct {
 #define BEACON_MAXSKEW_DEFAULT  apr_time_from_sec(30)
 
 /* Max announcement datagram we accept.  Our messages are a few hundred bytes;
- * anything larger is not one of ours and is truncated on receive. */
+ * anything larger is not one of ours and is dropped. */
 #define BEACON_MAX_MSG_LEN  2048
 
 /* When an add fails (e.g. the balancer is full), don't retry on every
@@ -293,8 +293,18 @@ static const char *beacon_canonical_url(apr_pool_t *pool, const char *url)
         || (uri.path && *uri.path && strcmp(uri.path, "/"))) {
         return NULL;
     }
-    if (uri.port_str && !uri.port) {
-        return NULL;
+    /* apr_uri_parse() runs strtol() and truncates to 16 bits, so "-80" would
+     * otherwise come out as port 65456. */
+    if (uri.port_str && *uri.port_str) {
+        const char *d;
+        for (d = uri.port_str; *d; d++) {
+            if (!apr_isdigit(*d)) {
+                return NULL;
+            }
+        }
+        if (!uri.port) {
+            return NULL;
+        }
     }
 
     ap_str_tolower(uri.scheme);
@@ -754,6 +764,9 @@ static int beacon_have_manage_fn(beacon_ctx_t *ctx)
     return 1;
 }
 
+/* Status flags a beacon worker is created with (see b_nwrkr_flags). */
+static const char beacon_new_flags[] = { PROXY_WORKER_BEACON_FLAG, '\0' };
+
 /*
  * Look up url among the members of the configured balancer.  Beacon only ever
  * deals in canonical origins (see beacon_canonical_url()), for which the
@@ -769,8 +782,18 @@ static proxy_worker *beacon_find_worker(beacon_ctx_t *ctx, apr_pool_t *pool,
         ap_get_module_config(ctx->s->module_config, &proxy_module);
     proxy_balancer *bsel = ap_proxy_get_balancer(pool, conf,
             apr_pstrcat(pool, BALANCER_PREFIX, ctx->balancer_name, NULL), 0);
+    proxy_worker *w;
 
-    return bsel ? ap_proxy_get_worker(pool, bsel, conf, url) : NULL;
+    if (!bsel) {
+        return NULL;
+    }
+    /* A worker added through another child's balancer-manager is not in this
+     * process's view until synced; without it the ownership check is blind. */
+    PROXY_THREAD_LOCK(bsel);
+    ap_proxy_sync_balancer(bsel, ctx->s, conf);
+    w = ap_proxy_get_worker(pool, bsel, conf, url);
+    PROXY_THREAD_UNLOCK(bsel);
+    return w;
 }
 
 static int beacon_worker_exists(beacon_ctx_t *ctx, apr_pool_t *pool,
@@ -894,6 +917,7 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
         apr_table_setn(params, "b", ctx->balancer_name);
         apr_table_setn(params, "b_nwrkr", url);
         apr_table_setn(params, "b_wyes", "1");
+        apr_table_setn(params, "b_nwrkr_flags", beacon_new_flags);
         rv = ctx->manage_fn(r, params);
         apr_pool_destroy(subp);
         if (rv != APR_SUCCESS) {
@@ -907,7 +931,10 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
             beacon_log_throttled(ctx, now, "balancer add not confirmed");
             return APR_ENOENT;
         }
-        ap_proxy_set_wstatus(PROXY_WORKER_BEACON_FLAG, 1, w);
+        if (!(w->s->status & PROXY_WORKER_BEACON)) {
+            /* The balancer did not apply b_nwrkr_flags. */
+            ap_proxy_set_wstatus(PROXY_WORKER_BEACON_FLAG, 1, w);
+        }
     }
 
     /* Step 2: enable it (clear the DISABLED flag) so it serves traffic.
