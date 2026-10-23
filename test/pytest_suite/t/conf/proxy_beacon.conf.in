@@ -166,6 +166,54 @@
         ProxyPass /reclaim balancer://reclaim
     </VirtualHost>
 
+    #
+    # Random-key secret (sixth receiver): "hex:" is the SipHash key itself, with
+    # no MD5 step, so only a sender signing with the raw bytes is accepted.
+    #
+    Define BEACON_HEXKEY_PORT @NextAvailablePort@
+
+    <VirtualHost proxy_beacon_hexkey>
+        ProxyBeaconListen  127.0.0.1:${BEACON_HEXKEY_PORT}
+        ProxyBeaconBalancer hexkey
+        ProxyBeaconSecret  hex:000102030405060708090a0b0c0d0e0f
+        ProxyBeaconTimeout 0
+        <Proxy balancer://hexkey>
+            ProxySet growth=5
+        </Proxy>
+        ProxyPass /hexkey balancer://hexkey
+    </VirtualHost>
+
+    #
+    # A listener whose bind always fails (192.0.2.1 is TEST-NET-1, never a local
+    # address): the open must be retried with a growing delay, not on every tick
+    # and not never.
+    #
+    <VirtualHost proxy_beacon_nobind>
+        ProxyBeaconListen  192.0.2.1:9
+        ProxyBeaconSecret  beacon-test-shared-secret
+    </VirtualHost>
+
+    #
+    # Ownership against administrator-added members: workers are added through
+    # this server's balancer-manager (any child may handle that), then announced.
+    #
+    Define BEACON_OWNSYNC_PORT @NextAvailablePort@
+
+    <VirtualHost proxy_beacon_ownsync>
+        ProxyBeaconListen  127.0.0.1:${BEACON_OWNSYNC_PORT}
+        ProxyBeaconBalancer ownsync
+        ProxyBeaconSecret  beacon-test-shared-secret
+        ProxyBeaconTimeout 0
+        <Proxy balancer://ownsync>
+            ProxySet growth=40
+        </Proxy>
+        ProxyPass /ownsync balancer://ownsync
+        <Location /balancer-manager>
+            SetHandler balancer-manager
+            Require all granted
+        </Location>
+    </VirtualHost>
+
     # Two backends competing for the single cap slot (announce every 1s).
     <VirtualHost proxy_beacon_cap1>
         ProxyBeaconAddress   127.0.0.1:${BEACON_CAP_PORT}

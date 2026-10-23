@@ -13,6 +13,9 @@ singleton runs in a child process).
 
 import os
 import re
+import subprocess
+import urllib.parse
+from datetime import datetime
 import signal
 import socket
 import struct
@@ -75,12 +78,15 @@ def _md5(data: bytes) -> bytes:
     return hashlib.md5(data).digest()
 
 
-def signed_beacon(url: str, seq: int = 1, ts_us: int = None) -> bytes:
-    """A correctly signed announcement, as the bundled sender would build it."""
+def signed_beacon(url: str, seq: int = 1, ts_us: int = None, key: bytes = None) -> bytes:
+    """A correctly signed announcement, as the bundled sender would build it.
+
+    key is the 16-byte SipHash key; the default is what a passphrase secret
+    derives (MD5 of it)."""
     if ts_us is None:
         ts_us = int(time.time() * 1_000_000)
     base = f"BEACON url={url} host=probe pid=1 seq={seq} ts={ts_us}"
-    mac = _siphash24(_md5(SECRET), base.encode()).to_bytes(8, "little").hex()
+    mac = _siphash24(key or _md5(SECRET), base.encode()).to_bytes(8, "little").hex()
     return f"{base} mac={mac}".encode()
 
 
@@ -559,5 +565,174 @@ def test_beacon_leaves_operator_flags_alone(http):
         status = member_status(http, member) or ""
         assert "Stop" in status, f"beacon cleared the administrator's Stop: {status!r}"
         assert "Dis" not in status, f"member should be re-enabled: {status!r}"
+    finally:
+        http.module(None)
+
+
+# ---- random-key secret -------------------------------------------------------
+
+HEX_KEY = bytes(range(16))      # ProxyBeaconSecret hex:000102...0f
+
+
+@need
+def test_hex_secret_is_the_key_itself(http):
+    """hex:<32 digits> is used as the MAC key directly.  A sender signing with the
+    raw bytes is accepted; one that signs with MD5 of the same text (what a
+    passphrase would give) is not."""
+    if http.have_module("mpm_prefork"):
+        pytest.skip("proxy_beacon not run under the prefork MPM")
+    port = conf_port(http, "HEXKEY")
+    error_log = Path(http.vars("t_logs")) / "error_log"
+    session_start = int(http.vars("session_log_start") or 0)
+    assert wait_for(error_log, session_start, "received: BEACON", 15)
+
+    bad, good = "http://127.0.0.16:8401", "http://127.0.0.16:8402"
+    start = error_log.stat().st_size
+    now = int(time.time() * 1_000_000)
+    send_udp(port, signed_beacon(bad, seq=1, ts_us=now,
+                                 key=_md5(b"hex:000102030405060708090a0b0c0d0e0f")))
+    send_udp(port, signed_beacon(good, seq=2, ts_us=now + 1, key=HEX_KEY))
+    assert wait_for(error_log, start, f"added backend {good} to balancer://hexkey", 10)
+    time.sleep(1)
+    assert bad not in added_members(log_since(error_log, start), "hexkey")
+
+
+# ---- ProxyBeaconSecret validation (httpd -t on a wrapped config) --------------
+
+def configtest(server, tmp_path, secret):
+    """`httpd -t` on the generated test config plus one vhost with this secret."""
+    conf = tmp_path / "secret.conf"
+    conf.write_text(
+        f'Include "{server.config.vars["t_conf_file"]}"\n'
+        "<VirtualHost 127.0.0.1:65301>\n"
+        "    ProxyBeaconListen 127.0.0.1:65302\n"
+        f'    ProxyBeaconSecret "{secret}"\n'
+        "</VirtualHost>\n")
+    argv = [a for a in server.args() if a != "-DFOREGROUND"]
+    argv[argv.index("-f") + 1] = str(conf)
+    return subprocess.run([*argv, "-t"], capture_output=True, text=True)
+
+
+@need
+@pytest.mark.parametrize("secret", [
+    "hex:000102030405060708090a0b0c0d0e0f",
+    "hex:000102030405060708090A0B0C0D0E0F",
+    "x" * 16,                                   # shortest passphrase
+])
+def test_valid_secrets_are_accepted(server, tmp_path, secret):
+    r = configtest(server, tmp_path, secret)
+    assert r.returncode == 0 and "Syntax OK" in r.stderr, r.stderr
+
+
+@need
+@pytest.mark.parametrize("secret,message", [
+    ("short", "at least 16"),
+    ("x" * 15, "at least 16"),                  # one short of the minimum
+    ("hex:abc", "exactly 32 hex digits"),
+    ("hex:" + "0" * 34, "exactly 32 hex digits"),
+    ("hex:zz" + "0" * 30, "non-hex digit"),
+])
+def test_invalid_secrets_are_rejected(server, tmp_path, secret, message):
+    r = configtest(server, tmp_path, secret)
+    assert r.returncode != 0, "config with this secret should not load"
+    assert message in r.stderr, r.stderr
+
+
+# ---- socket-open retry back-off ----------------------------------------------
+
+LOG_TS = re.compile(r"^\[\w{3} (\w{3}\s+\d+ [\d:.]+ \d{4})\]")
+
+
+def log_time(line):
+    m = LOG_TS.match(line)
+    return datetime.strptime(re.sub(r"\s+", " ", m.group(1)), "%b %d %H:%M:%S.%f %Y")
+
+
+@need
+def test_failed_socket_open_is_retried_with_backoff(http):
+    """The nobind vhost cannot bind.  The open is retried after 30s, then after
+    60s (doubling) -- not on every watchdog tick, and not never."""
+    if http.have_module("mpm_prefork"):
+        pytest.skip("proxy_beacon not run under the prefork MPM")
+    error_log = Path(http.vars("t_logs")) / "error_log"
+    session_start = int(http.vars("session_log_start") or 0)
+
+    def attempts():
+        """Attempt times per watchdog-owning pid: a new owner (after a hand-off
+        test killed the old one) starts its own retry cycle."""
+        by_pid = {}
+        for ln in log_since(error_log, session_start):
+            if "bind to 192.0.2.1:9 failed" in ln:
+                pid = re.search(r"\[pid (\d+)", ln).group(1)
+                by_pid.setdefault(pid, []).append(log_time(ln))
+        return by_pid
+
+    def best():
+        return max(attempts().values(), key=len, default=[])
+
+    deadline = time.time() + 75
+    while len(best()) < 2 and time.time() < deadline:
+        time.sleep(1)
+    assert len(best()) >= 2, f"never retried the failed open: {attempts()}"
+
+    for pid, times in attempts().items():
+        gaps = [(b - a).total_seconds() for a, b in zip(times, times[1:])]
+        for i, gap in enumerate(gaps):
+            expected = 30 * 2 ** i
+            assert expected - 3 <= gap <= expected + 8, (
+                f"pid {pid}: retry {i + 1} came {gap:.1f}s after the previous "
+                f"attempt, expected about {expected}s: {gaps}")
+
+
+# ---- administrator-added members ---------------------------------------------
+
+def ownsync_post(http, query):
+    """POST to the ownsync vhost's balancer-manager on a fresh connection, so
+    that different children get to handle it."""
+    close = {"Connection": "close"}
+    r = http.GET("/balancer-manager", headers=close)
+    assert r.status_code == 200, "balancer-manager not reachable"
+    m = re.search(r"b=ownsync[^\"]*?nonce=([0-9a-fA-F-]+)", r.text.replace("&amp;", "&"))
+    assert m, "no nonce for balancer://ownsync"
+    vars_ = http.vars()
+    referer = {"Referer": f"http://{vars_['servername']}:"
+                          f"{http.vhost_port('proxy_beacon_ownsync')}/balancer-manager"}
+    return http.POST("/balancer-manager",
+                     content=(query + "&nonce=" + m.group(1)).encode(),
+                     headers={**close, **referer})
+
+
+@need
+def test_admin_added_members_are_not_taken_over(http):
+    """Workers added through the balancer-manager (possibly by a child other than
+    the watchdog owner) are not beacon's, even when announced right away: the
+    owner must see them before deciding, and leave them alone."""
+    if http.have_module("mpm_prefork"):
+        pytest.skip("proxy_beacon not run under the prefork MPM")
+    http.module("proxy_beacon_ownsync")
+    try:
+        port = conf_port(http, "OWNSYNC")
+        error_log = Path(http.vars("t_logs")) / "error_log"
+        session_start = int(http.vars("session_log_start") or 0)
+        assert wait_for(error_log, session_start, "received: BEACON", 15)
+        start = error_log.stat().st_size
+
+        urls = [f"http://127.0.0.{30 + i}:8600" for i in range(12)]
+        for i, url in enumerate(urls):
+            r = ownsync_post(http, "b=ownsync&b_wyes=1&b_nwrkr=" + urllib.parse.quote(url, safe=""))
+            assert r.status_code == 200, r.status_code
+            send_udp(port, signed_beacon(url, seq=i + 1))
+
+        assert wait_for(error_log, start, "member not managed by beacon", 10)
+        time.sleep(2)
+        page = http.GET("/balancer-manager", headers={"Connection": "close"}).text
+        assert all(u.split("://", 1)[1] in page for u in urls), (
+            "the administrator's workers were not all added")
+
+        lines = log_since(error_log, start)
+        taken = [ln for ln in lines if any(u in ln for u in urls)
+                 and ("added backend" in ln or "already in balancer" in ln
+                      or "re-enabled" in ln or "evicted" in ln)]
+        assert not taken, f"beacon acted on an administrator's worker: {taken[:3]}"
     finally:
         http.module(None)
