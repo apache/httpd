@@ -712,7 +712,7 @@ H2SerializeHeaders on
                 <directive module="core" type="section">VirtualHost</directive>s. 
             </p>
             <p>
-                The security checks require that the TSL protocol is at least
+                The security checks require that the TLS protocol is at least
                 TLSv1.2 and that none of the ciphers listed in RFC 7540, Appendix A
                 is used. These checks will be extended once new security requirements
                 come into place.
@@ -858,7 +858,7 @@ H2TLSCoolDownSecs 0
             <p>
                 This directive influences how file content is handled in
                 responses. When <code>off</code>, which is the default, file handles
-                are passed from the requestion processing down to the main
+                are passed from the request processing down to the main
                 connection, using the usual Apache setaside handling for
                 managing the lifetime of the file.
             </p>

@@ -739,7 +739,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 child processes that do the actual work of servicing requests.
                 But httpd 2.0 introduced the concept of the
                 Multi-Processing Module (MPM). Developers can write MPMs to
-                suit the process- or threadingarchitecture of their specific
+                suit the process- or threading architecture of their specific
                 operating system. httpd 2 comes with special MPMs for Windows,
                 OS/2, Netware and BeOS. On unix-like platforms, the two most
                 popular MPMs are Prefork and Worker. The Prefork MPM offers the
@@ -1209,7 +1209,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         </title>
         <p>Requests for dynamically generated content usually take
             significantly more resources than requests for static content.
-            Static content consists of simple filespages, images, etc.-on disk
+            Static content consists of simple files, pages, images, etc.-on disk
             that are very efficiently served. Many operating systems also
             automatically cache the contents of frequently accessed files in
             memory.

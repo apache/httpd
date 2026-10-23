@@ -152,10 +152,10 @@
     </dl>
 </section>
 
-<section id="list_command"><title>List managed domamins</title>
+<section id="list_command"><title>List managed domains</title>
     <p><code><strong>a2md list</strong></code></p>
 
-    <p>List all managed domamins</p>
+    <p>List all managed domains</p>
 </section>
 
 <section id="store_command"><title>Manipulating MD store</title>

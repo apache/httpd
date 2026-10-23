@@ -151,7 +151,7 @@
     <dl>
     <dt>Server side Includes (SSI)</dt>
     <dd>A simple case replacing <directive>AddOutputFilterByType</directive>.
-        This example creates a new smart filter named "SSI" that conditionally leverates
+        This example creates a new smart filter named "SSI" that conditionally leverages
         the "INCLUDES" filter from <module>mod_include</module> as a provider.
     <highlight language="config">
 FilterDeclare SSI

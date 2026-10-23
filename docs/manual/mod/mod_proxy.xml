@@ -60,7 +60,7 @@
 
         <table border="1">
         <tr><th>Protocol</th><th>Module</th></tr>
-        <tr><td>AJP13 (Apache JServe Protocol version
+        <tr><td>AJP13 (Apache JServ Protocol version
           1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
         <tr><td>CONNECT (for
           SSL)</td><td><module>mod_proxy_connect</module></td></tr>
@@ -559,7 +559,7 @@ ProxyPass "/apps"     "http://127"
     </note>
 
     <note><title>Differences from the Location configuration section</title>
-      <p>A backend URL matches the configuration section if it begins with the
+      <p>A backend URL matches the configuration section if it begins with
       the <var>wildcard-url</var> string, even if the last path segment in the
       directive only matches a prefix of the backend URL.  For example,
       &lt;Proxy http://example.com/foo&gt; matches all of

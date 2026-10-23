@@ -188,13 +188,13 @@
       <dd>HTTP/2 Protocol backend for <module>mod_proxy</module></dd>
 
       <dt><module>mod_proxy_hcheck</module> (available since 2.4.21)</dt>
-      <dd>Support independent dynamic health checks for remote proxiy backend servers.</dd>
+      <dd>Support independent dynamic health checks for remote proxy backend servers.</dd>
 
       <dt><module>mod_brotli</module> (available since 2.4.26)</dt>
       <dd>Support the Brotli compression algorithm.</dd>
 
       <dt><module>mod_md</module> (available since 2.4.30)</dt>
-      <dd>Support the ACME protocol to automate certificate provisionning.</dd>
+      <dd>Support the ACME protocol to automate certificate provisioning.</dd>
 
       <dt><module>mod_proxy_uwsgi</module> (available since 2.4.30)</dt>
       <dd>UWSGI gateway module for <module>mod_proxy</module>.</dd>

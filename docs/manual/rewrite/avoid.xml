@@ -495,7 +495,7 @@ event that you have an enormous number of virtual hosts, consider using
 <p>Modules such as <module>mod_macro</module> are
 also useful for creating a large number of virtual hosts dynamically.</p>
 
-<p>Using <module>mod_rewrite</module> for vitualhost creation may be
+<p>Using <module>mod_rewrite</module> for virtual host creation may be
 appropriate if you are using a hosting service that does not provide
 you access to the server configuration files, and you are therefore
 restricted to configuration using <code>.htaccess</code> files.</p>
