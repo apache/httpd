@@ -120,7 +120,7 @@ upload)</td></tr>
 <tr><th><a href="directive-dict.html#Override">Ge&ccedil;ersizleştirme:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_logio</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Server 2.4.34 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Server 2.5.1 and later</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 </div>
