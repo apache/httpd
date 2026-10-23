@@ -1,0 +1,4 @@
+  *) mod_filter: Let a provider filter installed by AddOutputFilterByType or
+     FilterChain see its own name, not mod_filter's wrapper name, so a
+     provider that looks up its own configuration by name, such as
+     mod_ext_filter or mod_lua, finds it.  PR 65463  [Arturo Bernal]
