@@ -24,10 +24,10 @@
 
 #include <nghttp3/version.h>
 
-#if AP_MODULE_MAGIC_AT_LEAST(20211221, 32) // 2.5.1-dev
+#if AP_MODULE_MAGIC_AT_LEAST(20211221, 32) /* 2.5.1-dev */
     #define H3_DEVEL 1
     #define H3_STABLE 0
-#elif AP_MODULE_MAGIC_AT_LEAST(20120211, 143) // 2.4.69
+#elif AP_MODULE_MAGIC_AT_LEAST(20120211, 143) /* 2.4.69 */
     #define H3_DEVEL 0
     #define H3_STABLE 1
 #else

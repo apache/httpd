@@ -24,7 +24,7 @@
 
 #include "quic/h3q.h"
 
-/// Negotiated TLS parameters of one connection
+/* Negotiated TLS parameters of one connection */
 typedef struct h3q_tls_info
 {
     const char* protocol;

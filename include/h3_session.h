@@ -35,7 +35,7 @@ typedef struct h3_session h3_session;
 typedef struct h3_stream h3_stream;
 typedef struct h3_response_chunk h3_response_chunk;
 
-/// mod_ssl-compatible TLS environment for one connection, all members are NULL when TLS details are unavailable.
+/* mod_ssl-compatible TLS environment for one connection, all members are NULL when TLS details are unavailable. */
 typedef struct h3_tls_env
 {
     const char* protocol;
