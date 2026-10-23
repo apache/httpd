@@ -171,7 +171,7 @@ ProxyPass "/apps"     "balancer://foo"
 
     <note>
     The <a href="../expr.html">expression</a> can use curly-parens ("{}") as
-    quoting deliminators in addition to normal quotes.
+    quoting delimiters in addition to normal quotes.
     </note>
 
     <p>If using a health check method (eg: <code>GET</code>) which results in a response
