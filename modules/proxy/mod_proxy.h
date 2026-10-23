@@ -334,6 +334,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_FREE           0x0200
 #define PROXY_WORKER_HC_FAIL        0x0400
 #define PROXY_WORKER_HOT_SPARE      0x0800
+#define PROXY_WORKER_BEACON         0x1000  /* created and managed by mod_proxy_beacon */
 
 /* worker status flags */
 #define PROXY_WORKER_INITIALIZED_FLAG    'O'
@@ -348,6 +349,7 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_FREE_FLAG           'F'
 #define PROXY_WORKER_HC_FAIL_FLAG        'C'
 #define PROXY_WORKER_HOT_SPARE_FLAG      'R'
+#define PROXY_WORKER_BEACON_FLAG         'B'
 
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR | \
