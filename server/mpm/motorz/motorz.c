@@ -121,6 +121,11 @@ static volatile int requests_this_child;
  * practical visibility lag is bounded by the 500ms poll timeout at worst.
  */
 static int volatile die_now = 0;
+/* Set along with die_now when the child was asked to stop gracefully
+ * (AP_SIG_GRACEFUL or an idle-kill via the pipe-of-death), so that child_main
+ * waits for connections noted by modules before exiting.
+ */
+static int volatile graceful_stop = 0;
 static motorz_child_bucket *all_buckets, /* All listeners buckets */
                             *my_bucket;   /* Current child bucket */
 
@@ -1557,6 +1562,7 @@ static void stop_listening(int sig)
     ap_close_listeners_ex(my_bucket->listeners);
 
     /* For a graceful stop, we want the child to exit when done */
+    graceful_stop = 1;
     die_now = 1;
 }
 
@@ -1872,6 +1878,7 @@ static void motorz_supervise(motorz_core_t *mz, ap_sb_handle_t *sbh)
         ap_update_child_status(sbh, SERVER_READY, NULL);
 
         if (ap_mpm_pod_check(my_bucket->pod) == APR_SUCCESS) { /* idle kill? */
+            graceful_stop = 1;
             die_now = 1;
         }
         else if (mz->mpm->my_generation !=
@@ -2032,6 +2039,10 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
      * clean_child_exit()'s join is a no-op (no double pthread_join).
      */
     motorz_join_pollers(mz);
+
+    if (graceful_stop) {
+        ap_mpm_wait_for_extra_connections();
+    }
 
     clean_child_exit(0);
 }
@@ -2544,6 +2555,8 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     apr_status_t rv;
     const char *userdata_key = "mpm_motorz_module";
     motorz_core_t *mz;
+
+    ap_mpm_register_extra_connection_fns();
 
     debug = ap_exists_config_define("DEBUG");
 
