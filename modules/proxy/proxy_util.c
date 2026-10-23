@@ -4387,15 +4387,23 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
 
 PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, proxy_worker *w)
 {
-    unsigned int *status = &w->s->status;
+    volatile apr_uint32_t *status = (volatile apr_uint32_t *)&w->s->status;
     char flag = toupper(c);
     proxy_wstat_t *pwt = proxy_wstat_tbl;
     while (pwt->bit) {
         if (flag == pwt->flag) {
-            if (set)
-                *status |= pwt->bit;
-            else
-                *status &= ~(pwt->bit);
+            /*
+             * The status word is shared by every process and thread, and is
+             * changed from several places at once (balancer-manager, health
+             * checks, mod_proxy_beacon, ...), each setting only its own bit.
+             * A plain |= / &= can lose another one's change in between its
+             * read and its write.
+             */
+            apr_uint32_t old, upd;
+            do {
+                old = *status;
+                upd = set ? (old | pwt->bit) : (old & ~(apr_uint32_t)pwt->bit);
+            } while (apr_atomic_cas32(status, upd, old) != old);
             return APR_SUCCESS;
         }
         pwt++;
