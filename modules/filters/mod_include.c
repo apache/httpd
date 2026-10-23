@@ -1645,8 +1645,13 @@ static int parse_ap_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         return 0;
     }
     *was_error = 0;
-    if (re->source)
+    if (re->source) {
+        /* ap_expr does not tell how many subpatterns the regex has. The ones
+         * it does not use are marked by rm_so == -1, see get_include_var().
+         */
+        re->nsub = AP_MAX_REG_MATCH - 1;
         re->have_match = 1;
+    }
     return ret;
 }
 
