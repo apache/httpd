@@ -111,7 +111,8 @@ as an enabled member of `balancer://cluster` on the proxy. Stop one, and after
 
 > **`ProxyBeaconAdvertise` must be the URL the *proxy* can reach** — the
 > backend's routable origin, not `127.0.0.1`. It's validated at config-parse
-> time and must be a full `scheme://host[:port]`.
+> time and must be a full `scheme://host[:port]` **with no path** (see
+> [Member identity](#member-identity)).
 
 ---
 
@@ -124,8 +125,8 @@ as an enabled member of `balancer://cluster` on the proxy. Stop one, and after
 | `ProxyBeaconListen [addr][:port]` | — | **Marks this server as the receiver.** Binds a UDP socket. `addr`/`port` are optional and inherited from the server's own `Listen`/`ServerName` when omitted (see note below). |
 | `ProxyBeaconBalancer name` | — | Balancer that announced backends are added to. Bare name (`cluster`); a leading `balancer://` is stripped. Must already exist with spare `growth`. |
 | `ProxyBeaconTimeout interval` | `0` (no eviction) | Seconds of silence before a member is disabled. `0` = add-only, never auto-remove. Set to a small multiple of the backends' interval to get self-healing. |
-| `ProxyBeaconSecret secret` | — (**required**) | Shared cluster secret; **same value on proxy and all backends.** The server fails to start if a participating server omits it. |
-| `ProxyBeaconMaxSkew interval` | `30` | Anti-replay freshness window: reject announcements whose signed timestamp is more than this far from now (either direction). |
+| `ProxyBeaconSecret secret` | — (**required**) | Shared cluster secret; **same value on proxy and all backends**, at least 16 characters (long and random). The server fails to start if a participating server omits it or it is too short. |
+| `ProxyBeaconMaxSkew interval` | `30` | Anti-replay freshness window: reject announcements whose signed timestamp is more than this far from now (either direction). Sub-second values (`500ms`) are honoured. |
 
 **Inheriting the listen address:** because UDP and TCP are separate port spaces,
 `ProxyBeaconListen` can share the server's own service port without colliding
@@ -139,7 +140,7 @@ this way — use an explicit high port there.)
 | Directive | Default | Meaning |
 |-----------|---------|---------|
 | `ProxyBeaconAddress addr:port` | — | **Marks this server as a sender.** UDP target = the proxy's `ProxyBeaconListen` address. |
-| `ProxyBeaconAdvertise url` | — | The routable `scheme://host[:port]` the proxy adds as a member. Omit it and the backend beacons but advertises nothing (logged, never added). |
+| `ProxyBeaconAdvertise url` | — | The routable `scheme://host[:port]` origin the proxy adds as a member — no path, query, fragment or userinfo (rejected at config time). Omit it and the backend beacons but advertises nothing (logged, never added). |
 | `ProxyBeaconInterval interval` | `5` | How often this backend announces. Must be **meaningfully smaller** than the proxy's `ProxyBeaconTimeout`. |
 | `ProxyBeaconSecret secret` | — (**required**) | Same shared secret as the proxy. |
 
@@ -150,6 +151,75 @@ All directives accept `server config` and `virtual host` context. Interval-style
 directives use the standard httpd
 [time-interval syntax](../../docs/manual/mod/directive-dict.html#Syntax) and
 default to seconds (e.g. `ProxyBeaconInterval 10` or `... 500ms`).
+
+### Member identity
+
+An announced URL names a backend **origin** — `scheme://host[:port]`, nothing
+more. The proxy canonicalizes it and uses that one string as the member's
+identity everywhere: the key for its lease and replay state, the worker name it
+creates, and the name used for every later enable or evict.
+
+- **Canonical form:** scheme and host lower-cased, the scheme's default port
+  dropped, a single trailing `/` ignored. `HTTP://App.Example.com:80`,
+  `http://app.example.com/` and `http://app.example.com` are **one** member.
+- **Rejected:** a path (other than `/`), query, fragment, userinfo, an invalid
+  port, or the `unix:/path|http://…` socket form. These are dropped and logged as
+  `unacceptable url`; the backend is not added. `ProxyBeaconAdvertise` enforces
+  the same rule when the config is parsed, so a backend can't be misconfigured
+  into announcing one.
+
+**Why no paths?** The balancer finds a member by *longest-prefix* match.
+`http://10.0.0.5:8080/one` and `http://10.0.0.5:8080/one/two` would be tracked as
+two members with separate leases but resolve to one worker — so when one lease
+lapsed, the proxy would disable a worker whose other lease was still current. If
+you need different paths to go to different places, do that on the proxy with
+`ProxyPass`; advertise only where the backend lives.
+
+### Ownership and hand-off
+
+Beacon marks every worker it creates with the **`Bcn`** status (flag `B`, visible
+in the balancer-manager). It only ever enables or evicts workers carrying that
+mark: a `BalancerMember` from your configuration, or one an administrator added,
+is never touched, even if a backend announces exactly its URL.
+
+The announcements and leases are handled by **one** watchdog child. If that child
+dies, the watchdog moves to another child, which starts with no memory of the
+members. On taking over it **adopts every `Bcn` member** in the balancer and
+starts their leases afresh:
+
+- a member that has since gone silent is evicted `ProxyBeaconTimeout` after the
+  hand-off, instead of staying enabled forever;
+- a member that was already disabled is treated as evicted and is re-enabled by
+  its next announcement.
+
+Two things to know: a dead backend can stay in rotation for up to one
+`ProxyBeaconTimeout` after a hand-off, and the per-member replay high-water mark
+is not carried over — during a hand-off a captured announcement still inside
+`ProxyBeaconMaxSkew` can be replayed once per member, refreshing that lease for one
+timeout (it cannot add a member without the secret).
+
+**Holding a member out of rotation.** Beacon owns a member's **Disabled** flag
+(lease expiry sets it, the next announcement clears it), so a manual "Disable" in
+the balancer-manager is overridden. To keep a member out regardless of what it
+announces, set it **Stopped** or **Drain** — beacon never touches those, nor the
+health-check failure flag.
+
+**Capacity.** At most 256 announced URLs are tracked. Records of evicted members
+and of failed adds are released after being silent for more than twice
+`ProxyBeaconMaxSkew` (a replay of their last message would be stale by then), so
+they don't lock out new backends; a member that comes back is re-adopted. A
+balancer itself accepts at most 100 runtime members (`growth`). A holder of the
+secret can still fill the table with distinct URLs until they fall silent.
+
+**Socket problems.** If the UDP socket can't be opened (unresolvable address, port
+in use) it is retried with back-off, 30 s doubling to 10 min. Name lookups are
+synchronous on the single watchdog thread shared by every beacon configuration of
+the server, so an unresolvable name can stall them all for as long as the resolver
+takes to give up — **use IP addresses** in `ProxyBeaconAddress` / `ProxyBeaconListen`.
+
+> A new owner can only start once the old one's `watchdog-callback` mutex is
+> released. If the default mechanism isn't released when its holder is killed on
+> your platform, pick one that is: `Mutex sysvsem watchdog-callback`.
 
 ---
 
@@ -172,6 +242,22 @@ there is no unauthenticated mode to fall into. With it:
   any timestamp that doesn't strictly advance — so capturing and re-sending a
   dead backend's last datagram (to keep it from being evicted) is rejected even
   inside the freshness window.
+
+**What the secret is.** A valid MAC proves only that the sender holds the
+secret — not that it owns the URL it announces, may speak for another backend, or
+is ready to serve. Every holder can register any origin the proxy can reach,
+keep other members' leases alive, and use up growth slots and tracking records.
+Treat the secret as an **administrator credential for the balancer** and share it
+only among hosts you'd trust with that; it is not a boundary between partially
+trusted workloads. Because the key is derived from the passphrase with a fast
+hash (and the tag is 64 bits), a captured announcement allows offline guessing:
+**use a long random secret** (at least 16 characters is enforced).
+
+**What is checked.** Every datagram is dropped unless it is ≤ 2048 bytes with no
+NUL, carries a valid MAC (even when no `ProxyBeaconBalancer` is set, so log-only
+mode logs only authenticated announcements), has the exact `BEACON key=value … mac=…`
+shape with no repeated field and a plain decimal `ts=`, and names a printable-ASCII
+origin.
 
 Operational notes:
 
@@ -232,6 +318,12 @@ Useful log signals (grep the error log):
 | `re-enabled backend ...` | a previously-evicted backend came back |
 | `dropped ... mac mismatch` | wrong/missing secret on a sender (or a forged datagram) |
 | `replayed/reordered ts` | a stale/duplicate datagram was rejected |
+| `dropped ... oversize datagram` / `embedded NUL` / `bad frame` / `duplicate field` / `bad ts` | a datagram that isn't a well-formed announcement (see "What is checked") |
+| `dropped ... member table full` | 256 urls are already tracked; records free up as silent ones age out (see Capacity) |
+| `dropped ... unacceptable url` | an announcement's `url=` is not a plain origin (it has a path, query, userinfo, a bad port, or is a `unix:` URL) |
+| `took over N existing member(s)` | a new watchdog owner adopted the beacon-created members already in the balancer (see [Ownership and hand-off](#ownership-and-hand-off)) |
+| `dropped ... member not managed by beacon` | a backend announced the URL of a worker beacon did not create (configured or admin-added); it is left alone |
+| `dropped ... balancer add not confirmed` | the balancer reported success but no such member exists; retried after the back-off |
 | `ProxyBeaconSecret is required` (startup) | a participating server has no `ProxyBeaconSecret` — startup aborts |
 
 **Common gotchas:**
@@ -259,7 +351,8 @@ One ASCII, space-separated, key=value datagram per announcement:
 BEACON url=http://host:port host=<h> pid=<n> seq=<n> ts=<usec> mac=<hex>
 ```
 
-- `url=` — the routable origin added as a `BalancerMember`.
+- `url=` — the routable origin added as a `BalancerMember`; `scheme://host[:port]`
+  only (see [Member identity](#member-identity)).
 - `ts=` (microseconds since epoch) and `mac=` — present only when a secret is set;
   `ts` drives replay protection, `mac` is the SipHash signature.
 - `host=` / `pid=` / `seq=` — informational. (`seq` resets on backend restart, so

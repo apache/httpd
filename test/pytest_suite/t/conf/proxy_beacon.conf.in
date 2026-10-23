@@ -27,6 +27,11 @@
 <IfModule mod_proxy_beacon.c>
 <IfModule mod_proxy_balancer.c>
 
+    # Let mod_watchdog's singleton move to another child when its owner dies.
+    # The default lock is not released by a SIGKILLed holder, so the hand-off
+    # tests in test_proxy_beacon_input.py would never see a new owner.
+    Mutex sysvsem watchdog-callback
+
     # Received-beacon + balancer add/route logging in the error_log.
     LogLevel proxy_beacon:info proxy_balancer:debug
 
@@ -49,7 +54,7 @@
 
     # An initially-empty balancer with spare slots for runtime members.
     <Proxy balancer://beacon>
-        ProxySet growth=10
+        ProxySet growth=30
     </Proxy>
     ProxyPass /beacon balancer://beacon
 
@@ -72,7 +77,7 @@
     <VirtualHost proxy_beacon_bad>
         ProxyBeaconAddress   127.0.0.1:@PORT@
         ProxyBeaconAdvertise http://127.0.0.1:1
-        ProxyBeaconSecret    wrong-secret
+        ProxyBeaconSecret    wrong-secret-0123456789
         ProxyBeaconInterval  1
     </VirtualHost>
 
@@ -95,6 +100,70 @@
             ProxySet growth=1
         </Proxy>
         ProxyPass /cap balancer://cap
+    </VirtualHost>
+
+    #
+    # Ownership / hand-off scenario (third receiver).  balancer://handoff holds one
+    # STATIC member (configured by the admin, never announces) plus room for
+    # dynamic ones.  The tests announce a member once and then fall silent, kill
+    # the watchdog-owning child, and expect the NEW owner to evict the silent
+    # member after ProxyBeaconTimeout -- and to leave the static member alone.
+    #
+    Define BEACON_HANDOFF_PORT @NextAvailablePort@
+
+    <VirtualHost proxy_beacon_handoff>
+        ProxyBeaconListen  127.0.0.1:${BEACON_HANDOFF_PORT}
+        ProxyBeaconBalancer handoff
+        ProxyBeaconSecret  beacon-test-shared-secret
+        ProxyBeaconTimeout 3
+        <Proxy balancer://handoff>
+            BalancerMember http://127.0.0.11:19000
+            ProxySet growth=5
+        </Proxy>
+        ProxyPass /handoff balancer://handoff
+        <Location /balancer-manager>
+            SetHandler balancer-manager
+            Require all granted
+        </Location>
+    </VirtualHost>
+
+    #
+    # Sub-second freshness window (fourth receiver): ProxyBeaconMaxSkew 500ms must
+    # mean 500ms, not "rounds to 0, so fall back to the 30s default".
+    #
+    Define BEACON_SKEW_PORT @NextAvailablePort@
+
+    <VirtualHost proxy_beacon_skew>
+        ProxyBeaconListen  127.0.0.1:${BEACON_SKEW_PORT}
+        ProxyBeaconBalancer skew
+        ProxyBeaconSecret  beacon-test-shared-secret
+        ProxyBeaconTimeout 0
+        ProxyBeaconMaxSkew 500ms
+        <Proxy balancer://skew>
+            ProxySet growth=5
+        </Proxy>
+        ProxyPass /skew balancer://skew
+    </VirtualHost>
+
+    #
+    # Table reclamation (fifth receiver): members are evicted after 1s of silence
+    # and their records reclaimed once a replay of their last message would be
+    # stale anyway (2 * MaxSkew + 1s = 5s here).  growth=100 is the most a balancer
+    # accepts, so announcing 256 urls leaves 100 members and 156 failed adds: a
+    # full tracking table.
+    #
+    Define BEACON_RECLAIM_PORT @NextAvailablePort@
+
+    <VirtualHost proxy_beacon_reclaim>
+        ProxyBeaconListen  127.0.0.1:${BEACON_RECLAIM_PORT}
+        ProxyBeaconBalancer reclaim
+        ProxyBeaconSecret  beacon-test-shared-secret
+        ProxyBeaconTimeout 1
+        ProxyBeaconMaxSkew 2
+        <Proxy balancer://reclaim>
+            ProxySet growth=100
+        </Proxy>
+        ProxyPass /reclaim balancer://reclaim
     </VirtualHost>
 
     # Two backends competing for the single cap slot (announce every 1s).
