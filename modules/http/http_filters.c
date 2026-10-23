@@ -90,11 +90,9 @@ typedef struct http_filter_ctx
 /**
  * Parse a chunk line with optional extension, detect overflow.
  * There are several error cases:
- *  1) If the chunk link is misformatted, APR_EINVAL is returned.
- *  2) If the conversion would require too many bits, APR_EGENERAL is returned.
- *  3) If the conversion used the correct number of bits, but an overflow
- *     caused only the sign bit to flip, then APR_ENOSPC is returned.
- * A negative chunk length always indicates an overflow error.
+ *  1) If the chunk line is misformatted, APR_EINVAL is returned.
+ *  2) If the chunk size cannot be represented in apr_off_t, or the line
+ *     exceeds its limit, APR_ENOSPC is returned.
  */
 static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                                      apr_size_t len, int linelimit, int strict)
@@ -245,10 +243,6 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 return APR_ENOSPC;
             }
             ctx->remaining = (ctx->remaining << 4) | xvalue;
-            if (ctx->remaining < 0) {
-                /* Unreachable after the pre-shift check. */
-                return APR_ENOSPC;
-            }
         }
         else {
             /* Should not happen */
