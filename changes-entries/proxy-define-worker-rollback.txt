@@ -1,0 +1,6 @@
+  *) mod_proxy: Don't leave a half-initialized worker in the balancer (or
+     server config) worker array when ap_proxy_define_worker() fails, e.g.
+     for a hostname or Unix domain socket path that is too long.  Later
+     walks of the array, such as the worker lookup after a failed
+     balancer-manager "add worker", dereferenced the missing shared worker
+     data and crashed the child.  [Jim Jagielski]

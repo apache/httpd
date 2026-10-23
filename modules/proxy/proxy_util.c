@@ -2080,6 +2080,61 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     }
     ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
 
+    /* Reject names that cannot be stored before allocating anything for them:
+     * the allocation below is from p, which for runtime workers is the
+     * long-lived configuration pool, so a failed definition must not leave a
+     * proxy_worker_shared behind.  (These are the same limits PROXY_STRNCPY()
+     * enforces below.) */
+    if (strlen(uri.hostname) >= PROXY_RFC1035_HOSTNAME_SIZE) {
+        return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
+    }
+    if (sockpath && strlen(sockpath) >= PROXY_WORKER_UDS_PATH_SIZE) {
+        return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
+    }
+
+    /* right here we just want to tuck away the worker info.
+     * if called during config, we don't have shm setup yet,
+     * so just note the info for later. */
+    if (mask & AP_PROXY_WORKER_IS_MALLOCED)
+        wshared = ap_malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
+    else
+        wshared = apr_palloc(p, sizeof(proxy_worker_shared));
+    memset(wshared, 0, sizeof(proxy_worker_shared));
+
+    if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02808)
+        "Alert! worker name (%s) too long; truncated to: %s", ptr, wshared->name);
+    }
+    if (PROXY_STRNCPY(wshared->scheme, uri.scheme) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(010117)
+        "Alert! worker scheme (%s) too long; truncated to: %s", uri.scheme, wshared->scheme);
+    }
+    /*
+     * Everything that can fail is checked before the worker is added to the
+     * balancer's (or conf's) worker array below: an entry appended here and then
+     * abandoned on error would stay in the array with no shared data (->s is
+     * NULL) for every later walk of the array to trip over.
+     */
+    if (PROXY_STRNCPY(wshared->hostname_ex, uri.hostname) != APR_SUCCESS) {
+        if (mask & AP_PROXY_WORKER_IS_MALLOCED) {
+            free(wshared);
+        }
+        return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
+    }
+    if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(010118)
+        "worker hostname (%s) too long; truncated for legacy modules that do not use "
+        "proxy_worker_shared->hostname_ex: %s", uri.hostname, wshared->hostname);
+    }
+    if (sockpath) {
+        if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
+            if (mask & AP_PROXY_WORKER_IS_MALLOCED) {
+                free(wshared);
+            }
+            return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
+        }
+    }
+
     /*
      * Workers can be associated w/ balancers or on their
      * own; ie: the generic reverse-proxy or a worker
@@ -2104,36 +2159,7 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
         *worker = apr_palloc(p, sizeof(proxy_worker));
     }
     memset(*worker, 0, sizeof(proxy_worker));
-    
-    /* right here we just want to tuck away the worker info.
-     * if called during config, we don't have shm setup yet,
-     * so just note the info for later. */
-    if (mask & AP_PROXY_WORKER_IS_MALLOCED)
-        wshared = ap_malloc(sizeof(proxy_worker_shared));  /* will be freed ap_proxy_share_worker */
-    else
-        wshared = apr_palloc(p, sizeof(proxy_worker_shared));
-    memset(wshared, 0, sizeof(proxy_worker_shared));
-
-    if (PROXY_STRNCPY(wshared->name, ptr) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(02808)
-        "Alert! worker name (%s) too long; truncated to: %s", ptr, wshared->name);
-    }
-    if (PROXY_STRNCPY(wshared->scheme, uri.scheme) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(010117)
-        "Alert! worker scheme (%s) too long; truncated to: %s", uri.scheme, wshared->scheme);
-    }
-    if (PROXY_STRNCPY(wshared->hostname_ex, uri.hostname) != APR_SUCCESS) {
-        return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
-    }
-    if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf, APLOGNO(010118)
-        "worker hostname (%s) too long; truncated for legacy modules that do not use "
-        "proxy_worker_shared->hostname_ex: %s", uri.hostname, wshared->hostname);
-    }
     if (sockpath) {
-        if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
-            return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
-        }
         (*worker)->uds_name = apr_pstrcat(p, "unix:", sockpath, "|", ptr, NULL);
     }
     wshared->port = (uri.port) ? uri.port : port_of_scheme;
