@@ -171,6 +171,7 @@ is usually linked shared and requires loading. ], $http3_objs, , no, [
 
     APACHE_CHECK_NGHTTP3
     if test "$ac_cv_nghttp3" = "yes" ; then
+        APR_ADDTO(MOD_CFLAGS, [-I\$(top_srcdir)/$modpath_current/include])
         if test "x$enable_http3" = "xshared"; then
            # The only symbol which needs to be exported is the module
            # structure, so ask libtool to hide everything else:
