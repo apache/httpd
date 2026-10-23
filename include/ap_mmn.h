@@ -740,6 +740,10 @@
  * 20211221.32 (2.5.1-dev) Add ap_cstr_stripws() to httpd.h
  * 20211221.33 (2.5.1-dev) Add ap_size_parameter_parse() to httpd.h
  * 20211221.34 (2.5.1-dev) Add PROXY_WORKER_BEACON status bit to mod_proxy.h
+ * 20211221.35 (2.5.1-dev) Add the optional functions ap_mpm_note_extra_
+ *                         connection_added() and ap_mpm_note_extra_
+ *                         connection_removed(), and ap_mpm_wait_for_extra_
+ *                         connections(), to mpm_common.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -747,7 +751,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 34             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 35             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

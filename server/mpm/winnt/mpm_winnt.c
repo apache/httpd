@@ -1368,6 +1368,8 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
      *   -k runservice [WinNT errors logged from rewrite_args]
      */
 
+    ap_mpm_register_extra_connection_fns();
+
     /* Initialize shared static objects.
      * TODO: Put config related statics into an sconf structure.
      */
