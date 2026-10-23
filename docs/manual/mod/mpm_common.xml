@@ -729,10 +729,16 @@ Apache HTTP Server</a></seealso>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
-<module>prefork</module>
+<module>prefork</module><module>motorz</module>
 </modulelist>
 
 <usage>
+    <p>For the <module>motorz</module> MPM, this directive sets the number of
+    process slots, which must cover <directive
+    module="mpm_common">StartServers</directive> plus the old processes still
+    finishing connections after a graceful restart; it defaults to twice
+    <directive module="mpm_common">StartServers</directive>.</p>
+
     <p>For the <module>prefork</module> MPM, this directive sets the
     maximum configured value for <directive
     module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the

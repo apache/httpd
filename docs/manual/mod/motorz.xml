@@ -142,6 +142,18 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
     re-armed on its owning poller when resumed.</p>
 </section>
 
+<section id="graceful-stop"><title>Graceful stop and restart</title>
+    <p>When a child is asked to stop gracefully (a graceful restart or stop,
+    or reaching <directive module="mpm_common">MaxConnectionsPerChild</directive>)
+    it stops accepting connections, closes idle keep-alive connections, and
+    lets all other connections, including responses still being written,
+    finish before it exits. A previous generation therefore keeps its process
+    slots until its connections are done, which is why
+    <directive module="mpm_common">ServerLimit</directive> must leave room for
+    both generations. <directive module="mpm_common">GracefulShutdownTimeout</directive>
+    bounds how long the parent waits on a graceful stop.</p>
+</section>
+
 <section id="admission-control"><title>Admission control</title>
     <p>To keep a child safe under overload, <module>motorz</module> applies
     listener backpressure. When the worker pool saturates, the poller that
@@ -176,13 +188,17 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
     <em>structural</em> single-thread ceiling, but per-host throughput is still
     governed by worker CPU.</p>
 
-    <note><title>No ServerLimit / dynamic process scaling</title>
+    <note><title>No dynamic process scaling</title>
     <p>Unlike <module>worker</module> and <module>event</module>,
     <module>motorz</module> does not scale the number of child processes with
-    load and does not provide a separate
-    <directive module="mpm_common">ServerLimit</directive> ceiling. The process
-    pool is fixed at <directive module="mpm_common">StartServers</directive>,
-    which therefore acts as the hard daemon limit, and there are no
+    load. The process pool is fixed at
+    <directive module="mpm_common">StartServers</directive>.
+    <directive module="mpm_common">ServerLimit</directive> only bounds the
+    number of process slots, including those held by old children that are
+    still finishing connections after a graceful restart; it defaults to twice
+    <directive module="mpm_common">StartServers</directive> and, like
+    <directive module="mpm_common">ThreadLimit</directive>, cannot be changed
+    during a restart. There are no
     <directive module="mpm_common">MinSpareThreads</directive> /
     <directive module="mpm_common">MaxSpareThreads</directive> /
     <directive module="mpm_common">MaxRequestWorkers</directive> controls.

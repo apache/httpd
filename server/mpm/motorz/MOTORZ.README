@@ -34,6 +34,20 @@ sharded, only I/O is.) Multiple pollers lift the old single-poll-thread
 throughput ceiling: accept + event dispatch + timer expiry now scale with
 PollersPerChild instead of being serialized on one thread.
 
+Graceful stop
+-------------
+
+A child told to stop gracefully (AP_SIG_GRACEFUL, the pipe-of-death, a
+generation change, or MaxConnectionsPerChild) does not exit at once. The
+supervisor calls motorz_start_drain(): the child reports AP_MPMQ_STOPPING and
+runs child_stopping, the listener-owning poller closes the listening sockets,
+idle keep-alive connections are expired immediately, and connections still
+writing or waiting on I/O run to completion. The child exits when conns_open
+(connections accepted and not yet torn down) reaches zero. SIGTERM/SIGHUP
+still exit immediately. The parent counts a draining child (quiescing) as gone
+and starts its replacement in a free slot, so ServerLimit (default
+2 * StartServers) must leave room for both generations.
+
 Admission control (listener backpressure) keeps the child safe under overload:
 when the worker pool saturates, the listener-owning poller removes the
 listening sockets from its pollset (motorz_update_listeners /

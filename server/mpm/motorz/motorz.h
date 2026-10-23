@@ -66,23 +66,10 @@
 #include <signal.h>
 #include <sys/times.h>
 
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef DEFAULT_SERVER_LIMIT
-#define DEFAULT_SERVER_LIMIT 256
-#endif
-
 /* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
- * some sort of compile-time limit to help catch typos.
+ * some sort of compile-time limit to help catch typos, and to keep the
+ * scoreboard small enough that we can read the whole thing without worrying
+ * too much about the overhead.  ServerLimit defaults to twice StartServers.
  */
 #ifndef MAX_SERVER_LIMIT
 #define MAX_SERVER_LIMIT 200000
@@ -121,7 +108,11 @@ typedef struct motorz_core_t motorz_core_t;
 struct motorz_core_t {
     ap_unixd_mpm_retained_data *mpm;
 
+    /* ServerLimit/ThreadLimit as first configured: the scoreboard is sized
+     * from them once and survives graceful restarts, so they cannot change.
+     */
     int first_server_limit;
+    int first_thread_limit;
     int maxclients_reported;
     /*
      * The max child slot ever assigned, preserved across restarts.  Necessary
