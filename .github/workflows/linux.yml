@@ -215,6 +215,7 @@ jobs:
           - name: GCC 12 maintainer-mode w/-Werror, install + VPATH
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             notest-cflags: -Werror -O2
+            pkgs: gcc-12
             env: |
               CC=gcc-12
               TEST_VPATH=1
