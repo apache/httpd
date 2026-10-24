@@ -143,6 +143,8 @@ def inject(http, urls, probe_url, port=None, balancer="beacon"):
 
     now_us = int(time.time() * 1_000_000)
     for seq, item in enumerate(list(urls) + [probe_url]):
+        if callable(item):                   # built at send time
+            item = item()
         if isinstance(item, bytes):          # a hand-built datagram, sent as is
             send_udp(port, item)
         else:
@@ -439,12 +441,14 @@ def test_subsecond_max_skew_is_honoured(http):
     """ProxyBeaconMaxSkew 500ms: a timestamp 700ms old is stale.  (It used to be
     rounded down to 0 seconds, which then selected the 30 second default.)"""
     port = conf_port(http, "SKEW")
-    now = int(time.time() * 1_000_000)
     old, fresh = "http://127.0.0.13:8201", "http://127.0.0.13:8202"
+    # Signed only when sent: inject() can take longer than the window to
+    # get there.
     lines = inject(
         http,
-        [signed_beacon(old, seq=1, ts_us=now - 700_000),
-         signed_beacon(fresh, seq=2, ts_us=int(time.time() * 1_000_000))],
+        [lambda: signed_beacon(old, seq=1,
+                               ts_us=int(time.time() * 1_000_000) - 700_000),
+         lambda: signed_beacon(fresh, seq=2)],
         "http://127.0.0.13:8203", port=port, balancer="skew")
     members = added_members(lines, "skew")
     assert old not in members, "a 700ms-old timestamp passed a 500ms window"
