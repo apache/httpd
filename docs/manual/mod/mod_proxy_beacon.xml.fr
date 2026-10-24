@@ -122,7 +122,7 @@ datagrammes UDP unicast</description>
 # Réception des annonces des serveurs dorsaux sur
 # l’interface réseau de cluster (UDP).
 ProxyBeaconListen 0.0.0.0:5555
-ProxyBeaconSecret    "une_grande_phrase_secrète_partagée_aléatoire_de_cluster"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconBalancer  cluster
 
 # Un serveur dorsal est éjecté de la rotation s’il ne
@@ -144,7 +144,7 @@ ProxyPassReverse "/" "balancer://cluster/"
 # toutes les 10 secondes (UDP).
 ProxyBeaconAddress   proxy.example.com:5555
 ProxyBeaconAdvertise http://10.0.0.5:8080
-ProxyBeaconSecret    "une_grande_phrase_secrète_partagée_aléatoire_de_cluster"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconInterval  10
     </highlight>
 
@@ -166,6 +166,168 @@ ProxyBeaconInterval  10
     <code>augmente</code> jusqu’au nombre maximal de serveurs dorsaux que vous
     souhaitez enregistrer.</p>
     </note>
+
+</section>
+
+<section id="identity"><title>Identité de membre</title>
+
+    <p>Un URL annoncé identifie un dorsal <em>origine</em>:
+    <code>protocole://hôte[:port]</code>, et rien d’autre. Le mandataire utilise
+    partout la même chaîne de caractères pour représenter l'identité du membre :
+    elle sert à la fois de clé pour assurer le suivi du bail (« lease ») et de
+    l'état de rejeu (« replay state ») du dorsal, et de nom pour le membre actif
+    (« worker ») qu'il crée au sein du répartiteur de charge. Pour que ces
+    identités restent égales, le mandataire :</p>
+    <ul>
+      <li><strong>rend canoniques</strong> tous les URL annoncés : les protocole
+      et hôte sont mis en minuscules, le port par défaut du protocole est
+      supprimé (<code>HTTP://Backend.Example.com:80</code> et
+      <code>http://backend.example.com</code> désignent le même membre), et un
+      <code>/</code> unique en fin d’URL est ignoré ;</li>
+      <li><strong>rejette</strong> toute annonce qui ne correspond pas à une
+      origine : comportant un chemin (autre que <code>/</code>), une chaîne de
+      paramètres, un fragment, des informations utilisateur, un port non valable
+      (tel que <code>0</code>) ou qui utilise un format de socket
+      <code>unix:</code>. Le rejet est journalisé (avec limitation de débit) en
+      tant qu'<code>URL inacceptable</code> et le dorsal n’est pas ajouté.</li>
+    </ul>
+
+    <p>Les chemins sont refusés, car le répartiteur de charge trouve un membre
+    en recherchant une correspondance avec le préfixe le plus long. Des annonces
+    pour <code>http://10.0.0.5:8080/one</code> et
+    <code>http://10.0.0.5:8080/one/two</code> seraient considérées comme deux
+    membres avec des baux différents, mais correspondraient à un seul membre
+    actif, si bien que l’échéance d’un bail pourrait désactiver un membre actif
+    possédant un autre bail encore en cours. Choisissez des chemins de requête
+    sur le mandataire avec <directive module="mod_proxy">ProxyPass</directive>,
+    pas à travers l’URL promu.</p>
+
+    <p>Un dorsal qui s’est annoncé avec succès est considéré comme existant dans
+    le répartiteur de charge avant qu’il soit signalé comme ajouté, activé ou
+    évincé ; une annonce que le mandataire ne peut pas promouvoir en membre est
+    journalisée et réessayée après un certain délai plutôt que d’être signalée
+    comme réussie.</p>
+
+</section>
+
+<section id="ownership"><title>Transfert de propriété et de surveillance</title>
+
+    <p>Chaque membre actif créé par <module>mod_proxy_beacon</module> est marqué
+    avec le statut <code>Bcn</code> (indicateur <code>B</code>) ; cette
+    information est stockée dans l'état partagé du membre actif et affichée par
+    <code>balancer-manager</code>. Le module n'active ou ne supprime que les
+    membres actifs portant ce marquage. Un membre actif portant le même nom mais
+    dépourvu de ce marquage — qu'il s'agisse d'une directive <directive
+    module="mod_proxy">BalancerMember</directive> définie dans la configuration
+    ou d'un élément ajouté par un administrateur — n'est pas affecté ; l'annonce
+    le concernant est ignorée et consignée sous la mention <code>member not managed by beacon</code>.</p>
+
+    <p>Les annonces sont reçues et les baux sont conservés par un unique
+    processus enfant de <module>mod_watchdog</module>. Si ce processus se
+    termine ou est tué, le singleton « watchdog » est transféré à un autre
+    processus enfant ; celui-ci démarre alors sans aucune information sur les
+    membres qu'il n'a pas lui-même ajoutés. Lorsqu'un processus enfant devient
+    le responsable, il prend en charge (<em>takes over</em>) tous les membres du
+    répartiteur de charge portant la marque <code>Bcn</code> (ce qui est
+    consigné dans les journaux sous la forme <code>took over <var>N</var>
+    existing member(s)</code>) :</p>
+    <ul>
+      <li>chaque membre pris en charge obtient un nouveau bail qui démarre au
+      même moment, si bien qu’un membre qui est depuis devenu silencieux est
+      évincé au bout d’un temps (égal à la valeur de la directive
+      <directive>ProxyBeaconTimeout</directive>) après le transfert de
+      responsabilité, au lieu de resté actif indéfiniment;</li>
+      <li>un membre déjà désactivé est traité comme évincé et sa prochaine
+      annonce le réactivera.</li>
+    </ul>
+
+    <note>
+    <p>Un dorsal inactif peut donc rester en rotation pendant une durée allant
+    jusqu'à un <directive>ProxyBeaconTimeout</directive> après un transfert de
+    responsabilité (« hand-off »). Le seuil maximal de rejeu (« high-water mark
+    ») propre à chaque membre n'est lui non plus pas conservé : lors du
+    transfert, une annonce capturée — si elle se situe toujours dans la fenêtre
+    de validité définie par <directive>ProxyBeaconMaxSkew</directive> — peut
+    être rejouée une fois par membre, ce qui prolonge le bail de ce membre pour
+    une durée équivalente à un délai d'expiration (« timeout »). Cela ne permet
+    pas pour autant d'ajouter un nouveau membre sans disposer du secret partagé.</p>
+    </note>
+
+    <p>Un nouveau propriétaire ne peut prendre le relais qu'une fois le mutex de
+    rappel (« callback ») du processus de surveillance (« watchdog ») libéré par
+    le processus qui le détenait. La libération du mécanisme de mutex par
+    défaut, en cas de terminaison brutale de son détenteur, dépend de la
+    plateforme ; si une reprise rapide après un plantage est nécessaire,
+    choisissez un mécanisme qui est libéré lors de la disparition du processus
+    pour le mutex <code>watchdog-callback</code>, via la directive <directive
+    module="core">Mutex</directive> (par exemple : <code>Mutex sysvsem
+    watchdog-callback</code>).</p>
+
+</section>
+
+<section id="operator"><title>Contrôle des membres par l’administrateur</title>
+
+    <p>Beacon utilise le drapeau d’état <code>Disabled</code> pour maintenir un
+    membre en dehors de la rotation lorsque son bail a expiré, et l’efface
+    lorsque le membre s’annonce à nouveau ; il est responsable de ce drapeau
+    pour les membres qu’il gère. Un administrateur qui désactive un tel membre
+    dans le <code>répartiteur de charge</code> sera par conséquent outrepassé
+    par une annonce suivant une éviction.</p>
+
+    <p>Pour maintenir un membre en dehors de la rotation quoi qu’il annonce,
+    définissez le à <code>Stopped</code> ou à <code>Drain</code>. Beacon ne
+    modifie jamais ces drapeaux, ni le drapeau défini par un contrôle sanitaire
+    actif (<module>mod_proxy_hcheck</module>) ; ils se combinent avec l’état du
+    bail, si bien qu’un membre <code>Stopped</code> le restera quel que soit le
+    nombre d’évictions et de réactivations.</p>
+
+</section>
+
+<section id="limits"><title>Validation de message et limites</title>
+
+    <p>Le récepteur vérifie la validité de chaque datagramme avant d’agir sur ce
+    dernier :</p>
+    <ul>
+      <li>le datagramme doit avoir une taille maximale de 2048 octets et ne doit
+      pas contenir d’octet NUL ; un datagramme dont la taille est supérieure à
+      la taille maximale ne sera pas tronqué mais supprimé ;</li>
+      <li>le MAC est vérifié, que la directive
+      <directive>ProxyBeaconBalancer</directive> soit définie ou non ; ainsi,
+      même en mode journalisation seule (log-only), seules les annonces
+      authentifiées sont consignées ;</li>
+      <li>le message authentifié doit être exactement de la forme <code>BEACON
+      clé=valeur clé=valeur ... mac=...</code> (espaces simples, champs connus
+      non répétés), et <code>ts=</code> doit être un entier décimal de
+      18 chiffres maximum ;</li>
+      <li>l’URL doit être constitué de caractères ASCII imprimables. (voir <a
+      href="#identity">Member identity</a>).</li>
+    </ul>
+
+    <p>Le proxy suit au maximum 256 URL annoncés. Un enregistrement est supprimé
+    lorsqu'il correspond à un membre exclu, ou à un ajout ayant échoué, et qu'il
+    est resté inactif pendant une durée supérieure au double de la valeur de la
+    directive <directive>ProxyBeaconMaxSkew</directive> (à ce stade, une
+    éventuelle réémission de son dernier message serait de toute façon obsolète
+    ; aucune protection contre les rejeux n'est donc perdue). Jusqu'à ce
+    moment-là, un afflux d'URL distincts, provenant d'un détenteur du secret,
+    peut saturer la table et empêcher l'ajout de nouveaux serveurs dorsaux ; les
+    membres eux-mêmes restent présents dans le répartiteur de charge, et un
+    serveur dorsal qui effectue une nouvelle annonce après la suppression de son
+    enregistrement est réintégré. La limite propre au répartiteur de charge
+    (paramètre <code>growth</code>, plafonné à 100) restreint le nombre total de
+    membres pouvant être ajoutés.</p>
+
+    <p>Si l'ouverture du socket UDP échoue (par exemple en raison d'une adresse
+    impossible à résoudre ou d'un port déjà utilisé), une nouvelle tentative est
+    effectuée après un délai initial de 30 secondes ; ce délai double à chaque
+    essai, jusqu'à atteindre un maximum de 10 minutes. La résolution de noms est
+    synchrone et s'exécute au sein de l'unique thread du module
+    <module>mod_watchdog</module> qui gère toutes les configurations de « beacon
+    » du serveur ; par conséquent, un nom qui ne peut être résolu risque de
+    bloquer ces opérations pendant toute la durée nécessaire au mécanisme de
+    résolution pour abandonner. Il est donc préférable d'utiliser une adresse IP
+    dans les directives <directive>ProxyBeaconAddress</directive> et
+    <directive>ProxyBeaconListen</directive>.</p>
 
 </section>
 
@@ -251,7 +413,11 @@ ses annonces</description>
     tant que membre <directive module="mod_proxy">BalancerMember</directive>.
     Il doit s’agir d’un URL complet comme <code>scheme://host[:port]</code> que
     le mandataire pourra atteindre &mdash; pas l’adresse d’écoute locale &mdash;
-    et qui sera validé lors de l’analyse de la configuration.</p>
+    et qui sera validé lors de l’analyse de la configuration. L’URL ne référence
+    qu’une <em>origine</em> : un chemin, une chaîne de paramètres, un fragment
+    ou des informations utilisateur seront rejetés en générant une erreur de
+    configuration (voir <a href="#identity">Member identity</a>). L’URL est
+    annoncé sous sa forme canonique).</p>
 
     <p>Cette directive est utilisée sur un serveur dorsal avec la directive
     <directive>ProxyBeaconAddress</directive>. Si elle est omise, le serveur
@@ -343,7 +509,7 @@ de laquelle le mandataire enlève ce dernier de la rotation</description>
 <name>ProxyBeaconSecret</name>
 <description>Phrase secrète partagée à l’avance pour authentifier les annonces
 des serveurs dorsaux</description>
-<syntax>ProxyBeaconSecret <em>secret</em></syntax>
+<syntax>ProxyBeaconSecret <em>secret</em>|hex:<em>key</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -375,6 +541,37 @@ des serveurs dorsaux</description>
     annonces de ce dernier seront rejetées silencieusement (et journalisées), ce
     qui donne l’impression que le serveur dorsal n’a jamais atteint le
     répartiteur de charge.</p>
+
+    <p>Utilisez une clé aléatoire. Générez-en une à l'aide de la commande
+    <code>openssl rand -hex 16</code> et configurez-la en utilisant le préfixe
+    <code>hex:</code> suivi des 32 chiffres hexadécimaux ; cette valeur est
+    utilisée directement comme clé MAC de 128 bits, ne laissant ainsi aucune
+    chance de la deviner.  Toute autre valeur est traitée comme une phrase
+    secrète : elle doit comporter au moins 16 caractères, et la clé MAC en est
+    dérivée au moyen d'une fonction de hachage rapide. Étant donné que le jeton
+    d'authentification est de 64 bits, quiconque intercepte une seule annonce
+    peut tester des hypothèses de phrases secrètes hors ligne et à pleine
+    vitesse ; la protection offerte par une phrase secrète dépend donc
+    uniquement de son caractère aléatoire et de sa longueur. Une valeur
+    commençant par <code>hex:</code> est toujours interprétée comme une clé et
+    sera rejetée si elle ne se compose pas exactement de 32 chiffres
+    hexadécimaux.</p>
+
+    
+
+    <note type="warning"><title>Le secret consiste en un identifiant d’adhésion.</title>
+    <p>Un MAC valide prouve uniquement que l'expéditeur détient le secret. Il ne
+    prouve pas que l'expéditeur possède l'URL qu'il annonce, qu'il est habilité
+    à agir au nom d'un autre serveur dorsal, ou qu'il est prêt à traiter des
+    requêtes. Tout détenteur peut donc enregistrer n'importe quelle origine
+    dorsale accessible par le proxy, effectuer des annonces pour le compte
+    d'autres membres (en maintenant leurs baux actifs), et saturer les
+    emplacements d'extension du répartiteur ainsi que la table de suivi.
+    Considérez ce secret comme un identifiant d'administrateur du répartiteur,
+    et ne le partagez qu'avec des hôtes en qui vous avez une confiance totale.
+    Il ne constitue pas une frontière entre des charges de travail auxquelles
+    vous n'accordez qu'une confiance partielle.</p>
+    </note>
 
     <p>Étant donné que la phrase secrète est stockée dans le fichier de
     configuration, définissez les permissions de ce dernier comme s’il
@@ -408,11 +605,12 @@ des serveurs dorsaux</description>
     href="directive-dict.html#Syntax">time-interval</a> et sa valeur s’exprime
     par défaut en secondes.</p>
 
-    <p>Si elle n’est pas définie, sa valeur par défaut est de 30 secondes. Une
-    fenêtre plus large tolère des écarts d’horloge plus grands entre les hôtes ;
-    une fenêtre plus petite restreint la tolérance sur la vérification de
-    fraîcheur. Notez que la vérification de la croissance stricte des
-    horodatages d’un même serveur (voir la directive
+    <p>Si elle n’est pas définie, sa valeur par défaut est de 30 secondes. Des
+    valeurs inférieures à la seconde sont acceptées (par exemple
+    <code>500ms</code>). Une fenêtre plus large tolère des écarts d’horloge plus
+    grands entre les hôtes ; une fenêtre plus petite restreint la tolérance sur
+    la vérification de fraîcheur. Notez que la vérification de la croissance
+    stricte des horodatages d’un même serveur (voir la directive
     <directive>ProxyBeaconSecret</directive>) bloque les réémissions, quelle que
     soit la valeur de cette fenêtre. Cette directive est utilisée au niveau du
     mandataire.</p>

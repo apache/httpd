@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934979:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4111,7 +4111,7 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
 	Consultez la documentation du module pour plus d'informations.</p></li>
 
         <li><code>posixsem</code>
-        <p>Une variante de mutex basée sur un sémaphore Posix.</p>
+        <p>Une variante de mutex basée sur un sémaphore POSIX.</p>
 
         <note type="warning"><title>Avertissement</title>
         <p>La propriété du sémaphore n'est pas restituée si un thread du
@@ -4139,11 +4139,11 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
 
         <li><code>sem</code>
         <p>Sélection de la "meilleure" implémentation des sémaphores
-	disponible ; le choix s'effectue entre les sémaphores posix et
+	disponible ; le choix s'effectue entre les sémaphores POSIX et
 	IPC SystemV, dans cet ordre.</p></li>
 
         <li><code>pthread</code>
-        <p>Une variante de mutex à base de mutex de thread Posix
+        <p>Une variante de mutex à base de mutex de thread POSIX
 	inter-processus.</p>
 
         <note type="warning"><title>Avertissement</title>
