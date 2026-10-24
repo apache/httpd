@@ -2817,10 +2817,14 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
          * start while the previous one drains, and then whatever the first
          * startup chose.
          */
-        server_limit = mz->first_server_limit ? mz->first_server_limit
-                                              : 2 * ap_num_kids;
-        if (server_limit > MAX_SERVER_LIMIT) {
+        if (mz->first_server_limit) {
+            server_limit = mz->first_server_limit;
+        }
+        else if (ap_num_kids > MAX_SERVER_LIMIT / 2) {
             server_limit = MAX_SERVER_LIMIT;
+        }
+        else {
+            server_limit = 2 * ap_num_kids;
         }
     }
     else {
