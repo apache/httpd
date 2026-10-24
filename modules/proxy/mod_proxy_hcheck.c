@@ -369,14 +369,18 @@ static request_rec *create_request_rec(apr_pool_t *p, server_rec *s,
                                        const char *protocol)
 {
     request_rec *r;
+    apr_pool_t *rp;
 
-    r = apr_pcalloc(p, sizeof(request_rec));
-    r->pool            = p;
+    /* A subpool, destroyed before the backend connection is released:
+     * request filters are allocated from the connection's pool. */
+    apr_pool_create(&rp, p);
+    r = apr_pcalloc(rp, sizeof(request_rec));
+    r->pool            = rp;
     r->server          = s;
 
     r->per_dir_config = r->server->lookup_defaults;
     if (balancer->section_config) {
-        r->per_dir_config = ap_merge_per_dir_configs(r->pool,
+        r->per_dir_config = ap_merge_per_dir_configs(p,
                                                      r->per_dir_config,
                                                      balancer->section_config);
     }
@@ -386,7 +390,7 @@ static request_rec *create_request_rec(apr_pool_t *p, server_rec *s,
     r->user            = NULL;
     r->ap_auth_type    = NULL;
 
-    r->allowed_methods = ap_make_method_list(p, 2);
+    r->allowed_methods = ap_make_method_list(rp, 2);
 
     r->headers_in      = apr_table_make(r->pool, 1);
     r->trailers_in     = apr_table_make(r->pool, 1);
@@ -437,7 +441,7 @@ static request_rec *create_request_rec(apr_pool_t *p, server_rec *s,
 
 static void set_request_connection(request_rec *r, conn_rec *conn)
 {
-    conn->bucket_alloc = apr_bucket_alloc_create(r->pool);
+    conn->bucket_alloc = apr_bucket_alloc_create(apr_pool_parent_get(r->pool));
     r->connection = conn;
 
     r->kept_body = apr_brigade_create(r->pool, conn->bucket_alloc);
@@ -986,7 +990,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
 
     r = create_request_rec(ptemp, ctx->s, baton->balancer, wctx->method, wctx->protocol);
     if ((status = ap_proxy_connection_create_ex("HCOH", backend, r)) != OK) {
-        return backend_cleanup("HCOH", backend, ctx->s, status);
+        goto done;
     }
     set_request_connection(r, backend->connection);
     backend->connection->current_thread = thread;
@@ -998,10 +1002,10 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
                                                     : ctx->s->timeout);
 
     if ((status = hc_send(r, wctx->req, bb)) != OK) {
-        return backend_cleanup("HCOH", backend, ctx->s, status);
+        goto done;
     }
     if ((status = hc_read_headers(r, backend->sock, deadline)) != OK) {
-        return backend_cleanup("HCOH", backend, ctx->s, status);
+        goto done;
     }
     if (!r->header_only) {
         apr_table_t *saved_headers_in = r->headers_in;
@@ -1011,7 +1015,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
                               *worker->s->hcexpr != '\0');
         r->headers_in = saved_headers_in;
         if (status != OK) {
-            return backend_cleanup("HCOH", backend, ctx->s, status);
+            goto done;
         }
         r->trailers_out = apr_table_copy(r->pool, r->trailers_in);
     }
@@ -1041,6 +1045,9 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
                      hc->s->name, worker->s->name);
         status = !OK;
     }
+
+done:
+    apr_pool_destroy(r->pool);
     return backend_cleanup("HCOH", backend, ctx->s, status);
 }
 
