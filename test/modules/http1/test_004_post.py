@@ -3,6 +3,7 @@ import email.parser
 import inspect
 import json
 import os
+import socket
 import sys
 
 import pytest
@@ -54,3 +55,50 @@ class TestPost:
 
     def test_h1_004_05(self, env):
         r = self.curl_upload_and_verify(env, "data-1k", ["-vvv", "-H", "Expect: 100-continue"])
+
+    @pytest.mark.parametrize("size", [
+        "8000000000000000",
+        "ffffffffffffffff",
+        "00000000000000008000000000000000",
+    ])
+    def test_h1_004_chunk_size_overflow(self, env, size):
+        request = (f"POST / HTTP/1.1\r\nHost: localhost\r\n"
+                   f"Transfer-Encoding: chunked\r\n\r\n{size}\r\n0\r\n\r\n").encode("ascii")
+        with socket.create_connection(("localhost", int(env.http_port))) as sock:
+            sock.settimeout(5)
+            sock.sendall(request)
+            sock.shutdown(socket.SHUT_WR)
+            response = bytearray()
+            while b"\r\n" not in response and len(response) < 256:
+                data = sock.recv(256 - len(response))
+                if not data:
+                    break
+                response.extend(data)
+            status_line = response.split(b"\r\n", 1)[0]
+        assert status_line.startswith(b"HTTP/1.1 413 "), status_line
+
+    def test_h1_004_chunk_size_positive_boundary(self, env):
+        url = env.mkurl("http", "cgi", "/h1test/echo")
+        r = env.curl_get(url)
+        assert r.response["status"] == 200
+        off_t_bits = int(r.response["header"]["x-h1test-offt-bits"])
+
+        # The old -4 digit budget rejects this positive value on either
+        # 32-bit or 64-bit apr_off_t builds. Only send a small initial part
+        # of the declared chunk; the echo handler responds as it reads it.
+        size = f"{1 << (off_t_bits - 4):x}"
+        request = (f"POST /h1test/echo HTTP/1.1\r\n"
+                   f"Host: cgi.{env.http_tld}\r\n"
+                   f"Transfer-Encoding: chunked\r\n"
+                   f"Connection: close\r\n\r\n{size}\r\n").encode("ascii")
+        with socket.create_connection(("localhost", int(env.http_port))) as sock:
+            sock.settimeout(5)
+            sock.sendall(request + b"A" * 32768)
+            response = bytearray()
+            while b"\r\n" not in response and len(response) < 256:
+                data = sock.recv(256 - len(response))
+                if not data:
+                    break
+                response.extend(data)
+            status_line = response.split(b"\r\n", 1)[0]
+        assert status_line.startswith(b"HTTP/1.1 200 "), status_line
