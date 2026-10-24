@@ -350,7 +350,8 @@ void progress_pending_handshakes(h3_io_t* io)
         {
             char detail[H3Q_ERRLEN] = {0};
             h3q_conn_close_reason(conn, detail, sizeof(detail));
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s close=[%s]", why, detail);
+            int level = (strstr(detail, "err=0xc ") != NULL) ? APLOG_DEBUG : APLOG_ERR;
+            ap_log_error(APLOG_MARK, level, 0, io->server, "QUIC handshake did not complete: %s close=[%s]", why, detail);
             remove_pending_handshake(io, i, 1);
             finished = 1;
         }
