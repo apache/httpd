@@ -378,7 +378,7 @@ max_connections = (ThreadsPerChild + (AsyncRequestWorkerFactor * idle_workers)) 
     </div>
 
     <p>When all the worker threads are idle, then absolute maximum numbers of concurrent
-        connections can be calculared in a simpler way:</p>
+        connections can be calculated in a simpler way:</p>
 
     <p class="indent"><strong>
         (<code class="directive">AsyncRequestWorkerFactor</code> + 1) *

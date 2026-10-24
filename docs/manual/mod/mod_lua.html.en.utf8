@@ -1107,7 +1107,7 @@ end</pre>
     
     <p>
     Mod_lua implements a simple database feature for querying and running commands
-    on the most popular database engines (mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
+    on the most popular database engines (MySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle)
     as well as mod_dbd.</p>
     <p>
     The <code>dbType</code> to use as the first parameter of <code>dbacquire</code>

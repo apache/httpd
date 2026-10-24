@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2026-05-22" "Apache HTTP Server" "htdbm"
+.TH "HTDBM" 1 "2026-10-24" "Apache HTTP Server" "htdbm"
 
 .SH NAME
 htdbm \- Manipulate DBM password databases
@@ -74,7 +74,7 @@ Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is rewritt
 Display the results on standard output rather than updating a database\&. This option changes the syntax of the command line, since the \fIpasswdfile\fR argument (usually the first one) is omitted\&. It cannot be combined with the \fB-c\fR option\&.  
 .TP
 \fB-m\fR
-Use MD5 hashing for passwords\&. On Windows and Netware, this is the default\&.  
+Use MD5 hashing for passwords\&. On Windows and NetWare, this is the default\&.  
 .TP
 \fB-B\fR
 Use bcrypt hashing for passwords\&. This is currently considered to be very secure\&.  
@@ -83,13 +83,13 @@ Use bcrypt hashing for passwords\&. This is currently considered to be very secu
 This flag is only allowed in combination with \fB-B\fR (bcrypt hashing)\&. It sets the computing time used for the bcrypt algorithm (higher is more secure but slower, default: 5, valid: 4 to 31)\&.  
 .TP
 \fB-d\fR
-Use \fBcrypt()\fR hashing for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by \fBhtdbm\fR on all platforms, it is not supported by the \fBhttpd\fR server on Windows and Netware\&. This algorithm is \fBinsecure\fR by today's standards\&.  
+Use \fBcrypt()\fR hashing for passwords\&. The default on all platforms but Windows and NetWare\&. Though possibly supported by \fBhtdbm\fR on all platforms, it is not supported by the \fBhttpd\fR server on Windows and NetWare\&. This algorithm is \fBinsecure\fR by today's standards\&.  
 .TP
 \fB-s\fR
 Use SHA hashing for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&. This algorithm is \fBinsecure\fR by today's standards\&.  
 .TP
 \fB-p\fR
-Use plaintext passwords\&. Though \fBhtdbm\fR will support creation on all platforms, the \fBhttpd\fR daemon will only accept plain text passwords on Windows and Netware\&.  
+Use plaintext passwords\&. Though \fBhtdbm\fR will support creation on all platforms, the \fBhttpd\fR daemon will only accept plain text passwords on Windows and NetWare\&.  
 .TP
 \fB-l\fR
 Print each of the usernames and comments from the database on stdout\&.  

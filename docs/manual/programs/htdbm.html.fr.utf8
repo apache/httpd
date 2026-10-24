@@ -29,6 +29,8 @@ passe</h1>
 <a href="../fr/programs/htdbm.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
     <p><code class="program"><a href="../programs/htdbm.html">htdbm</a></code> permet de manipuler des fichiers au format DBM
     ou sont stock&eacute;s des nom d'utilisateurs et mots de passe &agrave; des fins

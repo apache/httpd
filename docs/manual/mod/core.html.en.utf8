@@ -3857,7 +3857,7 @@ or specified mutexes</td></tr>
         module documentation for more information.</p></li>
 
         <li><code>posixsem</code>
-        <p>This is a mutex variant based on a Posix semaphore.</p>
+        <p>This is a mutex variant based on a POSIX semaphore.</p>
 
         <div class="warning"><h3>Warning</h3>
         <p>The semaphore ownership is not recovered if a thread in the process
@@ -3883,10 +3883,10 @@ or specified mutexes</td></tr>
 
         <li><code>sem</code>
         <p>This selects the "best" available semaphore implementation, choosing
-        between Posix and SystemV IPC semaphores, in that order.</p></li>
+        between POSIX and SystemV IPC semaphores, in that order.</p></li>
 
         <li><code>pthread</code>
-        <p>This is a mutex variant based on cross-process Posix thread
+        <p>This is a mutex variant based on cross-process POSIX thread
         mutexes.</p>
 
         <div class="warning"><h3>Warning</h3>

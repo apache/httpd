@@ -28,6 +28,8 @@ HTTP Apache</h1>
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_6.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_6.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
   <p>Ce document d&eacute;crit quelques changements majeurs entre les version 2.4 et
   2.6 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s apparues dans

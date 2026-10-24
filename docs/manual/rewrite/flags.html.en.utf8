@@ -361,7 +361,7 @@ follows:</p>
 <h3>Security Warning</h3>
 <p>Exercise care when constructing the argument from backreferences or other
 variable expansion.  If any part of the argument is derived from user input,
-a malicious request may include delimeters or other unexpected values.</p>
+a malicious request may include delimiters or other unexpected values.</p>
 </div>
 
 <p>If a literal ':' character is needed in any of the cookie fields, an 

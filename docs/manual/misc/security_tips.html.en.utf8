@@ -92,8 +92,10 @@
 
     <ul>
       <li>The <code class="directive"><a href="../mod/mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></code>
-      directive allows to limit the time a client may take to send the
-      request.</li>
+      directive allows you to limit the time a client may take to complete
+      the TLS handshake and send the request. In particular, the
+      <code>handshake</code> stage times out clients that stall during the
+      TLS handshake.</li>
 
       <li>The <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> directive
       should be lowered on sites that are subject to DoS attacks.
@@ -154,7 +156,7 @@
     switches to the user defined by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive to serve hits. As is the
     case with any command that root executes, you must take care that it is
     protected from modification by non-root users. Not only must the files
-    themselves be writeable only by root, but so must the directories, and
+    themselves be writable only by root, but so must the directories, and
     parents of all directories. For example, if you choose to place
     ServerRoot in  <code>/usr/local/apache</code> then it is suggested that
     you create that directory as root, with commands like these:</p>
@@ -188,10 +190,10 @@
     executes or writes on then you open your system to root compromises.
     For example, someone could replace the <code class="program"><a href="../programs/httpd.html">httpd</a></code> binary so
     that the next time you start it, it will execute some arbitrary code. If
-    the logs directory is writeable (by a non-root user), someone could replace
+    the logs directory is writable (by a non-root user), someone could replace
     a log file with a symlink to some other system file, and then root
     might overwrite that file with arbitrary data. If the log files
-    themselves are writeable (by a non-root user), then someone may be
+    themselves are writable (by a non-root user), then someone may be
     able to overwrite the log itself with bogus data.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

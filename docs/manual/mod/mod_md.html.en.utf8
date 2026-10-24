@@ -534,7 +534,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="mdcertificatekeyfile"><span id="MDCertificateKeyFile">MDCertificateKeyFile</span> Directive <a title="Permanent link" href="#mdcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a static private key for for the static cerrtificate.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a static private key for the static certificate.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDCertificateKeyFile <var>path-to-file</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
