@@ -96,10 +96,10 @@
     <section id="options.encodings"><title>Encodings</title>
       <dl>
       <dt><code>-d</code></dt>
-      <dd>crypt hashing (default, except on Win32, Netware)</dd>
+      <dd>crypt hashing (default, except on Win32, NetWare)</dd>
 
       <dt><code>-m</code></dt>
-      <dd>MD5 hashing (default on Win32, Netware)</dd>
+      <dd>MD5 hashing (default on Win32, NetWare)</dd>
 
       <dt><code>-s</code></dt>
       <dd>SHA1 hashing</dd>
