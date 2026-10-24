@@ -97,8 +97,10 @@ The CI scripts use the following environment variables:
 * LITMUS - if set, runs the litmus WebDAV test suite against mod_dav.
 
 * PHP_FPM - path to the php-fpm binary.  If set, PHP tests are
-  included in the pytest test suites.  Set globally in the workflow
-  (e.g. "/usr/sbin/php-fpm8.3").
+  included in the pytest test suites.  If not set by the matrix
+  entry, the workflow sets it to the newest /usr/sbin/php-fpm* found
+  in the runner image (e.g. "/usr/sbin/php-fpm8.3"), failing the job
+  if there is none.
 
 Caching
 -------

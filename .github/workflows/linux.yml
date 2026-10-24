@@ -27,8 +27,6 @@ permissions:
 
 env:
   CFLAGS: "-g"
-  # This will need updating as the ubuntu-latest image changes:
-  PHP_FPM: "/usr/sbin/php-fpm8.3"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -420,6 +418,17 @@ jobs:
         # CPUs the runner has, unless the matrix entry set it already
         # (the ap_expr job sets it empty on purpose).
         grep -q '^MFLAGS=' $GITHUB_ENV || echo "MFLAGS=-j`nproc`" >> $GITHUB_ENV
+        # Use whichever php-fpm the runner image ships, so this doesn't
+        # break when the image moves to a new PHP version, unless the
+        # matrix entry set PHP_FPM already.
+        if ! grep -q '^PHP_FPM=' $GITHUB_ENV; then
+          PHP_FPM=`ls -1 /usr/sbin/php-fpm* 2>/dev/null | sort -V | tail -n1`
+          if test -z "$PHP_FPM"; then
+            echo "::error::No php-fpm found in /usr/sbin"
+            exit 1
+          fi
+          echo "PHP_FPM=$PHP_FPM" >> $GITHUB_ENV
+        fi
         echo JOBID=`printf '%s-%s' "${{ strategy.job-index }}" "$MATRIX_NAME" \
            | tr -cs '[:alnum:]._-' '-'` >> $GITHUB_ENV
     - name: apt refresh
