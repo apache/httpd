@@ -144,7 +144,7 @@ if ! test -v NO_TEST_FRAMEWORK; then
     fi
 
     if test -v WITH_TEST_SUITE -a $RV -eq 0; then
-        make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
+        make check-test-framework TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
         RV=${PIPESTATUS[0]}
         # re-run failing tests with -v, avoiding set -e
         if [ $RV -ne 0 ]; then
@@ -154,7 +154,7 @@ if ! test -v NO_TEST_FRAMEWORK; then
                 FAILERS="$FAILERS $FAILER"
             done < <(awk '/Failed:/{print $1}' test.log)
             if [ -n "$FAILERS" ]; then
-                make check TESTS="-v $FAILERS" || true
+                make check-test-framework TESTS="-v $FAILERS" || true
             fi
             # set -e would have killed us after the original t/TEST
             rm -f test.log
