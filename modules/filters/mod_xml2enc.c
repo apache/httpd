@@ -614,6 +614,12 @@ static void xml2enc_hooks(apr_pool_t* pool)
                                AP_REG_EXTENDED|AP_REG_ICASE) ;
     ap_assert(seek_meta_ctype && seek_charset);
 }
+
+/* Deprecated in newer libxml2 releases. */
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 static const char* set_alias(cmd_parms* cmd, void* CFG,
                              const char* charset, const char* alias)
 {
@@ -625,6 +631,9 @@ static const char* set_alias(cmd_parms* cmd, void* CFG,
     else
         return "Error setting charset alias";
 }
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
 
 static const char* set_default(cmd_parms* cmd, void* CFG, const char* charset)
 {
