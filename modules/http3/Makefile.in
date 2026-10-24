@@ -23,20 +23,11 @@ include $(top_srcdir)/build/special.mk
 # Pattern rules find them by path and compile with -std=c99.
 H3_CC99 = -std=c99 -Wno-declaration-after-statement
 
-%.lo: $(top_srcdir)/src/%.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) $(H3_CC99) -c $< && touch $@
-
 %.slo: $(top_srcdir)/src/%.c
 	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
-
-%.lo: $(top_srcdir)/src/quic/%.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) $(H3_CC99) -c $< && touch $@
 
 %.slo: $(top_srcdir)/src/quic/%.c
 	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
 
-%.lo: $(top_srcdir)/src/quic/detail/%.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) $(H3_CC99) -c $< && touch $@
-
 %.slo: $(top_srcdir)/src/quic/detail/%.c
-	$(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) $(H3_CC99) -c $< && touch $@
+	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
