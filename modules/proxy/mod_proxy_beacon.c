@@ -296,15 +296,20 @@ static const char *beacon_canonical_url(apr_pool_t *pool, const char *url)
         return NULL;
     }
     /* apr_uri_parse() runs strtol() and truncates to 16 bits, so "-80" would
-     * otherwise come out as port 65456. */
+     * otherwise come out as port 65456 and "99999" as 34463. */
     if (uri.port_str && *uri.port_str) {
         const char *d;
+        unsigned long port_val = 0;
         for (d = uri.port_str; *d; d++) {
             if (!apr_isdigit(*d)) {
                 return NULL;
             }
+            port_val = port_val * 10 + (*d - '0');
+            if (port_val > 65535) {
+                return NULL;
+            }
         }
-        if (!uri.port) {
+        if (!port_val) {
             return NULL;
         }
     }

@@ -236,11 +236,20 @@ def test_equivalent_spellings_are_one_member(http):
     "http://127.0.0.8:0",                   # port 0
     "http://127.0.0.8:-80",                 # strtol sign wraps to port 65456
     "http://127.0.0.8:+80",
+    "http://127.0.0.8:65536",               # truncates to port 0
+    "http://127.0.0.8:99999",               # truncates to port 34463
+    "http://127.0.0.8:4294967376",          # 2^32 + 80: truncates to port 80
 ]))
 def test_non_origin_urls_are_rejected(http, n, url):
     lines = inject(http, [url], f"http://127.0.0.3:{18100 + n}")
     assert not [m for m in added_members(lines) if "127.0.0.8" in m], (
         f"{url!r} must not become a member")
+
+
+@need
+def test_highest_port_is_accepted(http):
+    lines = inject(http, ["http://127.0.0.14:65535"], "http://127.0.0.3:18120")
+    assert "http://127.0.0.14:65535" in added_members(lines)
 
 
 # ---- ownership and watchdog hand-off -----------------------------------------
@@ -636,6 +645,39 @@ def test_invalid_secrets_are_rejected(server, tmp_path, secret, message):
     r = configtest(server, tmp_path, secret)
     assert r.returncode != 0, "config with this secret should not load"
     assert message in r.stderr, r.stderr
+
+
+def advertise_configtest(server, tmp_path, url):
+    """`httpd -t` on the generated test config plus one vhost advertising url."""
+    conf = tmp_path / "advertise.conf"
+    conf.write_text(
+        f'Include "{server.config.vars["t_conf_file"]}"\n'
+        "<VirtualHost 127.0.0.1:65301>\n"
+        "    ProxyBeaconAddress 127.0.0.1:65302\n"
+        f"    ProxyBeaconAdvertise {url}\n"
+        f'    ProxyBeaconSecret "{"x" * 16}"\n'
+        "</VirtualHost>\n")
+    argv = [a for a in server.args() if a != "-DFOREGROUND"]
+    argv[argv.index("-f") + 1] = str(conf)
+    return subprocess.run([*argv, "-t"], capture_output=True, text=True)
+
+
+@need
+def test_advertised_highest_port_is_accepted(server, tmp_path):
+    r = advertise_configtest(server, tmp_path, "http://127.0.0.14:65535")
+    assert r.returncode == 0 and "Syntax OK" in r.stderr, r.stderr
+
+
+@need
+@pytest.mark.parametrize("url", [
+    "http://127.0.0.14:65536",
+    "http://127.0.0.14:99999",
+    "http://127.0.0.14:4294967376",
+])
+def test_advertised_out_of_range_port_is_rejected(server, tmp_path, url):
+    r = advertise_configtest(server, tmp_path, url)
+    assert r.returncode != 0, "config advertising this url should not load"
+    assert "is not a valid scheme://host[:port] URL" in r.stderr, r.stderr
 
 
 # ---- socket-open retry back-off ----------------------------------------------
