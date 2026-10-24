@@ -374,6 +374,10 @@ def test_large_body_without_a_condition_is_fine(hc_http):
     ("PATHA", "/ping"),         # http://host:port        + hcuri "ping"
     ("PATHB", "/app/ping"),     # http://host:port/app    + hcuri "/ping"
     ("PATHC", "/app/ping"),     # http://host:port/app/   + hcuri "ping"
+    ("PATHD", "/"),             # http://host:port        + no hcuri
+    ("PATHE", "/app"),          # http://host:port/app    + no hcuri
+    ("PATHF", "/app/"),         # http://host:port/app/   + no hcuri: kept as is
+    ("PATHG", "/app/"),         # http://host:port/app    + hcuri "/"
 ])
 def test_probe_path_joins_worker_path_and_hcuri(hc_http, name, expected):
     """One slash between the worker's path and hcuri, and a request target that

@@ -483,23 +483,26 @@ static void create_hcheck_req(wctx_t *wctx, proxy_worker *hc,
             }
             {
                 /* The request target is the worker's path and hcuri, joined by
-                 * exactly one slash, and always starts with one. */
+                 * exactly one slash, and always starts with one.  Without an
+                 * hcuri the worker's path is used as it is: /app and /app/ can
+                 * be different resources. */
                 const char *path = wctx->path ? wctx->path : "";
                 const char *uri = hc->s->hcuri;
-                apr_size_t plen = strlen(path);
                 const char *target;
 
-                while (plen && path[plen - 1] == '/') {
-                    plen--;
-                }
-                while (*uri == '/') {
-                    uri++;
-                }
-                if (*uri) {
-                    target = apr_psprintf(p, "%.*s/%s", (int)plen, path, uri);
+                if (!*uri) {
+                    target = *path ? path : "/";
                 }
                 else {
-                    target = plen ? apr_pstrmemdup(p, path, plen) : "/";
+                    apr_size_t plen = strlen(path);
+
+                    while (plen && path[plen - 1] == '/') {
+                        plen--;
+                    }
+                    while (*uri == '/') {
+                        uri++;
+                    }
+                    target = apr_psprintf(p, "%.*s/%s", (int)plen, path, uri);
                 }
                 req = apr_psprintf(p,
                                    "%s %s %s\r\n"
