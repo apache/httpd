@@ -58,7 +58,14 @@ function install_apx() {
         ./buildconf ${buildconf}
     fi
     ./configure --prefix=${prefix} ${config}
-    make -j2
+    # glibc's C23 const-preserving strrchr() et al trip
+    # -Wdiscarded-qualifiers in APR 1.7.x.
+    case " ${NOTEST_CFLAGS-} " in
+    *" -Werror "*)
+        make $MFLAGS NOTEST_CFLAGS="${NOTEST_CFLAGS} -Wno-error=discarded-qualifiers" ;;
+    *)
+        make $MFLAGS ;;
+    esac
     make install
     popd
 }
