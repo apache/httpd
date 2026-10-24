@@ -222,6 +222,11 @@ static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3
 
 static void feed_stream_fin(h3_session* session, h3_stream* h3s)
 {
+    if (h3s->skip_ngh3_read)
+    {
+        h3s->body_complete = 1;
+        return;
+    }
     nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
     if (consumed < 0)
     {
@@ -229,9 +234,14 @@ static void feed_stream_fin(h3_session* session, h3_stream* h3s)
         {
             reject_malformed_stream(session, h3s, consumed);
         }
-        else
+        else if (nghttp3_err_is_fatal((int)consumed))
         {
             mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
+        }
+        else
+        {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "non-fatal nghttp3 error %" APR_INT64_T_FMT " on stream %" APR_INT64_T_FMT "; skipping further reads", (apr_int64_t)consumed, h3s->stream_id);
+            h3s->skip_ngh3_read = 1;
         }
     }
     else if (h3s->malformed && !h3s->done)
@@ -296,6 +306,14 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
                 apr_atomic_add64(&child_h3_io->total_bytes_read, nread);
             }
             *data_read = 1;
+            if (h3s->skip_ngh3_read)
+            {
+                if (fin && !h3s->body_complete)
+                {
+                    h3s->body_complete = 1;
+                }
+                continue;
+            }
             session->pending.sid = h3s->stream_id;
             session->pending.h3s = h3s;
             nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, buf, nread, 0);
@@ -308,9 +326,14 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
                     reject_malformed_stream(session, h3s, consumed);
                     return 0;
                 }
-                /* Mark dead if read fails. */
-                mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
-                h3s->done = 1;
+                if (nghttp3_err_is_fatal((int)consumed))
+                {
+                    mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
+                    h3s->done = 1;
+                    break;
+                }
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "non-fatal nghttp3 error %" APR_INT64_T_FMT " on stream %" APR_INT64_T_FMT "; skipping further reads", (apr_int64_t)consumed, h3s->stream_id);
+                h3s->skip_ngh3_read = 1;
                 break;
             }
             if (h3s->malformed && !h3s->done)

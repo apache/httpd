@@ -117,6 +117,7 @@ struct h3_stream
     int request_body_overflow;
 
     int malformed;
+    int skip_ngh3_read;
 
     int header_count;
     int headers_too_large;
