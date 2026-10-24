@@ -167,18 +167,22 @@ is usually linked shared and requires loading. ], $http3_objs, , no, [
     APACHE_CHECK_OPENSSL
     if test "$ac_cv_openssl" = "yes" ; then
         APR_ADDTO(MOD_CPPFLAGS, ["-DH3_OPENSSL"])
-    fi
-
-    APACHE_CHECK_NGHTTP3
-    if test "$ac_cv_nghttp3" = "yes" ; then
-        APR_ADDTO(MOD_CFLAGS, [-I\$(top_srcdir)/$modpath_current/include])
-        if test "x$enable_http3" = "xshared"; then
-           # The only symbol which needs to be exported is the module
-           # structure, so ask libtool to hide everything else:
-           APR_ADDTO(MOD_HTTP3_LDADD, [-export-symbols-regex http3_module])
-        fi
     else
         enable_http3=no
+    fi
+
+    if test "$enable_http3" != "no" ; then
+        APACHE_CHECK_NGHTTP3
+        if test "$ac_cv_nghttp3" = "yes" ; then
+            APR_ADDTO(MOD_CFLAGS, [-I\$(top_srcdir)/$modpath_current/include])
+            if test "x$enable_http3" = "xshared"; then
+               # The only symbol which needs to be exported is the module
+               # structure, so ask libtool to hide everything else:
+               APR_ADDTO(MOD_HTTP3_LDADD, [-export-symbols-regex http3_module])
+            fi
+        else
+            enable_http3=no
+        fi
     fi
 ])
 
