@@ -10,6 +10,10 @@ import pytest
 sys.path.append(os.path.join(os.path.dirname(__file__), '.'))
 
 from pyhttpd.env import HttpdTestEnv
+
+# Imported here before pytest_plugins loads it, so register it for
+# assertion rewriting first, to avoid PytestAssertRewriteWarning.
+pytest.register_assert_rewrite("pyhttpd.depends")
 from pyhttpd.depends import apply_gate, strict_optional_enabled
 
 # pyhttpd.depends provides --strict-optional and the needs_dependency marker.

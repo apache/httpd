@@ -283,16 +283,7 @@ class HttpdTestEnv:
 
     @classmethod
     def has_python_package(cls, name: str) -> bool:
-        if name in sys.modules:
-            # already loaded
-            return True
-        elif (spec := importlib.util.find_spec(name)) is not None:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules[name] = module
-            spec.loader.exec_module(module)
-            return True
-        else:
-            return False
+        return name in sys.modules or importlib.util.find_spec(name) is not None
 
     @classmethod
     def get_ssl_module(cls):
@@ -399,7 +390,8 @@ class HttpdTestEnv:
         from .depends import needs_dependency
         if cls._multipart_gate is None:
             cls._multipart_gate = needs_dependency(
-                "multipart", cls.has_python_package('multipart'),
+                "multipart", cls.has_python_package('python_multipart')
+                or cls.has_python_package('multipart'),
                 reason="no multipart python package available",
                 detected="python package 'multipart' not installed "
                          "(pip install python-multipart)")
