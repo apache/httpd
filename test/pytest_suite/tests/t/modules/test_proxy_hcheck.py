@@ -408,4 +408,7 @@ def test_check_worker_is_created_once(hc_http):
         fh.seek(session_start)
         created = [ln for ln in fh if "Creating hc worker" in ln
                    and f"127.0.0.1:{port}" in ln]
-    assert len(created) == 1, created
+    # Once per process: the cache is per process, and a child which takes
+    # over the singleton watchdog from one that exited builds its own.
+    pids = [re.search(r"\[pid (\d+)", ln).group(1) for ln in created]
+    assert created and len(pids) == len(set(pids)), created
