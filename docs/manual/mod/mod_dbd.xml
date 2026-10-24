@@ -43,7 +43,7 @@
     <p>This module manages database connections, in a manner
     optimized for the platform.  On non-threaded platforms,
     it provides a persistent connection in the manner of
-    classic LAMP (Linux, Apache, Mysql, Perl/PHP/Python).
+    classic LAMP (Linux, Apache, MySQL, Perl/PHP/Python).
     On threaded platform, it provides an altogether more
     scalable and efficient <em>connection pool</em>, as
     described in <a href="http://www.apachetutor.org/dev/reslist">this
@@ -206,7 +206,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     password, database name, hostname and port number for connection.</p>
     <p>Connection string parameters for current drivers include:</p>
     <dl>
-    <dt>FreeTDS (for MSSQL and SyBase)</dt>
+    <dt>FreeTDS (for MSSQL and Sybase)</dt>
     <dd>username, password, appname, dbname, host, charset, lang, server</dd>
     <dt>MySQL</dt>
     <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd>

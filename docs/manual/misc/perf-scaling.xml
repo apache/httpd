@@ -741,7 +741,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 Multi-Processing Module (MPM). Developers can write MPMs to
                 suit the process- or threading architecture of their specific
                 operating system. httpd 2 comes with special MPMs for Windows,
-                OS/2, Netware and BeOS. On unix-like platforms, the two most
+                OS/2, NetWare and BeOS. On unix-like platforms, the two most
                 popular MPMs are Prefork and Worker. The Prefork MPM offers the
                 same pre-forking process model that httpd 1.3 uses. The Worker
                 MPM runs a smaller number of child processes, and spawns
