@@ -71,7 +71,7 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
-    pkgs="Net::SSL LWP::Protocol::https                                 \
+    pkgs="LWP::Protocol::https                                          \
            LWP::Protocol::AnyEvent::http ExtUtils::Embed Test::More     \
            AnyEvent DateTime HTTP::DAV FCGI                             \
            AnyEvent::WebSocket::Client Apache::Test"
