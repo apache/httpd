@@ -152,6 +152,42 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
     <directive module="mpm_common">ServerLimit</directive> must leave room for
     both generations. <directive module="mpm_common">GracefulShutdownTimeout</directive>
     bounds how long the parent waits on a graceful stop.</p>
+
+    <p>A child does not enforce a deadline of its own while it drains. A
+    connection that is still writing a response, or is waiting on I/O for a
+    module that handles it asynchronously, is given until it completes or the
+    configured <directive module="mpm_common">Timeout</directive> expires, so a
+    graceful restart can take as long as the longest such connection.</p>
+</section>
+
+<section id="scoreboard"><title>Scoreboard and mod_status</title>
+    <p>A connection is not bound to a thread, so the scoreboard's per-thread
+    slots represent the worker threads. A worker reports the connection it is
+    processing through its slot and sets the slot back to ready when it is done
+    with it; a connection parked in a poller (keep-alive, write completion,
+    lingering close, waiting on I/O) does not occupy a slot. The busy and idle
+    worker counts in <module>mod_status</module> therefore reflect the worker
+    threads, as they do for the other threaded MPMs.</p>
+</section>
+
+<section id="limitations"><title>Platforms and limitations</title>
+    <p><module>motorz</module> runs on Unix-like platforms whose APR supports
+    threads and which can use a thread-safe pollset (kqueue, event ports or
+    epoll). It is not available on Windows, NetWare or OS/2.</p>
+    <ul>
+      <li>The <directive module="mpm_common">ThreadStackSize</directive>
+      directive is ignored (a warning is logged): the worker threads come from
+      an APR thread pool, which does not allow their stack size to be set.</li>
+      <li>There is no accept mutex. The listening sockets are non-blocking and
+      polled, so the poller that owns them in every child process wakes for
+      each new connection. A <code>Mutex accept</code> setting is accepted but
+      has no effect.</li>
+      <li>There are no
+      <directive module="mpm_common">MinSpareThreads</directive>,
+      <directive module="mpm_common">MaxSpareThreads</directive> or
+      <directive module="mpm_common">MaxRequestWorkers</directive> controls,
+      as described above.</li>
+    </ul>
 </section>
 
 <section id="admission-control"><title>Admission control</title>
@@ -212,6 +248,8 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>GracefulShutdownTimeout</name>
+</directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>
@@ -226,6 +264,8 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>StartServers</name>
@@ -233,8 +273,6 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
 <directivesynopsis location="mpm_common"><name>ThreadLimit</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
-</directivesynopsis>
-<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>

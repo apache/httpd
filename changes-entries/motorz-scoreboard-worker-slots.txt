@@ -1,0 +1,8 @@
+  *) mpm_motorz: Report connections in the scoreboard through one slot per
+     worker thread instead of slot 0 for every connection, so that
+     mod_status shows the busy and idle workers and the per-worker request
+     counts are not updated by many threads at once.  A fatal accept error now
+     makes the child drain like any other graceful stop instead of dropping
+     its connections.  Log a warning that ThreadStackSize, which the
+     worker thread pool cannot honour, is ignored, and stop creating an accept
+     mutex that was never used.  [Jim Jagielski]

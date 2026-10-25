@@ -122,7 +122,7 @@ will exit.</description>
 <default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
-<module>prefork</module></modulelist>
+<module>prefork</module><module>motorz</module></modulelist>
 
 <usage>
     <p>The <directive>GracefulShutdownTimeout</directive> specifies

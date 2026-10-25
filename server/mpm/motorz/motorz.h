@@ -169,7 +169,6 @@ typedef struct motorz_child_bucket motorz_child_bucket;
 struct motorz_child_bucket {
     ap_pod_t *pod;
     ap_listen_rec *listeners;
-    apr_proc_mutex_t *mutex;
 };
 
 typedef enum

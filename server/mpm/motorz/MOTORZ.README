@@ -1,7 +1,7 @@
 The MotorZ MPM aims to create a single MPM, that runs on all modern
-Unix and Win32 platforms, by levering APR as much as possible.
+Unix and Win32 platforms, by leveraging APR as much as possible.
 
-The MoteZ MPM uses an APR Poll CB event system, with  timers being
+The MotorZ MPM uses an APR Poll CB event system, with timers being
 built in.  When an event, either an I/O or Timer is ready to run, it
 is pushed to any available thread in the current process. A simple
 APR Thread pool is used.
@@ -48,11 +48,37 @@ still exit immediately. The parent counts a draining child (quiescing) as gone
 and starts its replacement in a free slot, so ServerLimit (default
 2 * StartServers) must leave room for both generations.
 
+There is no child-side deadline on a drain: a connection still writing, or
+waiting on I/O for an asynchronous module (CONN_STATE_ASYNC_WAITIO), is given
+until it completes or its Timeout expires, so a graceful restart can take as
+long as the longest such connection. (mpm_event behaves the same way.)
+GracefulShutdownTimeout only bounds a graceful *stop* of the whole server, in
+the parent.
+
 Admission control (listener backpressure) keeps the child safe under overload:
 when the worker pool saturates, the listener-owning poller removes the
 listening sockets from its pollset (motorz_update_listeners /
 motorz_disable_listeners) and re-adds them once the backlog drains, so the work
 queue and per-connection memory stay bounded rather than growing without limit.
+
+Scoreboard
+----------
+
+A connection is not bound to a thread, so the scoreboard's per-thread slots
+stand for the worker-pool threads. Each worker thread takes a slot the first
+time it runs a task, reports the connection it is processing through that slot
+(SERVER_BUSY_READ/WRITE/KEEPALIVE/CLOSING, so mod_status shows busy workers),
+and sets it back to SERVER_READY when the task ends. A connection parked in the
+poller (keep-alive, write completion, lingering close, async wait) therefore
+does not occupy a slot. The poller and supervisor threads have no slot.
+
+Unsupported
+-----------
+
+ThreadStackSize is ignored (a warning is logged when it is set): the worker
+threads are created by an APR thread pool, which offers no stack size control.
+There is no accept mutex either; the listening sockets are non-blocking and
+polled, so every child's listener-owning poller wakes for each new connection.
 
 Relationship to mpm_event
 -------------------------

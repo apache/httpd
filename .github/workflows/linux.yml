@@ -155,6 +155,19 @@ jobs:
               TEST_PYTEST=1
               TEST_MD=1
           # -------------------------------------------------------------------------
+          # The classic pytest suite against the motorz MPM (the other suites
+          # assume event).
+          - name: Python pytest_suite, motorz MPM
+            config: --enable-mods-shared=reallyall --with-mpm=motorz --enable-mpms-shared=all
+            pkgs: nghttp2-client
+            env: |
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--with-crypto"
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYTEST_ARGS="--only=pysuite"
+          # -------------------------------------------------------------------------
           # Test against a newer nghttp2 than in the Ubuntu images.
           - name: mod_http2 w/nghttp2 1.68.0
             config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event
