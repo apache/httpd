@@ -21,7 +21,7 @@
 #   A2MD_SRCS    - the command layer, living in this directory
 
 DISTCLEAN_TARGETS =
-CLEAN_TARGETS = a2md
+CLEAN_TARGETS = a2md test_retry_after
 
 # The top-level httpd build rules provide $(LIBTOOL), $(CC), $(LINK),
 # $(LT_COMPILE), ALL_CFLAGS, ALL_CPPFLAGS, ALL_INCLUDES, etc.
@@ -114,8 +114,24 @@ a2md: $(MD_LIB_OBJS) $(A2MD_OBJS)
 	    $(MD_LIB_OBJS) $(A2MD_OBJS) $(A2MD_LDADD)
 
 # -----------------------------------------------------------------------
+# Regression test for md_util_parse_retry_after(), linked against the
+# same $(MD_LIB_OBJS) a2md itself ships, built without httpd.
+# -----------------------------------------------------------------------
+test_retry_after.lo: test_retry_after.c
+	$(LIBTOOL) --mode=compile $(CC) $(A2MD_CPPFLAGS) $(ALL_CFLAGS) \
+	    $(ALL_INCLUDES) $(PICFLAGS) $(LTCFLAGS) -c $< -o $@
+
+test_retry_after: $(MD_LIB_OBJS) test_retry_after.lo
+	$(LIBTOOL) --mode=link $(CC) $(ALL_CFLAGS) $(PILDFLAGS) \
+	    $(LT_LDFLAGS) $(ALL_LDFLAGS) -o $@ \
+	    $(MD_LIB_OBJS) test_retry_after.lo $(A2MD_LDADD)
+
+check: test_retry_after
+	./test_retry_after
+
+# -----------------------------------------------------------------------
 # Clean targets (invoked by the parent Makefile)
 # -----------------------------------------------------------------------
 clean:
-	-rm -f a2md *.lo *.o *.la
+	-rm -f a2md test_retry_after *.lo *.o *.la
 	-rm -rf .libs _libs
