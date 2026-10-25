@@ -5014,6 +5014,17 @@ SetHandler imap-file
     directories or index files is suppressed. It also overrides
     <directive module="mod_dir">FallbackResource</directive>, since the
     request already has an explicit handler assigned.</p></note>
+
+    <note><title>Merge order with Files/FilesMatch</title>
+    <p>A <directive>SetHandler</directive> set inside a <directive
+    type="section" module="core">Files</directive> or <directive
+    type="section" module="core">FilesMatch</directive> section is merged
+    <em>after</em> one set in a <directive type="section"
+    module="core">Directory</directive> section or <code>.htaccess</code>
+    file for the same request, and so overrides it, even when the
+    <code>.htaccess</code> looks more specific. See <a
+    href="../sections.html#merging">How the sections are merged</a> for the
+    full merge order.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
