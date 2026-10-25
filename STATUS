@@ -112,7 +112,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     - Netware support
     - mod_ssl OCSP stapling support (mod_md's is better)
     - OpenSSL < 3 support (mod_ssl/ab)
-    - MPMs: simple, motorz
+    - MPMs: simple
     - mod_dav MS-WDV support has various unfixed problems
 
   * Ditch platforms/89/old prereqs or anything else?
