@@ -1,11 +1,14 @@
 r"""mpm_motorz: a child told to stop gracefully finishes the connections it has.
 
-The test_rwrite module streams a body of the requested length.  The client
-reads a little of it and stops, so that the server fills the socket buffers
-and the connection is parked in the MPM waiting to write.  Then the parent is
-sent the graceful restart signal.  The old child must keep serving that
-connection until the whole body has been delivered, while the new generation
-answers other requests.
+The server delivers a large static file.  The client reads a little of it and
+stops, so that the server fills the socket buffers and the connection is parked
+in the MPM waiting to write.  Then the parent is sent the graceful restart
+signal.  The old child must keep serving that connection until the whole body
+has been delivered, while the new generation answers other requests.
+
+The body has to come from the core handler: a handler that writes it itself
+(mod_test_rwrite) blocks a worker thread for the whole transfer, and the
+connection is then never parked, so the test passes even without the drain.
 
 The test runs a private httpd: restarting the suite's own server would change
 its state (its worker set, the log, ...) for the tests that run after this one.
@@ -21,13 +24,12 @@ import time
 
 import pytest
 
-from apache_pytest import need_module
-
 BODY_LENGTH = 64 * 1024 * 1024
+SMALL_LENGTH = 1000
 
 # What the private server needs, taken from the suite's generated config so that
 # paths and module names are the ones this build uses.
-WANTED_MODULES = ("mpm_", "unixd_module", "authz_core_module", "test_rwrite_module")
+WANTED_MODULES = ("mpm_", "unixd_module", "authz_core_module")
 
 
 def free_port():
@@ -67,11 +69,15 @@ def get(port, path, rcvbuf=None):
     return sock
 
 
-@need_module("test_rwrite")
 @pytest.mark.skipif(sys.platform == "win32", reason="signals")
 def test_graceful_restart_does_not_cut_a_download(config, tmp_path):
     if config.info.mpm != "motorz":
         pytest.skip("motorz only")
+
+    docroot = tmp_path / "htdocs"
+    docroot.mkdir()
+    (docroot / "big.bin").write_bytes(b"x" * BODY_LENGTH)
+    (docroot / "small.txt").write_bytes(b"y" * SMALL_LENGTH)
 
     port = free_port()
     conf = tmp_path / "httpd.conf"
@@ -87,9 +93,7 @@ def test_graceful_restart_does_not_cut_a_download(config, tmp_path):
                 *load_module_lines(config),
                 "StartServers 1",
                 "ThreadsPerChild 10",
-                "<Location /test_rwrite>",
-                "    SetHandler test_rwrite",
-                "</Location>",
+                f'DocumentRoot "{docroot}"',
                 "",
             ]
         )
@@ -111,7 +115,7 @@ def test_graceful_restart_does_not_cut_a_download(config, tmp_path):
             except OSError:
                 time.sleep(0.1)
 
-        sock = get(port, f"/test_rwrite?8192,{BODY_LENGTH}", rcvbuf=4096)
+        sock = get(port, "/big.bin", rcvbuf=4096)
         head, body = read_headers(sock)
         assert b" 200 " in head.split(b"\r\n")[0], head
         received = len(body)
@@ -125,7 +129,7 @@ def test_graceful_restart_does_not_cut_a_download(config, tmp_path):
         deadline = time.monotonic() + 20
         while time.monotonic() < deadline:
             try:
-                s = get(port, "/test_rwrite?1024,1000")
+                s = get(port, "/small.txt")
                 h, b = read_headers(s)
                 while chunk := s.recv(4096):
                     b += chunk
@@ -136,7 +140,7 @@ def test_graceful_restart_does_not_cut_a_download(config, tmp_path):
             except OSError:
                 pass
             time.sleep(0.2)
-        assert other == 1000, "no response after the graceful restart"
+        assert other == SMALL_LENGTH, "no response after the graceful restart"
 
         # The old child has had time to exit if it had dropped the connection.
         time.sleep(1)
