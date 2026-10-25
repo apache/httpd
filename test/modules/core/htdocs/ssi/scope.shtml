@@ -1,0 +1,3 @@
+<!--#if expr='"abc" =~ /(a)(b)(c)/' --><!--#set var="m1" value="[$1][$2][$3]" --><!--#echo var="m1" --><!--#endif -->
+<!--#if expr='"xyz" =~ /xyz/' --><!--#set var="m2" value="[$1][$2][$3]" --><!--#echo var="m2" --><!--#endif -->
+<!--#if expr='"xyz" =~ /(q)(r)/' --><!--#else --><!--#set var="m3" value="[$1][$2]" --><!--#echo var="m3" --><!--#endif -->

@@ -1613,11 +1613,15 @@ static int parse_ap_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         ctx->intern->re = re = apr_pcalloc(ctx->pool, sizeof(*re));
     }
     else {
-        /* ap_expr_exec_ctx() does not care about re->have_match but only about
-         * re->source
+        /* Start this directive with no match. op_REG()/op_NRE() only touch
+         * re->source/re->match for a regex with capturing groups, so without
+         * this a stale have_match/source/match[] from an earlier, unrelated
+         * directive's successful match could leak into this one, or worse,
+         * leave re->source NULL while re->match[] still holds that earlier
+         * match's offsets, which get_include_var() would then read through.
          */
-        if (!re->have_match)
-            re->source = NULL;
+        re->have_match = 0;
+        re->source = NULL;
     }
 
     if (!eval_ctx) {

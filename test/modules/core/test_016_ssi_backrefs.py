@@ -29,3 +29,18 @@ class TestSSIBackrefs:
         r = env.curl_get(url)
         assert r.response["status"] == 200
         assert r.response["body"].decode("utf-8").strip() == "[][backref][shtml]"
+
+    # A later #if/#elif must not see captures left over from an earlier,
+    # unrelated one on the same page: not from a regex with no capturing
+    # groups of its own, and not from a regex with capturing groups that
+    # failed to match. Referencing $1-$9 in either case logs AH01329
+    # ("refers to no regex"), which is the expected, safe behavior -- the
+    # bug this guards against was a stale/NULL re->source read crashing the
+    # worker, or leaking the earlier match's captures, instead.
+    def test_core_016_02(self, env):
+        url = env.mkurl("http", "htdocs", "/ssi/scope.shtml")
+        r = env.curl_get(url)
+        assert r.response["status"] == 200
+        assert r.response["body"].decode("utf-8").strip() == (
+            "[a][b][c]\n[][][]\n[][]")
+        env.httpd_error_log.ignore_recent(lognos=["AH01329"])
