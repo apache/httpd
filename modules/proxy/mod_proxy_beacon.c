@@ -103,6 +103,9 @@
 #include "apr_siphash.h"
 #include "apr_md5.h"
 
+#if APR_HAVE_PROCESS_H
+#include <process.h>            /* for getpid() on Windows */
+#endif
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>             /* for getpid() */
 #endif
