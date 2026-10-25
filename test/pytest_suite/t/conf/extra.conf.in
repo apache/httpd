@@ -656,6 +656,7 @@ Alias /manual @inherit_documentroot@/manual
 
     <Directory @SERVERROOT@/htdocs/modules/dav>
         DAV On
+        DAVMSext All
     </Directory>
 </IfModule>
 
