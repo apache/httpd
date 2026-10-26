@@ -241,11 +241,24 @@ def test_equivalent_spellings_are_one_member(http):
     "http://127.0.0.8:65536",               # truncates to port 0
     "http://127.0.0.8:99999",               # truncates to port 34463
     "http://127.0.0.8:4294967376",          # 2^32 + 80: truncates to port 80
+    "abcdefghijklmnop://127.0.0.8:8085",    # 16 chars: does not fit the worker
+    "http://" + "h" * 256 + ":8086",         # host does not fit the worker
 ]))
 def test_non_origin_urls_are_rejected(http, n, url):
     lines = inject(http, [url], f"http://127.0.0.3:{18100 + n}")
     assert not [m for m in added_members(lines) if "127.0.0.8" in m], (
         f"{url!r} must not become a member")
+
+
+@need
+@pytest.mark.parametrize("n,url", enumerate([
+    "https://127.0.0.9:8443",
+    "uwsgi://127.0.0.9:3031",               # a mod_proxy scheme apr does not know
+    "fcgi://127.0.0.9:9000",
+]))
+def test_proxy_scheme_origins_are_accepted(http, n, url):
+    lines = inject(http, [url], f"http://127.0.0.3:{18121 + n}")
+    assert url in added_members(lines)
 
 
 @need
@@ -682,6 +695,86 @@ def test_advertised_out_of_range_port_is_rejected(server, tmp_path, url):
     r = advertise_configtest(server, tmp_path, url)
     assert r.returncode != 0, "config advertising this url should not load"
     assert "is not a valid scheme://host[:port] URL" in r.stderr, r.stderr
+
+
+# ---- permanent configuration errors fail `httpd -t` --------------------------
+
+def vhost_configtest(server, tmp_path, body):
+    """`httpd -t` on the generated test config plus one vhost with this body."""
+    conf = tmp_path / "vhost.conf"
+    conf.write_text(
+        f'Include "{server.config.vars["t_conf_file"]}"\n'
+        "<VirtualHost 127.0.0.1:65301>\n"
+        f"{body}\n"
+        "</VirtualHost>\n")
+    argv = [a for a in server.args() if a != "-DFOREGROUND"]
+    argv[argv.index("-f") + 1] = str(conf)
+    return subprocess.run([*argv, "-t"], capture_output=True, text=True)
+
+
+SECRET_DIRECTIVE = 'ProxyBeaconSecret "xxxxxxxxxxxxxxxx"'
+
+
+@need
+def test_listener_with_a_balancer_passes_configtest(server, tmp_path):
+    """Control for the cases below: the same shape, but valid."""
+    r = vhost_configtest(server, tmp_path,
+                         f"ProxyBeaconListen 127.0.0.1:65302\n{SECRET_DIRECTIVE}\n"
+                         "ProxyBeaconBalancer beacon")
+    assert r.returncode == 0 and "Syntax OK" in r.stderr, r.stderr
+
+
+@need
+@pytest.mark.parametrize("body", [
+    "ProxyBeaconListen 127.0.0.1:65302",                       # listener
+    "ProxyBeaconAddress 127.0.0.1:65302",                      # sender
+])
+def test_missing_secret_fails_configtest(server, tmp_path, body):
+    r = vhost_configtest(server, tmp_path, body)
+    assert r.returncode != 0, "a channel without a secret must not pass -t"
+    assert "ProxyBeaconSecret is required" in r.stderr, r.stderr
+
+
+@need
+@pytest.mark.parametrize("body,message", [
+    (f"ProxyBeaconAddress justahost\n{SECRET_DIRECTIVE}", "must be host:port"),
+    (f"ProxyBeaconAddress 127.0.0.1\n{SECRET_DIRECTIVE}", "must be host:port"),
+    (f"ProxyBeaconAddress [::1\n{SECRET_DIRECTIVE}", "must be host:port"),
+    (f"ProxyBeaconListen [::1\n{SECRET_DIRECTIVE}", "must be [host][:port]"),
+    (f"ProxyBeaconListen 127.0.0.1:65302\n{SECRET_DIRECTIVE}\n"
+     "ProxyBeaconBalancer nosuchbalancer", "is not defined for this server"),
+])
+def test_malformed_address_or_unknown_balancer_fails_configtest(
+        server, tmp_path, body, message):
+    r = vhost_configtest(server, tmp_path, body)
+    assert r.returncode != 0, "this configuration must not pass -t"
+    assert message in r.stderr, r.stderr
+
+
+@need
+def test_listener_shared_with_another_server_is_warned_about(server, tmp_path):
+    """The main server's ProxyBeaconListen takes no argument; so does this one."""
+    r = vhost_configtest(server, tmp_path, f"ProxyBeaconListen\n{SECRET_DIRECTIVE}")
+    assert r.returncode == 0 and "Syntax OK" in r.stderr, r.stderr
+    assert "is also written for another server" in r.stderr, r.stderr
+
+
+@need
+@pytest.mark.parametrize("address", [":65302", "65302", "127.0.0.1", "[::1]:65302",
+                                    "udp://127.0.0.1:65302"])
+def test_listen_address_forms_pass_configtest(server, tmp_path, address):
+    r = vhost_configtest(server, tmp_path,
+                         f"ProxyBeaconListen {address}\n{SECRET_DIRECTIVE}")
+    assert r.returncode == 0 and "Syntax OK" in r.stderr, r.stderr
+
+
+@need
+@pytest.mark.parametrize("address", [":", ":0", ":65536", ":80x", "[::1"])
+def test_bad_listen_address_forms_fail_configtest(server, tmp_path, address):
+    r = vhost_configtest(server, tmp_path,
+                         f"ProxyBeaconListen {address}\n{SECRET_DIRECTIVE}")
+    assert r.returncode != 0, f"{address!r} must not pass -t"
+    assert "must be [host][:port]" in r.stderr, r.stderr
 
 
 # ---- socket-open retry back-off ----------------------------------------------

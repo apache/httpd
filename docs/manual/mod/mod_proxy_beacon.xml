@@ -165,10 +165,21 @@ ProxyBeaconInterval  10
       <li><strong>drops</strong> any announcement that is not an origin: one
           carrying a path (other than <code>/</code>), a query string, a
           fragment, user information, an invalid port (such as
-          <code>0</code>), or the <code>unix:</code> socket form. The drop is logged
+          <code>0</code>), the <code>unix:</code> socket form, a scheme
+          too long to be stored as part of a worker, or a host name too long
+          to be stored. The drop is logged
           (rate-limited) as <code>unacceptable url</code> and the backend is not
           added.</li>
     </ul>
+
+    <p>Mistakes that no later change in the network can cure are reported by
+    <code>httpd -t</code> as well as at startup: a missing
+    <directive>ProxyBeaconSecret</directive>, a
+    <directive>ProxyBeaconAddress</directive> that is not <code>host:port</code>,
+    a malformed <directive>ProxyBeaconListen</directive> address, and a
+    <directive>ProxyBeaconBalancer</directive> that is not defined for the
+    server. Whether an address resolves or a port can be bound is not checked
+    then; the proxy keeps retrying those.</p>
 
     <p>Paths are refused because the balancer finds a member by longest prefix
     match. Announcements for <code>http://10.0.0.5:8080/one</code> and

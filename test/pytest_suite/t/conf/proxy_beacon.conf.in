@@ -54,7 +54,7 @@
 
     # An initially-empty balancer with spare slots for runtime members.
     <Proxy balancer://beacon>
-        ProxySet growth=40
+        ProxySet growth=60
     </Proxy>
     ProxyPass /beacon balancer://beacon
 

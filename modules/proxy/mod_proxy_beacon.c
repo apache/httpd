@@ -281,7 +281,7 @@ static const char *beacon_set_pub_url(cmd_parms *cmd, void *dummy, const char *a
 static const char *beacon_canonical_url(apr_pool_t *pool, const char *url)
 {
     apr_uri_t uri;
-    const char *host, *port = "", *c;
+    const char *host, *port = "", *c, *canon;
 
     /* Printable ASCII only: the url is logged and becomes a worker name. */
     for (c = url; *c; c++) {
@@ -317,6 +317,14 @@ static const char *beacon_canonical_url(apr_pool_t *pool, const char *url)
         }
     }
 
+    /* The proxy truncates a scheme or worker name that does not fit its shared
+     * storage, which would give the member another identity than the one
+     * announced. */
+    if (strlen(uri.scheme) >= PROXY_WORKER_MAX_SCHEME_SIZE
+        || strlen(uri.hostname) >= PROXY_RFC1035_HOSTNAME_SIZE) {
+        return NULL;
+    }
+
     ap_str_tolower(uri.scheme);
     ap_str_tolower(uri.hostname);
     host = ap_strchr_c(uri.hostname, ':')
@@ -325,7 +333,8 @@ static const char *beacon_canonical_url(apr_pool_t *pool, const char *url)
     if (uri.port && uri.port != ap_proxy_port_of_scheme(uri.scheme)) {
         port = apr_psprintf(pool, ":%u", (unsigned)uri.port);
     }
-    return apr_pstrcat(pool, uri.scheme, "://", host, port, NULL);
+    canon = apr_pstrcat(pool, uri.scheme, "://", host, port, NULL);
+    return strlen(canon) < PROXY_WORKER_MAX_NAME_SIZE ? canon : NULL;
 }
 
 static const char *beacon_set_advertise(cmd_parms *cmd, void *dummy,
@@ -346,7 +355,8 @@ static const char *beacon_set_advertise(cmd_parms *cmd, void *dummy,
         return apr_psprintf(cmd->pool,
                             "ProxyBeaconAdvertise: '%s' is not a valid "
                             "scheme://host[:port] URL (no path, query, "
-                            "fragment or userinfo)", arg);
+                            "fragment or userinfo; short enough to be a "
+                            "worker name)", arg);
     }
     ctx->advertise_url = (char *)canon;
     return NULL;
@@ -538,12 +548,37 @@ static const command_rec beacon_cmds[] = {
  * own address:port; UDP and TCP are independent port spaces, so binding UDP:N
  * does not collide with the server's TCP listener.  *addr_out is from p.
  */
+/*
+ * Split "[host][:port]". apr_parse_addr_port() refuses a string that starts
+ * with ':', which the directive syntax allows to mean "this server's host".
+ */
+static apr_status_t beacon_parse_hostport(apr_pool_t *p, const char *hostport,
+                                          char **host, apr_port_t *port)
+{
+    char *scope;
+
+    if (*hostport == ':') {
+        apr_off_t val;
+        char *end;
+
+        if (apr_isdigit(hostport[1]) == 0
+            || apr_strtoff(&val, hostport + 1, &end, 10) != APR_SUCCESS
+            || *end || val < 1 || val > 65535) {
+            return APR_EINVAL;
+        }
+        *host = NULL;
+        *port = (apr_port_t)val;
+        return APR_SUCCESS;
+    }
+    return apr_parse_addr_port(host, &scope, port, hostport, p);
+}
+
 static apr_status_t beacon_resolve(apr_pool_t *p, const char *url,
                                    const char *default_host,
                                    apr_port_t default_port,
                                    apr_sockaddr_t **addr_out)
 {
-    char *host = NULL, *scope;
+    char *host = NULL;
     apr_port_t port = 0;
     apr_status_t rv;
 
@@ -552,7 +587,7 @@ static apr_status_t beacon_resolve(apr_pool_t *p, const char *url,
         if ((sep = ap_strstr_c(url, "://")) != NULL) {
             hostport = sep + 3;
         }
-        rv = apr_parse_addr_port(&host, &scope, &port, hostport, p);
+        rv = beacon_parse_hostport(p, hostport, &host, &port);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -970,8 +1005,10 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
             return APR_ENOENT;
         }
         if (!(w->s->status & PROXY_WORKER_BEACON)) {
-            /* The balancer did not apply b_nwrkr_flags. */
-            ap_proxy_set_wstatus(PROXY_WORKER_BEACON_FLAG, 1, w);
+            /* Whatever this is, balancer_manage() did not create it with our
+             * mark, so it is not ours to manage (and to evict). */
+            beacon_log_throttled(ctx, now, "member not created by beacon");
+            return APR_EEXIST;
         }
     }
 
@@ -982,8 +1019,13 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      APLOGNO(10578) "mod_proxy_beacon: added but failed to enable worker %s "
-                     "in balancer://%s", url, ctx->balancer_name);
-        /* fall through: still a member, just disabled */
+                     "in balancer://%s; will retry on its next announcement",
+                     url, ctx->balancer_name);
+        /* Still a member, but disabled: recorded as evicted, so that the next
+         * announcement enables it (beacon_handle_announce). */
+        m->added = 1;
+        m->evicted = 1;
+        return rv;
     }
 
     m->added = 1;
@@ -1110,23 +1152,28 @@ static void beacon_handle_announce(beacon_ctx_t *ctx, apr_pool_t *pool,
  * The per-member replay high-water mark is not recovered (last_ts starts at 0);
  * see the replay notes in the documentation.
  */
-static void beacon_reconcile(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now)
+static int beacon_reconcile(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now)
 {
     proxy_server_conf *conf =
         ap_get_module_config(ctx->s->module_config, &proxy_module);
     proxy_balancer *bsel = ap_proxy_get_balancer(pool, conf,
             apr_pstrcat(pool, BALANCER_PREFIX, ctx->balancer_name, NULL), 0);
     proxy_worker **workers;
-    int i, adopted = 0;
+    int i, adopted = 0, untracked = 0;
 
     if (!bsel) {
-        return;
+        return 0;
     }
 
     PROXY_THREAD_LOCK(bsel);
     /* Pick up the members the previous owner added: this process's own view of
-     * the balancer only knows the ones that existed at configuration time. */
-    ap_proxy_sync_balancer(bsel, ctx->s, conf);
+     * the balancer only knows the ones that existed at configuration time.
+     * Without that the picture is incomplete: try again on the next tick. */
+    if (ap_proxy_sync_balancer(bsel, ctx->s, conf) != APR_SUCCESS) {
+        PROXY_THREAD_UNLOCK(bsel);
+        beacon_log_throttled(ctx, now, "takeover: balancer sync failed");
+        return 0;
+    }
 
     workers = (proxy_worker **)bsel->workers->elts;
     for (i = 0; i < bsel->workers->nelts; i++) {
@@ -1138,8 +1185,13 @@ static void beacon_reconcile(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now
             continue;
         }
         if (apr_hash_count(ctx->seen) >= BEACON_MAX_MEMBERS) {
-            beacon_log_throttled(ctx, now, "member table full");
-            break;
+            /* No lease can be kept for it, so it would never be evicted: take
+             * it out of rotation until it announces again and is adopted. */
+            if (!(w->s->status & PROXY_WORKER_DISABLED)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, w);
+                untracked++;
+            }
+            continue;
         }
         m = beacon_member_new(ctx, w->s->name, now);
         if (!m) {
@@ -1157,6 +1209,14 @@ static void beacon_reconcile(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now
                      "member(s) of balancer://%s; their leases restart now",
                      adopted, ctx->balancer_name);
     }
+    if (untracked) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s,
+                     APLOGNO(10660) "mod_proxy_beacon: balancer://%s has more "
+                     "members than the %d beacon can track; disabled %d of "
+                     "them until they announce again",
+                     ctx->balancer_name, BEACON_MAX_MEMBERS, untracked);
+    }
+    return 1;
 }
 
 /*
@@ -1180,7 +1240,10 @@ static void beacon_sweep(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now)
 {
     apr_hash_index_t *hi;
     apr_time_t skew = ctx->max_skew > 0 ? ctx->max_skew : BEACON_MAXSKEW_DEFAULT;
-    apr_time_t reclaim_after = 2 * skew + apr_time_from_sec(1);
+    /* Saturate: MaxSkew is any positive time the administrator wrote. */
+    apr_time_t reclaim_after =
+        skew > (APR_INT64_MAX - apr_time_from_sec(1)) / 2
+        ? APR_INT64_MAX : 2 * skew + apr_time_from_sec(1);
 
     for (hi = apr_hash_first(pool, ctx->seen); hi; hi = apr_hash_next(hi)) {
         void *val;
@@ -1475,8 +1538,7 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
 
     if (ctx->role == BEACON_ROLE_LISTEN && ctx->balancer_name
         && !ctx->reconciled) {
-        beacon_reconcile(ctx, pool, apr_time_now());
-        ctx->reconciled = 1;
+        ctx->reconciled = beacon_reconcile(ctx, pool, apr_time_now());
     }
 
     if (ctx->role == BEACON_ROLE_SEND) {
@@ -1738,10 +1800,125 @@ static int beacon_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
+/*
+ * "[scheme://][host][:port]" syntax only, with no lookup: a name that does not
+ * resolve yet may be fine once the network is up, but a malformed address never
+ * is.  A sender needs both host and port; a listener inherits what is omitted.
+ */
+static int beacon_addr_syntax_ok(apr_pool_t *p, const char *url,
+                                 int need_host_port)
+{
+    char *host = NULL;
+    apr_port_t port = 0;
+    const char *hostport = url, *sep;
+
+    if (url && (sep = ap_strstr_c(url, "://")) != NULL) {
+        hostport = sep + 3;
+    }
+    if (!hostport || !*hostport) {
+        return !need_host_port;
+    }
+    if (beacon_parse_hostport(p, hostport, &host, &port) != APR_SUCCESS) {
+        return 0;
+    }
+    return !need_host_port || (host && *host && port);
+}
+
+/*
+ * Everything that is wrong with the configuration for good, however the
+ * network is when the server starts, so that "httpd -t" says so and a start
+ * does not go ahead only to fail in a child.  What can change (the address
+ * resolving, the port binding) is left to the retries in the watchdog callback.
+ */
+static int beacon_check_config(apr_pool_t *pconf, apr_pool_t *plog,
+                               apr_pool_t *ptemp, server_rec *main_s)
+{
+    server_rec *s, *t;
+    int errs = 0, participating = 0;
+
+    for (s = main_s; s; s = s->next) {
+        beacon_ctx_t *ctx = ap_get_module_config(s->module_config,
+                                                 &proxy_beacon_module);
+        if (s != ctx->s || ctx->role == BEACON_ROLE_NONE) {
+            continue;
+        }
+        participating++;
+
+        if (!ctx->has_secret) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                         APLOGNO(10661) "mod_proxy_beacon: ProxyBeaconSecret "
+                         "is required but not set; the beacon channel must be "
+                         "authenticated");
+            errs++;
+        }
+
+        if (ctx->role == BEACON_ROLE_SEND) {
+            if (!beacon_addr_syntax_ok(ptemp, ctx->pub_url, 1)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                             APLOGNO(10662) "mod_proxy_beacon: "
+                             "ProxyBeaconAddress '%s' must be host:port",
+                             ctx->pub_url);
+                errs++;
+            }
+            continue;
+        }
+
+        if (!beacon_addr_syntax_ok(ptemp, ctx->sub_url, 0)) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                         APLOGNO(10663) "mod_proxy_beacon: ProxyBeaconListen "
+                         "'%s' must be [host][:port]", ctx->sub_url);
+            errs++;
+        }
+        if (ctx->balancer_name) {
+            proxy_server_conf *conf = ap_get_module_config(s->module_config,
+                                                           &proxy_module);
+            if (!conf || !ap_proxy_get_balancer(ptemp, conf,
+                    apr_pstrcat(ptemp, BALANCER_PREFIX, ctx->balancer_name,
+                                NULL), 0)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                             APLOGNO(10664) "mod_proxy_beacon: "
+                             "ProxyBeaconBalancer: balancer://%s is not "
+                             "defined for this server", ctx->balancer_name);
+                errs++;
+            }
+            if (!APR_RETRIEVE_OPTIONAL_FN(balancer_manage)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                             APLOGNO(10665) "mod_proxy_beacon: "
+                             "ProxyBeaconBalancer needs mod_proxy_balancer");
+                errs++;
+            }
+        }
+        /* Two listeners on one address: only one of them would receive. */
+        for (t = main_s; t != s; t = t->next) {
+            beacon_ctx_t *other = ap_get_module_config(t->module_config,
+                                                       &proxy_beacon_module);
+            if (t == other->s && other->role == BEACON_ROLE_LISTEN
+                && !strcmp(other->sub_url, ctx->sub_url)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_WARNING, 0, s,
+                             APLOGNO(10667) "mod_proxy_beacon: ProxyBeaconListen "
+                             "'%s' is also written for another server; if "
+                             "both resolve to the same address, only one of "
+                             "them will receive the beacons", ctx->sub_url);
+            }
+        }
+    }
+
+    if (participating
+        && !APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance)) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, main_s,
+                     APLOGNO(10666) "mod_proxy_beacon: mod_watchdog is "
+                     "required");
+        errs++;
+    }
+
+    return errs ? !OK : OK;
+}
+
 static void beacon_register_hooks(apr_pool_t *p)
 {
     static const char *const aszSucc[] = { "mod_watchdog.c",
                                            "mod_proxy_balancer.c", NULL };
+    ap_hook_check_config(beacon_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(beacon_post_config, NULL, aszSucc, APR_HOOK_LAST);
 }
 

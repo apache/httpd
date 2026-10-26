@@ -231,7 +231,7 @@ receive port could announce an arbitrary backend URL, and **UDP source addresses
 are trivially spoofable.**
 
 `ProxyBeaconSecret` is therefore **required** (identical on proxy and every
-backend) — the server refuses to start if a participating server omits it, so
+backend) — `httpd -t` and startup both fail if a participating server omits it, so
 there is no unauthenticated mode to fall into. With it:
 
 - Each announcement is signed with a **SipHash-2-4 MAC** plus a timestamp; the
