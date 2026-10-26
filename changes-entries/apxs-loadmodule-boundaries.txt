@@ -1,0 +1,3 @@
+  *) apxs: Fix -a and -A not finding the LoadModule line of a module at the
+     start of the configuration file, or at its end without a newline.
+     PR 70258.  [Arturo Bernal]
