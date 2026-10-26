@@ -17,6 +17,15 @@ github:
       restrict_deletion: true
       restrict_force_push: true
       required_linear_history: true
+    - name: "Release tags"
+      type: tag
+      # This is a misnomer, it applies to the tag name
+      branches:
+        includes:
+          - "*.*.*"
+        excludes: []
+      # implicit
+      restrict_deletion: true
   enabled_merge_buttons:
     squash: true
     merge: false
