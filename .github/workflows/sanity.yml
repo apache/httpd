@@ -15,6 +15,7 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - .asf.yaml
   pull_request:
     branches: [ "trunk", "2.4.x" ]
     paths-ignore:

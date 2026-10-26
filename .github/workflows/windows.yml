@@ -16,6 +16,7 @@ on:
       - 'test/modules/arch/linux/**'
       - 'test/travis_*.sh'
       - 'test/gha-*.sh'
+      - .asf.yaml
     tags:
       - 2.*
   pull_request:
