@@ -355,7 +355,7 @@ static void pendElement(void *ctxt, const xmlChar *uname)
         /* enforce html */
         if (!desc || desc->depr)
             return;
-    
+
     }
     else if ((ctx->cfg->doctype == fpi_html_legacy)
              || (ctx->cfg->doctype == fpi_xhtml_legacy)) {
@@ -748,7 +748,7 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
 #ifndef GO_FASTER
             ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "Adding header [%s: %s] from HTML META",
-                          header, content); 
+                          header, content);
 #endif
             apr_table_setn(r->headers_out, header, content);
         }
@@ -766,16 +766,20 @@ static const char *interpolate_vars(request_rec *r, const char *str)
     const char *after;
     const char *replacement;
     const char *var;
+    unsigned char skip;
+
     for (;;) {
-        if ((start = ap_strstr_c(str, "${")) == NULL)
+        if ((start = ap_strstr_c(str, "%{ENV:")) == NULL && (start = ap_strstr_c(str, "${")) == NULL)
             break;
 
-        if ((end = ap_strchr_c(start+2, '}')) == NULL)
+        skip = (start && *start == '%') ? 6 : 2;
+
+        if ((end = ap_strchr_c(start+skip, '}')) == NULL)
             break;
 
-        delim = ap_strchr_c(start+2, '|');
+        delim = ap_strchr_c(start+skip, '|');
 
-        /* Restrict delim to ${...} */
+        /* Restrict delim to %{ENV:...} or ${...} */
         if (delim && delim >= end) {
             delim = NULL;
         }
@@ -783,10 +787,10 @@ static const char *interpolate_vars(request_rec *r, const char *str)
         before = apr_pstrmemdup(r->pool, str, start-str);
         after = end+1;
         if (delim) {
-            var = apr_pstrmemdup(r->pool, start+2, delim-start-2);
+            var = apr_pstrmemdup(r->pool, start+skip, delim-start-skip);
         }
         else {
-            var = apr_pstrmemdup(r->pool, start+2, end-start-2);
+            var = apr_pstrmemdup(r->pool, start+skip, end-start-skip);
         }
         replacement = apr_table_get(r->subprocess_env, var);
         if (!replacement) {
@@ -801,6 +805,7 @@ static const char *interpolate_vars(request_rec *r, const char *str)
     }
     return str;
 }
+
 static void fixup_rules(saxctxt *ctx)
 {
     urlmap *newp;
@@ -1197,7 +1202,7 @@ static const char *set_urlmap(cmd_parms *cmd, void *CFG, const char *args)
     const char *to;
     const char *flags;
     const char *cond = NULL;
-  
+
     if (from = ap_getword_conf(cmd->pool, &args), !from)
         return usage;
     if (to = ap_getword_conf(cmd->pool, &args), !to)
