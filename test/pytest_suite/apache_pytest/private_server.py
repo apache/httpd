@@ -18,7 +18,7 @@ SMALL_LENGTH = 1000
 # What the private server needs, taken from the suite's generated config so that
 # paths and module names are the ones this build uses.
 WANTED_MODULES = ("mpm_", "unixd_module", "authz_core_module",
-                  "unique_id_module", "headers_module")
+                  "unique_id_module", "headers_module", "echo_module")
 
 
 def free_port():

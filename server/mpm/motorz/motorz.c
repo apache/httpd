@@ -150,6 +150,15 @@ static int volatile draining = 0;
 static int volatile listeners_closed = 0;
 /* Connections accepted by this child and not yet torn down. */
 static apr_uint32_t conns_open = 0;
+/* Those of them in lingering close; they are not counted against the
+ * connection limit (see motorz_connections_above_limit). */
+static apr_uint32_t lingering_count = 0;
+/* AsyncRequestWorkerFactor, scaled so that it can be fractional. */
+#ifndef DEFAULT_WORKER_FACTOR
+#define DEFAULT_WORKER_FACTOR 2
+#endif
+#define WORKER_FACTOR_SCALE 16
+static unsigned int worker_factor = DEFAULT_WORKER_FACTOR * WORKER_FACTOR_SCALE;
 static motorz_child_bucket *all_buckets, /* All listeners buckets */
                             *my_bucket;   /* Current child bucket */
 
@@ -863,6 +872,10 @@ static void motorz_conn_done(motorz_conn_t *scon)
     ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
                  "motorz_conn_done(): scon: %pp", scon);
 
+    if (scon->linger_started) {
+        apr_atomic_dec32(&lingering_count);
+    }
+
     /* Disarm on the I/O poller (its pollset), then recycle to the accepting
      * poller's free-list (its single-consumer pop home -- not the I/O poller).
      */
@@ -972,6 +985,7 @@ static void motorz_start_lingering_close(motorz_conn_t *scon)
     }
 
     scon->linger_started = 1;
+    apr_atomic_inc32(&lingering_count);
     scon->linger_deadline = apr_time_now() + apr_time_from_sec(
         (draining || apr_table_get(c->notes, "short-lingering-close"))
             ? SECONDS_TO_LINGER : MAX_SECS_TO_LINGER);
@@ -1147,6 +1161,14 @@ read_request:
                  * fall thru to either wait for readability/timeout or
                  * do lingering close
                  */
+                if (scon->cs.state == CONN_STATE_PROCESSING) {
+                    /* No hook took the connection on (DECLINED), or one
+                     * returned OK without setting a state, as a protocol
+                     * module written for worker or prefork does (mod_echo):
+                     * nothing below would end it. Close it, as event does.
+                     */
+                    scon->cs.state = CONN_STATE_LINGER;
+                }
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, ap_server_conf,
@@ -1685,9 +1707,33 @@ static void motorz_enable_listeners(motorz_poller_t *poller)
                  "Accepting new connections again in this child");
 }
 
+/* The connection limit, as in mpm_event: a child accepts while the connections
+ * it has, not counting those in lingering close, number fewer than
+ * ThreadsPerChild + AsyncRequestWorkerFactor * idle workers. Parked connections
+ * (keep-alive, waiting for I/O, writing) use no worker, so without this limit
+ * idle clients could pile up without bound. 'idle' is the number of idle
+ * workers, which must be above zero.
+ */
+static int motorz_connections_above_limit(motorz_poller_t *poller,
+                                          apr_size_t idle)
+{
+    apr_uint32_t open = apr_atomic_read32(&conns_open);
+    apr_uint32_t lingering = apr_atomic_read32(&lingering_count);
+
+    /* While the listeners are off count one idle worker less, so that the
+     * limit does not flip with every connection that closes. */
+    if (poller->listeners_disabled) {
+        idle--;
+    }
+    return open > lingering
+           && (apr_uint64_t)(open - lingering)
+              >= (apr_uint64_t)threads_per_child
+                 + (apr_uint64_t)idle * worker_factor / WORKER_FACTOR_SCALE;
+}
+
 /* Reconsider admission once per poll-loop iteration (owning poller's thread).
  * Disable listeners when the worker pool is saturated and re-enable once it has
- * drained. Three complementary saturation signals:
+ * drained. Four complementary saturation signals:
  *
  *  1. idle == 0: no thread is free to pick up a new connection right now.
  *  2. pending >= throttle_hi: the push queue has a full wave of unstarted tasks
@@ -1695,6 +1741,8 @@ static void motorz_enable_listeners(motorz_poller_t *poller)
  *  3. active >= threads_per_child: all threads are occupied, including those
  *     blocked in I/O waits -- catches the slow-client / keep-alive-heavy case
  *     where the task queue looks empty but workers are fully tied up.
+ *  4. the child holds as many connections as the limit allows, whether or not
+ *     they use a worker (motorz_connections_above_limit).
  *
  * The hysteresis band (hi/lo) on the pending count avoids enable/disable
  * flapping. A poller that does not own listeners (num_listener_pfds == 0) no-ops.
@@ -1722,13 +1770,15 @@ static void motorz_update_listeners(motorz_poller_t *poller)
     if (!poller->listeners_disabled) {
         if (idle == 0
                 || pending >= motorz_throttle_hi
-                || active >= (apr_size_t)threads_per_child) {
+                || active >= (apr_size_t)threads_per_child
+                || motorz_connections_above_limit(poller, idle)) {
             motorz_disable_listeners(poller);
         }
     }
     else if (idle > 0
                  && pending <= motorz_throttle_lo
-                 && active < (apr_size_t)threads_per_child) {
+                 && active < (apr_size_t)threads_per_child
+                 && !motorz_connections_above_limit(poller, idle)) {
         motorz_enable_listeners(poller);
     }
 }
@@ -3076,6 +3126,32 @@ static const char *set_pollers_per_child(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *set_worker_factor(cmd_parms *cmd, void *dummy,
+                                     const char *arg)
+{
+    double val;
+    char *endptr;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    val = strtod(arg, &endptr);
+    if (*endptr) {
+        return "error parsing value";
+    }
+    if (val <= 0) {
+        return "AsyncRequestWorkerFactor argument must be a positive number";
+    }
+
+    worker_factor = val * WORKER_FACTOR_SCALE;
+    if (worker_factor < WORKER_FACTOR_SCALE) {
+        worker_factor = WORKER_FACTOR_SCALE;
+    }
+    return NULL;
+}
+
 static const command_rec motorz_cmds[] = {
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
@@ -3088,6 +3164,8 @@ AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum number of worker threads per child process for this run of Apache - Upper limit for ThreadsPerChild"),
 AP_INIT_TAKE1("PollersPerChild", set_pollers_per_child, NULL, RSRC_CONF,
   "Number of poll threads per child process (0 = auto from online CPUs)"),
+AP_INIT_TAKE1("AsyncRequestWorkerFactor", set_worker_factor, NULL, RSRC_CONF,
+  "Limit concurrent connections per process: ThreadsPerChild plus this factor times the number of idle workers"),
 AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };

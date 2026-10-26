@@ -62,7 +62,10 @@ Admission control (listener backpressure) keeps the child safe under overload:
 when the worker pool saturates, the listener-owning poller removes the
 listening sockets from its pollset (motorz_update_listeners /
 motorz_disable_listeners) and re-adds them once the backlog drains, so the work
-queue and per-connection memory stay bounded rather than growing without limit.
+queue stays bounded. A child also stops accepting once it holds ThreadsPerChild
++ AsyncRequestWorkerFactor * (idle workers) connections not in lingering close
+(motorz_connections_above_limit), as in mpm_event: connections parked in the
+poller use no worker, so the worker counts alone do not limit them.
 
 Scoreboard
 ----------

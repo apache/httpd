@@ -199,12 +199,22 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
 
 <section id="admission-control"><title>Admission control</title>
     <p>To keep a child safe under overload, <module>motorz</module> applies
-    listener backpressure. When the worker pool saturates, the poller that
-    owns the listening sockets removes them from its pollset and stops
-    accepting; it re-adds them once the backlog drains. This keeps the work
-    queue and per-connection memory bounded rather than growing without limit.
-    The decision is based on the worker pool's idle, pending and active-thread
-    counts, with hysteresis to avoid flapping the listeners on and off.</p>
+    listener backpressure. The poller that owns the listening sockets removes
+    them from its pollset and stops accepting, and re-adds them once there is
+    room again, in two situations:</p>
+    <ul>
+      <li>the worker pool is saturated, judged from its idle, pending and
+          active thread counts, with hysteresis to avoid flapping the
+          listeners on and off;</li>
+      <li>the child holds as many connections as
+          <directive>AsyncRequestWorkerFactor</directive> allows. Connections
+          that are idle in keep-alive, waiting for I/O or writing a response
+          use no worker thread, so the worker pool alone cannot limit
+          them.</li>
+    </ul>
+    <p>Connections that are not accepted wait in the listen backlog (see
+    <directive module="mpm_common">ListenBacklog</directive>). Other memory use,
+    such as a large request being read, is not limited by this.</p>
 
     <note><title>ThreadsPerChild and admission control</title>
     <p>Because the admission-control low-water mark is a fraction of
@@ -283,6 +293,32 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
 </directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>User</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AsyncRequestWorkerFactor</name>
+<description>Limit concurrent connections per process</description>
+<syntax>AsyncRequestWorkerFactor <var>factor</var></syntax>
+<default>AsyncRequestWorkerFactor 2</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>motorz</module></modulelist>
+
+<usage>
+    <p>This directive has the same meaning as in the <module>event</module>
+    MPM. A <strong>process</strong> only accepts new connections while the
+    number of connections it holds, not counting those in lingering close, is
+    lower than:</p>
+
+    <p class="indent"><strong>
+        <directive module="mpm_common">ThreadsPerChild</directive> +
+        (<directive>AsyncRequestWorkerFactor</directive> *
+        <var>number of idle workers</var>)
+    </strong></p>
+
+    <p>Most of the connections a child holds are normally idle and use no
+    worker thread, which is why the limit is larger than the number of
+    threads. Values below 1 are raised to 1.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

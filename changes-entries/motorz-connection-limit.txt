@@ -1,0 +1,5 @@
+  *) mpm_motorz: Limit the connections a child holds, as mpm_event does, with
+     AsyncRequestWorkerFactor.  Connections waiting in keep-alive or for I/O
+     use no worker thread, so they could accumulate without bound.  Also close
+     a connection whose process_connection hook leaves no state behind (e.g.
+     ProtocolEcho), which was never closed.  [Jim Jagielski]
