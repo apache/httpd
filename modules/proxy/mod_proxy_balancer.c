@@ -1095,6 +1095,122 @@ static void push2table(const char *input, apr_table_t *params,
 }
 
 /*
+ * Add the worker `url` to `bsel` at runtime. Returns APR_SUCCESS, or
+ * HTTP_BAD_REQUEST if it could not be added. The worker is created disabled.
+ *
+ * The global lock is taken first, so that no other process adds a worker
+ * between the check that it is not there yet and its slot being taken. The
+ * balancer's thread lock follows, for the part that changes this process's
+ * worker array: request threads walk it holding that lock, so they never see a
+ * worker that is not complete, and they do not wait for the global lock. Both
+ * come before proxy_mutex, which sync and initialization take inside. A worker
+ * whose sharing fails is taken out of the array again and its slot given back.
+ */
+static int balancer_add_worker(request_rec *r, proxy_balancer *bsel,
+                               proxy_server_conf *conf, const char *url,
+                               const char *flags)
+{
+    proxy_worker *nworker;
+    proxy_worker_shared *shm;
+    unsigned int index = 0;
+    apr_status_t rv;
+    char *ret;
+    int status = HTTP_BAD_REQUEST;
+#if APR_HAS_THREADS
+    int thread_locked = 0;
+
+    if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01194)
+                      "%s: Lock failed for adding worker", bsel->s->name);
+        return HTTP_BAD_REQUEST;
+    }
+    if ((rv = PROXY_THREAD_LOCK(bsel)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10658)
+                      "%s: Thread lock failed for adding worker",
+                      bsel->s->name);
+        goto done;
+    }
+    thread_locked = 1;
+#endif
+
+    /* Another child may have added it since this one last synced. */
+    ap_proxy_sync_balancer(bsel, r->server, conf);
+    if (ap_proxy_get_worker(r->pool, bsel, conf, url)
+            || !storage->num_free_slots(bsel->wslot)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10164)
+                      "%s: failed to add worker %s", bsel->s->name, url);
+        goto done;
+    }
+
+    ret = ap_proxy_define_worker(conf->pool, &nworker, bsel, conf, url, 0);
+    if (ret) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10163)
+                      "%s: failed to add worker %s", bsel->s->name, url);
+        goto done;
+    }
+    /* nworker is now the last element of bsel->workers. */
+    PROXY_COPY_CONF_PARAMS(nworker, conf);
+    /* Optional status flags to create the worker with, and DISABLED always:
+     * set before ap_proxy_share_worker() copies the worker to shm, so that no
+     * child can ever find it there without them (a creator such as
+     * mod_proxy_beacon leaves no window in which the worker exists without its
+     * mark, or is enabled before it has been told to). */
+    ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
+    if (flags) {
+        for (; *flags; flags++) {
+            ap_proxy_set_wstatus(*flags, 1, nworker);
+        }
+    }
+    if ((rv = storage->grab(bsel->wslot, &index)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01195)
+                      "worker slotmem_grab failed");
+        apr_array_pop(bsel->workers);
+        goto done;
+    }
+    if ((rv = storage->dptr(bsel->wslot, index, (void *)&shm)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01197)
+                      "worker slotmem_dptr failed");
+        storage->release(bsel->wslot, index);
+        apr_array_pop(bsel->workers);
+        goto done;
+    }
+    if ((rv = ap_proxy_share_worker(nworker, shm, index)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01199)
+                      "Cannot share worker");
+        storage->release(bsel->wslot, index);
+        apr_array_pop(bsel->workers);
+        goto done;
+    }
+    if ((rv = ap_proxy_initialize_worker(nworker, r->server, conf->pool)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01201)
+                      "Cannot init worker");
+        /* Other children find slots by their hash: empty it. */
+        memset(shm, 0, sizeof(*shm));
+        storage->release(bsel->wslot, index);
+        apr_array_pop(bsel->workers);
+        goto done;
+    }
+    /* sync all timestamps */
+    bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
+    status = APR_SUCCESS;
+
+done:
+#if APR_HAS_THREADS
+    if (thread_locked
+            && (rv = PROXY_THREAD_UNLOCK(bsel)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10659)
+                      "%s: Thread unlock failed for adding worker",
+                      bsel->s->name);
+    }
+    if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
+                      "%s: Unlock failed for adding worker", bsel->s->name);
+    }
+#endif
+    return status;
+}
+
+/*
  * Process the parameters and add or update the worker of the
  * balancer.  Must only be called if the nonce has been validated to
  * match, to avoid XSS attacks.
@@ -1269,107 +1385,11 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
         if ((val = apr_table_get(params, "b_wyes")) &&
             (*val == '1' && *(val+1) == '\0') &&
             (val = apr_table_get(params, "b_nwrkr"))) {
-            char *ret;
-            const char *flags;
-            proxy_worker *nworker;
-            nworker = ap_proxy_get_worker(r->pool, bsel, conf, val);
-            if (!nworker && storage->num_free_slots(bsel->wslot)) {
-#if APR_HAS_THREADS
-                if ((rv = PROXY_GLOBAL_LOCK(bsel)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01194)
-                                  "%s: Lock failed for adding worker",
-                                  bsel->s->name);
-                }
-#endif
-                ret = ap_proxy_define_worker(conf->pool, &nworker, bsel, conf, val, 0);
-                if (!ret) {
-                    unsigned int index;
-                    proxy_worker_shared *shm;
-                    PROXY_COPY_CONF_PARAMS(nworker, conf);
-                    /* Optional status flags to create the worker with (set
-                     * before ap_proxy_share_worker() copies it to shm, so a
-                     * creator such as mod_proxy_beacon never leaves a window
-                     * in which the worker exists without its mark). */
-                    if ((flags = apr_table_get(params, "b_nwrkr_flags"))) {
-                        for (; *flags; flags++) {
-                            ap_proxy_set_wstatus(*flags, 1, nworker);
-                        }
-                    }
-                    if ((rv = storage->grab(bsel->wslot, &index)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01195)
-                                      "worker slotmem_grab failed");
-#if APR_HAS_THREADS
-                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01196)
-                                          "%s: Unlock failed for adding worker",
-                                          bsel->s->name);
-                        }
-#endif
-                        return HTTP_BAD_REQUEST;
-                    }
-                    if ((rv = storage->dptr(bsel->wslot, index, (void *)&shm)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01197)
-                                      "worker slotmem_dptr failed");
-#if APR_HAS_THREADS
-                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01198)
-                                          "%s: Unlock failed for adding worker",
-                                          bsel->s->name);
-                        }
-#endif
-                        return HTTP_BAD_REQUEST;
-                    }
-                    if ((rv = ap_proxy_share_worker(nworker, shm, index)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01199)
-                                      "Cannot share worker");
-#if APR_HAS_THREADS
-                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01200)
-                                          "%s: Unlock failed for adding worker",
-                                          bsel->s->name);
-                        }
-#endif
-                        return HTTP_BAD_REQUEST;
-                    }
-                    if ((rv = ap_proxy_initialize_worker(nworker, r->server, conf->pool)) != APR_SUCCESS) {
-                        ap_log_rerror(APLOG_MARK, APLOG_EMERG, rv, r, APLOGNO(01201)
-                                      "Cannot init worker");
-#if APR_HAS_THREADS
-                        if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01202)
-                                          "%s: Unlock failed for adding worker",
-                                          bsel->s->name);
-                        }
-#endif
-                        return HTTP_BAD_REQUEST;
-                    }
-                    /* sync all timestamps */
-                    bsel->wupdated = bsel->s->wupdated = nworker->s->updated = apr_time_now();
-                    /* by default, all new workers are disabled */
-                    ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, nworker);
-                } else {
-                            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10163)
-                                  "%s: failed to add worker %s",
-                                  bsel->s->name, val);
-#if APR_HAS_THREADS
-                    PROXY_GLOBAL_UNLOCK(bsel);
-#endif
-                    return HTTP_BAD_REQUEST;
-                }
-#if APR_HAS_THREADS
-                if ((rv = PROXY_GLOBAL_UNLOCK(bsel)) != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01203)
-                                  "%s: Unlock failed for adding worker",
-                                  bsel->s->name);
-                }
-#endif
-            } else {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10164)
-                                  "%s: failed to add worker %s",
-                                  bsel->s->name, val);
-                return HTTP_BAD_REQUEST;
+            int rc = balancer_add_worker(r, bsel, conf, val,
+                                         apr_table_get(params, "b_nwrkr_flags"));
+            if (rc != APR_SUCCESS) {
+                return rc;
             }
-
         }
 
     }

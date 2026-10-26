@@ -2145,13 +2145,8 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
      * in which case the worker goes in the conf slot.
      */
     if (balancer) {
-        proxy_worker **runtime;
-        /* recall that we get a ptr to the ptr here */
-        runtime = apr_array_push(balancer->workers);
-        *worker = *runtime = apr_palloc(p, sizeof(proxy_worker));   /* right to left baby */
-        /* we've updated the list of workers associated with
-         * this balancer *locally* */
-        balancer->wupdated = apr_time_now();
+        /* Added to the balancer's array only once it is complete (below). */
+        *worker = apr_palloc(p, sizeof(proxy_worker));
     } else if (conf) {
         *worker = apr_array_push(conf->workers);
     } else {
@@ -2210,6 +2205,14 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     (*worker)->cp = NULL;
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
+
+    if (balancer) {
+        proxy_worker **runtime = apr_array_push(balancer->workers);
+        *runtime = *worker;
+        /* we've updated the list of workers associated with
+         * this balancer *locally* */
+        balancer->wupdated = apr_time_now();
+    }
 
     return NULL;
 }
