@@ -145,8 +145,17 @@ class PrivateServer:
     def __exit__(self, *exc):
         self.stop()
 
-    def graceful(self):
+    def graceful(self, timeout=30):
+        """Ask for a graceful restart and return once the parent has done it. A
+        slow (instrumented) parent can take seconds to act on the signal, and a
+        test that goes on before that is not restarting the server when it
+        thinks it is."""
+        done = self.error_log().count("resuming normal operations")
         os.kill(self.proc.pid, signal.SIGUSR1)
+        deadline = time.monotonic() + timeout
+        while (self.error_log().count("resuming normal operations") <= done
+               and time.monotonic() < deadline):
+            time.sleep(0.05)
 
     def error_log(self):
         return (self.tmp_path / "error_log").read_text(errors="replace")
