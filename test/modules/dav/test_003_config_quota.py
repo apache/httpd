@@ -2,7 +2,10 @@ import os
 
 import pytest
 
+from pyhttpd.backport import skip_not_backported
 from pyhttpd.conf import HttpdConf
+
+pytestmark = skip_not_backported("r1939129", "DAVquota")
 
 
 class TestConfigQuota:

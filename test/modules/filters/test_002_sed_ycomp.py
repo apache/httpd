@@ -2,6 +2,7 @@ import sys
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 # ycomp() reports "transform strings not the same size" when the two halves of
@@ -38,6 +39,7 @@ class TestSedYComp:
     # Source longer than destination: rejected, naming the real problem.
     @pytest.mark.parametrize("expr", ["y/abc/de/", "y/abcdef/de/",
                                       "y/abcdefgh/x/"])
+    @not_backported("r1938337", "mod_sed y command size mismatch error")
     def test_filters_002_01(self, env, expr):
         r = self.install(env, expr)
         assert r.exit_code != 0, f"httpd started with bad expression {expr}"

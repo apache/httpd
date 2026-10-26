@@ -1,8 +1,11 @@
 import pytest
 
+from pyhttpd.backport import not_backported
+
 from .env import ActivatedServer
 
 
+@not_backported("r1937596-r1937647", "mod_systemd watchdog, notify and socket activation")
 class TestSystemdSocketActivation:
     """Listening sockets passed in by the service manager.
 

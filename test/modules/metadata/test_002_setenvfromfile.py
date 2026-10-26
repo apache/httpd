@@ -2,7 +2,10 @@ import os
 import re
 import pytest
 
+from pyhttpd.backport import skip_not_backported
 from pyhttpd.conf import HttpdConf
+
+pytestmark = skip_not_backported("r1938506", "SetEnvFromFile")
 
 
 def _write_ssi_echo(path, names):

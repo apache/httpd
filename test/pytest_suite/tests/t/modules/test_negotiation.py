@@ -14,7 +14,7 @@ import re
 
 import pytest
 
-from apache_pytest import need_cgi, need_module, t_cmp
+from apache_pytest import need_cgi, need_module, not_backported, t_cmp
 
 EN, FR, DE, FU, BU, ZH = "en", "fr", "de", "fu", "bu", "zh-TW"
 
@@ -180,6 +180,7 @@ def _content_type(resp):
     ("text/html", "text/html"),
     (f"text/html, {XML};q=0.5", "text/html"),
 ])
+@not_backported("r1939268", "stripping qs from the negotiated Content-Type")
 def test_source_quality(http, path, accept, expected):
     r = http.GET(f"/modules/negotiation/qs/{path}", headers={"Accept": accept})
     assert t_cmp(_content_type(r), expected), \
@@ -188,6 +189,7 @@ def test_source_quality(http, path, accept, expected):
 
 @need_module("negotiation", "mime")
 @pytest.mark.parametrize("name,expected", QS_PARAMS, ids=[n for n, _ in QS_PARAMS])
+@not_backported("r1939268", "stripping qs from the negotiated Content-Type")
 def test_source_quality_parameters(http, name, expected):
     r = http.GET(f"/modules/negotiation/qs/{name}", headers={"Accept": "*/*"})
     assert t_cmp(_content_type(r), expected), \

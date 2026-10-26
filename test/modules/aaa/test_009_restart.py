@@ -39,6 +39,7 @@ import sys
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from . import digest_client as dc
 from .env import AAATestEnv
 
@@ -48,6 +49,8 @@ CLIENT_UNKNOWN = "AH10618"
 ONETIME_REUSED = "AH01779"
 
 _WIN32 = sys.platform == "win32"
+
+pytestmark = not_backported("r1937711", "random client ids after a restart")
 
 
 class TestDigestRestart:

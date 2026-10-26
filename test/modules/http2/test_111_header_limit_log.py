@@ -2,6 +2,7 @@ import re
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from .env import H2Conf, H2TestEnv
 
 # h2_stream_add_header() logs a limit violation once per stream, not once per
@@ -31,6 +32,7 @@ class TestHeaderLimitLog:
         conf.install()
         assert env.apache_restart() == 0
 
+    @not_backported("r1938328", "header limit message logged once per stream")
     def test_h2_111_01(self, env):
         env.httpd_error_log.clear_log()
         # Many more headers than LimitRequestFields allows.

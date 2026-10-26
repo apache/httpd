@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 # size and time directives parsed with ap_size_parameter_parse(), which can
@@ -13,6 +14,8 @@ DIRECTIVES = [
     "CacheSocacheMaxTime", "CacheSocacheMinTime", "CacheSocacheReadSize",
     "CacheSocacheReadTime",
 ]
+
+pytestmark = not_backported("r1939129, r1939163", "strict size parsing for off_t directives")
 
 
 class TestConfigOffT:

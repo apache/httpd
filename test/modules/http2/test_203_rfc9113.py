@@ -72,6 +72,8 @@ class TestRfc9113:
             env.httpd_error_log.ignore_recent(lognos = lognos)
 
     # RFC 9113, ch. 8.3.1: an OPTIONS request in asterisk form carries ':path: *'
+    @pytest.mark.xfail(condition=not H2TestEnv().httpd_is_at_least("2.5.0"),
+                       reason="asterisk-form OPTIONS in mod_http2 not backported")
     def test_h2_203_03_options_asterisk(self, env):
         url = env.mkurl("https", "test1", "/")
         r = env.curl_get(url, options=['--http2', '-X', 'OPTIONS',

@@ -13,7 +13,10 @@ Dereferencing it crashes the child, so an unauthenticated client can take
 down a worker with a single malformed request.
 """
 
+from pyhttpd.backport import skip_not_backported
 from .env import AAATestEnv
+
+pytestmark = skip_not_backported("r1939032", "no Digest record for a request failing header validation")
 
 
 class TestDigestErrorDocument:

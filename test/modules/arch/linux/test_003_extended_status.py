@@ -1,10 +1,13 @@
 import pytest
 
+from pyhttpd.backport import not_backported
+
 from pyhttpd.conf import HttpdConf
 
 from .env import NO_MONITOR_TIMEOUT
 
 
+@not_backported("r1937596-r1937647", "mod_systemd watchdog, notify and socket activation")
 class TestSystemdExtendedStatus:
     """mod_systemd turns ExtendedStatus on so that it has request counts to
     report, which changes what the rest of the server records too."""

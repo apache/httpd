@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 DAV_METHODS = {"OPTIONS", "GET", "HEAD", "POST", "DELETE", "PROPFIND",
@@ -39,6 +40,7 @@ def _request(env, method, path):
     return r.response["status"], {m.strip() for m in allow.split(',') if m.strip()}
 
 
+@not_backported("r1939146", "DAV OPTIONS Allow honouring TraceEnable")
 class TestOptionsTraceDisabled:
 
     @pytest.fixture(autouse=True, scope='class')

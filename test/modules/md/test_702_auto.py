@@ -302,6 +302,8 @@ class TestAutov2:
 
     # Specify a valid http proxy for a single MDomain
     def test_md_702_008b(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.xfail("MDHttpProxy inside MDomainSet not backported")
         domain = self.test_domain
         domains = [domain]
         #
@@ -320,6 +322,8 @@ class TestAutov2:
 
     # Specify a non-working http proxy for MDomain A and a valid http proxy for MDomain B
     def test_md_702_008c(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.xfail("MDHttpProxy inside MDomainSet not backported")
         domain_a = f"a{self.test_domain}"
         domain_b = f"b{self.test_domain}"
         conf = MDConf(env, admin=f"admin@{domain_a}", proxy=True)

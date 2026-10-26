@@ -4,7 +4,10 @@ import sys
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
+
+pytestmark = not_backported("r1938070, r1938258-r1938260", "mod_mime_magic fixes")
 
 
 class TestMimeMagic:

@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 
@@ -26,6 +27,7 @@ class TestLimitXMLRequestBody:
     @pytest.mark.parametrize("value", [
         "abc123", "123abc", "123foo456", "-1", "1.5", "0x10", "+", "-",
     ])
+    @not_backported("r1939121", "rejecting invalid LimitXMLRequestBody values")
     def test_core_010_002(self, env, value):
         r = self.check_config(env, value)
         assert r.exit_code != 0, f"{value} was accepted"

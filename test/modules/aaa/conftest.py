@@ -98,7 +98,10 @@ def env(pytestconfig) -> AAATestEnv:
     # is answered before the Digest module's post_read_request runs, so it
     # has no per-request Digest record; an ErrorDocument redirecting it into
     # a Digest-protected location must not then dereference that record.
-    conf.add('ErrorDocument 400 /digest/default/secret.txt')
+    # Only configured where that is fixed (r1939032): earlier code does
+    # dereference the missing record.
+    if env.httpd_is_at_least("2.5.0"):
+        conf.add('ErrorDocument 400 /digest/default/secret.txt')
     # A reverse-proxied location which authenticates with Digest at the
     # proxy (so the backend is never reached and need not be reachable).
     # The challenge is an origin-style WWW-Authenticate, so AuthDigestDomain

@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 # SubstituteMaxLineLength caps the length of a line after substitution.  Each
@@ -55,6 +56,7 @@ class TestSubstituteMaxLineLength:
     # and not returned over-length.
     @pytest.mark.parametrize("doc", ["over.html", "over_mid.html", "over_end.html"])
     @pytest.mark.parametrize("mode", list(MODES), ids=list(MODES))
+    @not_backported("r1938306", "SubstituteMaxLineLength counting the unmatched tail")
     def test_filters_001_01(self, env, mode, doc):
         self.configure(env, MODES[mode])
         r = self.get(env, f"/{doc}")

@@ -29,6 +29,7 @@ import sys
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from . import digest_client as dc
 from .env import AAATestEnv
 
@@ -40,6 +41,8 @@ _WIN32 = sys.platform == "win32"
 # A location tracking clients for the nonce-count, and one tracking them for
 # one-time nonces: the two put different kinds of value in last_nonce_time.
 BOTH = ["nccheck", "onetime"]
+
+pytestmark = not_backported("r1937713", "evicting never-authenticated clients first")
 
 
 class TestDigestEviction:

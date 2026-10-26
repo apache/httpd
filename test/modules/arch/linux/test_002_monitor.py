@@ -2,11 +2,14 @@ import re
 
 import pytest
 
+from pyhttpd.backport import not_backported
+
 from pyhttpd.conf import HttpdConf
 
 from .env import MONITOR_STATUS, MONITOR_TIMEOUT
 
 
+@not_backported("r1937596-r1937647", "mod_systemd watchdog, notify and socket activation")
 class TestSystemdMonitor:
     """The periodic STATUS= line the monitor hook reports, which is what
     "systemctl status httpd" shows below the unit description."""

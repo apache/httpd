@@ -3,6 +3,7 @@ import os
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.depends import needs_dependency
 
 from .md_conf import MDConf
@@ -78,6 +79,7 @@ class TestDns01:
                                 setups[0][4]]
 
     # an argument configured with quotes stays one argument
+    @not_backported("r1938494", "MDChallengeDns01 arguments passed verbatim")
     def test_md_721_003(self, env):
         domain = self.test_domain
         dnslog = os.path.join(env.gen_dir, "dns01 with spaces.log")

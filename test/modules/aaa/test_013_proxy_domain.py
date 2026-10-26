@@ -11,7 +11,10 @@ for the reverse-proxied case, so clients re-authenticated per URI prefix
 and sent the Authorization header outside the intended protection space.
 """
 
+from pyhttpd.backport import not_backported
 from . import digest_client as dc
+
+pytestmark = not_backported("r1939035", "domain= for reverse-proxied requests")
 
 
 class TestDigestProxyDomain:

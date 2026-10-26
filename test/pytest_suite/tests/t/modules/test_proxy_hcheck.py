@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from apache_pytest import need_module
+from apache_pytest import need_module, not_backported
 
 need = need_module("proxy_hcheck", "proxy_balancer", "proxy_http", "watchdog")
 
@@ -169,6 +169,7 @@ def test_complete_response_keeps_worker_healthy(hc_http):
 
 
 @need
+@not_backported("r1939353, r1939390", "hcheck rejecting a truncated response")
 def test_truncated_response_headers_fail_the_check(hc_http):
     """A response whose headers end at EOF, without the blank line that
     terminates them, is not a valid response.  It used to be accepted, so a
@@ -201,6 +202,7 @@ def manager_post(http, balancer, query):
 
 
 @need
+@not_backported("r1939353, r1939390", "hcheck following a changed hcuri")
 def test_changed_probe_uri_is_used(hc_http):
     """The probe URI is read from the worker when the health check is first set
     up, and was never looked at again, so changing it in the balancer-manager
@@ -254,6 +256,7 @@ def tls_need(http):
 
 
 @need
+@not_backported("r1939353, r1939390", "hcheck SNI on HTTPS probes")
 def test_https_probe_sends_sni_and_checks_the_name(hc_http, certs):
     """A health check of an https worker used to send no SNI and skip the host
     name check, so a backend presenting the certificate of another host passed
@@ -274,6 +277,7 @@ def test_https_probe_sends_sni_and_checks_the_name(hc_http, certs):
 
 
 @need
+@not_backported("r1939353, r1939390", "hcheck SNI on HTTPS probes")
 def test_https_probe_with_matching_certificate_passes(hc_http, certs):
     """Control for the above: the right certificate keeps the worker healthy."""
     tls_need(hc_http)
@@ -292,6 +296,7 @@ def test_https_probe_with_matching_certificate_passes(hc_http, certs):
 # ---- limits on what a probe accepts from a backend ----------------------------
 
 @need
+@not_backported("r1939353, r1939390", "hcheck response header limit")
 def test_response_with_too_many_headers_fails_the_check(hc_http):
     port = conf_port(hc_http, "MANYHDR")
 
@@ -308,6 +313,7 @@ def test_response_with_too_many_headers_fails_the_check(hc_http):
 
 
 @need
+@not_backported("r1939353, r1939390", "hcheck cutting off an endless response")
 def test_endless_response_is_cut_off(hc_http):
     """A backend that keeps sending (a byte every half second here) never trips
     a per-read timeout.  The probe needs an overall deadline (the worker's
@@ -341,6 +347,7 @@ def big_ok(size):
 
 
 @need
+@not_backported("r1939353, r1939390", "hcheck not keeping a large body")
 def test_large_body_is_not_kept_for_a_condition(hc_http):
     """With a condition on the body, a probe keeps the body in memory to evaluate
     it.  A 3MB body is more than that is allowed to take, and fails the check."""
@@ -379,6 +386,7 @@ def test_large_body_without_a_condition_is_fine(hc_http):
     ("PATHF", "/app/"),         # http://host:port/app/   + no hcuri: kept as is
     ("PATHG", "/app/"),         # http://host:port/app    + hcuri "/"
 ])
+@not_backported("r1939353, r1939390", "hcheck joining the worker path and hcuri")
 def test_probe_path_joins_worker_path_and_hcuri(hc_http, name, expected):
     """One slash between the worker's path and hcuri, and a request target that
     starts with one: a bare "ping" used to be sent as "GET ping HTTP/1.0", and a

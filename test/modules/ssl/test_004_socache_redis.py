@@ -4,6 +4,7 @@ from threading import Thread
 
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.depends import needs_dependency
 
 from pyhttpd.conf import HttpdConf
@@ -64,6 +65,7 @@ class TestSocacheRedis:
         ["1s", 1],
         ["1500ms", 2],
     ])
+    @not_backported("r1938833", "RedisTimeout unit conversion")
     def test_ssl_004_01(self, env, timeout, seconds):
         redis = SilentRedis()
         redis.start()

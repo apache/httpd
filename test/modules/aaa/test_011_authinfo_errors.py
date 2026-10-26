@@ -7,8 +7,11 @@ file inside the protected area reaches the error path while fully
 authenticated, so it exercises this without a handler like mod_dav.
 """
 
+from pyhttpd.backport import not_backported
 from . import digest_client as dc
 from .env import AAATestEnv
+
+pytestmark = not_backported("r1937888", "Authentication-Info on error responses")
 
 
 class TestAuthInfoOnError:

@@ -3,6 +3,7 @@ import re
 
 import pytest
 
+from pyhttpd.backport import not_backported, skip_not_backported
 from pyhttpd.conf import HttpdConf
 
 # mod_sed implements the Solaris 10 sed language over the response (OutputSed)
@@ -267,6 +268,7 @@ class TestSed:
     # in trans[], everything else non-printable as a three-digit octal escape.
     # Bytes with the top bit set used to come out as nonsense ("\/77" for 0xff)
     # because the shift was done on a signed char.
+    @not_backported("r1938487", "mod_sed l command sign extension")
     def test_filters_003_22(self, env):
         body = self.body(env, "l;d", path="/bytes.html")
         assert body == b"a\\11b\\177c\\377d\\200e\\251f\n", body
@@ -295,6 +297,7 @@ class TestSed:
     # what it is: a truncated 200.  mod_sed used to skip both the final flush
     # and the pass because of the error status, dropping the EOS with them, and
     # the client was left waiting on a response that never ended.
+    @not_backported("r1938485", "mod_sed EOS on an evaluation error")
     def test_filters_003_24(self, env):
         env.httpd_error_log.add_ignored_lognos(["AH02998", "AH10394"])
         self.configure(env, "s/monday/MON/")
@@ -313,6 +316,7 @@ class TestSed:
     # Filling it exactly used to write the terminating NULL one past the end
     # of eval->abuf, over eval->aptr itself, and the next line then wrote
     # through that NULL pointer.
+    @skip_not_backported("r1938486", "mod_sed r and w command buffer overflow (SIGSEGV)")
     def test_filters_003_25(self, env):
         env.httpd_error_log.add_ignored_lognos(["AH02998"])
         path = self.sed_path(env, "insert.txt")
@@ -342,6 +346,7 @@ class TestSed:
     # answering: pyhttpd gives curl --connect-timeout but no overall limit, so
     # without one of our own a failure hangs the whole run rather than failing
     # it.  Note the worker keeps spinning after curl gives up.
+    @skip_not_backported("r1938489", "mod_sed starred backreference loop (hangs a worker)")
     def test_filters_003_27(self, env):
         self.configure(env, r"s/\(a*\)\1*/X/")
         r = self.get(env, "/backref.html", options=BOUNDED)
@@ -352,6 +357,7 @@ class TestSed:
     # --- input filter -----------------------------------------------------
 
     # The same expression on a request body, which runs the same matcher.
+    @skip_not_backported("r1938489", "mod_sed starred backreference loop (hangs a worker)")
     def test_filters_003_28(self, env):
         self.configure(env, r"s/\(a*\)\1*/X/", input_sed=True)
         r = env.curl_post_data(env.mkurl("http", "test1", "/cgi/echo.py"),
@@ -379,6 +385,7 @@ class TestSed:
 
     # A handler which reads the request body with AP_MODE_GETLINE, not
     # AP_MODE_READBYTES, still gets it filtered.
+    @not_backported("r1938963, r1938964", "mod_sed InputSed GETLINE and Content-Length handling")
     def test_filters_003_33(self, env):
         self.configure(env, "s/monday/MON/g", input_sed=True, extra="""
             <Location "/getline">
@@ -395,6 +402,7 @@ class TestSed:
     # The request Content-Length is the length of the body before it was
     # filtered, so once mod_sed has started reading the body it is removed:
     # a handler must not find the original length.
+    @not_backported("r1938963, r1938964", "mod_sed InputSed GETLINE and Content-Length handling")
     def test_filters_003_34(self, env):
         self.configure(env, "s/monday/MONDAYMONDAY/g", input_sed=True,
                        extra="""
@@ -435,6 +443,7 @@ class TestSed:
         r"s/\(\{1\}a\)/X/",
         r"s/a\{1\}\{2,30\}/X/",
     ])
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_32(self, env, expr):
         err = self.configure(env, expr, fails=True)
         assert "not allowed here" in err, err
@@ -448,11 +457,13 @@ class TestSed:
         r"s/\(\(\)\1*\)/X/",
         r"s/\(a\1\)/X/",
     ])
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_35(self, env, expr):
         err = self.configure(env, expr, fails=True)
         assert "out of range" in err, err
 
     # A backreference to a closed group, even with a later group still open.
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_36(self, env):
         assert self.body(env, r"s/\(\(mo\)n\2*\)day/[\2]/").decode() == \
             "one [mo] two\nthree sunday four\n[mo] monday monday\n"
@@ -466,6 +477,7 @@ class TestSed:
             .decode() == "one MON two\nthree sunday four\nMON monday monday\n"
 
     # Any deeper is rejected.
+    @not_backported("r1938965", "mod_sed depth and delimiter checks")
     def test_filters_003_38(self, env):
         err = self.configure(env, ["{" * 21 + "p"] + ["}"] * 21, fails=True)
         assert "too many {'s" in err, err
@@ -478,6 +490,7 @@ class TestSed:
         ["s/[a-"],
         ["s/aaaa]*/b/", "s/[a-"],
     ])
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_39(self, env, exprs):
         err = self.configure(env, exprs, fails=True)
         assert "imbalance" in err, err
@@ -490,6 +503,7 @@ class TestSed:
         ["s/a"],
         ["s/aaaa/b/", "s/a"],
     ])
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_40(self, env, exprs):
         err = self.configure(env, exprs, fails=True)
         assert "missing delimiter" in err, err
@@ -498,6 +512,7 @@ class TestSed:
 
     # Any byte other than backslash and newline can be the delimiter,
     # including one with the high bit set.
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_41(self, env):
         assert self.body(env, [b"s\xe9monday\xe9MON\xe9",
                                b"\\\xe9sunday\xe9s\xe9u\xe9U\xe9"]).decode() \
@@ -505,11 +520,13 @@ class TestSed:
 
     # An s or y command which ends before its delimiter is rejected.
     @pytest.mark.parametrize("expr", ["s", "/monday/s", "y", "/monday/y"])
+    @not_backported("r1938965", "mod_sed depth and delimiter checks")
     def test_filters_003_42(self, env, expr):
         err = self.configure(env, expr, fails=True)
         assert "command garbled" in err, err
 
     # y maps bytes with the high bit set like any other.
+    @not_backported("r1938965", "mod_sed depth and delimiter checks")
     def test_filters_003_43(self, env):
         self.write_bytes(env, "latin1.html", b"caf\xe9 na\xefve\n")
         assert self.body(env, [b"y/\xe9\xef/ei/"], path="/latin1.html") == \
@@ -531,6 +548,7 @@ class TestSed:
         r"s/o\{4294967298\}/X/",
         r"s/o\{1,4294967298\}/X/",
     ])
+    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_45(self, env, expr):
         err = self.configure(env, expr, fails=True)
         assert "Range endpoint too large" in err, err
@@ -538,6 +556,7 @@ class TestSed:
     # A line number too large for a 64-bit count is rejected rather than
     # wrapping around; one which fits, but which no document reaches, is
     # accepted.
+    @not_backported("r1938965", "mod_sed depth and delimiter checks")
     def test_filters_003_46(self, env):
         err = self.configure(env, "99999999999999999999p", fails=True)
         assert "command garbled" in err, err

@@ -4,6 +4,8 @@ import time
 
 import pytest
 
+from pyhttpd.backport import not_backported
+
 from pyhttpd.depends import needs_dependency
 
 from .env import (ForegroundServer, TransientService, MIN_WATCHDOG_SEC,
@@ -22,6 +24,7 @@ def watchdog_env(usec: int, pid: str = '$$') -> dict:
     return env
 
 
+@not_backported("r1937596-r1937647", "mod_systemd watchdog, notify and socket activation")
 class TestSystemdWatchdog:
     """The keep-alive ping of the systemd watchdog protocol.
 

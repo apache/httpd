@@ -19,7 +19,7 @@ import time
 import httpx
 import pytest
 
-from apache_pytest import need_module, t_cmp
+from apache_pytest import need_module, not_backported, t_cmp
 
 DIR = "modules/dav"
 URI = f"/{DIR}/dav.html"
@@ -210,6 +210,7 @@ def test_dav(http):
 
 
 @need_module("dav")
+@not_backported("r1939426", "DAVMSext (ms_wdv) null dereference")
 def test_dav_mswdv_null_deref(http):
     """BZ 70051: a PUT/DELETE/MOVE/LOCK whose dav_get_resource() fails (e.g. an
     extraneous path component under an existing file) must not crash the

@@ -4,6 +4,7 @@ supported value), AuthDigestNonceLifetime 300, no AuthDigestDomain).
 """
 
 from . import digest_client as dc
+from pyhttpd.backport import not_backported
 from .env import AAATestEnv
 
 
@@ -179,6 +180,7 @@ class TestDigestChallengeResponse:
         assert r.response["status"] == 401
         env.httpd_error_log.ignore_recent(lognos=["AH01794"])
 
+    @not_backported("r1939034", "rejecting an Authorization uri which fails to unescape")
     def test_digest_015_uri_bad_escaping_rejected(self, env):
         # The Authorization uri= is compared against the request-target after
         # %-decoding both. A uri= that fails to decode -- an encoded NUL or

@@ -1,5 +1,6 @@
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 
@@ -36,10 +37,12 @@ class TestAllowMethods:
 
     # An extension method reaches make_allow() only through method_list,
     # which is emitted just when the M_INVALID bit is set in method_mask.
+    @not_backported("r1938291", "unregistered methods listed in Allow")
     def test_core_009_03(self, env):
         allow = self.options(env, "FROBNICATE")
         assert "FROBNICATE" in allow, f"expected FROBNICATE in Allow: {allow}"
 
+    @not_backported("r1938291", "unregistered methods listed in Allow")
     def test_core_009_04(self, env):
         allow = self.options(env, "DELETE, FROBNICATE")
         for method in ["DELETE", "FROBNICATE"]:
