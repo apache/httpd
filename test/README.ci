@@ -25,12 +25,21 @@ The CI scripts use the following environment variables:
 
 * MFLAGS - arguments to pass when running "make" for httpd.
 
-* SKIP_TESTING - if set, the Perl test framework is not run for the
-  build.
+* SKIP_TESTING - if set, no testing is done at all: the build is only
+  checked with "httpd -V".
+
+* NO_TEST_FRAMEWORK - if set, the Perl-based test framework is not
+  checked out or run.  The Python test suites are not affected.
+
+* TEST_LOGNO - if set, checks for APLOGNO() macro errors (duplicates
+  or empty arguments) and exits; no build or testing is done.
 
 * TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
-* TEST_MALLOC - set for job using enhanced malloc debugging.
+* TEST_ASAN - set for job using ASan ("Address Sanitizer")
+
+* TEST_MALLOC - set for job using enhanced malloc debugging
+  (sets MALLOC_PERTURB_, MALLOC_CHECK_ and LIBC_FATAL_STDERR_).
 
 * TEST_INSTALL - set for job testing "make install"
 
@@ -38,11 +47,32 @@ The CI scripts use the following environment variables:
 
 * TEST_LDAP - set for job with slapd, running LDAP tests
 
-* TEST_SSL - set for job with SSL/TLS testing variants
+* TEST_SSL - set for job with SSL/TLS testing variants (encrypted
+  private keys, session cache backends via redis/memcache/shmcb)
+
+* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.7"), that
+  version of OpenSSL is built from source and used for mod_ssl.
+
+* TEST_OPENSSL3_BRANCH - if set together with TEST_OPENSSL3, the
+  OpenSSL source is cloned from the named git branch instead of
+  downloading a release tarball.
+
+* OPENSSL_CONFIG - extra arguments passed to OpenSSL's ./Configure
+  when building from source (e.g. "no-engine").
+
+* TEST_APR_TARBALL - if set, APR/APR-util source is fetched as a
+  release tarball from archive.apache.org rather than cloned from git.
+  (This is necessary for old releases where running ./buildconf from
+  a tag may now be difficult.)
 
 * TESTS - a list of Perl framework tests to run
 
 * TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
+
+* LITMUS - if set, runs the litmus WebDAV test suite against mod_dav.
+
+* PHP_FPM - path to the php-fpm binary, set for the whole workflow.
+  Unless SKIP_TESTING is set, the build script checks that it runs.
 
 * CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
 
@@ -77,7 +107,6 @@ Travis to Github Actions Migration TODO
 * turn on failure notifications?
 * test across different Ubuntu versions again
  - and test against OpenSSL 1.x since we're now ONLY building against 3.x
-* update the docs below for testing from PRs/feature branches
 * introduce some job ordering rather than having a flat/concurrent
   set, if the default "./configure && make && test" works *then* start
   jobs doing 200 different variations on ./configure --enable-XXX 
@@ -112,7 +141,7 @@ Some known failures:
   Not clear if there is a real bug here which can be reproduced
   outside of pool-debug.
 
-Testing from a Feature Branch [*** N/A FOR GITHUB ACTIONS ***]
+Testing from a Feature Branch
 -----------------------------
 
 An SVN branch off trunk should be mirrored to github, and will be
@@ -120,11 +149,7 @@ tested in the same way that trunk is in CI, so this workflow is
 available for those familiar with using Subversion and the standard
 ASF/httpd repository layout.
 
-Tested branches are listed at: https://travis-ci.com/github/apache/httpd/branches
-
-Travis will also run the tests for a PR filed against the httpd Github
-repository at https://github.com/apache/httpd or from a fork of this
-repository if enabled for the Travis user.
+Test runs are listed at: https://github.com/apache/httpd/actions
 
 A workflow to enable testing would be as follows, substituting
 $USERNAME for your github username:
@@ -137,18 +162,12 @@ $USERNAME for your github username:
   $ git commit ...
   $ git push -u $USERNAME my-feature:my-feature
 
-To enable testing for a fork, visit the settings page at
-https://travis-ci.com/$USERNAME/httpd/settings - you may need to sync
-your account via https://travis-ci.com/account/repositories for a
-freshly created fork.
-
 To create a Pull Request, go to the URL produced in the "git push"
 command output when pushing to your fork, which is something like:
 https://github.com/apache/httpd/compare/trunk...$USERNAME:trunk
 
-Once a PR has been created, travis will run the tests and link the
-results from a PR comment. All tested PRs are listed here:
-https://travis-ci.com/github/apache/httpd/pull_requests
+Once a PR has been created, the tests will run and test results
+displayed directly in the PR.
 
 To merge from github back to SVN trunk, create a patch from e.g.:
 

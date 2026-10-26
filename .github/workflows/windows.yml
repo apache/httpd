@@ -16,6 +16,7 @@ on:
       - 'test/modules/arch/linux/**'
       - 'test/travis_*.sh'
       - 'test/gha-*.sh'
+      - .asf.yaml
     tags:
       - 2.*
   pull_request:
@@ -27,13 +28,15 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
-      - changes-entries/*
       - 'modules/arch/unix/**'
       - 'os/unix/**'
       - server/mpm_unix.c
       - 'test/modules/arch/linux/**'
       - 'test/travis_*.sh'
       - 'test/gha-*.sh'
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
