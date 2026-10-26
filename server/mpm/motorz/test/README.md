@@ -70,17 +70,16 @@ Runs identical `ab` (HTTP/1.1) and `h2load` (HTTP/2) workloads against the same
 build configured first with the event MPM, then motorz, with matched tunables,
 and prints a req/s comparison table.
 
-**Critical:** worker threads must exceed peak connection concurrency — under
-HTTP/2 each connection holds a worker for its lifetime, so too few workers
-starves the pool and h2load reports spurious failures on *both* MPMs. `bench.sh`
+**Note:** keep the worker count above the peak connection concurrency of the
+benchmark, so that it compares the MPMs and not worker starvation. `bench.sh`
 defaults `THREADS=128` (≥ the c=50 default) and **flags any run with
 failed/errored requests** (its req/s is then not a valid figure). Env knobs:
 `REQS CONC H2_REQS H2_CONC H2_STREAMS H2_BIG_REQS THREADS PORT`.
 
 Observed (12-core arm64, 1 child, adequate workers): motorz tracks event within
-~1–2% on all four workloads. Note: motorz shows an *intermittent* small h2
-failure rate under rapid connection churn at high concurrency that event does
-not — see the project memory note; not a throughput issue.
+~1–2% on all four workloads. (An intermittent loss of h2 responses under rapid
+connection churn that was seen once is fixed: `run-http2.sh` checks that 30000
+started requests lose none.)
 
 Environment knobs:
 

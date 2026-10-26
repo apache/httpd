@@ -242,6 +242,31 @@ static ap_sb_handle_t *motorz_worker_claim_sbh(motorz_conn_t *scon)
     return sbh;
 }
 
+/* The suspend/resume_connection hooks (mpm_common.h) tell modules that a
+ * connection is leaving a thread and that the thread which continues it has
+ * picked it up. As in mpm_event, suspend is announced by the worker that is
+ * about to park the connection, before it is published to the poller or handed
+ * to a module (afterwards another worker may already be running it), and resume
+ * by the worker that continues it, once that worker is associated with it.
+ */
+static void motorz_notify_suspend(motorz_conn_t *scon)
+{
+    ap_run_suspend_connection(scon->c, scon->r);
+    scon->c->sbh = NULL;
+    scon->suspend_notified = 1;
+}
+
+static void motorz_notify_resume(motorz_conn_t *scon, int cleanup)
+{
+    if (scon->suspend_notified) {
+        scon->suspend_notified = 0;
+        /* A cleanup resume (the connection ends here) may not be on the
+         * worker whose slot scon->sbh names. */
+        scon->c->sbh = cleanup ? NULL : scon->sbh;
+        ap_run_resume_connection(scon->c, scon->r);
+    }
+}
+
 /* Obtain a transaction pool for a new connection, reusing one from the
  * recycle free-list if available, otherwise creating a fresh one with its
  * own allocator (so per-connection memory is released as a unit and the
@@ -619,6 +644,7 @@ static void *motorz_timer_invoke(apr_thread_t *thread, void *baton)
     ap_sb_handle_t *sbh = motorz_worker_claim_sbh(scon);
 
     scon->c->current_thread = thread;
+    motorz_notify_resume(scon, 0);
 
     ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, ap_server_conf, APLOGNO(03320)
                          "motorz_timer_invoke(): entered");
@@ -637,6 +663,7 @@ static void *motorz_timer_invoke(apr_thread_t *thread, void *baton)
 static apr_status_t motorz_timer_event_process(motorz_poller_t *poller, motorz_timer_t *te)
 {
     motorz_conn_t *scon = (motorz_conn_t *)te->baton;
+    apr_status_t rv;
     scon->timer.expires = 0;
 
     ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, ap_server_conf, APLOGNO(03322)
@@ -653,9 +680,20 @@ static apr_status_t motorz_timer_event_process(motorz_poller_t *poller, motorz_t
      */
     motorz_pollset_del(poller, scon);
 
-    return apr_thread_pool_push(poller->mz->workers,
-                                motorz_timer_invoke,
-                                te, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+    rv = apr_thread_pool_push(poller->mz->workers,
+                              motorz_timer_invoke,
+                              te, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+    if (rv != APR_SUCCESS) {
+        /* Nothing will run the timeout, and the connection is no longer
+         * reachable from the poller: close it here. (The pool is created with
+         * all its threads, so a failed push means it is stopping or out of
+         * memory; the task was not queued.) */
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10668)
+                     "motorz_timer_event_process: could not queue the timeout; "
+                     "closing the connection");
+        motorz_conn_done(scon);
+    }
+    return rv;
 }
 
 static void *motorz_io_invoke(apr_thread_t *thread, void *baton)
@@ -668,6 +706,7 @@ static void *motorz_io_invoke(apr_thread_t *thread, void *baton)
     ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, ap_server_conf, APLOGNO(03323)
                          "motorz_io_invoke(): entered");
     scon->c->current_thread = thread;
+    motorz_notify_resume(scon, 0);
 
     rv = motorz_io_process(scon);
 
@@ -684,6 +723,7 @@ static void *motorz_io_invoke(apr_thread_t *thread, void *baton)
 static apr_status_t motorz_io_event_process(motorz_poller_t *poller, motorz_sb_t *sb)
 {
     motorz_conn_t *scon = (motorz_conn_t *) sb->baton;
+    apr_status_t rv;
 
     /* Take ownership of this connection on the poll thread before handing it
      * to a worker: disarm its pollset entry and cancel any pending timeout
@@ -698,9 +738,18 @@ static apr_status_t motorz_io_event_process(motorz_poller_t *poller, motorz_sb_t
      */
     motorz_conn_claim(poller, scon);
 
-    return apr_thread_pool_push(poller->mz->workers,
-                                motorz_io_invoke,
-                                sb, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+    rv = apr_thread_pool_push(poller->mz->workers,
+                              motorz_io_invoke,
+                              sb, APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+    if (rv != APR_SUCCESS) {
+        /* The connection has been claimed, so nothing else would ever reach
+         * it again: close it here. (See motorz_timer_event_process.) */
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, APLOGNO(10669)
+                     "motorz_io_event_process: could not queue the connection; "
+                     "closing it");
+        motorz_conn_done(scon);
+    }
+    return rv;
 }
 
 static apr_status_t motorz_io_callback(void *baton, const apr_pollfd_t *pfd)
@@ -874,6 +923,10 @@ static void motorz_conn_done(motorz_conn_t *scon)
 
     if (scon->linger_started) {
         apr_atomic_dec32(&lingering_count);
+    }
+    if (scon->suspend_notified) {
+        /* Parked, and ended without a worker picking it up again. */
+        motorz_notify_resume(scon, 1);
     }
 
     /* Disarm on the I/O poller (its pollset), then recycle to the accepting
@@ -1049,12 +1102,9 @@ static void motorz_suspend_connection(motorz_conn_t *scon)
                  "motorz_suspend_connection(): scon: %pp", scon);
 
     c->suspended_baton = scon;
-    scon->suspended = 1;
-    ap_run_suspend_connection(c, scon->r);
-    /* sbh is owned by the (now parked) connection; drop our reference like
-     * mpm_event's notify_suspend() does.
-     */
-    c->sbh = NULL;
+    motorz_notify_suspend(scon);
+    /* Last: from here on the module may hand the connection back. */
+    apr_atomic_set32(&scon->suspended, 1);
 }
 
 static apr_status_t motorz_io_process(motorz_conn_t *scon)
@@ -1214,6 +1264,7 @@ read_request:
                 (scon->cs.sense == CONN_SENSE_WANT_WRITE ? APR_POLLOUT
                                                          : APR_POLLIN)
                 | APR_POLLHUP | APR_POLLERR;
+            motorz_notify_suspend(scon);
             rv = motorz_conn_register(scon, reqevents,
                                       motorz_io_timeout_cb,
                                       motorz_get_timeout(scon));
@@ -1247,6 +1298,7 @@ read_request:
                     (scon->cs.sense == CONN_SENSE_WANT_READ ? APR_POLLIN
                                                             : APR_POLLOUT)
                     | APR_POLLHUP | APR_POLLERR;
+                motorz_notify_suspend(scon);
                 rv = motorz_conn_register(scon, reqevents,
                                           motorz_io_timeout_cb,
                                           motorz_get_timeout(scon));
@@ -1297,6 +1349,7 @@ read_request:
              * afterwards (a concurrent timeout may free it). On failure scon
              * is already disarmed by the rollback; close it.
              */
+            motorz_notify_suspend(scon);
             rv = motorz_conn_register(scon,
                                       APR_POLLIN | APR_POLLHUP | APR_POLLERR,
                                       motorz_io_timeout_cb,
@@ -1319,45 +1372,46 @@ read_request:
 }
 
 /* mpm_resume_suspended hook (A4): a module that previously suspended this
- * connection is handing it back. Recover scon from the suspended_baton, run
- * the resume_connection hooks, and re-inject it into the worker pool to
- * continue in write-completion (flush, then keep-alive or close). May be
- * called from a module's own thread, so we hand off rather than process
- * inline.
+ * connection is handing it back. Recover scon from the suspended_baton and
+ * re-inject it into the worker pool to continue in write-completion (flush,
+ * then keep-alive or close). May be called from a module's own thread, so we
+ * hand off rather than process inline; the worker that picks it up runs the
+ * resume_connection hooks (motorz_notify_resume), as that is the thread that
+ * continues the connection. Only one resume per suspension is accepted.
  */
 static apr_status_t motorz_resume_suspended(conn_rec *c)
 {
     motorz_conn_t *scon = (motorz_conn_t *) c->suspended_baton;
-    motorz_core_t *mz;
+    conn_state_e prev_state;
+    conn_sense_e prev_sense;
+    apr_status_t rv;
 
-    if (scon == NULL || !scon->suspended) {
+    if (scon == NULL || apr_atomic_cas32(&scon->suspended, 0, 1) != 1) {
         ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, c, APLOGNO(10551)
                       "motorz_resume_suspended: connection not suspended");
         return APR_EGENERAL;
     }
-    mz = scon->mz;
 
     c->suspended_baton = NULL;
-    scon->suspended = 0;
-
-    /* Restore sbh before running resume hooks: motorz_suspend_connection
-     * NULLed c->sbh (matching event's notify_suspend), but any module or
-     * filter calling ap_update_child_status(c->sbh, ...) after resume would
-     * dereference NULL without this. scon->sbh is valid for the connection's
-     * lifetime (it lives in scon->pool which is not recycled during suspend).
-     */
-    c->sbh = scon->sbh;
-    ap_run_resume_connection(c, scon->r);
-
-    /* Continue where a normal request would after processing: flush pending
-     * output, then decide keep-alive vs. close.
-     */
+    prev_state = scon->cs.state;
+    prev_sense = scon->cs.sense;
     scon->cs.state = CONN_STATE_WRITE_COMPLETION;
     scon->cs.sense = CONN_SENSE_DEFAULT;
 
-    return apr_thread_pool_push(mz->workers, motorz_io_invoke,
-                                scon->pfd.client_data,
-                                APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+    rv = apr_thread_pool_push(scon->mz->workers, motorz_io_invoke,
+                              scon->pfd.client_data,
+                              APR_THREAD_TASK_PRIORITY_NORMAL, NULL);
+    if (rv != APR_SUCCESS) {
+        /* Not queued (see motorz_timer_event_process): the module still owns
+         * the connection, so it can try again or close it. */
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c, APLOGNO(10670)
+                      "motorz_resume_suspended: could not queue the connection");
+        c->suspended_baton = scon;
+        scon->cs.state = prev_state;
+        scon->cs.sense = prev_sense;
+        apr_atomic_set32(&scon->suspended, 1);
+    }
+    return rv;
 }
 
 /* One poll thread per poller drives accept/dispatch/timer work for the
@@ -1589,7 +1643,7 @@ static int motorz_query(int query_code, int *result, apr_status_t *rv)
         *result = 0;
         break;
     case AP_MPMQ_MAX_REQUESTS_DAEMON:
-        *result = 0;
+        *result = ap_max_requests_per_child;
         break;
     case AP_MPMQ_MAX_DAEMONS:
         *result = ap_num_kids;
@@ -1694,9 +1748,24 @@ static void motorz_enable_listeners(motorz_poller_t *poller)
     for (i = 0; i < poller->num_listener_pfds; i++) {
         apr_status_t rv = apr_pollset_add(poller->pollset,
                                           poller->listener_pfds[i]);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, ap_server_conf,
-                         "motorz_enable_listeners: apr_pollset_add failed");
+        if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
+            /* Stay disabled and try again on the next pass; say so, but not on
+             * every pass. Take back the ones added so far: a pollset need not
+             * tell that a descriptor is there already. */
+            apr_time_t now = apr_time_now();
+            int j;
+
+            for (j = 0; j < i; j++) {
+                apr_pollset_remove(poller->pollset, poller->listener_pfds[j]);
+            }
+
+            if (now - poller->last_enable_failure > apr_time_from_sec(10)) {
+                poller->last_enable_failure = now;
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                             APLOGNO(10671) "motorz_enable_listeners: could not "
+                             "accept connections again; retrying");
+            }
+            return;
         }
     }
     poller->listeners_disabled = 0;

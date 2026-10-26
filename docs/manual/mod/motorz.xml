@@ -139,7 +139,15 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
 
     <p>Modules that take a connection fully asynchronous (suspending it and
     resuming it later) are supported; a suspended connection is parked and
-    re-armed on its owning poller when resumed.</p>
+    re-armed on its owning poller when resumed. As in the <module>event</module>
+    MPM, a module that registers for the <code>suspend_connection</code> and
+    <code>resume_connection</code> hooks is told on the worker thread that parks
+    a connection (between requests, or while it waits for I/O or for output to
+    drain) and again on the worker thread that continues it, which need not be
+    the same thread. The generic timed and poll callbacks of the MPM interface
+    (<code>ap_mpm_register_timed_callback()</code> and
+    <code>ap_mpm_register_poll_callback()</code>) are not provided: they return
+    <code>APR_ENOTIMPL</code>, and a module has to cope with that.</p>
 </section>
 
 <section id="graceful-stop"><title>Graceful stop and restart</title>
@@ -222,7 +230,7 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
     values (in particular <code>ThreadsPerChild 1</code>) cause the listeners
     to re-enable only when the work queue is completely empty, which severely
     degrades throughput. A value of <code>ThreadsPerChild</code> of at least 4
-    is strongly recommended; the server emits a warning otherwise.</p>
+    is strongly recommended; the server logs a warning for a value of 1.</p>
     </note>
 </section>
 

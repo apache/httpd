@@ -172,6 +172,7 @@ struct motorz_poller_t {
     apr_pollfd_t **listener_pfds;
     int num_listener_pfds;
     int listeners_disabled;
+    apr_time_t last_enable_failure;  /* rate limits the error for it */
 };
 
 typedef struct motorz_child_bucket motorz_child_bucket;
@@ -234,8 +235,11 @@ struct motorz_conn_t
     conn_rec *c;
     /** request record (if any) this struct refers to */
     request_rec *r;
-    /** is the current conn_rec suspended? */
-    int suspended;
+    /** is the current conn_rec suspended by a module? (atomic: set by the
+     *  worker that parks it, cleared by whoever hands it back) */
+    apr_uint32_t suspended;
+    /** suspend_connection hooks ran and the resume_connection ones have not */
+    int suspend_notified;
     /** has ap_start_lingering_close() been called for this conn? */
     int linger_started;
     /** absolute end of the lingering close; set once, only ever shortened */
