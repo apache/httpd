@@ -94,6 +94,9 @@ def test_graceful_restart_does_not_cut_a_download(config, tmp_path):
                 "StartServers 1",
                 "ThreadsPerChild 10",
                 f'DocumentRoot "{docroot}"',
+                "<IfModule mime_module>",
+                "    TypesConfig /dev/null",
+                "</IfModule>",
                 "",
             ]
         )
