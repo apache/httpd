@@ -16,6 +16,11 @@
  * limitations under the License.
  */
 
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
 #include <string.h>
 
 #include <openssl/bio.h>

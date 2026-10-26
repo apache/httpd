@@ -576,20 +576,20 @@ SET(mod_http2_extra_sources
   modules/http2/h2_ws.c
 )
 SET(mod_http3_requires               NGHTTP3_FOUND)
-SET(mod_http3_extra_includes         ${NGHTTP3_INCLUDE_DIR} modules/http3/include)
-SET(mod_http3_extra_libs             ${NGHTTP3_LIBRARIES})
-SET(mod_http3_main_source            modules/http3/src/mod_http3.c)
+SET(mod_http3_extra_includes         ${NGHTTP3_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/modules/http3/include ${OPENSSL_INCLUDE_DIR})
+SET(mod_http3_extra_libs             ${NGHTTP3_LIBRARIES} ${OPENSSL_LIBRARIES})
+SET(mod_http3_main_source            modules/http3/mod_http3.c)
 SET(mod_http3_extra_sources
-  modules/http3/src/h3_callbacks.c     modules/http3/src/h3_config.c
-  modules/http3/src/h3_filter.c        modules/http3/src/h3_hooks.c
-  modules/http3/src/h3_io.c            modules/http3/src/h3_request.c
-  modules/http3/src/h3_server.c        modules/http3/src/h3_session.c
-  modules/http3/src/h3_socket.c        modules/http3/src/h3_socket_os.c
-  modules/http3/src/h3_stream.c        modules/http3/src/h3_threads.c
-  modules/http3/src/quic/h3q.c         modules/http3/src/quic/h3q_conn.c
-  modules/http3/src/quic/h3q_stream.c
-  modules/http3/src/quic/detail/h3q_addr.c
-  modules/http3/src/quic/detail/h3q_tls.c
+  modules/http3/h3_callbacks.c     modules/http3/h3_config.c
+  modules/http3/h3_filter.c        modules/http3/h3_hooks.c
+  modules/http3/h3_io.c            modules/http3/h3_request.c
+  modules/http3/h3_server.c        modules/http3/h3_session.c
+  modules/http3/h3_socket.c        modules/http3/h3_socket_os.c
+  modules/http3/h3_stream.c        modules/http3/h3_threads.c
+  modules/http3/quic/h3q.c         modules/http3/quic/h3q_conn.c
+  modules/http3/quic/h3q_stream.c
+  modules/http3/quic/detail/h3q_addr.c
+  modules/http3/quic/detail/h3q_tls.c
 )
 SET(mod_ldap_extra_defines           LDAP_DECLARE_EXPORT)
 SET(mod_ldap_extra_libs              wldap32)

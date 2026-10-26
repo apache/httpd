@@ -24,7 +24,6 @@
 #include <mpm_common.h>
 
 #include <apr_atomic.h>
-#include <apr_optional.h>
 #include <apr_pools.h>
 #include <apr_thread_pool.h>
 #include <apr_thread_proc.h>
@@ -32,9 +31,6 @@
 #include "h3_config.h"
 #include "h3_socket.h"
 #include "quic/h3q.h"
-
-APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_added, (void));
-APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_removed, (void));
 
 typedef struct h3_session h3_session;
 

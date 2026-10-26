@@ -19,15 +19,12 @@
 
 include $(top_srcdir)/build/special.mk
 
-# mod_http3 sources are C99 and live outside modules/http3/.
-# Pattern rules find them by path and compile with -std=c99.
+# mod_http3 sources are C99; override SH_COMPILE to add the flags.
 H3_CC99 = -std=c99 -Wno-declaration-after-statement
+SH_COMPILE = $(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
 
-%.slo: $(top_srcdir)/src/%.c
-	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
+%.slo: $(top_srcdir)/modules/http3/quic/%.c
+	$(SH_COMPILE)
 
-%.slo: $(top_srcdir)/src/quic/%.c
-	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
-
-%.slo: $(top_srcdir)/src/quic/detail/%.c
-	$(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
+%.slo: $(top_srcdir)/modules/http3/quic/detail/%.c
+	$(SH_COMPILE)
