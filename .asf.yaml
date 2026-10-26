@@ -1,0 +1,32 @@
+github:
+  description: "Apache HTTP Server"
+  homepage: https://httpd.apache.org/
+  labels:
+    - httpd
+    - http-server
+  rulesets:
+    - name: "Default Branch Protection"
+      type: branch
+      branches:
+        includes:
+          - "~DEFAULT_BRANCH"
+          - "2.*.x"
+        excludes: []
+      bypass_teams:
+        - root
+      restrict_deletion: true
+      restrict_force_push: true
+      required_linear_history: true
+  enabled_merge_buttons:
+    squash: true
+    merge: false
+    rebase: true
+  features:
+    # Disable all extraneous repo features
+    wiki: false
+    issues: false
+    projects: false
+    discussions: false
+notifications:
+  commits: cvs@httpd.apache.org
+  pullrequests: cvs@httpd.apache.org
