@@ -13,6 +13,9 @@ connection is then never parked, so the test passes even without the drain.
 The tests run a private httpd: restarting the suite's own server would change
 its state (its worker set, the log, ...) for the tests that run after this one.
 
+A peer that keeps writing to a connection the server is closing must not keep
+the old child alive: the lingering close has one fixed deadline.
+
 A draining child keeps its process slot, and no replacement can start while
 every slot is taken.  The other tests open a download, restart, and repeat, so
 that several old children are draining at once, then check that new connections
@@ -62,6 +65,18 @@ def read_headers(sock):
         data += chunk
     head, _, body = data.partition(b"\r\n\r\n")
     return head, body
+
+
+def child_pids(parent):
+    """Pids of the direct children of parent (portable: macOS and Linux)."""
+    out = subprocess.run(["ps", "-A", "-o", "pid=,ppid="],
+                         capture_output=True, text=True).stdout
+    pids = set()
+    for line in out.splitlines():
+        fields = line.split()
+        if len(fields) == 2 and int(fields[1]) == parent:
+            pids.add(int(fields[0]))
+    return pids
 
 
 def get(port, path, rcvbuf=None):
@@ -276,3 +291,42 @@ def test_full_scoreboard_is_reported_once_and_recovers(config, tmp_path):
         finally:
             for entry in socks:
                 entry[0].close()
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="signals")
+def test_trickle_input_does_not_extend_lingering_close(config, tmp_path):
+    """The client sends one byte every 250 ms to a connection the server has
+    finished with.  The linger deadline is fixed when the lingering close
+    starts, so once a graceful restart shortens it the old child must be gone
+    after a couple of seconds although the client never stops writing."""
+    if config.info.mpm != "motorz":
+        pytest.skip("motorz only")
+
+    with PrivateServer(config, tmp_path) as server:
+        sock = socket.create_connection(("127.0.0.1", server.port), timeout=10)
+        try:
+            sock.sendall(b"GET /small.txt HTTP/1.1\r\nHost: localhost\r\n"
+                         b"Connection: close\r\n\r\n")
+            while sock.recv(4096):      # until the server shuts its side down
+                pass
+
+            old = child_pids(server.proc.pid)
+            assert old, "no child process found"
+            server.graceful()
+
+            start = time.monotonic()
+            gone = None
+            while time.monotonic() - start < 15:
+                try:
+                    sock.send(b"x")
+                except OSError:
+                    pass                # the server may have closed already
+                if not (old & child_pids(server.proc.pid)):
+                    gone = time.monotonic() - start
+                    break
+                time.sleep(0.25)
+            assert gone is not None, "old child still alive while the peer trickles"
+            assert gone < 8, f"old child needed {gone:.1f}s to exit"
+            assert server.small_ok(5), "new generation does not answer"
+        finally:
+            sock.close()

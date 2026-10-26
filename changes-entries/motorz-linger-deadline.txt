@@ -1,0 +1,4 @@
+  *) mpm_motorz: Give a lingering close one fixed deadline.  A peer that kept
+     sending data to a connection being closed restarted the timeout on every
+     read, so it could hold the connection, and an old child during a graceful
+     restart, indefinitely.  [Jim Jagielski]

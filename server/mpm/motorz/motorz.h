@@ -238,6 +238,8 @@ struct motorz_conn_t
     int suspended;
     /** has ap_start_lingering_close() been called for this conn? */
     int linger_started;
+    /** absolute end of the lingering close; set once, only ever shortened */
+    apr_time_t linger_deadline;
     /** poll file descriptor information */
     apr_pollfd_t pfd;
     /** public parts of the connection state */

@@ -895,41 +895,46 @@ static apr_status_t motorz_lingering_close(motorz_conn_t *scon)
     char dummybuf[512];
     apr_size_t nbytes;
     apr_status_t rv;
+    apr_time_t now;
+    apr_interval_time_t remaining;
+
+    /* A draining child cuts every linger short, but never extends one. */
+    if (draining) {
+        apr_time_t short_end = apr_time_now() + apr_time_from_sec(SECONDS_TO_LINGER);
+
+        if (short_end < scon->linger_deadline) {
+            scon->linger_deadline = short_end;
+        }
+    }
 
     do {
         nbytes = sizeof(dummybuf);
         rv = apr_socket_recv(csd, dummybuf, &nbytes);
-    } while (rv == APR_SUCCESS);
+    } while (rv == APR_SUCCESS && apr_time_now() < scon->linger_deadline);
 
-    if (!APR_STATUS_IS_EAGAIN(rv)) {
-        /* Peer closed, reset, or hard error: we are done. */
+    now = apr_time_now();
+    if (rv == APR_SUCCESS || (!APR_STATUS_IS_EAGAIN(rv))
+            || now >= scon->linger_deadline) {
+        /* Peer closed, reset, hard error, or out of time: we are done. */
         motorz_conn_done(scon);
         return APR_SUCCESS;
     }
+    remaining = scon->linger_deadline - now;
 
-    /* Nothing left to read for now; wait for more readability, bounded by the
-     * linger timeout. A readable PT_CSD dispatch goes through
-     * motorz_conn_claim(), which cancels this connection's timer, so we must
-     * (re)register the linger timeout here alongside (re)arming the pollset.
-     * This means a peer that keeps dribbling data resets the deadline each
-     * time -- the same bounded imprecision mpm_event accepts for its linger
-     * queues, and exactly the slow-drain case the timeout exists to cap.
-     * Honour a module's request for a shortened linger period.
+    /* Nothing left to read for now; wait for more readability until the
+     * deadline. A readable PT_CSD dispatch goes through motorz_conn_claim(),
+     * which cancels this connection's timer, so the timeout is re-registered
+     * here alongside (re)arming the pollset -- for the time that is left, so a
+     * peer that keeps dribbling data cannot extend it.
      *
      * Arm pollset + timer atomically (motorz_conn_register); after it returns
      * scon may already have been freed by a concurrent timeout, so we must not
      * touch it again -- including on the error path, where the rollback inside
      * motorz_conn_register has disarmed it and we just close.
      */
-    {
-        apr_interval_time_t linger =
-            (draining || apr_table_get(scon->c->notes, "short-lingering-close"))
-                ? apr_time_from_sec(SECONDS_TO_LINGER)
-                : apr_time_from_sec(MAX_SECS_TO_LINGER);
-        rv = motorz_conn_register(scon,
-                                  APR_POLLIN | APR_POLLHUP | APR_POLLERR,
-                                  motorz_linger_timeout_cb, linger);
-    }
+    rv = motorz_conn_register(scon,
+                              APR_POLLIN | APR_POLLHUP | APR_POLLERR,
+                              motorz_linger_timeout_cb, remaining);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_TRACE1, rv, ap_server_conf,
                      "motorz_lingering_close: apr_pollset_add failed; closing");
@@ -953,16 +958,20 @@ static void motorz_start_lingering_close(motorz_conn_t *scon)
 
     scon->cs.state = CONN_STATE_LINGER;
 
-    /* ap_start_lingering_close() flushes and shuts down the write side. A
-     * true return means there is nothing to linger over (aborted or no
-     * half-close needed), so close immediately.
+    /* ap_start_lingering_close() flushes and shuts down the write side; bound
+     * the flush as mpm_event does. A true return means there is nothing to
+     * linger over (aborted or no half-close needed), so close immediately.
      */
+    apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
     if (ap_start_lingering_close(c)) {
         motorz_conn_done(scon);
         return;
     }
 
     scon->linger_started = 1;
+    scon->linger_deadline = apr_time_now() + apr_time_from_sec(
+        (draining || apr_table_get(c->notes, "short-lingering-close"))
+            ? SECONDS_TO_LINGER : MAX_SECS_TO_LINGER);
 
     /* All draining from here is non-blocking. */
     apr_socket_timeout_set(csd, 0);
