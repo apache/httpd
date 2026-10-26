@@ -267,6 +267,37 @@ def test_highest_port_is_accepted(http):
     assert "http://127.0.0.14:65535" in added_members(lines)
 
 
+# ---- the log of received messages is bounded ---------------------------------
+
+@need
+def test_received_log_lines_are_bounded(http):
+    """An authentic message can be replayed within the freshness window as often
+    as the sender likes.  Its "received:" line is logged for the first twenty in
+    a second; the rest are counted, and the count is logged once."""
+    if http.have_module("mpm_prefork"):
+        pytest.skip("proxy_beacon not run under the prefork MPM")
+    port = int(http.vars("port"))
+    error_log = Path(http.vars("t_logs")) / "error_log"
+    session_start = int(http.vars("session_log_start") or 0)
+    assert wait_for(error_log, session_start, "received: BEACON", 15)
+
+    # A url with a path is refused after it was logged, so no member is added.
+    marker = "127.0.0.15:8300/replayed"
+    start = error_log.stat().st_size
+    now_us = int(time.time() * 1_000_000)
+    for i in range(300):
+        send_udp(port, signed_beacon(f"http://{marker}", seq=i, ts_us=now_us + i))
+    time.sleep(1.5)
+    # The next message opens a new second, in which the count is logged.
+    send_udp(port, signed_beacon(f"http://{marker}", seq=1000))
+    time.sleep(1.5)
+
+    lines = log_since(error_log, start)
+    received = [ln for ln in lines if "received:" in ln and marker in ln]
+    assert 0 < len(received) < 70, f"{len(received)} lines for 301 messages"
+    assert any("received: lines left out" in ln for ln in lines), lines[-5:]
+
+
 # ---- ownership and watchdog hand-off -----------------------------------------
 
 STATIC_MEMBER = "http://127.0.0.11:19000"   # BalancerMember in balancer://handoff

@@ -165,6 +165,13 @@ typedef struct {
     apr_pool_t          *open_pool;       /* socket + address of the current open attempt */
     apr_time_t           next_open_try;   /* when to retry a failed open (0 = not scheduled) */
     apr_interval_time_t  open_delay;      /* current retry back-off (0 = no failure yet) */
+    int                  io_errors;       /* failed sends/receives in a row */
+    apr_time_t           last_io_error_log;
+    apr_time_t           next_refresh;    /* sender: when to resolve the destination again */
+    apr_pool_t          *addr_pool;       /* sender: a refreshed destination, if any */
+    apr_time_t           recv_log_window; /* start of the second counted below */
+    unsigned int         recv_log_count;  /* "received:" lines logged in it */
+    apr_uint64_t         recv_log_suppressed; /* ...and those it left out */
 } beacon_ctx_t;
 
 /* SipHash-2-4 output is 8 bytes -> 16 hex chars (+ NUL). */
@@ -200,6 +207,18 @@ typedef struct {
 /* Cap on datagrams handled per watchdog tick, so a flood can't hold the
  * watchdog thread in the receive loop; the rest wait for the next tick. */
 #define BEACON_MAX_DRAIN        1024
+/* ...and no more than this much time per tick, so that a flood of datagrams
+ * cannot keep the watchdog thread from the eviction sweep and the other
+ * contexts that share it. */
+#define BEACON_DRAIN_BUDGET     apr_time_from_msec(50)
+/* After this many failed sends or receives in a row the socket is closed and
+ * reopened (re-resolving the address) under the open back-off. */
+#define BEACON_IO_ERRORS_MAX    5
+/* A sender looks its destination up again this often, so that a proxy which
+ * moved to another address is found. */
+#define BEACON_REFRESH          apr_time_from_sec(300)
+/* The "received:" lines, at most this many per second and context. */
+#define BEACON_RECV_LOG_PER_SEC 20
 
 /* Process-wide watchdog handle, like mod_proxy_hcheck's static watchdog. */
 static ap_watchdog_t *beacon_watchdog;
@@ -664,6 +683,10 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
 
     /* The address and socket of an attempt live in their own pool, cleared
      * before each retry so a persistent failure does not grow ctx->p. */
+    if (ctx->addr_pool) {
+        apr_pool_destroy(ctx->addr_pool);
+        ctx->addr_pool = NULL;
+    }
     if (ctx->open_pool) {
         apr_pool_clear(ctx->open_pool);
     }
@@ -719,6 +742,21 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
             return;
         }
         ctx->opened = 1;
+        ctx->io_errors = 0;
+        {
+            /* Nothing could have been received while the socket was closed:
+             * do not evict members for that silence. */
+            apr_hash_index_t *hi;
+            apr_time_t t = apr_time_now();
+
+            for (hi = apr_hash_first(ctx->open_pool, ctx->seen); hi;
+                 hi = apr_hash_next(hi)) {
+                void *val;
+
+                apr_hash_this(hi, NULL, NULL, &val);
+                ((beacon_member_t *)val)->last_seen = t;
+            }
+        }
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      APLOGNO(10570) "mod_proxy_beacon: listening for beacons on %pI",
                      ctx->addr);
@@ -765,6 +803,8 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
             return;
         }
         ctx->opened = 1;
+        ctx->io_errors = 0;
+        ctx->next_refresh = apr_time_now() + BEACON_REFRESH;
         ctx->last_publish = 0; /* beacon on the first running tick */
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      APLOGNO(10575) "mod_proxy_beacon: beaconing to %pI", ctx->addr);
@@ -1509,6 +1549,74 @@ static int beacon_verify(beacon_ctx_t *ctx, const char *msg, apr_time_t now,
 }
 
 /* RUNNING: sender sends a throttled beacon; listener drains its receive socket. */
+/*
+ * Count a failed send or receive. Returns true if it should be logged, which is
+ * at most once in 10 seconds. After BEACON_IO_ERRORS_MAX in a row the socket
+ * is closed: the open back-off in beacon_cb_running() opens it again, looking
+ * the address up again.
+ */
+static int beacon_io_failed(beacon_ctx_t *ctx, apr_time_t now)
+{
+    int log_it = now - ctx->last_io_error_log >= apr_time_from_sec(10);
+
+    if (log_it) {
+        ctx->last_io_error_log = now;
+    }
+    if (++ctx->io_errors >= BEACON_IO_ERRORS_MAX) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(10672)
+                     "mod_proxy_beacon: closing the socket after repeated "
+                     "errors; it will be opened again");
+        apr_socket_close(ctx->sock);
+        ctx->opened = 0;
+        ctx->open_failed = 1;
+        ctx->io_errors = 0;
+    }
+    return log_it;
+}
+
+/*
+ * Sender: look the destination up again. The address in use is kept if that
+ * fails. This runs on the watchdog thread, so a slow resolver delays the other
+ * contexts for as long as the lookup takes: ProxyBeaconAddress should be an IP
+ * address, or a name that resolves quickly.
+ */
+static void beacon_refresh_destination(beacon_ctx_t *ctx, apr_time_t now)
+{
+    apr_pool_t *np;
+    apr_pool_t *old;
+    apr_sockaddr_t *na = NULL;
+    apr_status_t rv;
+
+    ctx->next_refresh = now + BEACON_REFRESH;
+    apr_pool_create(&np, ctx->p);
+    rv = beacon_resolve(np, ctx->pub_url, NULL, 0, &na);
+    if (rv != APR_SUCCESS) {
+        apr_pool_destroy(np);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ctx->s, APLOGNO(10673)
+                     "mod_proxy_beacon: cannot resolve ProxyBeaconAddress '%s' "
+                     "again; keeping the address in use", ctx->pub_url);
+        return;
+    }
+    if (na->family != ctx->addr->family) {
+        /* The socket belongs to the old family: open a new one. */
+        apr_pool_destroy(np);
+        apr_socket_close(ctx->sock);
+        ctx->opened = 0;
+        beacon_cb_starting(ctx);
+        return;
+    }
+    if (!apr_sockaddr_equal(na, ctx->addr)) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ctx->s, APLOGNO(10674)
+                     "mod_proxy_beacon: beaconing to %pI now", na);
+    }
+    old = ctx->addr_pool;
+    ctx->addr_pool = np;
+    ctx->addr = na;
+    if (old) {
+        apr_pool_destroy(old);
+    }
+}
+
 static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
 {
     server_rec *s = ctx->s;
@@ -1543,6 +1651,13 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
 
     if (ctx->role == BEACON_ROLE_SEND) {
         apr_time_t now = apr_time_now();
+
+        if (now >= ctx->next_refresh) {
+            beacon_refresh_destination(ctx, now);
+            if (!ctx->opened) {
+                return;
+            }
+        }
         if (now >= ctx->last_publish + ctx->interval) {
             const char *host = ctx->s->server_hostname
                                    ? ctx->s->server_hostname : "(unknown)";
@@ -1578,9 +1693,14 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             len = strlen(msg);
             if ((rv = apr_socket_sendto(ctx->sock, ctx->addr, 0, msg, &len))
                     != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                             APLOGNO(10582) "mod_proxy_beacon: sendto %s failed",
-                             ctx->pub_url);
+                if (beacon_io_failed(ctx, now)) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                                 APLOGNO(10582) "mod_proxy_beacon: sendto %s "
+                                 "failed", ctx->pub_url);
+                }
+            }
+            else {
+                ctx->io_errors = 0;
             }
             ctx->last_publish = now;
         }
@@ -1588,13 +1708,14 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
     else if (ctx->role == BEACON_ROLE_LISTEN) {
         apr_time_t now;
         apr_pool_t *ptemp;
+        apr_time_t started = apr_time_now();
         int n;
 
         apr_pool_create(&ptemp, pool);
         apr_pool_tag(ptemp, "beacon_recv");
 
         /* Drain the socket every tick (re-enable latency matters), up to
-         * BEACON_MAX_DRAIN datagrams. */
+         * BEACON_MAX_DRAIN datagrams and BEACON_DRAIN_BUDGET of time. */
         for (n = 0; n < BEACON_MAX_DRAIN; n++) {
             char buf[BEACON_MAX_MSG_LEN + 2];
             apr_sockaddr_t from;
@@ -1608,17 +1729,25 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             char url[BEACON_URL_MAX];
             apr_int64_t msg_ts = 0;
 
+            if (n && apr_time_now() - started > BEACON_DRAIN_BUDGET) {
+                break;
+            }
             apr_pool_clear(ptemp);
             from.pool = ptemp;
             rv = apr_socket_recvfrom(&from, ctx->sock, 0, buf, &sz);
             if (APR_STATUS_IS_EAGAIN(rv)) {
+                ctx->io_errors = 0;
                 break; /* socket drained */
             }
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                             APLOGNO(10583) "mod_proxy_beacon: recvfrom failed");
+                if (beacon_io_failed(ctx, apr_time_now())) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                                 APLOGNO(10583) "mod_proxy_beacon: recvfrom "
+                                 "failed");
+                }
                 break;
             }
+            ctx->io_errors = 0;
             if (sz == 0) {
                 continue; /* empty datagram */
             }
@@ -1661,9 +1790,29 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
              * to forge or corrupt error-log lines.  Done only after
              * verification so a rejected datagram allocates nothing. */
             if (APLOGinfo(s)) {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                             APLOGNO(10584) "mod_proxy_beacon: received: %s",
-                             ap_escape_logitem(ptemp, msg_str));
+                /* An authentic message can be replayed within the freshness
+                 * window as often as the sender likes: bound the log. */
+                if (msg_now - ctx->recv_log_window >= apr_time_from_sec(1)) {
+                    if (ctx->recv_log_suppressed) {
+                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                                     APLOGNO(10675) "mod_proxy_beacon: %"
+                                     APR_UINT64_T_FMT " received: lines left "
+                                     "out in the last second",
+                                     ctx->recv_log_suppressed);
+                    }
+                    ctx->recv_log_window = msg_now;
+                    ctx->recv_log_count = 0;
+                    ctx->recv_log_suppressed = 0;
+                }
+                if (ctx->recv_log_count < BEACON_RECV_LOG_PER_SEC) {
+                    ctx->recv_log_count++;
+                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                                 APLOGNO(10584) "mod_proxy_beacon: received: %s",
+                                 ap_escape_logitem(ptemp, msg_str));
+                }
+                else {
+                    ctx->recv_log_suppressed++;
+                }
             }
 
             if (!ctx->balancer_name) {

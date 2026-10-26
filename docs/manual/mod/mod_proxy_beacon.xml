@@ -290,12 +290,67 @@ ProxyBeaconInterval  10
 
     <p>If the UDP socket cannot be opened (an unresolvable address, a port in
     use), opening is retried with a delay that starts at 30 seconds and doubles
-    up to 10 minutes. Name lookups are synchronous and run on the single
+    up to 10 minutes. The same happens after five failed sends or receives in a
+    row. A backend looks up the address of the proxy again every five minutes,
+    keeping the one it has if that fails, so a proxy that moved is found without
+    a restart. Name lookups are synchronous and run on the single
     <module>mod_watchdog</module> thread that serves every beacon
     configuration of the server, so a name that fails to resolve can stall them
     for as long as the resolver takes to give up. Prefer an IP address in
     <directive>ProxyBeaconAddress</directive> and
     <directive>ProxyBeaconListen</directive>.</p>
+
+    <p>Each time the watchdog runs, the proxy reads datagrams for at most 50
+    milliseconds (and at most 1024 of them), so that a flood cannot keep it from
+    evicting members; what it does not read in time waits in the socket buffer
+    or is dropped by the operating system. At most twenty
+    <code>received:</code> lines per second are logged for each configuration;
+    the number left out is logged when the next announcement arrives after that
+    second.</p>
+
+</section>
+
+<section id="envelope"><title>What this module is for</title>
+
+    <p>The module provides <em>liveness-based membership</em> for a set of
+    backends that you control. Use it within these limits, which are properties
+    of the design and not defects to be worked around:</p>
+
+    <ul>
+      <li><strong>Stable origin identities.</strong> A member that stops
+          announcing is disabled, not removed, and keeps its balancer slot for
+          the life of the server (see <a href="#operator">Administrator control
+          of members</a>). A fleet whose backends change address or port over
+          time uses up <code>growth</code> with every new origin, even when the
+          old ones are gone; when it is used up, newcomers are refused. Size
+          <code>growth</code> for the number of <em>distinct origins</em> that
+          will ever announce between restarts, and watch the log for refused
+          additions. It is not suited to arbitrarily rotating addresses.</li>
+      <li><strong>One trust domain.</strong> The secret is a membership
+          credential: every holder can announce any reachable origin, including
+          in place of another backend. Do not share it among workloads that do
+          not trust each other (see
+          <directive module="mod_proxy_beacon">ProxyBeaconSecret</directive>).</li>
+      <li><strong>Liveness, not readiness.</strong> A backend announces while
+          its watchdog runs. That says nothing about whether it can serve a
+          request. A new member is enabled as soon as its first announcement
+          is accepted; combine the module with
+          <module>mod_proxy_hcheck</module> or the backends' own control of
+          when they start announcing if that matters.</li>
+      <li><strong>Replay protection belongs to the owner.</strong> The record of
+          the last accepted timestamp of each member is held by the process that
+          owns the watchdog. After the owner changes, or the server restarts, a
+          captured announcement that is still inside the
+          <directive>ProxyBeaconMaxSkew</directive> window can be accepted once
+          more (see <a href="#ownership">Ownership and watchdog
+          hand-off</a>). Keep the receiving port on a network that untrusted
+          hosts cannot reach, as the secret is not a defence against a replay.</li>
+      <li><strong>One receiver per backend.</strong> A backend announces to a
+          single address (<directive>ProxyBeaconAddress</directive>). Announcing
+          to several proxies is not something the module offers.</li>
+      <li><strong>Unicast, same network.</strong> The datagrams are neither
+          encrypted nor acknowledged.</li>
+    </ul>
 
 </section>
 

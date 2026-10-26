@@ -1,0 +1,5 @@
+  *) mod_proxy_beacon: Read datagrams for at most 50 ms per watchdog run, log
+     at most twenty received announcements per second, reopen the socket after
+     repeated send or receive errors, and let a backend look up the proxy's
+     address again every five minutes.  Document what the module is meant
+     for.  [Jim Jagielski]
