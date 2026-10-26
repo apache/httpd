@@ -19,7 +19,7 @@ github:
       required_linear_history: true
     - name: "Release tags"
       type: tag
-      # This is a misnomer, it applies to the tag name
+      # This is a misnomer. It applies to the tag name
       branches:
         includes:
           - "*.*.*"
