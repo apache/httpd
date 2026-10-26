@@ -10,6 +10,7 @@ on:
       - README*
       - '**.md'
       - changes-entries/*
+      - .asf.yaml
     tags:
       - 2.*
   pull_request:
