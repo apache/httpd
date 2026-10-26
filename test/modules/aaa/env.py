@@ -4,10 +4,21 @@ import logging
 import os
 from typing import List, Optional
 
+import pytest
+
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
 from pyhttpd.result import ExecResult
 
 log = logging.getLogger(__name__)
+
+
+def not_backported(rev: str, what: str):
+    """Mark a test of a trunk change which is not in the branch under test
+    (anything older than 2.5.0) as an expected failure. Drop the mark when
+    the change is backported."""
+    return pytest.mark.xfail(
+        condition=not HttpdTestEnv().httpd_is_at_least("2.5.0"),
+        reason=f"{what} ({rev}) not backported")
 
 
 class AAATestSetup(HttpdTestSetup):
@@ -16,7 +27,7 @@ class AAATestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(AAATestSetup)))
         self.add_modules(["auth_digest", "authn_file", "authn_core",
-                          "authz_core", "authz_user"])
+                          "authz_core", "authz_user", "proxy", "proxy_http"])
 
 
 class AAATestEnv(HttpdTestEnv):
@@ -30,7 +41,7 @@ class AAATestEnv(HttpdTestEnv):
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core"])
-        self._digest_pwfile = f"{self.server_dir}/digest.passwd"
+        self._digest_pwfile = os.path.join(self.server_dir, "digest.passwd")
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=AAATestSetup(env=self))

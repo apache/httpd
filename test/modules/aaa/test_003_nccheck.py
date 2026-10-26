@@ -1,25 +1,21 @@
 """AuthDigestNcCheck replay-detection scenarios.
 
-Note the actual semantics here are stricter than a sliding replay window:
-the server keeps its own count of authenticated requests seen for a client
-(incremented on *every* request carrying that client's opaque, whether or
-not it goes on to authenticate) and requires the client's nc to match it
-*exactly* -- so both replays of an old nc and skipping ahead are rejected.
-A failed nc check also resets the server's tracked count back to 0, as part
-of issuing a fresh challenge for the client (see note_digest_auth_failure()
-in mod_auth_digest.c: an existing, opaque-identified client always gets its
-nonce_count reset when a new challenge is generated for it, regardless of
-*why* the challenge is being reissued) -- so recovery after a rejected nc
-means starting the sequence over at 00000001, not continuing where the
-client left off.
+The semantics are those of RFC 7616 3.4.3: the nonce-count is counted by
+the client per-nonce, so the server tracks a count per (client, nonce) pair
+and requires it to strictly increase. Within one nonce, an nc which has
+already been seen is a replay and is rejected; a *higher* nc than expected
+is not, since the client also counts the requests it sends to URIs in the
+protection space which turn out not to need authentication, and the server
+never sees those. Moving to a newer nonce starts a fresh count, and a nonce
+the client has already moved on from is rejected.
+
+The tracked count is only ever updated for a fully verified request, so a
+failed request cannot disturb the count of the client whose opaque it
+quotes; test_007_replay.py covers that property directly.
 """
 
-import sys
-
-import pytest
-
 from . import digest_client as dc
-from .env import AAATestEnv
+from .env import AAATestEnv, not_backported
 
 
 class TestDigestNcCheck:
@@ -41,18 +37,20 @@ class TestDigestNcCheck:
             include_opaque=include_opaque)
         return env.curl_get(self.url(env, location), options=["-H", f"Authorization: {auth}"])
 
-    @pytest.mark.xfail(condition=sys.platform == "win32",
-                        reason="NcCheck semantics differ with siphash (r1937104 not backported)")
     def test_digest_030_nccheck_requires_opaque(self, env):
         # with AuthDigestNcCheck on, the server cannot verify nc without
         # having tracked this client via its opaque -- omitting the opaque
-        # therefore fails the check outright, even with nc=00000001.
+        # therefore fails, even with nc=00000001. It is rejected before the
+        # nc check is even reached: the nonce hash is computed over the
+        # opaque (gen_nonce_hash()), so a nonce quoted without the opaque it
+        # was issued with does not verify, and that is reported as stale.
         challenge = self.challenge(env, "nccheck")
         assert challenge.opaque is not None
         r = self.authenticate(env, "nccheck", challenge, nc="00000001", include_opaque=False)
         assert r.response["status"] == 401
         new_challenge = dc.DigestChallenge.parse(r.response["header"]["www-authenticate"])
-        assert new_challenge.stale is False
+        assert new_challenge.stale is True
+        env.httpd_error_log.ignore_recent(lognos=["AH01776"])
 
     def test_digest_031_nccheck_sequential_ok(self, env):
         challenge = self.challenge(env, "nccheck")
@@ -63,8 +61,6 @@ class TestDigestNcCheck:
         r3 = self.authenticate(env, "nccheck", challenge, nc="00000003")
         assert r3.response["status"] == 200
 
-    @pytest.mark.xfail(condition=sys.platform == "win32",
-                        reason="NcCheck semantics differ with siphash (r1937104 not backported)")
     def test_digest_032_nccheck_replay_rejected(self, env):
         challenge = self.challenge(env, "nccheck")
         r1 = self.authenticate(env, "nccheck", challenge, nc="00000001")
@@ -80,23 +76,34 @@ class TestDigestNcCheck:
         assert new_challenge.stale is False
         env.httpd_error_log.ignore_recent(lognos=["AH01774"])
 
-        # the rejected attempt reset the server's tracked count to 0 (a new
-        # challenge was issued for this client), so recovery restarts the
-        # sequence at 00000001 -- continuing from 00000003 would NOT work.
-        r4 = self.authenticate(env, "nccheck", challenge, nc="00000001")
+        # recovery: the rejected attempt handed out a fresh challenge for
+        # this client, and following it -- new nonce, so the count starts
+        # over at 00000001 -- authenticates again.
+        r4 = self.authenticate(env, "nccheck", new_challenge, nc="00000001")
         assert r4.response["status"] == 200
 
-    @pytest.mark.xfail(condition=sys.platform == "win32",
-                        reason="NcCheck semantics differ with siphash (r1937104 not backported)")
-    def test_digest_033_nccheck_skip_ahead_rejected(self, env):
+        # the superseded nonce is not usable any more, at any nc.
+        r5 = self.authenticate(env, "nccheck", challenge, nc="00000003")
+        assert r5.response["status"] == 401
+        env.httpd_error_log.ignore_recent(lognos=["AH01774"])
+
+    def test_digest_033_nccheck_skip_ahead_allowed(self, env):
         challenge = self.challenge(env, "nccheck")
         r1 = self.authenticate(env, "nccheck", challenge, nc="00000001")
         assert r1.response["status"] == 200
 
-        # skipping ahead is rejected too: nc must match exactly, not just
-        # be higher than what was last accepted.
+        # skipping ahead is allowed: nc only has to be higher than the
+        # highest already seen for this nonce, not exactly one more. A
+        # client legitimately produces gaps by sending counted requests to
+        # URIs in the protection space which don't need authentication, and
+        # a higher nc is not a replay in any case.
         r2 = self.authenticate(env, "nccheck", challenge, nc="00000009")
-        assert r2.response["status"] == 401
+        assert r2.response["status"] == 200
+
+        # ...and the skipped-over counts are spent: they are no longer
+        # accepted afterwards.
+        r3 = self.authenticate(env, "nccheck", challenge, nc="00000005")
+        assert r3.response["status"] == 401
         env.httpd_error_log.ignore_recent(lognos=["AH01774"])
 
     def test_digest_034_no_nccheck_allows_replay(self, env):
@@ -107,3 +114,66 @@ class TestDigestNcCheck:
         assert r1.response["status"] == 200
         r2 = self.authenticate(env, "default", challenge, nc="00000001")
         assert r2.response["status"] == 200
+
+    def test_digest_035_out_of_range_opaque_is_not_truncated(self, env):
+        # The opaque is a 32- or 64-bit client id. A value which would
+        # truncate onto a live id must not select that client. This is
+        # observable in the challenge which comes back: a client the server
+        # still knows is re-challenged with its own opaque, whereas an unknown
+        # one is given a freshly minted opaque and stale=true.
+        challenge = self.challenge(env, "nccheck")
+        assert self.authenticate(env, "nccheck", challenge,
+                                 nc="00000001").response["status"] == 200
+
+        # 2^bits + the live id, which truncates to the live id in that many
+        # bits; one of the two is out of range whichever width is in use
+        for bits in (32, 64):
+            crafted = "%x" % ((1 << bits) + int(challenge.opaque, 16))
+            auth = dc.build_authorization(
+                AAATestEnv.DIGEST_USER, challenge, AAATestEnv.DIGEST_PASSWORD,
+                method="GET", uri="/digest/nccheck/secret.txt", nc="00000002",
+                cnonce="trunc-cnonce", opaque=crafted)
+            r = env.curl_get(env.mkurl("http", "aaa", "/digest/nccheck/secret.txt"),
+                             options=["-H", f"Authorization: {auth}"])
+            # AH01782 (AH01787 before 64-bit ids) for an opaque out of range,
+            # AH01776 (nonce hash) for one in range but not the opaque the
+            # nonce was issued with
+            env.httpd_error_log.ignore_recent(lognos=["AH01782", "AH01787",
+                                                      "AH01776"])
+            assert r.response["status"] == 401
+            new_challenge = dc.DigestChallenge.parse(
+                r.response["header"]["www-authenticate"])
+            assert new_challenge.opaque != crafted, \
+                f"an opaque 2^{bits} above a live client id was truncated onto it"
+
+    @not_backported("r1939033", "nonce-count validation")
+    def test_digest_036_malformed_nc_rejected(self, env):
+        # The nonce-count is 8 hex digits. A value which is not -- a negative
+        # number, non-hex, or the wrong length -- must be rejected rather
+        # than parsed leniently into a wrapped count.
+        challenge = self.challenge(env, "nccheck")
+        for bad in ["-0000001", "zzzzzzzz", "000000001", "1", "0000 001"]:
+            r = self.authenticate(env, "nccheck", challenge, nc=bad,
+                                  cnonce=f"nc-{len(bad)}")
+            assert r.response["status"] == 401, f"nc={bad!r} was accepted"
+        env.httpd_error_log.ignore_recent(lognos=["AH01782"])
+
+    @not_backported("r1939033", "nonce-count validation")
+    def test_digest_037_malformed_nc_does_not_poison_client(self, env):
+        # A correctly-signed request carrying nc="-0000001" must not be
+        # accepted: before the count was validated it was read as a huge
+        # unsigned value and stored, locking the client out of every later
+        # (smaller) in-sequence count.
+        challenge = self.challenge(env, "nccheck")
+        assert self.authenticate(env, "nccheck", challenge,
+                                 nc="00000001").response["status"] == 200
+
+        r = self.authenticate(env, "nccheck", challenge, nc="-0000001",
+                              cnonce="poison-cnonce")
+        assert r.response["status"] == 401, "a negative nc was accepted"
+
+        # the legitimate client carries on with its next in-sequence count
+        assert self.authenticate(env, "nccheck", challenge,
+                                 nc="00000002").response["status"] == 200, \
+            "a malformed nc locked the client out"
+        env.httpd_error_log.ignore_recent(lognos=["AH01782"])

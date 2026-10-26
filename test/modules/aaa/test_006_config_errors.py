@@ -8,7 +8,7 @@ are all checked with `httpd -t` against a throwaway config so the shared
 package server is never disturbed.
 """
 
-from .env import AAATestEnv
+from .env import AAATestEnv, not_backported
 
 
 class TestDigestConfigErrors:
@@ -84,3 +84,23 @@ class TestDigestConfigErrors:
     def test_digest_067_shmemsize_units_accepted(self, env):
         r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 64K"])
         assert r.exit_code == 0
+
+    @not_backported("r1939036", "AuthDigestShmemSize validation")
+    def test_digest_068_shmemsize_trailing_junk_rejected(self, env):
+        # Junk after the unit character must be rejected, not silently
+        # ignored (which read "64Kfoo" as 64K).
+        r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 64Kfoo"])
+        assert r.exit_code != 0
+        assert "AuthDigestShmemSize" in r.stderr
+
+    @not_backported("r1939036", "AuthDigestShmemSize validation")
+    def test_digest_069_shmemsize_no_room_for_entry_rejected(self, env):
+        # A size which would hold the table and an entry by their bare
+        # struct sizes, but not once the per-allocation rmm overhead is
+        # counted, must be rejected: otherwise every request needing an
+        # entry gets a 503 the config check did not warn about. 120 bytes is
+        # above those struct sizes but below the overhead-aware minimum on
+        # both 32- and 64-bit.
+        r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 120"])
+        assert r.exit_code != 0
+        assert "AuthDigestShmemSize" in r.stderr

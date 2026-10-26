@@ -2,7 +2,10 @@
 import os
 import sys
 from urllib import parse
-import multipart # https://github.com/andrew-d/python-multipart (`apt install python3-multipart`)
+try:  # python-multipart >= 0.0.13 renamed the module, "multipart" is deprecated
+    import python_multipart as multipart
+except ImportError:
+    import multipart # https://github.com/Kludex/python-multipart (`apt install python3-multipart`)
 import shutil
 
 

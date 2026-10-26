@@ -90,8 +90,9 @@ class MDTestEnv(HttpdTestEnv):
     @classmethod
     def has_a2md(cls):
         d = os.path.dirname(inspect.getfile(HttpdTestEnv))
+        config_ini = os.getenv("PYHTTPD_CONFIG", os.path.join(d, 'config.ini'))
         config = ConfigParser(interpolation=ExtendedInterpolation())
-        config.read(os.path.join(d, 'config.ini'))
+        config.read(config_ini)
         bin_dir = config.get('global', 'bindir')
         a2md_bin = os.path.join(bin_dir, 'a2md')
         return os.path.isfile(a2md_bin)
@@ -212,16 +213,21 @@ class MDTestEnv(HttpdTestEnv):
     def check_acme(self):
         if self._acme_server_ok:
             return True
-        if self._acme_server_down:
-            pytest.skip(msg="ACME server not running")
-            return False
-        if self.is_live(self.acme_url, timeout=timedelta(seconds=0.5)):
-            self._acme_server_ok = True
-            return True
-        else:
+        if not self._acme_server_down:
+            if self.is_live(self.acme_url, timeout=timedelta(seconds=0.5)):
+                self._acme_server_ok = True
+                return True
             self._acme_server_down = True
-            pytest.fail(msg="ACME server not running", pytrace=False)
-            return False
+        # Both the first test to notice and every one after it report the
+        # same way: a configured-but-unreachable ACME server is a missing
+        # dependency, so skip, or fail under --strict-optional. Previously
+        # the first failed and the rest skipped, and both calls passed the
+        # 'msg' keyword that pytest removed in 8.0, raising TypeError.
+        self.require(False, "ACME server not running",
+                     dep="ACME test server",
+                     detected=f"ACME={self.get_acme_server()}, "
+                              f"no response from {self.acme_url}")
+        return False
 
     def get_ca_pem_file(self, hostname: str) -> Optional[str]:
         pem_file = super().get_ca_pem_file(hostname)
@@ -340,7 +346,7 @@ class MDTestEnv(HttpdTestEnv):
         md = self.get_md_status(domain)
         assert md
         assert 'state' in md, "md is unexpected: {0}".format(md)
-        assert md['state'] is MDTestEnv.MD_S_COMPLETE, f"unexpected state: {md['state']}"
+        assert md['state'] is MDTestEnv.MD_S_COMPLETE, f"unexpected state: {md}"
         pkey_file = self.store_domain_file(domain, self.pkey_fname(pkey))
         cert_file = self.store_domain_file(domain, self.cert_fname(pkey))
         r = self.run(['ls', os.path.dirname(pkey_file)])
@@ -359,7 +365,7 @@ class MDTestEnv(HttpdTestEnv):
         # check private key, validate certificate, etc
         MDCertUtil.validate_privkey(self.store_domain_file(domain, 'privkey.pem'))
         cert = MDCertUtil(self.store_domain_file(domain, 'pubcert.pem'))
-        cert.validate_cert_matches_priv_key(self.store_domain_file(domain, 'privkey.pem'))
+        cert.add_privkey(self.store_domain_file(domain, 'privkey.pem'))
         # No longer check CN, it may not be set or is not trusted anyway
         # assert cert.get_cn() == domain, f'CN: expected "{domain}", got {cert.get_cn()}'
         # check SANs

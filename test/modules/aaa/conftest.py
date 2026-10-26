@@ -43,6 +43,12 @@ def env(pytestconfig) -> AAATestEnv:
     docs = env.server_docs_dir
     pwfile = env.digest_pwfile
     conf = HttpdConf(env)
+    # Pin the client table to its historical size, ~12 entries, rather than
+    # the current default of ~140: the tests which need an entry to be
+    # garbage collected (085) drive that by filling the table with bare
+    # requests, and a table an order of magnitude larger makes them an order
+    # of magnitude slower for nothing.
+    conf.add('AuthDigestShmemSize 1000')
     conf.add(_digest_dir(docs, "default", [
         'AuthDigestProvider file',
         f'AuthUserFile "{pwfile}"',
@@ -51,6 +57,12 @@ def env(pytestconfig) -> AAATestEnv:
         'AuthDigestProvider file',
         f'AuthUserFile "{pwfile}"',
         'AuthDigestNcCheck On',
+    ]))
+    conf.add(_digest_dir(docs, "nccheck-shortlife", [
+        'AuthDigestProvider file',
+        f'AuthUserFile "{pwfile}"',
+        'AuthDigestNcCheck On',
+        'AuthDigestNonceLifetime 2',
     ]))
     conf.add(_digest_dir(docs, "shortlife", [
         'AuthDigestProvider file',
@@ -67,6 +79,12 @@ def env(pytestconfig) -> AAATestEnv:
         f'AuthUserFile "{pwfile}"',
         'AuthDigestNonceLifetime 0',
     ]))
+    conf.add(_digest_dir(docs, "onetime-nccheck", [
+        'AuthDigestProvider file',
+        f'AuthUserFile "{pwfile}"',
+        'AuthDigestNonceLifetime 0',
+        'AuthDigestNcCheck On',
+    ]))
     conf.add(_digest_dir(docs, "domain", [
         'AuthDigestProvider file',
         f'AuthUserFile "{pwfile}"',
@@ -76,6 +94,29 @@ def env(pytestconfig) -> AAATestEnv:
         # AuthDigestProvider intentionally omitted: falls back to "file".
         f'AuthUserFile "{pwfile}"',
     ]))
+    # A request which fails header validation (e.g. no Host on HTTP/1.1)
+    # is answered before the Digest module's post_read_request runs, so it
+    # has no per-request Digest record; an ErrorDocument redirecting it into
+    # a Digest-protected location must not then dereference that record.
+    # Only configured where that is fixed (r1939032): earlier code does
+    # dereference the missing record.
+    if env.httpd_is_at_least("2.5.0"):
+        conf.add('ErrorDocument 400 /digest/default/secret.txt')
+    # A reverse-proxied location which authenticates with Digest at the
+    # proxy (so the backend is never reached and need not be reachable).
+    # The challenge is an origin-style WWW-Authenticate, so AuthDigestDomain
+    # applies to it just as for a non-proxied location.
+    conf.add([
+        'ProxyPass "/pxdomain/" "http://127.0.0.1:1/unused/"',
+        '<Location "/pxdomain/">',
+        '    AuthType Digest',
+        f'    AuthName "{AAATestEnv.REALM}"',
+        '    AuthDigestProvider file',
+        f'    AuthUserFile "{pwfile}"',
+        '    AuthDigestDomain "/pxdomain/"',
+        '    Require valid-user',
+        '</Location>',
+    ])
     conf.install()
     assert env.apache_restart() == 0
     return env

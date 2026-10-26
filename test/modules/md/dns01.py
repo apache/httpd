@@ -1,10 +1,26 @@
 #!/usr/bin/env python3
 
+import os
 import subprocess
 import sys
 
-curl = "curl"
+from configparser import ConfigParser, ExtendedInterpolation
+
 challtestsrv = "localhost:8055"
+
+
+def curl_bin():
+    """The curl binary the test framework is configured to use."""
+    if 'CURL' in os.environ:
+        return os.environ['CURL']
+    pyhttpd_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'pyhttpd')
+    config_ini = os.getenv("PYHTTPD_CONFIG", os.path.join(pyhttpd_dir, 'config.ini'))
+    config = ConfigParser(interpolation=ExtendedInterpolation())
+    config.read(config_ini)
+    return config.get('global', 'curl_bin', fallback='curl')
+
+
+curl = curl_bin()
 
 
 def run(args):

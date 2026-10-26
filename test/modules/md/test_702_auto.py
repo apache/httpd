@@ -3,6 +3,8 @@ import time
 from datetime import timedelta
 
 import pytest
+
+from pyhttpd.depends import needs_dependency
 from pyhttpd.certs import CertificateSpec
 
 from pyhttpd.env import HttpdTestEnv
@@ -11,8 +13,9 @@ from .md_env import MDTestEnv
 from .md_conf import MDConf
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestAutov2:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -208,8 +211,8 @@ class TestAutov2:
         # check temporary cert from server
         cert2 = MDCertUtil(env.path_fallback_cert(domain))
         assert cert1.same_serial_as(cert2), \
-            "Unexpected temporary certificate on vhost %s. Expected cn: %s , "\
-            "but found cn: %s" % (name_a, cert2.get_cn(), cert1.get_cn())
+            f"Unexpected temporary certificate on vhost {name_a}." \
+            f" Expected cn: {cert2}, but found cn: {cert1}"
 
     # test case: drive MD with only invalid challenges, domains should stay 503'd
     def test_md_702_006(self, env):
@@ -296,6 +299,59 @@ class TestAutov2:
         assert env.await_completion([domain])
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
+
+    # Specify a valid http proxy for a single MDomain
+    def test_md_702_008b(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.xfail("MDHttpProxy inside MDomainSet not backported")
+        domain = self.test_domain
+        domains = [domain]
+        #
+        conf = MDConf(env, admin=f"admin@{domain}", proxy=True)
+        conf.add_drive_mode("always")
+        conf.start_md(domains)
+        conf.add(f"    MDHttpProxy http://localhost:{env.proxy_port}")
+        conf.end_md()
+        conf.install()
+        #
+        # - restart (-> drive), check that md is in store
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.await_completion([domain])
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        env.check_md_complete(domain)
+
+    # Specify a non-working http proxy for MDomain A and a valid http proxy for MDomain B
+    def test_md_702_008c(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.xfail("MDHttpProxy inside MDomainSet not backported")
+        domain_a = f"a{self.test_domain}"
+        domain_b = f"b{self.test_domain}"
+        conf = MDConf(env, admin=f"admin@{domain_a}", proxy=True)
+        conf.start_md([domain_a])
+        conf.add(f"    MDHttpProxy http://localhost:1")
+        conf.end_md()
+        conf.add_vhost(domains=[domain_a])
+        conf.start_md([domain_b])
+        conf.add(f"    MDHttpProxy http://localhost:{env.proxy_port}")
+        conf.end_md()
+        conf.add_vhost(domains=[domain_b])
+        conf.install()
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.await_completion([domain_b], restart=False)
+        md = env.await_error(domain_a)
+        assert md
+        assert md['renewal']['errors'] > 0
+        assert md['renewal']['last']['status-description'] == 'Connection refused'
+        assert 'account' not in md['ca']
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # Unsuccessful in contacting ACME server
+            ],
+            matches = [
+                r'.*Unsuccessful in contacting ACME server at .*'
+            ]
+        )
 
     # Force cert renewal due to critical remaining valid duration
     # Assert that new cert activation is delayed

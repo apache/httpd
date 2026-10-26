@@ -4,13 +4,16 @@ import os
 
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .md_conf import MDConf
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_a2md(), reason="no a2md available")
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("a2md", MDTestEnv.has_a2md(), reason="no a2md available")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestRoundtripv2:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -19,6 +22,9 @@ class TestRoundtripv2:
         env.APACHE_CONF_SRC = "data/test_roundtrip"
         env.clear_store()
         MDConf(env).install()
+        env.httpd_error_log.add_ignored_lognos(["AH10045"])
+        yield
+        env.httpd_error_log.remove_ignored_lognos(["AH10045"])
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):

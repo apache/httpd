@@ -5,7 +5,7 @@ from .env import H2Conf, H2TestEnv
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
-@pytest.mark.skipif(not H2TestEnv().has_nghttp(), reason="nghttp not available")
+@H2TestEnv.needs_nghttp()
 class TestInvalidHeaders:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -169,11 +169,13 @@ class TestInvalidHeaders:
         conf.install()
         assert env.apache_restart() == 0
         url = env.mkurl("https", "cgi", "/")
-        opt = []
-        for i in range(21):
-            opt += ["-H", "x{0}: 1".format(i)]
-        r = env.curl_get(url, options=opt)
-        assert 431 == r.response["status"]
+
+        for desc, opts in [
+            ("regular", [v for i in range(21) for v in ("-H", f"x{i}: 1")]),
+            ("cookie",  [v for i in range(21) for v in ("-H", f"cookie: c{i}=v{i}")]),
+        ]:
+            r = env.curl_get(url, options=opts)
+            assert r.response["status"] == 431, f"{desc} header failed"
         conf = H2Conf(env)
         conf.add("""
             LimitRequestFields 0
@@ -214,8 +216,12 @@ class TestInvalidHeaders:
 
     # invalid chars in method
     def test_h2_200_16(self, env):
-        if not env.h2load_is_at_least('1.45.0'):
-            pytest.skip(f'nhttp2 version too old')
+        # this drives nghttp, not h2load: gate on the version of the client
+        # actually used, so an absent h2load does not skip a runnable test
+        env.require(env.nghttp_is_at_least('1.45.0'),
+                    'nghttp2 version too old',
+                    dep='nghttp >= 1.45.0',
+                    detected=f"nghttp {env.nghttp_version_str()}")
         conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.install()

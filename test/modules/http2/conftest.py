@@ -23,6 +23,10 @@ def env(pytestconfig) -> H2TestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = H2TestEnv(pytestconfig=pytestconfig)
+    # the h2 vhosts are TLS, so setup_httpd() hard-requires mod_ssl and
+    # raises if it was not built. Report that as the missing dependency.
+    env.require(env.has_mod_ssl(), "no mod_ssl available", dep="mod_ssl",
+                detected=f"no mod_ssl.so in {env.libexec_dir}")
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
