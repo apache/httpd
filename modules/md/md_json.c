@@ -812,7 +812,7 @@ int md_json_itera(md_json_itera_cb *cb, void *baton, md_json_t *json, ...)
     va_list ap;
     size_t index;
     json_t *val;
-    md_json_t wrap;
+    md_json_t *wrap;
     
     va_start(ap, json);
     j = jselect(json, ap);
@@ -822,10 +822,11 @@ int md_json_itera(md_json_itera_cb *cb, void *baton, md_json_t *json, ...)
         return 0;
     }
         
-    wrap.p = json->p;
+    wrap = apr_pcalloc(json->p, sizeof(*wrap));
+    wrap->p = json->p;
     json_array_foreach(j, index, val) {
-        wrap.j = val;
-        if (!cb(baton, index, &wrap)) {
+        wrap->j = val;
+        if (!cb(baton, index, wrap)) {
             return 0;
         }
     }
@@ -838,7 +839,7 @@ int md_json_iterkey(md_json_iterkey_cb *cb, void *baton, md_json_t *json, ...)
     va_list ap;
     const char *key;
     json_t *val;
-    md_json_t wrap;
+    md_json_t *wrap;
     
     va_start(ap, json);
     j = jselect(json, ap);
@@ -848,10 +849,11 @@ int md_json_iterkey(md_json_iterkey_cb *cb, void *baton, md_json_t *json, ...)
         return 0;
     }
         
-    wrap.p = json->p;
+    wrap = apr_pcalloc(json->p, sizeof(*wrap));
+    wrap->p = json->p;
     json_object_foreach(j, key, val) {
-        wrap.j = val;
-        if (!cb(baton, key, &wrap)) {
+        wrap->j = val;
+        if (!cb(baton, key, wrap)) {
             return 0;
         }
     }

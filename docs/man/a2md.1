@@ -1,0 +1,179 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "A2MD" 1 "2026-09-22" "Apache HTTP Server" "a2md"
+
+.SH NAME
+a2md \- Show and manipulate Apache Managed Domains
+
+.SH "SYNOPSIS"
+ 
+.PP
+\fB\fBa2md\fR [\fBoptions\fR] {\fBacme | add | update | drive | list | store\fR} [\fBcmd_options\fR] [\fBargs\fR]\fR
+ 
+
+.SH "SUMMARY"
+ 
+.PP
+The \fBa2md\fR utility can be used to configure and update managed domains with the mod_md module for Apache HTTP Server\&. Managed Domains are virtual hosts which automatically obtain and renew TLS certificates from an ACME server\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+\fB{-a|--acme} \fIarg\fR\fR
+The url of the ACME server directory  
+.TP
+\fB{-d|--dir} \fIarg\fR\fR
+Directory for file data  
+.TP
+\fB{-h|--help}\fR
+Print usage information  
+.TP
+\fB{-j|--json}\fR
+Produce JSON output  
+.TP
+\fB{-p|--proxy} \fIarg\fR\fR
+Use the HTTP proxy url  
+.TP
+\fB{-q|--quiet}\fR
+Produce less output  
+.TP
+\fB{-t|--terms} \fIarg\fR\fR
+You agree to the terms of services (url)  
+.TP
+\fB{-v|--verbose}\fR
+Produce more output  
+.TP
+\fB{-V|--version}\fR
+Print version  
+ 
+.SH "ACME SERVER COMMANDS"
+ 
+.PP
+\fB\fBa2md acme\fR {newreg | delreg | agree | authz | validate} [opts] [args]\fR
+ 
+.PP
+Play with the ACME server\&. For most of the commands you need to specify the url of the ACME server directory\&.
+ 
+ 
+.TP
+\fB\fBnewreg\fR \fIcontact-uri\fR [\fIcontact-uri\fR \&.\&.\&.]\fR
+Register a new account at ACME server with given \fIcontact-uri\fR (email)  
+.TP
+\fB\fBdelreg\fR \fIaccount\fR\fR
+Delete an existing ACME \fIaccount\fR  
+.TP
+\fB\fBagree\fR \fIaccount\fR\fR
+Agree to ACME terms of service  
+.TP
+\fB\fBauthz\fR \fIaccount\fR \fIdomain\fR\fR
+Request a new authorization for an \fIaccount\fR and \fIdomain\fR  
+.TP
+\fB\fBvalidate\fR \fIaccount\fR\fR
+Validate \fIaccount\fR existence  
+ 
+.SH "MANAGED DOMAIN ADDITION"
+ 
+.PP
+\fB\fBa2md add\fR [opts] domain [domain \&.\&.\&.]\fR
+ 
+.PP
+Adds a new managed domain\&. Must not overlap with existing domains\&.
+ 
+.SH "UPDATING MANAGED DOMAIN"
+ 
+.PP
+\fB\fBa2md update\fR \fIname\fR [opts] {domains | ca | account | contacts | agreement}\fR
+ 
+.PP
+Update a managed domain's properties, where \fIname\fR belongs to managed domain which will be updated\&.
+ 
+.PP
+URL of ACME server can be also updated if \fB-a|--acme\fR option is present\&.
+ 
+ 
+.TP
+\fB\fBdomains\fR \fIdname\fR [\fIdname\fR \&.\&.\&.]\fR
+Update domain where \fIdname\fR is domain name which will be updated\&.  
+.TP
+\fB\fBca\fR \fIurl\fR [\fIproto\fR]\fR
+The \fIURL\fR where the CA offers its service\&. Currently only the ACME (LetsEncrypt) \fIproto\fR is implemented\&.  
+.TP
+\fB\fBaccount\fR\fR
+Account name on corresponding ACME server\&.  
+.TP
+\fB\fBcontacts\fR \fIemail\fR [\fIemail\fR \&.\&.\&.]\fR
+Contact address which will be used by ACME server to inform about renewals or changed terms of service\&.  
+.TP
+\fB\fBagreement\fR \fIURI\fR\fR
+URI pointing to terms of service of ACME server\&.  
+ 
+.SH "DRIVE MANAGED DOMAINS"
+ 
+.PP
+\fB\fBa2md drive\fR [\fImd \&.\&.\&.\fR] [\fIoptions \&.\&.\&.\fR]\fR
+ 
+.PP
+Drive all or the mentioned managed domains toward completeness
+ 
+ 
+.TP
+\fB{-c|--challenge} \fIarg\fR\fR
+Which challenge type to use  
+.TP
+\fB{-f|--force} \fIarg\fR\fR
+Force driving the managed domain, even when it seems valid  
+.TP
+\fB{-r|--reset} \fIarg\fR\fR
+Reset any staging data for the managed domain  
+ 
+.SH "LIST MANAGED DOMAMINS"
+ 
+.PP
+\fB\fBa2md list\fR\fR
+ 
+.PP
+List all managed domamins
+ 
+.SH "MANIPULATING MD STORE"
+ 
+.PP
+\fB\fBa2md store\fR {add | remove | list | update} [\fIopts\fR] [\fIargs\fR]\fR
+ 
+.PP
+Manipulate the MD store
+ 
+ 
+.TP
+\fB\fBadd\fR \fIdns\fR [\fIdns\fR \&.\&.\&.]\fR
+Add a new managed domain dns with all the additional domain names  
+.TP
+\fB\fBremove\fR [{-f | --force}] \fIname\fR [\fIname\fR \&.\&.\&.]\fR
+Remove the managed domains \fIname\fR from the store\&. When \fB-f\fR or \fB--force\fR option is specified, force managed domain removal - be silent about missing domains  
+.TP
+\fB\fBlist\fR\fR
+List all managed domains in the store  
+.TP
+\fB\fBupdate\fR \fIname\fR [\fIdomains\fR \fIdname\fR [\fIdname\fR \&.\&.\&.]]\fR
+If \fIdomains\fR cmd is specified followed by one or more domains, MD store will be updated with those domains\&. The URL of the ACME server can be also updated if \fB-a\fR or \fB--acme\fR option is present\&.  
+ 
