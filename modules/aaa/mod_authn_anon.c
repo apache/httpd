@@ -115,18 +115,14 @@ static const command_rec authn_anon_cmds[] =
 {
     AP_INIT_ITERATE("Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG,
      "a space-separated list of user IDs"),
-    AP_INIT_FLAG("Anonymous_MustGiveEmail", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authn_anon_config_rec, mustemail),
-     OR_AUTHCFG, "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_NoUserId", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authn_anon_config_rec, nouserid),
-     OR_AUTHCFG, "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_VerifyEmail", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authn_anon_config_rec, verifyemail),
-     OR_AUTHCFG, "Limited to 'on' or 'off'"),
-    AP_INIT_FLAG("Anonymous_LogEmail", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authn_anon_config_rec, logemail),
-     OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG_SLOT("Anonymous_MustGiveEmail", authn_anon_config_rec, mustemail,
+                      OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG_SLOT("Anonymous_NoUserId", authn_anon_config_rec, nouserid,
+                      OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG_SLOT("Anonymous_VerifyEmail", authn_anon_config_rec, verifyemail,
+                      OR_AUTHCFG, "Limited to 'on' or 'off'"),
+    AP_INIT_FLAG_SLOT("Anonymous_LogEmail", authn_anon_config_rec, logemail,
+                      OR_AUTHCFG, "Limited to 'on' or 'off'"),
     {NULL}
 };
 
