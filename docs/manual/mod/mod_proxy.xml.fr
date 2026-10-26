@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1937809:1939369 (outdated) -->
+<!-- English Revision: 1939369 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -66,7 +66,7 @@
 
         <table border="1">
         <tr><th>Protocole</th><th>Module</th></tr>
-        <tr><td>AJP13 (Protocole Apache JServe version
+        <tr><td>AJP13 (Protocole Apache JServ version
           1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
         <tr><td>CONNECT (pour
           SSL)</td><td><module>mod_proxy_connect</module></td></tr>

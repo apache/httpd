@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1906520:1939353 (outdated) -->
+<!-- English Revision: 1939353 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -99,10 +99,11 @@
     <tr><td>hcpasses</td>
         <td>1</td>
         <td>Nombre de check up à passer avec succès avant de remettre en service
-	l'équipier</td></tr>
+	l'équipier (un nombre entier supérieur ou égal à 0)</td></tr>
     <tr><td>hcfails</td>
         <td>1</td>
-        <td>Nombre de check up échoués avant mettre hors service l'équipier</td></tr>
+        <td>Nombre de check up échoués avant mettre hors service l'équipier (un
+	nombre entier supérieur ou égal à 0)</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
         <td>Intervalle entre deux check up en secondes (par défaut effectué
@@ -110,7 +111,11 @@
 	href="directive-dict.html#Syntax">time-interval</a>.</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
-        <td>URI supplémentaire à ajouter à l'URL de l'équipier pour le check up.</td></tr>
+        <td>URI supplémentaire à ajouter à l'URL de l'équipier pour le check up.
+	Il est ajouté au chemin de l’URL de l’équipier, s’il existe, avec un
+	slash unique, si bien que <code>ping</code> et <code>/ping</code> sont
+	identiques. Une modification apportée au <code>balancer-manager</code>
+	sera prise en compte lors de la vérification suivante.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
         <td>Nom du modèle créé via <directive module="mod_proxy_hcheck">ProxyHCTemplate</directive> à
@@ -122,6 +127,20 @@
             <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est
 	    interprété comme un check up réussi.</em></td></tr>
     </table>
+</note>
+
+<note><title>Ce qu’un contrôle sanitaire accepte</title>
+  <p>La fiabilité du serveur dorsal n’est pas assurée. Une vérification échoue
+  si la réponse n’est pas complète (les en-têtes doivent se terminer avec une
+  ligne vide, pas à la fin de la connexion), ou si elle contient plus de 100 champs
+  d’en-tête, si une ligne d’en-tête est trop longue ou si l’échange prend plus
+  longtemps que la valeur de <code>timeout</code> de l’équipier (worker) (ou la
+  directive <directive module="core">Timeout</directive> du serveur si
+  l’équipier n’en possède pas) ; un dorsal qui continue à envoyer ne peut
+  maintenir une vérification ouverte. Pour les équipiers <code>https</code>, la
+  vérification envoie le nom de serveur (SNI) et vérifie le nom du certificat
+  comme le ferait une requête mandatée pour le même équipier, en tenant compte
+  des directives <code>SSLProxy*</code> de <module>mod_ssl</module>.</p>
 </note>
 
 <note><title>Compatibilité :</title>
@@ -211,7 +230,10 @@ ProxyPass "/apps"     "balancer://foo"
     <p>Si l'on utilise une méthode de check up (par exemple <code>GET</code>)
     qui génère un corps de réponse, ce corps peut lui-même être ausculté via
     <code>ap_expr</code> en utilisant la fonction associée aux expressions
-    <code>hc()</code> spécifique à ce module.</p>
+    <code>hc()</code> spécifique à ce module. Le corps est transféré en mémoire
+    pour un équipier qui possède un <code>hcexpr</code>, et pour un maximum de 1
+    Mo : un corps plus grand fera échouer le check-up. Sans la présence d’un
+    <code>hcexpr</code>, le corps est lu et supprimé.</p>
 
     <p>Dans l'exemple suivant, on envoie une requête <code>GET</code> au serveur
     d'arrière-plan, et si le corps de la réponse contient la chaîne <em>Under

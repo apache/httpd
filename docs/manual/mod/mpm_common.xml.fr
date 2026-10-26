@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933657:1939435 (outdated) -->
+<!-- English Revision: 1939435 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -89,7 +89,7 @@ positionner avant d'effectuer un vidage mémoire</description>
 
     <note><title>Signaux spécifiques</title>
       <p><directive>CoreDumpDirectory</directive> n'est traité qu'à la
-      reception d'un certain nombre de signaux , SIGFPE, SIGILL, SIGABORT,
+      reception d'un certain nombre de signaux , SIGFPE, SIGILL, SIGABRT,
       SIGSEGV, et SIGBUS.</p>
       <p>
       Sur certains systèmes d'exploitation, SIGQUIT provoque aussi un
@@ -139,7 +139,7 @@ s'arrêter dans le cas d'un arrêt "en douceur"</description>
 <default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
-<module>prefork</module></modulelist>
+<module>prefork</module><module>motorz</module></modulelist>
 
 <usage>
     <p>La directive <directive>GracefulShutdownTimeout</directive>
@@ -805,10 +805,18 @@ processus</description>
 <default>Voir ci-dessous pour plus de détails</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
-<module>prefork</module>
+<module>prefork</module><module>motorz</module>
 </modulelist>
 
 <usage>
+    <p>Pour le MPM <module>motorz</module>, cette directive permet de définir le
+    nombre d’emplacements de processus qui doit couvrir la valeur de <directive
+    module="mpm_common">StartServers</directive> augmentée du nombre d’anciens
+    processus encore en train de terminer une connexion après un redémarrage « en
+    douceur » (graceful) ; sa valeur par défaut est la plus grande valeur entre
+    16 et deux fois la valeur de <directive
+    module="mpm_common">StartServers</directive>.</p>
+
     <p>Avec le MPM <module>prefork</module>, cette directive définit le
     nombre maximum que l'on peut affecter à la directive <directive
     module="mpm_common">MaxRequestWorkers</directive>, et ceci pour la

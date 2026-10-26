@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934245:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -1225,7 +1225,7 @@ end
     <p>Mod_lua implémente une fonctionnalité basique de connexion aux
 bases de données permettant d'envoyer des requêtes ou d'exécuter des
 commandes auprès des moteurs de base de données les plus courants
-(mySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.</p>
+(MySQL, PostgreSQL, FreeTDS, ODBC, SQLite, Oracle), ainsi que mod_dbd.</p>
     <p>
     <code>dbType</code>, le premier paramètre de <code>dbacquire</code>, est
     sensible à la casse.</p>

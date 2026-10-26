@@ -158,6 +158,72 @@ serveur HTTP Apache</a></seealso>
     est réactivée.</p>
 </section>
 
+<section id="graceful-stop"><title>Arrêt et redémarrage en douceur (graceful)</title>
+    <p>Lorsqu’on demande à un processus enfant de s’arrêter en douceur (un
+    redémarrage ou arrêt en douceur ou <directive
+    module="mpm_common">MaxConnectionsPerChild</directive>) atteint), il
+    n’accepte plus de connexion, ferme les connexions persistantes inactives, et
+    laisse se terminer toutes les autres connexions, y compris les réponses
+    encore en cours d’écriture, avant de quitter. Ainsi, une génération
+    précédente conserve ses emplacements de processus jusqu’à ce que ses
+    connexions soient fermées ; c’est pourquoi la directive <directive
+    module="mpm_common">ServerLimit</directive> doit prévoir de la place pour
+    les deux générations. La directive <directive
+    module="mpm_common">GracefulShutdownTimeout</directive> permet de définir la
+    durée pendant laquelle le processus parent attend lors d’un arrêt en
+    douceur.</p>
+
+    <p>Si tous les emplacements sont occupés par un processus enfant en cours de
+    terminaison, le processus parent ne peut pas initier de remplacement, et
+    comme il n’a pas de processus enfant de la génération actuelle, aucune
+    nouvelle connexion ne peut être acceptée : il faut attendre jusqu’à ce qu’un
+    processus enfant quitte. Cela nécessite des connexions qui perdurent au-delà
+    de plusieurs redémarrages successifs, comme dans le cas de longs
+    téléchargements. Le processus parent consigne le message "scoreboard is
+    full" lorsque cela se produit ; vous devez alors augmenter <directive
+    module="mpm_common">ServerLimit</directive>.</p>
+
+    <p>Un processus enfant ne s’impose pas de limite lors de sa purge. Une
+    connexion qui est en train d’écrire une réponse, ou qui attend une
+    entrée/sortie pour un module qui le gère de manière asynchrone, est
+    maintenue jusqu’à ce qu’elle doit terminée ou que le délai <directive
+    module="mpm_common">Timeout</directive> configuré expire ; un redémarrage en
+    douceur peut donc durer aussi longtemps qu’une telle connexion.</p>
+</section>
+
+<section id="scoreboard"><title>Tableau d’affichage et mod_status</title>
+    <p>Une connexion n’est pas liée à un thread et les emplacements par thread
+    du tableau d’affichage représentent les threads de travail. Un thread de
+    travail indique la connexion qu’il traite par son emplacement et libère ce
+    dernier lorsqu’il en a fini avec lui ; une connexion en attente
+    (persistante, complètement d’écriture, fermeture avec délai, attente d’une
+    entrée/sortie) n’occupe pas de slot. Dans <module>mod_status</module>, les
+    nombres de « travailleurs » actifs et inactifs représentent donc les threads
+    de travail, comme ils le font pour les autres MPMs threadés.</p>
+</section>
+
+<section id="limitations"><title>Plateformes et limitations</title>
+    <p><module>motorz</module> s’exécute sur les plateformes de style Unix dont
+    l’APR prend en charge les threads et qui peuvent utiliser un ensemble de
+    descripteurs d'événements (pollset) thread-safe (kqueue, event ports ou
+    epoll). Il n’est pas disponible sous Windows, NetWare ou OS/2.</p>
+    <ul>
+      <li>La directive <directive
+      module="mpm_common">ThreadStackSize</directive> est ignorée (un
+      avertissement est consigné) : les threads de travail proviennent d’un
+      ensemble de threads de l’APR pour lesquels la définition de la taille de
+      pile n’est pas autorisée.</li>
+      <li>Il n’y a pas de mutex accept. Les sockets d’écoute sont non bloquants
+      et sondés ; ainsi, le thread sondeur qui les possède dans chaque processus
+      enfant se réveille à chaque nouvelle connexion. Un réglage <code>Mutex
+      accept</code> est accepté, mais n’a aucun effet.</li>
+      <li>Il n’y a pas de contrôles <directive
+      module="mpm_common">MinSpareThreads</directive>, <directive
+      module="mpm_common">MaxSpareThreads</directive> ou <directive
+      module="mpm_common">MaxRequestWorkers</directive>, comme décrit ci-avant.</li>
+    </ul>
+</section>
+
 <section id="admission-control"><title>Contrôle d’admission</title>
     <p>Pour qu’un processus enfant reste fiable en cas de surcharge,
     <module>motorz</module> applique une pression en retour (backpressure) à
@@ -202,27 +268,34 @@ serveur HTTP Apache</a></seealso>
     unique, mais le débit par hôte reste tout de même gouverné par le CPU de
     travail.</p>
 
-    <note><title>Pas de ServerLimit / modification dynamique du nombre de
+    <note><title>Pas de modification dynamique du nombre de
     processus</title>
     <p>À la différence des MPMs <module>worker</module> et
     <module>event</module>, <module>motorz</module> ne modifie pas le nombre de
-    processus enfants avec la charge et ne définit pas de plafond séparé avec
-    <directive module="mpm_common">ServerLimit</directive>. Le nombre de
-    processus enfants est fixé par la directive <directive
-    module="mpm_common">StartServers</directive> qui agit de ce fait comme une
-    limite physique du démon, et il n’y a pas de contrôles du style <directive
-    module="mpm_common">MinSpareThreads</directive>, <directive
+    processus enfants avec la charge. L’ensemble des processus est fixé à
+    <directive module="mpm_common">StartServers</directive>. <directive
+    module="mpm_common">ServerLimit</directive> ne définit que le nombre
+    d’emplacements de processus, y compris ceux occupés par d’anciens processus
+    enfant qui terminent une connexion après un redémarrage en douceur ; sa
+    valeur par défaut est la plus grande valeur entre 16 et deux fois la valeur
+    de <directive module="mpm_common">StartServers</directive> et, comme la
+    directive <directive module="mpm_common">ThreadLimit</directive>, ne peut
+    pas être modifiée au cours d’un redémarrage. Il n’y a pas de contrôles du
+    style <directive module="mpm_common">MinSpareThreads</directive>, <directive
     module="mpm_common">MaxSpareThreads</directive> ou <directive
     module="mpm_common">MaxRequestWorkers</directive>. Il est possible de
     définir le parallélisme du traitement avec la directive <directive
     module="mpm_common">ThreadsPerChild</directive> (et, si le processus de
-    sondage sature, avec la directive <directive>PollersPerChild</directive>).</p>
+    sondage sature, avec la directive
+    <directive>PollersPerChild</directive>).</p>
     </note>
 </section>
 
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>GracefulShutdownTimeout</name>
 </directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
@@ -238,6 +311,8 @@ serveur HTTP Apache</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>StartServers</name>
@@ -245,8 +320,6 @@ serveur HTTP Apache</a></seealso>
 <directivesynopsis location="mpm_common"><name>ThreadLimit</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
-</directivesynopsis>
-<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
