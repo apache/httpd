@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ech-server:
+    image: apache-ech-server:latest
+    container_name: ech-server
+    ports:
+      - "443:443"
+    volumes:
+      - ./conf/ssl:/usr/local/apache2/conf/ssl
+      - ./conf/ech:/usr/local/apache2/conf/ech_keys
+    command: |
+      sh -c "
+      echo 'LoadModule ssl_module modules/mod_ssl.so' >> /usr/local/apache2/conf/httpd.conf
+      echo 'LoadModule socache_shmcb_module modules/mod_socache_shmcb.so' >> /usr/local/apache2/conf/httpd.conf
+      echo 'LogLevel ssl:trace8' >> /usr/local/apache2/conf/httpd.conf
+      echo 'Listen 443' >> /usr/local/apache2/conf/httpd.conf
+
+      echo 'SSLSessionTickets off' >> /usr/local/apache2/conf/httpd.conf
+      echo 'SSLSessionCache none' >> /usr/local/apache2/conf/httpd.conf
+
+      echo '<VirtualHost *:443>' >> /usr/local/apache2/conf/httpd.conf
+      echo '  DocumentRoot /usr/local/apache2/htdocs/public' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLEngine on' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLOptions +StdEnvVars' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLCertificateFile /usr/local/apache2/conf/ssl/server.crt' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLCertificateKeyFile /usr/local/apache2/conf/ssl/server.key' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLECHKeyDir /usr/local/apache2/conf/ech_keys' >> /usr/local/apache2/conf/httpd.conf
+      echo '</VirtualHost>' >> /usr/local/apache2/conf/httpd.conf
+
+      echo '<VirtualHost *:443>' >> /usr/local/apache2/conf/httpd.conf
+      echo '  ServerName ech-test.fyp.local' >> /usr/local/apache2/conf/httpd.conf
+      echo '  DocumentRoot /usr/local/apache2/htdocs/private' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLEngine on' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLCertificateFile /usr/local/apache2/conf/ssl/server.crt' >> /usr/local/apache2/conf/httpd.conf
+      echo '  SSLCertificateKeyFile /usr/local/apache2/conf/ssl/server.key' >> /usr/local/apache2/conf/httpd.conf
+      echo '</VirtualHost>' >> /usr/local/apache2/conf/httpd.conf
+
+      /usr/local/apache2/bin/httpd -D FOREGROUND"

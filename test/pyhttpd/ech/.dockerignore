@@ -1,0 +1,3 @@
+conf/
+__pycache__/
+geckodriver
