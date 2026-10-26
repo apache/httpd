@@ -146,6 +146,31 @@ class HttpdErrorLog:
         self._caught_matches = set()
         return errors, warnings
 
+    def current_pos(self) -> int:
+        """The end of the log as it stands now, to wait_for() lines
+           logged after it.
+        """
+        if not os.path.isfile(self._path):
+            return 0
+        with open(self._path) as fd:
+            return fd.seek(0, SEEK_END)
+
+    def wait_for(self, pattern: re.Pattern, start_pos: int, timeout=10) -> bool:
+        """Wait for a line matching pattern to be logged after start_pos,
+           as returned by current_pos().
+        """
+        end = datetime.now() + timedelta(seconds=timeout)
+        while True:
+            if os.path.isfile(self._path):
+                with open(self._path) as fd:
+                    fd.seek(start_pos, os.SEEK_SET)
+                    for line in fd:
+                        if pattern.match(line):
+                            return True
+            if datetime.now() > end:
+                return False
+            time.sleep(.1)
+
     def scan_recent(self, pattern: re.Pattern, timeout=10):
         if not os.path.isfile(self.path):
             return False

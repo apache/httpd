@@ -84,6 +84,20 @@ class HttpdTestSetup:
     def add_optional_modules(self, modules: List[str]):
         self._optional_modules.extend(modules)
 
+    def _cgi_module(self):
+        """The name of a CGI module this build has: mod_cgid for preference,
+        mod_cgi otherwise.  There is no mod_cgid on Windows."""
+        if sys.platform != "win32" \
+                and os.path.isfile(os.path.join(self.env.libexec_dir,
+                                                "mod_cgid.so")):
+            return "cgid"
+        return "cgi"
+
+    def add_cgi_module(self):
+        """Load a CGI module, for a suite which needs CGI but does not care
+        which of mod_cgid and mod_cgi runs it."""
+        self.add_modules([self._cgi_module()])
+
     def make(self):
         self._make_dirs()
         self._make_conf()
@@ -110,7 +124,7 @@ class HttpdTestSetup:
 
     def _make_conf(self):
         # remove anything from another run/test suite
-        conf_dest_dir = f"{self.env.server_dir}/conf"
+        conf_dest_dir = os.path.join(self.env.server_dir, 'conf')
         if os.path.isdir(conf_dest_dir):
             shutil.rmtree(conf_dest_dir)
         for d in self._source_dirs:
@@ -153,15 +167,15 @@ class HttpdTestSetup:
             # issue load directives for all modules we want that are shared
             missing_mods = list()
             modules = self._modules
-            if sys.platform == "win32":
-                modules = ["cgi" if m == "cgid" else m for m in modules]
+            modules = [self._cgi_module() if m == "cgid" else m
+                       for m in modules]
             for m in modules:
                 match = re.match(r'^mod_(.+)$', m)
                 if match:
                     m = match.group(1)
                 if m in loaded:
                     continue
-                mod_path = f"{self.env.libexec_dir}/mod_{m}.so"
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if m in builtin_modules:
                     fd.write(f"#built-in: LoadModule {m}_module   \"{mod_path}\"\n")
                 elif os.path.isfile(mod_path):
@@ -177,7 +191,7 @@ class HttpdTestSetup:
                     m = match.group(1)
                 if m in loaded:
                     continue
-                mod_path = f"{self.env.libexec_dir}/mod_{m}.so"
+                mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if m not in builtin_modules and os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
                     loaded.add(m)
@@ -188,7 +202,7 @@ class HttpdTestSetup:
     def _make_htdocs(self):
         if not os.path.exists(self.env.server_docs_dir):
             os.makedirs(self.env.server_docs_dir)
-        dest_dir = f"{self.env.server_dir}/htdocs"
+        dest_dir = os.path.join(self.env.server_dir, 'htdocs')
         # remove anything from another run/test suite
         if os.path.isdir(dest_dir):
             shutil.rmtree(dest_dir)
@@ -207,7 +221,7 @@ class HttpdTestSetup:
                             open(fpath, 'wb').write(data.replace(b'\r\n', b'\n'))
                     except OSError:
                         pass
-                if re.match(r'.+\.py', fname):
+                if re.search(r'\.(py|cgi)$', fname):
                     if sys.platform == "win32":
                         self._fix_shebang(fpath)
                     st = os.stat(fpath)
@@ -236,7 +250,7 @@ class HttpdTestSetup:
                 log.error(f"compiling mod_aptest failed: {p.stderr}")
                 raise Exception(f"compiling mod_aptest failed: {p.stderr}")
 
-            module_dir = f"{local_dir}/mod_aptest/.libs/"
+            module_dir = os.path.join(local_dir, "mod_aptest", ".libs")
 
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'a') as fd:
@@ -259,22 +273,17 @@ class HttpdTestSetup:
 class HttpdTestEnv:
 
     LIBEXEC_DIR = None
+    # entries shared across all modules, archived once in _shared
+    SHARED_SERVER_ENTRIES = {'ca', 'ca1', 'ca2', 'md', 'acme-ca.pem',
+                             'eab.json'}
+
     @staticmethod
     def has_tool(name: str) -> bool:
         return bool(shutil.which(name))
 
     @classmethod
     def has_python_package(cls, name: str) -> bool:
-        if name in sys.modules:
-            # already loaded
-            return True
-        elif (spec := importlib.util.find_spec(name)) is not None:
-            module = importlib.util.module_from_spec(spec)
-            sys.modules[name] = module
-            spec.loader.exec_module(module)
-            return True
-        else:
-            return False
+        return name in sys.modules or importlib.util.find_spec(name) is not None
 
     @classmethod
     def get_ssl_module(cls):
@@ -286,6 +295,107 @@ class HttpdTestEnv:
             env = HttpdTestEnv()  # will initialized it
         path = os.path.join(cls.LIBEXEC_DIR, f"mod_{name}.so")
         return os.path.isfile(path)
+
+    @classmethod
+    def has_mod_ssl(cls):
+        """Whether mod_ssl is installed.
+
+        Not the same question as get_ssl_module(), which only reports which
+        TLS module $SSL selected for this run. A test that is "only for
+        mod_ssl" is not applicable under SSL=mod_tls and should skip; a test
+        that needs mod_ssl to be installed at all has a real dependency.
+        """
+        return cls.has_shared_module("ssl")
+
+    _directives = None
+
+    def has_directive(self, name: str) -> bool:
+        if HttpdTestEnv._directives is None:
+            httpd_bin = os.path.join(self._bin_dir, 'httpd')
+            try:
+                p = subprocess.run([httpd_bin, '-L'],
+                                   capture_output=True, text=True)
+                HttpdTestEnv._directives = p.stdout
+            except Exception:
+                HttpdTestEnv._directives = ""
+        return name in HttpdTestEnv._directives
+
+    _nghttp_gate = {}
+
+    @classmethod
+    def needs_nghttp(cls, assets: bool = False):
+        """A marker gating a test, class or module on the nghttp client.
+
+        nghttp is the only client that can drive PUSH, trailers and explicit
+        frame padding, so the tests that use it have no fallback. It is named
+        unconditionally in config.ini, which says nothing about whether it is
+        installed, so the binary has to be run to find out.
+
+        :param assets: also require the '-a' asset-fetching support, which
+            nghttp only has when built against libxml2
+        """
+        from .depends import needs_dependency
+        if assets not in cls._nghttp_gate:
+            env = HttpdTestEnv()
+            ok = env.has_nghttp_get_assets() if assets else env.has_nghttp()
+            if assets:
+                reason = "nghttp not available or misses -a (needs libxml2)"
+            else:
+                reason = "nghttp not available"
+            cls._nghttp_gate[assets] = needs_dependency(
+                "nghttp", ok, reason=reason,
+                detected=f"tried to run {env._nghttp}")
+        return cls._nghttp_gate[assets]
+
+    _h2load_gate = {}
+
+    @classmethod
+    def needs_h2load(cls, minv: str = None, reason: str = None):
+        """A marker gating a test, class or module on the h2load client.
+
+        :param minv: also require at least this h2load version. 1.41.0 is
+            the one that matters here, it brought --connect-to.
+        :param reason: skip reason, when the default wording is too vague
+            about what the version is needed for.
+        """
+        from .depends import needs_dependency
+        key = (minv, reason)
+        if key not in cls._h2load_gate:
+            env = HttpdTestEnv()
+            if minv is None:
+                ok = env.has_h2load()
+                dep = "h2load"
+                default_reason = "h2load not available"
+            else:
+                ok = env.h2load_is_at_least(minv)
+                dep = f"h2load >= {minv}"
+                default_reason = f"h2load unavailable or older than {minv}"
+            found = env.h2load_version_str()
+            cls._h2load_gate[key] = needs_dependency(
+                dep, ok, reason=reason or default_reason,
+                detected=(f"h2load {found}" if found is not None
+                          else f"tried to run {env._h2load}"))
+        return cls._h2load_gate[key]
+
+    _multipart_gate = None
+
+    @classmethod
+    def needs_multipart(cls):
+        """A marker gating a test, class or module on the multipart package.
+
+        The CGI helpers in htdocs/cgi/ parse file uploads with it. They
+        import it only for a multipart/ body, so this belongs on the tests
+        that upload a file, not on everything that touches a CGI.
+        """
+        from .depends import needs_dependency
+        if cls._multipart_gate is None:
+            cls._multipart_gate = needs_dependency(
+                "multipart", cls.has_python_package('python_multipart')
+                or cls.has_python_package('multipart'),
+                reason="no multipart python package available",
+                detected="python package 'multipart' not installed "
+                         "(pip install python-multipart)")
+        return cls._multipart_gate
 
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
@@ -335,16 +445,17 @@ class HttpdTestEnv:
         self._gen_dir = self.config.get('test', 'gen_dir')
 
         self._server_dir = os.path.join(self._gen_dir, 'apache')
-        self._server_dir = self._server_dir.replace("\\","/")
-        self._server_conf_dir = f"{self._server_dir}/conf"
-        self._server_docs_dir = f"{self._server_dir}/htdocs"
-        self._server_logs_dir = f"{self._server_dir}/logs"
-        self._server_run_dir = f"{self._server_dir}/run"
-        self._server_access_log = f"{self._server_logs_dir}/access_log"
-        error_log_sep =  "." if self.isWindows else "_"
-        self._error_log = HttpdErrorLog(f"{self._server_logs_dir}/error{error_log_sep}log")
+        self._server_conf_dir = os.path.join(self._server_dir, "conf")
+        self._server_docs_dir = os.path.join(self._server_dir, "htdocs")
+        self._server_logs_dir = os.path.join(self._server_dir, "logs")
+        self._server_run_dir = os.path.join(self._server_dir, "run")
+        self._server_access_log = os.path.join(self._server_logs_dir, "access_log")
+        error_log_sep = "." if self.isWindows else "_"
+        self._error_log = HttpdErrorLog(os.path.join(self._server_logs_dir, f"error{error_log_sep}log"))
         self._apachectl_stderr = None
         self._httpd_proc = None
+
+        self._apply_cli_overrides(pytestconfig)
 
         self._dso_modules = self.config.get('httpd', 'dso_modules').split(' ')
         self._mpm_modules = self.config.get('httpd', 'mpm_modules').split(' ')
@@ -358,8 +469,13 @@ class HttpdTestEnv:
         self._https_base = f"https://{self._httpd_addr}:{self.https_port}"
 
         self._verbosity = pytestconfig.option.verbose if pytestconfig is not None else 0
-        self._test_conf = f"{self._server_conf_dir}/test.conf"
+        # imported here, not at module scope, to keep env.py free of a
+        # top-level pytest dependency: it is also built outside pytest runs
+        from .depends import strict_optional_enabled
+        self._strict_optional = strict_optional_enabled(pytestconfig)
+        self._test_conf = os.path.join(self._server_conf_dir, "test.conf")
         self._httpd_base_conf = []
+        self._httpd_env = {}
         self._httpd_log_modules = ['aptest']
         self._log_interesting = None
         self._setup = None
@@ -376,7 +492,64 @@ class HttpdTestEnv:
         self._curl_headerfiles_n = 0
         self._curl_version = None
         self._h2load_version = None
+        self._nghttp_version = None
         self._current_test = None
+
+    def _apply_cli_overrides(self, pytestconfig):
+        """Override config.ini values with --httpd / --conf CLI options.
+
+        config.ini is generated by the build system from config.ini.in and
+        is never rewritten.  When --httpd or --conf are passed on the
+        command line the corresponding variables are overridden in memory.
+        """
+        if pytestconfig is None:
+            return
+        httpd_path = pytestconfig.getoption("--httpd", default=None)
+        conf_path = pytestconfig.getoption("--conf", default=None)
+        if httpd_path:
+            httpd_path = os.path.abspath(httpd_path)
+            prefix = os.path.dirname(os.path.dirname(httpd_path))
+            self._bin_dir = os.path.dirname(httpd_path)
+            self._prefix = prefix
+            self._libexec_dir = os.path.join(prefix, "modules")
+            HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir
+            if self.isWindows:
+                self._apachectl = httpd_path
+            else:
+                ctl = os.path.join(self._bin_dir, "apachectl")
+                self._apachectl = ctl if os.path.isfile(ctl) else httpd_path
+            self._apxs = os.path.join(self._bin_dir, "apxs")
+            try:
+                p = subprocess.run([httpd_path, "-v"],
+                                   capture_output=True, text=True)
+                m = re.search(r"Apache/(\S+)", p.stdout)
+                if m:
+                    self._httpd_ver = m.group(1)
+            except Exception:
+                pass
+        if conf_path:
+            conf_path = os.path.abspath(conf_path)
+            dso = []
+            mpm = []
+            try:
+                with open(conf_path) as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith("#"):
+                            continue
+                        m = re.match(r"LoadModule\s+(\S+)_module", line)
+                        if m:
+                            name = m.group(1)
+                            if name.startswith("mpm_"):
+                                mpm.append(name)
+                            else:
+                                dso.append(name)
+            except Exception:
+                pass
+            if dso:
+                self.config.set('httpd', 'dso_modules', ' '.join(dso))
+            if mpm:
+                self.config.set('httpd', 'mpm_modules', ' '.join(mpm))
 
     def add_httpd_conf(self, lines: List[str]):
         self._httpd_base_conf.extend(lines)
@@ -384,10 +557,23 @@ class HttpdTestEnv:
     def add_httpd_log_modules(self, modules: List[str]):
         self._httpd_log_modules.extend(modules)
 
+    def set_httpd_env(self, name: str, value: Optional[str]):
+        """Add a variable to the environment httpd is started with, or
+        remove it again when passed None.
+
+        Used by tests for modules which take their input from the
+        environment rather than from the configuration, such as
+        mod_systemd reading $NOTIFY_SOCKET.
+        """
+        if value is None:
+            self._httpd_env.pop(name, None)
+        else:
+            self._httpd_env[name] = value
+
     def issue_certs(self):
         if self._ca is None:
             self._ca = HttpdTestCA.create_root(name=self.http_tld,
-                                               store_dir=f"{self.server_dir}/ca",
+                                               store_dir=os.path.join(self.server_dir, 'ca'),
                                                key_type="rsa4096")
         self._ca.issue_certs(self._cert_specs)
 
@@ -412,6 +598,81 @@ class HttpdTestEnv:
         assert (len(errors), len(warnings)) == (0, 0),\
                 f"apache logged {len(errors)} errors and {len(warnings)} warnings: \n"\
                 "{0}\n{1}\n".format("\n".join(errors), "\n".join(warnings))
+
+    # combines httpd version & revision to identify the archive folder
+    def _archive_version(self):
+        if not hasattr(self, '_cached_archive_version'):
+            version = self.get_httpd_version()
+            r = subprocess.run(['git', 'rev-parse', '--short', 'HEAD'],
+                               capture_output=True, text=True,
+                               cwd=self._our_dir)
+            if r.returncode == 0:
+                version = f"{version}-{r.stdout.strip()}"
+            else:
+                r = subprocess.run(['svn', 'info', '--show-item', 'revision'],
+                                   capture_output=True, text=True,
+                                   cwd=self._our_dir)
+
+                if r.returncode == 0:
+                    version = f"{version}-r{r.stdout.strip()}"
+            self._cached_archive_version = version
+        return self._cached_archive_version
+
+    def archive_logs(self, package_name, archive_dir):
+        version = self._archive_version()
+        dest = os.path.join(archive_dir, version, package_name)
+        os.makedirs(dest, exist_ok=True)
+
+        # merge into existing dest to preserve per-test confs
+        shutil.copytree(self._server_dir, dest, ignore=self.ignore_files,
+                        dirs_exist_ok=True)
+
+        shared_dest = os.path.join(archive_dir, version, '_shared')
+
+        if os.path.isdir(shared_dest):
+            shutil.rmtree(shared_dest)
+        os.makedirs(shared_dest)
+
+        for entry in self.SHARED_SERVER_ENTRIES:
+            src = os.path.join(self._server_dir, entry)
+            entry_dest = os.path.join(shared_dest, entry)
+            if os.path.isdir(src):
+                shutil.copytree(src, entry_dest)
+            elif os.path.isfile(src):
+                shutil.copy2(src, entry_dest)
+
+        shared_conf_dest = os.path.join(shared_dest, 'conf')
+        os.makedirs(shared_conf_dest)
+
+        # copy them once
+        for f in ['httpd.conf', 'mime.types', 'stop.conf']:
+            src = os.path.join(self._server_conf_dir, f)
+            if os.path.isfile(src):
+                shutil.copy2(src, shared_conf_dest)
+
+    def archive_test_conf(self, test_name, package_name, archive_dir):
+        version = self._archive_version()
+        dest = os.path.join(archive_dir, version, package_name, 'conf')
+        if not os.path.isdir(dest):
+            os.makedirs(dest)
+        test_conf = os.path.join(self._server_conf_dir, 'test.conf')
+        if os.path.isfile(test_conf):
+            safe_name = test_name.replace('/', '_').replace('\\', '_')
+            dest_file = os.path.join(dest, f"{safe_name}.conf")
+            shutil.copy(test_conf, dest_file)
+
+    # return files to ignore
+    def ignore_files(self, d, entries):
+        ignored = [e for e in entries if
+                   e.endswith('.sock') or e in self.SHARED_SERVER_ENTRIES]
+        # shared confs goes to _shared
+        # test.conf is captured per-test
+        if os.path.basename(d) == 'conf':
+            ignored += ['httpd.conf', 'mime.types', 'stop.conf', 'test.conf']
+        # htdocs are static test fixtures not useful in the archive
+        if os.path.basename(d) == os.path.basename(self._server_dir):
+            ignored += ['htdocs']
+        return ignored
 
     @property
     def curl(self) -> str:
@@ -543,6 +804,31 @@ class HttpdTestEnv:
     def set_current_test_name(self, val) -> None:
         self._current_test = val
 
+    def require(self, condition: bool, reason: str,
+                dep: str = None, detected=None) -> None:
+        """Skip, or fail under strict-optional mode, on a missing dependency.
+
+        The in-test counterpart of the @needs_dependency decorator, for
+        checks that can only be made once a test is running. Use it instead
+        of a bare pytest.skip() whenever the reason is "something we expected
+        to be installed is not", and a plain pytest.skip() when the reason is
+        "this test does not apply here".
+
+        :param condition: truthy if the dependency is present
+        :param reason: skip reason, also the "reason" line when strict
+        :param dep: short dependency name for the strict message
+        :param detected: what was found instead, for the strict message
+        """
+        import pytest
+        if condition:
+            return
+        if self._strict_optional:
+            from .depends import strict_failure_message
+            pytest.fail(strict_failure_message(
+                dep or reason, expected=reason, detected=detected,
+                where=self.current_test_name), pytrace=False)
+        pytest.skip(reason)
+
     @property
     def apachectl_stderr(self) -> str:
         return self._apachectl_stderr
@@ -572,76 +858,118 @@ class HttpdTestEnv:
         hv = self._versiontuple(self.get_httpd_version())
         return hv >= self._versiontuple(minv)
 
+    @staticmethod
+    def _run_version(args):
+        """Run a --version style command, returning its stdout or None.
+
+        None means the binary is not there or would not run, which callers
+        must distinguish from "ran fine but is too old". config.ini/default
+        may just be the bare command name ("h2load"), not a verified path,
+        so catching OSError here is what keeps an uninstalled tool from
+        crashing collection with FileNotFoundError.
+        """
+        try:
+            p = subprocess.run(args, capture_output=True, text=True)
+        except OSError:
+            return None
+        return p.stdout if p.returncode == 0 else None
+
+    def _probe_h2load(self):
+        """The h2load version tuple, or None when h2load is unusable."""
+        if self._h2load_version is None:
+            self._h2load_version = False  # probed, not found
+            out = self._run_version([self._h2load, '--version']) if self._h2load else None
+            if out is not None:
+                m = re.match(r'h2load nghttp2/(\S+)', out.strip())
+                if m:
+                    self._h2load_version = self._versiontuple(m.group(1))
+        return self._h2load_version or None
+
     def has_h2load(self):
-        if self._h2load == "":
-            return False
-        # config.ini/default may just be the bare command name ("h2load"),
-        # not a verified path -- confirm it actually resolves so
-        # h2load_is_at_least() below doesn't crash with FileNotFoundError
-        # (breaking test collection) when the tool isn't installed.
-        if os.path.dirname(self._h2load):
-            return os.path.isfile(self._h2load) and os.access(self._h2load, os.X_OK)
-        return self.has_tool(self._h2load)
+        return self._probe_h2load() is not None
+
+    def h2load_version_str(self):
+        """'1.41.0', or None when h2load is absent. For strict messages."""
+        v = self._probe_h2load()
+        return None if v is None else ".".join(str(n) for n in v)
 
     def h2load_is_at_least(self, minv):
-        if not self.has_h2load():
-            return False
-        if self._h2load_version is None:
-            p = subprocess.run([self._h2load, '--version'], capture_output=True, text=True)
-            if p.returncode != 0:
-                return False
-            s = p.stdout.strip()
-            m = re.match(r'h2load nghttp2/(\S+)', s)
-            if m:
-                self._h2load_version = self._versiontuple(m.group(1))
-        if self._h2load_version is not None:
-            return self._h2load_version >= self._versiontuple(minv)
-        return False
+        v = self._probe_h2load()
+        return v is not None and v >= self._versiontuple(minv)
+
+    def _probe_curl(self):
+        """The curl version tuple, or None when curl is unusable."""
+        if self._curl_version is None:
+            self._curl_version = False  # probed, not found
+            out = self._run_version([self._curl, '-V']) if self._curl else None
+            if out is not None:
+                for l in out.splitlines():
+                    m = re.match(r'curl ([0-9.]+)[- ].*', l)
+                    if m:
+                        self._curl_version = self._versiontuple(m.group(1))
+                        break
+        return self._curl_version or None
+
+    def has_curl(self):
+        return self._probe_curl() is not None
+
+    def curl_version_str(self):
+        """'8.4.0', or None when curl is absent. For strict messages."""
+        v = self._probe_curl()
+        return None if v is None else ".".join(str(n) for n in v)
 
     def curl_is_at_least(self, minv):
-        if self._curl_version is None:
-            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
-            if p.returncode != 0:
-                return False
-            for l in p.stdout.splitlines():
-                m = re.match(r'curl ([0-9.]+)[- ].*', l)
-                if m:
-                    self._curl_version = self._versiontuple(m.group(1))
-                    break
-        if self._curl_version is not None:
-            return self._curl_version >= self._versiontuple(minv)
-        return False
+        v = self._probe_curl()
+        return v is not None and v >= self._versiontuple(minv)
 
     def curl_is_less_than(self, version):
-        if self._curl_version is None:
-            p = subprocess.run([self._curl, '-V'], capture_output=True, text=True)
-            if p.returncode != 0:
-                return False
-            for l in p.stdout.splitlines():
-                m = re.match(r'curl ([0-9.]+)[- ].*', l)
+        v = self._probe_curl()
+        return v is not None and v < self._versiontuple(version)
+
+    def curl_is_8_1_x(self):
+        """Whether curl is one of the 8.1.x releases.
+
+        Those mishandle TLS renegotiation; 8.0.x and 8.2.0+ are both fine.
+        Returns False when curl is absent, so combine it with has_curl() when
+        the test also needs curl to exist at all.
+        """
+        v = self._probe_curl()
+        return (v is not None
+                and self._versiontuple('8.1.0') <= v < self._versiontuple('8.2.0'))
+
+    def _probe_nghttp(self):
+        """The nghttp version tuple, or None when nghttp is unusable.
+
+        config.ini always names a binary, so the name alone proves nothing
+        about whether nghttp is installed: it has to be run. 'nghttp
+        --version' prints 'nghttp2/1.64.0', the nghttp2 library version.
+        """
+        if self._nghttp_version is None:
+            self._nghttp_version = False  # probed, not found
+            out = self._run_version([self._nghttp, '--version']) if self._nghttp else None
+            if out is not None:
+                m = re.search(r'nghttp2/(\S+)', out.strip())
                 if m:
-                    self._curl_version = self._versiontuple(m.group(1))
-                    break
-        if self._curl_version is not None:
-            return self._curl_version < self._versiontuple(version)
-        return False
+                    self._nghttp_version = self._versiontuple(m.group(1))
+        return self._nghttp_version or None
 
     def has_nghttp(self):
-        if self._nghttp == "":
-            return False
-        if os.path.dirname(self._nghttp):
-            return os.path.isfile(self._nghttp) and os.access(self._nghttp, os.X_OK)
-        return self.has_tool(self._nghttp)
+        return self._probe_nghttp() is not None
+
+    def nghttp_version_str(self):
+        """'1.64.0', or None when nghttp is absent. For strict messages."""
+        v = self._probe_nghttp()
+        return None if v is None else ".".join(str(n) for n in v)
+
+    def nghttp_is_at_least(self, minv):
+        v = self._probe_nghttp()
+        return v is not None and v >= self._versiontuple(minv)
 
     def has_nghttp_get_assets(self):
         if not self.has_nghttp():
             return False
-        args = [self._nghttp, "-a"]
-        p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-        rv = p.returncode
-        if rv != 0:
-            return False
-        return p.stderr == ""
+        p = subprocess.run([self._nghttp, "-a"], capture_output=True, text=True)
+        return p.returncode == 0 and p.stderr == ""
 
     def get_apxs_var(self, name: str) -> str:
         p = subprocess.run([self._apxs, "-q", name], capture_output=True, text=True)
@@ -771,13 +1099,14 @@ class HttpdTestEnv:
             parts.insert(0, venv_bin)
         env = os.environ.copy()
         env['PATH'] = os.pathsep.join(parts)
+        env.update(self._httpd_env)
         return env
 
     def _run_apachectl(self, cmd) -> ExecResult:
         conf_file = 'stop.conf' if cmd == 'stop' else 'httpd.conf'
         args = [self._apachectl,
                 "-d", self.server_dir,
-                "-f", f"{self._server_dir}/conf/{conf_file}",
+                "-f", os.path.join(self._server_dir, 'conf', conf_file),
                 "-k", cmd]
         r = self.run(args, env=self._clean_path_env())
         self._apachectl_stderr = r.stderr
@@ -789,7 +1118,7 @@ class HttpdTestEnv:
         httpd = os.path.join(self._bin_dir, 'httpd')
         return [httpd,
                 "-d", self.server_dir,
-                "-f", f"{self.server_dir}/conf/httpd.conf",
+                "-f", os.path.join(self.server_dir, 'conf', 'httpd.conf'),
                 "-DFOREGROUND"]
 
     def _win_start(self) -> int:
@@ -840,6 +1169,7 @@ class HttpdTestEnv:
             log.error("no httpd process to signal")
             return -1
         event_name = f"ap{self._httpd_proc.pid}_restart"
+        log_pos = self.httpd_error_log.current_pos()
         handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
         if not handle:
             log.error(f"cannot open event {event_name}")
@@ -847,19 +1177,36 @@ class HttpdTestEnv:
         ctypes.windll.kernel32.SetEvent(handle)
         ctypes.windll.kernel32.CloseHandle(handle)
         timeout = timedelta(seconds=10)
-        if not self.is_live(self._http_base, timeout=timeout):
-            log.warning(f"server not live after '{cmd}' within {timeout}")
+        if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
+                                             timeout=timeout.total_seconds()):
+            log.warning(f"no restart logged after '{cmd}' within {timeout}")
             return -1
-        return 0
+        return 0 if self.is_live(self._http_base, timeout=timeout) else -1
+
+    # Logged by every MPM once the new generation is serving.
+    RE_RESUMING = re.compile(r'.* configured -- resuming normal operations$')
+
+    def _apache_signal_restart(self, cmd: str) -> int:
+        """Have the running parent restart, gracefully or not, and wait
+        for the new generation to be serving.  "httpd -k restart" only
+        sends the signal; a request answered straight afterwards may have
+        been served by the old generation, with the old config, and about
+        to be killed."""
+        log_pos = self.httpd_error_log.current_pos()
+        r = self._run_apachectl(cmd)
+        if r.exit_code != 0:
+            return r.exit_code
+        timeout = timedelta(seconds=10)
+        if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
+                                             timeout=timeout.total_seconds()):
+            log.warning(f"no restart logged after '{cmd}' within {timeout}")
+            return -1
+        return 0 if self.is_live(self._http_base, timeout=timeout) else -1
 
     def apache_reload(self):
         if self.isWindows:
             return self._win_signal_restart("graceful")
-        r = self._run_apachectl("graceful")
-        if r.exit_code == 0:
-            timeout = timedelta(seconds=10)
-            return 0 if self.is_live(self._http_base, timeout=timeout) else -1
-        return r.exit_code
+        return self._apache_signal_restart("graceful")
 
     def apache_restart(self):
         if self.isWindows:
@@ -904,6 +1251,24 @@ class HttpdTestEnv:
         else:
             rv = 0
         return rv
+
+    def apache_hard_restart(self) -> int:
+        """Restart without the "graceful" flag, so the MPM starts over."""
+        if self.isWindows:
+            return self._win_signal_restart("restart")
+        return self._apache_signal_restart("restart")
+
+    def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
+        # Where PidFile lands depends on how the httpd under test resolves
+        # a relative path against DefaultRuntimeDir, which has differed
+        # between versions; look in both places rather than assume.
+        for d in (self._server_logs_dir, self._server_dir):
+            try:
+                with open(os.path.join(d, name)) as fd:
+                    return int(fd.read().strip())
+            except (OSError, ValueError):
+                continue
+        return None
 
     def apache_access_log_clear(self):
         if os.path.isfile(self._server_access_log):
