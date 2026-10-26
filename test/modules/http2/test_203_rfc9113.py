@@ -71,3 +71,28 @@ class TestRfc9113:
         if lognos is not None:
             env.httpd_error_log.ignore_recent(lognos = lognos)
 
+    # RFC 9113, ch. 8.3.1: an OPTIONS request in asterisk form carries ':path: *'
+    def test_h2_203_03_options_asterisk(self, env):
+        url = env.mkurl("https", "test1", "/")
+        r = env.curl_get(url, options=['--http2', '-X', 'OPTIONS',
+                                       '--request-target', '*'])
+        assert r.exit_code == 0, f'curl output: {r.stderr}'
+        assert r.response["protocol"] == "HTTP/2", f'curl output: {r.stdout}'
+        assert r.response["status"] == 200, f'curl output: {r.stdout}'
+
+    # the asterisk form is only valid for OPTIONS, other ':path' values
+    # not starting with '/' remain malformed. nghttp2 may already reset
+    # the stream (curl fails), otherwise we answer with a 400.
+    @pytest.mark.parametrize(["method", "target"], [
+        ['GET', '*'],
+        ['POST', '*'],
+        ['OPTIONS', '**'],
+        ['OPTIONS', 'index.html'],
+    ])
+    def test_h2_203_04_invalid_path(self, env, method, target):
+        url = env.mkurl("https", "test1", "/")
+        r = env.curl_get(url, options=['--http2', '-X', method,
+                                       '--request-target', target])
+        assert r.exit_code != 0 or r.response["status"] == 400, \
+            f'curl exit: {r.exit_code}, output: {r.stdout}'
+
