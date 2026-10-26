@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # motorz MPM -- robust smoke test mapped to the changes made on this branch.
 #

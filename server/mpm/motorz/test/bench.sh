@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # motorz vs event -- head-to-head MPM performance comparison.
 #

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # motorz MPM -- HTTP/2-over-TLS suite (mod_http2 + mod_ssl on motorz).
 #
