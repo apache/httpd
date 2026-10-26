@@ -198,6 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1939482
                   https://svn.apache.org/r1939484
                   https://svn.apache.org/r1939487
+                  https://svn.apache.org/r1939493
      2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
      +1: jim,
 
