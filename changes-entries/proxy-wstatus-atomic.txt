@@ -1,0 +1,4 @@
+  *) mod_proxy: Change the shared status word of a worker only through
+     ap_proxy_set_wstatus() when it is in shared memory, so that a flag set by
+     one thread or process (e.g. disabled, stopped) is not undone by another
+     one updating a different flag.  [Jim Jagielski]

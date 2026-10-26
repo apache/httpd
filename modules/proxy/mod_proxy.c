@@ -1499,7 +1499,7 @@ static int proxy_handler(request_rec *r)
              */
             if (balancer
                 && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
                 worker->s->error_time = apr_time_now();
             }
             break;
@@ -1511,7 +1511,7 @@ static int proxy_handler(request_rec *r)
              */
             if (balancer
                 && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
                 worker->s->error_time = apr_time_now();
             }
         }

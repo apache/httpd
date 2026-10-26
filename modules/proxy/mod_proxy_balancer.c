@@ -448,7 +448,7 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
         worker = (proxy_worker **)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
             ++(*worker)->s->retries;
-            (*worker)->s->status &= ~PROXY_WORKER_IN_ERROR;
+            ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 0, *worker);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01165)
                          "%s: Forcing recovery for worker (%s:%d)",
                          balancer->s->name, (*worker)->s->hostname_ex,
@@ -663,7 +663,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                               "balancer parameter",
                               balancer->s->name, ap_proxy_worker_get_name(worker),
                               val);
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
                 worker->s->error_time = apr_time_now();
                 break;
             }
@@ -677,7 +677,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                       "%s: Forcing worker (%s) into error state "
                       "due to timeout and 'failontimeout' parameter being set",
                        balancer->s->name, ap_proxy_worker_get_name(worker));
-        worker->s->status |= PROXY_WORKER_IN_ERROR;
+        ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
         worker->s->error_time = apr_time_now();
 
     }
