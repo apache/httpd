@@ -29,7 +29,7 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_xml2enc.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_xml2enc.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Enhanced charset/internationalisation support for libxml2-based
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Enhanced charset/internationalization support for libxml2-based
 filter modules</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>xml2enc_module</td></tr>
@@ -38,7 +38,7 @@ filter modules</td></tr>
 for 2.2.x versions</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module provides enhanced internationalisation support for
+    <p>This module provides enhanced internationalization support for
     markup-aware filter modules such as <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.
     It can automatically detect the encoding of input data and ensure
     they are correctly processed by the <a href="http://xmlsoft.org/">libxml2</a> parser, including converting to Unicode (UTF-8) where

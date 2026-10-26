@@ -78,7 +78,7 @@
     <p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> by contrast gives server administrators a
     great deal of flexibility in configuring the filter chain.  In fact,
     filters can be inserted based on complex boolean
-    <a href="../expr.html">expressions</a> This generalises the limited
+    <a href="../expr.html">expressions</a> This generalizes the limited
     flexibility offered by <code class="directive">AddOutputFilterByType</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -459,7 +459,7 @@ AddOutputFilterByType DEFLATE text/html text/plain
     the HTTP <code>Cache-Control: no-transform</code> header.</dd>
 
     <dt><code>cache=no</code></dt>
-    <dd>The filter renders the output uncacheable (eg by introducing randomised
+    <dd>The filter renders the output uncacheable (eg by introducing randomized
     content changes)</dd>
     </dl>
 

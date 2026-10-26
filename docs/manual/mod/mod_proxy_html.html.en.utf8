@@ -57,7 +57,7 @@ making it accessible from outside.</p>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif"> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#custom">Customized HTML Parsing</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#i18n">Internationalisation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#i18n">Internationalization</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
@@ -79,7 +79,7 @@ making it accessible from outside.</p>
 <h2 id="intro">Introduction <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
 <p>mod_proxy_html was originally a third-party module for Apache HTTPD
 2.0.x and later versions.  It was donated to the ASF in 2011 along with
-<code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> (see <a href="#i18n">Internationalisation</a>)
+<code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> (see <a href="#i18n">Internationalization</a>)
 and is a standard module in HTTPD 2.4 and development versions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -101,7 +101,7 @@ need rewriting, and to rewrite links in embedded non-HTML contents
 (stylesheets and scripts).  Note that it is not suitable for external
 stylesheets or scripts: for those you should use another parser such as
 <code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> or <code class="module"><a href="../mod/mod_sed.html">mod_sed</a></code>.
-The main customisation directives are <code class="directive">ProxyHTMLLinks</code>
+The main customization directives are <code class="directive">ProxyHTMLLinks</code>
 and <code class="directive">ProxyHTMLEvents</code>.  By default these are set in 
 configuration file <var>proxy-html.conf</var>, which also contains
 comments to help you customize your parser if required.</p>
@@ -112,7 +112,7 @@ This can be changed by uncommenting the relevant line in
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="i18n">Internationalisation <a title="Permanent link" href="#i18n" class="permalink">&para;</a></h2>
+<h2 id="i18n">Internationalization <a title="Permanent link" href="#i18n" class="permalink">&para;</a></h2>
 <p>Internally, mod_proxy_html uses a smart HTML parser from the
 third-party <a href="http://xmlsoft.org/">libxml2</a> library.
 The parser uses Unicode (utf-8) internally.  This makes it a
@@ -121,7 +121,7 @@ many non-English-language websites.  If this is not handled correctly,
 websites that display non-ASCII characters in encodings other than
 utf-8 (Unicode) will display incorrectly.</p>
 <p>From the first release in 2003 to the donation to Apache in 2011,
-internationalisation (i18n) support developed from near nothing to a
+internationalization (i18n) support developed from near nothing to a
 sophisticated framework capable of applying rules from HTTP, HTML and XML
 to detect a document's encoding and handle it correctly.  However,
 this processing was common to mod_proxy_html and other modules using
@@ -240,7 +240,7 @@ module for earlier 2.x versions.</td></tr>
 </table>
     <p>A simple switch to enable or disable the proxy_html filter.
     If <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> is loaded it will also automatically
-    set up internationalisation support.</p>
+    set up internationalization support.</p>
     <p>Note that the proxy_html filter will only act on HTML data
     (Content-Type text/html or application/xhtml+xml) and when the
     data are proxied.  You can override this (at your own risk) by

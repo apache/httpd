@@ -270,7 +270,7 @@ identifier for each request</dd>
 hosting</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run
     tasks</dd>
-<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
+<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalization support for libxml2-based
 filter modules</dd>
 </dl></div></div>
 <div class="bottomlang">
