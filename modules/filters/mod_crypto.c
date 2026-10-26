@@ -630,7 +630,6 @@ do_crypto(ap_filter_t * f, unsigned char *in, apr_off_t size, int finish)
             /* no precomputed iv? write the generated iv as the first block of the stream */
             if (need_iv && ctx->iv) {
                 memcpy(out, ctx->iv, blockSize);
-                ctx->remaining += blockSize;
                 out += blockSize;
                 extra = blockSize;
             }
@@ -764,7 +763,7 @@ crypto_out_filter(ap_filter_t * f, apr_bucket_brigade * bb)
             /* handle any leftovers */
             do_crypto(f, NULL, 0, 1);
             apr_brigade_write(ctx->bb, NULL, NULL, (const char *) ctx->out,
-                              ctx->conf->size - ctx->remaining);
+                              ctx->written);
             ctx->remaining = ctx->osize;
             ctx->written = 0;
             apr_brigade_partition(bb, ctx->remaining, &after);
