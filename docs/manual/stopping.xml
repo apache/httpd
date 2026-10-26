@@ -195,7 +195,7 @@ syntax error(s).</note>
     serving anything). The parent will then remove its <directive
     module="mpm_common">PidFile</directive> and cease listening on
     all ports. The parent will continue to run, and monitor children
-    which are handling requests. Once all children have finalised
+    which are handling requests. Once all children have finalized
     and exited or the timeout specified by the <directive
     module="mpm_common">GracefulShutdownTimeout</directive> has been
     reached, the parent will also exit.  If the timeout is reached,

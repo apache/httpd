@@ -52,7 +52,7 @@
     <p>Where libmagic reports <code>application/octet-stream</code>
     the module sets no type, leaving the response without a
     <code>Content-Type</code> header, as <module>mod_mime_magic</module>
-    does for unrecognised content. Directories are typed as
+    does for unrecognized content. Directories are typed as
     <code>httpd/unix-directory</code> and empty files as
     <code>text/plain</code>.</p>
 
@@ -100,7 +100,7 @@
     <p>The <directive>MimeLibmagic</directive> directive enables the
     module for a server or virtual host. Files which
     <module>mod_mime</module> leaves untyped, typically those without
-    a recognised extension, then have their contents examined by
+    a recognized extension, then have their contents examined by
     libmagic.</p>
 
     <example><title>Example</title>

@@ -67,7 +67,7 @@ to the reverse proxy over unicast UDP datagrams</description>
     <module>mod_watchdog</module> and <module>mod_proxy_balancer</module>. The
     background work (listening, publishing, adding and evicting members) runs in
     a single <module>mod_watchdog</module> child process, so it is not available
-    under the <code>prefork</code> MPM behaviour where that singleton cannot
+    under the <code>prefork</code> MPM behavior where that singleton cannot
     run.</p>
 
 <note type="warning"><title>Authentication</title>
@@ -141,7 +141,7 @@ ProxyBeaconInterval  10
     <note>
     <p>A backend added at runtime occupies one of the balancer's growth slots
     for the lifetime of the server process; it is disabled rather than removed
-    when it stops announcing, matching the behaviour of the
+    when it stops announcing, matching the behavior of the
     <code>balancer-manager</code> (which can add, but not remove, workers at
     runtime). Size <code>growth</code> for the maximum number of backends you
     expect to register.</p>
@@ -565,10 +565,10 @@ is taken out of rotation</description>
     <p>Because the secret is stored in the configuration file, restrict that
     file's permissions as you would for a private key.</p>
 
-    <note><title>Clock synchronisation</title>
+    <note><title>Clock synchronization</title>
     <p>The timestamp-based replay protection compares the announcement's time
     against the proxy's clock, so the proxy and backends must have reasonably
-    synchronised clocks (for example via NTP). See
+    synchronized clocks (for example via NTP). See
     <directive>ProxyBeaconMaxSkew</directive>.</p>
     </note>
 </usage>
@@ -589,7 +589,7 @@ is taken out of rotation</description>
     <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
     defaults to seconds.</p>
 
-    <p>If unset, the default is 30 seconds. Sub-second values are honoured
+    <p>If unset, the default is 30 seconds. Sub-second values are honored
     (for example <code>500ms</code>). A larger window tolerates greater
     clock skew between hosts; a smaller window bounds the freshness check. Note
     that the per-backend strictly-increasing-timestamp check (see

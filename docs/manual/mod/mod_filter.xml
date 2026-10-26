@@ -52,7 +52,7 @@
     <p><module>mod_filter</module> by contrast gives server administrators a
     great deal of flexibility in configuring the filter chain.  In fact,
     filters can be inserted based on complex boolean
-    <a href="../expr.html">expressions</a> This generalises the limited
+    <a href="../expr.html">expressions</a> This generalizes the limited
     flexibility offered by <directive>AddOutputFilterByType</directive>.</p>
 </section>
 
@@ -473,7 +473,7 @@ for a complete reference and examples.</seealso>
     the HTTP <code>Cache-Control: no-transform</code> header.</dd>
 
     <dt><code>cache=no</code></dt>
-    <dd>The filter renders the output uncacheable (eg by introducing randomised
+    <dd>The filter renders the output uncacheable (eg by introducing randomized
     content changes)</dd>
     </dl>
 </usage>
