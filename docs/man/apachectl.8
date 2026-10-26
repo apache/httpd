@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APACHECTL" 8 "2026-05-08" "Apache HTTP Server" "apachectl"
+.TH "APACHECTL" 8 "2026-10-26" "Apache HTTP Server" "apachectl"
 
 .SH NAME
 apachectl \- Apache HTTP Server Control Interface
@@ -83,7 +83,7 @@ Gracefully restarts the Apache \fBhttpd\fR daemon\&. If the daemon is not runnin
 Gracefully stops the Apache \fBhttpd\fR daemon\&. This differs from a normal stop in that currently open connections are not aborted\&. A side effect is that old log files will not be closed immediately\&. This is equivalent to \fBapachectl -k graceful-stop\fR\&.  
 .TP
 \fBconfigtest\fR
-Run a configuration file syntax test\&. It parses the configuration files and either reports \fBSyntax Ok\fR or detailed information about the particular syntax error\&. This is equivalent to \fBapachectl -t\fR\&.  
+Run a configuration file syntax test\&. It parses the configuration files and either reports \fBSyntax Ok\fR or detailed information about the particular syntax error\&. This is equivalent to \fBapachectl -t\fR\&. Further arguments are passed on to \fBhttpd\fR, so \fBapachectl configtest -f \fIfile\fR\fR tests the given configuration file\&.  
  
 .PP
 The following option was available in earlier versions but has been removed\&.
