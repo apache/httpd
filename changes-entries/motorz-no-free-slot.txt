@@ -1,0 +1,6 @@
+  *) mpm_motorz: Log an error when the parent cannot start a child because
+     every process slot is held by children still draining connections after
+     graceful restarts, a state in which nothing accepts new connections until
+     one of them exits.  Raise the default ServerLimit to at least 16, as
+     twice StartServers was too little for several restarts in a row while long
+     downloads were open.  [Jim Jagielski]

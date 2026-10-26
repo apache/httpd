@@ -1,5 +1,5 @@
-r"""mpm_motorz: the default ServerLimit is twice StartServers, capped at the
-compile-time maximum, and must not overflow for a huge StartServers.
+r"""mpm_motorz: the default ServerLimit is the larger of 16 and twice StartServers,
+capped at the compile-time maximum, and must not overflow for a huge StartServers.
 
 Each case runs `httpd -t` on the generated test config plus one StartServers.
 """

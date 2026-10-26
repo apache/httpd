@@ -153,6 +153,13 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
     both generations. <directive module="mpm_common">GracefulShutdownTimeout</directive>
     bounds how long the parent waits on a graceful stop.</p>
 
+    <p>If every slot is taken by a draining child, the parent cannot start a
+    replacement, and while it has no child of the current generation nothing
+    accepts new connections: they wait until a draining child exits. This
+    needs connections that outlast several restarts in a row, such as long
+    downloads. The parent logs "scoreboard is full" when it happens; raise
+    <directive module="mpm_common">ServerLimit</directive>.</p>
+
     <p>A child does not enforce a deadline of its own while it drains. A
     connection that is still writing a response, or is waiting on I/O for a
     module that handles it asynchronously, is given until it completes or the
@@ -231,7 +238,8 @@ LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
     <directive module="mpm_common">StartServers</directive>.
     <directive module="mpm_common">ServerLimit</directive> only bounds the
     number of process slots, including those held by old children that are
-    still finishing connections after a graceful restart; it defaults to twice
+    still finishing connections after a graceful restart; it defaults to the
+    larger of 16 and twice
     <directive module="mpm_common">StartServers</directive> and, like
     <directive module="mpm_common">ThreadLimit</directive>, cannot be changed
     during a restart. There are no

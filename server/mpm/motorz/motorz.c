@@ -2267,8 +2267,10 @@ static int startup_children(motorz_core_t *mz, int number_to_start)
  */
 static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
 {
+    static int no_slot_reported = 0;    /* log once per episode */
     int free_slot = -1;
     int active = 0;
+    int draining_kids = 0;
     int i;
 
     for (i = 0; i < server_limit; ++i) {
@@ -2281,6 +2283,9 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
         }
         else if (ps->generation == mz->mpm->my_generation && !ps->quiescing) {
             active++;
+        }
+        else {
+            draining_kids++;
         }
     }
 
@@ -2295,6 +2300,26 @@ static void perform_idle_server_maintenance(motorz_core_t *mz, apr_pool_t *p)
     }
     else if (active < ap_num_kids && free_slot >= 0) {
         make_child(mz, ap_server_conf, free_slot);
+    }
+
+    /* Draining children keep their slots, so with every slot taken nothing can
+     * start, and if no current child is left nothing accepts connections until
+     * an old one exits. Say so once, as mpm_event does.
+     */
+    if (active < ap_num_kids && free_slot < 0) {
+        if (!no_slot_reported) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(10657)
+                         "scoreboard is full, cannot start %d of %d child "
+                         "process(es): %d of the %d slots are held by children "
+                         "still draining connections after a restart. "
+                         "Increase ServerLimit.",
+                         ap_num_kids - active, ap_num_kids, draining_kids,
+                         server_limit);
+            no_slot_reported = 1;
+        }
+    }
+    else {
+        no_slot_reported = 0;
     }
 }
 
@@ -2796,8 +2821,9 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
     }
 
     if (server_limit == 0) {
-        /* Not configured: twice StartServers, so that a new generation can
-         * start while the previous one drains, and then whatever the first
+        /* Not configured: twice StartServers, but at least
+         * DEFAULT_SERVER_LIMIT, so that new generations can start while
+         * several earlier ones still drain, and then whatever the first
          * startup chose.
          */
         if (mz->first_server_limit) {
@@ -2808,6 +2834,9 @@ static int motorz_check_config(apr_pool_t *p, apr_pool_t *plog,
         }
         else {
             server_limit = 2 * ap_num_kids;
+            if (server_limit < DEFAULT_SERVER_LIMIT) {
+                server_limit = DEFAULT_SERVER_LIMIT;
+            }
         }
     }
     else {
@@ -3042,7 +3071,7 @@ AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
 AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
               "Number of threads each child creates"),
 AP_INIT_TAKE1("ServerLimit", set_server_limit, NULL, RSRC_CONF,
-  "Maximum number of child processes for this run of Apache - Upper limit for StartServers (default: twice StartServers)"),
+  "Maximum number of child processes for this run of Apache - Upper limit for StartServers (default: the larger of 16 and twice StartServers)"),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum number of worker threads per child process for this run of Apache - Upper limit for ThreadsPerChild"),
 AP_INIT_TAKE1("PollersPerChild", set_pollers_per_child, NULL, RSRC_CONF,

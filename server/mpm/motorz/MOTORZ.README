@@ -45,8 +45,11 @@ idle keep-alive connections are expired immediately, and connections still
 writing or waiting on I/O run to completion. The child exits when conns_open
 (connections accepted and not yet torn down) reaches zero. SIGTERM/SIGHUP
 still exit immediately. The parent counts a draining child (quiescing) as gone
-and starts its replacement in a free slot, so ServerLimit (default
-2 * StartServers) must leave room for both generations.
+and starts its replacement in a free slot, so ServerLimit (default the
+larger of 16 and 2 * StartServers) must leave room for several generations.
+With every slot taken nothing can start, and with no child of the current
+generation nothing accepts connections until a draining child exits; the
+parent logs "scoreboard is full" (AH10657) once when that happens.
 
 There is no child-side deadline on a drain: a connection still writing, or
 waiting on I/O for an asynchronous module (CONN_STATE_ASYNC_WAITIO), is given

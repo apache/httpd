@@ -2,7 +2,8 @@
      MaxConnectionsPerChild) now stops accepting, closes idle keep-alive
      connections and lets the other connections finish instead of dropping
      them, and runs the child_stopping and child_stopped hooks.  Add
-     ServerLimit (default twice StartServers, fixed across restarts), which
+     ServerLimit (default 16 or twice StartServers if larger, fixed across
+     restarts), which
      fixes scoreboard overruns when StartServers was raised on a graceful
      restart, and make the parent start replacements only in free slots.
      [Jim Jagielski]

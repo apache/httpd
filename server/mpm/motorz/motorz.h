@@ -69,10 +69,19 @@
 /* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
  * some sort of compile-time limit to help catch typos, and to keep the
  * scoreboard small enough that we can read the whole thing without worrying
- * too much about the overhead.  ServerLimit defaults to twice StartServers.
+ * too much about the overhead.
  */
 #ifndef MAX_SERVER_LIMIT
 #define MAX_SERVER_LIMIT 200000
+#endif
+
+/* ServerLimit defaults to the larger of this and twice StartServers. A graceful
+ * restart leaves the old children in their slots until their connections are
+ * done, and no replacement can start while every slot is taken, so the default
+ * must leave room for several restarts in a row.
+ */
+#ifndef DEFAULT_SERVER_LIMIT
+#define DEFAULT_SERVER_LIMIT 16
 #endif
 
 /* Limit on the threads per process.  Clients will be locked out if more than
