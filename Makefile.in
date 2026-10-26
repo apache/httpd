@@ -34,7 +34,7 @@ DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_layout.h \
 	build/pkg/pkginfo build/config_vars.sh bsd_converted
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists \
 	httpd.spec
-PHONY_TARGETS := check check-conf check-dirs check-include check-pytest check-all-pytest unittest-objdir
+PHONY_TARGETS := check check-conf check-dirs check-include check-pytest check-all-pytest unittest-objdir test-apps
 
 TESTS =
 TEST_CONFIG =
@@ -526,6 +526,10 @@ check-all-pytest: check-tree check/bin/apachectl check/config.ini check/modules/
 
 # Runs all configured/available test targets.
 check: $(CHECK_TARGETS)
+
+# Build test binaries/modules (enabled by --enable-test-apps)
+test-apps:
+	cd test && $(MAKE) $(MFLAGS) test-apps
 
 #
 # Unit Test Suite
