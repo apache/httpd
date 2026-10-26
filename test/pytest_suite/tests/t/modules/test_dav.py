@@ -19,7 +19,7 @@ import time
 import httpx
 import pytest
 
-from apache_pytest import need_module, t_cmp
+from apache_pytest import need_module, not_backported, t_cmp
 
 DIR = "modules/dav"
 URI = f"/{DIR}/dav.html"
@@ -207,3 +207,42 @@ def test_dav(http):
                 os.rmdir(p)
             except OSError:
                 pass
+
+
+@need_module("dav")
+@not_backported("r1939426", "DAVMSext (ms_wdv) null dereference")
+def test_dav_mswdv_null_deref(http):
+    """BZ 70051: a PUT/DELETE/MOVE/LOCK whose dav_get_resource() fails (e.g. an
+    extraneous path component under an existing file) must not crash the
+    worker. Under DAVMSext, check_locked_by_other() in ms_wdv.c used to
+    dereference its lockdb unconditionally in the out: label, even on the
+    paths that goto out before open_lockdb() runs and leave it NULL.
+    """
+    htdocs = http.vars("documentroot")
+    os.makedirs(os.path.join(htdocs, DIR), exist_ok=True)
+    name = "mswdv-70051.html"
+    fpath = os.path.join(htdocs, DIR, name)
+    if os.path.exists(fpath):
+        os.unlink(fpath)
+
+    base = http.base_url
+    url = f"{base}/{DIR}/{name}"
+
+    with httpx.Client(timeout=30.0) as c:
+        resp = c.put(url, content=BODY)
+        assert resp.is_success, f"seed PUT failed (got {resp.status_code})"
+
+        # dav_fs_get_resource() rejects the extra path component below the
+        # plain file with an error -- dav_get_resource() fails before any
+        # lockdb is opened. Pre-fix, check_locked_by_other()'s "out:" label
+        # dereferenced that still-NULL lockdb and crashed the worker.
+        resp = c.put(f"{url}/extra", content="boom")
+        assert resp.status_code in (403, 404, 409), \
+            f"PUT past a file should be a clean DAV error, got {resp.status_code}"
+
+        # the worker must still be alive: a normal request must succeed.
+        resp = c.get(url)
+        assert resp.status_code == 200, \
+            f"server did not survive the request (got {resp.status_code})"
+
+    os.unlink(fpath)

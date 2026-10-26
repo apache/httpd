@@ -135,6 +135,15 @@
         LanguagePriority zh-TW fr fu en de 
     </Directory>
 
+    <Directory @SERVERROOT@/htdocs/modules/negotiation/qs>
+        Options +MultiViews
+        AddType text/html;qs=0.9 .html
+        AddType application/xhtml+xml;qs=1.0 .xhtml
+        AddType "text/html;charset=utf-8;qs=0.8" .qsafter
+        AddType "text/html;QS=0.8;charset=utf-8" .qsbefore
+        AddType "application/example;foo=\"a;b\";q=0.7;qs=0.5;bar=\"c, d\"" .quoted
+    </Directory>
+
    <IfDefine APACHE2>
        <IfModule @CGI_MODULE@>
             <Directory @SERVERROOT@/htdocs/modules/negotiation/query>
@@ -647,6 +656,9 @@ Alias /manual @inherit_documentroot@/manual
 
     <Directory @SERVERROOT@/htdocs/modules/dav>
         DAV On
+        <IfVersion >= 2.5.1>
+          DAVMSext All
+        </IfVersion>
     </Directory>
 </IfModule>
 
@@ -884,6 +896,8 @@ LimitRequestFields    32
   Alias /modules/ldap/group @DocumentRoot@
   Alias /modules/ldap/refer @DocumentRoot@
   Alias /modules/ldap/search @DocumentRoot@
+  Alias /modules/ldap/subreq @DocumentRoot@
+  Alias /modules/ldap/target @DocumentRoot@
 
   # Simple user lookup
   <Location /modules/ldap/simple>
@@ -923,6 +937,40 @@ LimitRequestFields    32
      AuthLDAPBindPassword mod_authnz_ldap
      Require ldap-search cn=Subgroup
   </Location>
+
+  # Subrequest issued from the fixups phase (mod_rewrite -U) into a second
+  # per-dir config with identical LDAP settings. A subrequest only re-runs
+  # authn/authz when its per-dir config differs from the parent's, and at
+  # mod_rewrite's fixup the parent still holds the LDAP connection it used
+  # for authz. On platforms where APR_THREAD_MUTEX_DEFAULT is recursive
+  # (Windows) the subrequest used to be handed the parent's connection, and
+  # the parent's cleanup then ran against an already released connection.
+  <IfModule mod_rewrite.c>
+  <Location /modules/ldap/subreq>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-subreq@httpd.apache.org
+     AuthBasicProvider ldap
+     Require ldap-group cn=Group One,dc=example,dc=com
+     RewriteEngine On
+     RewriteCond /modules/ldap/target/foobar.html -U
+     RewriteRule ^ - [E=LDAP_SUBREQ:ok]
+     <IfModule mod_headers.c>
+        Header set X-LDAP-Subreq "%{LDAP_SUBREQ}e"
+     </IfModule>
+  </Location>
+  <Location /modules/ldap/target>
+     AuthLDAPURL "ldap://localhost:8389/dc=example,dc=com?uid"
+     AuthLDAPBindDN "cn=httpd,dc=example,dc=com"
+     AuthLDAPBindPassword mod_authnz_ldap
+     AuthType Basic
+     AuthName ldap-target@httpd.apache.org
+     AuthBasicProvider ldap
+     Require ldap-group cn=Group One,dc=example,dc=com
+  </Location>
+  </IfModule>
 
 </IfDefine>
 
@@ -1538,6 +1586,10 @@ LimitRequestFields    32
       CheckSpelling on
       CheckCaseOnly on
    </Directory>
+   # Point a short URI at a longer, nonexistent base name in a CheckSpelling
+   # directory. This exercised the r->uri + (urlen - pglen) underflow in
+   # check_speling(); the server must answer cleanly rather than read OOB.
+   Alias /sp-oob @SERVERROOT@/htdocs/modules/speling/nocase/nonexistent-long-name.html
 </IfModule>
 
 <IfModule mod_actions.c>

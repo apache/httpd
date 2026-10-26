@@ -96,6 +96,8 @@ def pytest_configure(config: pytest.Config) -> None:
         "need_php(): skip unless a PHP SAPI module is available",
         "need_ssl(): skip unless mod_ssl is available",
         "need_lwp(): always satisfied (httpx client always present)",
+        "not_backported(rev, what): expected to fail on a server older than "
+        "2.5.0, which lacks the trunk change rev",
     ):
         config.addinivalue_line("markers", marker)
 
@@ -229,6 +231,11 @@ def pytest_collection_modifyitems(
         reason = _unmet_requirement(item, info, php_fpm=php_fpm)
         if reason:
             item.add_marker(pytest.mark.skip(reason=reason))
+        elif info.version < (2, 5, 0):
+            for mark in item.iter_markers(name="not_backported"):
+                rev, what = mark.args
+                item.add_marker(pytest.mark.xfail(
+                    reason=f"{what} ({rev}) not backported", strict=False))
 
 
 # --------------------------------------------------------------------------- #

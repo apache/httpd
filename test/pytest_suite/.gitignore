@@ -31,7 +31,6 @@ t/conf/ssl/ca
 t/conf/cacheroot/
 t/logs/
 t/state/
-t/md/
 
 # Generated htpasswd / htdigest files
 t/basic1
