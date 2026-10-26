@@ -1220,7 +1220,6 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
                                             proxy_worker *wsel,
                                             apr_table_t *params)
 {
-    apr_status_t rv;
     /* First set the params */
     if (wsel) {
         const char *val;
