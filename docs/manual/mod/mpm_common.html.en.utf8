@@ -88,7 +88,7 @@ to the httpd process.</td></tr>
     the process will <em>not</em> begin to exit if the accept() error is
     ECONNREFUSED, ECONNABORTED, or ECONNRESET.</p>
  
-    <div class="note">Some third-party firwewall software components may inject errors
+    <div class="note">Some third-party firewall software components may inject errors
     into accept() processing, using return codes not specified by the 
     operating system.</div>
 
@@ -143,7 +143,7 @@ switch before dumping core</td></tr>
 
     <div class="note"><h3>Specific signals</h3>
       <p><code class="directive">CoreDumpDirectory</code> processing only occurs for
-      a select set of fatal signals: SIGFPE, SIGILL, SIGABORT,
+      a select set of fatal signals: SIGFPE, SIGILL, SIGABRT,
       SIGSEGV, and SIGBUS.</p>
       <p>On some operating systems, SIGQUIT also results in a core dump but
       does not go through <code class="directive">CoreDumpDirectory</code> or
@@ -183,7 +183,7 @@ will exit.</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>GracefulShutdownTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/motorz.html">motorz</a></code></td></tr>
 </table>
     <p>The <code class="directive">GracefulShutdownTimeout</code> specifies
     how many seconds after receiving a "graceful-stop" signal, a
@@ -389,7 +389,7 @@ in *BSDs.</td></tr>
     the same IP address and port</h3>
     <p>Setting the <code>SO_REUSEPORT</code> option on the listening socket(s)
     consequently allows multiple processes (sharing the same <code>EUID</code>,
-    e.g. <code>root</code>) to bind to the the same IP address and port,
+    e.g. <code>root</code>) to bind to the same IP address and port,
     without the binding error raised by the system in the usual case.</p>
     <p>This also means that multiple instances of Apache httpd configured on a
     same <code>IP:port</code> and with a positive <code class="directive">ListenCoresBucketsRatio</code>
@@ -747,8 +747,13 @@ Apache HTTP Server</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/motorz.html">motorz</a></code></td></tr>
 </table>
+    <p>For the <code class="module"><a href="../mod/motorz.html">motorz</a></code> MPM, this directive sets the number of
+    process slots, which must cover <code class="directive"><a href="#startservers">StartServers</a></code> plus the old processes still
+    finishing connections after a graceful restart; it defaults to twice
+    <code class="directive"><a href="#startservers">StartServers</a></code>.</p>
+
     <p>For the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, this directive sets the
     maximum configured value for <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for the lifetime of the
     Apache httpd process. For the <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event

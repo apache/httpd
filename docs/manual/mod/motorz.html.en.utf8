@@ -67,12 +67,16 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
 <ul id="topics">
 <li><img alt="" src="../images/down.gif"> <a href="#how-it-works">How it Works</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#async-connections">Asynchronous connection handling</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#graceful-stop">Graceful stop and restart</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#scoreboard">Scoreboard and mod_status</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitations">Platforms and limitations</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#admission-control">Admission control</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#relationship">Relationship to other MPMs</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mod_unixd.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
@@ -82,10 +86,10 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
 <li><img alt="" src="../images/down.gif"> <a href="#pollersperchild">PollersPerChild</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#startservers">StartServers</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
-<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif"> <a href="mod_unixd.html#user">User</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=motorz">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=motorz">Report a bug</a></li></ul><h3>See also</h3>
@@ -176,6 +180,54 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
     re-armed on its owning poller when resumed.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
+<h2 id="graceful-stop">Graceful stop and restart <a title="Permanent link" href="#graceful-stop" class="permalink">&para;</a></h2>
+    <p>When a child is asked to stop gracefully (a graceful restart or stop,
+    or reaching <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>)
+    it stops accepting connections, closes idle keep-alive connections, and
+    lets all other connections, including responses still being written,
+    finish before it exits. A previous generation therefore keeps its process
+    slots until its connections are done, which is why
+    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> must leave room for
+    both generations. <code class="directive"><a href="../mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code>
+    bounds how long the parent waits on a graceful stop.</p>
+
+    <p>A child does not enforce a deadline of its own while it drains. A
+    connection that is still writing a response, or is waiting on I/O for a
+    module that handles it asynchronously, is given until it completes or the
+    configured <code class="directive"><a href="../mod/mpm_common.html#timeout">Timeout</a></code> expires, so a
+    graceful restart can take as long as the longest such connection.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="scoreboard">Scoreboard and mod_status <a title="Permanent link" href="#scoreboard" class="permalink">&para;</a></h2>
+    <p>A connection is not bound to a thread, so the scoreboard's per-thread
+    slots represent the worker threads. A worker reports the connection it is
+    processing through its slot and sets the slot back to ready when it is done
+    with it; a connection parked in a poller (keep-alive, write completion,
+    lingering close, waiting on I/O) does not occupy a slot. The busy and idle
+    worker counts in <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> therefore reflect the worker
+    threads, as they do for the other threaded MPMs.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="limitations">Platforms and limitations <a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
+    <p><code class="module"><a href="../mod/motorz.html">motorz</a></code> runs on Unix-like platforms whose APR supports
+    threads and which can use a thread-safe pollset (kqueue, event ports or
+    epoll). It is not available on Windows, NetWare or OS/2.</p>
+    <ul>
+      <li>The <code class="directive"><a href="../mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
+      directive is ignored (a warning is logged): the worker threads come from
+      an APR thread pool, which does not allow their stack size to be set.</li>
+      <li>There is no accept mutex. The listening sockets are non-blocking and
+      polled, so the poller that owns them in every child process wakes for
+      each new connection. A <code>Mutex accept</code> setting is accepted but
+      has no effect.</li>
+      <li>There are no
+      <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code>,
+      <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> or
+      <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> controls,
+      as described above.</li>
+    </ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
 <h2 id="admission-control">Admission control <a title="Permanent link" href="#admission-control" class="permalink">&para;</a></h2>
     <p>To keep a child safe under overload, <code class="module"><a href="../mod/motorz.html">motorz</a></code> applies
     listener backpressure. When the worker pool saturates, the poller that
@@ -210,13 +262,17 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
     <em>structural</em> single-thread ceiling, but per-host throughput is still
     governed by worker CPU.</p>
 
-    <div class="note"><h3>No ServerLimit / dynamic process scaling</h3>
+    <div class="note"><h3>No dynamic process scaling</h3>
     <p>Unlike <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event</a></code>,
     <code class="module"><a href="../mod/motorz.html">motorz</a></code> does not scale the number of child processes with
-    load and does not provide a separate
-    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> ceiling. The process
-    pool is fixed at <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>,
-    which therefore acts as the hard daemon limit, and there are no
+    load. The process pool is fixed at
+    <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>.
+    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> only bounds the
+    number of process slots, including those held by old children that are
+    still finishing connections after a graceful restart; it defaults to twice
+    <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> and, like
+    <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code>, cannot be changed
+    during a restart. There are no
     <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> /
     <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> /
     <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> controls.

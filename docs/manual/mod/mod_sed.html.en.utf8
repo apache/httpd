@@ -120,7 +120,7 @@ page</a>.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sed command to filter request data (typically <code>POST</code> data)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>InputSed <var>sed-command</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
@@ -134,7 +134,7 @@ page</a>.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sed command for filtering response content</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>OutputSed <var>sed-command</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>

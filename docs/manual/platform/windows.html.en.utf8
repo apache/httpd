@@ -318,11 +318,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
       memorize its password.</li>
 
       <li>Grant the newly-created user a privilege of <code>Log on
-      as a service</code> and <code>Act as part of the operating
-      system</code>. On Windows NT 4.0 these privileges are granted via
-      User Manager for Domains, but on Windows 2000 and XP you probably
-      want to use Group Policy for propagating these settings. You can
-      also manually set these via the Local Security Policy MMC snap-in.
+      as a service</code>.
       </li>
 
       <li>Confirm that the created account is a member of the Users

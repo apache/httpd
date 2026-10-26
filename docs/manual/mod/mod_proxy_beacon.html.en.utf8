@@ -99,6 +99,10 @@ to the reverse proxy over unicast UDP datagrams</td></tr>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif"> <a href="#examples">Usage example</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#identity">Member identity</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ownership">Ownership and watchdog hand-off</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#operator">Administrator control of members</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limits">Message validation and limits</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif"> <a href="#proxybeaconaddress">ProxyBeaconAddress</a></li>
@@ -130,7 +134,7 @@ to the reverse proxy over unicast UDP datagrams</td></tr>
     <p>On the <strong>reverse proxy</strong>:</p>
     <pre class="prettyprint lang-config"># Receive backend announcements on the cluster network interface (UDP).
 ProxyBeaconListen 0.0.0.0:5555
-ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconBalancer  cluster
 
 # A backend is dropped from rotation if it does not announce for 30 seconds.
@@ -148,7 +152,7 @@ ProxyPassReverse "/" "balancer://cluster/"</pre>
     <pre class="prettyprint lang-config"># Announce this backend's routable origin to the proxy every 10 seconds (UDP).
 ProxyBeaconAddress   proxy.example.com:5555
 ProxyBeaconAdvertise http://10.0.0.5:8080
-ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconSecret    "hex:00112233445566778899aabbccddeeff"
 ProxyBeaconInterval  10</pre>
 
 
@@ -168,6 +172,145 @@ ProxyBeaconInterval  10</pre>
     runtime). Size <code>growth</code> for the maximum number of backends you
     expect to register.</p>
     </div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="identity">Member identity <a title="Permanent link" href="#identity" class="permalink">&para;</a></h2>
+
+    <p>An announced URL identifies a backend <em>origin</em>:
+    <code>scheme://host[:port]</code>, and nothing more. The proxy uses the same
+    string as the member's identity everywhere: as the key under which it tracks
+    the backend's lease and replay state, and as the worker name it creates in
+    the balancer. To keep those identities equal, the proxy:</p>
+    <ul>
+      <li><strong>canonicalizes</strong> every announced URL: the scheme and
+          host are lower-cased, the scheme's default port is dropped
+          (<code>HTTP://Backend.Example.com:80</code> and
+          <code>http://backend.example.com</code> are the same member), and a
+          single trailing <code>/</code> is ignored;</li>
+      <li><strong>drops</strong> any announcement that is not an origin: one
+          carrying a path (other than <code>/</code>), a query string, a
+          fragment, user information, an invalid port (such as
+          <code>0</code>), or the <code>unix:</code> socket form. The drop is logged
+          (rate-limited) as <code>unacceptable url</code> and the backend is not
+          added.</li>
+    </ul>
+
+    <p>Paths are refused because the balancer finds a member by longest prefix
+    match. Announcements for <code>http://10.0.0.5:8080/one</code> and
+    <code>http://10.0.0.5:8080/one/two</code> would be tracked as two members
+    with separate leases but resolve to a single worker, so the lapse of one
+    lease could disable a worker whose other lease was still current. Choose
+    request paths on the proxy with <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>,
+    not through the advertised URL.</p>
+
+    <p>A backend that is announced successfully is confirmed to exist in the
+    balancer before it is reported as added, enabled or evicted; an announcement
+    that the proxy cannot turn into a member is logged and retried after a
+    back-off rather than reported as a success.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="ownership">Ownership and watchdog hand-off <a title="Permanent link" href="#ownership" class="permalink">&para;</a></h2>
+
+    <p>Every worker that <code class="module"><a href="../mod/mod_proxy_beacon.html">mod_proxy_beacon</a></code> creates is marked with
+    the <code>Bcn</code> status (flag <code>B</code>), which is stored in the
+    worker's shared state and shown by the <code>balancer-manager</code>. The
+    module only enables or evicts workers that carry this mark. A worker of the
+    same name that does not &mdash; a
+    <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> from the
+    configuration, or one added by an administrator &mdash; is left alone; an
+    announcement for it is dropped and logged as
+    <code>member not managed by beacon</code>.</p>
+
+    <p>The announcements are received and the leases kept by a single
+    <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> child process. If that process exits or is
+    killed, the watchdog singleton moves to another child, which starts with no
+    record of the members it did not add itself. When a child becomes the owner
+    it therefore <em>takes over</em> every worker in the balancer carrying the
+    <code>Bcn</code> mark (logged as <code>took over <var>N</var> existing
+    member(s)</code>):</p>
+    <ul>
+      <li>each taken-over member gets a fresh lease starting at that moment, so
+          a member that has since fallen silent is evicted
+          <code class="directive">ProxyBeaconTimeout</code> after the hand-off instead of
+          staying enabled indefinitely;</li>
+      <li>a member that is already disabled is treated as evicted, and its next
+          announcement re-enables it.</li>
+    </ul>
+
+    <div class="note">
+    <p>A dead backend can therefore stay in rotation for up to one
+    <code class="directive">ProxyBeaconTimeout</code> after a hand-off. The per-member
+    replay high-water mark is not carried over either: during the hand-off a
+    captured announcement that is still inside the
+    <code class="directive">ProxyBeaconMaxSkew</code> freshness window can be replayed
+    once per member, which refreshes that member's lease for one timeout. It
+    does not allow a new member to be added without the shared secret.</p>
+    </div>
+
+    <p>A new owner can only start once the watchdog's callback mutex has been
+    released by the process that held it. Whether the default mutex mechanism is
+    released when its holder is killed depends on the platform; if prompt
+    hand-off after a crash matters, select a mechanism that is released on
+    process death for the <code>watchdog-callback</code> mutex with the
+    <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> directive (for example
+    <code>Mutex sysvsem watchdog-callback</code>).</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="operator">Administrator control of members <a title="Permanent link" href="#operator" class="permalink">&para;</a></h2>
+
+    <p>Beacon uses the <code>Disabled</code> status flag to take a member out of
+    rotation when its lease expires, and clears it when the member announces
+    again; it owns that flag for the members it manages. An administrator who
+    disables such a member in the <code>balancer-manager</code> is therefore
+    overridden by the next announcement after an eviction.</p>
+
+    <p>To hold a member out of rotation regardless of what it announces, set it
+    to <code>Stopped</code> or <code>Drain</code> instead. Beacon never changes
+    those flags, nor the flag set by an active health check
+    (<code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code>); they combine with the lease state, so a
+    stopped member stays stopped through any number of evictions and
+    re-enablements.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="limits">Message validation and limits <a title="Permanent link" href="#limits" class="permalink">&para;</a></h2>
+
+    <p>The receiver validates every datagram before acting on it:</p>
+    <ul>
+      <li>the datagram must fit in 2048 bytes and must not contain a NUL byte;
+          a longer one is dropped rather than truncated;</li>
+      <li>the MAC is verified, whether or not
+          <code class="directive">ProxyBeaconBalancer</code> is set, so even the
+          log-only mode logs only authenticated announcements;</li>
+      <li>the authenticated message must have the exact form
+          <code>BEACON key=value key=value ... mac=...</code> (single spaces,
+          known fields not repeated), and <code>ts=</code> must be a plain
+          decimal number of at most 18 digits;</li>
+      <li>the url must be a printable-ASCII origin (see
+          <a href="#identity">Member identity</a>).</li>
+    </ul>
+
+    <p>The proxy tracks at most 256 announced URLs. A record is released once it
+    belongs to an evicted member, or to an add that failed, and has been silent
+    for more than twice <code class="directive">ProxyBeaconMaxSkew</code> (by then a
+    replay of its last message would be stale anyway, so no replay protection is
+    lost). Until then a flood of distinct URLs from a holder of the secret can
+    fill the table and keep new backends out; the members themselves remain in
+    the balancer, and a backend that announces again after its record was
+    released is re-adopted. A balancer's own limit (<code>growth</code>, at most
+    100) caps how many members can ever be added.</p>
+
+    <p>If the UDP socket cannot be opened (an unresolvable address, a port in
+    use), opening is retried with a delay that starts at 30 seconds and doubles
+    up to 10 minutes. Name lookups are synchronous and run on the single
+    <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> thread that serves every beacon
+    configuration of the server, so a name that fails to resolve can stall them
+    for as long as the resolver takes to give up. Prefer an IP address in
+    <code class="directive">ProxyBeaconAddress</code> and
+    <code class="directive">ProxyBeaconListen</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -208,7 +351,10 @@ announcements</td></tr>
     proxy will add as a <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>.
     It must be a full <code>scheme://host[:port]</code> URL that the proxy can
     reach &mdash; not the local listen address &mdash; and is validated when the
-    configuration is parsed.</p>
+    configuration is parsed. The URL names an <em>origin</em> only: a path,
+    query string, fragment or user information is rejected with a configuration
+    error (see <a href="#identity">Member identity</a>). The URL is announced in
+    its canonical form.</p>
 
     <p>This directive is used on a backend, alongside
     <code class="directive">ProxyBeaconAddress</code>. If it is omitted, the backend still
@@ -312,7 +458,8 @@ beacons</td></tr>
     <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
     defaults to seconds.</p>
 
-    <p>If unset, the default is 30 seconds. A larger window tolerates greater
+    <p>If unset, the default is 30 seconds. Sub-second values are honoured
+    (for example <code>500ms</code>). A larger window tolerates greater
     clock skew between hosts; a smaller window bounds the freshness check. Note
     that the per-backend strictly-increasing-timestamp check (see
     <code class="directive">ProxyBeaconSecret</code>) blocks replays regardless of this
@@ -323,7 +470,7 @@ beacons</td></tr>
 <div class="directive-section"><h2 id="proxybeaconsecret"><span id="ProxyBeaconSecret">ProxyBeaconSecret</span> Directive <a title="Permanent link" href="#proxybeaconsecret" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pre-shared secret used to authenticate announcements</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconSecret <em>secret</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconSecret <em>secret</em>|hex:<em>key</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
@@ -350,6 +497,28 @@ beacons</td></tr>
     secrets on the proxy and a backend differ, that backend's announcements are
     silently rejected (and logged), which appears as the backend never joining
     the balancer.</p>
+
+    <p>Use a random key. Generate one with <code>openssl rand -hex 16</code>
+    and configure it as <code>hex:</code> followed by the 32 hex digits; that
+    value is used directly as the 128-bit MAC key, so there is nothing to guess.
+    Any other value is treated as a passphrase: it must be at least 16
+    characters, and the MAC key is derived from it with a fast hash. Because the
+    authentication tag is 64 bits, anyone who captures a single announcement can
+    test passphrase guesses offline at full speed, so a passphrase protects only
+    as well as it is random and long. A value that begins with <code>hex:</code>
+    is always read as a key and is rejected if it is not exactly 32 hex
+    digits.</p>
+
+    <div class="warning"><h3>The secret is a membership credential</h3>
+    <p>A valid MAC proves only that the sender holds the secret. It does not
+    prove that the sender owns the URL it announces, may speak for another
+    backend, or is ready to serve. Every holder can therefore register any
+    backend origin the proxy can reach, announce on behalf of other members
+    (keeping their leases alive), and use up the balancer's growth slots and the
+    tracking table. Treat the secret as an administrator credential for the
+    balancer, and share it only among hosts that you would trust with that. It
+    is not a boundary between partially trusted workloads.</p>
+    </div>
 
     <p>Because the secret is stored in the configuration file, restrict that
     file's permissions as you would for a private key.</p>

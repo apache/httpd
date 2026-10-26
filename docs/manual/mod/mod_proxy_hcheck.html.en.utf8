@@ -79,17 +79,22 @@
         </td></tr>
     <tr><td>hcpasses</td>
         <td>1</td>
-        <td>Number of successful health check tests before worker is re-enabled</td></tr>
+        <td>Number of successful health check tests before worker is re-enabled
+        (a whole number, 0 or more)</td></tr>
     <tr><td>hcfails</td>
         <td>1</td>
-        <td>Number of failed health check tests before worker is disabled</td></tr>
+        <td>Number of failed health check tests before worker is disabled
+        (a whole number, 0 or more)</td></tr>
     <tr><td>hcinterval</td>
         <td>30</td>
         <td>Period of health checks in seconds (e.g. performed every 30 seconds).
         Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.</td></tr>
     <tr><td>hcuri</td>
         <td>&nbsp;</td>
-        <td>Additional URI to be appended to the worker URL for the health check.</td></tr>
+        <td>Additional URI to be appended to the worker URL for the health check.
+        It is joined to the path of the worker URL, if any, with a single slash,
+        so <code>ping</code> and <code>/ping</code> are the same. A change made
+        in the <code>balancer-manager</code> is used by the next check.</td></tr>
     <tr><td>hctemplate</td>
         <td>&nbsp;</td>
         <td>Name of template, created via <code class="directive"><a href="#proxyhctemplate">ProxyHCTemplate</a></code>,
@@ -100,6 +105,19 @@
             used to check response headers for health.<br>
             <em>If not used, 2xx thru 3xx status codes imply success</em></td></tr>
     </table>
+</div>
+
+<div class="note"><h3>What a health check accepts</h3>
+  <p>The backend is not trusted to behave. A check fails if the response is not
+     complete (its headers must end with the blank line, not at the end of the
+     connection), has more than 100 header fields or a header line that is too
+     long, or if the whole exchange takes longer than the worker's
+     <code>timeout</code> (the server's <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code>
+     if the worker has none); a backend that keeps sending cannot hold a check
+     open. For <code>https</code> workers the check sends the server name (SNI)
+     and verifies the certificate name just as a proxied request to the same
+     worker does, according to the <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
+     <code>SSLProxy*</code> directives.</p>
 </div>
 
 <div class="note"><h3>Compatibility:</h3>
@@ -185,12 +203,15 @@ ProxyPass "/apps"     "balancer://foo"
 
     <div class="note">
     The <a href="../expr.html">expression</a> can use curly-parens ("{}") as
-    quoting deliminators in addition to normal quotes.
+    quoting delimiters in addition to normal quotes.
     </div>
 
     <p>If using a health check method (eg: <code>GET</code>) which results in a response
     body, that body itself can be checked via <code>ap_expr</code> using the <code>hc()</code>
-    expression function, which is unique to this module.</p>
+    expression function, which is unique to this module. The body is only read into
+    memory for a worker that has an <code>hcexpr</code>, and then at most 1MB of it: a
+    larger body fails the check. Without an <code>hcexpr</code> the body is read and
+    discarded.</p>
 
     <p>In the following example, we send the backend a <code>GET</code> request
     and if the response body contains the phrase <em>Under maintenance</em>,
