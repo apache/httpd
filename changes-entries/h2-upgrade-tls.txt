@@ -1,0 +1,3 @@
+  *) core: Do not offer 'h2' via the Upgrade response header on TLS
+     connections. RFC 9113 requires HTTP/2 over TLS to be negotiated
+     via ALPN only. PR 59311
