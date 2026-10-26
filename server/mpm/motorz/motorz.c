@@ -83,14 +83,13 @@ static int thread_limit = DEFAULT_THREAD_LIMIT;
  */
 static int server_limit = 0;
 
-/* Unique connection ID: child_slot * thread_limit + per-child sequence number.
- * Mirrors the formula used by the worker and event MPMs so that c->id values
- * are globally unique across children and connections within a child.
- * conn_seq is a per-child atomic counter; thread_limit slots per child ensures
- * no overlap between children.
+/* Connection ID: child_slot * thread_limit + worker slot, as in the worker and
+ * event MPMs. It names the worker running the connection, so it is unique among
+ * connections being processed and bounded by the number of worker slots, which
+ * mod_cgid relies on for its per-id bookkeeping. It is refreshed whenever a
+ * worker picks the connection up (motorz_worker_claim_sbh).
  */
 #define ID_FROM_CHILD_THREAD(c, t) ((long)(c) * (long)thread_limit + (long)(t))
-static apr_uint32_t conn_seq = 0;
 
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
@@ -114,8 +113,9 @@ static int my_child_num;
 /* Scoreboard worker slots. A connection is not tied to a thread: it is
  * processed by whichever worker-pool thread it is dispatched to. So the
  * scoreboard slots stand for the pool's threads, not for connections. Each
- * worker thread takes the next free slot the first time it runs a task (slot
- * sharing is harmless: it only blurs the status of two threads), points the
+ * worker thread takes the next free slot the first time it runs a task (the
+ * pool never replaces a thread, so no two live threads share one; c->id is
+ * derived from the slot), points the
  * connection it is working on at that slot for the duration of the task, and
  * returns the slot to SERVER_READY when the task ends. Without this every
  * connection reported through slot 0, from many threads at once.
@@ -210,6 +210,14 @@ static ap_sb_handle_t *motorz_worker_sbh(void)
     return sbh;
 }
 
+static long motorz_sbh_conn_id(ap_sb_handle_t *sbh)
+{
+    int child, thread;
+
+    ap_sb_get_child_thread(sbh, &child, &thread);
+    return ID_FROM_CHILD_THREAD(child, thread);
+}
+
 /* Point scon (and its conn_rec) at the calling worker's slot. Only valid while
  * the worker owns scon, i.e. after it was claimed and before it is released.
  */
@@ -220,6 +228,7 @@ static ap_sb_handle_t *motorz_worker_claim_sbh(motorz_conn_t *scon)
     scon->sbh = sbh;
     if (scon->c) {
         scon->c->sbh = sbh;
+        scon->c->id = motorz_sbh_conn_id(sbh);
     }
     return sbh;
 }
@@ -406,14 +415,8 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
     ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, ap_server_conf, APLOGNO(03316)
                          "motorz_io_setup_conn(): entered");
 
-    /* Derive a unique connection ID matching worker/event's formula.
-     * apr_atomic_inc32 returns the value BEFORE increment, so add 1 to get
-     * the sequence number for this connection (sequence starts at 1).
-     * my_child_num is set once at child startup and read-only from here.
-     */
-    conn_id = ID_FROM_CHILD_THREAD(my_child_num,
-                                   (apr_uint32_t)apr_atomic_inc32(&conn_seq) + 1);
     sbh = motorz_worker_sbh();
+    conn_id = motorz_sbh_conn_id(sbh);
     scon->sbh = sbh;
     scon->ba = apr_bucket_alloc_create(scon->pool);
 

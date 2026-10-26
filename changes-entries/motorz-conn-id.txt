@@ -1,0 +1,5 @@
+  *) mpm_motorz: Derive the connection id from the worker slot running the
+     connection, as the worker and event MPMs do, instead of a per-child
+     counter.  Ids of connections in different children could be equal, and
+     the ever-growing values made mod_cgid keep an entry for each of them.
+     [Jim Jagielski]
