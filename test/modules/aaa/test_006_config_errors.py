@@ -8,7 +8,8 @@ are all checked with `httpd -t` against a throwaway config so the shared
 package server is never disturbed.
 """
 
-from .env import AAATestEnv, not_backported
+from pyhttpd.backport import not_backported
+from .env import AAATestEnv
 
 
 class TestDigestConfigErrors:

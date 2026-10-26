@@ -4,7 +4,8 @@ supported value), AuthDigestNonceLifetime 300, no AuthDigestDomain).
 """
 
 from . import digest_client as dc
-from .env import AAATestEnv, not_backported
+from pyhttpd.backport import not_backported
+from .env import AAATestEnv
 
 
 class TestDigestChallengeResponse:

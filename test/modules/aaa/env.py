@@ -4,21 +4,10 @@ import logging
 import os
 from typing import List, Optional
 
-import pytest
-
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
 from pyhttpd.result import ExecResult
 
 log = logging.getLogger(__name__)
-
-
-def not_backported(rev: str, what: str):
-    """Mark a test of a trunk change which is not in the branch under test
-    (anything older than 2.5.0) as an expected failure. Drop the mark when
-    the change is backported."""
-    return pytest.mark.xfail(
-        condition=not HttpdTestEnv().httpd_is_at_least("2.5.0"),
-        reason=f"{what} ({rev}) not backported")
 
 
 class AAATestSetup(HttpdTestSetup):

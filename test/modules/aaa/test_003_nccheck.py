@@ -15,7 +15,8 @@ quotes; test_007_replay.py covers that property directly.
 """
 
 from . import digest_client as dc
-from .env import AAATestEnv, not_backported
+from pyhttpd.backport import not_backported
+from .env import AAATestEnv
 
 
 class TestDigestNcCheck:
