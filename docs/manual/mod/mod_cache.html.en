@@ -65,7 +65,7 @@
 
     <p>In the default configuration, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> inserts the
     caching filter as far forward as possible within the filter stack,
-    utilising the <strong>quick handler</strong> to bypass all per request
+    utilizing the <strong>quick handler</strong> to bypass all per request
     processing when returning content to the client. In this mode of
     operation, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> may be thought of as a caching
     proxy server bolted to the front of the webserver, while running within
@@ -75,7 +75,7 @@
     <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> directive,
     it becomes possible to insert the <strong>CACHE</strong> filter at a
     point in the filter stack chosen by the administrator. This provides the
-    opportunity to cache content before that content is personalised by the
+    opportunity to cache content before that content is personalized by the
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> filter, or optionally compressed by the
     <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> filter.</p>
 
@@ -262,7 +262,7 @@ LoadModule cache_module modules/mod_cache.so
 
   <p>While this mode offers the best performance, the administrator may find that
   under certain circumstances they may want to perform further processing on the
-  request after the request is cached, such as to inject personalisation into the
+  request after the request is cached, such as to inject personalization into the
   cached page, or to apply authorization restrictions to the content. Under these
   circumstances, an administrator is often forced to place independent reverse
   proxy servers either behind or in front of the caching server to achieve this.</p>
@@ -285,7 +285,7 @@ CacheQuickHandler off
 AddOutputFilterByType CACHE;DEFLATE text/plain</pre>
 
 
-  <p>Another option is to have content cached before personalisation is applied
+  <p>Another option is to have content cached before personalization is applied
   by <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> (or another content processing filter). In this
   example templates containing tags understood by
   <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> are cached before being parsed:</p>
