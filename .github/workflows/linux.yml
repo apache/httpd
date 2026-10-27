@@ -22,11 +22,11 @@ on:
       - '**.md'
       - changes-entries/*
 
+permissions:
+  contents: read
+
 env:
-  MARGS: "-j2"
   CFLAGS: "-g"
-  # This will need updating as the ubuntu-latest image changes:
-  PHP_FPM: "/usr/sbin/php-fpm8.3"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -36,6 +36,9 @@ jobs:
   build:
     strategy:
       fail-fast: false
+      # https://infra.apache.org/github-actions-policy.html requires a
+      # job concurrency level of 20 or less.
+      max-parallel: 20
       matrix:
         include:
           # -------------------------------------------------------------------------
@@ -79,11 +82,13 @@ jobs:
             env: |
               TEST_ARGS=-order=random
           # -------------------------------------------------------------------------
-          - name: GCC 12 maintainer-mode w/-Werror, install + VPATH
+          - name: GCC 15 maintainer-mode w/-Werror, install + VPATH
+            os: ubuntu-26.04
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             notest-cflags: -Werror -O2
+            pkgs: gcc-15
             env: |
-              CC=gcc-12
+              CC=gcc-15
               TEST_VPATH=1
               TEST_INSTALL=1
               SKIP_TESTING=1
@@ -102,16 +107,24 @@ jobs:
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto --without-ldap"
           # -------------------------------------------------------------------------
+          - name: APR 1.7.x, APR-util 1.6.x
+            config: --enable-mods-shared=reallyall
+            env: |
+              APR_VERSION=1.7.x
+              APU_VERSION=1.6.x
+              APU_CONFIG="--with-crypto --with-ldap"
+          # -------------------------------------------------------------------------
           - name: APR 1.8.x, APR-util 1.7.x
             config: --enable-mods-shared=reallyall
             env: |
               APR_VERSION=1.8.x
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
-          # Oldest supported APR/APR-util branches:
+          # Oldest supported APR/APR-util branches.  Their configure
+          # tests fail to compile with GCC 14 or later.
           - name: APR 1.4.8, APR-util 1.3.12
+            os: ubuntu-24.04
             config: --enable-mods-shared=reallyall
             env: |
               TEST_APR_TARBALL=yes
@@ -127,7 +140,6 @@ jobs:
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: Shared MPMs (event), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=event
@@ -138,7 +150,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_SSL=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: Shared MPMs (worker), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=worker
@@ -149,7 +160,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_SSL=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: Shared MPMs (prefork), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
@@ -160,7 +170,6 @@ jobs:
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_MALLOC=1
               TEST_SSL=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: litmus WebDAV tests
             config: --enable-dav --enable-dav-fs
@@ -192,7 +201,6 @@ jobs:
               TEST_LDAP=1
               TEST_ARGS="-defines LDAP"
               TESTS="t/modules/"
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
           - name: APR trunk thread debugging
@@ -209,7 +217,6 @@ jobs:
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: ASan, pool-debug
             notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer
@@ -220,7 +227,6 @@ jobs:
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
               TEST_ASAN=1
-              CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           - name: HTTP/2 test suite
             config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
@@ -272,53 +278,48 @@ jobs:
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.0.21
+              TEST_OPENSSL3=3.0.22
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.4 -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.4.6
+              TEST_OPENSSL3=3.4.8
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.4.6
+              TEST_OPENSSL3=3.4.8
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.5 no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.5.7
+              TEST_OPENSSL3=3.5.9
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
           - name: OpenSSL 4.0
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=4.0.1
+              TEST_OPENSSL3=4.0.3
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
-            pkgs: subversion
           # -------------------------------------------------------------------------
     runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
@@ -327,42 +328,89 @@ jobs:
       CONFIG: ${{ matrix.config }}
     name: ${{ matrix.name }}
     steps:
-    # JOBID is used in the cache keys, created here as a hash of all
-    # properties of the environment, including the image OS version,
-    # compiler flags and any job-specific properties.
+    # JOBID names the artifacts uploaded on failure; see "Artifacts" in
+    # README.ci.  IMAGEOS is exported so that it is visible to the env
+    # context, which does not see the runner's own $ImageOS.
     - name: Set environment variables
+      env:
+        MATRIX_NAME: ${{ matrix.name }}
       run: |
         echo "${{ matrix.env }}" >> $GITHUB_ENV
-        echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
-           | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
+        echo "IMAGEOS=$ImageOS" >> $GITHUB_ENV
+        # The scripts run "make $MFLAGS"; default it to the number of
+        # CPUs the runner has, unless the matrix entry set it already.
+        grep -q '^MFLAGS=' $GITHUB_ENV || echo "MFLAGS=-j`nproc`" >> $GITHUB_ENV
+        # Use whichever php-fpm the runner image ships, so this doesn't
+        # break when the image moves to a new PHP version, unless the
+        # matrix entry set PHP_FPM already.
+        if ! grep -q '^PHP_FPM=' $GITHUB_ENV; then
+          PHP_FPM=`ls -1 /usr/sbin/php-fpm* 2>/dev/null | sort -V | tail -n1`
+          if test -z "$PHP_FPM"; then
+            echo "::error::No php-fpm found in /usr/sbin"
+            exit 1
+          fi
+          echo "PHP_FPM=$PHP_FPM" >> $GITHUB_ENV
+        fi
+        echo JOBID=`printf '%s-%s' "${{ strategy.job-index }}" "$MATRIX_NAME" \
+           | tr -cs '[:alnum:]._-' '-'` >> $GITHUB_ENV
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
+    # cpanminus and perl-doc are only used to build the CPAN modules for
+    # the Perl test framework, and perl-doc drags in around a hundred
+    # packages.  gdb is only used to extract a backtrace from any core
+    # dumped during testing, which includes the pytest suites.
     - name: Install prerequisites
       run: sudo apt-get install -o Acquire::Retries=5
-                    cpanminus libtool-bin libapr1-dev libaprutil1-dev
-                    liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
-                    libnghttp2-dev libjansson-dev libpcre2-dev gdb
-                    perl-doc libsasl2-dev ${{ matrix.pkgs }}
-    - uses: actions/checkout@v4
+                    libtool-bin libapr1-dev libaprutil1-dev
+                    liblua5.3-dev libbrotli-dev libcurl4-openssl-dev
+                    libnghttp2-dev libjansson-dev libpcre2-dev
+                    ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) && 'cpanminus perl-doc' || '' }}
+                    ${{ ! env.SKIP_TESTING && 'gdb' || '' }}
+                    libsasl2-dev ${{ matrix.pkgs }}
+    - uses: actions/checkout@v6
     - uses: actions/checkout@v6
       with:
         repository: apache/httpd-tests
         path: test/perl-framework
         submodules: true
       if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
-    - name: Cache installed libraries
-      uses: actions/cache@v4
+    # Sets $ROOTID, identifying the contents of ~/root - left unset for
+    # a job which builds no dependencies from source - and $PERLID,
+    # identifying the perl which the ~/perl5 modules are built against.
+    - name: Resolve dependency versions
+      run: ./test/gha-resolve-deps.sh
+    # Restored here but saved only once the dependencies have been built
+    # successfully, below: a job which fails part-way through building
+    # them would otherwise save a half-built tree under a key which can
+    # never be updated.  Bump the serial in the key to discard the cached
+    # builds and start afresh.
+    - name: Restore installed libraries
+      uses: actions/cache/restore@v5
+      id: cache-libs
+      if: env.ROOTID != ''
       with:
         path: ~/root
-        key: cache-libs-${{ env.JOBID }}
+        key: cache-libs-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
+    # ~/perl5 does not vary by job: the module list is fixed and the
+    # modules are always built with CC=gcc.  It varies only by the perl
+    # ABI, which $PERLID identifies, and by the module list itself, so
+    # one cache is shared by every job.  Bump the serial in the key to
+    # force a rebuild against current CPAN.
     - name: Cache CPAN modules
-      uses: actions/cache@v4
+      uses: actions/cache@v5
+      if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK ) }}
       with:
         path: ~/perl5
-        key: cache-cpan-${{ env.JOBID }}
+        key: cache-cpan-1-${{ env.PERLID }}-${{ runner.arch }}-${{ hashFiles('test/travis_before_linux.sh') }}
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
+    - name: Save installed libraries
+      uses: actions/cache/save@v5
+      if: success() && env.ROOTID != '' && steps.cache-libs.outputs.cache-hit != 'true'
+      with:
+        path: ~/root
+        key: ${{ steps.cache-libs.outputs.cache-primary-key }}
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
