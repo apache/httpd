@@ -82,13 +82,13 @@ jobs:
             env: |
               TEST_ARGS=-order=random
           # -------------------------------------------------------------------------
-          - name: GCC 15 maintainer-mode w/-Werror, install + VPATH
-            os: ubuntu-26.04
+          - name: GCC 14 maintainer-mode w/-Werror, install + VPATH
+            os: ubuntu-24.04
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             notest-cflags: -Werror -O2
-            pkgs: gcc-15
+            pkgs: gcc-14
             env: |
-              CC=gcc-15
+              CC=gcc-14
               TEST_VPATH=1
               TEST_INSTALL=1
               SKIP_TESTING=1
