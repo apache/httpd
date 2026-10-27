@@ -899,7 +899,18 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
     return NULL;
 }
 
-static int dav_find_submitted_locktoken(const dav_if_header *if_header,
+/*
+** If an authenticated user created a lock, only that user may submit its
+** locktoken to manipulate a resource.
+*/
+static int dav_lock_owned_by_other_user(const request_rec *r,
+                                        const dav_lock *lock)
+{
+    return lock->auth_user && (!r->user || strcmp(lock->auth_user, r->user));
+}
+
+static int dav_find_submitted_locktoken(const request_rec *r,
+                                        const dav_if_header *if_header,
                                         const dav_lock *lock_list,
                                         const dav_hooks_locks *locks_hooks)
 {
@@ -929,6 +940,10 @@ static int dav_find_submitted_locktoken(const dav_if_header *if_header,
                 **               shouldn't see them in the If: header anyway)
                 */
                 for (lock = lock_list; lock != NULL; lock = lock->next) {
+
+                    if (dav_lock_owned_by_other_user(r, lock)) {
+                        continue;
+                    }
 
                     if (!(*locks_hooks->compare_locktoken)(state_list->locktoken, lock->locktoken)) {
                         return 1;
@@ -1319,9 +1334,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                     ** the lock, only the same user may submit that locktoken
                     ** to manipulate a resource.
                     */
-                    if (lock->auth_user &&
-                        (!r->user ||
-                         strcmp(lock->auth_user, r->user))) {
+                    if (dav_lock_owned_by_other_user(r, lock)) {
                         const char *errmsg;
 
                         errmsg = apr_pstrcat(p, "User \"",
@@ -1439,7 +1452,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
             ** Note that seen_locktoken == 0 implies lock_list != NULL
             ** which implies locks_hooks != NULL.
             */
-            if (dav_find_submitted_locktoken(if_header, lock_list,
+            if (dav_find_submitted_locktoken(r, if_header, lock_list,
                                              locks_hooks)) {
                 /*
                 ** We found a match! We're set... none of the If: header
@@ -1499,7 +1512,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
     ** Note that seen_locktoken == 0 implies lock_list != NULL which implies
     ** locks_hooks != NULL.
     */
-    if (dav_find_submitted_locktoken(if_header, lock_list, locks_hooks)) {
+    if (dav_find_submitted_locktoken(r, if_header, lock_list, locks_hooks)) {
         /*
         ** We found a match! We're set... we have a matching state list,
         ** and the If: header specified the locktoken somewhere. We're done.
