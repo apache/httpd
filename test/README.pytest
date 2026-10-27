@@ -260,3 +260,27 @@ a httpd test instance and do provide some base setups:
 - create certificates for your hosts and make curl use
   the root certs (so no --insecure calls by curl).
 
+
+Tests of changes missing from 2.4.x
+-----------------------------------
+This directory is the same on trunk and on 2.4.x: a test is written on trunk,
+then `test/` is copied to 2.4.x as it is, and `check-test-sync.sh` fails if
+the two branches differ. A test covering a trunk change that 2.4.x does not
+have yet carries a mark from `pyhttpd/backport.py` (or, in `pytest_suite/`,
+`apache_pytest.not_backported`) naming the trunk revision:
+
+    from pyhttpd.backport import not_backported, skip_not_backported
+
+    @not_backported("r1939033", "nonce-count validation")
+    def test_digest_001(self, env): ...
+
+`not_backported` makes the test an expected failure on a server older than
+2.5.0, `skip_not_backported` skips it where failing would hang or crash the
+server or leave errors in the error log. Neither does anything on trunk.
+
+When the change is backported, add the 2.4.x release it first appears in:
+
+    @not_backported("r1939033", "nonce-count validation", backported_in="2.4.71")
+
+on trunk, then copy `test/` to 2.4.x again. Older 2.4.x servers keep the
+expectation. `platform="win32"` limits it to one `sys.platform`.
