@@ -1,0 +1,4 @@
+<!--#if expr='v("REQUEST_URI") =~ /(x)|(backref)[.](shtml)/' -->
+<!--#set var="m" value="[$1][$2][$3]" -->
+<!--#echo var="m" -->
+<!--#endif -->
