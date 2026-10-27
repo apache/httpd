@@ -31,8 +31,8 @@ fi
 
 PREFIX=${PREFIX:-$HOME/build/httpd-root}
 
-# If perl-framework testing is required it is checked out here by
-# _before_linux.sh:
+# If perl-framework testing is required, the workflow checks it out
+# here:
 if test -d test/perl-framework; then
     CONFIG="$CONFIG --enable-load-all-modules"
     if grep -q ^check: Makefile.in; then
@@ -55,8 +55,8 @@ else
 fi
 
 # Pick up the rustls install built previously.
-if test -v TEST_MOD_TLS -a RUSTLS_VERSION; then
-  CONFIG="$CONFIG --with-tls --with-rustls=$HOME/root/rustls"
+if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
+    CONFIG="$CONFIG --with-tls --with-rustls=$HOME/root/rustls"
 fi
 
 if test -v TEST_OPENSSL3; then
@@ -67,6 +67,13 @@ if test -v TEST_OPENSSL3; then
     openssl version
 fi
 
+if test -v TEST_NGHTTP2; then
+    # APACHE_CHECK_NGHTTP2 only yields -L, so an RPATH is needed here or
+    # mod_http2.so resolves to the system libnghttp2 at run-time.
+    CONFIG="$CONFIG --with-nghttp2=$HOME/root/nghttp2"
+    export LDFLAGS="${LDFLAGS:-} -Wl,-rpath,$HOME/root/nghttp2/lib"
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
@@ -74,8 +81,18 @@ if test -v TEST_VPATH; then
     cd ../vpath
 fi
 
+builddir=$PWD
+
 $srcdir/configure --prefix=$PREFIX $CONFIG
 make $MFLAGS
+
+if test -v TEST_NGHTTP2; then
+    ldd modules/http2/.libs/mod_http2.so | grep --color=always nghttp2
+    if ! ldd modules/http2/.libs/mod_http2.so | grep -q "$HOME/root/nghttp2/lib"; then
+        : mod_http2 is not linked against the nghttp2 built from source
+        exit 1
+    fi
+fi
 
 if test -v TEST_OPENSSL3; then
    # Clear the library/run paths so that anything else run during
@@ -133,37 +150,62 @@ sudo sysctl -w kernel.core_uses_pid=1 2>/dev/null || true
 sudo sysctl -w kernel.core_pattern=core || true
 ulimit -c unlimited 2>/dev/null || true
 
-if test -v WITH_TEST_SUITE; then
-    make check TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}"
-    RV=$?
-else
-    test -v TEST_INSTALL || make install
-    pushd test/perl-framework
-        perl Makefile.PL -apxs $PREFIX/bin/apxs
-        make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}" | tee test.log
+if ! test -v NO_TEST_FRAMEWORK; then
+    # 2.4.x has no libcheck-based unit tests.
+    if grep -q httpdunit Makefile.in; then
+        : Running libcheck-based unit tests.
+        if ! prove -v ./test/httpdunit; then
+            RV=1
+        fi
+    fi
+
+    if test -v WITH_TEST_SUITE -a $RV -eq 0; then
+        make check-test-framework TESTS="${TESTS}" TEST_CONFIG="${TEST_ARGS}" | tee test.log
         RV=${PIPESTATUS[0]}
         # re-run failing tests with -v, avoiding set -e
         if [ $RV -ne 0 ]; then
-            #mv t/logs/error_log t/logs/error_log_save
+            # mv test/perl-framework/t/logs/error_log test/perl-framework/t/logs/error_log_save
             FAILERS=""
             while read FAILER; do
                 FAILERS="$FAILERS $FAILER"
             done < <(awk '/Failed:/{print $1}' test.log)
             if [ -n "$FAILERS" ]; then
-                t/TEST -v $FAILERS || true
+                make check-test-framework TESTS="-v $FAILERS" || true
             fi
             # set -e would have killed us after the original t/TEST
             rm -f test.log
-            #mv t/logs/error_log_save t/logs/error_log
+            # mv test/perl-framework/t/logs/error_log_save test/perl-framework/t/logs/error_log
             false
         fi
-    popd
-fi
+    else
+        test -v TEST_INSTALL || make install
+        pushd test/perl-framework
+            perl Makefile.PL -apxs $PREFIX/bin/apxs
+            make test APACHE_TEST_EXTRA_ARGS="${TEST_ARGS} ${TESTS}" | tee test.log
+            RV=${PIPESTATUS[0]}
+            # re-run failing tests with -v, avoiding set -e
+            if [ $RV -ne 0 ]; then
+                # mv t/logs/error_log t/logs/error_log_save
+                FAILERS=""
+                while read FAILER; do
+                    FAILERS="$FAILERS $FAILER"
+                done < <(awk '/Failed:/{print $1}' test.log)
+                if [ -n "$FAILERS" ]; then
+                    t/TEST -v $FAILERS || true
+                fi
+                # set -e would have killed us after the original t/TEST
+                rm -f test.log
+                # mv t/logs/error_log_save t/logs/error_log
+                false
+            fi
+        popd
+    fi
 
-# Skip further testing if a core dump was created during the test
-# suite run above.
-if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
-    RV=4
+    # Skip further testing if a core dump was created during the test
+    # suite run above.
+    if test $RV -eq 0 && test -n "`ls test/perl-framework/t/core{,.*} 2>/dev/null`"; then
+        RV=4
+    fi
 fi
 
 if test \( -v TEST_SSL -o -v TEST_OPENSSL3 \) \
@@ -179,9 +221,6 @@ if test -v TEST_SSL -a $RV -eq 0; then
         ./t/TEST -defines "TEST_SSL_DES3_KEY TEST_SSL_PASSPHRASE_EXEC" t/ssl
         RV=$?
 
-        # Log the OpenSSL version.
-        grep 'mod_ssl.*compiled against' t/logs/error_log | tail -n 1
-        
         # Test various session cache backends
         for cache in shmcb redis:localhost:6379 memcache:localhost:11211; do
             test $RV -eq 0 || break
@@ -189,6 +228,13 @@ if test -v TEST_SSL -a $RV -eq 0; then
             SSL_SESSCACHE=$cache ./t/TEST -sslproto TLSv1.2 -defines TEST_SSL_SESSCACHE -start
             ./t/TEST t/ssl
             RV=$?
+            if test $RV -eq 0; then
+                # TODO: only really useful in e.g. triggering
+                # server segfaults which are caught later, doesn't
+                # directly catch non-200 responses etc.
+                $builddir/support/ab -qd -n 4000 -c 20 -f TLS1.2 https://localhost:8532/
+                RV=$?
+            fi
             ./t/TEST -stop
             SRV=$?
             if test $RV -eq 0 -a $SRV -ne 0; then
@@ -214,35 +260,83 @@ if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
     grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
 fi
 
-if test -v TEST_CORE -a $RV -eq 0; then
-    # Run HTTP/2 tests.
-    MPM=event py.test-3 test/modules/core
-    RV=$?
-fi
+# 2.4.x has no `make check-all-pytest`: it runs its pytest suites one by
+# one, against the installed server.
+if ! test -v TEST_PYTEST; then
+    if test -v TEST_CORE -a $RV -eq 0; then
+        MPM=event py.test-3 test/modules/core
+        RV=$?
+    fi
 
-if test -v TEST_H2 -a $RV -eq 0; then
-    # Build the test clients
-    (cd test/clients && make)
-    # Run HTTP/2 tests.
-    MPM=event py.test-3 test/modules/http2
-    RV=$?
-    if test $RV -eq 0; then
-      MPM=worker py.test-3 test/modules/http2
-      RV=$?
+    if test -v TEST_H2 -a $RV -eq 0; then
+        # Build the test clients
+        (cd test/clients && make)
+        MPM=event py.test-3 test/modules/http2
+        RV=$?
+        if test $RV -eq 0; then
+            MPM=worker py.test-3 test/modules/http2
+            RV=$?
+        fi
+    fi
+
+    if test -v TEST_MD -a $RV -eq 0; then
+        # Run ACME tests.
+        # need the go based pebble as ACME test server
+        # which is a package on debian sid, but not on focal
+        export GOPATH=${PREFIX}/gocode
+        mkdir -p "${GOPATH}"
+        export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
+        go get -u github.com/letsencrypt/pebble/...
+        (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
+
+        py.test-3 test/modules/md
+        RV=$?
     fi
 fi
 
-if test -v TEST_MD -a $RV -eq 0; then
-    # Run ACME tests.
-    # need the go based pebble as ACME test server
-    # which is a package on debian sid, but not on focal
-    export GOPATH=${PREFIX}/gocode
-    mkdir -p "${GOPATH}"
-    export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
-    go get -u github.com/letsencrypt/pebble/...
-    (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
-
-    py.test-3 test/modules/md
+if test -v TEST_PYTEST -a $RV -eq 0; then
+    # Run all available pytest-based test suites against this build, via
+    # the unified `make check-all-pytest` target: pytest_suite/ (the
+    # self-contained port of the classic Apache::Test suite, incl. PHP
+    # tests if PHP_FPM is set) and every test/modules/*/ pyhttpd suite
+    # (core, http1, http2, proxy, ssl, aaa, ...). This replaces the old
+    # per-suite TEST_CORE / TEST_PROXY / TEST_H2 / TEST_MD flags, which
+    # each invoked py.test-3 directly against a `make install`ed tree;
+    # check-all-pytest instead builds and tests entirely from the in-tree
+    # check/ build, needing no install.
+    #
+    # modules/md is included only when `pebble` is on PATH: its ACME
+    # tests need a local pebble CA server, so a job wanting md coverage
+    # must install pebble first; see README.ci.
+    #
+    # modules/http2 is excluded when mod_http2 wasn't built (e.g. the
+    # UBSan job's --disable-http2): its pytest package hard-requires
+    # both http2 and proxy_http2 to load, and errors at fixture setup
+    # otherwise rather than skipping.
+    #
+    # A job can narrow this down by presetting PYHTTPD_TARGETS and/or
+    # PYTEST_ARGS; see README.ci.
+    if test -v TEST_LDAP && ! test -v PYTEST_ARGS; then
+        # Only pytest_suite has LDAP coverage, and it needs the LDAP
+        # define to configure the mod_authnz_ldap vhosts.  The other
+        # suites are covered by the pytest-specific jobs.
+        PYTEST_ARGS="--only=pysuite --defines LDAP tests/t/modules/test_ldap.py"
+    fi
+    (cd test/clients && make)
+    if ! test -v PYHTTPD_TARGETS; then
+        PYHTTPD_TARGETS=""
+        for d in test/modules/*/; do
+            name=$(basename "$d")
+            case "$name" in
+                __pycache__) continue ;;
+                md) command -v pebble >/dev/null 2>&1 || continue ;;
+                http2) test -f modules/http2/.libs/mod_http2.so || continue ;;
+            esac
+            PYHTTPD_TARGETS="$PYHTTPD_TARGETS modules/$name"
+        done
+    fi
+    export PYHTTPD_TARGETS
+    make check-all-pytest PYTEST_ARGS="${PYTEST_ARGS:-}"
     RV=$?
 fi
 

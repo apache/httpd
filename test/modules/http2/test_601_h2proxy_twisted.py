@@ -4,6 +4,7 @@ import os
 import sys
 import pytest
 
+from pyhttpd.backport import not_backported
 from .env import H2Conf, H2TestEnv
 
 
@@ -20,9 +21,8 @@ class TestH2ProxyTwisted:
 
     @pytest.mark.parametrize("name", [
         "data-1k", "data-10k", "data-100k",
-        pytest.param("data-1m", marks=pytest.mark.xfail(
-            condition=sys.platform == "win32",
-            reason="H2 proxy upload fails for 1MB on 2.4.x Windows")),
+        pytest.param("data-1m", marks=not_backported(
+            "cause not identified", "H2 proxy upload of 1MB", platform="win32")),
     ])
     def test_h2_601_01_echo_uploads(self, env, name):
         fpath = os.path.join(env.gen_dir, name)

@@ -12,15 +12,16 @@
 @REM Usage: build-win.bat [repo_url] [branch]
 @REM
 @REM   repo_url  Git repository URL (default: https://github.com/apache/httpd.git)
-@REM   branch    Git branch to clone (default: 2.4.x)
+@REM   branch    Git branch to clone (default: trunk)
 @REM
 @REM If run from within the httpd source tree, uses that source directly.
-@REM Otherwise clones the repo into %USERPROFILE%\httpd-2.4.x.
+@REM Otherwise clones the repo into %USERPROFILE%\httpd-trunk.
 @REM
 @REM Examples:
 @REM   build-win.bat
 @REM   build-win.bat https://github.com/myfork/httpd.git
 @REM   build-win.bat https://github.com/myfork/httpd.git my-branch
+@REM   build-win.bat https://github.com/apache/httpd.git 2.4.x
 @REM
 
 @REM -------------------------------------
@@ -71,7 +72,7 @@ echo "PortableGit installed successfully."
 SET "HTTPD_REPO=%~1"
 if "%HTTPD_REPO%"=="" SET "HTTPD_REPO=https://github.com/apache/httpd.git"
 SET "HTTPD_BRANCH=%~2"
-if "%HTTPD_BRANCH%"=="" SET "HTTPD_BRANCH=2.4.x"
+if "%HTTPD_BRANCH%"=="" SET "HTTPD_BRANCH=trunk"
 
 @REM Find httpd source: try script location first, then fall back to clone
 SET "SCRIPT_DIR=%~dp0"
@@ -81,7 +82,7 @@ if EXIST "%CANDIDATE%\include\httpd.h" (
     echo "Using existing httpd source in %HTTPD_SRC%"
     goto :src_ok
 )
-SET "HTTPD_SRC=%USERPROFILE%\httpd-2.4.x"
+SET "HTTPD_SRC=%USERPROFILE%\httpd-trunk"
 if EXIST "%HTTPD_SRC%\include\httpd.h" (
     echo "Using existing httpd source in %HTTPD_SRC%"
     if EXIST "%HTTPD_SRC%\.git" (
