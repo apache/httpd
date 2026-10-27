@@ -121,8 +121,10 @@ jobs:
               APU_VERSION=1.7.x
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
-          # Oldest supported APR/APR-util branches:
+          # Oldest supported APR/APR-util branches.  Their configure
+          # tests fail to compile with GCC 14 or later.
           - name: APR 1.4.8, APR-util 1.3.12
+            os: ubuntu-24.04
             config: --enable-mods-shared=reallyall
             env: |
               TEST_APR_TARBALL=yes
