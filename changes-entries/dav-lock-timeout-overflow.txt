@@ -1,0 +1,3 @@
+  *) mod_dav: Cap a LOCK request's Timeout at 2^32-1 seconds and ignore a
+     negative or malformed Second- value, rather than creating a lock which
+     has already expired.  [arshiya tabasum <arshi bugqore.com>]
