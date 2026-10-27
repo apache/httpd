@@ -57,8 +57,8 @@ Environment:
   PHP_FPM          path to php-fpm for PHP tests in pytest_suite (optional)
   PYHTTPD_CONFIG   path to config.ini for the pyhttpd suite (default:
                    pyhttpd/config.ini's own --prefix path, which may not be
-                   \`make install\`ed -- e.g. \`make check-all-pytest\` exports
-                   this pointing at check/config.ini)
+                   \`make install\`ed -- e.g. \`make check-all-pytest\`, where
+                   there is one, exports this pointing at check/config.ini)
   PYHTTPD_TARGETS  space-separated list of pyhttpd test paths (default: modules/*)
 EOF
 }

@@ -21,6 +21,7 @@
 @REM   build-win.bat
 @REM   build-win.bat https://github.com/myfork/httpd.git
 @REM   build-win.bat https://github.com/myfork/httpd.git my-branch
+@REM   build-win.bat https://github.com/apache/httpd.git 2.4.x
 @REM
 
 @REM -------------------------------------

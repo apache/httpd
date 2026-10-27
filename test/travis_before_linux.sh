@@ -1,5 +1,14 @@
 #!/bin/bash -xe
 
+# The 2.4.x workflow caches ~/root under a key which does not name what is
+# in it, and sets CLEAR_CACHE for the jobs which must start afresh.
+if test -v CLEAR_CACHE; then
+    rm -rf $HOME/root
+fi
+
+# The 2.4.x workflow does not set MFLAGS.
+: ${MFLAGS=-j2}
+
 : /etc/hosts --
 cat /etc/hosts
 : -- ends
@@ -32,7 +41,35 @@ function install_apx() {
     local buildconf=$4
     local prefix=${HOME}/root/${name}-${version}
     local build=${HOME}/build/${name}-${version}
-    local ref
+    local giturl=https://github.com/apache/${name}.git
+    local ref commit=tarball
+
+    if ! test -v TEST_APR_TARBALL; then
+        case ${name}:${version} in
+           apr:trunk|apr:*.x) ref=${APR_COMMIT:-refs/heads/${version}} ;;
+           apr-util:trunk|apr-util:*.x) ref=${APU_COMMIT:-refs/heads/${version}} ;;
+           *) ref=refs/tags/${version} ;;
+        esac
+    fi
+
+    # Without $ROOTID (see gha-resolve-deps.sh) the cache key does not say
+    # what was built, so an install restored here may be stale or built
+    # otherwise: pin the ref to a commit, and rebuild unless that commit,
+    # the configuration and $CC are those the install was made from.
+    if ! test -v ROOTID; then
+        if ! test -v TEST_APR_TARBALL; then
+            commit=${ref}
+            if ! [[ ${commit} =~ ^[0-9a-f]{40}$ ]]; then
+                commit=`git ls-remote ${giturl} ${ref} | cut -f1`
+                if test -z "$commit"; then
+                    : Could not determine latest commit hash for ${ref} in ${giturl} - check branch is valid?
+                    exit 1
+                fi
+                ref=${commit}
+            fi
+        fi
+        grep -q "${version} ${commit} ${config} CC=$CC" ${HOME}/root/.key-${name} || rm -rf ${prefix}
+    fi
 
     if test -d ${prefix}; then
         return 0
@@ -44,16 +81,10 @@ function install_apx() {
             tar -C ${HOME}/build -xzf -
         pushd ${build}
     else
-        case ${name}:${version} in
-           apr:trunk|apr:*.x) ref=${APR_COMMIT:-refs/heads/${version}} ;;
-           apr-util:trunk|apr-util:*.x) ref=${APU_COMMIT:-refs/heads/${version}} ;;
-           *) ref=refs/tags/${version} ;;
-        esac
-
         mkdir -p ${build}
         pushd ${build}
         git init -q
-        git fetch -q --depth=1 https://github.com/apache/${name}.git ${ref}
+        git fetch -q --depth=1 ${giturl} ${ref}
         git checkout -q FETCH_HEAD
         ./buildconf ${buildconf}
     fi
@@ -68,6 +99,10 @@ function install_apx() {
     esac
     make install
     popd
+
+    if ! test -v ROOTID; then
+        echo ${version} ${commit} "${config}" "CC=${CC}" > ${HOME}/root/.key-${name}
+    fi
 }
 
 # Allow to load $HOME/build/apache/httpd/.gdbinit
@@ -76,6 +111,24 @@ echo "add-auto-load-safe-path $HOME/work/httpd/httpd/.gdbinit" >> $HOME/.gdbinit
 # Unless either SKIP_TESTING or NO_TEST_FRAMEWORK are set, install
 # CPAN modules required to run the Perl test framework.
 if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
+    # Clear CPAN cache if necessary
+    if [ -v CLEAR_CACHE ]; then rm -rf ~/perl5; fi
+
+    if ! perl -V > perlver; then
+        : Perl binary broken
+        perl -V
+        exit 1
+    fi
+
+    # Compare the current "perl -V" output with the output at the time
+    # the cache was built; flush the cache if it's changed to avoid
+    # failure later when /usr/bin/perl refuses to load a mismatched XS
+    # module.
+    if ! cmp -s perlver ~/perl5/.perlver; then
+        : Purging cache since "perl -V" output has changed
+        rm -rf ~/perl5
+    fi
+
     cpanm --local-lib=~/perl5 local::lib && eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
 
     pkgs="LWP::Protocol::https                                          \
@@ -88,6 +141,9 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
     # otherwise.
     CC=gcc cpanm --notest $pkgs
     unset pkgs
+
+    # Cache the perl -V output for future verification.
+    mv perlver ~/perl5/.perlver
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
@@ -111,7 +167,22 @@ fi
 if test -v TEST_OPENSSL3; then
     # The cache key covers $TEST_OPENSSL3, $OPENSSL_CONFIG and, for a
     # branch build, the resolved commit, so an install found here is
-    # current.
+    # current.  Without $ROOTID it does not, so the commit built is
+    # recorded, and a build of a branch is redone if the branch has moved.
+    if ! test -v ROOTID; then
+        if test -v TEST_OPENSSL3_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+            latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
+            : Got branch latest commit ${latest}
+            if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+                : Cached repos already at ${latest}
+            else
+                : Forcing rebuild
+                rm -f $HOME/root/openssl-is-${TEST_OPENSSL3}
+            fi
+        fi
+        test -f $HOME/root/openssl-is-${TEST_OPENSSL3} || rm -rf $HOME/root/openssl3
+    fi
+
     if ! test -d $HOME/root/openssl3; then
         mkdir -p build/openssl
         pushd build/openssl
@@ -134,6 +205,14 @@ if test -v TEST_OPENSSL3; then
                        '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
            make install_sw
+           if ! test -v ROOTID; then
+               if test -d .git; then
+                   : Caching git commit hash:
+                   git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL3}
+               else
+                   touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+               fi
+           fi
        popd
     fi
 
@@ -176,6 +255,18 @@ fi
 if test -v APU_VERSION; then
     install_apx apr-util ${APU_VERSION} "${APU_CONFIG}" --with-apr=$HOME/build/apr-${APR_VERSION}
     ldd $HOME/root/apr-util-${APU_VERSION}/lib/libaprutil-?.so || true
+fi
+
+# Since librustls is not a package (yet) on any platform, we
+# build the version we want from source
+if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
+    if ! test -d $HOME/root/rustls; then
+        RUSTLS_HOME="$HOME/build/rustls-ffi"
+        git clone -q --depth=1 -b "$RUSTLS_VERSION" https://github.com/rustls/rustls-ffi.git "$RUSTLS_HOME"
+        pushd "$RUSTLS_HOME"
+            make install DESTDIR="$HOME/root/rustls"
+        popd
+    fi
 fi
 
 if test -v PHP_FPM -a ! -v SKIP_TESTING; then

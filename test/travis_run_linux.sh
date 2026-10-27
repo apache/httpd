@@ -54,6 +54,11 @@ else
     CONFIG="$CONFIG --with-apr-util=/usr"
 fi
 
+# Pick up the rustls install built previously.
+if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
+    CONFIG="$CONFIG --with-tls --with-rustls=$HOME/root/rustls"
+fi
+
 if test -v TEST_OPENSSL3; then
     CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
     export PATH=$HOME/root/openssl3/bin:$PATH
@@ -87,6 +92,14 @@ if test -v TEST_NGHTTP2; then
         : mod_http2 is not linked against the nghttp2 built from source
         exit 1
     fi
+fi
+
+if test -v TEST_OPENSSL3; then
+   # Clear the library/run paths so that anything else run during
+   # testing is not forced to use the custom OpenSSL build; e.g. perl,
+   # php-fpm, ...
+   unset LD_LIBRARY_PATH
+   unset LD_RUN_PATH
 fi
 
 if test -v TEST_INSTALL; then
@@ -138,9 +151,12 @@ sudo sysctl -w kernel.core_pattern=core || true
 ulimit -c unlimited 2>/dev/null || true
 
 if ! test -v NO_TEST_FRAMEWORK; then
-    : Running libcheck-based unit tests.
-    if ! prove -v ./test/httpdunit; then
-        RV=1
+    # 2.4.x has no libcheck-based unit tests.
+    if grep -q httpdunit Makefile.in; then
+        : Running libcheck-based unit tests.
+        if ! prove -v ./test/httpdunit; then
+            RV=1
+        fi
     fi
 
     if test -v WITH_TEST_SUITE -a $RV -eq 0; then
@@ -238,6 +254,44 @@ if test -v LITMUS -a $RV -eq 0; then
        RV=$?
        ./t/TEST -stop
     popd
+fi
+
+if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
+    grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
+fi
+
+# 2.4.x has no `make check-all-pytest`: it runs its pytest suites one by
+# one, against the installed server.
+if ! test -v TEST_PYTEST; then
+    if test -v TEST_CORE -a $RV -eq 0; then
+        MPM=event py.test-3 test/modules/core
+        RV=$?
+    fi
+
+    if test -v TEST_H2 -a $RV -eq 0; then
+        # Build the test clients
+        (cd test/clients && make)
+        MPM=event py.test-3 test/modules/http2
+        RV=$?
+        if test $RV -eq 0; then
+            MPM=worker py.test-3 test/modules/http2
+            RV=$?
+        fi
+    fi
+
+    if test -v TEST_MD -a $RV -eq 0; then
+        # Run ACME tests.
+        # need the go based pebble as ACME test server
+        # which is a package on debian sid, but not on focal
+        export GOPATH=${PREFIX}/gocode
+        mkdir -p "${GOPATH}"
+        export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
+        go get -u github.com/letsencrypt/pebble/...
+        (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
+
+        py.test-3 test/modules/md
+        RV=$?
+    fi
 fi
 
 if test -v TEST_PYTEST -a $RV -eq 0; then

@@ -267,3 +267,34 @@ when the commit is mirrored to Github, e.g. a commit message like:
    GitHub: closes #1
 
 will close PR #1 when it's merged.
+
+2.4.x
+-----
+
+The 2.4.x workflow differs from the one described above: it has no
+gha-resolve-deps.sh, no TEST_PYTEST and no "make check-all-pytest".
+travis_before_linux.sh and travis_run_linux.sh are the same on both
+branches and do what the workflow leaves to them:
+
+* CLEAR_CACHE - if set, the cached $HOME/root and $HOME/perl5 are
+  removed before the build.
+
+* MFLAGS - the 2.4.x workflow does not set it; the build script then
+  uses "-j2".
+
+* TEST_MOD_TLS - with RUSTLS_VERSION, builds that tag of rustls-ffi
+  into $HOME/root/rustls and configures httpd with --with-tls and
+  --with-rustls.
+
+* TEST_CORE, TEST_H2, TEST_MD - when TEST_PYTEST is not set, run
+  test/modules/core, test/modules/http2 (with the event MPM, then the
+  worker MPM) and test/modules/md with py.test-3 against the installed
+  server; TEST_MD first installs pebble.
+
+When the workflow does not set $ROOTID, its cache key does not say what
+was built, so the scripts check for themselves.  APR and APR-util are
+rebuilt unless $HOME/root/.key-apr (.key-apr-util) names the same
+version, commit, configuration and $CC; OpenSSL is rebuilt unless
+$HOME/root/openssl-is-$TEST_OPENSSL3 exists and, for a branch, names its
+current commit; the CPAN modules are rebuilt when the output of
+"perl -V" differs from the one saved in $HOME/perl5/.perlver.
