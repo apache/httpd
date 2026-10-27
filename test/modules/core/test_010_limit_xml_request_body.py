@@ -37,6 +37,8 @@ class TestLimitXMLRequestBody:
     @pytest.mark.parametrize("value", [
         "9223372036854775807", "9223372036854775808", "9" * 40,
     ])
+    @not_backported("r1939121", "rejecting LimitXMLRequestBody values beyond a "
+                    "32-bit long, which atol() truncates on Windows")
     def test_core_010_003(self, env, value):
         r = self.check_config(env, value)
         assert r.exit_code != 0, f"{value} was accepted"
