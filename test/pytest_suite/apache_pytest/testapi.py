@@ -74,13 +74,29 @@ def need_min_apache_version(version: str) -> pytest.MarkDecorator:
     return pytest.mark.need_min_apache_version(version)
 
 
-def not_backported(rev: str, what: str) -> pytest.MarkDecorator:
-    """Expect failure on a server older than 2.5.0 (not_backported).
+def has_trunk_change(version: tuple[int, int, int],
+                     backported_in: str | None = None) -> bool:
+    """Whether a server of ``version`` has a trunk change: trunk always does,
+    2.4.x only from the version it was backported in (a -dev suffix counts as
+    the release)."""
+    if version >= (2, 5, 0):
+        return True
+    if backported_in is None:
+        return False
+    parts = tuple(int(x) for x in str(backported_in).split("."))
+    parts += (0,) * (3 - len(parts))
+    return version >= parts
 
-    The test covers a trunk change (``rev``) which this branch does not have
-    yet. Not strict, so a test which happens to pass is reported as XPASS.
-    Drop the mark when the change is backported."""
-    return pytest.mark.not_backported(rev, what)
+
+def not_backported(rev: str, what: str,
+                   backported_in: str | None = None) -> pytest.MarkDecorator:
+    """Expect failure on a server without a trunk change (not_backported).
+
+    The test covers a trunk change (``rev``) which 2.4.x does not have yet,
+    or only from ``backported_in``. Not strict, so a test which happens to
+    pass is reported as XPASS. Add ``backported_in`` when the change is
+    backported."""
+    return pytest.mark.not_backported(rev, what, backported_in=backported_in)
 
 
 def need_cgi() -> pytest.MarkDecorator:
