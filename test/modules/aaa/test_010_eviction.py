@@ -42,7 +42,8 @@ _WIN32 = sys.platform == "win32"
 # one-time nonces: the two put different kinds of value in last_nonce_time.
 BOTH = ["nccheck", "onetime"]
 
-pytestmark = not_backported("r1937713", "evicting never-authenticated clients first")
+# on the tests that fail without it (the others pass there as well)
+NOT_BACKPORTED = not_backported("r1937713", "evicting never-authenticated clients first")
 
 
 class TestDigestEviction:
@@ -89,6 +90,7 @@ class TestDigestEviction:
                         "mpm_winnt child is a separate process, "
                         "ap_retained_data does not survive restart")
     @pytest.mark.parametrize("location", BOTH)
+    @NOT_BACKPORTED
     def test_digest_100_authenticated_client_survives_a_flood(self, env, location):
         # The legitimate client authenticates, so its entry now records the
         # nonce it used.

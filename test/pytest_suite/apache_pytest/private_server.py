@@ -5,12 +5,12 @@ It serves one small and one large static file.  Module and path settings are
 taken from the suite's generated config so that they match the build under test.
 """
 
-import os
 import re
-import signal
 import socket
 import subprocess
 import time
+
+from pyhttpd.instance import HttpdInstance, free_port  # noqa: F401  (free_port re-exported)
 
 BODY_LENGTH = 64 * 1024 * 1024
 SMALL_LENGTH = 1000
@@ -19,12 +19,6 @@ SMALL_LENGTH = 1000
 # paths and module names are the ones this build uses.
 WANTED_MODULES = ("mpm_", "unixd_module", "authz_core_module",
                   "unique_id_module", "headers_module", "echo_module")
-
-
-def free_port():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(("127.0.0.1", 0))
-        return s.getsockname()[1]
 
 
 def load_module_lines(config):
@@ -79,7 +73,7 @@ class PrivateServer:
         self.extra = list(extra)
         self.big_length = big_length
         self.port = free_port()
-        self.proc = None
+        self.instance = None
 
     def start(self):
         tmp_path = self.tmp_path
@@ -110,33 +104,20 @@ class PrivateServer:
                 ]
             )
         )
-        httpd = [str(self.config.info.httpd), "-f", str(conf), "-DFOREGROUND"]
-        check = subprocess.run([*httpd, "-t"], capture_output=True, text=True)
-        assert check.returncode == 0, check.stderr
-
         # Its own process group, so that the children go away with the parent.
-        self.proc = subprocess.Popen(httpd, start_new_session=True)
-        deadline = time.monotonic() + 20
-        while time.monotonic() < deadline:
-            assert self.proc.poll() is None, f"httpd exited, see {tmp_path}/error_log"
-            try:
-                socket.create_connection(("127.0.0.1", self.port), timeout=0.5).close()
-                break
-            except OSError:
-                time.sleep(0.1)
+        self.instance = HttpdInstance(
+            self.config.info.httpd, ["-f", str(conf)],
+            ports=[self.port], error_log=tmp_path / "error_log",
+            stderr_file=tmp_path / "stderr", configtest_first=True)
+        self.instance.start(timeout=20)
+
+    @property
+    def proc(self):
+        return self.instance.proc if self.instance else None
 
     def stop(self):
-        if self.proc is None:
-            return
-        try:
-            os.killpg(self.proc.pid, signal.SIGTERM)
-        except OSError:
-            pass
-        try:
-            self.proc.wait(timeout=15)
-        except subprocess.TimeoutExpired:
-            os.killpg(self.proc.pid, signal.SIGKILL)
-            self.proc.wait()
+        if self.instance is not None:
+            self.instance.stop(timeout=15)
 
     def __enter__(self):
         self.start()
@@ -150,12 +131,7 @@ class PrivateServer:
         slow (instrumented) parent can take seconds to act on the signal, and a
         test that goes on before that is not restarting the server when it
         thinks it is."""
-        done = self.error_log().count("resuming normal operations")
-        os.kill(self.proc.pid, signal.SIGUSR1)
-        deadline = time.monotonic() + timeout
-        while (self.error_log().count("resuming normal operations") <= done
-               and time.monotonic() < deadline):
-            time.sleep(0.05)
+        self.instance.restart(graceful=True, timeout=timeout)
 
     def error_log(self):
         return (self.tmp_path / "error_log").read_text(errors="replace")

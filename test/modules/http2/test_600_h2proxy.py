@@ -122,7 +122,7 @@ class TestH2Proxy:
             'UseCanonicalPhysicalPort On'
         ])
         conf.start_vhost(domains=[f'cgi.{env.http_tld}'],
-                         port=5004, doc_root="htdocs/cgi")
+                         port=env.http_port2, doc_root="htdocs/cgi")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
         conf.install()

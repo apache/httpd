@@ -5,6 +5,8 @@ import pytest
 from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
+STRICT = not_backported("r1939129", "strict BufferSize parsing")
+
 
 class TestBufferSize:
 
@@ -23,10 +25,13 @@ class TestBufferSize:
         r = self.check_config(env, value)
         assert r.exit_code == 0, f"{r.stderr}"
 
+    # without the change, a number followed by anything else is taken
     @pytest.mark.parametrize("value", [
-        "abc", "123abc", "12.3", "0x10", "0", "-1", "9" * 40,
+        "abc",
+        pytest.param("123abc", marks=STRICT),
+        pytest.param("12.3", marks=STRICT),
+        "0x10", "0", "-1", "9" * 40,
     ])
-    @not_backported("r1939129", "strict BufferSize parsing")
     def test_filters_004_02(self, env, value):
         r = self.check_config(env, value)
         assert r.exit_code != 0, f"{value} was accepted"

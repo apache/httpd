@@ -120,7 +120,7 @@ jobs:
 
       - name: Test httpd
         run: |
-            ${{github.workspace}}\test\pyhttpd\runtests.bat --httpd "C:\Program Files (x86)\HTTPD\bin\httpd.exe" --conf "C:\Program Files (x86)\HTTPD\conf\httpd.conf" -vvvv -x
+            ${{github.workspace}}\test\runtests.bat --httpd "C:\Program Files (x86)\HTTPD\bin\httpd.exe" --conf "C:\Program Files (x86)\HTTPD\conf\httpd.conf" modules -vvvv -x
 
       - name: Upload test logs
         if: always()

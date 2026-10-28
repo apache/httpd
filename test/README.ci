@@ -64,16 +64,15 @@ The CI scripts use the following environment variables:
 
 * TEST_PYTEST - if set, runs all available pytest-based test suites
   via "make check-all-pytest" (pytest_suite/ and test/modules/*/
-  pyhttpd suites).  Replaces the old per-suite TEST_CORE / TEST_PROXY
-  / TEST_H2 / TEST_MD flags.
-
-* PYHTTPD_TARGETS - with TEST_PYTEST, a space-separated list of
-  test/modules/*/ suites to run (e.g. "modules/http2").  If unset, all
-  are run except modules/md when no `pebble` is on PATH, and
+  suites, in one pytest session).  Replaces the old per-suite TEST_CORE
+  / TEST_PROXY / TEST_H2 / TEST_MD flags.  A suite whose dependencies
+  are missing skips itself: modules/md without `pebble` on PATH,
   modules/http2 when mod_http2 was not built.
 
-* PYTEST_ARGS - with TEST_PYTEST, extra arguments passed through to
-  test/run-all-tests.sh (e.g. "--only=pyhttpd" to skip pytest_suite/).
+* PYTEST_ARGS - with TEST_PYTEST, test paths (relative to test/) and
+  options passed through to pytest, to narrow the run: "modules/http2",
+  "modules" (skip pytest_suite/), "pytest_suite/tests" (skip modules/),
+  "-k expr", "-m expr".
 
 * TEST_NGHTTP2 - if set to a version string (e.g. "1.68.0"), that
   release of nghttp2 is built from its GitHub tag (library only) and
@@ -82,7 +81,7 @@ The CI scripts use the following environment variables:
   packaged for the runner image.
 
 * TEST_MD - set together with TEST_PYTEST; installs pebble first so
-  PYHTTPD_TARGETS auto-detection includes modules/md.  See the
+  that modules/md runs instead of skipping.  See the
   "Python pytest test suites" job in .github/workflows/linux.yml.
 
 * TEST_APR_TARBALL - if set, APR/APR-util source is fetched as a
@@ -271,10 +270,13 @@ will close PR #1 when it's merged.
 2.4.x
 -----
 
-The 2.4.x workflow differs from the one described above: it has no
-gha-resolve-deps.sh, no TEST_PYTEST and no "make check-all-pytest".
-travis_before_linux.sh and travis_run_linux.sh are the same on both
-branches and do what the workflow leaves to them:
+The 2.4.x workflow runs the pytest jobs of trunk's, and TEST_PYTEST and
+"make check-all-pytest" work the same on both branches, so a test
+backported from trunk needs no change in how it is run.  A job that
+configures an MPM which the branch does not have yet (MotorZ, for now)
+succeeds without doing anything.  travis_before_linux.sh and
+travis_run_linux.sh are the same on both branches and do what the
+workflow leaves to them:
 
 * CLEAR_CACHE - if set, the cached $HOME/root and $HOME/perl5 are
   removed before the build.
@@ -285,11 +287,6 @@ branches and do what the workflow leaves to them:
 * TEST_MOD_TLS - with RUSTLS_VERSION, builds that tag of rustls-ffi
   into $HOME/root/rustls and configures httpd with --with-tls and
   --with-rustls.
-
-* TEST_CORE, TEST_H2, TEST_MD - when TEST_PYTEST is not set, run
-  test/modules/core, test/modules/http2 (with the event MPM, then the
-  worker MPM) and test/modules/md with py.test-3 against the installed
-  server; TEST_MD first installs pebble.
 
 When the workflow does not set $ROOTID, its cache key does not say what
 was built, so the scripts check for themselves.  APR and APR-util are

@@ -1,0 +1,41 @@
+[project]
+name = "httpd-tests"
+version = "0.1.0"
+description = "Python/pytest test suites for Apache httpd (modules/ and pytest_suite/)"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+    "cryptography",
+    "filelock",
+    "python-multipart",
+    "pyopenssl",
+    "packaging",
+    "websockets",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py", "*_test.py"]
+# test_*.py: the self-tests of the framework, first, as they take seconds
+testpaths = ["test_*.py", "modules", "pytest_suite/tests"]
+# "." makes the pyhttpd framework package importable; pytest_suite makes the
+# apache_pytest framework package importable.
+pythonpath = [".", "pytest_suite"]
+# importlib import mode lets same-named test modules coexist across category
+# dirs (e.g. ssl/test_all.py and php/test_all.py) without __init__.py files or
+# import-file-mismatch collisions.
+addopts = "-ra --import-mode=importlib --strict-markers"
+markers = [
+    "need_module(*names): skip unless all named httpd modules are available",
+    "need_min_apache_version(ver): skip unless the server is at least ver",
+    "need_cgi(): skip unless a CGI module (mod_cgi or mod_cgid) is available",
+    "need_php(): skip unless a PHP SAPI module or php-fpm is available",
+    "need_ssl(): skip unless mod_ssl is available",
+    "need_lwp(): always satisfied (the httpx client is always present)",
+    "needs_dependency(dep, available, reason=None, detected=None): optional dependency; skip if missing, fail under --strict-optional. Use pyhttpd.depends.needs_dependency()",
+    "not_backported(rev, what, backported_in=None, platform=None): expected to fail on httpd without the trunk change rev (2.4.x, or older than backported_in). Use pyhttpd.backport.not_backported()",
+    "skip_not_backported(rev, what, backported_in=None, platform=None): like not_backported but not run (hangs, crashes, error log). Use pyhttpd.backport.skip_not_backported()",
+]

@@ -11,7 +11,8 @@ from pyhttpd.backport import not_backported
 from . import digest_client as dc
 from .env import AAATestEnv
 
-pytestmark = not_backported("r1937888", "Authentication-Info on error responses")
+# on the tests that fail without it (the others pass there as well)
+NOT_BACKPORTED = not_backported("r1937888", "Authentication-Info on error responses")
 
 
 class TestAuthInfoOnError:
@@ -37,6 +38,7 @@ class TestAuthInfoOnError:
         return env.curl_get(self.url(env, location, path), options=[
             "-H", f"Authorization: {self.auth(env, location, path, challenge, nc)}"])
 
+    @NOT_BACKPORTED
     def test_digest_110_error_response_carries_authentication_info(self, env):
         # A 404 for an authenticated request still confirms the response to
         # the client: Authentication-Info with a valid rspauth.
@@ -54,6 +56,7 @@ class TestAuthInfoOnError:
             self.uri(location, "no-such-file.txt"))
         assert ai.get("rspauth") == expect, "rspauth wrong on the error response"
 
+    @NOT_BACKPORTED
     def test_digest_111_onetime_client_continues_after_an_error(self, env):
         # Under one-time nonces the error must still hand back a nextnonce,
         # or the client's next request is stale-challenged.  Prove the client

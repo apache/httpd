@@ -11,8 +11,8 @@ from pyhttpd.depends import needs_dependency
 from pyhttpd.conf import HttpdConf
 from .env import MetadataTestEnv
 
-pytestmark = not_backported("r1938908, r1938927",
-                            "mod_remoteip per-vhost lists and PROXY protocol EOF handling")
+# on the cases that fail without it (the others pass there as well)
+PER_VHOST = not_backported("r1938908", "mod_remoteip per-vhost lists")
 
 
 @needs_dependency("mod_remoteip", MetadataTestEnv.has_shared_module("remoteip"),
@@ -30,12 +30,15 @@ class TestRemoteIp:
     @pytest.mark.parametrize(["scope", "directives", "listed", "proxies"], [
         ["vhost", [f"RemoteIPInternalProxy {PEER}", f"RemoteIPTrustedProxy {CDN}"],
          [], CDN],
-        ["vhost", [f"RemoteIPInternalProxy {PEER}", "RemoteIPTrustedProxyList {list}"],
-         [CDN], CDN],
-        ["vhost", ["RemoteIPTrustedProxyList {list}", f"RemoteIPInternalProxy {PEER}"],
-         [CDN], CDN],
-        ["vhost", ["RemoteIPTrustedProxy 10.142.1.99", "RemoteIPInternalProxyList {list}"],
-         [PEER, CDN], "-"],
+        pytest.param("vhost", [f"RemoteIPInternalProxy {PEER}",
+                               "RemoteIPTrustedProxyList {list}"],
+                     [CDN], CDN, marks=PER_VHOST),
+        pytest.param("vhost", ["RemoteIPTrustedProxyList {list}",
+                               f"RemoteIPInternalProxy {PEER}"],
+                     [CDN], CDN, marks=PER_VHOST),
+        pytest.param("vhost", ["RemoteIPTrustedProxy 10.142.1.99",
+                               "RemoteIPInternalProxyList {list}"],
+                     [PEER, CDN], "-", marks=PER_VHOST),
         ["server", [f"RemoteIPInternalProxy {PEER}", "RemoteIPTrustedProxyList {list}"],
          [CDN], CDN],
     ])
@@ -79,22 +82,23 @@ class TestRemoteIp:
          [], CDN, False],
         [[], [f"RemoteIPInternalProxy {PEER}", f"RemoteIPTrustedProxy {CDN}"],
          CDN, False],
+        # (both scopes: merged, and warned about, only with the change)
         # RemoteIPInternalProxy in the main server, a list in the vhost
-        [[f"RemoteIPInternalProxy {PEER}"], ["RemoteIPInternalProxyList {cdn}"],
-         "-", True],
-        [[f"RemoteIPInternalProxy {PEER}"], ["RemoteIPTrustedProxyList {cdn}"],
-         CDN, True],
+        pytest.param([f"RemoteIPInternalProxy {PEER}"], ["RemoteIPInternalProxyList {cdn}"],
+                     "-", True, marks=PER_VHOST),
+        pytest.param([f"RemoteIPInternalProxy {PEER}"], ["RemoteIPTrustedProxyList {cdn}"],
+                     CDN, True, marks=PER_VHOST),
         # a list in the main server, a direct entry in the vhost
-        [["RemoteIPInternalProxyList {peer}"], [f"RemoteIPTrustedProxy {CDN}"],
-         CDN, True],
+        pytest.param(["RemoteIPInternalProxyList {peer}"], [f"RemoteIPTrustedProxy {CDN}"],
+                     CDN, True, marks=PER_VHOST),
         # direct entries in both
-        [[f"RemoteIPInternalProxy {PEER}"], [f"RemoteIPTrustedProxy {CDN}"],
-         CDN, True],
+        pytest.param([f"RemoteIPInternalProxy {PEER}"], [f"RemoteIPTrustedProxy {CDN}"],
+                     CDN, True, marks=PER_VHOST),
         # the CDN is trusted by the main server and internal for the vhost
-        [[f"RemoteIPInternalProxy {PEER}", f"RemoteIPTrustedProxy {CDN}"],
-         [f"RemoteIPInternalProxy {CDN}"], "-", True],
-        [[f"RemoteIPInternalProxy {PEER}", f"RemoteIPTrustedProxy {CDN}"],
-         ["RemoteIPInternalProxyList {cdn}"], "-", True],
+        pytest.param([f"RemoteIPInternalProxy {PEER}", f"RemoteIPTrustedProxy {CDN}"],
+                     [f"RemoteIPInternalProxy {CDN}"], "-", True, marks=PER_VHOST),
+        pytest.param([f"RemoteIPInternalProxy {PEER}", f"RemoteIPTrustedProxy {CDN}"],
+                     ["RemoteIPInternalProxyList {cdn}"], "-", True, marks=PER_VHOST),
     ])
     def test_metadata_004_02(self, env, main, vhost, proxies, warning):
         files = {"cdn": self.CDN, "peer": self.PEER}

@@ -6,6 +6,9 @@ import pytest
 from pyhttpd.backport import not_backported, skip_not_backported
 from pyhttpd.conf import HttpdConf
 
+# for the cases a server without the change gets wrong
+COMPILE_CHECKS = not_backported("r1938962", "mod_sed expression compile checks")
+
 # mod_sed implements the Solaris 10 sed language over the response (OutputSed)
 # or the request body (InputSed).  Almost none of it was covered before, so
 # these tests walk the commands the module documents plus the paths mod_sed.c
@@ -453,11 +456,10 @@ class TestSed:
     # A backreference may only refer to a group which has been closed; one
     # inside the group it refers to is rejected.
     @pytest.mark.parametrize("expr", [
-        r"s/\(\(a*\)\1\)/X/",
-        r"s/\(\(\)\1*\)/X/",
+        pytest.param(r"s/\(\(a*\)\1\)/X/", marks=COMPILE_CHECKS),
+        pytest.param(r"s/\(\(\)\1*\)/X/", marks=COMPILE_CHECKS),
         r"s/\(a\1\)/X/",
     ])
-    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_35(self, env, expr):
         err = self.configure(env, expr, fails=True)
         assert "out of range" in err, err
@@ -488,9 +490,8 @@ class TestSed:
     # its own or following a longer directive.
     @pytest.mark.parametrize("exprs", [
         ["s/[a-"],
-        ["s/aaaa]*/b/", "s/[a-"],
+        pytest.param(["s/aaaa]*/b/", "s/[a-"], marks=COMPILE_CHECKS),
     ])
-    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_39(self, env, exprs):
         err = self.configure(env, exprs, fails=True)
         assert "imbalance" in err, err
@@ -545,10 +546,9 @@ class TestSed:
     # has, rather than wrapping around.
     @pytest.mark.parametrize("expr", [
         r"s/o\{255\}/X/",
-        r"s/o\{4294967298\}/X/",
-        r"s/o\{1,4294967298\}/X/",
+        pytest.param(r"s/o\{4294967298\}/X/", marks=COMPILE_CHECKS),
+        pytest.param(r"s/o\{1,4294967298\}/X/", marks=COMPILE_CHECKS),
     ])
-    @not_backported("r1938962", "mod_sed expression compile checks")
     def test_filters_003_45(self, env, expr):
         err = self.configure(env, expr, fails=True)
         assert "Range endpoint too large" in err, err

@@ -90,6 +90,9 @@ class TestShutdown:
         #
         env.httpd_error_log.ignore_recent(
             lognos = [
-                "AH03490"   # scoreboard is full, not at MaxRequestWorkers
+                "AH03490",  # scoreboard is full, not at MaxRequestWorkers
+                # MaxRequestWorkers lowered to fit the ServerLimit, as logged
+                # by prefork, worker and event
+                "AH00181", "AH00319", "AH00516",
             ]
         )

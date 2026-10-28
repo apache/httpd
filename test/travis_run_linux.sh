@@ -1,5 +1,17 @@
 #!/bin/bash -ex
 
+# Not every branch has every MPM: MotorZ is on trunk only, for now.  A job
+# which configures a branch without it has nothing to build or test, so it
+# says so and succeeds; the same workflow can then be used on both branches.
+case "${CONFIG:-}" in
+    *--with-mpm=motorz*)
+        if ! test -d server/mpm/motorz; then
+            echo "::notice::This branch has no MotorZ MPM, nothing to do."
+            exit 0
+        fi
+        ;;
+esac
+
 # Test for APLOGNO() macro errors (duplicates, empty args) etc.  For
 # trunk, run the updater script to see if it fails.  If it succeeds
 # and changes any files (because there was a missing argument), the
@@ -260,82 +272,32 @@ if test $RV -ne 0 && test -f test/perl-framework/t/logs/error_log; then
     grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log
 fi
 
-# 2.4.x has no `make check-all-pytest`: it runs its pytest suites one by
-# one, against the installed server.
-if ! test -v TEST_PYTEST; then
-    if test -v TEST_CORE -a $RV -eq 0; then
-        MPM=event py.test-3 test/modules/core
-        RV=$?
-    fi
-
-    if test -v TEST_H2 -a $RV -eq 0; then
-        # Build the test clients
-        (cd test/clients && make)
-        MPM=event py.test-3 test/modules/http2
-        RV=$?
-        if test $RV -eq 0; then
-            MPM=worker py.test-3 test/modules/http2
-            RV=$?
-        fi
-    fi
-
-    if test -v TEST_MD -a $RV -eq 0; then
-        # Run ACME tests.
-        # need the go based pebble as ACME test server
-        # which is a package on debian sid, but not on focal
-        export GOPATH=${PREFIX}/gocode
-        mkdir -p "${GOPATH}"
-        export PATH="${GOROOT}/bin:${GOPATH}/bin:${PATH}"
-        go get -u github.com/letsencrypt/pebble/...
-        (cd $GOPATH/src/github.com/letsencrypt/pebble && go install ./...)
-
-        py.test-3 test/modules/md
-        RV=$?
-    fi
-fi
-
 if test -v TEST_PYTEST -a $RV -eq 0; then
     # Run all available pytest-based test suites against this build, via
-    # the unified `make check-all-pytest` target: pytest_suite/ (the
+    # the unified `make check-all-pytest` target: test/pytest_suite/ (the
     # self-contained port of the classic Apache::Test suite, incl. PHP
-    # tests if PHP_FPM is set) and every test/modules/*/ pyhttpd suite
-    # (core, http1, http2, proxy, ssl, aaa, ...). This replaces the old
-    # per-suite TEST_CORE / TEST_PROXY / TEST_H2 / TEST_MD flags, which
-    # each invoked py.test-3 directly against a `make install`ed tree;
-    # check-all-pytest instead builds and tests entirely from the in-tree
-    # check/ build, needing no install.
+    # tests if PHP_FPM is set) and every test/modules/*/ suite (core,
+    # http1, http2, proxy, ssl, aaa, ...), in one pytest session. This
+    # replaces the old per-suite TEST_CORE / TEST_PROXY / TEST_H2 /
+    # TEST_MD flags, which each invoked py.test-3 directly against a
+    # `make install`ed tree; check-all-pytest instead builds and tests
+    # entirely from the in-tree check/ build, needing no install.  This is
+    # the same on trunk and 2.4.x.
     #
-    # modules/md is included only when `pebble` is on PATH: its ACME
-    # tests need a local pebble CA server, so a job wanting md coverage
-    # must install pebble first; see README.ci.
+    # Suites whose dependencies are missing skip themselves: modules/md
+    # without `pebble` on PATH (a job wanting md coverage must install
+    # pebble first, see README.ci), modules/http2 when mod_http2 wasn't
+    # built (e.g. the UBSan job's --disable-http2).
     #
-    # modules/http2 is excluded when mod_http2 wasn't built (e.g. the
-    # UBSan job's --disable-http2): its pytest package hard-requires
-    # both http2 and proxy_http2 to load, and errors at fixture setup
-    # otherwise rather than skipping.
-    #
-    # A job can narrow this down by presetting PYHTTPD_TARGETS and/or
-    # PYTEST_ARGS; see README.ci.
+    # A job can narrow this down with PYTEST_ARGS: test paths relative to
+    # test/ and any pytest options; see README.ci.
     if test -v TEST_LDAP && ! test -v PYTEST_ARGS; then
         # Only pytest_suite has LDAP coverage, and it needs the LDAP
         # define to configure the mod_authnz_ldap vhosts.  The other
         # suites are covered by the pytest-specific jobs.
-        PYTEST_ARGS="--only=pysuite --defines LDAP tests/t/modules/test_ldap.py"
+        PYTEST_ARGS="--defines=LDAP pytest_suite/tests/t/modules/test_ldap.py"
     fi
     (cd test/clients && make)
-    if ! test -v PYHTTPD_TARGETS; then
-        PYHTTPD_TARGETS=""
-        for d in test/modules/*/; do
-            name=$(basename "$d")
-            case "$name" in
-                __pycache__) continue ;;
-                md) command -v pebble >/dev/null 2>&1 || continue ;;
-                http2) test -f modules/http2/.libs/mod_http2.so || continue ;;
-            esac
-            PYHTTPD_TARGETS="$PYHTTPD_TARGETS modules/$name"
-        done
-    fi
-    export PYHTTPD_TARGETS
     make check-all-pytest PYTEST_ARGS="${PYTEST_ARGS:-}"
     RV=$?
 fi

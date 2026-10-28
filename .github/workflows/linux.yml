@@ -167,7 +167,7 @@ jobs:
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
-              PYTEST_ARGS="--only=pysuite"
+              PYTEST_ARGS=pytest_suite/tests
           # -------------------------------------------------------------------------
           # Test against a newer nghttp2 than in the Ubuntu images.
           - name: mod_http2 w/nghttp2 1.68.0
@@ -177,8 +177,7 @@ jobs:
               TEST_NGHTTP2=1.68.0
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/http2
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/http2
           # -------------------------------------------------------------------------
           - name: Default
             # Check the defaults expected for a default build on Linux.
@@ -333,8 +332,7 @@ jobs:
               TEST_INSTALL=1
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/arch
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/arch
           # -------------------------------------------------------------------------
           ### TODO if: *condition_not_24x
           ### TODO: Fails because :i386 packages are not being found.
@@ -361,8 +359,7 @@ jobs:
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/ssl
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.4 -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -373,8 +370,7 @@ jobs:
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/ssl
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -385,8 +381,7 @@ jobs:
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/ssl
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
           - name: OpenSSL 3.5 no-engine -Werror
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -398,8 +393,7 @@ jobs:
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/ssl
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
           - name: OpenSSL 4.0
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
@@ -411,8 +405,7 @@ jobs:
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
               TEST_PYTEST=1
-              PYHTTPD_TARGETS=modules/ssl
-              PYTEST_ARGS=--only=pyhttpd
+              PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
     runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30

@@ -1,16 +1,27 @@
 # Apache httpd test suite — Python / pytest
 
 > **Provenance / how this fits in `test/`.** This `pytest_suite/` is a
-> self-contained snapshot ported from the `httpd-tests` repository (the Python
-> port of the classic Perl `Apache::Test` suite). It **coexists alongside**
-> `test/pyhttpd/` and `test/modules/` — it does *not* use pyhttpd's framework
-> or its root `conftest.py`. It has its own `conftest.py` and `pyproject.toml`,
-> so pytest treats this directory as its own rootdir; run it from here (or via
-> `test/run-all-tests.sh`), never by pointing pytest at `test/` as a whole.
-> The two suites are complementary: this one covers the classic core/modules/
-> security/SSL/PHP tests; pyhttpd covers HTTP/2, mod_md (ACME), HTTP/1 and proxy.
-> To re-sync from upstream, re-copy the source tree (source files only — exclude
-> `.venv/`, caches, and generated artifacts; see `.gitignore`).
+> snapshot of the `httpd-tests` repository (the Python port of the classic Perl
+> `Apache::Test` suite). It is one half of a single pytest project rooted in
+> `test/`, alongside `test/modules/` (the pyhttpd suites). Both halves share the
+> framework in `test/pyhttpd/` (finding and probing the httpd build, `need_*` and
+> `not_backported` gating, starting and stopping httpd, ports, the test CA, the
+> C-module builder); `apache_pytest/` here is a thin layer on top of it that keeps
+> the test files' imports working, so they can stay identical to upstream's.
+> The Python environment (`test/pyproject.toml`, `test/uv.lock`, `test/.venv`),
+> the pytest configuration and the command-line options (registered by
+> `test/pyhttpd/plugin.py`) are `test/`'s. Run it with `test/runtests.sh`,
+> alone (`./runtests.sh pytest_suite/tests`) or together with `modules/`.
+> The two halves are complementary: this one covers the classic core/modules/
+> security/SSL/PHP tests; `modules/` covers HTTP/2, mod_md (ACME), HTTP/1 and proxy.
+>
+> **Re-syncing from upstream `httpd-tests`:** copy the test files and assets
+> only: `tests/t/`, `t/` and `c-modules/` (not `.venv/`, caches or generated
+> artifacts; see `.gitignore`). Never copy upstream's `conftest.py` or
+> `apache_pytest/` over this directory's: the framework here is the shared one.
+> After a copy, run `pytest pytest_suite/tests` from `test/`. A new upstream test
+> that needs a framework API missing from `apache_pytest/` fails at import, and
+> the API is added to `pyhttpd/` and re-exported there.
 
 A self-contained [pytest](https://pytest.org) port of the Apache httpd
 integration test suite (historically the Perl `Apache::Test` framework). It
@@ -28,25 +39,28 @@ optionally, a **`php-fpm`** binary for the PHP tests.
 
 ```sh
 # 1. Create the virtualenv (pytest + httpx). Needs `uv` (https://docs.astral.sh/uv/);
-#    reads pyproject.toml + uv.lock. runtests.sh also does this for you on first run.
-uv sync
+#    reads ../pyproject.toml + ../uv.lock. ../runtests.sh also does this for you
+#    on first run.
+uv sync --project ..
 
-# 2. Run the whole suite against your httpd build.
-./runtests.sh --apxs /path/to/your/httpd/bin/apxs
+# 2. Run the whole suite against your httpd build, from test/.
+cd ..
+./runtests.sh --apxs=/path/to/your/httpd/bin/apxs pytest_suite/tests
 
 # ...or let it auto-detect apxs / httpd / php-fpm from $PATH or env vars:
-APXS=$HOME/root/httpd/bin/apxs PHP_FPM=/usr/sbin/php-fpm8.3 ./runtests.sh
+APXS=$HOME/root/httpd/bin/apxs PHP_FPM=/usr/sbin/php-fpm8.3 ./runtests.sh pytest_suite/tests
 ```
 
-`runtests.sh` is the self-evident entry point: it locates the venv's `pytest`,
-fills in `--apxs` / `--php-fpm` from environment variables or `$PATH`, clears a
-stale CGI socket, and forwards any extra arguments to pytest.
+`test/runtests.sh` is the entry point: it locates the venv's `pytest`, fills in
+`--apxs` / `--php-fpm` from environment variables or `$PATH`, clears a stale CGI
+socket, and forwards any extra arguments to pytest. Paths are relative to
+`test/`; a path relative to this directory (`tests/t/php`) works as well.
 
 ```sh
 ./runtests.sh tests/t/modules            # run one category
 ./runtests.sh tests/t/modules/test_alias.py   # run one file
-./runtests.sh -k rewrite -v              # any pytest args pass through
-./runtests.sh --php-fpm /opt/local/sbin/php-fpm83 tests/t/php   # PHP tests
+./runtests.sh pytest_suite/tests -k rewrite -v   # any pytest args pass through
+./runtests.sh --php-fpm=/opt/local/sbin/php-fpm83 tests/t/php   # PHP tests
 ```
 
 
@@ -54,10 +68,10 @@ stale CGI socket, and forwards any extra arguments to pytest.
 
 | Requirement | How it's provided | Notes |
 |---|---|---|
-| Python ≥ 3.11 + pytest + httpx | `uv sync` (uses `pyproject.toml` / `uv.lock`) | The only Python deps. |
+| Python ≥ 3.11 + pytest + httpx | `uv sync` (uses `test/pyproject.toml` / `test/uv.lock`) | The only Python deps. |
 | A built Apache httpd | `--apxs` / `--httpd` (or `APXS` / `HTTPD` env) | The server under test. Built with shared modules so the suite can load them. |
 | `php-fpm` (optional) | `--php-fpm` (or `PHP_FPM` env) | Any PHP 7/8 version. Without it, the PHP tests skip. |
-| `openssl` CLI | auto (on `$PATH`) | Used to generate the test SSL CA/certs. |
+| `openssl` CLI | auto (on `$PATH`) | Optional. The test SSL CA/certs are generated in Python (`pyhttpd/sslca.py`, `cryptography`); the CLI is only run by a few tests (the OCSP responder, `proxy_hcheck`), which skip without it. |
 
 The suite probes the httpd build (`httpd -v/-V/-l` and its installed
 `httpd.conf`) to learn its version, MPM, and available modules, then **skips**
@@ -81,17 +95,15 @@ These are added on top of pytest's own options:
 ## Layout
 
 ```
-python/
-├── runtests.sh          # entry point (this is how you run the suite)
-├── pyproject.toml       # deps + pytest config
-├── conftest.py          # fixtures: server lifecycle, the `http` client, need_* gating
-├── apache_pytest/       # the framework (port of Apache::Test internals)
-│   ├── probe.py         #   inspect the httpd build (version, MPM, modules)
+pytest_suite/            # (the runner, pyproject.toml and uv.lock are in test/)
+├── conftest.py          # fixtures: server lifecycle, the `http` client
+├── apache_pytest/       # classic-suite layer over test/pyhttpd (port of Apache::Test internals)
+│   ├── probe.py         #   re-exports pyhttpd.build (inspect the httpd build)
 │   ├── config.py        #   generate httpd.conf from t/conf/*.conf.in
-│   ├── cmodules.py      #   compile c-modules/ via apxs
-│   ├── sslca.py         #   generate the SSL test CA + certs
+│   ├── cmodules.py      #   which c-modules/ to build (built by pyhttpd.cmodules)
+│   ├── sslca.py         #   re-exports pyhttpd.sslca (the SSL test CA + certs)
 │   ├── fpm.py           #   manage a php-fpm daemon
-│   ├── server.py        #   start/stop httpd
+│   ├── server.py        #   the generated config's httpd command line (runs on pyhttpd.instance)
 │   ├── client.py        #   the `http` fixture (HTTP/HTTPS + raw sockets)
 │   ├── rawsocket.py     #   raw-socket helper for protocol tests
 │   └── testapi.py       #   t_cmp() + need_* markers used by tests
@@ -318,12 +330,19 @@ If a test needs server configuration or files served from disk:
 
 ## Notes & gotchas
 
-* **`uv run` vs the venv.** `runtests.sh` invokes `.venv/bin/pytest` directly so
+* **`uv run` vs the venv.** `runtests.sh` invokes `test/.venv/bin/pytest` directly so
   it works in environments where `uv run` is shimmed/unavailable. If you call
-  pytest yourself, use `.venv/bin/pytest` (or activate the venv).
+  pytest yourself, use `../.venv/bin/pytest` (or activate the venv).
+* **Write options as `--apxs=PATH`**, not `--apxs PATH`, when calling pytest
+  yourself: pytest's early argument scan cannot yet tell that the second form's
+  value is not a test path, and picks the wrong rootdir. `runtests.sh` joins them.
+* **The error log is checked.** An unexpected error or warning logged while a
+  test runs fails it (as a teardown error). Tests that provoke errors on purpose
+  are covered by the lists in `test/pyhttpd/classic_errorlog.py`, not in the test
+  files; a new test with a deliberate error path adds its AH number there.
 * **Same-named test modules** across categories (e.g. `ssl/test_all.py` and
   `php/test_all.py`) coexist thanks to `--import-mode=importlib` +
-  `pythonpath=["."]` in `pyproject.toml`.
+  `pythonpath` in `test/pyproject.toml`.
 * **Stale CGI socket.** A killed run can leave `t/logs/cgisock*`, which breaks a
   fresh start; `runtests.sh` removes it automatically.
 * **No orphans.** The server is launched in its own process group and reaped on

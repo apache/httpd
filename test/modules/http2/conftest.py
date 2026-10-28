@@ -23,6 +23,12 @@ def env(pytestconfig) -> H2TestEnv:
     logging.getLogger('').addHandler(console)
     logging.getLogger('').setLevel(level=level)
     env = H2TestEnv(pytestconfig=pytestconfig)
+    # setup_httpd() raises if a module it LoadModules is missing, e.g. in a
+    # build configured with --disable-http2. Report that as the missing
+    # dependency instead.
+    env.require(env.has_shared_module("http2") and env.has_shared_module("proxy_http2"),
+                "mod_http2 and mod_proxy_http2 were not built", dep="mod_http2",
+                detected=f"no mod_http2.so and mod_proxy_http2.so in {env.libexec_dir}")
     # the h2 vhosts are TLS, so setup_httpd() hard-requires mod_ssl and
     # raises if it was not built. Report that as the missing dependency.
     env.require(env.has_mod_ssl(), "no mod_ssl available", dep="mod_ssl",

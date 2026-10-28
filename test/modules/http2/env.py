@@ -6,6 +6,7 @@ from shutil import copyfile
 from typing import Dict, Any
 
 from pyhttpd.certs import CertificateSpec
+from pyhttpd.cmodules import ensure_built
 from pyhttpd.conf import HttpdConf
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
 
@@ -28,14 +29,12 @@ class H2TestSetup(HttpdTestSetup):
         module_dir = self.env.test_modules_dir
         if not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(H2TestSetup))
-            p = subprocess.run([self.env.apxs, '-c', 'mod_h2test.c'],
-                            capture_output=True,
-                            cwd=os.path.join(local_dir, 'mod_h2test'))
-
-            rv = p.returncode
-            if rv != 0:
-                log.error(f"compiling md_h2test failed: {p.stderr}")
-                raise Exception(f"compiling md_h2test failed: {p.stderr}")
+            try:
+                ensure_built(os.path.join(local_dir, 'mod_h2test'), 'h2test',
+                             self.env.apxs)
+            except RuntimeError as e:
+                log.error(f"compiling mod_h2test failed: {e}")
+                raise Exception(f"compiling mod_h2test failed: {e}")
 
             module_dir = f"{local_dir}/mod_h2test/.libs"
 

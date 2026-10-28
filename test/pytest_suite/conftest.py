@@ -18,15 +18,17 @@ CLI options:
 
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
 
 import pytest
+from pyhttpd.build import resolve_build as _resolve_build
+from pyhttpd.build import why_no_build as _why_no_build
+from pyhttpd.classic_errorlog import check_shutdown, check_startup
+from pyhttpd.gating import add_module_provider
 
 from apache_pytest import HttpdServer, TestClient, TestConfig, compile_all, probe
 from apache_pytest.cmodules import clean_modules
 from apache_pytest.probe import HttpdInfo
-from apache_pytest.testapi import has_trunk_change
 
 # The suite is self-contained: all assets it needs (t/conf templates, t/htdocs
 # docroot, c-modules sources, auth files) live under this directory (python/).
@@ -36,210 +38,27 @@ SUITE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = SUITE_ROOT
 
 
-def pytest_addoption(parser: pytest.Parser) -> None:
-    group = parser.getgroup("httpd")
-    group.addoption("--httpd", action="store", default=None, help="path to httpd binary")
-    group.addoption("--apxs", action="store", default=None, help="path to apxs")
-    group.addoption(
-        "--defines",
-        action="store",
-        default="",
-        help="space-separated extra -D defines (e.g. 'LDAP')",
-    )
-    group.addoption(
-        "--php-fpm",
-        action="store",
-        default=None,
-        help="path to a php-fpm binary; enables the t/php tests via mod_proxy_fcgi "
-        "(any version/location -- the path is the only PHP-specific input)",
-    )
-    group.addoption(
-        "--php-fpm-port",
-        action="store",
-        type=int,
-        default=8999,
-        help="TCP port for the managed php-fpm pool (default 8999)",
-    )
-    group.addoption(
-        "--clean-modules",
-        action="store_true",
-        default=False,
-        help="remove all compiled C-module artifacts before building (emulate make clean)",
-    )
-    group.addoption(
-        "--conf",
-        action="store",
-        default=None,
-        help="path to the installed httpd.conf (for LoadModule discovery "
-        "when --apxs is not available, e.g. on Windows)",
-    )
-    group.addoption(
-        "--prefix",
-        action="store",
-        default=None,
-        help="server install prefix for resolving relative module paths "
-        "(default: derived from --conf path)",
-    )
-    group.addoption(
-        "--with-perl",
-        action="store",
-        default=None,
-        help="path to the perl interpreter for generated scripts and "
-        "rewrite prg-maps (default: /usr/bin/perl or APACHE_TEST_PERL env)",
-    )
-
-
-def pytest_configure(config: pytest.Config) -> None:
-    for marker in (
-        "need_module(*names): skip unless all named httpd modules are available",
-        "need_min_apache_version(ver): skip unless server >= ver",
-        "need_cgi(): skip unless a CGI module is available",
-        "need_php(): skip unless a PHP SAPI module is available",
-        "need_ssl(): skip unless mod_ssl is available",
-        "need_lwp(): always satisfied (httpx client always present)",
-        "not_backported(rev, what, backported_in=None): expected to fail on "
-        "a server older than 2.5.0 (or than backported_in), which lacks the "
-        "trunk change rev",
-    ):
-        config.addinivalue_line("markers", marker)
-
-
-def _apxs_query(apxs: Path, var: str) -> str:
-    proc = subprocess.run(  # noqa: S603 - trusted path
-        ["perl", str(apxs), "-q", var], capture_output=True, text=True, check=True
-    )
-    return proc.stdout.strip()
-
-
-class _NoServerError(Exception):
-    """Raised when neither --httpd nor --apxs was provided."""
-
-
-def _resolve_paths(
-    config: pytest.Config,
-) -> tuple[Path, Path | None, Path | None, Path | None, list[str]]:
-    """Resolve (httpd, apxs, inherited_conf, install_prefix, defines) from options.
-
-    Raises :class:`_NoServerError` if neither --httpd nor --apxs is given. (A
-    plain exception, not pytest.fail, so the collection-time probe can catch it
-    without turning into an INTERNALERROR; the fixture converts it to a clean
-    skip/fail at setup time.)
-    """
-    apxs_opt = config.getoption("--apxs")
-    httpd_opt = config.getoption("--httpd")
-    defines = [d for d in config.getoption("--defines").split() if d]
-
-    apxs = Path(apxs_opt) if apxs_opt else None
-    inherited_conf: Path | None = None
-    install_prefix: Path | None = None
-    if apxs is not None:
-        sbindir = Path(_apxs_query(apxs, "SBINDIR"))
-        sysconfdir = Path(_apxs_query(apxs, "SYSCONFDIR"))
-        install_prefix = Path(_apxs_query(apxs, "PREFIX"))
-        inherited_conf = sysconfdir / "httpd.conf"
-        if httpd_opt is None:
-            httpd_opt = str(sbindir / "httpd")
-
-    conf_opt = config.getoption("--conf")
-    prefix_opt = config.getoption("--prefix")
-    if conf_opt is not None and inherited_conf is None:
-        inherited_conf = Path(conf_opt)
-    if prefix_opt is not None:
-        install_prefix = Path(prefix_opt)
-    elif inherited_conf is not None and install_prefix is None:
-        install_prefix = inherited_conf.parent.parent
-
-    if httpd_opt is None:
-        raise _NoServerError("must pass --httpd or --apxs")
-    return Path(httpd_opt), apxs, inherited_conf, install_prefix, defines
-
-
 # --------------------------------------------------------------------------- #
 # Collection-time requirement gating (need_* markers)
 # --------------------------------------------------------------------------- #
-_probe_cache: HttpdInfo | None = None
+# The markers are evaluated by pyhttpd.gating, against the build that
+# pyhttpd.build found. The bundled C test modules (authany, echo_post,
+# input_body_filter, ...) are compiled and LoadModule'd into the generated
+# test config by the session fixture below, so need_module("authany") etc.
+# should be satisfied at collection time too. Declare the C modules that WILL
+# be built (honoring the same HTTPD_TEST_REQUIRE_APACHE gating discover()
+# applies).
 
 
-def _probed_info(config: pytest.Config) -> HttpdInfo | None:
-    """Probe the target httpd once for collection-time requirement checks.
-
-    Returns None if no httpd was specified (so requirement markers can't be
-    evaluated -- tests are left to fail/skip naturally at fixture setup).
-    """
-    global _probe_cache  # noqa: PLW0603 - simple memo across the collection hook
-    if _probe_cache is not None:
-        return _probe_cache
-    try:
-        httpd, _apxs, inherited_conf, install_prefix, _defines = _resolve_paths(config)
-    except Exception:
-        return None
-    info = probe(httpd, inherited_conf, install_prefix)
-    # The bundled C test modules (authany, echo_post, input_body_filter, ...) are
-    # compiled and LoadModule'd into the generated test config by the session
-    # fixture, so need_module("authany") etc. should be satisfied at collection
-    # time too. Augment the probed set with the C modules that WILL be built
-    # (honoring the same HTTPD_TEST_REQUIRE_APACHE gating discover() applies).
+def _provide_cmodules(info: HttpdInfo) -> None:
     from apache_pytest.cmodules import discover
 
     cmods, _skipped = discover(REPO_ROOT / "c-modules", info)
     for mod in cmods:
         info.modules.add(f"mod_{mod.name}.c")
-    _probe_cache = info
-    return _probe_cache
 
 
-def _unmet_requirement(
-    item: pytest.Item, info: HttpdInfo, *, php_fpm: bool = False
-) -> str | None:
-    """Return a skip reason if any need_* marker on ``item`` is unmet, else None.
-
-    ``php_fpm`` indicates a php-fpm binary was provided (and mod_proxy_fcgi is
-    available), which satisfies need_php even without an in-process PHP SAPI.
-    """
-    for mark in item.iter_markers(name="need_module"):
-        for name in mark.args:
-            if not info.has_module(name):
-                return f"module {name} not available"
-    for mark in item.iter_markers(name="need_min_apache_version"):
-        ver = mark.args[0]
-        parts = tuple(int(x) for x in str(ver).split("."))
-        parts += (0,) * (3 - len(parts))
-        if info.version < parts:
-            return f"httpd {info.version_str} < required {ver}"
-    if any(item.iter_markers(name="need_cgi")) and not (
-        info.has_module("mod_cgi") or info.has_module("mod_cgid")
-    ):
-        return "no CGI module (mod_cgi/mod_cgid) available"
-    if any(item.iter_markers(name="need_php")):
-        php_mods = ("sapi_apache2", "mod_php4", "mod_php5", "mod_php7", "mod_php")
-        have_sapi = any(info.has_module(m) for m in php_mods)
-        have_fpm = php_fpm and info.has_module("mod_proxy_fcgi")
-        if not (have_sapi or have_fpm):
-            return "no PHP SAPI module or php-fpm available"
-    if any(item.iter_markers(name="need_ssl")) and not info.has_module("mod_ssl"):
-        return "mod_ssl not available"
-    # need_lwp is always satisfied (httpx is always present); no check.
-    return None
-
-
-def pytest_collection_modifyitems(
-    config: pytest.Config, items: list[pytest.Item]
-) -> None:
-    info = _probed_info(config)
-    if info is None:
-        return
-    php_fpm = bool(config.getoption("--php-fpm"))
-    for item in items:
-        reason = _unmet_requirement(item, info, php_fpm=php_fpm)
-        if reason:
-            item.add_marker(pytest.mark.skip(reason=reason))
-        else:
-            for mark in item.iter_markers(name="not_backported"):
-                rev, what = mark.args
-                if not has_trunk_change(info.version,
-                                        mark.kwargs.get("backported_in")):
-                    item.add_marker(pytest.mark.xfail(
-                        reason=f"{what} ({rev}) not backported", strict=False))
+add_module_provider(_provide_cmodules)
 
 
 # --------------------------------------------------------------------------- #
@@ -248,11 +67,15 @@ def pytest_collection_modifyitems(
 @pytest.fixture(scope="session")
 def framework(request: pytest.FixtureRequest):
     """Probe, configure, build C modules, start httpd; yield (config, server)."""
-    try:
-        httpd, apxs, inherited_conf, install_prefix, defines = _resolve_paths(request.config)
-    except _NoServerError as exc:
-        pytest.fail(str(exc))
+    # the httpd of the session, the one the need_* marks were evaluated for
+    target = _resolve_build(request.config)
+    if target is None:
+        pytest.fail(_why_no_build())
+    httpd, apxs = target.httpd, target.apxs
+    inherited_conf, install_prefix = target.inherited_conf, target.prefix
+    defines = target.extra_defines
 
+    # probed again: gating added the c-modules/ that will be built to target
     info = probe(httpd, inherited_conf, install_prefix)
 
     perl_opt = request.config.getoption("--with-perl")
@@ -320,11 +143,14 @@ def framework(request: pytest.FixtureRequest):
     server = HttpdServer(config)
     server.start()
     try:
+        check_startup(request.config, str(error_log),
+                      int(config.vars["session_log_start"]))
         yield config, server
     finally:
         server.stop()
         if fpm_mgr is not None:
             fpm_mgr.stop()
+    check_shutdown(request.config)
 
 
 @pytest.fixture(scope="session")
