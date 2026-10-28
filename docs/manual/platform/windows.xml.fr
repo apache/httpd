@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933739:1939285 (outdated) -->
+<!-- English Revision: 1939285 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -345,14 +345,8 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]
       <li>Créez un compte d'utilisateur du domaine normal, et
       assurez-vous de retenir son mot de passe.</li>
 
-      <li>Accordez à l'utilisateur nouvellement créé les privilèges
-      <code>Log on as a service</code> et <code>Act as part of the
-      operating system</code>. Sous Windows NT 4.0, ces privilèges sont
-      accordés via le Gestionnaire des utilisateurs du Domaine, mais
-      sous Windows 2000 et XP, vous aurez plutôt intérêt à utiliser une
-      GPO pour propager ces configurations. Vous pouvez aussi effectuer
-      ces réglages via la Politique de Sécurité Locale intégrée à la
-      MMC.</li>
+      <li>Accordez à l'utilisateur nouvellement créé le privilège
+      <code>Log on as a service</code>.</li>
 
       <li>Vérifiez que le compte nouvellement créé est membre du groupe
       Utilisateurs</li>

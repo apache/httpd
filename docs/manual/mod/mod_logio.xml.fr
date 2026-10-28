@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932796:1939346 (outdated) -->
+<!-- English Revision: 1939346 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -86,14 +86,20 @@ d'Apache</a></seealso>
     <tr><td><code>%^FU</code></td>
         <td>Délai en microsecondes entre l'arrivée de la requête et la lecture
 	du dernier octet du corps de la requête (upload terminé). Disponible
-	seulement si <directive>LogIOTrackTTFU</directive> est à ON.<br />
-	Disponible à partir de la version 2.4.34 du serveur HTTP Apache.</td></tr>
+	seulement si <directive>LogIOTrackTTFU</directive> est à ON. Si ce suivi
+	n’est pas activé, ou si le dernier octet du corps de la requête n’a
+	jamais été lu (par exemple la requête a été annulée avant la fin du
+	chargement), la valeur consignée est <code>-</code>.<br />
+	Disponible à partir de la version 2.5.1 du serveur HTTP Apache.</td></tr>
 
     <tr><td><code>%^FB</code></td>
         <td>Délai en microsecondes entre l'arrivée de la requête et
 	l'écriture du premier octet des en-têtes de la réponse.
 	Disponible uniquement si la directive
-	<directive>LogIOTrackTTFB</directive> a été définie à ON.<br />
+	<directive>LogIOTrackTTFB</directive> a été définie à ON. Si ce suivi
+	n’est pas activé, ou si le premier octet des en-têtes de la réponse n’a
+	jamais été lu (par exemple la requête a été annulée avant l’écriture de
+	tout en-tête de réponse), la valeur consignée est <code>-</code>.<br />
 	Disponible à partir de la version 2.4.13 du serveur HTTP Apache
         </td></tr>	
     </table>
@@ -116,7 +122,7 @@ requête (TTFU = time to finish upload)</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
-<compatibility>Disponible à partir de la version 2.4.34 du serveur HTTP Apache</compatibility>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette directive permet d'activer/désactiver la mesure du temps entre le

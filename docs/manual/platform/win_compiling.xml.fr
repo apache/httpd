@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1935202:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -175,7 +175,7 @@
 	compilation d'InstallBin échouera. Pour contourner le problème,
 	vous pouvez supprimer le lien <code>awk.exe</code> de
 	l'installation de Cygwin, et copier <code>gawk.exe</code> vers
-	<code>awk.exe</code>. Notez aussi que les portages cygwin/mingw
+	<code>awk.exe</code>. Notez aussi que les portages Cygwin/mingw
 	de gawk 3.0.x étaient bogués ; veuillez par conséquent effectuer
 	une mise à jour vers la	version 3.1.x avant l'utilisation de
 	tout portage de gawk.</note>
@@ -261,7 +261,7 @@
 	compilés automatiquement.</p>
 
         <p>Le support dbd inclut le paquet instantclient Oracle, MySQL,
-	PostgreSQL et sqlite. Par exemple, pour les compiler tous,
+	PostgreSQL et SQlite. Par exemple, pour les compiler tous,
 	définissez LIB de façon à inclure le chemin des bibliothèques,
 	INCLUDE de façon à inclure le chemin des en-têtes, et PATH de
 	façon à inclure le chemin des dll et bin de chacun des quatre

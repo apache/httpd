@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673947:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -26,7 +26,7 @@
   <parentdocument href="./">Notes spécifiques aux différentes
   plateformes</parentdocument>
 
-  <title>Utiliser Apache sur les systèmes à base de paquets RPM (Redhat
+  <title>Utiliser Apache sur les systèmes à base de paquets RPM (Red Hat
   / CentOS / Fedora)</title>
 
   <summary>

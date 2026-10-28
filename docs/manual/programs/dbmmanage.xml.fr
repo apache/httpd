@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933136:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -106,11 +106,11 @@ utilisateurs au format DBM</title>
       <dl>
       <dt><code>-d</code></dt>
       <dd>hashage crypt (chiffrement par défaut sauf sous Win32,
-      Netware)</dd>
+      NetWare)</dd>
 
       <dt><code>-m</code></dt>
       <dd>hashage MD5 (chiffrement par défaut sous Win32,
-      Netware)</dd>
+      NetWare)</dd>
 
       <dt><code>-s</code></dt>
       <dd>hashage SHA1</dd>
