@@ -25,8 +25,11 @@ class TestConf:
         acme.start(config='default')
         env.check_acme()
         env.httpd_error_log.add_ignored_lognos(["AH10045", "AH10105"])
+        # the failing message command of MDConf(no_renewal=True)
+        env.httpd_error_log.add_ignored_matches([r'.*urn:org:apache:httpd:log:AH10109:.*'])
         yield
         env.httpd_error_log.remove_ignored_lognos(["AH10045", "AH10105"])
+        env.httpd_error_log.clear_ignored_matches()
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
@@ -139,6 +142,7 @@ class TestConf:
     # test case: assign separate contact info based on VirtualHost
     def test_md_310_107(self, env):
         MDConf(env, admin="", text="""
+            MDRenewMode manual
             MDomain testdomain.org www.testdomain.org mail.testdomain.org
             MDomain testdomain2.org www.testdomain2.org mail.testdomain2.org
 
@@ -196,7 +200,7 @@ class TestConf:
 
     # test case: drive mode always
     def test_md_310_112(self, env):
-        MDConf(env, text="""
+        MDConf(env, no_renewal=True, text="""
             MDRenewMode always
             MDomain testdomain.org www.testdomain.org mail.testdomain.org
             """).install()
@@ -251,6 +255,7 @@ class TestConf:
     # test case: automatically collect md names from vhost config
     def test_md_310_117(self, env):
         conf = MDConf(env, text="""
+            MDRenewMode manual
             MDMember auto
             MDomain testdomain.org
             """)
@@ -427,7 +432,7 @@ class TestConf:
         ("always", 2)
     ])
     def test_md_310_207(self, env, renew_mode, exp_code):
-        MDConf(env, text="""
+        MDConf(env, no_renewal=True, text="""
             MDRenewMode %s
             MDomain testdomain.org www.testdomain.org mail.testdomain.org
             """ % renew_mode).install()
@@ -595,7 +600,7 @@ class TestConf:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.a2md(["list"]).json['output'][0]['renew-mode'] == 1
         # test case: drive mode always
-        MDConf(env, text="""
+        MDConf(env, no_renewal=True, text="""
             MDRenewMode always
             MDomain testdomain.org www.testdomain.org mail.testdomain.org
             """).install()

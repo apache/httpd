@@ -104,6 +104,7 @@ class TestConf:
     # test case: two MDomains, one correct vhost name
     def test_md_300_006(self, env):
         MDConf(env, text="""
+            MDRenewMode manual
             MDomain not-forbidden.org www.not-forbidden.org mail.not-forbidden.org test3.not-forbidden.org
             <VirtualHost *:12346>
                 ServerName example2.org
@@ -121,6 +122,7 @@ class TestConf:
     # test case: two MDomains, two correct vhost names
     def test_md_300_007(self, env):
         MDConf(env, text="""
+            MDRenewMode manual
             MDomain not-forbidden.org www.not-forbidden.org mail.not-forbidden.org test3.not-forbidden.org
             <VirtualHost *:12346>
                 ServerName example2.org
@@ -141,6 +143,7 @@ class TestConf:
     # test case: two MDomains, overlapping vhosts
     def test_md_300_008(self, env):
         MDConf(env, text="""
+            MDRenewMode manual
             MDomain not-forbidden.org www.not-forbidden.org mail.not-forbidden.org test3.not-forbidden.org
             <VirtualHost *:12346>
                 ServerName example2.org
@@ -187,6 +190,7 @@ class TestConf:
     def test_md_300_010(self, env):
         conf = MDConf(env)
         conf.add("""
+            MDRenewMode manual
             MDomain not-forbidden.org www.not-forbidden.org mail.not-forbidden.org test3.not-forbidden.org
 
             <VirtualHost *:12346>
@@ -221,6 +225,7 @@ class TestConf:
     def test_md_300_011b(self, env):
         env.apache_stop()
         MDConf(env, text="""
+            MDRenewMode manual
             MDomain not-forbidden.org auto mail.not-forbidden.org
 
             <VirtualHost *:%s>
@@ -251,6 +256,7 @@ class TestConf:
     # test case: one md covers two vhosts
     def test_md_300_013(self, env):
         MDConf(env, text="""
+            MDRenewMode manual
             MDomain example2.org test-a.example2.org test-b.example2.org
             <VirtualHost *:12346>
                 ServerName test-a.example2.org
@@ -366,6 +372,7 @@ class TestConf:
     # test case: use MDRequireHttps in an <if> construct, but not in <Directory
     def test_md_300_022(self, env):
         MDConf(env, text="""
+            MDRenewMode manual
             MDomain secret.com
             <If "1 == 1">
               MDRequireHttps temporary
@@ -435,6 +442,7 @@ class TestConf:
         conf = MDConf(env)
         domain = f"t300-026.{env.http_tld}"
         conf.add(f"""
+            MDRenewMode manual
             MDomain {domain}
             """)
         conf.add_vhost(port=env.http_port, domains=[domain], with_ssl=False)
@@ -485,6 +493,7 @@ class TestConf:
         dalias = f"t300-028alias.{env.http_tld}"
         conf.add_vhost(port=env.http_port, domains=[domaina, domainb, dalias], with_ssl=False)
         conf.add(f"""
+            MDRenewMode manual
             MDMembers manual
             MDomain {domaina} 
             MDomain {domainb} {dalias}

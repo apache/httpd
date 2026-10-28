@@ -1,3 +1,5 @@
+import os
+
 from .md_env import MDTestEnv
 from pyhttpd.conf import HttpdConf
 
@@ -6,7 +8,7 @@ class MDConf(HttpdConf):
 
     def __init__(self, env: MDTestEnv, text=None, std_ports=True,
                  local_ca=True, std_vhosts=True, proxy=False,
-                 admin=None):
+                 admin=None, no_renewal=False):
         super().__init__(env=env)
 
         if admin is None:
@@ -25,6 +27,11 @@ class MDConf(HttpdConf):
                 f"MDCACertificateFile {env.server_dir}/acme-ca.pem",
                 "",
                 ])
+        if no_renewal:
+            # A renewal still running when the server stops delays the stop,
+            # which httpd logs as a warning. A failing handler vetoes it.
+            cmd = os.path.join(env.test_dir, "../modules/md/msg_fail_on.py")
+            self.add(f"MDMessageCmd {cmd} {env.gen_dir}/message.log renewing")
         if std_ports:
             self.add(f"MDPortMap 80:{env.http_port} 443:{env.https_port}")
             if env.ssl_module == "mod_tls":
