@@ -53,6 +53,6 @@ class TestDigestTruncatedNonce:
         stale = dc.DigestChallenge.parse(r2.response["header"]["www-authenticate"])
         assert stale.stale is True
 
-        not_base64 = re.compile(r".*invalid nonce .* - time is not base64")
+        not_base64 = re.compile(r".*AH10678: invalid nonce .* - time is not base64")
         assert env.httpd_error_log.scan_recent(not_base64)
-        env.httpd_error_log.ignore_recent(matches=[not_base64.pattern])
+        env.httpd_error_log.ignore_recent(lognos=["AH10678"])
