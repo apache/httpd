@@ -1,0 +1,2 @@
+  *) test: Switch des3 keys to aes256, switch dsa certificates to ecdsa.
+     [Graham Leggett]

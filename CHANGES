@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
-  *) test: Switch des3 keys to aes256, switch dsa certificates to ecdsa.
-     [Graham Leggett]
-
   *) mpm_event, mpm_worker, mpm_winnt, mpm_prefork, mpm_motorz: Added optional
      functions to account for connections managed outside the MPM accept loop
      (e.g., UDP).
