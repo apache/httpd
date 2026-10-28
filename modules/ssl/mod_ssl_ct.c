@@ -181,6 +181,7 @@ static ct_server_config *copy_ct_server_config(apr_pool_t *p,
                                                ct_server_config *base);
 
 static apr_thread_t *service_thread;
+static apr_pool_t *service_pool;
 
 static apr_hash_t *cached_server_data;
 
@@ -872,7 +873,17 @@ static apr_status_t wait_for_thread(void *data)
     apr_thread_t *thd = data;
     apr_status_t retval;
 
-    apr_thread_join(&retval, thd);
+    return apr_thread_join(&retval, thd);
+}
+
+static apr_status_t stop_service_thread(void *data)
+{
+    /* the apr_thread_t lives in service_pool */
+    if (wait_for_thread(data) == APR_SUCCESS) {
+        apr_pool_destroy(service_pool);
+    }
+    service_thread = NULL;
+    service_pool = NULL;
     return APR_SUCCESS;
 }
 
@@ -2550,7 +2561,19 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    rv = ap_thread_create(&service_thread, NULL, run_service_thread, s, p);
+    /* Not a subpool of pchild: with APR pool-debug, destroying pchild holds
+     * its pool-tree mutex while running the pre-cleanup that joins the
+     * thread, and apr_thread_exit() needs the mutex of the thread pool's
+     * parent. Some MPM exit paths (prefork after a signal) destroy pchild
+     * without running child_stopped, so the join must work from there.
+     */
+    rv = apr_pool_create_unmanaged_ex(&service_pool, apr_pool_abort_get(p),
+                                      NULL);
+    if (rv == APR_SUCCESS) {
+        apr_pool_tag(service_pool, "ssl_ct_service");
+        rv = ap_thread_create(&service_thread, NULL, run_service_thread, s,
+                              service_pool);
+    }
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      APLOGNO(02745) "could not create " SERVICE_THREAD_NAME
@@ -2561,7 +2584,7 @@ static void ssl_ct_child_init(apr_pool_t *p, server_rec *s)
         exit(APEXIT_CHILDSICK);
     }
 
-    apr_pool_pre_cleanup_register(p, service_thread, wait_for_thread);
+    apr_pool_pre_cleanup_register(p, service_thread, stop_service_thread);
 
     if (sconf->proxy_awareness != PROXY_OBLIVIOUS) {
         rv = apr_thread_mutex_create(&cached_server_data_mutex,
