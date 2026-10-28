@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933438:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -846,7 +846,7 @@ Swap:       3903784      12540  3891244
 	    écrire des MPMs qui pouvaient fonctionner avec l'architecture
 	    à base de processus ou de threads de leur système
 	    d'exploitation spécifique. httpd 2 est fourni avec des MPMs
-	    spécifiques pour Windows, OS/2, Netware et BeOS. Pour les
+	    spécifiques pour Windows, OS/2, NetWare et BeOS. Pour les
 	    plateformes de style unix, les deux MPMS les plus connus
 	    sont Prefork et Worker. Le MPM Prefork offre le même modèle
 	    de processus enfants prélancés que celui de httpd 1.3. Le
@@ -1364,7 +1364,7 @@ Swap:       3903784      12540  3891244
         <p>Les requêtes impliquant des contenus dynamiques nécessitent
 	en général d'avantage de ressources que les
 	requêtes pour des contenus statiques. Les contenus statiques
-	consistent en simples pages issues de documents ou images
+	consistent en simples fichiers, pages, images, etc.
 	sur disque, et sont servis très rapidement. En outre, de
 	nombreux systèmes d'exploitation mettent automatiquement en
 	cache en mémoire les contenus des fichiers fréquemment accédés. 
