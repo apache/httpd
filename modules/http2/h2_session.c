@@ -1076,8 +1076,8 @@ apr_status_t h2_session_create(h2_session **psession, conn_rec *c, request_rec *
                       (int)session->max_stream_mem,
                       session->mplx->processing_limit,
                       session->mplx->processing_max,
-                      session->push_diary->dtype, 
-                      (int)session->push_diary->N,
+                      session->push_diary ? session->push_diary->dtype : 0,
+                      session->push_diary ? (int)session->push_diary->N : 0,
                       (int)session->max_data_frame_len,
                       session->max_stream_errors);
     }
