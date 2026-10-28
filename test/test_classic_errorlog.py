@@ -74,3 +74,27 @@ def test_error_while_starting_fails(run):
 def test_warning_while_starting_passes(run):
     # the shared t/conf makes httpd warn at every start
     run(start="yes").assert_outcomes(passed=1)
+
+
+@pytest.mark.parametrize("filename,logno,errors", [
+    ("test_ldap", "AH01617", 0),
+    ("test_ldap", "AH01631", 0),
+    ("test_ldap", "AH99999", 1),
+    ("test_unrelated", "AH01617", 1),
+    ("test_unrelated", "AH01631", 1),
+])
+def test_ldap_expected_errors_are_file_scoped(pytester, monkeypatch,
+                                             filename, logno, errors):
+    monkeypatch.setenv("PYTHONPATH", os.path.dirname(os.path.abspath(__file__)))
+    pytester.makeconftest(_SUITE.split("def test_one")[0]
+                         .replace("{start}", "")
+                         .replace("{start_error}", "")
+                         .replace("{stop}", ""))
+    pytester.makepyfile(**{filename: f'''
+def test_auth_failure(framework, config):
+    with open(config.vars["t_logs"] + "/error_log", "a") as fd:
+        fd.write("[auth_basic:error] [pid 1] {logno}: authentication failure\\n")
+'''})
+    result = pytester.runpytest_subprocess("-p", "pyhttpd.classic_errorlog",
+                                           "-p", "no:cacheprovider")
+    result.assert_outcomes(passed=1, errors=errors)
