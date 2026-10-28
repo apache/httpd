@@ -172,7 +172,9 @@ static void log_setid_failure(const char *proc_type,
     apr_snprintf(errmsg, sizeof errmsg,
                  "(%d)%s: %s unable to set %s to %ld\n",
                  errno, errno_desc, proc_type, id_type, (long)user_id);
-    write(STDERR_FILENO, errmsg, strlen(errmsg));
+    if (write(STDERR_FILENO, errmsg, strlen(errmsg)) < 0) {
+        /* nowhere left to report it: the caller exits right after */
+    }
 }
 
 /* When suexec is enabled, this runs in the forked child
