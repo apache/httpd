@@ -1,0 +1,2 @@
+  *) mod_http2: Fix a crash creating an HTTP/2 session with
+     "H2PushDiarySize 0" and debug logging enabled.  [Joe Orton]
