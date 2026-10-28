@@ -20,7 +20,7 @@ reporting and handling vulnerabilities is out of scope for this
 document.
 
 For a list of already-addressed vulnerabilities, see [Apache 2.4 Security
-Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html)
+Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html).
 
 ## Model scope
 
@@ -49,7 +49,9 @@ Any security vulnerability SHOULD be reproducible:
 4. under a standard build, on a supported platform.
 
 Issues which are reproducible only using instrumented builds (such as
-ASAN, or under valgrind) should be clearly explained as such.
+ASAN, or under valgrind) should be clearly explained as such, and may
+be rejected if they do not demonstrate any practical impact in
+non-instrumented builds.
 
 Issues which depend on a specially crafted server configuration MUST
 include references (such as public documentation) which show why that
