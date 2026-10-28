@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pytest
 
@@ -18,10 +19,16 @@ DIRECTIVES = [
 OFF_T = not_backported("r1939129, r1939163", "strict size parsing for off_t directives")
 
 # Without the change (2.4.x), these directives take the number at the start of
-# a value and ignore the rest, and these three also take a value without one;
+# a value and ignore the rest, and these also take a value without one;
 # LimitRequestBody was strict already, but has no units and other messages.
 UNCHECKED_TAIL = [d for d in DIRECTIVES if d != "LimitRequestBody"]
 NO_DIGITS_OK = ["LimitXMLRequestBody", "ScriptLogLength", "ScriptLogBuffer"]
+# On glibc, strto*() leaves errno unset when there are no digits. The cache
+# handlers check apr_strtoff()'s status, but not whether it consumed digits.
+# Other libc implementations may reject these already (a non-strict XPASS
+# on Linux with such a libc is fine).
+if sys.platform == "linux":
+    NO_DIGITS_OK += [d for d in DIRECTIVES if d.startswith("Cache")]
 NO_RANGE_CHECK = ["ScriptLogLength", "ScriptLogBuffer"]
 
 

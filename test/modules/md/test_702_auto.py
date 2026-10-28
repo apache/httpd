@@ -29,6 +29,10 @@ class TestAutov2:
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
+        # A renewal can still be running after the previous test activated
+        # its certificate. Do not remove its store while the watchdog writes
+        # to it, or carry that renewal into the next test's restart.
+        assert env.apache_stop() == 0
         env.clear_store()
         self.test_domain = env.get_request_domain(request)
 
@@ -399,9 +403,15 @@ class TestAutov2:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
-        md = env.await_error(domain)
-        assert md["renewal"]["errors"] > 0
+        try:
+            assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+            md = env.await_error(domain)
+            assert md and md["renewal"]["errors"] > 0
+        finally:
+            env.httpd_error_log.ignore_recent(
+                lognos=["AH10173", "AH10056"],
+                matches=[r'.*None of the ACME challenge methods configured for this domain are suitable.*']
+            )
         #
         # now the same with a 80 mapped to a supported port 
         conf = MDConf(env, admin="admin@" + domain)
@@ -414,16 +424,6 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         assert env.await_completion([domain])
-        #
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
-                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
-            ],
-            matches = [
-                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
-            ]
-        )
 
     def test_md_702_011(self, env):
         domain = self.test_domain
@@ -437,9 +437,15 @@ class TestAutov2:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
-        md = env.await_error(domain)
-        assert md["renewal"]["errors"] > 0
+        try:
+            assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+            md = env.await_error(domain)
+            assert md and md["renewal"]["errors"] > 0
+        finally:
+            env.httpd_error_log.ignore_recent(
+                lognos=["AH10173", "AH10056"],
+                matches=[r'.*None of the ACME challenge methods configured for this domain are suitable.*']
+            )
         #
         # now the same with a 443 mapped to a supported port 
         conf = MDConf(env, admin="admin@" + domain)
@@ -453,16 +459,6 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         assert env.await_completion([domain])
-        #
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
-                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
-            ],
-            matches = [
-                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
-            ]
-        )
 
     # test case: one MD with several dns names. sign up. remove the *first* name
     # in the MD. restart. should find and keep the existing MD.
@@ -903,4 +899,3 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         env.check_md_complete(domains[0])
-

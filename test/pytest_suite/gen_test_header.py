@@ -9,6 +9,10 @@ import sys
 import types
 from pathlib import Path
 
+# CMake runs this script directly, without pytest's pythonpath settings.
+# cmodules.py also uses the shared, standard-library-only pyhttpd builder.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 # Stub out the apache_pytest package so cmodules.py can be loaded
 # without pulling in httpx and other test-only dependencies.
 pkg = types.ModuleType('apache_pytest')
