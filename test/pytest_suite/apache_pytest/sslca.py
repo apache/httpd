@@ -2,14 +2,14 @@
 
 Python port of Apache::TestSSLCA. Builds, under ``t/conf/ssl/ca/asf``, a self-
 signed CA plus server and client certificates that the SSL test configs reference
-(``server.crt``/``server.pem``, ``server_des3.*``, ``client_ok``/``client_snakeoil``/
+(``server.crt``/``server.pem``, ``server_aes256.*``, ``client_ok``/``client_snakeoil``/
 ``client_revoked``/``client_colon``, proxy client PEMs, and a CRL). The layout and
 filenames match the Perl framework so the existing ``t/conf/ssl/*.conf.in`` files
 work unchanged.
 
 Notes vs. the Perl original:
 * RSA keys are 2048-bit, digest sha256 (matches modern openssl defaults).
-* DSA server variants (``server_dsa`` etc.) are generated too, for config files
+* DSA server variants (``server_ecdsa`` etc.) are generated too, for config files
   that may reference them; on OpenSSL 3.x DSA keygen still works.
 * All passphrases are ``httpd`` (``$pass`` in the original).
 """
@@ -47,15 +47,15 @@ CERT_DN: dict[str, dict[str, str]] = {
     "client_revoked": {},
     "server": {"CN": "localhost", "OU": "httpd-test/rsa-test"},
     "server2": {"CN": "localhost", "OU": "httpd-test/rsa-test-2"},
-    "server_des3": {"CN": "localhost", "OU": "httpd-test/rsa-des3-test"},
-    "server2_des3": {"CN": "localhost", "OU": "httpd-test/rsa-des3-test-2"},
+    "server_aes256": {"CN": "localhost", "OU": "httpd-test/rsa-aes256-test"},
+    "server2_aes256": {"CN": "localhost", "OU": "httpd-test/rsa-aes256-test-2"},
 }
 # DSA variants of every server cert (Perl derives these dynamically).
 for _k in list(CERT_DN):
     if _k.startswith("server"):
-        _dsa = dict(CERT_DN[_k])
-        _dsa["OU"] = _dsa.get("OU", "").replace("rsa", "dsa")
-        CERT_DN[f"{_k}_dsa"] = _dsa
+        _ecdsa = dict(CERT_DN[_k])
+        _ecdsa["OU"] = _ecdsa.get("OU", "").replace("rsa", "ecdsa")
+        CERT_DN[f"{_k}_ecdsa"] = _ecdsa
 
 
 class SSLCA:
@@ -180,20 +180,15 @@ class SSLCA:
 
     def _new_key(self, name: str) -> None:
         out = f"keys/{name}.pem"
-        if "dsa" in name:
-            param = self.dir / "dsa-param"
-            if not param.exists():
-                self._run("dsaparam", "-out", "dsa-param", "2048", cwd=self.dir)
-            args = ["gendsa", "-out", out]
-            if "_des3" in name:
-                args += ["-des3", "-passout", f"pass:{PASS}"]
-            args += ["dsa-param"]
+        if "ecdsa" in name:
+            args = ["genpkey", "-algorithm", "EC", "-pkeyopt", "ec_paramgen_curve:prime256v1", "-out", out]
+            if "_aes256" in name:
+                args += ["-aes-256-cbc", "-pass", f"pass:{PASS}"]
             self._run(*args, cwd=self.dir)
         else:
-            args = ["genrsa", "-out", out]
-            if "_des3" in name:
-                args += ["-des3", "-passout", f"pass:{PASS}"]
-            args += ["2048"]
+            args = ["genpkey", "-algorithm", "RSA", "-pkeyopt", "rsa_keygen_bits:2048", "-out", out]
+            if "_aes256" in name:
+                args += ["-aes-256-cbc", "-pass", f"pass:{PASS}"]
             self._run(*args, cwd=self.dir)
 
     def _new_cert(self, name: str) -> None:
