@@ -18,11 +18,13 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_core.h"
+#include "http_main.h"
 #include "http_protocol.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_time.h"
 #include "ap_mpm.h"
+#include "mpm_common.h"
 #include "scoreboard.h"
 #include "mod_watchdog.h"
 #include "ap_slotmem.h"
@@ -845,10 +847,23 @@ static int hm_handler(request_rec *r)
     return OK;
 }
 
+static void hm_child_stopping(apr_pool_t *pchild, int graceful)
+{
+    hm_ctx_t *ctx = ap_get_module_config(ap_server_conf->module_config,
+                                         &heartmonitor_module);
+
+    /* STATE_STOPPING only comes once RUNNING has returned, which can take
+     * up to HM_UPDATE_SEC; end the listen loop now instead. */
+    if (ctx) {
+        ctx->keep_running = 0;
+    }
+}
+
 static void hm_register_hooks(apr_pool_t *p)
 {
     static const char * const aszSucc[]={ "mod_proxy.c", NULL };
     ap_hook_post_config(hm_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_stopping(hm_child_stopping, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_handler(hm_handler, NULL, aszSucc, APR_HOOK_FIRST);
 }
