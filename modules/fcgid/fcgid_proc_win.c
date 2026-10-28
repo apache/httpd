@@ -96,7 +96,7 @@ apr_status_t proc_spawn_process(const char *cmdline, fcgid_proc_info *procinfo,
 
     /* Pass the finish event id to subprocess */
     apr_table_setn(procinfo->proc_environ, SHUTDOWN_EVENT_NAME,
-                   apr_ltoa(procnode->proc_pool, (long) *finish_event));
+                   apr_ltoa(procnode->proc_pool, HandleToLong(*finish_event)));
 
     /* Prepare the listen namedpipe file name (no check for truncation) */
     apr_snprintf(sock_path, sizeof sock_path,
