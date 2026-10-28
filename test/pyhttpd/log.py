@@ -41,6 +41,11 @@ class HttpdErrorLog:
     def path(self) -> str:
         return self._path
 
+    def start_at(self, pos: int):
+        """Check from file position *pos* on, e.g. the size of the log before
+        the server was started."""
+        self._start_pos = self._recent_pos = pos
+
     def clear_log(self):
         if os.path.isfile(self.path):
             os.truncate(self.path, 0)

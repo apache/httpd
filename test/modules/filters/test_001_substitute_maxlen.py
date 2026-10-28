@@ -54,9 +54,14 @@ class TestSubstituteMaxLineLength:
 
     # A line that would grow past the limit must be rejected, not truncated
     # and not returned over-length.
-    @pytest.mark.parametrize("doc", ["over.html", "over_mid.html", "over_end.html"])
-    @pytest.mark.parametrize("mode", list(MODES), ids=list(MODES))
-    @not_backported("r1938306", "SubstituteMaxLineLength counting the unmatched tail")
+    # (without the change, a regex substitution with more of the line after
+    # the last match gets it wrong)
+    @pytest.mark.parametrize("mode, doc", [
+        pytest.param(mode, doc, id=f"{mode}-{doc}", marks=not_backported(
+            "r1938306", "SubstituteMaxLineLength counting the unmatched tail")
+            if mode.startswith("regex") and doc != "over_end.html" else ())
+        for mode in MODES for doc in ["over.html", "over_mid.html", "over_end.html"]
+    ])
     def test_filters_001_01(self, env, mode, doc):
         self.configure(env, MODES[mode])
         r = self.get(env, f"/{doc}")

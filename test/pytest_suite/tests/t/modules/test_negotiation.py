@@ -174,13 +174,17 @@ def _content_type(resp):
 
 
 @need_module("negotiation", "mime")
-@pytest.mark.parametrize("path", ["doc", "typemap.var"])
+# (a type map was right without the change, MultiViews was not)
+@pytest.mark.parametrize("path", [
+    pytest.param("doc", marks=not_backported(
+        "r1939268", "stripping qs from the negotiated Content-Type")),
+    "typemap.var",
+])
 @pytest.mark.parametrize("accept,expected", [
     (f"text/html, {XML}", XML),
     ("text/html", "text/html"),
     (f"text/html, {XML};q=0.5", "text/html"),
 ])
-@not_backported("r1939268", "stripping qs from the negotiated Content-Type")
 def test_source_quality(http, path, accept, expected):
     r = http.GET(f"/modules/negotiation/qs/{path}", headers={"Accept": accept})
     assert t_cmp(_content_type(r), expected), \

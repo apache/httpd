@@ -207,7 +207,11 @@ class TestConf:
             "not-forbidden.org", "test3.not-forbidden.org", "test4.not-forbidden.org"
         ])
         conf.install()
-        assert env.apache_fail() == 0
+        # not an error: mod_md warns and the server starts (check_coverage())
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.httpd_error_log.scan_recent(re.compile(
+            r'.* AH10040: .* the name/alias test4\.not-forbidden\.org itself is not managed'),
+            timeout=1)
         env.apache_stop()
         env.httpd_error_log.ignore_recent([
             "AH10040"   # A requested MD certificate will not match ServerName
@@ -347,7 +351,11 @@ class TestConf:
             "not.secret.com", "secret.com"
         ])
         conf.install()
-        assert env.apache_fail() == 0
+        # accepted: a name of the vhost that the MD does not cover is only
+        # warned about, see test_md_300_011a
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        env.apache_stop()
+        env.httpd_error_log.ignore_recent(["AH10040"])
         # this is unreliable on debian
         #assert env.httpd_error_log.scan_recent(
         #    re.compile(r'.*Virtual Host not.secret.com:0 matches Managed Domain \'secret.com\', '

@@ -17,8 +17,11 @@ from typing import List, Optional
 from configparser import ConfigParser, ExtendedInterpolation
 from urllib.parse import urlparse
 
+from .cmodules import ensure_built
 from .certs import Credentials, HttpdTestCA, CertificateSpec
+from .instance import HttpdInstance, HttpdStartError
 from .log import HttpdErrorLog
+from .ports import PORT_KEYS, resolve_ports
 from .nghttp import Nghttp
 from .result import ExecResult
 
@@ -150,14 +153,7 @@ class HttpdTestSetup:
             fd.write(t.substitute(var_map))
 
     def _get_builtin_modules(self) -> set:
-        httpd_bin = os.path.join(self.env.bin_dir, 'httpd')
-        p = subprocess.run([httpd_bin, '-l'], capture_output=True, text=True)
-        builtin = set()
-        for line in p.stdout.splitlines():
-            match = re.match(r'^\s+mod_(.+)\.c$', line)
-            if match:
-                builtin.add(match.group(1))
-        return builtin
+        return HttpdTestEnv.static_modules()
 
     def _make_modules_conf(self):
         loaded = set()
@@ -180,10 +176,9 @@ class HttpdTestSetup:
                     fd.write(f"#built-in: LoadModule {m}_module   \"{mod_path}\"\n")
                 elif os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
-                elif m in self.env.dso_modules:
-                    missing_mods.append(m)
                 else:
-                    fd.write(f"#built static: LoadModule {m}_module   \"{mod_path}\"\n")
+                    # neither compiled in nor built as a DSO
+                    missing_mods.append(m)
                 loaded.add(m)
             for m in self._optional_modules:
                 match = re.match(r'^mod_(.+)$', m)
@@ -242,13 +237,12 @@ class HttpdTestSetup:
         module_dir = self.env.test_modules_dir
         if not self.env.isWindows:
             local_dir = os.path.dirname(inspect.getfile(HttpdTestSetup))
-            p = subprocess.run([self.env.apxs, '-c', 'mod_aptest.c'],
-                            capture_output=True,
-                            cwd=os.path.join(local_dir, 'mod_aptest'))
-            rv = p.returncode
-            if rv != 0:
-                log.error(f"compiling mod_aptest failed: {p.stderr}")
-                raise Exception(f"compiling mod_aptest failed: {p.stderr}")
+            try:
+                ensure_built(os.path.join(local_dir, 'mod_aptest'), 'aptest',
+                             self.env.apxs)
+            except RuntimeError as e:
+                log.error(f"compiling mod_aptest failed: {e}")
+                raise Exception(f"compiling mod_aptest failed: {e}")
 
             module_dir = os.path.join(local_dir, "mod_aptest", ".libs")
 
@@ -289,12 +283,40 @@ class HttpdTestEnv:
     def get_ssl_module(cls):
         return os.environ['SSL'] if 'SSL' in os.environ else 'mod_ssl'
 
+    _static_modules = {}
+
+    @classmethod
+    def static_modules(cls) -> set:
+        """The modules compiled into the httpd under test, by the name
+        LoadModule and add_modules() use: "so", "http2", "mpm_event"..."""
+        env = HttpdTestEnv()
+        httpd_bin = os.path.join(env.bin_dir, 'httpd')
+        if httpd_bin not in cls._static_modules:
+            names = set()
+            try:
+                p = subprocess.run([httpd_bin, '-l'], capture_output=True, text=True)
+                out = p.stdout
+            except OSError:
+                out = ""
+            for line in out.splitlines():
+                m = re.match(r'^\s+(mod_|mpm_)?(.+)\.c$', line)
+                if m and m.group(1) == 'mod_':
+                    names.add(m.group(2))
+                elif m and m.group(1) == 'mpm_':                 # mpm_winnt.c
+                    names.add(f"mpm_{m.group(2)}")
+                elif m and m.group(2) in ('event', 'worker', 'prefork', 'motorz'):
+                    names.add(f"mpm_{m.group(2)}")
+            cls._static_modules[httpd_bin] = names
+        return cls._static_modules[httpd_bin]
+
     @classmethod
     def has_shared_module(cls, name):
+        """Whether mod_<name> is there to be loaded: built as a DSO, or
+        compiled into httpd, when there is nothing to load."""
         if cls.LIBEXEC_DIR is None:
             env = HttpdTestEnv()  # will initialized it
         path = os.path.join(cls.LIBEXEC_DIR, f"mod_{name}.so")
-        return os.path.isfile(path)
+        return os.path.isfile(path) or name in cls.static_modules()
 
     @classmethod
     def has_mod_ssl(cls):
@@ -429,11 +451,17 @@ class HttpdTestEnv:
         self._test_modules_dir = self.config.get('global', 'pre_built_test_binaries_dir',
                                                  fallback=None)
 
-        self._http_port = int(self.config.get('test', 'http_port'))
-        self._http_port2 = int(self.config.get('test', 'http_port2'))
-        self._https_port = int(self.config.get('test', 'https_port'))
-        self._proxy_port = int(self.config.get('test', 'proxy_port'))
-        self._ws_port = int(self.config.get('test', 'ws_port'))
+        ports = resolve_ports(
+            {key: int(self.config.get('test', key)) for key in PORT_KEYS},
+            base_port=(pytestconfig.getoption('--base-port', default=None)
+                       if pytestconfig is not None else None),
+            fixed=(bool(pytestconfig.getoption('--fixed-ports', default=False))
+                   if pytestconfig is not None else True))
+        self._http_port = ports['http_port']
+        self._http_port2 = ports['http_port2']
+        self._https_port = ports['https_port']
+        self._proxy_port = ports['proxy_port']
+        self._ws_port = ports['ws_port']
         self._http_tld = self.config.get('test', 'http_tld')
         self._test_dir = self.config.get('test', 'test_dir')
 
@@ -453,9 +481,9 @@ class HttpdTestEnv:
         error_log_sep = "." if self.isWindows else "_"
         self._error_log = HttpdErrorLog(os.path.join(self._server_logs_dir, f"error{error_log_sep}log"))
         self._apachectl_stderr = None
-        self._httpd_proc = None
+        self._instance = None
 
-        self._apply_cli_overrides(pytestconfig)
+        self._apply_target()
 
         self._dso_modules = self.config.get('httpd', 'dso_modules').split(' ')
         self._mpm_modules = self.config.get('httpd', 'mpm_modules').split(' ')
@@ -495,61 +523,50 @@ class HttpdTestEnv:
         self._nghttp_version = None
         self._current_test = None
 
-    def _apply_cli_overrides(self, pytestconfig):
-        """Override config.ini values with --httpd / --conf CLI options.
+    def _apply_target(self):
+        """Point this environment at the httpd of the session.
 
-        config.ini is generated by the build system from config.ini.in and
-        is never rewritten.  When --httpd or --conf are passed on the
-        command line the corresponding variables are overridden in memory.
+        config.ini, generated by the build system from config.ini.in, names
+        the build of this tree. When another one is tested (--apxs, --httpd),
+        pyhttpd.build.resolve_build() found it before collection, and the
+        server, its version and its modules come from there, whether or not
+        the environment was created with a pytest config. Ports, clients and
+        directories stay as config.ini has them.
         """
-        if pytestconfig is None:
+        from .build import current
+        target = current()
+        if target is None or target.source == "config.ini":
             return
-        httpd_path = pytestconfig.getoption("--httpd", default=None)
-        conf_path = pytestconfig.getoption("--conf", default=None)
-        if httpd_path:
-            httpd_path = os.path.abspath(httpd_path)
-            prefix = os.path.dirname(os.path.dirname(httpd_path))
-            self._bin_dir = os.path.dirname(httpd_path)
-            self._prefix = prefix
-            self._libexec_dir = os.path.join(prefix, "modules")
-            HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir
-            if self.isWindows:
-                self._apachectl = httpd_path
-            else:
-                ctl = os.path.join(self._bin_dir, "apachectl")
-                self._apachectl = ctl if os.path.isfile(ctl) else httpd_path
-            self._apxs = os.path.join(self._bin_dir, "apxs")
-            try:
-                p = subprocess.run([httpd_path, "-v"],
-                                   capture_output=True, text=True)
-                m = re.search(r"Apache/(\S+)", p.stdout)
+        httpd_path = os.path.abspath(str(target.httpd))
+        self._bin_dir = os.path.dirname(httpd_path)
+        self._prefix = (str(target.prefix) if target.prefix is not None
+                        else os.path.dirname(self._bin_dir))
+        self._libexec_dir = str(target.libexecdir)
+        HttpdTestEnv.LIBEXEC_DIR = self._libexec_dir
+        if self.isWindows:
+            self._apachectl = httpd_path
+        else:
+            ctl = os.path.join(self._bin_dir, "apachectl")
+            self._apachectl = ctl if os.path.isfile(ctl) else httpd_path
+        self._apxs = (str(target.apxs) if target.apxs is not None
+                      else os.path.join(self._bin_dir, "apxs"))
+        self._httpd_ver = target.version_str
+        dso = []
+        mpm = []
+        if target.apxs is None and target.inherited_conf is not None:
+            # --httpd with --conf, as on Windows: the modules the conf loads
+            for d in target.load_directives:
+                name = d.symbol[:-len("_module")] if d.symbol.endswith("_module") \
+                    else d.symbol
+                (mpm if name.startswith("mpm_") else dso).append(name)
+        elif os.path.isdir(self._libexec_dir):
+            # the shared modules that were built
+            for so in sorted(os.listdir(self._libexec_dir)):
+                m = re.match(r'^mod_(.+)\.so$', so)
                 if m:
-                    self._httpd_ver = m.group(1)
-            except Exception:
-                pass
-        if conf_path:
-            conf_path = os.path.abspath(conf_path)
-            dso = []
-            mpm = []
-            try:
-                with open(conf_path) as f:
-                    for line in f:
-                        line = line.strip()
-                        if line.startswith("#"):
-                            continue
-                        m = re.match(r"LoadModule\s+(\S+)_module", line)
-                        if m:
-                            name = m.group(1)
-                            if name.startswith("mpm_"):
-                                mpm.append(name)
-                            else:
-                                dso.append(name)
-            except Exception:
-                pass
-            if dso:
-                self.config.set('httpd', 'dso_modules', ' '.join(dso))
-            if mpm:
-                self.config.set('httpd', 'mpm_modules', ' '.join(mpm))
+                    (mpm if m.group(1).startswith("mpm_") else dso).append(m.group(1))
+        self.config.set('httpd', 'dso_modules', ' '.join(dso))
+        self.config.set('httpd', 'mpm_modules', ' '.join(mpm))
 
     def add_httpd_conf(self, lines: List[str]):
         self._httpd_base_conf.extend(lines)
@@ -1094,7 +1111,7 @@ class HttpdTestEnv:
             p for p in os.environ.get('PATH', '').split(os.pathsep)
             if '/shims' not in p
         ]
-        venv_bin = os.path.join(self._our_dir, '.venv', 'bin')
+        venv_bin = os.path.join(os.path.dirname(self._our_dir), '.venv', 'bin')
         if os.path.isdir(venv_bin) and venv_bin not in parts:
             parts.insert(0, venv_bin)
         env = os.environ.copy()
@@ -1102,161 +1119,98 @@ class HttpdTestEnv:
         env.update(self._httpd_env)
         return env
 
+    @property
+    def instance(self) -> HttpdInstance:
+        """The httpd of this environment; see pyhttpd.instance."""
+        if self._instance is None:
+            self._instance = HttpdInstance(
+                os.path.join(self._bin_dir, 'httpd'),
+                ["-d", self._server_dir,
+                 "-f", os.path.join(self._server_conf_dir, 'httpd.conf')],
+                ports=[self._http_port],
+                error_log=self._error_log,
+                pid_files=[os.path.join(d, 'httpd.pid')
+                           for d in (self._server_logs_dir, self._server_dir)],
+                env=self._server_env(),
+                stderr_file=os.path.join(self._server_dir, 'start.stderr'))
+        return self._instance
+
+    def _server_env(self) -> dict:
+        env = self._clean_path_env()
+        # what apachectl did: the messages of the server in a known language
+        env.setdefault('LANG', 'C')
+        return env
+
     def _run_apachectl(self, cmd) -> ExecResult:
+        """Run "httpd -k <cmd>" and return the result. Only for tests that
+        look at what httpd itself reports; use apache_restart() and friends
+        to control the server."""
         conf_file = 'stop.conf' if cmd == 'stop' else 'httpd.conf'
-        args = [self._apachectl,
+        args = [os.path.join(self._bin_dir, 'httpd'),
                 "-d", self.server_dir,
                 "-f", os.path.join(self._server_dir, 'conf', conf_file),
                 "-k", cmd]
-        r = self.run(args, env=self._clean_path_env())
+        r = self.run(args, env=self._server_env())
         self._apachectl_stderr = r.stderr
         if r.exit_code != 0:
             log.warning(f"failed: {r}")
         return r
 
-    def _win_httpd_args(self):
-        httpd = os.path.join(self._bin_dir, 'httpd')
-        return [httpd,
-                "-d", self.server_dir,
-                "-f", os.path.join(self.server_dir, 'conf', 'httpd.conf'),
-                "-DFOREGROUND"]
-
-    def _win_start(self) -> int:
-        self._win_stop()
-        args = self._win_httpd_args()
-        log.debug(f"starting httpd: {args}")
-        self._httpd_proc = subprocess.Popen(args, env=self._clean_path_env())
-        time.sleep(1)
-        rc = self._httpd_proc.poll()
-        if rc is not None:
-            log.error(f"httpd exited immediately with code {rc}")
-            self._httpd_proc = None
-            return -1
-        timeout = timedelta(seconds=30)
-        if self.is_live(self._http_base, timeout=timeout):
-            return 0
-        log.error(f"httpd not responding at {self._http_base}")
-        rc = self._httpd_proc.poll()
-        if rc is not None:
-            log.error(f"httpd process died with code {rc}")
-        return -1
-
-    def _win_stop(self) -> int:
-        if self._httpd_proc is not None:
-            import ctypes
-            log.debug("stopping httpd (signal shutdown event)")
-            event_name = f"ap{self._httpd_proc.pid}_shutdown"
-            handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
-            if handle:
-                ctypes.windll.kernel32.SetEvent(handle)
-                ctypes.windll.kernel32.CloseHandle(handle)
-            else:
-                log.warning(f"cannot open {event_name}, falling back to terminate")
-                self._httpd_proc.terminate()
-            try:
-                self._httpd_proc.wait(timeout=30)
-            except subprocess.TimeoutExpired:
-                self._httpd_proc.kill()
-                self._httpd_proc.wait(timeout=5)
-            self._httpd_proc = None
-        if not self.is_dead(self._http_base, timeout=timedelta(seconds=60)):
-            log.warning("port still in use after stop")
-        return 0
-
-    def _win_signal_restart(self, cmd: str) -> int:
-        import ctypes
-        if self._httpd_proc is None:
-            log.error("no httpd process to signal")
-            return -1
-        event_name = f"ap{self._httpd_proc.pid}_restart"
-        log_pos = self.httpd_error_log.current_pos()
-        handle = ctypes.windll.kernel32.OpenEventW(0x0002, False, event_name)
-        if not handle:
-            log.error(f"cannot open event {event_name}")
-            return -1
-        ctypes.windll.kernel32.SetEvent(handle)
-        ctypes.windll.kernel32.CloseHandle(handle)
-        timeout = timedelta(seconds=10)
-        if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
-                                             timeout=timeout.total_seconds()):
-            log.warning(f"no restart logged after '{cmd}' within {timeout}")
-            return -1
-        return 0 if self.is_live(self._http_base, timeout=timeout) else -1
-
-    # Logged by every MPM once the new generation is serving.
-    RE_RESUMING = re.compile(r'.* configured -- resuming normal operations$')
-
-    def _apache_signal_restart(self, cmd: str) -> int:
-        """Have the running parent restart, gracefully or not, and wait
-        for the new generation to be serving.  "httpd -k restart" only
-        sends the signal; a request answered straight afterwards may have
-        been served by the old generation, with the old config, and about
-        to be killed."""
-        log_pos = self.httpd_error_log.current_pos()
-        r = self._run_apachectl(cmd)
-        if r.exit_code != 0:
-            return r.exit_code
-        timeout = timedelta(seconds=10)
-        if not self.httpd_error_log.wait_for(self.RE_RESUMING, log_pos,
-                                             timeout=timeout.total_seconds()):
-            log.warning(f"no restart logged after '{cmd}' within {timeout}")
-            return -1
-        return 0 if self.is_live(self._http_base, timeout=timeout) else -1
+    def _start_instance(self) -> int:
+        """Start the server, and wait for it to answer. 0 if it does."""
+        self._apachectl_stderr = None
+        # tests change the environment of the server between starts
+        self.instance.env = self._server_env()
+        try:
+            self.instance.start()
+        except HttpdStartError as e:
+            self._apachectl_stderr = e.stderr
+            log.debug(f"httpd did not start: {e}")
+            return e.returncode if e.returncode else -1
+        self._apachectl_stderr = self.instance.stderr_text()
+        return 0 if self.is_live(self._http_base, timeout=timedelta(seconds=10)) else -1
 
     def apache_reload(self):
-        if self.isWindows:
-            return self._win_signal_restart("graceful")
-        return self._apache_signal_restart("graceful")
+        return 0 if self.instance.restart(graceful=True) else -1
 
     def apache_restart(self):
-        if self.isWindows:
-            self._win_stop()
-            return self._win_start()
         self.apache_stop()
-        r = self._run_apachectl("start")
-        if r.exit_code == 0:
-            timeout = timedelta(seconds=10)
-            return 0 if self.is_live(self._http_base, timeout=timeout) else -1
-        return r.exit_code
+        return self._start_instance()
 
     def apache_stop(self):
-        if self.isWindows:
-            self._win_stop()
-            timeout = timedelta(seconds=10)
-            return 0 if self.is_dead(self._http_base, timeout=timeout) else -1
-        r = self._run_apachectl("stop")
-        if r.exit_code == 0:
-            timeout = timedelta(seconds=10)
-            return 0 if self.is_dead(self._http_base, timeout=timeout) else -1
-        return r
+        return 0 if self.instance.stop() else -1
 
     def apache_graceful_stop(self):
         log.debug("stop apache")
-        if self.isWindows:
-            self._win_stop()
-            return 0 if self.is_dead() else -1
-        self._run_apachectl("graceful-stop")
-        return 0 if self.is_dead() else -1
+        return 0 if self.instance.graceful_stop() else -1
 
     def apache_fail(self):
+        """Start the server with a configuration it has to reject. 0 if it
+        did: httpd exited with an error before serving. -1 if it started
+        after all, or neither started nor exited in time (that is a stuck
+        server, not a rejected configuration). The server is stopped either
+        way, and apachectl_stderr has what it reported.
+        """
         log.debug("expect apache fail")
-        if self.isWindows:
-            self._win_stop()
-            rv = self._win_start()
-            return 0 if rv != 0 else (0 if self.is_dead() else -1)
-        self._run_apachectl("stop")
-        rv = self._run_apachectl("start")
-        if rv == 0:
-            rv = 0 if self.is_dead() else -1
-        else:
-            rv = 0
-        return rv
+        self.apache_stop()
+        self._apachectl_stderr = None
+        self.instance.env = self._server_env()
+        try:
+            self.instance.start()
+        except HttpdStartError as e:
+            self._apachectl_stderr = e.stderr
+            if e.returncode > 0:
+                return 0
+            log.error(f"httpd neither started nor failed: {e}")
+            return -1
+        self._apachectl_stderr = self.instance.stderr_text()
+        log.error("httpd started where it was expected to fail")
+        self.instance.stop()
+        return -1
 
     def apache_hard_restart(self) -> int:
         """Restart without the "graceful" flag, so the MPM starts over."""
-        if self.isWindows:
-            return self._win_signal_restart("restart")
-        return self._apache_signal_restart("restart")
+        return 0 if self.instance.restart(graceful=False) else -1
 
     def read_pid_file(self, name: str = 'httpd.pid') -> Optional[int]:
         # Where PidFile lands depends on how the httpd under test resolves

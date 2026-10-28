@@ -7,7 +7,8 @@ import pytest
 from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
-pytestmark = not_backported("r1938070, r1938258-r1938260", "mod_mime_magic fixes")
+# on the tests that fail without it (the others pass there as well)
+NOT_BACKPORTED = not_backported("r1938070, r1938258-r1938260", "mod_mime_magic fixes")
 
 
 class TestMimeMagic:
@@ -63,6 +64,7 @@ class TestMimeMagic:
         assert env.apache_restart() == 0
 
     # type and encoding from a magic file entry
+    @NOT_BACKPORTED
     def test_metadata_001_01_softmagic(self, env):
         url = env.mkurl("http", "test1", "/magic/softmagic")
         r = env.curl_get(url)
@@ -81,6 +83,7 @@ class TestMimeMagic:
         assert "content-encoding" not in r.response["header"]
 
     # type from the HTML token, escape sequences in the content
+    @NOT_BACKPORTED
     def test_metadata_001_03_html_escapes(self, env):
         url = env.mkurl("http", "test1", "/magic/html-escape")
         r = env.curl_get(url)
@@ -91,6 +94,7 @@ class TestMimeMagic:
 
     # type from a magic file entry followed by a descriptive note: the
     # type must end at the whitespace, and the note is not an encoding
+    @NOT_BACKPORTED
     def test_metadata_001_04_softmagic_note(self, env):
         url = env.mkurl("http", "test1", "/magic/softnote")
         r = env.curl_get(url)
@@ -111,6 +115,7 @@ class TestMimeMagic:
     @pytest.mark.skipif(sys.platform == "win32",
                         reason="magic value needs a 64-bit long")
     @pytest.mark.parametrize("name", ["belong", "ulelong"])
+    @NOT_BACKPORTED
     def test_metadata_001_05_long_high_bit(self, env, name):
         url = env.mkurl("http", "test1", f"/magic/{name}")
         r = env.curl_get(url)

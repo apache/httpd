@@ -24,10 +24,12 @@ class TestLimitXMLRequestBody:
         assert r.exit_code == 0, f"{r.stderr}"
 
     # only a whole non-negative decimal number is a valid limit
+    # (without the change, only "-1" was rejected)
     @pytest.mark.parametrize("value", [
-        "abc123", "123abc", "123foo456", "-1", "1.5", "0x10", "+", "-",
-    ])
-    @not_backported("r1939121", "rejecting invalid LimitXMLRequestBody values")
+        pytest.param(v, marks=not_backported(
+            "r1939121", "rejecting invalid LimitXMLRequestBody values"))
+        for v in ["abc123", "123abc", "123foo456", "1.5", "0x10", "+", "-"]
+    ] + ["-1"])
     def test_core_010_002(self, env, value):
         r = self.check_config(env, value)
         assert r.exit_code != 0, f"{value} was accepted"
@@ -38,7 +40,8 @@ class TestLimitXMLRequestBody:
         "9223372036854775807", "9223372036854775808", "9" * 40,
     ])
     @not_backported("r1939121", "rejecting LimitXMLRequestBody values beyond a "
-                    "32-bit long, which atol() truncates on Windows")
+                    "32-bit long, which atol() truncates on Windows",
+                    platform="win32")
     def test_core_010_003(self, env, value):
         r = self.check_config(env, value)
         assert r.exit_code != 0, f"{value} was accepted"

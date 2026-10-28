@@ -40,7 +40,6 @@ def _request(env, method, path):
     return r.response["status"], {m.strip() for m in allow.split(',') if m.strip()}
 
 
-@not_backported("r1939146", "DAV OPTIONS Allow honouring TraceEnable")
 class TestOptionsTraceDisabled:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -49,6 +48,7 @@ class TestOptionsTraceDisabled:
 
     # TRACE is not offered while the server refuses it
     @pytest.mark.parametrize("path", ["/dav/file.txt", "/dav/col/"])
+    @not_backported("r1939146", "DAV OPTIONS Allow honouring TraceEnable")
     def test_dav_002_001(self, env, path):
         status, allow = _request(env, "OPTIONS", path)
         assert status == 200

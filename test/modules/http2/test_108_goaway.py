@@ -2,6 +2,7 @@
 # mod-h2 test suite
 # check the error code of GOAWAY frames sent by the server
 #
+import os
 import socket
 import ssl
 import struct
@@ -82,8 +83,9 @@ class TestGoaway:
 
     # An idle connection that runs into the server timeout is closed
     # gracefully. The GOAWAY must carry NO_ERROR and not the APR status
-    # of the timeout.
-    @not_backported("r1939156", "HTTP/2 error codes in GOAWAY")
+    # of the timeout. (Without the change only the worker MPM sends that.)
+    @(not_backported("r1939156", "HTTP/2 error codes in GOAWAY")
+      if os.environ.get("MPM") == "worker" else pytest.mark.usefixtures())
     def test_h2_108_01_idle_timeout(self, env):
         error = self._goaway_error(env, self._tls_context())
         assert error == self.ERR_NO_ERROR, f"GOAWAY error code {error}"

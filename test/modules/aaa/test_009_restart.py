@@ -50,7 +50,8 @@ ONETIME_REUSED = "AH01779"
 
 _WIN32 = sys.platform == "win32"
 
-pytestmark = not_backported("r1937711", "random client ids after a restart")
+# on the tests that fail without it (the others pass there as well)
+NOT_BACKPORTED = not_backported("r1937711", "random client ids after a restart")
 
 
 class TestDigestRestart:
@@ -119,6 +120,7 @@ class TestDigestRestart:
     @pytest.mark.xfail(sys.platform == "win32", reason=
                         "mpm_winnt child is a separate process, "
                         "ap_retained_data does not survive restart")
+    @NOT_BACKPORTED
     def test_digest_091_returning_client_is_stale_even_if_its_id_was_reused(self, env):
         # Same property, but now the id space has caught up: after the restart
         # a new client is handed the id the returning client still quotes.
@@ -154,6 +156,7 @@ class TestDigestRestart:
     @pytest.mark.xfail(sys.platform == "win32", reason=
                         "mpm_winnt child is a separate process, "
                         "ap_retained_data does not survive restart")
+    @NOT_BACKPORTED
     def test_digest_092_onetime_nonce_from_before_a_restart_is_not_accepted(self, env):
         # One-time nonces are ordered by a counter which restarts at 0 with
         # the segment, while the nonce itself stays verifiable. A client
@@ -192,6 +195,7 @@ class TestDigestRestart:
     @pytest.mark.xfail(sys.platform == "win32", reason=
                         "mpm_winnt child is a separate process, "
                         "ap_retained_data does not survive restart")
+    @NOT_BACKPORTED
     def test_digest_093_onetime_request_cannot_be_replayed_across_a_restart(self, env):
         # The severity case. A one-time nonce is single-use because the server
         # remembers the last nonce each client used -- and that memory does
