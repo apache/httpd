@@ -415,7 +415,7 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                          apr_shm_baseaddr_get(client_shm),
                          p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10676)
                      "failed to attach to rmm in child");
         return;
     }
@@ -424,7 +424,7 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                                       apr_global_mutex_lockfile(client_lock),
                                       p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO()
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10677)
                      "failed to initialize lock (client_lock) in child");
     }
 }
@@ -1442,7 +1442,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     resp->nonce[NONCE_TIME_LEN] = tmp;
 
     if (len != sizeof(nonce_time.arr)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10678)
                       "invalid nonce %s received - time is not base64",
                       resp->nonce);
         return note_digest_auth_failure(r, conf, resp, 1);
@@ -1508,7 +1508,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
         break;
 
     case NONCE_NOT_OWNER:
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO()
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10679)
                       "user %s: client %" APR_UINT64_T_FMT " belongs to "
                       "another user - sending new nonce and opaque",
                       r->user, resp->opaque_num);
