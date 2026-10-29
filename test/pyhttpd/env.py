@@ -35,6 +35,9 @@ class Dummy:
 
 class HttpdTestSetup:
 
+    # modules which exist only on Unix
+    UNIX_ONLY_MODULES = ("unixd", "suexec")
+
     # the modules we want to load
     MODULES = [
         "log_config",
@@ -75,8 +78,7 @@ class HttpdTestSetup:
     def __init__(self, env: 'HttpdTestEnv'):
         self.env = env
         self._source_dirs = [os.path.dirname(inspect.getfile(HttpdTestSetup))]
-        self._modules = [m for m in HttpdTestSetup.MODULES
-                         if not (m == "unixd" and env.isWindows)]
+        self._modules = HttpdTestSetup.MODULES.copy()
         self._optional_modules = []
 
     def add_source_dir(self, source_dir):
@@ -171,6 +173,8 @@ class HttpdTestSetup:
                 if match:
                     m = match.group(1)
                 if m in loaded:
+                    continue
+                if self.env.isWindows and m in HttpdTestSetup.UNIX_ONLY_MODULES:
                     continue
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
                 if m in builtin_modules:
