@@ -6,6 +6,7 @@ import os
 import socket
 import ssl
 import struct
+import sys
 
 import pytest
 
@@ -83,9 +84,11 @@ class TestGoaway:
 
     # An idle connection that runs into the server timeout is closed
     # gracefully. The GOAWAY must carry NO_ERROR and not the APR status
-    # of the timeout. (Without the change only the worker MPM sends that.)
+    # of the timeout. (Without the change only the worker MPM and mpm_winnt
+    # send that.)
     @(not_backported("r1939156", "HTTP/2 error codes in GOAWAY")
-      if os.environ.get("MPM") == "worker" else pytest.mark.usefixtures())
+      if os.environ.get("MPM") == "worker" or sys.platform == "win32"
+      else pytest.mark.usefixtures())
     def test_h2_108_01_idle_timeout(self, env):
         error = self._goaway_error(env, self._tls_context())
         assert error == self.ERR_NO_ERROR, f"GOAWAY error code {error}"

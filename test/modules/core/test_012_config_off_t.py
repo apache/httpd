@@ -75,7 +75,7 @@ class TestConfigOffT:
         ["-1", "9223372036854775808", "9" * 40, "8589934592g"],
         lambda d, v: (d in UNCHECKED_TAIL and v.endswith("g")) or d in NO_RANGE_CHECK,
         # atol() into a long, which is 32 bits on Windows
-        lambda d, v: d == "LimitXMLRequestBody" and v == "9223372036854775808"))
+        lambda d, v: d == "LimitXMLRequestBody" and v in ("9223372036854775808", "9" * 40)))
     def test_core_012_003(self, env, directive, value):
         r = self.check_config(env, directive, value)
         assert r.exit_code != 0, f"{value} was accepted"
