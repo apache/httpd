@@ -75,7 +75,8 @@ class HttpdTestSetup:
     def __init__(self, env: 'HttpdTestEnv'):
         self.env = env
         self._source_dirs = [os.path.dirname(inspect.getfile(HttpdTestSetup))]
-        self._modules = HttpdTestSetup.MODULES.copy()
+        self._modules = [m for m in HttpdTestSetup.MODULES
+                         if not (m == "unixd" and env.isWindows)]
         self._optional_modules = []
 
     def add_source_dir(self, source_dir):
