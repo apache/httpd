@@ -16,6 +16,8 @@ DIRECTIVES = [
 ]
 
 OFF_T = not_backported("r1939129, r1939163", "strict size parsing for off_t directives")
+OFF_T_WIN = not_backported("r1939129, r1939163", "strict size parsing for off_t directives",
+                           platform="win32")
 
 # Without the change (2.4.x), these directives take the number at the start of
 # a value and ignore the rest, and these also take a value without one;
@@ -30,10 +32,11 @@ NO_DIGITS_OK += [d for d in DIRECTIVES if d.startswith("Cache")]
 NO_RANGE_CHECK = ["ScriptLogLength", "ScriptLogBuffer"]
 
 
-def cases(values, lacks):
+def cases(values, lacks, lacks_win=lambda d, v: False):
     """Every (directive, value), marked where a server without the change
-    gets it wrong: lacks(directive, value)."""
-    return [pytest.param(d, v, marks=OFF_T if lacks(d, v) else ())
+    gets it wrong: lacks(directive, value), or only on Windows: lacks_win."""
+    return [pytest.param(d, v, marks=OFF_T if lacks(d, v)
+                         else OFF_T_WIN if lacks_win(d, v) else ())
             for v in values for d in DIRECTIVES]
 
 
@@ -70,7 +73,9 @@ class TestConfigOffT:
     # a number the directive does not accept, or too large to be stored
     @pytest.mark.parametrize("directive, value", cases(
         ["-1", "9223372036854775808", "9" * 40, "8589934592g"],
-        lambda d, v: (d in UNCHECKED_TAIL and v.endswith("g")) or d in NO_RANGE_CHECK))
+        lambda d, v: (d in UNCHECKED_TAIL and v.endswith("g")) or d in NO_RANGE_CHECK,
+        # atol() into a long, which is 32 bits on Windows
+        lambda d, v: d == "LimitXMLRequestBody" and v == "9223372036854775808"))
     def test_core_012_003(self, env, directive, value):
         r = self.check_config(env, directive, value)
         assert r.exit_code != 0, f"{value} was accepted"
