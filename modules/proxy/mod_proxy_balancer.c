@@ -1950,6 +1950,7 @@ static int balancer_handler(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(01189)
                           "%s: Lock failed for balancer_handler",
                           balancer->s->name);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
 #endif
         ap_proxy_sync_balancer(balancer, r->server, conf);

@@ -1,0 +1,2 @@
+  *) mod_proxy_balancer: Do not sync a balancer in the balancer manager, or
+     unlock it, when grabbing its lock failed. PR 70293
