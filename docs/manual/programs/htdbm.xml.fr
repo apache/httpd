@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934521:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -158,7 +158,7 @@ passe</title>
 
     <dt><code>-m</code></dt>
     <dd>Utilise un hashage MD5 pour les mots de passe. Sous Windows
-    et Netware, c'est l'option par défaut..</dd>
+    et NetWare, c'est l'option par défaut..</dd>
 
     <dt><code>-B</code></dt>
     <dd>Utilise le hashage bcrypt pour les mots de
@@ -176,9 +176,9 @@ passe</title>
     <dt><code>-d</code></dt>
     <dd>Utilise un hashage <code>crypt()</code> pour les mots de
     passe. C'est l'option par défaut sur toutes les plates-formes, sauf
-    Windows et Netware. Bien que <program>htdbm</program> supporte ce
+    Windows et NetWare. Bien que <program>htdbm</program> supporte ce
     chiffrement sur toutes les plates-formes, il n'est pas supporté par
-    le serveur <program>httpd</program> sous Windows et Netware. Cet
+    le serveur <program>httpd</program> sous Windows et NetWare. Cet
     algorythme est considéré comme <strong>non sûr</strong> selon les
     standards actuels.</dd>
 
@@ -193,7 +193,7 @@ passe</title>
     <dd>Utilise des mots de passe au format texte en clair. Bien que
     <code>htdbm</code> supporte ce format sur toutes les plates-formes,
     le démon <program>httpd</program> n'accepte les mots de passe au
-    format texte en clair que sous Windows et Netware.</dd>
+    format texte en clair que sous Windows et NetWare.</dd>
 
     <dt><code>-l</code></dt>
     <dd>Affiche chaque nom d'utilisateur de la base de données
