@@ -3,8 +3,6 @@ import time
 
 import pytest
 
-from pyhttpd.backport import not_backported
-
 from pyhttpd.depends import needs_dependency
 
 from .env import (NOTIFY_RELOAD_VERSION, TransientService, error_log_since,
@@ -22,7 +20,6 @@ pytestmark = [
 ]
 
 
-@not_backported("r1937596-r1937647", "mod_systemd watchdog, notify and socket activation")
 class TestNotifyReload:
     """httpd as a Type=notify-reload unit.
 
