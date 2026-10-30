@@ -53,33 +53,33 @@
         SSLPassPhraseDialog  builtin
     </IfDefine>
 
-    <IfDefine TEST_SSL_DES3_KEY>
-        SSLCertificateFile @SSLCA@/asf/certs/server_des3.crt
-
-        SSLCertificateKeyFile @SSLCA@/asf/keys/server_des3.pem
-
-#        SSLCertificateFile @SSLCA@/asf/certs/server_des3_dsa.crt
-
-#        SSLCertificateKeyFile @SSLCA@/asf/keys/server_des3_dsa.pem
+    <IfDefine TEST_SSL_AES256_KEY>
+        <IfDefine TEST_SSL_ECDSA_CERT>
+            SSLCertificateFile @SSLCA@/asf/certs/server_aes256_ecdsa.crt
+            SSLCertificateKeyFile @SSLCA@/asf/keys/server_aes256_ecdsa.pem
+        </IfDefine>
+        <IfDefine !TEST_SSL_ECDSA_CERT>
+            SSLCertificateFile @SSLCA@/asf/certs/server_aes256.crt
+            SSLCertificateKeyFile @SSLCA@/asf/keys/server_aes256.pem
+        </IfDefine>
     </IfDefine>
     #else the default is an unencrypted key
-    <IfDefine !TEST_SSL_DES3_KEY>
-        SSLCertificateFile @SSLCA@/asf/certs/server.crt
-
-        SSLCertificateKeyFile @SSLCA@/asf/keys/server.pem
-
-#        SSLCertificateFile @SSLCA@/asf/certs/server_dsa.crt
-
-#        SSLCertificateKeyFile @SSLCA@/asf/keys/server_dsa.pem
+    <IfDefine !TEST_SSL_AES256_KEY>
+        <IfDefine TEST_SSL_ECDSA_CERT>
+            SSLCertificateFile @SSLCA@/asf/certs/server_ecdsa.crt
+            SSLCertificateKeyFile @SSLCA@/asf/keys/server_ecdsa.pem
+        </IfDefine>
+        <IfDefine !TEST_SSL_ECDSA_CERT>
+            SSLCertificateFile @SSLCA@/asf/certs/server.crt
+            SSLCertificateKeyFile @SSLCA@/asf/keys/server.pem
+        </IfDefine>
     </IfDefine>
 
     #SSLCertificateChainFile @SSLCA@/asf/certs/cachain.crt
-
     SSLCACertificateFile @SSLCA@/asf/certs/ca.crt
-
     SSLCACertificatePath @ServerRoot@/conf/ssl
-
     SSLCARevocationFile @SSLCA@/asf/crl/ca-bundle.crl
+
     <IfVersion >= 2.3.15>
         SSLCARevocationCheck chain
     </IfVersion>

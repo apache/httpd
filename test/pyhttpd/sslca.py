@@ -8,8 +8,8 @@ the file names of the Perl framework, so that the ``t/conf/ssl/*.conf.in``
 files work unchanged:
 
   certs/ca.crt, keys/ca.pem               the CA
-  certs/<name>.crt, keys/<name>.pem       server, server2, server_des3,
-                                          server2_des3 (+ _dsa variants),
+  certs/<name>.crt, keys/<name>.pem       server, server2, server_aes256,
+                                          server2_aes256 (+ _ecdsa variants),
                                           client_ok, client_snakeoil,
                                           client_colon, client_revoked
   proxy/<client>.pem                      certificate and key of each client
@@ -22,9 +22,9 @@ Differences from the Perl original:
 * RSA keys are 2048 bit, digest sha256 (what modern openssl defaults to).
 * The CA certificate carries keyCertSign and cRLSign: OpenSSL 3 refuses to
   verify a chain through a CA without them.
-* DSA server variants (``server_dsa`` etc.) are generated too, for config files
+* DSA server variants (``server_ecdsa`` etc.) are generated too, for config files
   that may reference them.
-* Keys are PKCS#8 (openssl 3 writes that too); the _des3 ones and the CA key
+* Keys are PKCS#8 (openssl 3 writes that too); the _aes256 ones and the CA key
   are encrypted with the passphrase ``httpd``.
 """
 
@@ -35,7 +35,7 @@ from typing import Dict, List, Optional, Tuple
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import dsa, rsa
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.x509.name import _ASN1Type
 from cryptography.x509.oid import (ExtendedKeyUsageOID, NameOID,
                                    ObjectIdentifier)
@@ -67,15 +67,15 @@ CERT_DN: Dict[str, Dict[str, str]] = {
     "client_revoked": {},
     "server": {"CN": "localhost", "OU": "httpd-test/rsa-test"},
     "server2": {"CN": "localhost", "OU": "httpd-test/rsa-test-2"},
-    "server_des3": {"CN": "localhost", "OU": "httpd-test/rsa-des3-test"},
-    "server2_des3": {"CN": "localhost", "OU": "httpd-test/rsa-des3-test-2"},
+    "server_aes256": {"CN": "localhost", "OU": "httpd-test/rsa-aes256-test"},
+    "server2_aes256": {"CN": "localhost", "OU": "httpd-test/rsa-aes256-test-2"},
 }
 # DSA variants of every server cert (Perl derives these dynamically).
 for _k in list(CERT_DN):
     if _k.startswith("server"):
-        _dsa = dict(CERT_DN[_k])
-        _dsa["OU"] = _dsa.get("OU", "").replace("rsa", "dsa")
-        CERT_DN[f"{_k}_dsa"] = _dsa
+        _ecdsa = dict(CERT_DN[_k])
+        _ecdsa["OU"] = _ecdsa.get("OU", "").replace("rsa", "ecdsa")
+        CERT_DN[f"{_k}_ecdsa"] = _ecdsa
 
 # DN attributes in the order "openssl req" and the policy of "openssl ca" put them
 _DN_ATTRS: List[Tuple[str, ObjectIdentifier]] = [
@@ -140,7 +140,6 @@ class SSLCA:
         self._index: List[str] = []
         self._ca_key = None
         self._ca_cert: Optional[x509.Certificate] = None
-        self._dsa_params = None
 
     # -- helpers ----------------------------------------------------------
 
@@ -165,7 +164,7 @@ class SSLCA:
 
     @staticmethod
     def _key_pem(key, encrypted: bool) -> bytes:
-        enc = (serialization.BestAvailableEncryption(PASS.encode())
+        enc = (serialization.scrypt.AES256(PASS.encode())
                if encrypted else serialization.NoEncryption())
         return key.private_bytes(serialization.Encoding.PEM,
                                  serialization.PrivateFormat.PKCS8, enc)
@@ -207,13 +206,11 @@ class SSLCA:
         self._write("certs/ca.crt", self._ca_cert.public_bytes(serialization.Encoding.PEM))
 
     def _new_key(self, name: str):
-        if "dsa" in name:
-            if self._dsa_params is None:
-                self._dsa_params = dsa.generate_parameters(key_size=2048)
-            key = self._dsa_params.generate_private_key()
+        if "ecdsa" in name:
+            key = ec.generate_private_key(ec.SECP256R1())
         else:
             key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-        self._write(f"keys/{name}.pem", self._key_pem(key, "_des3" in name))
+        self._write(f"keys/{name}.pem", self._key_pem(key, "_aes256" in name))
         return key
 
     def _extensions(self, name: str, dn: Dict[str, str], pub) -> List[Tuple[x509.ExtensionType, bool]]:
