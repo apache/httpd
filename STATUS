@@ -1,29 +1,12 @@
-APACHE 2.4 STATUS:                        -*- mode: text; coding: utf-8 -*-
-Last modified at [$Date$]
+APACHE HTTP SERVER 2.4 STATUS:                       -*- mode: text; coding: utf-8 -*-
 
 The current version of this file can be found at:
 
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
+  * https://github.com/apache/httpd/blob/2.4.x/STATUS
 
 The current development branch of this software can be found at:
 
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk
-
-Consult the following STATUS files for information on related projects:
-
-  * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.4.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr/branches/1.5.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr/branches/1.6.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x/STATUS
-
-Patches considered for backport are noted in their branches' STATUS:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
-
+  * https://github.com/apache/httpd/
 
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
@@ -128,14 +111,11 @@ Contributors looking for a mission:
 
   * Review the "PatchAvailable" bugs in the bug database:
 
-    https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
+    https://bz.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
 
     After testing, you can append a comment saying "Reviewed and tested".
 
   * Open bugs in the bug database.
-
-  * See also the STATUS file in the docs/ directory, which lists documentation-specific TODO items.
-
 
 CURRENT RELEASE NOTES:
 
@@ -143,9 +123,9 @@ CURRENT RELEASE NOTES:
     that no MMN major number changes will occur after 2.4.1.  Such changes can
     only be made in the trunk.
 
-  * All commits to branches/2.4.x must be reflected in SVN trunk,
+  * All commits to the 2.4.x branch must be reflected in the trunk branch,
     as well, if they apply.  Logical progression is commit to trunk
-    then merge into branches/2.4.x, as applicable.
+    then merge into 2.4.x, as applicable.
 
   * Current exceptions for RTC for this branch:
     . mod_proxy_http2
@@ -161,22 +141,21 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
 
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-  *) module_authnz_ldap: fix 2.4.69 crashes on Windows. PR 70261
-     Trunk version of patch:
-        https://svn.apache.org/r1939088
-        https://svn.apache.org/r1939105
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/842.diff
-     Can be applied via apply_backport_pr.sh 842
-     +1: covener, steffenal, jorton
-
-------------------------------------------------------------------------
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+
+ ** Propose new backports as PRs **
+
+ Open PRs for 2.4.x:
+ -> https://github.com/apache/httpd/pulls?q=is%3Apr+state%3Aopen+base%3A2.4.x+draft%3Afalse
+
+ Open PRs for 2.4.x with at least one review approval:
+ -> https://github.com/apache/httpd/pulls?q=is%3Apr+state%3Aopen+base%3A2.4.x+draft%3Afalse+review%3Aapproved
+
+ Open PRs for 2.4.x with passing CI:
+ -> https://github.com/apache/httpd/pulls?q=is%3Apr+state%3Aopen+base%3A2.4.x+draft%3Afalse+status%3Asuccess
+
+HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
      announcement -- backends self-register as balancer members over UDP.
