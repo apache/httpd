@@ -2,8 +2,6 @@ import time
 
 import pytest
 
-from pyhttpd.backport import not_backported
-
 from pyhttpd.depends import needs_dependency
 
 from .env import MONITOR_STATUS, MONITOR_TIMEOUT, TransientService, http_responds
@@ -14,7 +12,6 @@ pytestmark = needs_dependency(
     detected="systemd-run --user is not usable here")
 
 
-@not_backported("r1937596-r1937647", "mod_systemd watchdog, notify and socket activation")
 class TestSystemdService:
     """httpd as a real systemd service, end to end.
 
