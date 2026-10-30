@@ -19,6 +19,7 @@
 #include <http_config.h>
 #include <http_log.h>
 #include <http_protocol.h>
+#include <mpm_common.h>
 
 #include <apr_allocator.h>
 #include <apr_atomic.h>
@@ -276,6 +277,7 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
         return APR_EGENERAL;
     }
     apr_allocator_owner_set(allocator, session_pool);
+    apr_allocator_max_free_set(allocator, ap_max_mem_free); /* MaxMemFree: an idle connection gives back its peak */
     apr_pool_tag(session_pool, "h3_session");
     /* Workers allocate from stream subpools while this thread makes its own: share the allocator safely. */
     apr_thread_mutex_t* alloc_mutex = NULL;

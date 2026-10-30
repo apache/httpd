@@ -35,6 +35,7 @@
 #define H3Q_GSO_SEGS 64       /* kernel UDP_MAX_SEGMENTS */
 #define H3Q_GSO_BYTES 65000
 #define H3Q_RETRY_TOKEN_TIMEOUT (10 * NGTCP2_SECONDS)
+#define H3Q_CID_SLOTS 16 /* ngtcp2 keeps at most 8 server CIDs, live and retired, plus 2 client DCIDs */
 
 struct h3q_engine
 {
@@ -72,14 +73,13 @@ struct h3q_engine
 struct h3q_conn
 {
     h3q_engine* engine;
-    apr_pool_t* pool; /* CID hash keys */
     ngtcp2_conn* qconn;
     ngtcp2_crypto_conn_ref conn_ref;
     ngtcp2_crypto_ossl_ctx* ossl_ctx;
     SSL* ssl;
     ngtcp2_path_storage path;
-    apr_array_header_t* cids; /* every CID put in the engine map, to remove on free */
-    uint8_t* close_pkt;       /* CONNECTION_CLOSE, resent while closing (RFC 9000 10.2.1) */
+    ngtcp2_cid cids[H3Q_CID_SLOTS]; /* keys of the engine map; datalen 0: free slot */
+    uint8_t* close_pkt;             /* CONNECTION_CLOSE, resent while closing (RFC 9000 10.2.1); malloc */
     size_t close_len;
     ngtcp2_tstamp close_until;
     ngtcp2_tstamp close_next;

@@ -30,11 +30,33 @@
 #include "quic/detail/h3q_impl.h"
 #include "quic/h3q_conn.h"
 
-/* CID bytes are copied into the connection pool, so the hash key outlives the callback. */
-static void cid_add(h3q_conn* conn, const ngtcp2_cid* cid)
+/* The map key points into a slot of the connection, so a slot stays until its key leaves the map.
+ * A CID that another connection has stays with it: a client must not take over a connection with its DCID. */
+static int cid_add(h3q_conn* conn, const ngtcp2_cid* cid)
 {
-    apr_hash_set(conn->engine->conns, apr_pmemdup(conn->pool, cid->data, cid->datalen), (apr_ssize_t)cid->datalen, conn);
-    APR_ARRAY_PUSH(conn->cids, ngtcp2_cid) = *cid;
+    if (apr_hash_get(conn->engine->conns, cid->data, (apr_ssize_t)cid->datalen))
+    {
+        return 1;
+    }
+    for (int i = 0; i < H3Q_CID_SLOTS; i++)
+    {
+        if (!conn->cids[i].datalen)
+        {
+            conn->cids[i] = *cid;
+            apr_hash_set(conn->engine->conns, conn->cids[i].data, (apr_ssize_t)cid->datalen, conn);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static void cid_remove(h3q_conn* conn, ngtcp2_cid* slot)
+{
+    if (apr_hash_get(conn->engine->conns, slot->data, (apr_ssize_t)slot->datalen) == conn)
+    {
+        apr_hash_set(conn->engine->conns, slot->data, (apr_ssize_t)slot->datalen, NULL);
+    }
+    slot->datalen = 0;
 }
 
 static h3q_stream* stream_lookup(h3q_conn* conn, int64_t id)
@@ -173,15 +195,20 @@ static int cb_get_new_connection_id(ngtcp2_conn* qconn, ngtcp2_cid* cid, uint8_t
     {
         return NGTCP2_ERR_CALLBACK_FAILURE;
     }
-    cid_add(conn, cid);
-    return 0;
+    return cid_add(conn, cid) ? 0 : NGTCP2_ERR_CALLBACK_FAILURE;
 }
 
 static int cb_remove_connection_id(ngtcp2_conn* qconn, const ngtcp2_cid* cid, void* user_data)
 {
     (void)qconn;
     h3q_conn* conn = user_data;
-    apr_hash_set(conn->engine->conns, cid->data, (apr_ssize_t)cid->datalen, NULL);
+    for (int i = 0; i < H3Q_CID_SLOTS; i++)
+    {
+        if (ngtcp2_cid_eq(&conn->cids[i], cid))
+        {
+            cid_remove(conn, &conn->cids[i]);
+        }
+    }
     return 0;
 }
 
@@ -224,12 +251,11 @@ h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
     conn->next = engine->conns_head;
     engine->conns_head = conn;
     ngtcp2_cid scid = {.datalen = H3Q_SCIDLEN};
-    if (apr_pool_create(&conn->pool, engine->pool) != APR_SUCCESS || RAND_bytes(scid.data, (int)scid.datalen) != 1)
+    if (RAND_bytes(scid.data, (int)scid.datalen) != 1)
     {
         h3q_conn_free(conn);
         return NULL;
     }
-    conn->cids = apr_array_make(conn->pool, 4, sizeof(ngtcp2_cid));
     ngtcp2_path_storage_init(&conn->path, path->local.addr, path->local.addrlen, path->remote.addr, path->remote.addrlen, NULL);
 
     ngtcp2_settings settings;
@@ -449,7 +475,10 @@ void h3q_conn_close(h3q_conn* conn, const ngtcp2_ccerr* ccerr)
     {
         return;
     }
-    conn->close_pkt = apr_palloc(conn->pool, H3Q_PKT_BUF);
+    if (!(conn->close_pkt = malloc(H3Q_PKT_BUF)))
+    {
+        return;
+    }
     ngtcp2_path_storage ps;
     ngtcp2_pkt_info pi;
     ngtcp2_path_storage_zero(&ps);
@@ -546,12 +575,11 @@ void h3q_conn_free(h3q_conn* conn)
             break;
         }
     }
-    for (int i = 0; conn->cids && i < conn->cids->nelts; i++)
+    for (int i = 0; i < H3Q_CID_SLOTS; i++)
     {
-        const ngtcp2_cid* cid = &APR_ARRAY_IDX(conn->cids, i, ngtcp2_cid);
-        if (apr_hash_get(engine->conns, cid->data, (apr_ssize_t)cid->datalen) == conn)
+        if (conn->cids[i].datalen)
         {
-            apr_hash_set(engine->conns, cid->data, (apr_ssize_t)cid->datalen, NULL);
+            cid_remove(conn, &conn->cids[i]);
         }
     }
     if (conn->qconn)
@@ -574,10 +602,7 @@ void h3q_conn_free(h3q_conn* conn)
         free(conn->streams_head);
         conn->streams_head = next;
     }
-    if (conn->pool)
-    {
-        apr_pool_destroy(conn->pool);
-    }
+    free(conn->close_pkt);
     free(conn);
 }
 

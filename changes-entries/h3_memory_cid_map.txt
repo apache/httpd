@@ -1,0 +1,11 @@
+  *) mod_http3: Less memory per connection. The QUIC connection keeps its
+     connection IDs in 16 slots of its own, not in an APR pool (8 KB at
+     least), and makes the CONNECTION_CLOSE buffer only when it closes. The
+     session and stream allocators keep at most MaxMemFree, as in mod_http2,
+     so an idle connection gives back its peak memory.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: A client can no longer put an Initial DCID that is a CID of
+     another connection into the CID map. Before, the map could keep a key
+     that pointed into the pool of a freed connection.
+     [Alexander Gerasimov <codeguard gmail.com>]
