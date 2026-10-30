@@ -28,6 +28,14 @@
                                         -- Unknown   */
 #include "ssl_private.h"
 
+#ifndef PATH_MAX
+#ifdef MAX_PATH
+#define PATH_MAX MAX_PATH
+#else
+#define PATH_MAX 4096
+#endif
+#endif
+
 #include "mpm_common.h"
 #include "mod_md.h"
 #include "util_md5.h"
