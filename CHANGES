@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.70
 
+  *) core: Do not offer 'h2' via the Upgrade response header on TLS
+     connections. RFC 9113 requires HTTP/2 over TLS to be negotiated
+     via ALPN only. PR 59311
+
 Changes with Apache 2.4.69
 
   *) SECURITY: CVE-2026-93546: mod_dav_fs namespace overflow
