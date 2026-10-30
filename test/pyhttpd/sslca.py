@@ -164,9 +164,7 @@ class SSLCA:
 
     @staticmethod
     def _key_pem(key, encrypted: bool) -> bytes:
-        enc = (serialization.PrivateFormat.PKCS8.encryption_builder()
-            .pbes2_sha256_and_aes256_cbc()
-            .build(PASS.encode())
+        enc = (serialization.BestAvailableEncryption(PASS.encode())
                if encrypted else serialization.NoEncryption())
         return key.private_bytes(serialization.Encoding.PEM,
                                  serialization.PrivateFormat.PKCS8, enc)
