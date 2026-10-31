@@ -45,6 +45,11 @@
 #include "quic/h3q_conn.h"
 #include "quic/h3q_stream.h"
 
+#ifndef HAVE_NGHTTP3_CONN_IS_DRAINED2
+/* nghttp3 < 1.16.0 has the same function, without the const argument */
+#define nghttp3_conn_is_drained2 nghttp3_conn_is_drained
+#endif
+
 h3_io_t* child_h3_io = NULL;
 
 int h3_io_at_connection_limit(h3_io_t* io)
