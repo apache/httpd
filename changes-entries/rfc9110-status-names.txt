@@ -1,0 +1,3 @@
+  *) core: Use the RFC 9110 reason phrases for 413 (Content Too Large),
+     414 (URI Too Long), 416 (Range Not Satisfiable) and 422 (Unprocessable
+     Content).  [Michiel W. Beijen <mb x14.nl>]
