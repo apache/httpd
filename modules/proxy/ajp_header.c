@@ -164,6 +164,7 @@ static const unsigned char sc_for_req_method_table[] = {
     SC_M_MKACTIVITY,
     SC_M_BASELINE_CONTROL,
     SC_M_MERGE,
+    0,                      /* M_QUERY */
     0                       /* M_INVALID */
 };
 
