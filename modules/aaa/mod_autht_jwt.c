@@ -20,14 +20,15 @@
  * of JWT bearer tokens, and as an acceptor of JWT Bearer tokens for authentication.
  */
 
+#include "httpd.h"
+#include "http_config.h"
+#include "apu_version.h"
+
 /* apr_jose support requires >= 1.7 */
 #if APU_MAJOR_VERSION > 1 || \
     (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION > 6)
 #define HAVE_APU_JOSE 1
 #endif
-
-#include "httpd.h"
-#include "http_config.h"
 
 #ifdef HAVE_APU_JOSE
 

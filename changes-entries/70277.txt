@@ -1,0 +1,5 @@
+  *) mod_autht_jwt: Fix the APU_MAJOR_VERSION/APU_MINOR_VERSION check that
+     gates apr_jose support, which ran before apu_version.h was included
+     and so always evaluated false, silently building the module as a
+     no-op stub regardless of the installed apr-util version.
+     PR 70277 [Arturo Bernal]
