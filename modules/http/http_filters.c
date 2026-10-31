@@ -1081,7 +1081,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
         body = REQUEST_NO_BODY;
 
     if ((rv = ap_setup_client_block(r, body))) {
-        if (rv == HTTP_CONTENT_TOO_LARGE)
+        if (rv == HTTP_REQUEST_ENTITY_TOO_LARGE)
             apr_table_setn(r->notes, "error-notes",
                           "TRACE with a request body is not allowed");
         return rv;
@@ -1093,7 +1093,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
             if (r->remaining > 65536) {
                 apr_table_setn(r->notes, "error-notes",
                        "Extended TRACE request bodies cannot exceed 64k\n");
-                return HTTP_CONTENT_TOO_LARGE;
+                return HTTP_REQUEST_ENTITY_TOO_LARGE;
             }
             /* always 32 extra bytes to catch chunk header exceptions */
             bodybuf = (apr_size_t)r->remaining + 32;
@@ -1118,7 +1118,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
                 ;
             apr_table_setn(r->notes, "error-notes",
                    "Extended TRACE request bodies cannot exceed 64k\n");
-            return HTTP_CONTENT_TOO_LARGE;
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
 
         if (res < 0) {
@@ -1418,7 +1418,7 @@ AP_DECLARE(int) ap_map_http_request_error(apr_status_t rv, int status)
         return HTTP_BAD_REQUEST;
 
     case APR_ENOSPC:
-        return HTTP_CONTENT_TOO_LARGE;
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
 
     case APR_ENOTIMPL:
         return HTTP_NOT_IMPLEMENTED;
@@ -1583,7 +1583,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
         && (r->read_chunked || (r->remaining > 0))) {
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01595)
                       "%s with body is not allowed for %s", r->method, r->uri);
-        return HTTP_CONTENT_TOO_LARGE;
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
     if (limit_req_body > 0 && (r->remaining > limit_req_body)) {
@@ -1595,7 +1595,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
                 " is larger than the configured limit"
                 " of %" APR_OFF_T_FMT, r->remaining, limit_req_body);
 
-        return HTTP_CONTENT_TOO_LARGE;
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
 #ifdef AP_DEBUG
@@ -2280,7 +2280,7 @@ apr_status_t ap_h1_request_in_filter(ap_filter_t *f,
                 ctx->method = ctx->uri = "-";
                 ctx->protocol = "HTTP/1.0";
                 if (APR_STATUS_IS_ENOSPC(rv)) {
-                    http_status = HTTP_URI_TOO_LONG;
+                    http_status = HTTP_REQUEST_URI_TOO_LARGE;
                 }
                 else if (APR_STATUS_IS_TIMEUP(rv)) {
                     http_status = HTTP_REQUEST_TIME_OUT;

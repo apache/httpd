@@ -1360,7 +1360,7 @@ static int proxy_handler(request_rec *r)
             apr_table_setn(r->notes, "verbose-error-to", "*");
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01140)
                           "TRACE with request body is not allowed");
-            return HTTP_CONTENT_TOO_LARGE;
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
     }
 

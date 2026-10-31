@@ -99,7 +99,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
                               "Invalid Content-Length '%s'", lenp);
 
                 ap_remove_input_filter(f);
-                return bail_out_on_error(b, f, HTTP_CONTENT_TOO_LARGE);
+                return bail_out_on_error(b, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
 
             /* If we have a limit in effect and we know the C-L ahead of
@@ -111,7 +111,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, dconf->keep_body);
                 ap_remove_input_filter(f);
-                return bail_out_on_error(b, f, HTTP_CONTENT_TOO_LARGE);
+                return bail_out_on_error(b, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
 
         }
@@ -136,7 +136,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
                       "Requested content-length of %" APR_OFF_T_FMT
                       " is larger than the configured limit"
                       " of %" APR_OFF_T_FMT, len, ctx->keep_body);
-        return bail_out_on_error(b, f, HTTP_CONTENT_TOO_LARGE);
+        return bail_out_on_error(b, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
     }
     ctx->remaining -= len;
 

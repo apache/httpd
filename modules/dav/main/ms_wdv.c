@@ -631,7 +631,7 @@ static dav_error *mswdv_combined_proppatch(request_rec *r)
      * giving a safe upper bound to in-memory caching. */
     limit = ap_get_limit_xml_body(r);
     if (limit > 0 && proppatch_len > limit) {
-        return dav_new_error(r->pool, HTTP_CONTENT_TOO_LARGE, 0, 0,
+        return dav_new_error(r->pool, HTTP_REQUEST_ENTITY_TOO_LARGE, 0, 0,
                              "PROPPATCH part length exceeds configured limit");
     }
     if (proppatch_len <= 0) {

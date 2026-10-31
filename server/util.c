@@ -2915,11 +2915,11 @@ AP_DECLARE(apr_status_t) ap_pstr2_alnum(apr_pool_t *p, const char *src,
  * In order to ensure that resource limits are not exceeded, a
  * maximum size must be provided. If the sum of the lengths of
  * the names and the values exceed this size, this function
- * will return HTTP_CONTENT_TOO_LARGE.
+ * will return HTTP_REQUEST_ENTITY_TOO_LARGE.
  *
  * An optional number of parameters can be provided, if the number
  * of parameters provided exceeds this amount, this function will
- * return HTTP_CONTENT_TOO_LARGE. If this value is negative,
+ * return HTTP_REQUEST_ENTITY_TOO_LARGE. If this value is negative,
  * no limit is imposed, and the number of parameters is in turn
  * constrained by the size parameter above.
  *
@@ -3082,7 +3082,7 @@ AP_DECLARE(int) ap_parse_form_data(request_rec *r, ap_filter_t *f,
     } while (!seen_eos);
 
     if (FORM_ABORT == state || size < 0 || num == 0) {
-        return HTTP_CONTENT_TOO_LARGE;
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
     else if (FORM_VALUE == state && pair && offset > 0) {
         const char *tmp = apr_pmemdup(r->pool, buffer, offset);

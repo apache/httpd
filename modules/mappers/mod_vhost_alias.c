@@ -242,7 +242,7 @@ static APR_INLINE int vhost_alias_checkspace(request_rec *r, char *buf,
     if (size >= HUGE_STRING_LEN) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10595)
                       "VirtualDocumentRoot expansion too large");
-        return HTTP_URI_TOO_LONG;
+        return HTTP_REQUEST_URI_TOO_LARGE;
     }
     if (*pdest + size > buf + HUGE_STRING_LEN) {
         **pdest = '\0';

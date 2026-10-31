@@ -135,7 +135,7 @@ int h3_hook_access_checker(request_rec* r)
     }
     if (stream && stream->request_body_overflow)
     {
-        return HTTP_CONTENT_TOO_LARGE;
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
     if (stream && stream->body_truncated)
     {

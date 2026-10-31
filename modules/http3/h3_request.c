@@ -354,7 +354,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     }
     else if (h3s->request_body_overflow)
     {
-        ap_die(HTTP_CONTENT_TOO_LARGE, r);
+        ap_die(HTTP_REQUEST_ENTITY_TOO_LARGE, r);
     }
     else
     {
