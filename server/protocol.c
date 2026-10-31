@@ -1385,11 +1385,11 @@ AP_DECLARE(request_rec *) ap_read_request(conn_rec *conn)
         if (!ap_assign_request_line(r, method, uri, protocol)) {
             apr_brigade_cleanup(tmp_bb);
             switch (r->status) {
-            case HTTP_REQUEST_URI_TOO_LARGE:
+            case HTTP_URI_TOO_LONG:
             case HTTP_BAD_REQUEST:
             case HTTP_VERSION_NOT_SUPPORTED:
             case HTTP_NOT_IMPLEMENTED:
-                if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+                if (r->status == HTTP_URI_TOO_LONG) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(00565)
                                   "request failed: client's request-line exceeds LimitRequestLine (longer than %d)",
                                   r->server->limit_req_line);

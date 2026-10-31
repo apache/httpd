@@ -206,12 +206,12 @@ void ap_lua_load_apache2_lmodule(lua_State *L)
        makeintegerfield(L, HTTP_GONE);
        makeintegerfield(L, HTTP_LENGTH_REQUIRED);
        makeintegerfield(L, HTTP_PRECONDITION_FAILED);
-       makeintegerfield(L, HTTP_REQUEST_ENTITY_TOO_LARGE);
-       makeintegerfield(L, HTTP_REQUEST_URI_TOO_LARGE);
+       makeintegerfield(L, HTTP_CONTENT_TOO_LARGE);
+       makeintegerfield(L, HTTP_URI_TOO_LONG);
        makeintegerfield(L, HTTP_UNSUPPORTED_MEDIA_TYPE);
        makeintegerfield(L, HTTP_RANGE_NOT_SATISFIABLE);
        makeintegerfield(L, HTTP_EXPECTATION_FAILED);
-       makeintegerfield(L, HTTP_UNPROCESSABLE_ENTITY);
+       makeintegerfield(L, HTTP_UNPROCESSABLE_CONTENT);
        makeintegerfield(L, HTTP_LOCKED);
        makeintegerfield(L, HTTP_FAILED_DEPENDENCY);
        makeintegerfield(L, HTTP_UPGRADE_REQUIRED);

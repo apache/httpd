@@ -776,7 +776,7 @@ static int hm_handler(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10562)
                       "Heartbeat message too large: %" APR_OFF_T_FMT " bytes (max %d)",
                       r->remaining, MAX_MSG_LEN);
-        return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        return HTTP_CONTENT_TOO_LARGE;
     }
 
     len = MAX_MSG_LEN;

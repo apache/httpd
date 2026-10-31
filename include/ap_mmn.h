@@ -744,6 +744,8 @@
  *                         connection_added() and ap_mpm_note_extra_
  *                         connection_removed(), and ap_mpm_wait_for_extra_
  *                         connections(), to mpm_common.h
+ * 20211221.36 (2.5.1-dev) Add HTTP_CONTENT_TOO_LARGE, HTTP_URI_TOO_LONG and
+ *                         HTTP_UNPROCESSABLE_CONTENT to httpd.h (RFC 9110)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -751,7 +753,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 35             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 36             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

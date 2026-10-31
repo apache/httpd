@@ -769,7 +769,7 @@ apr_status_t h2_stream_add_header(h2_stream *stream,
                                           "Request pseudo header exceeds "
                                           "LimitRequestFieldSize: %s"), name);
             }
-            error = HTTP_REQUEST_URI_TOO_LARGE;
+            error = HTTP_URI_TOO_LONG;
             goto cleanup;
         }
     }
