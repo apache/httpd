@@ -32,7 +32,8 @@ class TestHeaderLimitLog:
         conf.install()
         assert env.apache_restart() == 0
 
-    @not_backported("r1938328", "header limit message logged once per stream")
+    @not_backported("r1938328", "header limit message logged once per stream",
+                    backported_in="2.4.70")
     def test_h2_111_01(self, env):
         env.httpd_error_log.clear_log()
         # Many more headers than LimitRequestFields allows.
