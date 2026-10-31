@@ -99,7 +99,7 @@ static int fill_reneg_buffer(request_rec *r, SSLDirConfigRec *dc)
     }
     else {
         /* If the reneg buffer size is set to zero, just fail. */
-        rv = HTTP_CONTENT_TOO_LARGE;
+        rv = HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
     return rv;

@@ -524,14 +524,14 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_GONE                            410
 #define HTTP_LENGTH_REQUIRED                 411
 #define HTTP_PRECONDITION_FAILED             412
-#define HTTP_CONTENT_TOO_LARGE               413
-#define HTTP_URI_TOO_LONG                    414
+#define HTTP_REQUEST_ENTITY_TOO_LARGE        413 /* RFC 9110: Content Too Large */
+#define HTTP_REQUEST_URI_TOO_LARGE           414 /* RFC 9110: URI Too Long */
 #define HTTP_UNSUPPORTED_MEDIA_TYPE          415
 #define HTTP_RANGE_NOT_SATISFIABLE           416
 #define HTTP_EXPECTATION_FAILED              417
 #define HTTP_IM_A_TEAPOT                     418
 #define HTTP_MISDIRECTED_REQUEST             421
-#define HTTP_UNPROCESSABLE_CONTENT           422
+#define HTTP_UNPROCESSABLE_ENTITY            422 /* RFC 9110: Unprocessable Content */
 #define HTTP_LOCKED                          423
 #define HTTP_FAILED_DEPENDENCY               424
 #define HTTP_TOO_EARLY                       425
@@ -551,11 +551,6 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define HTTP_LOOP_DETECTED                   508
 #define HTTP_NOT_EXTENDED                    510
 #define HTTP_NETWORK_AUTHENTICATION_REQUIRED 511
-
-/** Names used before RFC 9110; kept for backwards compatibility */
-#define HTTP_REQUEST_ENTITY_TOO_LARGE HTTP_CONTENT_TOO_LARGE
-#define HTTP_REQUEST_URI_TOO_LARGE    HTTP_URI_TOO_LONG
-#define HTTP_UNPROCESSABLE_ENTITY     HTTP_UNPROCESSABLE_CONTENT
 
 /** is the status code informational */
 #define ap_is_HTTP_INFO(x)         (((x) >= 100)&&((x) < 200))
@@ -577,10 +572,10 @@ AP_DECLARE(const char *) ap_get_server_built(void);
                                    (((x) == HTTP_BAD_REQUEST)           || \
                                     ((x) == HTTP_REQUEST_TIME_OUT)      || \
                                     ((x) == HTTP_LENGTH_REQUIRED)       || \
-                                    ((x) == HTTP_CONTENT_TOO_LARGE)     || \
-                                    ((x) == HTTP_URI_TOO_LONG)          || \
+                                    ((x) == HTTP_REQUEST_ENTITY_TOO_LARGE) || \
+                                    ((x) == HTTP_REQUEST_URI_TOO_LARGE) || \
                                     ((x) == HTTP_INTERNAL_SERVER_ERROR) || \
-                                    ((x) == HTTP_SERVICE_UNAVAILABLE)   || \
+                                    ((x) == HTTP_SERVICE_UNAVAILABLE) || \
                                     ((x) == HTTP_NOT_IMPLEMENTED))
 
 /** does the status imply header only response (i.e. never w/ a body)? */
