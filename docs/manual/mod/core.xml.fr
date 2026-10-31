@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1939372:1939425 (outdated) -->
+<!-- English Revision: 1939425 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -5364,6 +5364,17 @@ gestionnaire particulier</description>
     <directive module="mod_dir">FallbackResource</directive>, car un
     gestionnaire est déjà explicitement assigné à la requête.
     </p></note>
+
+    <note><title>Ordre de fusion avec Files/FilesMatch</title> <p>Une directive
+    <directive>SetHandler</directive> définie dans une section <directive
+    type="section" module="core">Files</directive> ou <directive type="section"
+    module="core">FilesMatch</directive> est fusionnée après une directive de
+    même type définie dans une section <directive type="section"
+    module="core">Directory</directive> ou un fichier <code>.htaccess</code>
+    pour la même requête, et donc l’outrepasse, même si le fichier
+    <code>.htaccess</code> est plus spécifique. Voir <a
+    href="../sections.html#merging">Comment les sections sont fusionnées</a>
+    pour une description complète de l’ordre de fusion.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>

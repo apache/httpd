@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933949:1939427 (outdated) -->
+<!-- English Revision: 1939427 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -146,11 +146,13 @@ graceful-stop</code>.</dd>
 
 <dt><code>configtest</code></dt>
 
-<dd>Effectue une vérification de la syntaxe du fichier de configuration.
-Avec cette option, le script parcourt le fichier de configuration et
-renvoie soit <code>Syntax Ok</code>, soit des informations détaillées à
-propos des éventuelles erreurs de syntaxe. Equivalent à <code>apachectl
--t</code>.</dd>
+<dd>Effectue une vérification de la syntaxe du fichier de configuration.  Avec
+cette option, le script parcourt le fichier de configuration et renvoie soit
+<code>Syntax Ok</code>, soit des informations détaillées à propos des
+éventuelles erreurs de syntaxe. Equivalent à <code>apachectl -t</code>. D’autres
+arguments sont passés à <program>httpd</program> ; ainsi, <code>apachectl
+configtest -f <var>file</var></code> teste le fichier de configuration spécifié.
+</dd>
 
 </dl>
 
