@@ -1,0 +1,10 @@
+  *) mod_cache: Do not store a response whose "Vary: *" was set via
+     "Header always", which mod_cache's cacheability check missed because
+     it only looked at r->headers_out and not r->err_headers_out. This
+     could let mod_cache serve one client's response to another client
+     under the Vary: * header, since storage itself does merge the two
+     tables. Also fix cache_select() to treat a stored "Vary: *" as an
+     automatic mismatch per RFC 9111 4.1, instead of as an ordinary
+     (absent) header name, so an existing "Vary: *" entry already on
+     disk cannot be served to a mismatched request either.
+     PR 70289 [Arturo Bernal]
