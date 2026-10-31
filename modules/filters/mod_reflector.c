@@ -56,13 +56,13 @@ static int reflector_handler(request_rec * r)
     conf = (reflector_cfg *) ap_get_module_config(r->per_dir_config,
                                                   &reflector_module);
 
-    ap_allow_methods(r, 1, "POST", "OPTIONS", NULL);
+    ap_allow_methods(r, 1, "POST", "QUERY", "OPTIONS", NULL);
 
     if (r->method_number == M_OPTIONS) {
         return ap_send_http_options(r);
     }
 
-    else if (r->method_number == M_POST) {
+    else if (r->method_number == M_POST || r->method_number == M_QUERY) {
         const char *content_length, *content_type;
         int seen_eos;
 

@@ -21,6 +21,11 @@ class TestQuery:
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
         conf = H1Conf(env)
+        conf.add([
+            f'<Directory "{env.server_docs_dir}/cgi/files">',
+            "  DirectoryIndex ../query.py",
+            "</Directory>",
+        ])
         conf.add_vhost_cgi()
         conf.start_vhost(domains=[f"test1.{env.http_tld}"],
                          port=env.https_port, doc_root="htdocs/test1")
@@ -32,6 +37,9 @@ class TestQuery:
             "</Location>",
             "<Location /method/>",
             "  Require method GET QUERY",
+            "</Location>",
+            "<Location /reflect>",
+            "  SetHandler reflector",
             "</Location>",
         ])
         conf.end_vhost()
@@ -124,6 +132,23 @@ class TestQuery:
         r = _query(env, "/method/", vhost="test1")
         assert r.response["status"] != 403
         env.httpd_error_log.ignore_recent(lognos=["AH01630"])
+
+    # DirectoryIndex hands QUERY on a directory to the index script
+    def test_h1_008_09(self, env):
+        r = _query(env, "/files/", body="a=b")
+        assert r.exit_code == 0, f"{r}"
+        assert r.response["status"] == 200
+        assert r.json["method"] == "QUERY"
+        assert r.json["body"] == "a=b"
+
+    # mod_reflector reflects QUERY content
+    def test_h1_008_11(self, env):
+        r = _query(env, "/reflect", vhost="test1", body='{"q": 1}',
+                   ctype="application/json")
+        assert r.exit_code == 0, f"{r}"
+        assert r.response["status"] == 200
+        assert r.response["header"]["content-type"] == "application/json"
+        assert r.response["body"] == b'{"q": 1}'
 
 
 class TestQueryUnsafe:

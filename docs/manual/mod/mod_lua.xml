@@ -769,7 +769,8 @@ r:clock() -- Returns the current time with microsecond precision
 </highlight>
 
 <highlight language="lua">
-r:requestbody(filename) -- Reads and returns the request body of a request.
+r:requestbody(filename) -- Reads and returns the request body of a POST, PUT
+                -- or QUERY request.
                 -- If 'filename' is specified, it instead saves the
                 -- contents to that file:
 

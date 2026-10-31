@@ -101,6 +101,25 @@ class TestCgid:
             lognos=["AH01215", "AH10599"],
             matches=[r".*End of script output before headers: stderr_fail\.py"])
 
+    def test_generators_001_15_script_log_query(self, env):
+        """ScriptLog records the content of a QUERY (RFC 10008) request
+        like that of a POST."""
+        log = self.script_log(env)
+        if os.path.exists(log):
+            os.unlink(log)
+        r = env.curl_raw([env.mkurl("http", "cgi", "/stderr_fail.py")],
+                         options=["-X", "QUERY",
+                                  "--data-binary", "query-body-marker",
+                                  "-H", "Content-Type: application/sql"])
+        assert r.response["status"] == 500
+        with open(log) as fd:
+            content = fd.read()
+        assert "%request\n" in content
+        assert "\nquery-body-marker\n" in content
+        env.httpd_error_log.ignore_recent(
+            lognos=["AH01215", "AH10599"],
+            matches=[r".*End of script output before headers: stderr_fail\.py"])
+
     def test_generators_001_03_timeout(self, env):
         """CGIDScriptTimeout gives 504 for a script which says nothing."""
         start = time.time()
