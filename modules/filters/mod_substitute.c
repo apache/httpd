@@ -664,6 +664,11 @@ err:
     if (rv == APR_ENOMEM)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO(01328) "Line too long, URI %s",
                       f->r->uri);
+    /* ctx->linebb may still hold buckets from the caller's brigade which
+     * were never set aside, and the filter can be called again (with EOS)
+     * after the caller has destroyed their data.
+     */
+    apr_brigade_cleanup(ctx->linebb);
     apr_pool_clear(ctx->tpool);
     return rv;
 }
