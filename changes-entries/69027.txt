@@ -1,0 +1,4 @@
+  *) dbmmanage, htpasswd-sha1.pl: Use the Digest::SHA module, which is part of
+     Perl, instead of Digest::SHA1, which has to be installed from CPAN.
+     PR 69027
+     [Arturo Bernal]
