@@ -155,7 +155,19 @@ serveur HTTP Apache</a></seealso>
     <p>Les modules qui acceptent une connexion totalement asynchrone (la
     suspendant et la réactivant plus tard) sont pris en charge ; une connexion
     suspendue est parquée et réarmée sur son propre thread sondeur lorsqu’elle
-    est réactivée.</p>
+    est réactivée. Comme dans le MPM <module>event</module>, un module qui
+    s'enregistre auprès des points d'ancrage (« hooks »)
+    <code>suspend_connection</code> et <code>resume_connection</code> est
+    informé, au niveau du thread de travail qui met une connexion en attente
+    (entre deux requêtes, ou pendant qu'elle attend des opérations d'E/S ou le
+    vidage des données de sortie), puis à nouveau au niveau du thread de travail
+    qui la reprend — sachant qu'il ne s'agit pas nécessairement du même thread.
+    Les rappels (callbacks) génériques, basés sur le temps ou sur un mécanisme
+    de sondage (poll), de l'interface MPM
+    (<code>ap_mpm_register_timed_callback()</code> et
+    <code>ap_mpm_register_poll_callback()</code>) ne sont pas fournis : ils
+    renvoient <code>APR_ENOTIMPL</code>, et un module doit être en mesure de
+    gérer cette situation.</p>
 </section>
 
 <section id="graceful-stop"><title>Arrêt et redémarrage en douceur (graceful)</title>
@@ -227,15 +239,25 @@ serveur HTTP Apache</a></seealso>
 <section id="admission-control"><title>Contrôle d’admission</title>
     <p>Pour qu’un processus enfant reste fiable en cas de surcharge,
     <module>motorz</module> applique une pression en retour (backpressure) à
-    l’écouteur. Lorsque le pool de threads de travail sature, le thread sondeur
-    qui possède les sockets d’écoute les enlève de son domaine de sondage et
-    arrête d’accepter ; il les réajoute lorsque la liste de demandes se
-    vide. Cela a pour effet de limiter la taille de la file d’attente de
-    travaux et la mémoire consommée par connexion, au lieu de les laisser
-    grandir sans limite. La décision se base sur le décompte des threads
-    inactifs, en attente et actifs dans le pool de threads de travail, avec
-    hystérèse pour éviter un basculement excessif des écouteurs entre « on » et
-    « off ».</p>
+    l’écouteur. Le thread sondeur qui possède les sockets d’écoute les enlève de
+    son domaine de sondage et arrête d’accepter, et les réajoute lorsqu’il y a à
+    nouveau de la place, dans deux situations :</p>
+    <ul>
+      <li>le pool de workers est saturé — si l’on en juge par le nombre de
+      threads inactifs, en attente et actifs — avec un mécanisme d’hystérésis
+      visant à éviter des activations et désactivations intempestives des
+      écouteurs ;</li>
+      <li>L'enfant gère autant de connexions que le permet la directive
+      <directive>AsyncRequestWorkerFactor</directive>. Les connexions inactives
+      en mode « keep-alive », en attente d'opérations d'E/S ou en cours
+      d'écriture d'une réponse, n'utilisent aucun thread de travail ; le pool de
+      threads de travail ne peut donc pas, à lui seul, les limiter.</li>
+    </ul>
+    <p>Les connexions qui ne sont pas acceptées patientent dans la file
+    d'attente d'écoute (voir <directive
+    module="mpm_common">ListenBacklog</directive>). D'autres formes
+    d'utilisation de la mémoire, comme la lecture d'une requête volumineuse, ne
+    sont pas limitées par ce mécanisme.</p>
 
     <note><title>ThreadsPerChild et contrôle d’admission</title>
     <p>Ètant donné que la marque des « basses eaux » du contrôle d’admission est
@@ -245,7 +267,7 @@ serveur HTTP Apache</a></seealso>
     écouteurs ne sont réactivés que lorsque la file d’attente de travaux est
     totalement vide, ce qui dégrade sévèrement le débit. Une valeur d’au moins 4
     pour <code>ThreadsPerChild</code> est fortement recommandée ; si cette
-    valeur est inférieure à 4, le serveur émet un avertissement.</p>
+    valeur est égale à 1, le serveur consigne un avertissement.</p>
     </note>
 </section>
 
@@ -322,6 +344,33 @@ serveur HTTP Apache</a></seealso>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
 </directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>User</name>
+</directivesynopsis>
+
+ <directivesynopsis>
+<name>AsyncRequestWorkerFactor</name>
+<description>Limiter les connexions simultanées par processus</description>
+<syntax>AsyncRequestWorkerFactor <var>factor</var></syntax>
+<default>AsyncRequestWorkerFactor 2</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>motorz</module></modulelist>
+
+<usage>
+    <p>Cette directive est basée sur le même concept que le MPM
+    <module>event</module>. Un <strong>processus</strong> n’accepte de nouvelles
+    connexions que si le nombre de connexions qu’il gère, sans compter celles en
+    cours de fermeture différée, est inférieur à :</p>
+
+    <p class="indent"><strong>
+        <directive module="mpm_common">ThreadsPerChild</directive> +
+        (<directive>AsyncRequestWorkerFactor</directive> *
+        <var>nombre de threads de travail inactifs</var>)
+    </strong></p>
+
+    <p>La plupart des connexions que gère un processus enfant sont normalement
+    inactives et n’utilisent pas de thread de travail ; c’est pourquoi la limite
+    est plus grande que le nombre de threads. Les valeurs inférieures à 1 sont
+    réajustées à 1.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>

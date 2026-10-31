@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1933438:1939372 (outdated) -->
+<!-- English Revision: 1939372 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -89,7 +89,7 @@
 
 <category id="platform"><title>Notes spécifiques aux différentes plateformes</title>
     <page href="platform/windows.html">Microsoft Windows</page>
-    <page href="platform/rpm.html">Systèmes basés sur les paquet RPM (Redhat / CentOS / Fedora)</page>
+    <page href="platform/rpm.html">Systèmes basés sur les paquet RPM (Red Hat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
 </category>
 
