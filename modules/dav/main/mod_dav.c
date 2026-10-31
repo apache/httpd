@@ -2756,7 +2756,7 @@ static int process_mkcol_body(request_rec *r)
     /* This is snarfed from ap_setup_client_block(). We could get pretty
      * close to this behavior by passing REQUEST_NO_BODY, but we need to
      * return HTTP_UNSUPPORTED_MEDIA_TYPE (while ap_setup_client_block
-     * returns HTTP_REQUEST_ENTITY_TOO_LARGE). */
+     * returns HTTP_CONTENT_TOO_LARGE). */
 
     const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
     const char *lenp = apr_table_get(r->headers_in, "Content-Length");

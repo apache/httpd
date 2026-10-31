@@ -128,16 +128,16 @@ static const char * const status_lines[RESPONSE_CODES] =
     "410 Gone",
     "411 Length Required",
     "412 Precondition Failed",
-    "413 Request Entity Too Large",
-    "414 Request-URI Too Long",
+    "413 Content Too Large",
+    "414 URI Too Long",
     "415 Unsupported Media Type",
-    "416 Requested Range Not Satisfiable",
+    "416 Range Not Satisfiable",
     "417 Expectation Failed",
     "418 I'm A Teapot",
     NULL, /* 419 */
     NULL, /* 420 */
     "421 Misdirected Request",
-    "422 Unprocessable Entity",
+    "422 Unprocessable Content",
     "423 Locked",
     "424 Failed Dependency",
     "425 Too Early",
@@ -1058,14 +1058,14 @@ static const char *get_canned_error_string(int status,
         return("<p>The requested resource is no longer available on this server"
                " and there is no forwarding address.\n"
                "Please remove all references to this resource.</p>\n");
-    case HTTP_REQUEST_ENTITY_TOO_LARGE:
+    case HTTP_CONTENT_TOO_LARGE:
         return(apr_pstrcat(p,
                            "The requested resource does not allow request data with ",
                            ap_escape_html(r->pool, method),
                            " requests, or the amount of data provided in\n"
                            "the request exceeds the capacity limit.\n",
                            NULL));
-    case HTTP_REQUEST_URI_TOO_LARGE:
+    case HTTP_URI_TOO_LONG:
         s1 = "<p>The requested URL's length exceeds the capacity\n"
              "limit for this server.<br />\n";
         return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
@@ -1090,7 +1090,7 @@ static const char *get_canned_error_string(int status,
                  "field was not presented by the client.\n";
         return add_optional_notes(r, s1, "error-notes", "</p>"
                    "<p>Only the 100-continue expectation is supported.</p>\n");
-    case HTTP_UNPROCESSABLE_ENTITY:
+    case HTTP_UNPROCESSABLE_CONTENT:
         return("<p>The server understands the media type of the\n"
                "request entity, but was unable to process the\n"
                "contained instructions.</p>\n");

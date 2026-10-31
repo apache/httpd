@@ -633,7 +633,7 @@ static dav_error * dav_propdb_map_namespaces(
 
         if (ns_id == 0) {
             if (db->ns_count >= DAV_PROPDB_NS_MAX) {
-                return dav_new_error(db->pool, HTTP_REQUEST_ENTITY_TOO_LARGE,
+                return dav_new_error(db->pool, HTTP_CONTENT_TOO_LARGE,
                                      0, 0,
                                      "Too many distinct namespaces in "
                                      "property database.");

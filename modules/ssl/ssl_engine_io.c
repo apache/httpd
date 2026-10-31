@@ -2106,7 +2106,7 @@ int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02018)
                           "request body exceeds maximum size (%" APR_SIZE_T_FMT
                           ") for SSL buffer", maxlen);
-            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+            return HTTP_CONTENT_TOO_LARGE;
         }
 
     } while (!eos);
