@@ -1,0 +1,5 @@
+  *) mod_autht_jwt: Fix a NULL pointer dereference (worker segfault) on a
+     JWT whose claims are an empty JSON object. apr_json_object_first()
+     documents returning NULL for an empty object, but check_token()'s two
+     claims loops used a do/while that dereferenced the result before
+     checking it. PR 70274 [Arturo Bernal]
