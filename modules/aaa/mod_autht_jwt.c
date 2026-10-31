@@ -669,7 +669,7 @@ static const char *jwt_get_token(request_rec *r)
                         APR_JSON_VALUE_STRING), r->pool);
     }
 
-    apr_jose_signature_make(&signature, NULL, protect, r->pool);
+    apr_jose_signature_make(&signature, NULL, protect, NULL, r->pool);
     apr_jose_jws_make(&jws, &signature, NULL, &jwt, r->pool);
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
