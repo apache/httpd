@@ -564,3 +564,10 @@ test/httpdunit: $(httpdunit_OBJECTS) $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS) 
 
 check-unittests: test/httpdunit
 	test/httpdunit
+
+# Regression test for md_util_parse_retry_after(), shared by mod_md and
+# a2md (see support/a2md/Makefile.in). Only in $(CHECK_TARGETS) when a2md
+# itself is enabled (support/a2md/config2.m4).
+.PHONY: check-retry-after
+check-retry-after:
+	cd support/a2md && $(MAKE) $(MFLAGS) check

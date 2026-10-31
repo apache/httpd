@@ -279,6 +279,33 @@ const char *md_link_find_relation(const struct apr_table_t *headers,
                                   apr_pool_t *pool, const char *relation);
 
 const char *md_util_parse_ct(apr_pool_t *pool, const char *cth);
+
+/**
+ * Parse the value of a Retry-After header field (RFC 9110, section 10.2.3),
+ * which is either a number of seconds or an HTTP-date. Leading and trailing
+ * whitespace is ignored. Anything else, such as a sign, a fraction, a list
+ * of values, a time zone other than GMT or text after the date, is invalid.
+ * An HTTP-date is accepted in the three formats of RFC 9110, section 5.6.7.
+ * The day name is checked for its syntax only. A delay too large for an
+ * apr_interval_time_t is saturated to APR_INT64_MAX.
+ *
+ * An HTTP-date is relative to the clock of the server that sent it. To
+ * be independent of any difference to the local clock, the delay is computed
+ * against the Date header field of the same response, if given.
+ *
+ * This has no httpd dependency, so a2md can call it too.
+ * @param delay The parsed delay, never negative
+ * @param value The field value to parse
+ * @param date The value of the Date header field of the response, or NULL.
+ *             It is ignored if it is not a valid HTTP-date.
+ * @param now The local time to measure an HTTP-date against if date is not
+ *            usable, also to resolve a two digit year
+ * @return APR_SUCCESS, or APR_EINVAL if value is not valid
+ */
+apr_status_t md_util_parse_retry_after(apr_interval_time_t *delay,
+                                       const char *value, const char *date,
+                                       apr_time_t now);
+
 /**************************************************************************************************/
 /* retry logic */
 
@@ -287,5 +314,32 @@ typedef apr_status_t md_util_try_fn(void *baton, int i);
 apr_status_t md_util_try(md_util_try_fn *fn, void *baton, int ignore_errs,  
                          apr_interval_time_t timeout, apr_interval_time_t start_delay, 
                          apr_interval_time_t max_delay, int backoff);
+
+/**
+ * Callback to tell md_util_try_with_retry_after() to stop waiting, e.g.
+ * because the process is shutting down. Return non-zero to cancel.
+ */
+typedef int md_util_interrupt_fn(void *baton);
+
+/**
+ * Register the callback polled by md_util_try_with_retry_after() while it
+ * waits. Not set by default, so a waiting a2md is not interrupted.
+ */
+void md_util_interrupt_set(md_util_interrupt_fn *fn, void *baton);
+
+/**
+ * Like md_util_try(), but honours a server given Retry-After. *retry_at is
+ * the local time before which fn should not be called again. It is read
+ * before every call, so fn may set it, and is waited for at most until the
+ * timeout, then fn is called a last time. May be NULL. The waits end early
+ * and APR_EINTR is returned, without calling fn again, when the callback
+ * set by md_util_interrupt_set() asks for it.
+ */
+apr_status_t md_util_try_with_retry_after(md_util_try_fn *fn, void *baton,
+                                          int ignore_errs,
+                                          apr_interval_time_t timeout,
+                                          apr_interval_time_t start_delay,
+                                          apr_interval_time_t max_delay,
+                                          int backoff, apr_time_t *retry_at);
 
 #endif /* md_util_h */

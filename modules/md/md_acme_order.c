@@ -267,12 +267,13 @@ typedef struct {
     const char *ari_cert_id;
     apr_array_header_t *domains;
     md_result_t *result;
+    apr_time_t retry_at;
 } order_ctx_t;
 
 #define ORDER_CTX_INIT(ctx, p, o, a, n, d, pf, cid, r) \
     (ctx)->p = (p); (ctx)->order = (o); (ctx)->acme = (a); \
     (ctx)->name = (n); (ctx)->domains = d; (ctx)->profile = pf; \
-    (ctx)->ari_cert_id = cid;(ctx)->result = r
+    (ctx)->ari_cert_id = cid;(ctx)->result = r; (ctx)->retry_at = 0
 
 static apr_status_t identifier_to_json(void *value, md_json_t *json, apr_pool_t *p, void *baton)
 {
@@ -323,6 +324,7 @@ static apr_status_t on_order_upd(md_acme_t *acme, apr_pool_t *p, const apr_table
     }
     
     order_update_from_json(ctx->order, body, ctx->p);
+    ctx->order->retry_at = md_acme_retry_after(hdrs);
 out:
     return rv;
 }
@@ -391,7 +393,8 @@ apr_status_t md_acme_order_await_ready(md_acme_order_t *order, md_acme_t *acme,
     ORDER_CTX_INIT(&ctx, p, order, acme, md->name, NULL, NULL, NULL, result);
 
     md_result_activity_setn(result, "Waiting for order to become ready");
-    rv = md_util_try(await_ready, &ctx, 0, timeout, 0, 0, 1);
+    rv = md_util_try_with_retry_after(await_ready, &ctx, 0, timeout, 0, 0, 1,
+                                      &order->retry_at);
     md_result_log(result, MD_LOG_DEBUG);
     return rv;
 }
@@ -434,7 +437,8 @@ apr_status_t md_acme_order_await_valid(md_acme_order_t *order, md_acme_t *acme,
     ORDER_CTX_INIT(&ctx, p, order, acme, md->name, NULL, NULL, NULL, result);
 
     md_result_activity_setn(result, "Waiting for finalized order to become valid");
-    rv = md_util_try(await_valid, &ctx, 0, timeout, 0, 0, 1);
+    rv = md_util_try_with_retry_after(await_valid, &ctx, 0, timeout, 0, 0, 1,
+                                      &order->retry_at);
     md_result_log(result, MD_LOG_DEBUG);
     return rv;
 }
@@ -480,6 +484,9 @@ apr_status_t md_acme_order_start_challenges(md_acme_order_t *order, md_acme_t *a
                 if (APR_SUCCESS != rv) {
                     goto leave;
                 }
+                if (authz->retry_at > order->retry_at) {
+                    order->retry_at = authz->retry_at;
+                }
                 add_setup_token(order, setup_token);
                 md_acme_order_save(store, p, MD_SG_STAGING, md->name, order, 0);
                 break;
@@ -511,6 +518,7 @@ static apr_status_t check_challenges(void *baton, int attempt)
     apr_status_t rv = APR_SUCCESS;
     int i;
     
+    ctx->retry_at = 0;
     for (i = 0; i < ctx->order->authz_urls->nelts; ++i) {
         url = APR_ARRAY_IDX(ctx->order->authz_urls, i, const char*);
         md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ctx->p, "%s: check AUTHZ at %s (attempt %d)", 
@@ -525,6 +533,7 @@ static apr_status_t check_challenges(void *baton, int attempt)
                     break;
                 case MD_ACME_AUTHZ_S_PENDING:
                     rv = APR_EAGAIN;
+                    ctx->retry_at = authz->retry_at;
                     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, ctx->p, 
                                   "%s: status pending at %s", authz->domain, authz->url);
                     goto leave;
@@ -562,9 +571,13 @@ apr_status_t md_acme_order_monitor_authzs(md_acme_order_t *order, md_acme_t *acm
     apr_status_t rv;
     
     ORDER_CTX_INIT(&ctx, p, order, acme, md->name, NULL, NULL, NULL, result);
+    ctx.retry_at = order->retry_at;
     
     md_result_activity_printf(result, "Monitoring challenge status for %s", md->name);
-    rv = md_util_try(check_challenges, &ctx, 0, timeout, 0, 0, 1);
+    rv = md_util_try_with_retry_after(check_challenges, &ctx, 0, timeout, 0, 0, 1,
+                                      &ctx.retry_at);
+    /* that was the hint for the authorizations, not for the order */
+    order->retry_at = 0;
     md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, p, "%s: checked authorizations", md->name);
     return rv;
 }

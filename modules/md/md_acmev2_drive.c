@@ -148,6 +148,12 @@ leave:
 /**************************************************************************************************/
 /* ACMEv2 renewal */
 
+/* A wait cut short by a shutdown is not a failed renewal, do not report it as one. */
+static void wait_failed(md_result_t *result, apr_status_t rv, const char *msg)
+{
+    md_result_set(result, rv, APR_STATUS_IS_EINTR(rv)? "Interrupted by shutdown" : msg);
+}
+
 apr_status_t md_acmev2_drive_renew(md_acme_driver_t *ad, md_proto_driver_t *d, md_result_t *result)
 {
     apr_status_t rv = APR_SUCCESS;
@@ -208,14 +214,14 @@ retry:
     rv = md_acme_order_monitor_authzs(ad->order, ad->acme, d->md,
                                       ad->authz_monitor_timeout, result, d->p);
     if (APR_SUCCESS != rv) {
-      md_result_set(result, rv, "Error waiting on domain names to be validated");
+      wait_failed(result, rv, "Error waiting on domain names to be validated");
       goto leave;
     }
 
     rv = md_acme_order_await_ready(ad->order, ad->acme, d->md,
                                    ad->authz_monitor_timeout, result, d->p);
     if (APR_SUCCESS != rv) {
-      md_result_set(result, rv, "Error waiting for order to become ready");
+      wait_failed(result, rv, "Error waiting for order to become ready");
       goto leave;
     }
 
@@ -228,7 +234,7 @@ retry:
     rv = md_acme_order_await_valid(ad->order, ad->acme, d->md, 
                                    ad->authz_monitor_timeout, result, d->p);
     if (APR_SUCCESS != rv) {
-      md_result_set(result, rv, "Error waiting for order to become valid.");
+      wait_failed(result, rv, "Error waiting for order to become valid.");
       goto leave;
     }
     

@@ -168,12 +168,27 @@ apr_status_t md_acme_init(apr_pool_t *p, const char *base,  int init_ssl)
     return init_ssl? md_crypt_init(p) : APR_SUCCESS;
 }
 
+apr_time_t md_acme_retry_after(const struct apr_table_t *headers)
+{
+    const char *value = headers? apr_table_get(headers, "Retry-After") : NULL;
+    const char *date = headers? apr_table_get(headers, "Date") : NULL;
+    apr_time_t now = apr_time_now();
+    apr_interval_time_t delay;
+
+    if (!value || APR_SUCCESS != md_util_parse_retry_after(&delay, value, date, now)) {
+        return 0;
+    }
+    return (now > 0 && delay > APR_INT64_MAX - now)? APR_INT64_MAX : now + delay;
+}
+
 static apr_status_t inspect_problem(md_acme_req_t *req, const md_http_response_t *res)
 {
     const char *ctype;
     md_json_t *problem = NULL;
     apr_status_t rv;
 
+    /* e.g. rateLimited, RFC 8555 6.6 */
+    req->result->retry_at = md_acme_retry_after(req->resp_hdrs);
     ctype = apr_table_get(req->resp_hdrs, "content-type");
     ctype = md_util_parse_ct(res->req->pool, ctype);
     if (ctype && !strcmp(ctype, "application/problem+json")) {
@@ -490,6 +505,7 @@ void md_acme_report_result(md_acme_t *acme, apr_status_t rv, struct md_result_t 
     else {
         md_result_problem_set(result, acme->last->status, acme->last->problem, 
                               acme->last->detail, acme->last->subproblems);
+        result->retry_at = acme->last->retry_at;
     }
 }
 
