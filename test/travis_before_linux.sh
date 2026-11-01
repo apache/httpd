@@ -252,6 +252,28 @@ if test -v TEST_NGHTTP2; then
     grep -H '^Version' $HOME/root/nghttp2/lib/pkgconfig/libnghttp2.pc
 fi
 
+# Build the requested version of curl with HTTP/3, over OpenSSL's QUIC
+# stack and the packaged libnghttp3, if it's not already installed in
+# the cached ~/root. The packaged curl has no HTTP/3.
+if test -v TEST_CURL_H3; then
+    if ! test -x $HOME/root/curl/bin/curl; then
+        mkdir -p build/curl
+        pushd build/curl
+           curl -L "https://curl.se/download/curl-${TEST_CURL_H3}.tar.xz" |
+               tar -xJf -
+           cd curl-${TEST_CURL_H3}
+           ./configure --prefix=$HOME/root/curl --disable-shared \
+                       --with-openssl --with-openssl-quic --with-nghttp3 \
+                       --without-libpsl
+           make $MFLAGS
+           make install
+        popd
+    fi
+
+    : -- Using curl from $HOME/root/curl --
+    $HOME/root/curl/bin/curl -V
+fi
+
 if test -v APR_VERSION; then
     install_apx apr ${APR_VERSION} "${APR_CONFIG}"
     ldd $HOME/root/apr-${APR_VERSION}/lib/libapr-?.so || true
