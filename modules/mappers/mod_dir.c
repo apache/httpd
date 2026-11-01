@@ -301,16 +301,17 @@ static int fixup_dir(request_rec *r)
         return DECLINED;
     }
 
-    if (d->checkhandler == MODDIR_ON && strcmp(r->handler, DIR_MAGIC_TYPE)) {
+    if (d->checkhandler == MODDIR_ON && r->handler
+            && strcmp(r->handler, DIR_MAGIC_TYPE)) {
         /* Prevent DIR_MAGIC_TYPE from leaking out when someone has taken over */
-        if (r->content_type && !strcmp(r->content_type, DIR_MAGIC_TYPE)) { 
+        if (r->content_type && !strcmp(r->content_type, DIR_MAGIC_TYPE)) {
             r->content_type = NULL;
         }
         return DECLINED;
     }
 
     /* we're running between mod_rewrites fixup and its internal redirect handler, step aside */
-    if (!strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) { 
+    if (r->handler && !strcmp(r->handler, REWRITE_REDIRECT_HANDLER_NAME)) {
         /* Prevent DIR_MAGIC_TYPE from leaking out when someone has taken over */
         if (r->content_type && !strcmp(r->content_type, DIR_MAGIC_TYPE)) {
             r->content_type = NULL;

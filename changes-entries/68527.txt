@@ -1,0 +1,5 @@
+  *) mod_dir: Fix a NULL pointer dereference in fixup_dir() when r->handler
+     is NULL, which can happen once mod_rewrite's internal-redirect loop
+     protection (LimitInternalRecursion) kicks in on a self-matching
+     RewriteRule.
+     PR 68527 [Arturo Bernal]
