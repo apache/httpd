@@ -282,6 +282,19 @@ int cache_select(cache_request_rec *cache, request_rec *r)
                 const char *h1, *h2;
 
                 /*
+                 * RFC 9111 4.1: a stored response with a Vary header field
+                 * value containing a member "*" always fails to match, as
+                 * "*" is not the name of a real request header to compare.
+                 */
+                if (vary[0] == '*' && vary[1] == '\0') {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r, APLOGNO(10620) "cache_select(): Vary header "
+                            "contains '*', cannot match stored response.");
+                    mismatch = 1;
+                    break;
+                }
+
+                /*
                  * is this header in the request and the header in the cached
                  * request identical? If not, we give up and do a straight get
                  */
