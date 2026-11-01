@@ -53,39 +53,70 @@
         SSLPassPhraseDialog  builtin
     </IfDefine>
 
-    <IfDefine TEST_SSL_AES256_KEY>
-        <IfDefine TEST_SSL_ECDSA_CERT>
-            SSLCertificateFile @SSLCA@/asf/certs/server_aes256_ecdsa.crt
-            SSLCertificateKeyFile @SSLCA@/asf/keys/server_aes256_ecdsa.pem
+    <IfDefine TEST_SSL_STOREURI>
+        <IfDefine TEST_SSL_AES256_KEY>
+            <IfDefine TEST_SSL_ECDSA_CERT>
+                SSLStoreURI @SSLCA@/asf/certs/server_aes256_ecdsa.crt
+                SSLStoreURI @SSLCA@/asf/keys/server_aes256_ecdsa.pem
+            </IfDefine>
+            <IfDefine !TEST_SSL_ECDSA_CERT>
+                SSLStoreURI @SSLCA@/asf/certs/server_aes256.crt
+                SSLStoreURI @SSLCA@/asf/keys/server_aes256.pem
+            </IfDefine>
         </IfDefine>
-        <IfDefine !TEST_SSL_ECDSA_CERT>
-            SSLCertificateFile @SSLCA@/asf/certs/server_aes256.crt
-            SSLCertificateKeyFile @SSLCA@/asf/keys/server_aes256.pem
+        #else the default is an unencrypted key
+        <IfDefine !TEST_SSL_AES256_KEY>
+            <IfDefine TEST_SSL_ECDSA_CERT>
+                SSLStoreURI @SSLCA@/asf/certs/server_ecdsa.crt
+                SSLStoreURI @SSLCA@/asf/keys/server_ecdsa.pem
+            </IfDefine>
+            <IfDefine !TEST_SSL_ECDSA_CERT>
+                SSLStoreURI @SSLCA@/asf/certs/server.crt
+                SSLStoreURI @SSLCA@/asf/keys/server.pem
+            </IfDefine>
         </IfDefine>
-    </IfDefine>
-    #else the default is an unencrypted key
-    <IfDefine !TEST_SSL_AES256_KEY>
-        <IfDefine TEST_SSL_ECDSA_CERT>
-            SSLCertificateFile @SSLCA@/asf/certs/server_ecdsa.crt
-            SSLCertificateKeyFile @SSLCA@/asf/keys/server_ecdsa.pem
-        </IfDefine>
-        <IfDefine !TEST_SSL_ECDSA_CERT>
-            SSLCertificateFile @SSLCA@/asf/certs/server.crt
-            SSLCertificateKeyFile @SSLCA@/asf/keys/server.pem
-        </IfDefine>
+
+        SSLTrustURI @SSLCA@/asf/certs/ca.crt
+        SSLTrustURI @SSLCA@/asf/crl/ca-bundle.crl
+
     </IfDefine>
 
-    #SSLCertificateChainFile @SSLCA@/asf/certs/cachain.crt
-    SSLCACertificateFile @SSLCA@/asf/certs/ca.crt
-    SSLCACertificatePath @ServerRoot@/conf/ssl
-    SSLCARevocationFile @SSLCA@/asf/crl/ca-bundle.crl
+    <IfDefine !TEST_SSL_STOREURI>
+        <IfDefine TEST_SSL_AES256_KEY>
+            <IfDefine TEST_SSL_ECDSA_CERT>
+                SSLCertificateFile @SSLCA@/asf/certs/server_aes256_ecdsa.crt
+                SSLCertificateKeyFile @SSLCA@/asf/keys/server_aes256_ecdsa.pem
+            </IfDefine>
+            <IfDefine !TEST_SSL_ECDSA_CERT>
+                SSLCertificateFile @SSLCA@/asf/certs/server_aes256.crt
+                SSLCertificateKeyFile @SSLCA@/asf/keys/server_aes256.pem
+            </IfDefine>
+        </IfDefine>
+        #else the default is an unencrypted key
+        <IfDefine !TEST_SSL_AES256_KEY>
+            <IfDefine TEST_SSL_ECDSA_CERT>
+                SSLCertificateFile @SSLCA@/asf/certs/server_ecdsa.crt
+                SSLCertificateKeyFile @SSLCA@/asf/keys/server_ecdsa.pem
+            </IfDefine>
+            <IfDefine !TEST_SSL_ECDSA_CERT>
+                SSLCertificateFile @SSLCA@/asf/certs/server.crt
+                SSLCertificateKeyFile @SSLCA@/asf/keys/server.pem
+            </IfDefine>
+        </IfDefine>
+
+        #SSLCertificateChainFile @SSLCA@/asf/certs/cachain.crt
+        SSLCACertificateFile @SSLCA@/asf/certs/ca.crt
+        SSLCACertificatePath @ServerRoot@/conf/ssl
+        SSLCARevocationFile @SSLCA@/asf/crl/ca-bundle.crl
+
+    </IfDefine>
 
     <IfVersion >= 2.3.15>
         SSLCARevocationCheck chain
     </IfVersion>
 
     # any string other than _default_ causes an NVH set to be created
-    <VirtualHost default:@ssl_module_name@>
+    <VirtualHost localhost:@ssl_module_name@>
         SSLEngine on
 
         #t/ssl/verify.t
