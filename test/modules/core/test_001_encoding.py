@@ -90,3 +90,21 @@ class TestEncoding:
         url = env.mkurl("https", host, path)
         r = env.curl_get(url)
         assert r.response["status"] == status
+
+    # BZ 69994: decoding %2f (only done with AllowEncodedSlashes on) can
+    # complete a ".." segment that the first normalize_path() pass, run
+    # before %2f is decoded, could not see yet. The second pass detects
+    # it escaping above the root, but its return value used to be
+    # ignored, so the request was silently allowed through instead of
+    # getting the same 400 a plain, never-encoded ".." already gets in
+    # test_core_001_04 above.
+    @pytest.mark.parametrize("path", [
+        "/a/..%2f..%2fb.html",
+        "/a/b/..%2f..%2f..%2fc.html",
+    ])
+    def test_core_001_21(self, env, path):
+        url = env.mkurl("https", "test2", path)
+        r = env.curl_get(url)
+        assert r.response["status"] == 400
+        env.httpd_error_log.ignore_recent(
+            matches=[r'.*invalid URI path after decoding encoded slashes.*'])

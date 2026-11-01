@@ -270,7 +270,12 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             /* Decoding slashes might have created new // or /./ or /../
              * segments (e.g. "/.%2F/"), so re-normalize.
              */
-            ap_normalize_path(r->parsed_uri.path, normalize_flags);
+            if (!ap_normalize_path(r->parsed_uri.path, normalize_flags)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10680)
+                              "invalid URI path after decoding encoded "
+                              "slashes (%s)", r->unparsed_uri);
+                return HTTP_BAD_REQUEST;
+            }
         }
     }
 
