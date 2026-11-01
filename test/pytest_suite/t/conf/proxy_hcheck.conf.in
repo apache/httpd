@@ -1,0 +1,107 @@
+#t/TEST -proxy_hcheck
+#
+# Health-checked balancers for t/modules/test_proxy_hcheck.py.  The backends are
+# not httpd: the tests start small socket servers on the ports allocated here,
+# so that they control exactly what each health check sees.  hcinterval=1 with
+# one pass / one fail makes a worker change state within a couple of seconds.
+
+<IfModule mod_proxy_hcheck.c>
+<IfModule mod_proxy_balancer.c>
+<IfModule mod_proxy_http.c>
+
+    Define HC_URI_PORT @NextAvailablePort@
+    Define HC_HDR_PORT @NextAvailablePort@
+    Define HC_MANYHDR_PORT @NextAvailablePort@
+    Define HC_SLOW_PORT @NextAvailablePort@
+    Define HC_BIGEXPR_PORT @NextAvailablePort@
+    Define HC_BIGPLAIN_PORT @NextAvailablePort@
+    Define HC_PATHA_PORT @NextAvailablePort@
+    Define HC_PATHB_PORT @NextAvailablePort@
+    Define HC_PATHC_PORT @NextAvailablePort@
+    Define HC_PATHD_PORT @NextAvailablePort@
+    Define HC_PATHE_PORT @NextAvailablePort@
+    Define HC_PATHF_PORT @NextAvailablePort@
+    Define HC_PATHG_PORT @NextAvailablePort@
+    Define HC_TLSBAD_PORT @NextAvailablePort@
+    Define HC_TLSGOOD_PORT @NextAvailablePort@
+
+    <VirtualHost proxy_hcheck>
+        LogLevel proxy_hcheck:debug
+
+        # The probe path is changed at run time through the balancer-manager.
+        <Proxy balancer://hcuri>
+            BalancerMember http://127.0.0.1:${HC_URI_PORT} hcmethod=GET hcuri=/old hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        ProxyPass /hcuri balancer://hcuri
+
+        # A HEAD probe against a backend that sends a truncated response.
+        <Proxy balancer://hchdr>
+            BalancerMember http://127.0.0.1:${HC_HDR_PORT} hcmethod=HEAD hcuri=/ hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        ProxyPass /hchdr balancer://hchdr
+
+        # HTTPS probes.  Certificates are not chain-verified (SSLProxyVerify none)
+        # so that only the host name check is in play: the "bad" backend presents a
+        # certificate for another name, the "good" one for localhost.
+        <IfModule mod_ssl.c>
+            SSLProxyEngine on
+            SSLProxyVerify none
+            SSLProxyCheckPeerName on
+            <Proxy balancer://hctlsbad>
+                BalancerMember https://localhost:${HC_TLSBAD_PORT} hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1
+            </Proxy>
+            ProxyPass /hctlsbad balancer://hctlsbad
+            <Proxy balancer://hctlsgood>
+                BalancerMember https://localhost:${HC_TLSGOOD_PORT} hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1
+            </Proxy>
+            ProxyPass /hctlsgood balancer://hctlsgood
+        </IfModule>
+
+        # How the probe path is put together from the worker URL and hcuri.
+        <Proxy balancer://hcpatha>
+            BalancerMember http://127.0.0.1:${HC_PATHA_PORT} hcmethod=GET hcuri=ping hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        <Proxy balancer://hcpathb>
+            BalancerMember http://127.0.0.1:${HC_PATHB_PORT}/app hcmethod=GET hcuri=/ping hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        <Proxy balancer://hcpathc>
+            BalancerMember http://127.0.0.1:${HC_PATHC_PORT}/app/ hcmethod=GET hcuri=ping hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        <Proxy balancer://hcpathd>
+            BalancerMember http://127.0.0.1:${HC_PATHD_PORT} hcmethod=GET hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        <Proxy balancer://hcpathe>
+            BalancerMember http://127.0.0.1:${HC_PATHE_PORT}/app hcmethod=GET hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        <Proxy balancer://hcpathf>
+            BalancerMember http://127.0.0.1:${HC_PATHF_PORT}/app/ hcmethod=GET hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        <Proxy balancer://hcpathg>
+            BalancerMember http://127.0.0.1:${HC_PATHG_PORT}/app hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+
+        # Limits on what a probe will take from a backend.
+        ProxyHCExpr nomaint {hc('body') !~ /UNDER-MAINTENANCE/}
+        <Proxy balancer://hcmanyhdr>
+            BalancerMember http://127.0.0.1:${HC_MANYHDR_PORT} hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+        # timeout=2: also the overall budget of one probe
+        <Proxy balancer://hcslow>
+            BalancerMember http://127.0.0.1:${HC_SLOW_PORT} hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1 timeout=2
+        </Proxy>
+        <Proxy balancer://hcbigexpr>
+            BalancerMember http://127.0.0.1:${HC_BIGEXPR_PORT} hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1 hcexpr=nomaint
+        </Proxy>
+        <Proxy balancer://hcbigplain>
+            BalancerMember http://127.0.0.1:${HC_BIGPLAIN_PORT} hcmethod=GET hcuri=/ hcinterval=1 hcpasses=1 hcfails=1
+        </Proxy>
+
+        <Location /balancer-manager>
+            SetHandler balancer-manager
+            Require all granted
+        </Location>
+    </VirtualHost>
+
+</IfModule>
+</IfModule>
+</IfModule>

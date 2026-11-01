@@ -83,7 +83,7 @@ choice at compile-time.</p>
 
 <table border="1" style="zebra">
 <columnspec><column width=".2"/><column width=".2"/></columnspec>
-<tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
+<tr><td>NetWare</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
 <tr><td>Unix</td><td><module>prefork</module>, <module>worker</module>, or
     <module>event</module>, depending on platform capabilities</td></tr>

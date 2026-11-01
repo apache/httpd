@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_xml2enc.xml.meta">
 
 <name>mod_xml2enc</name>
-<description>Enhanced charset/internationalisation support for libxml2-based
+<description>Enhanced charset/internationalization support for libxml2-based
 filter modules</description>
 <status>Base</status>
 <sourcefile>mod_xml2enc.c</sourcefile>
@@ -32,7 +32,7 @@ filter modules</description>
 for 2.2.x versions</compatibility>
 
 <summary>
-    <p>This module provides enhanced internationalisation support for
+    <p>This module provides enhanced internationalization support for
     markup-aware filter modules such as <module>mod_proxy_html</module>.
     It can automatically detect the encoding of input data and ensure
     they are correctly processed by the <a href="http://xmlsoft.org/"

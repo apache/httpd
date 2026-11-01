@@ -78,7 +78,7 @@ switch before dumping core</description>
 
     <note><title>Specific signals</title>
       <p><directive>CoreDumpDirectory</directive> processing only occurs for
-      a select set of fatal signals: SIGFPE, SIGILL, SIGABORT,
+      a select set of fatal signals: SIGFPE, SIGILL, SIGABRT,
       SIGSEGV, and SIGBUS.</p>
       <p>On some operating systems, SIGQUIT also results in a core dump but
       does not go through <directive>CoreDumpDirectory</directive> or
@@ -319,7 +319,7 @@ in *BSDs.</compatibility>
     the same IP address and port</title>
     <p>Setting the <code>SO_REUSEPORT</code> option on the listening socket(s)
     consequently allows multiple processes (sharing the same <code>EUID</code>,
-    e.g. <code>root</code>) to bind to the the same IP address and port,
+    e.g. <code>root</code>) to bind to the same IP address and port,
     without the binding error raised by the system in the usual case.</p>
     <p>This also means that multiple instances of Apache httpd configured on a
     same <code>IP:port</code> and with a positive <directive>ListenCoresBucketsRatio</directive>

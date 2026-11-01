@@ -57,6 +57,7 @@ Release
 /.kdev_include_paths
 /.cproject
 /.project
+/dist/
 
 # /built/
 /built/
@@ -368,3 +369,6 @@ test/gen
 test/pyhttpd/config.ini
 __pycache__
 
+# make check
+check
+build/config_vars.out

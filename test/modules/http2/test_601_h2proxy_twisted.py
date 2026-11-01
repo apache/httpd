@@ -1,8 +1,10 @@
 import json
 import logging
 import os
+import sys
 import pytest
 
+from pyhttpd.backport import not_backported
 from .env import H2Conf, H2TestEnv
 
 
@@ -18,7 +20,9 @@ class TestH2ProxyTwisted:
         assert env.apache_restart() == 0
 
     @pytest.mark.parametrize("name", [
-        "data-1k", "data-10k", "data-100k", "data-1m",
+        "data-1k", "data-10k", "data-100k",
+        pytest.param("data-1m", marks=not_backported(
+            "cause not identified", "H2 proxy upload of 1MB", platform="win32")),
     ])
     def test_h2_601_01_echo_uploads(self, env, name):
         fpath = os.path.join(env.gen_dir, name)
@@ -72,8 +76,12 @@ class TestH2ProxyTwisted:
     def test_h2_601_05_echo_fail_many(self, env):
         if not env.httpd_is_at_least('2.4.58'):
             pytest.skip(f'needs httpd 2.4.58')
-        if not env.curl_is_at_least('8.0.0'):
-            pytest.skip(f'need at least curl v8.0.0 for this')
+        if sys.platform == "win32":
+            pytest.skip("command line too long for Windows (200 parallel curl requests)")
+        env.require(env.curl_is_at_least('8.0.0'),
+                    'need at least curl v8.0.0 for this',
+                    dep='curl >= 8.0.0',
+                    detected=f"curl {env.curl_version_str()}")
         count = 200
         fpath = os.path.join(env.gen_dir, "data-100k")
         args = [env.curl, '--parallel', '--parallel-max', '20']

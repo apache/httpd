@@ -141,14 +141,13 @@ static int parse_host_port(const char **phost, uint16_t *pport,
                            int *pipv6, size_t *pconsumed,
                            const char *s, size_t len, uint16_t def_port)
 {
-    size_t i, offset;
+    size_t i, offset=0;
     char *host = NULL;
     int port = 0;
     int rv = 1, ipv6 = 0;
 
     if (!len)
         goto leave;
-    offset = 0;
     if (s[offset] == '[') {
         ipv6 = 1;
         for (i = offset++; i < len; ++i) {
@@ -490,7 +489,7 @@ static int h2_session_on_frame_recv(nghttp2_session *ngh2,
                                     const nghttp2_frame *frame,
                                     void *user_data)
 {
-    struct h2_session *session = user_data;
+    (void)ngh2;
 
     switch (frame->hd.type) {
     case NGHTTP2_HEADERS:
@@ -511,8 +510,19 @@ static int h2_session_on_frame_recv(nghttp2_session *ngh2,
         break;
     case NGHTTP2_GOAWAY:
         log_infof("frame recv", "FRAME[GOAWAY]");
-        fprintf(stdout, "[%d] GOAWAY\n", frame->hd.stream_id);
-        session->aborted = 1;
+        {
+            struct h2_session *session = user_data;
+            struct h2_stream *s;
+            while ((s = session->streams) != NULL) {
+                s->error_code = frame->goaway.error_code;
+                s->closed = 1;
+                s->reset = 1;
+                fprintf(stdout, "[%d] RST\n", s->id);
+                h2_session_stream_remove(session, s);
+                if (s->on_close)
+                    s->on_close(s);
+            }
+        }
         break;
     }
     return 0;
@@ -746,9 +756,6 @@ static nfds_t h2_session_set_poll(struct h2_session *session,
     int want_read, want_write;
     struct h2_stream *stream;
 
-    if(session->aborted)
-      return 0;
-
     want_read = (nghttp2_session_want_read(session->ngh2) ||
                  session->want_io == IO_WANT_READ);
     want_write = (nghttp2_session_want_write(session->ngh2) ||
@@ -807,6 +814,14 @@ static void h2_session_run(struct h2_session *session)
 
 static void h2_session_close(struct h2_session *session)
 {
+    if (session->ngh2) {
+        nghttp2_session_del(session->ngh2);
+        session->ngh2 = NULL;
+    }
+    if (session->fd >= 0) {
+        close(session->fd);
+        session->fd = -1;
+    }
     log_infof(cmd, "closed session to %s:%u",
               session->connect_host, session->connect_port);
 }
@@ -958,7 +973,7 @@ int main(int argc, char *argv[])
     struct uri uri;
     struct h2_session session;
     struct ws_stream *stream;
-    char ch;
+    int ch;
 
     cmd = argv[0];
     while((ch = getopt(argc, argv, "c:vh")) != -1) {
@@ -1111,5 +1126,11 @@ int main(int argc, char *argv[])
 
     h2_session_run(&session);
     h2_session_close(&session);
+    free(stream);
+    free((void *)uri.host);
+    if (uri.authority != uri.host)
+        free((void *)uri.authority);
+    free((void *)uri.path);
+    free((void *)host);
     return 0;
 }

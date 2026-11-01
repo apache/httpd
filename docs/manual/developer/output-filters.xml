@@ -75,7 +75,7 @@
     <p>Filters can create <code>FLUSH</code> buckets and pass these
     down the filter chain if desired.  Generating <code>FLUSH</code>
     buckets unnecessarily, or too frequently, can harm network
-    utilisation since it may force large numbers of small packets to
+    utilization since it may force large numbers of small packets to
     be sent, rather than a small number of larger packets.  The
     section on <a href="#nonblock">Non-blocking bucket reads</a>
     covers a case where filters are encouraged to generate

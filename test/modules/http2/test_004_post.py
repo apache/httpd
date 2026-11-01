@@ -13,6 +13,8 @@ from .env import H2Conf, H2TestEnv
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_nghttp()
+@H2TestEnv.needs_multipart()
 class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')

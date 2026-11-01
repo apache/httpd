@@ -544,7 +544,7 @@ CacheDirLength 1</pre>
       <p>Using the <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code> module, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
       can cache data from a variety of implementations (aka: "providers"). Using the
       <code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code> module, for example, one can specify that
-      <a href="http://memcached.org">memcached</a> is to be used as the
+      <a href="http://memcached.org">memcached</a> is to be used as
       the backend storage mechanism.</p>
 
       <p>Typically the module will be configured as so:</p>

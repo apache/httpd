@@ -21,14 +21,13 @@ actually compiling and loading in the smoke test.
 from __future__ import annotations
 
 import re
-import shutil
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from .probe import HttpdInfo
+from pyhttpd.cmodules import LIB_SUBDIR as _LIB_SUBDIR
+from pyhttpd.cmodules import clean_module_dir, ensure_built
 
-_LIB_SUBDIR = ".libs"  # apxs output dir for Apache 2.x (TestConfigC %lib_dir)
+from .probe import HttpdInfo
 
 # Hook phases registered by APACHE_HTTPD_TEST_MODULE for Apache 2.x
 # (TestConfigC @cmodule_phases).
@@ -190,16 +189,6 @@ def discover(cmodules_dir: Path, info: HttpdInfo) -> tuple[list[CModule], dict[s
     return mods, skipped
 
 
-def _apxs_cmd(apxs: Path, defines: list[str], include_dir: Path, src: Path) -> list[str]:
-    # apxs is a Perl script; invoke via perl to sidestep exec-bit issues.
-    # Mirrors: $(APXS) -D APACHE2 -D APACHE2_4 -I<cmodules_dir> -c mod_NAME.c
-    cmd = ["perl", str(apxs)]
-    for d in defines:
-        cmd += ["-D", d]
-    cmd += ["-I", str(include_dir), "-c", str(src)]
-    return cmd
-
-
 def clean_modules(cmodules_dir: Path) -> None:
     """Remove all apxs build artifacts from ``cmodules_dir`` (emulate ``make clean``).
 
@@ -209,12 +198,7 @@ def clean_modules(cmodules_dir: Path) -> None:
     The next ``compile_all`` call will rebuild everything from scratch.
     """
     for sub in sorted(p for p in cmodules_dir.iterdir() if p.is_dir()):
-        libs = sub / _LIB_SUBDIR
-        if libs.is_dir():
-            shutil.rmtree(libs)
-        for pattern in ("*.o", "*.lo", "*.slo", "*.la"):
-            for f in sub.glob(pattern):
-                f.unlink(missing_ok=True)
+        clean_module_dir(sub)
     header = cmodules_dir / "apache_httpd_test.h"
     header.unlink(missing_ok=True)
 
@@ -233,26 +217,16 @@ def compile_all(
     :raises RuntimeError: if apxs fails for a module (captured output included).
     """
     defines = defines if defines is not None else ["APACHE2", "APACHE2_4"]
-    generate_header(cmodules_dir / "apache_httpd_test.h")
+    header = cmodules_dir / "apache_httpd_test.h"
+    generate_header(header)
 
     mods, skipped = discover(cmodules_dir, info)
-    apxs_mtime = apxs.stat().st_mtime
     loads: list[tuple[str, Path]] = []
     for mod in mods:
-        needs = force or not mod.so.exists() or (
-            mod.so.stat().st_mtime < mod.src.stat().st_mtime
-        ) or (
-            mod.so.stat().st_mtime < apxs_mtime
-        )
-        if needs:
-            cmd = _apxs_cmd(apxs, defines, cmodules_dir, mod.src)
-            proc = subprocess.run(  # noqa: S603 - trusted paths
-                cmd, cwd=mod.src_dir, capture_output=True, text=True, check=False
-            )
-            if proc.returncode != 0 or not mod.so.exists():
-                raise RuntimeError(
-                    f"apxs failed building mod_{mod.name} (exit {proc.returncode}):\n"
-                    f"$ {' '.join(cmd)}\n{proc.stdout}\n{proc.stderr}"
-                )
+        # rebuilt when the source, the generated header, the defines or the
+        # httpd it is built against change (see pyhttpd.cmodules)
+        ensure_built(mod.src_dir, mod.name, apxs, defines=defines,
+                     include_dirs=[cmodules_dir], extra_inputs=[header],
+                     force=force)
         loads.append((mod.symbol, mod.so))
     return loads, skipped

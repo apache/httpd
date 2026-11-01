@@ -156,9 +156,9 @@
         <code>awk.exe</code> is really a symlink to the <code>gawk.exe</code>
         file. The Windows command shell does not recognize symlinks, and
         because of this building InstallBin will fail. A workaround is
-        to delete <code>awk.exe</code> from the cygwin installation and
+        to delete <code>awk.exe</code> from the Cygwin installation and
         copy <code>gawk.exe</code> to <code>awk.exe</code>.  Also note the
-        cygwin/mingw ports of gawk 3.0.x were buggy, please upgrade to 3.1.x
+        Cygwin/MinGW ports of gawk 3.0.x were buggy, please upgrade to 3.1.x
         before attempting to use any gawk port.</div>
       </li>
 
@@ -227,7 +227,7 @@
         odbc dbd providers are compiled unconditionally.</p>
 
         <p>The dbd support includes the Oracle instantclient package, MySQL,
-        PostgreSQL and sqlite.  To build these all, for example, set up the
+        PostgreSQL and SQLite.  To build these all, for example, set up the
         LIB to include the library path, INCLUDE to include the headers path,
         and PATH to include the dll bin path of all four SDK's, and set the
         DBD_LIST environment variable to inform the build which client driver

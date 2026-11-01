@@ -55,8 +55,9 @@ class TestProxyAjp:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        if not env.has_shared_module("proxy_ajp"):
-            pytest.skip("mod_proxy_ajp not available")
+        env.require(env.has_shared_module("proxy_ajp"), "mod_proxy_ajp not available",
+                    dep="mod_proxy_ajp",
+                    detected=f"no mod_proxy_ajp.so in {env.libexec_dir}")
         faker = _AJPFaker("127.0.0.1", env.http_port2)
         faker.start()
         conf = HttpdConf(env)

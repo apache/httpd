@@ -761,7 +761,7 @@ a matching file with MultiViews</td></tr>
     never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
-    and filters to participate in Multviews, but will exclude unknown
+    and filters to participate in MultiViews, but will exclude unknown
     files:</p>
 
     <pre class="prettyprint lang-config">MultiviewsMatch Handlers Filters</pre>

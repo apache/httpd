@@ -46,8 +46,10 @@ class TestProxyFwd:
         assert r.json['port'] == f'{env.http_port}'
 
     def test_h2_503_02_fwd_proxy_h2_off(self, env):
-        if not env.curl_is_at_least('8.1.0'):
-            pytest.skip(f'need at least curl v8.1.0 for this')
+        env.require(env.curl_is_at_least('8.1.0'),
+                    'need at least curl v8.1.0 for this',
+                    dep='curl >= 8.1.0',
+                    detected=f"curl {env.curl_version_str()}")
         url = f'http://localhost:{env.http_port}/hello.py'
         proxy_host = f'test1.{env.http_tld}'
         options = [
@@ -62,8 +64,10 @@ class TestProxyFwd:
 
     # test the HTTP/2 setup working
     def test_h2_503_03_proxy_fwd_h2_on(self, env):
-        if not env.curl_is_at_least('8.1.0'):
-            pytest.skip(f'need at least curl v8.1.0 for this')
+        env.require(env.curl_is_at_least('8.1.0'),
+                    'need at least curl v8.1.0 for this',
+                    dep='curl >= 8.1.0',
+                    detected=f"curl {env.curl_version_str()}")
         self.config_fwd_proxy(env, h2_enabled=True)
         url = f'http://localhost:{env.http_port}/hello.py'
         proxy_host = f'test1.{env.http_tld}'

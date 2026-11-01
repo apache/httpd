@@ -91,7 +91,8 @@ def test_proxy_beacon(http):
     # Qualify by balancer://beacon so the capacity-test balancer (below) doesn't
     # perturb these counts.
     added = [ln for ln in session_loglines
-             if "added backend" in ln and "balancer://beacon" in ln]
+             if f"added backend http://{vars_['servername']}:{vars_['port']} "
+                "to balancer://beacon" in ln]
     assert len(added) == 1, (
         f"backend should be added exactly once; saw {len(added)}: {added}")
     assert not [ln for ln in loglines if "failed to add worker" in ln

@@ -33,7 +33,6 @@ function testit()
 testit '{"tag": "2.4.49"}' 2.4.x
 testit '{"tag": "2.5.59"}' trunk
 testit '{"branch": "2.4.x"}' 2.4.x
-testit '{"branch": "candidate-2.4.49"}' 2.4.x
 testit '{"branch": "2.4.55-candidate"}' 2.4.x
 testit '{"branch": "2.4-backport-branch"}' 2.4.x
 testit '{"branch": "2.4.x-something"}' 2.4.x

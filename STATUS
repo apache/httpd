@@ -1,29 +1,12 @@
-APACHE 2.4 STATUS:                        -*- mode: text; coding: utf-8 -*-
-Last modified at [$Date$]
+APACHE HTTP SERVER 2.4 STATUS:                       -*- mode: text; coding: utf-8 -*-
 
 The current version of this file can be found at:
 
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
+  * https://github.com/apache/httpd/blob/2.4.x/STATUS
 
 The current development branch of this software can be found at:
 
-  * http://svn.apache.org/repos/asf/httpd/httpd/trunk
-
-Consult the following STATUS files for information on related projects:
-
-  * http://svn.apache.org/repos/asf/apr/apr/trunk/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr/branches/1.4.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.4.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr/branches/1.5.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.5.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr/branches/1.6.x/STATUS
-  * http://svn.apache.org/repos/asf/apr/apr-util/branches/1.6.x/STATUS
-
-Patches considered for backport are noted in their branches' STATUS:
-
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
-  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.4.x/STATUS
-
+  * https://github.com/apache/httpd/
 
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
@@ -128,14 +111,11 @@ Contributors looking for a mission:
 
   * Review the "PatchAvailable" bugs in the bug database:
 
-    https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
+    https://bz.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
 
     After testing, you can append a comment saying "Reviewed and tested".
 
   * Open bugs in the bug database.
-
-  * See also the STATUS file in the docs/ directory, which lists documentation-specific TODO items.
-
 
 CURRENT RELEASE NOTES:
 
@@ -143,9 +123,9 @@ CURRENT RELEASE NOTES:
     that no MMN major number changes will occur after 2.4.1.  Such changes can
     only be made in the trunk.
 
-  * All commits to branches/2.4.x must be reflected in SVN trunk,
+  * All commits to the 2.4.x branch must be reflected in the trunk branch,
     as well, if they apply.  Logical progression is commit to trunk
-    then merge into branches/2.4.x, as applicable.
+    then merge into 2.4.x, as applicable.
 
   * Current exceptions for RTC for this branch:
     . mod_proxy_http2
@@ -161,27 +141,66 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
 
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-------------------------------------------------------------------------
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
+
+ ** Propose new backports as PRs **
+
+ Open PRs for 2.4.x:
+ -> https://github.com/apache/httpd/pulls?q=is%3Apr+state%3Aopen+base%3A2.4.x+draft%3Afalse
+
+ Open PRs for 2.4.x with at least one review approval:
+ -> https://github.com/apache/httpd/pulls?q=is%3Apr+state%3Aopen+base%3A2.4.x+draft%3Afalse+review%3Aapproved
+
+ Open PRs for 2.4.x with passing CI:
+ -> https://github.com/apache/httpd/pulls?q=is%3Apr+state%3Aopen+base%3A2.4.x+draft%3Afalse+status%3Asuccess
+
+HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
      announcement -- backends self-register as balancer members over UDP.
+     Also adds the PROXY_WORKER_BEACON worker status bit (MMN minor bump) and
+     lets the balancer-manager create a worker with initial status flags.
+     Apply after the "Update the shared worker status word atomically" and
+     "Don't leave a half-defined worker" mod_proxy proposals below.
      trunk patch: https://svn.apache.org/r1934995
                   https://svn.apache.org/r1935040
                   https://svn.apache.org/r1935556
+                  https://svn.apache.org/r1938135
+                  https://svn.apache.org/r1938912
+                  https://svn.apache.org/r1939350
+                  https://svn.apache.org/r1939351
+                  https://svn.apache.org/r1939362
+                  https://svn.apache.org/r1939364
+                  https://svn.apache.org/r1939391
+                  https://svn.apache.org/r1939436
+                  https://svn.apache.org/r1939482
+                  https://svn.apache.org/r1939484
+                  https://svn.apache.org/r1939487
+                  https://svn.apache.org/r1939493
      2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
-     +1: jim, 
+     +1: jim,
 
   *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
      (multi-poller scale-out with new PollersPerChild directive, async
-     keep-alive/HTTP/2 handoff, concurrency hardening, motorz test suite).
+     keep-alive/HTTP/2 handoff, graceful drain, ServerLimit and
+     AsyncRequestWorkerFactor, concurrency hardening, motorz test suite).
+     Leaves out the trunk-only core features trunk's motorz also uses.
      trunk patch: https://svn.apache.org/r1934868
+                  https://svn.apache.org/r1934888
+                  https://svn.apache.org/r1934890
+                  https://svn.apache.org/r1938134
+                  https://svn.apache.org/r1939355
+                  https://svn.apache.org/r1939361
+                  https://svn.apache.org/r1939366
+                  https://svn.apache.org/r1939392
+                  https://svn.apache.org/r1939435
+                  https://svn.apache.org/r1939466
+                  https://svn.apache.org/r1939477
+                  https://svn.apache.org/r1939479
+                  https://svn.apache.org/r1939480
+                  https://svn.apache.org/r1939483
+                  https://svn.apache.org/r1939486
      2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
      +1: jim, 
 
@@ -202,7 +221,64 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1937646
                   https://svn.apache.org/r1937647
      2.4.x patch: https://github.com/apache/httpd/pull/773.patch
-     +1: jorton,
+     +1: jorton, covener
+
+  *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
+     type, and serialize lock database access with a global mutex since
+     apr_dbm does not provide thread-safe locking.
+     trunk patch: https://svn.apache.org/r1912571
+                  https://svn.apache.org/r1912718
+                  https://svn.apache.org/r1914438
+     2.4.x patch: https://github.com/apache/httpd/pull/399.patch
+     +1: jorton, covener
+     covener: docs need fixup for "2.5.1" 
+
+  *) mod_remoteip: Various fixes and improvements from trunk.
+     trunk patch: https://svn.apache.org/r1874344
+                  https://svn.apache.org/r1933436
+                  https://svn.apache.org/r1936258
+                  https://svn.apache.org/r1936357
+                  https://svn.apache.org/r1936366
+                  https://svn.apache.org/r1938292
+                  https://svn.apache.org/r1938908
+                  https://svn.apache.org/r1938909
+                  https://svn.apache.org/r1938927
+                  https://svn.apache.org/r1938928
+     2.4.x patch: https://github.com/apache/httpd/pull/819.patch
+     +1: jorton, covener
+
+   *) ab: remove SVN keywords in copyright msg
+      trunk patch:   https://svn.apache.org/r1939247
+     +1: covener
+     covener: trivial patch probably needs to manually re-applied due to the 
+              keyword expansion.
+
+  *) mod_proxy: Update the shared worker status word atomically, so a
+     change to one status bit (error, initialized, ...) can't be lost to a
+     concurrent change of another.
+     trunk patch: https://svn.apache.org/r1939352
+                  https://svn.apache.org/r1939481
+     2.4.x patch: https://gist.github.com/jimjag/b09630a9a80be39cb475ecc1c98be0d3
+     +1: jim,
+
+  *) mod_proxy: Don't leave a half-defined worker in the balancer's (or
+     conf's) worker array when ap_proxy_define_worker() fails on a too long
+     hostname or UDS path.
+     trunk patch: https://svn.apache.org/r1939349
+     2.4.x patch: https://gist.github.com/jimjag/490e576002ffe48f40153c1ee7bbe046
+     +1: jim,
+
+  *) mod_proxy_hcheck: Fix several health check problems: truncated
+     responses, no overall response deadline, unbounded header/body size,
+     missing SNI for TLS probes, stale request after an hcuri change,
+     request URI construction, lax hcpasses/hcfails/ProxyHCTPsize parsing,
+     unlocked walks of the balancer worker array, unhandled thread pool
+     push failures, and request pool lifetime vs. the backend connection.
+     trunk patch: https://svn.apache.org/r1939353
+                  https://svn.apache.org/r1939390
+                  https://svn.apache.org/r1939416
+     2.4.x patch: https://gist.github.com/jimjag/a593d5dd174b7f4a49c594599b878e8c
+     +1: jim,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]

@@ -23,7 +23,7 @@
 <manualpage metafile="rpm.xml.meta">
   <parentdocument href="./">Platform Specific Notes</parentdocument>
 
-  <title>Using Apache With RPM Based Systems (Redhat / CentOS / Fedora)</title>
+  <title>Using Apache With RPM Based Systems (Red Hat / CentOS / Fedora)</title>
 
   <summary>
 

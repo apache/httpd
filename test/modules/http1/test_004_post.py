@@ -7,9 +7,12 @@ import sys
 
 import pytest
 
+from pyhttpd.env import HttpdTestEnv
+
 from .env import H1Conf
 
 
+@HttpdTestEnv.needs_multipart()
 class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')

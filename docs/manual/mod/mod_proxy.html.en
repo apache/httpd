@@ -65,7 +65,7 @@
 
         <table class="bordered">
         <tr><th>Protocol</th><th>Module</th></tr>
-        <tr><td>AJP13 (Apache JServe Protocol version
+        <tr><td>AJP13 (Apache JServ Protocol version
           1.3)</td><td><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></td></tr>
         <tr><td>CONNECT (for
           SSL)</td><td><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></td></tr>
@@ -764,7 +764,7 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
     </div>
 
     <div class="note"><h3>Differences from the Location configuration section</h3>
-      <p>A backend URL matches the configuration section if it begins with the
+      <p>A backend URL matches the configuration section if it begins with
       the <var>wildcard-url</var> string, even if the last path segment in the
       directive only matches a prefix of the backend URL.  For example,
       &lt;Proxy "http://example.com/foo"&gt; matches all of
@@ -1627,7 +1627,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 
     <p><strong>Additional ProxyPass Keywords</strong></p>
 
-    <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
+    <p>Normally, mod_proxy will canonicalize ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
     that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the

@@ -17,13 +17,25 @@ class _UWSGIFaker(TCPFaker):
             + body
         )
 
+    @staticmethod
+    def empty_header(data):
+        body = b"Hello"
+        return (
+            b"HTTP/1.1 200 OK\r\n"
+            b"X-Empty:\r\n"
+            b"Content-Length: 5\r\n"
+            b"\r\n"
+            + body
+        )
+
 
 class TestProxyUwsgi:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        if not env.has_shared_module("proxy_uwsgi"):
-            pytest.skip("mod_proxy_uwsgi not available")
+        env.require(env.has_shared_module("proxy_uwsgi"), "mod_proxy_uwsgi not available",
+                    dep="mod_proxy_uwsgi",
+                    detected=f"no mod_proxy_uwsgi.so in {env.libexec_dir}")
         faker = _UWSGIFaker("127.0.0.1", env.http_port2)
         faker.start()
         conf = HttpdConf(env)
@@ -50,4 +62,12 @@ class TestProxyUwsgi:
         datasize = data[1] + (data[2] * 256)  # read from 16bit little-endian
         assert data[3] == 0x00  # standard WSGI request
         assert len(data) == 4 + datasize
+
+    # empty backend response header values are valid
+    def test_proxy_005_02(self, env, _class_scope):
+        _class_scope._make_response = _UWSGIFaker.empty_header
+        r = env.curl_get(env.mkurl("http", "test1", "/"))
+        assert r.response["status"] == 200
+        assert "x-empty" in r.response["header"]
+        assert r.response["body"] == b"Hello"
 

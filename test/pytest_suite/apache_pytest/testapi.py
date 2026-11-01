@@ -10,9 +10,9 @@ files use. The Perl Apache::Test vocabulary maps as follows:
 * ``have_min_apache_version()`` -> :func:`have_min_apache_version` (runtime gate)
 * ``GET`` / ``GET_BODY`` / ...  -> methods on the ``http`` fixture (client.py)
 
-The requirement markers (need_*) are evaluated at collection time by a
-``pytest_collection_modifyitems`` hook in conftest.py, which probes the target
-httpd once and skips tests whose requirements aren't met -- the analog of
+The requirement markers (need_*) are evaluated at collection time by
+pyhttpd.gating, which probes the target httpd once and skips tests whose
+requirements aren't met -- the analog of
 Apache::Test's plan-time skipping.
 """
 
@@ -22,6 +22,9 @@ import re
 from typing import Any
 
 import pytest
+
+from pyhttpd.backport import has_change as has_trunk_change  # noqa: F401
+from pyhttpd.backport import not_backported  # noqa: F401  (one definition, both suites)
 
 # --------------------------------------------------------------------------- #
 # Assertions / comparison
@@ -60,8 +63,8 @@ def t_cmp(received: Any, expected: Any) -> bool:
 # --------------------------------------------------------------------------- #
 # Requirement markers (need_*) -- thin wrappers over pytest.mark
 # --------------------------------------------------------------------------- #
-# Each marker records its requirement as marker args; the collection hook in
-# conftest.py reads them against the probed HttpdInfo and skips as needed.
+# Each marker records its requirement as marker args; pyhttpd.gating reads them
+# against the probed HttpdInfo at collection time and skips as needed.
 
 
 def need_module(*names: str) -> pytest.MarkDecorator:

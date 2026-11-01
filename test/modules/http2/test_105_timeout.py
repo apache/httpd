@@ -142,8 +142,10 @@ class TestTimeout:
     def test_h2_105_12(self, env):
         # long connection timeout, short stream timeout
         # sending a slow POST
-        if not env.curl_is_at_least('8.0.0'):
-            pytest.skip(f'need at least curl v8.0.0 for this')
+        env.require(env.curl_is_at_least('8.0.0'),
+                    'need at least curl v8.0.0 for this',
+                    dep='curl >= 8.0.0',
+                    detected=f"curl {env.curl_version_str()}")
         if not env.httpd_is_at_least("2.5.0"):
             pytest.skip(f'need at least httpd 2.5.0 for this')
         conf = H2Conf(env)
@@ -159,7 +161,7 @@ class TestTimeout:
             time.sleep(2)
             try:
                 piper.send("0123456789\n")
-            except BrokenPipeError:
+            except (BrokenPipeError, OSError):
                 break
         piper.close()
         assert piper.response, f'{piper}'

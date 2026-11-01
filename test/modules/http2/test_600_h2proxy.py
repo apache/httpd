@@ -1,4 +1,6 @@
 import pytest
+import re
+import socket
 
 from .env import H2Conf, H2TestEnv
 
@@ -120,7 +122,7 @@ class TestH2Proxy:
             'UseCanonicalPhysicalPort On'
         ])
         conf.start_vhost(domains=[f'cgi.{env.http_tld}'],
-                         port=5004, doc_root="htdocs/cgi")
+                         port=env.http_port2, doc_root="htdocs/cgi")
         conf.add("AddHandler cgi-script .py")
         conf.end_vhost()
         conf.install()
@@ -198,3 +200,27 @@ class TestH2Proxy:
         # stream (exit_code != 0) or give a 503 response.
         if r.exit_code == 0:
             assert r.response['status'] in [502, 503]
+
+    # test missing host header
+    def test_h2_600_33(self, env):
+
+        conf = H2Conf(env, extras={
+            'base': [
+                'ProxyPreserveHost on',
+                f'ProxyPass /test/ h2c://127.0.0.1:{env.http_port}/',
+            ],
+        })
+        conf.install()
+        assert env.apache_restart() == 0
+
+        with socket.create_connection(
+                ('localhost', int(env.http_port))) as sock:
+            sock.sendall("GET /test/\r\n\r\n".encode())
+        warn_message = re.compile(
+            r'.*HTTP/0\.9 request \(with no Host header\)'
+            r' and preserve host set, forcing hostname.*'
+        )
+        assert env.httpd_error_log.scan_recent(warn_message, timeout=5)
+        env.httpd_error_log.ignore_recent(matches=[
+            r'.*HTTP/0\.9 request \(with no Host header\).*', ],
+            lognos=["AH10511"])

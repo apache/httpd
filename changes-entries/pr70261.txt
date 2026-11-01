@@ -1,0 +1,2 @@
+  *) mod_authnz_ldap: Fix crashes in 2.4.69 reported on Windows.
+     PR 70261. [Eric Covener]

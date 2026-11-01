@@ -3,12 +3,15 @@ import logging
 
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .md_conf import MDConf
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestAutov2:
 
     @pytest.fixture(autouse=True, scope='class')
@@ -54,6 +57,9 @@ class TestAutov2:
             {'spec': "secp256r1", 'ciphers': "ECDSA", 'keylen': 256},
             {'spec': "", 'ciphers': "RSA", 'keylen': 0},
         ])
+        env.httpd_error_log.ignore_recent(
+            lognos=["AH10373"]
+        )
 
     # set EC key type override on MD and get certificate
     def test_md_810_002(self, env):
@@ -70,6 +76,9 @@ class TestAutov2:
             {'spec': "secp384r1", 'ciphers': "ECDSA", 'keylen': 384},
             {'spec': "", 'ciphers': "RSA", 'keylen': 0},
         ])
+        env.httpd_error_log.ignore_recent(
+            lognos=["AH10373"]
+        )
 
     # set two key spec, ec before rsa
     def test_md_810_003a(self, env):

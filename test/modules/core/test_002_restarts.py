@@ -88,8 +88,8 @@ class ChildDynamics:
 
 @pytest.mark.skipif(condition='STRESS_TEST' not in os.environ,
                     reason="STRESS_TEST not set in env")
-@pytest.mark.skipif(condition=not CoreTestEnv().h2load_is_at_least('1.41.0'),
-                    reason="h2load unavailable or misses --connect-to option")
+@CoreTestEnv.needs_h2load("1.41.0",
+                          reason="h2load unavailable or misses --connect-to option")
 class TestRestarts:
 
     def test_core_002_01(self, env):

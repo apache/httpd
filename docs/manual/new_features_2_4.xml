@@ -168,7 +168,7 @@
       <dd>Provides a Slot-based shared memory provider (ala the scoreboard).</dd>
 
       <dt><module>mod_xml2enc</module></dt>
-      <dd>Formerly a third-party module, this supports internationalisation
+      <dd>Formerly a third-party module, this supports internationalization
       in libxml2-based (markup-aware) filter modules.</dd>
 
       <dt><module>mod_macro</module> (available since 2.4.5)</dt>
@@ -188,13 +188,13 @@
       <dd>HTTP/2 Protocol backend for <module>mod_proxy</module></dd>
 
       <dt><module>mod_proxy_hcheck</module> (available since 2.4.21)</dt>
-      <dd>Support independent dynamic health checks for remote proxiy backend servers.</dd>
+      <dd>Support independent dynamic health checks for remote proxy backend servers.</dd>
 
       <dt><module>mod_brotli</module> (available since 2.4.26)</dt>
       <dd>Support the Brotli compression algorithm.</dd>
 
       <dt><module>mod_md</module> (available since 2.4.30)</dt>
-      <dd>Support the ACME protocol to automate certificate provisionning.</dd>
+      <dd>Support the ACME protocol to automate certificate provisioning.</dd>
 
       <dt><module>mod_proxy_uwsgi</module> (available since 2.4.30)</dt>
       <dd>UWSGI gateway module for <module>mod_proxy</module>.</dd>
@@ -380,7 +380,7 @@
         to properly distinguish between the RFC2616 HTTP/1.1 caching
         features provided by <module>mod_cache</module>, and the generic
         key/value caching provided by the <a href="socache.html">socache</a>
-        interface, as well as to cover specialised caching provided by
+        interface, as well as to cover specialized caching provided by
         mechanisms such as <module>mod_file_cache</module>.</dd>
 
     </dl>

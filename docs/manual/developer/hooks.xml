@@ -38,7 +38,7 @@
 </summary>
 
 <section id="corehooks"><title>Core Hooks</title>
-    <p>The httpd's core modules offer a predefinined list of hooks
+    <p>The httpd's core modules offer a predefined list of hooks
     used during the standard <a href="./request.html">request processing</a>
     phase. Creating a new hook will expose a function that 
     implements it (see sections below) but it is essential to understand that you will not 

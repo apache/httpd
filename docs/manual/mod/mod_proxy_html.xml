@@ -70,7 +70,7 @@ module for earlier 2.x versions.</compatibility>
     <code>&lt;head&gt;</code> sections.</p>
     <p>If not required, turning ProxyHTMLMeta Off will give a small
     performance boost by skipping this parse step.  However, it
-    is sometimes necessary for internationalisation to work correctly.</p>
+    is sometimes necessary for internationalization to work correctly.</p>
     <p><directive>ProxyHTMLMeta</directive> has two effects.  Firstly and most importantly
     it enables detection of character encodings declared in the form</p>
     <pre>&lt;meta http-equiv="Content-Type" content="text/html;charset=<var>foo</var>"&gt;</pre>
@@ -114,7 +114,7 @@ module for earlier 2.x versions.</compatibility>
 <usage>
     <p>A simple switch to enable or disable the proxy_html filter.
     If <module>mod_xml2enc</module> is loaded it will also automatically
-    set up internationalisation support.</p>
+    set up internationalization support.</p>
     <p>Note that the proxy_html filter will only act on HTML data
     (Content-Type text/html or application/xhtml+xml) and when the
     data are proxied.  You can override this (at your own risk) by
