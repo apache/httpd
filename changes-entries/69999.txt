@@ -1,0 +1,4 @@
+  *) mod_dav: Fix mswdv_urlencode() percent-encoding a nibble of exactly
+     0xA as ':' instead of 'A', garbling the X-MSDAVEXT_ERROR header's
+     diagnostic text on a lock conflict.
+     PR 69999 [Arturo Bernal]

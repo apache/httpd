@@ -104,8 +104,8 @@ static const char *mswdv_urlencode(request_rec *r, const char *str)
             char msb = (*ip >> 4);
             char lsb = (*ip & 0x0f);
             *op++ = '%';
-            *op++ = msb > 10 ? 'A' + msb - 10 : '0' +msb;
-            *op++ = lsb > 10 ? 'A' + lsb - 10 : '0' +lsb;
+            *op++ = msb >= 10 ? 'A' + msb - 10 : '0' + msb;
+            *op++ = lsb >= 10 ? 'A' + lsb - 10 : '0' + lsb;
         }
     }
     *op++ = '\0';
