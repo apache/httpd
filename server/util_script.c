@@ -175,7 +175,6 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 {
     apr_table_t *e;
     server_rec *s = r->server;
-    conn_rec *c = r->connection;
     core_dir_config *conf =
         (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     const char *env_temp;
@@ -291,7 +290,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
         apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
     }
 
-    rport = c->client_addr->port;
+    rport = r->useragent_addr->port;
     apr_table_addn(e, "REMOTE_PORT", apr_itoa(r->pool, rport));
 
     if (r->user) {
