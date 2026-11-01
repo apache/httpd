@@ -187,10 +187,22 @@ ProxyBeaconInterval  10
       <li><strong>rejette</strong> toute annonce qui ne correspond pas à une
       origine : comportant un chemin (autre que <code>/</code>), une chaîne de
       paramètres, un fragment, des informations utilisateur, un port non valable
-      (tel que <code>0</code>) ou qui utilise un format de socket
-      <code>unix:</code>. Le rejet est journalisé (avec limitation de débit) en
-      tant qu'<code>URL inacceptable</code> et le dorsal n’est pas ajouté.</li>
+      (tel que <code>0</code>), qui utilise un format de socket
+      <code>unix:</code>, un protocole trop long pour être stocké en tant que
+      partie d’un thread de travail ou un nom d’hôte trop long pour être stocké.
+      Le rejet est journalisé (avec limitation de débit) en tant qu'<code>URL
+      inacceptable</code> et le dorsal n’est pas ajouté.</li>
     </ul>
+
+    <p>Les erreurs qu’aucune modification ultérieure du réseau ne peut corriger
+    sont signalées par <code>httpd -t</code> ainsi qu’au démarrage : une
+    directive <directive>ProxyBeaconSecret</directive> manquante, une
+    <directive>ProxyBeaconAddress</directive> qui n’est pas sous la forme
+    <code>host:port</code>, une adresse <directive>ProxyBeaconListen</directive>
+    mal formée et un <directive>ProxyBeaconBalancer</directive> qui n’est pas
+    défini pour le serveur. Qu’une adresse puisse être résolue ou qu’un port
+    puisse être lié n’est alors plus vérifié ; le mandataire continue de les
+    essayer.</p>
 
     <p>Les chemins sont refusés, car le répartiteur de charge trouve un membre
     en recherchant une correspondance avec le préfixe le plus long. Des annonces
@@ -320,14 +332,78 @@ ProxyBeaconInterval  10
     <p>Si l'ouverture du socket UDP échoue (par exemple en raison d'une adresse
     impossible à résoudre ou d'un port déjà utilisé), une nouvelle tentative est
     effectuée après un délai initial de 30 secondes ; ce délai double à chaque
-    essai, jusqu'à atteindre un maximum de 10 minutes. La résolution de noms est
-    synchrone et s'exécute au sein de l'unique thread du module
+    essai, jusqu'à atteindre un maximum de 10 minutes. La même chose se produit
+    après cinq échecs d’envoi ou de réception à la suite. Un serveur dorsal
+    recherche à nouveau l’adresse du mandataire toutes les cinq minutes et
+    conserve celle qu’il connaît si cette recherche échoue ; un mandataire qui
+    s’est déplacé sera donc trouvé sans avoir à redémarrer. La résolution de
+    noms est synchrone et s'exécute au sein de l'unique thread du module
     <module>mod_watchdog</module> qui gère toutes les configurations de « beacon
     » du serveur ; par conséquent, un nom qui ne peut être résolu risque de
     bloquer ces opérations pendant toute la durée nécessaire au mécanisme de
     résolution pour abandonner. Il est donc préférable d'utiliser une adresse IP
     dans les directives <directive>ProxyBeaconAddress</directive> et
     <directive>ProxyBeaconListen</directive>.</p>
+
+    <p>À chaque exécution de watchdog, le mandataire lit des datagrammes pendant
+    au plus 50 millisecondes (et pour un nombre maximal de 1024), de sorte
+    qu’une submersion ne puisse pas l’empêcher d’évincer des membres ; ce qu’il
+    ne lit pas pendant ce temps est mis en attente dans le tampon du socket ou
+    supprimé par le système d’exploitation. Au plus vingt lignes
+    <code>received:</code> par seconde sont consignées pour chaque
+    configuration ; le nombre de lignes omises est enregistré lorsque l’annonce
+    suivante survient après cette seconde.</p>
+
+</section>
+
+<section id="envelope"><title>À quoi sert ce module ?</title>
+
+    <p>Ce module fournit une <em>adhésion fondée sur l’activité</em> pour un
+    ensemble de serveurs dorsaux que vous contrôlez. Utilisez-le dans le respect
+    de ces limites, qui relèvent des caractéristiques de la conception et non de
+    défauts auxquels il faudrait trouver une parade :</p>
+
+    <ul>
+      <li><strong>Identités d’origine stables.</strong> Un membre qui est arrêté
+      est désactivé, pas supprimé, et conserve son emplacement dans le
+      répartiteur pour la durée de vie du serveur (voir <a
+      href="#operator">Contrôle des membres par l’administrateur</a>). Une flotte de serveurs dorsaux qui changent
+      d’adresse ou de port au court du temps consomme une partie du quota
+      <code>growth</code> avec chaque
+      nouvelle origine, même lorsque les anciennes sont parties ; lorsque ce
+      quota est épuisé, les nouveaux arrivants sont rejetés. Définissez le
+      paramètre <code>growth</code> en fonction du nombre d’<em>origines
+      distinctes</em> susceptibles d’effectuer des annonces entre deux
+      redémarrages, et surveillez les journaux pour détecter tout refus d’ajout.
+      Il n’est pas approprié d’effectuer une rotation arbitraire des adresses.</li>
+      <li><strong>Un seul domaine de confiance.</strong> Le secret est une
+      accréditation d’adhésion : chaque détenteur peut annoncer une origine
+      accessible, y compris à la place d’un autre serveur dorsal. Ne le partagez
+      pas entre des charges de travail qui ne se font pas confiance (voir
+      <directive module="mod_proxy_beacon">ProxyBeaconSecret</directive>).</li>
+      <li><strong>Activité, non lisibilité.</strong> Un serveur dorsal s’annonce
+      pendant que son watchdog s’exécute. Cela ne veut pas dire qu’il peut
+      traiter une requête. Un nouveau membre est activé dès lors que sa première
+      annonce a été acceptée ; combinez le module avec
+      <module>mod_proxy_hcheck</module>, ou bien gérez, au niveau des serveurs
+      dorsaux eux-mêmes, le moment où ils commencent à se signaler comme
+      disponibles, si cela a une importance.</li>
+      <li><strong>La protection contre le rejeu appartient au
+      propriétaire.</strong> L’enregistrement du dernier horodatage accepté de
+      chaque membre est conservé par le processus qui possède le watchdog. Si le
+      propriétaire change, ou que le serveur redémarre, une annonce capturée qui
+      se trouve encore dans la fenêtre <directive>ProxyBeaconMaxSkew</directive>
+      peut être acceptée à nouveau (voir <a href="#ownership">Transfert de
+      propriété et de watchdog</a>). Gardez le port de réception sur un réseau
+      que les hôtes non fiables ne peuvent pas atteindre, car le secret ne
+      constitue pas une protection contre le rejeu.</li>
+      <li><strong>Un seul récepteur par serveur dorsal.</strong> Un serveur
+      dorsal s’annonce à une seule adresse
+      (<directive>ProxyBeaconAddress</directive>). S’annoncer à plusieurs
+      mandataires n’est pas pris en charge par le module.</li>
+      <li><strong>Unicast, même réseau.</strong> Les datagrammes ne sont ni
+      chiffrés ni acquittés.</li>
+    </ul>
 
 </section>
 
