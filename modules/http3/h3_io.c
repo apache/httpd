@@ -432,6 +432,11 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         {
             nghttp3_conn_submit_shutdown_notice(session->ngh3);
         }
+        if (!io->thread_running && !session->final_goaway_sent)
+        {
+            nghttp3_conn_shutdown(session->ngh3);
+            session->final_goaway_sent = 1;
+        }
         flush_nghttp3(session);
         int drained = nghttp3_conn_is_drained2(session->ngh3);
         apr_thread_mutex_unlock(session->lock);
@@ -448,7 +453,11 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         if (drained || (session->goaway_deadline && apr_time_now() >= session->goaway_deadline))
         {
             apr_thread_mutex_lock(session->lock);
-            nghttp3_conn_shutdown(session->ngh3);
+            if (!session->final_goaway_sent)
+            {
+                nghttp3_conn_shutdown(session->ngh3);
+                session->final_goaway_sent = 1;
+            }
             flush_nghttp3(session);
             apr_thread_mutex_unlock(session->lock);
             session->aborted = 1;
