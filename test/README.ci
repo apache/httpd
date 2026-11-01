@@ -80,6 +80,11 @@ The CI scripts use the following environment variables:
   HTTP/2 workflow to test against nghttp2 versions other than the one
   packaged for the runner image.
 
+* TEST_CURL_H3 - if set to a version string (e.g. "8.18.0"), that
+  release of curl is built with HTTP/3 (OpenSSL QUIC and libnghttp3)
+  and used by the pytest suites through $CURL.  Used by the mod_http3
+  job, since the runner's curl has no HTTP/3.
+
 * TEST_MD - set together with TEST_PYTEST; installs pebble first so
   that modules/md runs instead of skipping.  See the
   "Python pytest test suites" job in .github/workflows/linux.yml.

@@ -179,6 +179,20 @@ jobs:
               TEST_PYTEST=1
               PYTEST_ARGS=modules/http2
           # -------------------------------------------------------------------------
+          # mod_http3 needs OpenSSL >= 3.5 and libnghttp3, which Ubuntu
+          # 26.04 has. Its curl has no HTTP/3, so one is built from source.
+          # Strict mode turns a skip for a missing dependency into a failure.
+          - name: mod_http3
+            os: ubuntu-26.04
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event --enable-http3
+            pkgs: libnghttp3-dev
+            env: |
+              TEST_CURL_H3=8.18.0
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/http3
+              PYHTTPD_STRICT_OPTIONAL=1
+          # -------------------------------------------------------------------------
           - name: Default
             # Check the defaults expected for a default build on Linux.
             config-output: >-
