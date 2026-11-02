@@ -83,7 +83,7 @@ jobs:
               TEST_ASAN=1
           # -------------------------------------------------------------------------
           - name: ASan, pool-debug
-            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2
+            notest-cflags: -ggdb -fsanitize=address -fno-sanitize-recover=address -fno-omit-frame-pointer -O2 -Wno-deprecated-declarations
             config: --enable-mods-shared=reallyall --enable-maintainer-mode
             env: |
               APR_VERSION=1.7.x
