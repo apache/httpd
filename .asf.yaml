@@ -31,10 +31,10 @@ github:
     merge: false
     rebase: true
   features:
+    projects: true
     # Disable all extraneous repo features
     wiki: false
     issues: false
-    projects: false
     discussions: false
 notifications:
   commits: cvs@httpd.apache.org
