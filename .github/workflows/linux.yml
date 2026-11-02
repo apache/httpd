@@ -125,9 +125,6 @@ jobs:
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all
             os: ubuntu-24.04-arm
           # -------------------------------------------------------------------------
-          - name: Event MPM, all-modules, mod_cgid w/o fdpassing
-            config: --enable-mods-shared=reallyall --with-mpm=event --disable-cgi
-          # -------------------------------------------------------------------------
           - name: Default, all-modules + install
             config: --enable-mods-shared=reallyall
             env: |
