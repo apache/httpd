@@ -236,6 +236,16 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
           # -------------------------------------------------------------------------
+          - name: mod_systemd
+            config: --enable-maintainer-mode --enable-systemd=shared
+            pkgs: libsystemd-dev
+            config-output: HAVE_SYSTEMD
+            env: |
+              TEST_INSTALL=1
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/arch
+          # -------------------------------------------------------------------------
           ### TODO: if: *condition_not_24x
           ### TODO: pebble install is broken.
           # - name: ACME test suite
@@ -419,6 +429,18 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Build and test
       run: ./test/travis_run_linux.sh
+    # Checks the config header in the build tree, so this must follow
+    # the build, and is only useful for a non-VPATH job.
+    - if: ${{ matrix.config-output != '' }}
+      name: Check for expected ap_config_auto.h definitions
+      run: for var in ${{ matrix.config-output }}; do
+             grep --color=always "^#define *${var} *1" include/ap_config_auto.h;
+           done
+    - if: ${{ matrix.config-no-output != '' }}
+      name: Check for unexpected ap_config_auto.h definitions
+      run: for var in ${{ matrix.config-no-output }}; do
+             ! grep --color=always "^#define *${var}" include/ap_config_auto.h;
+           done
     - uses: actions/upload-artifact@v7
       if: failure()
       with:
