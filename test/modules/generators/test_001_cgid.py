@@ -143,7 +143,7 @@ class TestCgid:
         assert r.response["status"] == 200
         assert r.response["body"].decode() == "not reading\n"
 
-    @skip_not_backported("r1939165", "raised limit on CGI environment variables")
+    @skip_not_backported("r1939165", "raised limit on CGI environment variables", backported_in="2.4.70")
     def test_generators_001_08_env_count_large(self, env):
         """More than 256 environment variables reach the script."""
         r = self.get(env, "cgi", "/envcount.py/small")
@@ -157,7 +157,7 @@ class TestCgid:
         # the daemon sees the aborted connection as a read error
         env.httpd_error_log.ignore_recent(lognos=["AH10245", "AH01248"])
 
-    @skip_not_backported("r1939165", "raised limit on CGI request size")
+    @skip_not_backported("r1939165", "raised limit on CGI request size", backported_in="2.4.70")
     def test_generators_001_15_long_query(self, env):
         """A 5000-character request URI, with a query string longer
         than PATH_MAX, reaches the script."""
@@ -207,7 +207,7 @@ class TestCgid:
         assert r.response["status"] == 200
         assert r.response["body"].decode().strip() == "PI=/extra/path"
 
-    @skip_not_backported("r1938602", "cgid daemon pid in the trace log")
+    @skip_not_backported("r1938602", "cgid daemon pid in the trace log", backported_in="2.4.70")
     def test_generators_001_20_daemon_killed(self, env):
         """CGI requests are served again once the cgid daemon which died
         unexpectedly has been restarted."""
