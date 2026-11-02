@@ -2150,12 +2150,18 @@ leaving:
     /* entering KeepAlive timing when we have no more open streams AND
      * we have processed at least one stream. */
     *pkeepalive = (session->open_streams == 0 && session->remote.emitted_count);
+    if (!h2_mplx_c1_going_keepalive(session->mplx)) {
+        /* A stream is still finishing in the background (see
+         * h2_mplx_c1_going_keepalive()); do not tell the MPM we are
+         * idle, or its completion will be stuck until KeepAliveTimeout.
+         */
+        *pkeepalive = 0;
+    }
     if (trace) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE3, status, c,
                       H2_SSSN_MSG(session, "process returns, keepalive=%d"),
                       *pkeepalive);
     }
-    h2_mplx_c1_going_keepalive(session->mplx);
 
     if (session->state == H2_SESSION_ST_DONE) {
         if (session->local.error) {

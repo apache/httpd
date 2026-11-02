@@ -224,11 +224,18 @@ apr_status_t h2_mplx_worker_pop_c2(h2_mplx *m, conn_rec **out_c2);
 
 
 /**
- * Session processing is entering KEEPALIVE, e.g. giving control
+ * Session processing is about to enter KEEPALIVE, e.g. giving control
  * to the MPM for monitoring incoming socket events only.
  * Last chance for maintenance work before losing control.
+ * @return 0 iff a stream is still finishing its c2 processing in the
+ *         background (moved out of the active stream set into the
+ *         "hold" set), so the caller must not actually go keepalive:
+ *         nothing wakes the connection from KeepAliveTimeout once the
+ *         MPM is told it is idle, so that stream's completion (and
+ *         its access log entry) would be delayed until the connection
+ *         times out. Non-zero if there is nothing left to wait for.
  */
-void h2_mplx_c1_going_keepalive(h2_mplx *m);
+int h2_mplx_c1_going_keepalive(h2_mplx *m);
 
 #define H2_MPLX_MSG(m, msg)     \
     "h2_mplx(%d-%lu): "msg, m->child_num, (unsigned long)m->id

@@ -1,0 +1,4 @@
+  *) mod_http2: Fix a stream whose processing finishes right as the
+     connection goes idle being logged, and its memory freed, only
+     after KeepAliveTimeout instead of right away.
+     PR 70302 [Arturo Bernal]
