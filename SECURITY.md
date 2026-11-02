@@ -362,12 +362,13 @@ each request; the documented risks of inline login forms and of the
 
 ### mod_dav, mod_dav_fs
 
-The DAV repository, lock database and property databases are private to
-the server; modification outside httpd is unsupported. Authorized DAV
-users are untrusted for protocol parsing, memory safety and path
+The DAV repository, lock database and property databases are private
+to the server; modification outside httpd is unsupported. Authorized
+DAV users are untrusted for protocol parsing, memory safety and path
 confinement, but the documented denial-of-service possibilities open
 to authorized users (filling the disk, `DavDepthInfinity`,
-`DavHonorMtimeHeader`) are out of scope.
+`DavHonorMtimeHeader`) are out of scope. Locks are not a security
+feature, issues in the locking model are out of scope.
 
 ### mod_cache, mod_cache_disk
 
@@ -385,6 +386,16 @@ examined may be untrusted (for example uploaded files) and the built-in
 matcher MUST handle it safely. The risks of `MimeMagicDecompression`
 (off by default) are documented and out of scope; defects in libmagic
 itself are third-party.
+
+### mod_negotiation, mod_imagemap, mod_asis, mod_cern_meta
+
+The content files these modules read from the filesystem are trusted
+site-author input: type-map (`.var`) and MultiViews variants
+(`mod_negotiation`), imagemap (`.map`) files (`mod_imagemap`), the raw
+header section of `.asis` files, and `.meta` sidecars (`mod_cern_meta`).
+Defects in parsing them, including emitting arbitrary response headers,
+are out of scope. Client-supplied request data remains in scope, such
+as the `Accept*` negotiation headers and imagemap `x,y` coordinates.
 
 ### mod_ident, DNS
 
