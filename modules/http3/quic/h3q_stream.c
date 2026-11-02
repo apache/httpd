@@ -23,6 +23,14 @@
 
 #include "quic/h3q_stream.h"
 
+/*
+ * Marks a stream, through its SSL app data, whose sending half was
+ * concluded. OpenSSL before 3.5.7 frees the send buffer once the peer
+ * acknowledges the FIN, and SSL_get_stream_write_state() then dereferences
+ * it, so the write state of such a stream must not be asked for.
+ */
+static char concluded_marker;
+
 h3q_write_result h3q_stream_write(h3q_stream* st, const h3q_vec* vec, size_t nvec, int fin)
 {
     SSL* ssl = (SSL*)st;
@@ -57,7 +65,10 @@ h3q_write_result h3q_stream_write(h3q_stream* st, const h3q_vec* vec, size_t nve
     }
     if (fin && !res.blocked && !res.broken && res.accepted == expected)
     {
-        SSL_stream_conclude(ssl, 0);
+        if (SSL_stream_conclude(ssl, 0))
+        {
+            SSL_set_app_data(ssl, &concluded_marker);
+        }
     }
     return res;
 }
@@ -95,7 +106,8 @@ void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_
     int rstate = SSL_get_stream_read_state(ssl);
     *read_finished = (rstate == SSL_STREAM_STATE_FINISHED || rstate == SSL_STREAM_STATE_RESET_REMOTE || rstate == SSL_STREAM_STATE_CONN_CLOSED);
     int wstate = SSL_STREAM_STATE_FINISHED;
-    if (rstate != SSL_STREAM_STATE_CONN_CLOSED && rstate != SSL_STREAM_STATE_RESET_REMOTE)
+    if (rstate != SSL_STREAM_STATE_CONN_CLOSED && rstate != SSL_STREAM_STATE_RESET_REMOTE &&
+        SSL_get_app_data(ssl) != &concluded_marker)
     {
         wstate = SSL_get_stream_write_state(ssl);
     }
