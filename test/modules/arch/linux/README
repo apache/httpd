@@ -88,10 +88,11 @@ libsystemd httpd itself is linked against.
                        skipped where systemd is older than 253, which is
                        where Type=notify-reload arrived.
 
-The whole package is skipped unless mod_systemd was built, which needs
-configure --enable-systemd.  A static module is enough for everything
-except the test which has to leave mod_systemd out of the configuration;
-that one needs --enable-systemd=shared.
+These tests are collected on Linux only, which the conftest.py in the
+directory above arranges.  The package is then skipped unless mod_systemd
+was built, which needs configure --enable-systemd.  A static module is
+enough for everything except the test which has to leave mod_systemd out
+of the configuration; that one needs --enable-systemd=shared.
 
 Running the systemd suites where there is no user session
 ---------------------------------------------------------
