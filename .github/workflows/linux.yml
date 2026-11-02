@@ -433,3 +433,5 @@ jobs:
         path: |
           **/config.log
           test/perl-framework/t/logs/error_log
+          test/pytest_suite/t/logs/error_log
+          test/gen/apache/logs/error_log
