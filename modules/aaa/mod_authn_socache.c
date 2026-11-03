@@ -268,17 +268,27 @@ static const char *construct_key(request_rec *r, const char *context,
 {
     /* handle "special" context values */
     if (!strcmp(context, directory)) {
+        const char *slash = ap_strrchr_c(r->uri, '/');
         /* The directory context identifies an entry by the server and
-         * the resource requested.  The URI must not be truncated at the
-         * last slash: credential sources are commonly scoped per
-         * resource (for example <Files> sections with different
-         * AuthUserFile settings within one directory), and a key built
-         * from the directory alone silently merges such distinct
-         * authentication domains into a single cache entry.
+         * the directory of the request URI.  Within one directory,
+         * entries are separated by the provider and realm mixed into
+         * the key below; a configuration that varies the credential
+         * source within a single directory and realm (for example
+         * <Files> sections with different AuthUserFile settings) must
+         * use distinct AuthName values or a custom AuthnCacheContext
+         * to keep the sources apart, as the documentation states.
          */
-        context = apr_psprintf(r->pool, "%s:%u%s",
-                               r->server->server_hostname,
-                               (unsigned)ap_get_server_port(r), r->uri);
+        if (slash) {
+            context = apr_psprintf(r->pool, "%s:%u%.*s",
+                                   r->server->server_hostname,
+                                   (unsigned)ap_get_server_port(r),
+                                   (int)(slash - r->uri), r->uri);
+        }
+        else {
+            context = apr_psprintf(r->pool, "%s:%u%s",
+                                   r->server->server_hostname,
+                                   (unsigned)ap_get_server_port(r), r->uri);
+        }
     }
     else if (!strcmp(context, "server")) {
         context = apr_psprintf(r->pool, "%s:%u",

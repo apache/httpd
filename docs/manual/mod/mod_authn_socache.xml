@@ -191,22 +191,30 @@ AuthnCacheProvideFor dbd myprovider
     constructing a cache key.  This serves to disambiguate identical
     usernames serving different authentication areas on the server.</p>
     <p>Two special values for this are <code>directory</code>, which uses
-    the server (hostname and port) and the full URI of the request, and
-    <code>server</code>, which uses the virtual host name and port.</p>
-    <p>The default is <code>directory</code>, which is also the most
-    conservative setting: every resource has its own cache entries, so
-    credential sources scoped per resource, for example
-    <directive module="core" type="section">Files</directive> sections
-    with different <directive module="mod_authn_file">AuthUserFile</directive>
-    settings within one directory, never share an entry.  This is
-    likely to be less than optimal where a whole directory tree is a
-    single authentication area, as it (for example) causes
-    <var>$app-base</var>, <var>$app-base/images</var>,
-    <var>$app-base/scripts</var> and <var>$app-base/media</var> each to
-    have its own separate cache entries.  In that case, name the
+    the server (hostname and port) and the directory of the request URI,
+    and <code>server</code>, which uses the virtual host name and port.</p>
+    <p>The default is <code>directory</code>.  The default separates
+    backend provider results only where the directory-like URL path, the
+    provider, or the <directive
+    module="mod_authn_core">AuthName</directive> differs.  A configuration
+    that varies the credential source within a single directory and a
+    single <directive module="mod_authn_core">AuthName</directive> — for
+    example <directive module="core" type="section">Files</directive>
+    sections with different <directive
+    module="mod_authn_file">AuthUserFile</directive> settings — must give
+    each source its own <directive
+    module="mod_authn_core">AuthName</directive> or its own custom
+    <directive>AuthnCacheContext</directive>; otherwise the sources share
+    cache entries, and a password valid for one source is accepted for
+    the others.</p>
+    <p>The <code>directory</code> context causes <var>$app-base</var>,
+    <var>$app-base/images</var>, <var>$app-base/scripts</var> and
+    <var>$app-base/media</var> each to have its own separate cache
+    entries.  Where a whole directory tree is a single authentication
+    area backed by one credential source, name the
     <directive>AuthnCacheContext</directive> for the password
-    provider: for example a <var>htpasswd</var> file or database table,
-    and use that one context for the whole area.</p>
+    provider instead: for example a <var>htpasswd</var> file or database
+    table, and use that one context for the whole area.</p>
     <p>A shared custom context is only safe where every request in its
     scope is checked against the same credential source.  If different
     credential sources are used within the scope of one custom context

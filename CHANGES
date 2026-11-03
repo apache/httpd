@@ -2,14 +2,14 @@
 Changes with Apache 2.5.1
 
   *) mod_authn_socache: Bind cache keys to the authentication domain.
-     The directory context now keys entries by server (hostname and
-     port) and the full request URI instead of the URI directory, the
-     key includes the name of the provider that produced the entry,
-     and Basic auth entries include the protection space (AuthName),
-     as Digest entries already included the realm.  Previously,
-     distinct credential sources within one directory, such as <Files>
-     sections with different AuthUserFile settings, silently shared
-     cache entries.  [Hafiar]
+     The server name in the directory and server contexts now includes
+     the port, the key includes the name of the provider that produced
+     the entry, and Basic auth entries include the protection space
+     (AuthName), as Digest entries already included the realm.
+     Previously, the key separated neither providers nor protection
+     spaces, so distinct credential sources silently shared cache
+     entries.  The AuthnCacheContext documentation now states which
+     differences the default context does not separate.  [Hafiar]
 
   *) mpm_event, mpm_worker, mpm_winnt, mpm_prefork, mpm_motorz: Added optional
      functions to account for connections managed outside the MPM accept loop
