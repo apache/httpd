@@ -167,16 +167,16 @@ update-changes:
 	                    /^( *\*|Changes with Apache )/ && active == 1 && done == 0{rec=$$0; while((getline<fname) > 0){if (! ($$0 ~ /^ *$$/)){print}}printf "\n";print rec; active = 0; done = 1; next} //;' \
 	    CHANGES.tmp > CHANGES ; \
 	    rm CHANGES.tmp ; \
-	    if [ -n "$(SVN)" ] ; then \
-	        if ! $(SVN) rm "$$i" 2>/dev/null ; then \
+	    if [ -n "$(GIT)" ] ; then \
+	        if ! $(GIT) rm "$$i" 2>/dev/null ; then \
 	            $(RM) "$$i" ; \
 	        fi ; \
 	    else \
 	        $(RM) "$$i" ; \
 	    fi ; \
 	done ; \
-	if [ -n "$(SVN)" ] ; then \
-	    $(SVN) diff CHANGES ; \
+	if [ -n "$(GIT)" ] ; then \
+	    $(GIT) diff -- CHANGES ; \
 	fi
 
 validate-xml:
