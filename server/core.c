@@ -2057,9 +2057,16 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
 {
     core_dir_config *d = d_;
     allow_options_t opt;
+    /* Saved so a prohibited option anywhere in the line can undo
+     * whatever earlier tokens already applied; see "denied" below.
+     */
+    const allow_options_t saved_opts = d->opts;
+    const allow_options_t saved_opts_add = d->opts_add;
+    const allow_options_t saved_opts_remove = d->opts_remove;
     int first = 1;
     int merge = 0;
     int all_none = 0;
+    int denied = 0;
     char action;
 
     while (l[0]) {
@@ -2129,6 +2136,15 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
         }
 
         if ( (cmd->override_opts & opt) != opt ) {
+            if (cmd->override & NONFATAL_OVERRIDE) {
+                ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, cmd->temp_pool,
+                              APLOGNO(10681)
+                              "Option %s in .htaccess forbidden by "
+                              "AllowOverride, Options ignored", w);
+                denied = 1;
+                first = 0;
+                continue;
+            }
             return apr_pstrcat(cmd->pool, "Option ", w, " not allowed here", NULL);
         }
         else if (action == '-') {
@@ -2147,6 +2163,17 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
         }
 
         first = 0;
+    }
+
+    /* A prohibited option anywhere in the line means the complete
+     * directive is ignored, not just that one token: undo whatever
+     * earlier tokens on the same line already applied, leaving d exactly
+     * as if this Options directive had never been seen.
+     */
+    if (denied) {
+        d->opts = saved_opts;
+        d->opts_add = saved_opts_add;
+        d->opts_remove = saved_opts_remove;
     }
 
     return NULL;
