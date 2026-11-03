@@ -659,6 +659,12 @@ indexing</description>
       module="mod_autoindex">AddDescription</directive> for dangers
       inherent in truncating descriptions.</strong></dd>
 
+      <dd>This width is measured in bytes, not characters; see the
+      note under <code><a
+      href="#indexoptions.namewidth">NameWidth</a></code> for how
+      this can affect the display of multi-byte or wide-character
+      descriptions.</dd>
+
       <dt><a name="indexoptions.fancyindexing"
                id="indexoptions.fancyindexing">FancyIndexing</a></dt>
 
@@ -763,6 +769,18 @@ indexing</description>
 
       <dd><code>NameWidth=*</code> grows the column to the necessary
       width.</dd>
+
+      <dd>Because this width is measured in bytes, a name containing
+      multi-byte UTF-8 characters, or characters from "wide" Unicode
+      scripts such as CJK, occupies more bytes, or fewer terminal
+      columns, than the same number of ASCII bytes would. The
+      resulting padding can therefore misalign the columns that
+      follow the name. This applies equally to <code><a
+      href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>.
+      Directories with such content should use <code><a
+      href="#indexoptions.htmltable">HTMLTable</a></code> instead,
+      which lays the listing out as an HTML table rather than padding
+      it with whitespace.</dd>
 
       <dt><a name="indexoptions.scanhtmltitles"
                id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>
