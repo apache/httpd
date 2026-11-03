@@ -143,6 +143,39 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES APPROVED TO BACKPORT FROM TRUNK:
 
+  *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
+     MONOTONIC_USEC on reload, fix graceful restart with socket
+     activation and the status line; add a systemd test suite.
+     trunk patch: https://svn.apache.org/r1909769
+                  https://svn.apache.org/r1928356
+                  https://svn.apache.org/r1937596
+                  https://svn.apache.org/r1937597
+                  https://svn.apache.org/r1937598
+                  https://svn.apache.org/r1937599
+                  https://svn.apache.org/r1937600
+                  https://svn.apache.org/r1937601
+                  https://svn.apache.org/r1937602
+                  https://svn.apache.org/r1937635
+                  https://svn.apache.org/r1937644
+                  https://svn.apache.org/r1937646
+                  https://svn.apache.org/r1937647
+     2.4.x patch: https://github.com/apache/httpd/pull/773.patch
+     +1: jorton, covener, jim
+
+  *) mod_remoteip: Various fixes and improvements from trunk.
+     trunk patch: https://svn.apache.org/r1874344
+                  https://svn.apache.org/r1933436
+                  https://svn.apache.org/r1936258
+                  https://svn.apache.org/r1936357
+                  https://svn.apache.org/r1936366
+                  https://svn.apache.org/r1938292
+                  https://svn.apache.org/r1938908
+                  https://svn.apache.org/r1938909
+                  https://svn.apache.org/r1938927
+                  https://svn.apache.org/r1938928
+     2.4.x patch: https://github.com/apache/httpd/pull/819.patch
+     +1: jorton, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -206,25 +239,6 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
      +1: jim, 
 
-  *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
-     MONOTONIC_USEC on reload, fix graceful restart with socket
-     activation and the status line; add a systemd test suite.
-     trunk patch: https://svn.apache.org/r1909769
-                  https://svn.apache.org/r1928356
-                  https://svn.apache.org/r1937596
-                  https://svn.apache.org/r1937597
-                  https://svn.apache.org/r1937598
-                  https://svn.apache.org/r1937599
-                  https://svn.apache.org/r1937600
-                  https://svn.apache.org/r1937601
-                  https://svn.apache.org/r1937602
-                  https://svn.apache.org/r1937635
-                  https://svn.apache.org/r1937644
-                  https://svn.apache.org/r1937646
-                  https://svn.apache.org/r1937647
-     2.4.x patch: https://github.com/apache/httpd/pull/773.patch
-     +1: jorton, covener, jim
-
   *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
      type, and serialize lock database access with a global mutex since
      apr_dbm does not provide thread-safe locking.
@@ -234,20 +248,6 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/399.patch
      +1: jorton, covener
      covener: docs need fixup for "2.5.1" 
-
-  *) mod_remoteip: Various fixes and improvements from trunk.
-     trunk patch: https://svn.apache.org/r1874344
-                  https://svn.apache.org/r1933436
-                  https://svn.apache.org/r1936258
-                  https://svn.apache.org/r1936357
-                  https://svn.apache.org/r1936366
-                  https://svn.apache.org/r1938292
-                  https://svn.apache.org/r1938908
-                  https://svn.apache.org/r1938909
-                  https://svn.apache.org/r1938927
-                  https://svn.apache.org/r1938928
-     2.4.x patch: https://github.com/apache/httpd/pull/819.patch
-     +1: jorton, covener, jim
 
    *) ab: remove SVN keywords in copyright msg
       trunk patch:   https://svn.apache.org/r1939247
