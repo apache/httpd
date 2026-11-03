@@ -32,7 +32,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">A&ccedil;ıklama:</a></th><td>B&ouml;l&uuml; &ccedil;izgisiyle biten y&ouml;nlendirmeleri yapar ve dizin i&ccedil;eriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Mod&uuml;l&nbsp;Betimleyici:</a></th><td>dir_module</td></tr>

@@ -30,10 +30,6 @@
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
-            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
-            documentaci&oacute;n para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Este documento describe los t&eacute;rminos que se usan para describir
     cada <a href="directives.html">directiva de configuraci&oacute;n</a> de

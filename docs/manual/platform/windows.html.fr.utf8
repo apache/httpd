@@ -344,13 +344,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       assurez-vous de retenir son mot de passe.</li>
 
       <li>Accordez &agrave; l'utilisateur nouvellement cr&eacute;&eacute; les privil&egrave;ges
-      <code>Log on as a service</code> et <code>Act as part of the
-      operating system</code>. Sous Windows NT 4.0, ces privil&egrave;ges sont
-      accord&eacute;s via le Gestionnaire des utilisateurs du Domaine, mais
-      sous Windows 2000 et XP, vous aurez plut&ocirc;t int&eacute;r&ecirc;t &agrave; utiliser une
-      GPO pour propager ces configurations. Vous pouvez aussi effectuer
-      ces r&eacute;glages via la Politique de S&eacute;curit&eacute; Locale int&eacute;gr&eacute;e &agrave; la
-      MMC.</li>
+      <code>Log on as a service</code>.</li>
 
       <li>V&eacute;rifiez que le compte nouvellement cr&eacute;&eacute; est membre du groupe
       Utilisateurs</li>

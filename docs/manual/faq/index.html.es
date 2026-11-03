@@ -29,10 +29,6 @@
 <a href="../tr/faq/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/faq/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
-            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
-            documentaci&oacute;n para comprobar si se han producido cambios
-            recientemente.</div>
 
 
     <p>Las preguntas frecuentes se han movido a la  <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Wiki  de HTTP Server (en Ingl&eacute;s)</a>.</p>

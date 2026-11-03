@@ -9,7 +9,7 @@
   <variants>
     <variant>en</variant>
     <variant>fr</variant>
-    <variant outdated="yes">ko</variant>
-    <variant outdated="yes">zh-cn</variant>
+    <variant>ko</variant>
+    <variant>zh-cn</variant>
   </variants>
 </metafile>

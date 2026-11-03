@@ -7,9 +7,9 @@
   <relpath>..</relpath>
 
   <variants>
-    <variant outdated="yes">de</variant>
+    <variant>de</variant>
     <variant>en</variant>
     <variant>fr</variant>
-    <variant outdated="yes">ja</variant>
+    <variant>ja</variant>
   </variants>
 </metafile>

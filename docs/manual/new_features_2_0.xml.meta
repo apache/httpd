@@ -10,8 +10,8 @@
     <variant>de</variant>
     <variant>en</variant>
     <variant>fr</variant>
-    <variant outdated="yes">ja</variant>
-    <variant outdated="yes">ko</variant>
+    <variant>ja</variant>
+    <variant>ko</variant>
     <variant>pt-br</variant>
     <variant>tr</variant>
   </variants>

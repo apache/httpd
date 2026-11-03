@@ -32,10 +32,6 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
-            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
-            documentaci&oacute;n para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>
       Abajo se muestra una lista con todos los m&oacute;dulos que forman
@@ -259,7 +255,7 @@ identifier for each request</dd>
 hosting</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run
     tasks</dd>
-<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
+<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalization support for libxml2-based
 filter modules</dd>
 </dl></div></div>
 <div class="bottomlang">

@@ -31,10 +31,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
-            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
-            documentaci&oacute;n para comprobar si se han producido cambios
-            recientemente.</div>
 
 	<p>&Eacute;ste glosario define las terminolog&iacute;as m&aacute;s comunes
 	relacionada con Apache en particular, y con los servidores web en

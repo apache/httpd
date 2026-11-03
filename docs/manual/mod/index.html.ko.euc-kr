@@ -32,8 +32,6 @@
 <a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>
       다음은 아파치 배포본에 포함된 모든 모듈 목록이다. <a href="directives.html">모든 아파치 지시어</a> 목록도
@@ -240,7 +238,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 hosting</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run
     tasks</dd>
-<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
+<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalization support for libxml2-based
 filter modules</dd>
 </dl></div></div>
 <div class="bottomlang">

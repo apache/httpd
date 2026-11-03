@@ -32,7 +32,6 @@
 <a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/invoking.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p>Apache normal olarak, Windows'ta bir hizmet olarak &ccedil;alışır. Ayrıntılı
       bilgi i&ccedil;in <a href="platform/windows.html#winsvc">Apache HTTPD'nin bir

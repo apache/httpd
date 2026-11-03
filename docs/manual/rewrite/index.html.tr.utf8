@@ -28,7 +28,6 @@
 <a href="../tr/rewrite/" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml; gelen URL isteklerinde değişiklik
       yapabilmek i&ccedil;in <a href="intro.html#regex">d&uuml;zenli ifade</a> kurallarına

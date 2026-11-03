@@ -27,7 +27,6 @@
 <a href="../fr/programs/httxt2dbm.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/httxt2dbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p><code><strong>httxt2dbm</strong></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ile kullanmak i&ccedil;in d&uuml;z metin
     dosyalardan DBM dosyaları &uuml;retir.</p>

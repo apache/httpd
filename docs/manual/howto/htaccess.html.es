@@ -30,10 +30,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
-            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
-            documentaci&oacute;n para comprobar si se han producido cambios
-            recientemente.</div>
 
     <p>Los ficheros <code>.htaccess</code> facilitan una forma de realizar 
     cambios en la configuraci&oacute;n en contexto directorio.</p>

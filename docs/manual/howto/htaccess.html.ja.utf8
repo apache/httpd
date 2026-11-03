@@ -30,10 +30,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている
-            可能性があります。
-            最近更新された内容を見るには英語版をご覧下さい。
-        </div>
 
 <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更する方法を
 提供します。</p>

@@ -33,10 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
-            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
-            documentaci&oacute;n para comprobar si se han producido cambios
-            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripci&oacute;n:</a></th><td>Funcionalides b&aacute;sicas del Servidor HTTP Apache que siempre est&aacute;n presentes.</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Core</td></tr></table>
 </div>
