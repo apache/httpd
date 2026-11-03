@@ -15,6 +15,21 @@ def pytest_report_header(config, start_path):
     return f"mod_auth_digest [apache: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 
 
+def _socache_dir(docs, path, files_lines):
+    lines = [
+        f'<Directory "{docs}/socache/{path}">',
+        '    AuthType Basic',
+        '    AuthName "socache-shared"',
+        '    AuthBasicProvider socache file',
+        '    AuthnCacheProvideFor file',
+        '    AuthnCacheTimeout 600',
+    ]
+    lines.extend(f"    {l}" for l in files_lines)
+    lines.append('    Require valid-user')
+    lines.append('</Directory>')
+    return lines
+
+
 def _digest_dir(docs, path, extra_lines):
     lines = [
         f'<Directory "{docs}/digest/{path}">',
@@ -101,6 +116,43 @@ def env(pytestconfig) -> AAATestEnv:
     conf.add(_digest_dir(docs, "noprovider", [
         # AuthDigestProvider intentionally omitted: falls back to "file".
         f'AuthUserFile "{pwfile}"',
+    ]))
+    # mod_authn_socache areas (test_020): one directory whose two files
+    # are backed by different htpasswd files. In "byname" the files carry
+    # distinct AuthName values, in "byctx" distinct AuthnCacheContext
+    # values, and in "samename" neither, which the documentation states
+    # shares cache entries between the two sources.
+    conf.add('AuthnCacheSOCache shmcb')
+    conf.add('AuthnCacheEnable')
+    low = env.basic_pwfile_low
+    high = env.basic_pwfile_high
+    conf.add(_socache_dir(docs, "byname", [
+        '<Files "low.txt">',
+        'AuthName "lowarea"',
+        f'AuthUserFile "{low}"',
+        '</Files>',
+        '<Files "high.txt">',
+        'AuthName "higharea"',
+        f'AuthUserFile "{high}"',
+        '</Files>',
+    ]))
+    conf.add(_socache_dir(docs, "byctx", [
+        '<Files "low.txt">',
+        f'AuthUserFile "{low}"',
+        'AuthnCacheContext lowctx',
+        '</Files>',
+        '<Files "high.txt">',
+        f'AuthUserFile "{high}"',
+        'AuthnCacheContext highctx',
+        '</Files>',
+    ]))
+    conf.add(_socache_dir(docs, "samename", [
+        '<Files "low.txt">',
+        f'AuthUserFile "{low}"',
+        '</Files>',
+        '<Files "high.txt">',
+        f'AuthUserFile "{high}"',
+        '</Files>',
     ]))
     # A request which fails header validation (e.g. no Host on HTTP/1.1)
     # is answered before the Digest module's post_read_request runs, so it
