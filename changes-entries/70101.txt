@@ -1,0 +1,5 @@
+  *) mod_autoindex: Fix FancyIndexing column alignment when a listed
+     name contains a multi-byte UTF-8 character: the name was padded
+     by its byte length instead of its display width, throwing the
+     following columns out of line. PR 70101 [Arturo Bernal]
+

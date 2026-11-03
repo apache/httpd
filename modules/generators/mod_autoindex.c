@@ -1427,6 +1427,96 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     return (p);
 }
 
+/*
+ * How many terminal columns does the UTF-8 string "s" occupy, for
+ * NameWidth padding and truncation? A plain byte count overcompensates
+ * for any multi-byte character, since e.g. a 3-byte CJK character only
+ * occupies 2 columns in a monospaced rendering, not 3.
+ *
+ * If limit is non-zero, stop as soon as the next character would make
+ * the column count exceed it, and return the byte length consumed so
+ * far instead of the full string length (for truncation). A malformed
+ * byte, or one that is not the first byte of a complete sequence, is
+ * counted as one column, same as a plain ASCII byte, so non-UTF-8 and
+ * truncated-sequence names measure exactly as before this function
+ * existed.
+ *
+ * utf8 must be false whenever the name is not actually going to be
+ * rendered as UTF-8 (IndexOptions Charset is anything else, including
+ * the ISO-8859-1 default on platforms without APR_HAS_UNICODE_FS):
+ * decoding as UTF-8 regardless of the real encoding mis-measures any
+ * byte sequence that happens to also be valid UTF-8, which is common
+ * for accented Latin-1 names. With utf8 false, every byte counts as
+ * exactly one column, matching how a single-byte charset actually
+ * renders.
+ */
+static apr_size_t ai_utf8_colwidth(const char *s, apr_size_t limit,
+                                   int utf8, int *widthp)
+{
+    apr_size_t len = 0;
+    int width = 0;
+
+    while (*s) {
+        const unsigned char c = (unsigned char) *s;
+        apr_size_t seqlen = 1;
+        int cp = c, cw = 1, i;
+
+        if (utf8) {
+            if ((c & 0xE0) == 0xC0) {
+                seqlen = 2;
+                cp = c & 0x1F;
+            }
+            else if ((c & 0xF0) == 0xE0) {
+                seqlen = 3;
+                cp = c & 0x0F;
+            }
+            else if ((c & 0xF8) == 0xF0) {
+                seqlen = 4;
+                cp = c & 0x07;
+            }
+
+            for (i = 1; i < (int)seqlen; i++) {
+                if (((unsigned char) s[i] & 0xC0) != 0x80) {
+                    seqlen = 1;     /* not a complete sequence: raw byte */
+                    cp = c;
+                    break;
+                }
+                cp = (cp << 6) | (s[i] & 0x3F);
+            }
+
+            /* The common East Asian Wide and Fullwidth ranges (Unicode
+             * UAX #11), approximated to the main blocks rather than every
+             * individual range, which is enough for real-world filenames. */
+            if (seqlen > 1
+                && ((cp >= 0x1100 && cp <= 0x115F)
+                    || (cp >= 0x2E80 && cp <= 0x303E)
+                    || (cp >= 0x3041 && cp <= 0x33FF)
+                    || (cp >= 0x3400 && cp <= 0x4DBF)
+                    || (cp >= 0x4E00 && cp <= 0x9FFF)
+                    || (cp >= 0xA000 && cp <= 0xA4CF)
+                    || (cp >= 0xAC00 && cp <= 0xD7A3)
+                    || (cp >= 0xF900 && cp <= 0xFAFF)
+                    || (cp >= 0xFE30 && cp <= 0xFE4F)
+                    || (cp >= 0xFF00 && cp <= 0xFF60)
+                    || (cp >= 0xFFE0 && cp <= 0xFFE6)
+                    || (cp >= 0x20000 && cp <= 0x3FFFD))) {
+                cw = 2;
+            }
+        }
+
+        if (limit && (apr_size_t) (width + cw) > limit) {
+            break;
+        }
+        width += cw;
+        len += seqlen;
+        s += seqlen;
+    }
+    if (widthp) {
+        *widthp = width;
+    }
+    return len;
+}
+
 static char *terminate_description(autoindex_config_rec *d, char *desc,
                                    apr_int32_t autoindex_opts, int desc_width)
 {
@@ -1514,7 +1604,8 @@ static void emit_link(request_rec *r, const char *anchor, char column,
 static void output_directories(struct ent **ar, int n,
                                autoindex_config_rec *d, request_rec *r,
                                apr_int32_t autoindex_opts, char keyid,
-                               char direction, const char *colargs)
+                               char direction, const char *colargs,
+                               int name_is_utf8)
 {
     int x;
     apr_size_t rv;
@@ -1539,7 +1630,8 @@ static void output_directories(struct ent **ar, int n,
                         == FANCY_INDEXING) {
         if (d->name_adjust == K_ADJUST) {
             for (x = 0; x < n; x++) {
-                int t = strlen(ar[x]->name);
+                int t;
+                ai_utf8_colwidth(ar[x]->name, 0, name_is_utf8, &t);
                 if (t > name_width) {
                     name_width = t;
                 }
@@ -1557,7 +1649,15 @@ static void output_directories(struct ent **ar, int n,
             }
         }
     }
-    name_scratch = apr_palloc(r->pool, name_width + 1);
+    /* name_scratch holds raw UTF-8 bytes. ai_utf8_colwidth() only ever
+     * counts a complete sequence as 1 or 2 columns, regardless of its
+     * byte length, so the worst case is a 4-byte sequence that is *not*
+     * recognized as wide (counted as 1 column, e.g. an emoji outside
+     * the ranges above): up to 4 bytes per column. Size for that,
+     * rather than for whatever ratio the current wide-ranges table
+     * happens to produce, plus the "..>" truncation marker and the
+     * terminating NUL. */
+    name_scratch = apr_palloc(r->pool, (apr_size_t) name_width * 4 + 4);
     pad_scratch = apr_palloc(r->pool, name_width + 1);
     memset(pad_scratch, ' ', name_width);
     pad_scratch[name_width] = '\0';
@@ -1753,13 +1853,15 @@ static void output_directories(struct ent **ar, int n,
                           ap_escape_html(scratch, t2), "</a>", NULL);
             }
             else {
-                nwidth = strlen(t2);
+                ai_utf8_colwidth(t2, 0, name_is_utf8, &nwidth);
                 if (nwidth > name_width) {
-                  memcpy(name_scratch, t2, name_width - 3);
-                  name_scratch[name_width - 3] = '.';
-                  name_scratch[name_width - 2] = '.';
-                  name_scratch[name_width - 1] = '>';
-                  name_scratch[name_width] = 0;
+                  apr_size_t tlen = ai_utf8_colwidth(t2, name_width - 3,
+                                                      name_is_utf8, NULL);
+                  memcpy(name_scratch, t2, tlen);
+                  name_scratch[tlen] = '.';
+                  name_scratch[tlen + 1] = '.';
+                  name_scratch[tlen + 2] = '>';
+                  name_scratch[tlen + 3] = 0;
                   t2 = name_scratch;
                   nwidth = name_width;
                 }
@@ -1838,13 +1940,15 @@ static void output_directories(struct ent **ar, int n,
                     ap_rputc(' ', r);
                 }
             }
-            nwidth = strlen(t2);
+            ai_utf8_colwidth(t2, 0, name_is_utf8, &nwidth);
             if (nwidth > name_width) {
-                memcpy(name_scratch, t2, name_width - 3);
-                name_scratch[name_width - 3] = '.';
-                name_scratch[name_width - 2] = '.';
-                name_scratch[name_width - 1] = '>';
-                name_scratch[name_width] = 0;
+                apr_size_t tlen = ai_utf8_colwidth(t2, name_width - 3,
+                                                    name_is_utf8, NULL);
+                memcpy(name_scratch, t2, tlen);
+                name_scratch[tlen] = '.';
+                name_scratch[tlen + 1] = '.';
+                name_scratch[tlen + 2] = '>';
+                name_scratch[tlen + 3] = 0;
                 t2 = name_scratch;
                 nwidth = name_width;
             }
@@ -2047,6 +2151,7 @@ static int index_directory(request_rec *r,
     apr_size_t dirpathlen;
     char *ctype = "text/html";
     char *charset;
+    int name_is_utf8;
 
     if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r, APLOGNO(01275)
@@ -2074,6 +2179,7 @@ static int index_directory(request_rec *r,
     else {
         ap_set_content_type_ex(r, ctype, 1);
     }
+    name_is_utf8 = !ap_cstr_casecmp(charset, "UTF-8");
 
     if (autoindex_opts & TRACK_MODIFIED) {
         ap_update_mtime(r, r->finfo.mtime);
@@ -2284,7 +2390,7 @@ static int index_directory(request_rec *r,
               (int (*)(const void *, const void *)) dsortf);
     }
     output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts,
-                       keyid, direction, colargs);
+                       keyid, direction, colargs, name_is_utf8);
     apr_dir_close(thedir);
 
     emit_tail(r, autoindex_conf->readme,
