@@ -223,7 +223,7 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1937646
                   https://svn.apache.org/r1937647
      2.4.x patch: https://github.com/apache/httpd/pull/773.patch
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
   *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
      type, and serialize lock database access with a global mutex since
@@ -247,7 +247,7 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1938927
                   https://svn.apache.org/r1938928
      2.4.x patch: https://github.com/apache/httpd/pull/819.patch
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
    *) ab: remove SVN keywords in copyright msg
       trunk patch:   https://svn.apache.org/r1939247
