@@ -109,12 +109,16 @@ class _SocacheBase:
     def digest_pwfile(cls, env):
         return os.path.join(env.server_dir, "socache-digest.passwd")
 
-    def url(self, env, name, fname="secret.txt"):
-        return env.mkurl("http", "aaa", f"/socache/{name}/{fname}")
+    def url(self, env, name, fname="secret.txt", port=None):
+        url = env.mkurl("http", "aaa", f"/socache/{name}/{fname}")
+        if port:
+            url = url.replace(f":{env.http_port}/", f":{port}/")
+        return url
 
-    def basic(self, env, name, user, password, fname="secret.txt"):
+    def basic(self, env, name, user, password, fname="secret.txt",
+              port=None):
         """The status of a Basic authenticated request."""
-        r = env.curl_get(self.url(env, name, fname),
+        r = env.curl_get(self.url(env, name, fname, port),
                          options=["-u", f"{user}:{password}"])
         assert r.exit_code == 0, r.stderr
         if r.response["status"] == 200:
@@ -160,6 +164,8 @@ class TestAuthnSocache(_SocacheBase):
             # Caches for a provider which is not the one in use.
             ("other", ['AuthnCacheProvideFor dbm']),
             ("none", []),
+            # The provider in use is not the first one cached for.
+            ("second", ['AuthnCacheProvideFor dbm file']),
             ("dir1", cached),
             ("dir2", cached),
             ("literal1", cached + ['AuthnCacheContext shared']),
@@ -175,6 +181,7 @@ class TestAuthnSocache(_SocacheBase):
         for name, other_lines in [
             ("files", []),
             ("files-context", ['AuthnCacheContext other-file']),
+            ("files-authname", ['AuthName "AAA Other Realm"']),
         ]:
             conf.add(_directory(env, name, [
                 *_basic_lines(basic_pwfile, cached),
@@ -189,6 +196,12 @@ class TestAuthnSocache(_SocacheBase):
         ]:
             conf.add(_directory(env, name,
                                 _digest_lines(digest_pwfile, cache_lines)))
+        # A second server of the same name on another port, to which the
+        # sections above apply as well.
+        conf.add(f'Listen {env.http_port2}')
+        conf.start_vhost(domains=[f"aaa.{env.http_tld}"],
+                         port=env.http_port2, doc_root=env.server_docs_dir)
+        conf.end_vhost()
         with env.preserved_test_conf():
             conf.install()
             assert env.apache_restart() == 0
@@ -375,6 +388,64 @@ class TestAuthnSocache(_SocacheBase):
         AAATestEnv.write_basic_pwfile(basic_pwfile2, {})
         assert self.basic(env, "files-context", user, P1) == 200
         assert self.basic(env, "files-context", user, P2, OTHER) == 200
+
+    def test_authn_socache_175_files_authname(
+            self, env, basic_pwfile, basic_pwfile2):
+        """An AuthName of its own keeps the entries for a document with
+        a different password file apart from those of the rest of the
+        directory."""
+        user = "user175"
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P1})
+        AAATestEnv.write_basic_pwfile(basic_pwfile2, {user: P2})
+        for _ in range(2):
+            # first from the password files, then from the cache
+            assert self.basic(env, "files-authname", user, P1) == 200
+            assert self.basic(env, "files-authname", user, P1, OTHER) == 401
+            assert self.basic(env, "files-authname", user, P2, OTHER) == 200
+            assert self.basic(env, "files-authname", user, P2) == 401
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {})
+        AAATestEnv.write_basic_pwfile(basic_pwfile2, {})
+        assert self.basic(env, "files-authname", user, P1) == 200
+        assert self.basic(env, "files-authname", user, P2, OTHER) == 200
+
+    def test_authn_socache_176_second_provider(self, env, basic_pwfile):
+        """An entry is found whichever of the providers named by
+        AuthnCacheProvideFor stored it."""
+        user = "user176"
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P1})
+        assert self.basic(env, "second", user, P1) == 200
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P2})
+        assert self.basic(env, "second", user, P1) == 200
+        assert self.basic(env, "second", user, P2) == 401
+
+    def test_authn_socache_177_host_port(self, env, basic_pwfile):
+        """The port a client puts in the Host header has no part in
+        finding an entry, so cannot be used to avoid or fill the
+        cache."""
+        user = "user177"
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P1})
+        assert self.basic(env, "basic", user, P1) == 200
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P2})
+        for port in 1, 65535:
+            r = env.curl_get(self.url(env, "basic"), options=[
+                "-u", f"{user}:{P1}",
+                "-H", f"Host: aaa.{env.http_tld}:{port}"])
+            assert r.response["status"] == 200
+
+    @pytest.mark.parametrize("name", ["basic", "server1"])
+    def test_authn_socache_178_server_port(self, env, basic_pwfile, name):
+        """Servers of the same name on different ports do not share
+        entries, with the "directory" or the "server" AuthnCacheContext."""
+        user = f"user178{name}"
+        port2 = env.http_port2
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P1})
+        assert self.basic(env, name, user, P1) == 200
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P2})
+        assert self.basic(env, name, user, P1, port=port2) == 401
+        assert self.basic(env, name, user, P2, port=port2) == 200
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {})
+        assert self.basic(env, name, user, P1) == 200
+        assert self.basic(env, name, user, P2, port=port2) == 200
 
 
 class TestAuthnSocacheHtaccess(_SocacheBase):
