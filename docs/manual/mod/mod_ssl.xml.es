@@ -70,7 +70,7 @@ para más detalles sobre las variables de compatibilidad.</p>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>El id de sesión SSL codificado en hexadecimal</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Sesión SSL inicial o reanudada.  Nota: múltiples peticiones pueden servirse a través de la misma sesión SSL (Inicial o Reanudada) si el KeepAlive de HTTP está en uso</td></tr>
 <tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> si la renegociación segura está soportada, si no <code>false</code></td></tr>
-<tr><td><code>SSL_SHARED_CIPHERS</code></td>            <td>string</td>    <td>Lista separada por comas de cifrados compartidos (es decir, el subconjunto de cifrados configurados tanto en el servidor como en el cliente)</td></tr>
+<tr><td><code>SSL_SHARED_CIPHERS</code></td>            <td>string</td>    <td>Lista separada por dos puntos de cifrados compartidos (es decir, el subconjunto de cifrados configurados tanto en el servidor como en el cliente)</td></tr>
 <tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>El nombre de la especificación del cifrado</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> si el cifrado es un cifrado export</td></tr>
 <tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Número de bits de cifrado (en uso actualmente)</td></tr>
@@ -427,9 +427,16 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
 <contextlist><context>server config</context></contextlist>
 
 <usage>
+<note><title>SSLRandomSeed está obsoleta</title>
+
+<p>La directiva <code>SSLRandomSeed</code> está obsoleta, y se ignora
+completamente si httpd se compila usando la versión 1.1.1 o posterior de
+OpenSSL.</p>
+</note>
+
   <p>
-  Esto configura una o más fuentes de generación de semilla pseudoaleatoria de 
-  números "Pseudo Random Number Generator (PRNG)" en OpenSSL en el arranque 
+  Esto configura una o más fuentes de generación de semilla pseudoaleatoria de
+  números "Pseudo Random Number Generator (PRNG)" en OpenSSL en el arranque
   (<em>contexto</em> es <code>startup</code>) y/o justo antes de que se 
   establezca una nueva conexión SSL
   (<em>contexto</em> es <code>connect</code>). Esta directiva sólo se puede usar
@@ -439,16 +446,16 @@ SSLPassPhraseDialog "exec:/usr/local/apache/sbin/pp-filter"
   Las siguientes variante de <em>fuente</em> están disponibles:</p>
   <ul>
   <li><code>builtin</code>
-    <p>Esta es siempre la fuente de generación de semilla que está siempre 
-    disponible. Usa el mínimo de ciclos de CPU en tiempo real así que se puede
-    usar siempre sin contratiempos. La fuente utilizada para la generación de
-    semilla de PRNG contiene la hora actual, el id de proceso actual y 
-    (cuando es aplicable) un extracto de 1KB escogido aleatoriamente de la
-    estructura de scoreboard de Apache. La pega es que no es realmente una 
-    fuente muy compleja y en el momento del arranque (cuando el scoreboard 
-    todavía no está disponible) esta fuente sólo produce unos pocos bytes de 
-    entropía. Así que usted debería, al menos en el arranque, usar una fuente
-    adicional de generación de semilla.</p></li>
+    <p>Esta es la fuente de generación de semilla integrada, siempre
+    disponible. Su uso consume un mínimo de ciclos de CPU en tiempo de
+    ejecución, por lo que siempre se puede usar sin inconvenientes. La fuente
+    utilizada para la generación de semilla de PRNG se compone de la hora
+    actual, el id de proceso actual y un extracto de 128 bytes escogido
+    aleatoriamente de la pila. La pega es que no es realmente una fuente muy
+    fuerte y en el momento del arranque (cuando el scoreboard todavía no está
+    disponible) esta fuente sólo produce unos pocos bytes de entropía. Así
+    que usted debería, al menos en el arranque, usar una fuente adicional de
+    generación de semilla.</p></li>
 
     <li><code>file:/ruta/hacia/la/fuente</code>
     <p>
@@ -621,17 +628,19 @@ SSLSessionCacheTimeout 600
 <directivesynopsis>
 <name>SSLEngine</name>
 <description>Interruptor de Activación del motor SSL</description>
-<syntax>SSLEngine on|off|optional|addr[:port] [addr[:port]] ...</syntax>
+<syntax>SSLEngine on|off</syntax>
 <default>SSLEngine off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>El parámetro <code>addr:port</code> está disponible en Apache 
-2.4.30 y posterior.</compatibility>
+<compatibility>
+  El soporte para el argumento "optional" se eliminó en la versión 2.4.64.
+  Activaba el soporte de RFC 2817 (actualización de TLS).
+</compatibility>
 
 <usage>
 <p>
 Esta directiva sirve para activar o desactivar el uso del motor del protocolo
-SSL/TLS. Los valores 'on', 'off' y 'optional' deberían usarse dentro de una
+SSL/TLS. Debería usarse dentro de una
 sección <directive module="core" type="section">VirtualHost</directive> para
 activar SSL/TLS para un host virtual. Por defecto el motor de SSL/TLS está
 deshabilitado para ambos el servidor principal y todos los host virtuales
@@ -645,23 +654,6 @@ SSLEngine on
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
-<p>Se deberían usar los valores <code>addr:port</code> en la configuración 
-global del servidor para activar el motor del Protocolo SSL/TLS para 
-<em>todos</em> los
-<directive module="core" type="section">VirtualHost</directive> 
-que coincidan con una de las direcciones de la lista.</p>
-<example><title>Ejemplo</title>
-<highlight language="config">
-SSLEngine *:443
-&lt;VirtualHost *:443&gt;
-#...
-&lt;/VirtualHost&gt;
-</highlight>
-</example>
-<p><directive>SSLEngine</directive> puede ser configurado a
-<code>optional</code>: esto activa el soporte de 
-<a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>.
-</p>
 </usage>
 </directivesynopsis>
 
@@ -732,11 +724,16 @@ Los <em>protocolos</em> disponibles (no sensibles a mayúsculas) son:</p>
     Una revisión del protocolo TLS 1.1, tal y como se define en
     <a href="http://www.ietf.org/rfc/rfc5246.txt">RFC 5246</a>.</p></li>
 
+<li><code>TLSv1.3</code> (cuando se usa OpenSSL 1.1.1 y posterior)
+    <p>
+    Una nueva versión del protocolo TLS, tal y como se define en
+    <a href="http://www.ietf.org/rfc/rfc8446.txt">RFC 8446</a>.</p></li>
+
 <li><code>all</code>
     <p>
     Esto es un atajo para ``<code>+SSLv3 +TLSv1</code>'' o
     - cuando se usa OpenSSL 1.0.1 y posterior -
-    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2</code>'', respectivamente
+    ``<code>+SSLv3 +TLSv1 +TLSv1.1 +TLSv1.2 +TLSv1.3</code>'', respectivamente
     (excepto para versiones de OpenSSL compiladas con la opción de configuración
     ``no-ssl3'', donde <code>all</code> no incluye <code>+SSLv3</code>).
   </p></li>
@@ -746,6 +743,31 @@ Los <em>protocolos</em> disponibles (no sensibles a mayúsculas) son:</p>
 SSLProtocol TLSv1
 </highlight>
 </example>
+<note>
+<title><directive>SSLProtocol</directive> para hosts virtuales basados en nombre</title>
+<p>
+Antes de OpenSSL 1.1.1, aunque la Server Name Indication (SNI) permitía
+determinar el host virtual de destino al principio del saludo TLS, no era
+posible cambiar la versión del protocolo TLS de la conexión en ese momento,
+por lo que el <directive>SSLProtocol</directive> negociado siempre se basaba
+en el del <em>host virtual base</em> (el primer host virtual declarado en la
+<code>IP:puerto</code> de escucha de la conexión).
+</p>
+<p>
+A partir de la versión 2.5.1 de Apache HTTP Server, cuando se compila/enlaza
+con OpenSSL 1.1.1 o posterior, y cuando el cliente proporciona la SNI en el
+saludo TLS, se respetará el <directive>SSLProtocol</directive> de cada host
+virtual (basado en nombre).
+</p>
+<p>
+Por compatibilidad con versiones anteriores, si no se configura ningún
+<directive>SSLProtocol</directive> en un host virtual basado en nombre, se
+sigue aplicando el del host virtual base, <strong>salvo</strong> que
+<directive>SSLProtocol</directive> esté configurado globalmente, en cuyo caso
+se aplica el valor global (esta última excepción es más sensata que
+compatible, no obstante).
+</p>
+</note>
 </usage>
 </directivesynopsis>
 
@@ -753,7 +775,7 @@ SSLProtocol TLSv1
 <name>SSLCipherSuite</name>
 <description>Conjunto de Cifrados disponibles para negociación en el saludo SSL
 </description>
-<syntax>SSLCipherSuite <em>especificación-de-cifrado</em></syntax>
+<syntax>SSLCipherSuite [<em>protocolo</em>] <em>especificación-de-cifrado</em></syntax>
 <default>SSLCipherSuite DEFAULT (depende de la versión de OpenSSL)</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -763,16 +785,30 @@ SSLProtocol TLSv1
 
 <usage>
 <p>
-Esta compleja directiva usa una cadena de <em>cifrados</em> separados por comas
-que consiste en especificaciones de cifrado OpenSSL para configurar el conjunto
-de cifrados que se le permite negociar al cliente en la fase de saludo SSL. 
+Esta compleja directiva usa una cadena <em>especificación-de-cifrado</em> separada por dos
+puntos que consiste en especificaciones de cifrado OpenSSL para configurar el conjunto
+de cifrados que se le permite negociar al cliente en la fase de saludo SSL. El
+especificador de protocolo opcional permite configurar el conjunto de cifrados para
+una versión concreta de SSL. Los valores posibles incluyen "SSL" para todos los
+protocolos SSL hasta TLSv1.2 inclusive.
+</p>
+<p>
 Tenga en cuenta que esta directiva se puede usar en contexto de servidor y de
 directorio. En contexto de servidor aplica el saludo estándar de SSL cuando se
-establece una conexión. En contexto directorio fuerza una renegociación SSL con 
+establece una conexión. En contexto directorio fuerza una renegociación SSL con
 el juego de cifrados después de que la solicitud HTTP ha sido leída pero antes de
 que se envíe la respuesta.</p>
 <p>
-Una especificación de cifrado SSL en <em>especificación-de-cifrado</em> se compone de 4 
+Si la librería SSL soporta TLSv1.3 (OpenSSL 1.1.1 y posterior), el especificador
+de protocolo "TLSv1.3" se puede usar para configurar los conjuntos de cifrados
+para ese protocolo. Dado que TLSv1.3 no ofrece renegociaciones, no está permitido
+especificar cifrados para él en un contexto de directorio.</p>
+<p>
+Para ver una lista de los nombres de cifrado de TLSv1.3, consulte
+<a href="https://docs.openssl.org/master/man3/SSL_CTX_set_ciphersuites/">la
+documentación de OpenSSL</a>.</p>
+<p>
+Una especificación de cifrado SSL en <em>especificación-de-cifrado</em> se compone de 4
 atributos principales más unos cuantos menores extra:</p>
 <ul>
 <li><em>Algoritmo de Intercambio de Clave</em>:<br />
@@ -937,23 +973,28 @@ SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 
 <directivesynopsis>
 <name>SSLCertificateFile</name>
-<description>Fichero de datos Certificado X.509 codificado en PEM</description>
-<syntax>SSLCertificateFile <em>ruta-al-fichero</em></syntax>
+<description>Fichero de datos de certificado X.509 del servidor codificado en
+PEM, o identificador de token</description>
+<syntax>SSLCertificateFile <em>ruta-al-fichero</em>|<em>certid</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><em>certid</em> disponible en la versión 2.4.42 y
+posteriores.</compatibility>
 
 <usage>
 <p>
-Esta directiva apunta a un fichero con datos de certificado en formato PEM. Como
-mínimo, el fichero debe incluir un certificado final (no sólo CA a menos que sea
-autofirmado). La directiva puede usarse multiples veces (haciendo referencia a
-ficheros distintos) para dar soporte a múltiples algoritmos para la 
-autenticación de servidor - típicamente RSA, DSA y ECC. El número de algoritmos
-soportados depende de la versión de OpenSSL utilizada por mod_ssl: con la versión
-1.0.0 o posterior,
-<code>openssl list-public-key-algorithms</code> sacará una lista de algoritmos
-soportados, vea también la nota más adelante sobre limitaciones de versiones
-OpenSSL previas a 1.0.2 y la forma de sortearlas.
+Esta directiva apunta a un fichero con datos de certificado en formato PEM, o
+al identificador del certificado a través de un token criptográfico
+configurado. Si se usa un fichero PEM, como mínimo, el fichero debe incluir un
+certificado de entidad final (hoja). La directiva puede usarse múltiples veces
+(haciendo referencia a ficheros distintos) para dar soporte a múltiples
+algoritmos para la autenticación de servidor - típicamente RSA, DSA y ECC. El
+número de algoritmos soportados depende de la versión de OpenSSL utilizada por
+mod_ssl: con la versión 3.0 o posterior, <code>openssl list
+-public-key-algorithms</code> (o <code>openssl list-public-key-algorithms</code>
+con OpenSSL 1.0) mostrará una lista de algoritmos soportados. Vea la nota más
+adelante sobre limitaciones de versiones de OpenSSL anteriores a 1.0.2 y la
+forma de sortearlas.
 </p>
 
 <p>
@@ -979,14 +1020,43 @@ se aplican independientemente del tipo de algoritmo de autenticación.
 </p>
 
 <p>
-Finalmente la clave privada del certificado también se puede añadir al fichero
-de certificado en lugar de usar por separado la directiva 
-<directive module="mod_ssl">SSLCertificateKeyFile</directive>. Esta práctica
-está muy desaconsejada. Si se usa, los ficheros de certificado usando tales
-ficheros de claves embebidas deben configurarse después de los certificados que
-usan una clave privada en un fichero aparte. Si la clave privada está encriptada
-, el diálogo de solicitud de contraseña se fuerza en el arranque.
-</p>
+Finalmente, la clave privada del certificado de entidad final también se puede
+añadir al fichero de certificado en lugar de usar por separado la directiva
+<directive module="mod_ssl">SSLCertificateKeyFile</directive>.</p>
+
+<note type="warning"><title>No combine la clave y el certificado en un mismo
+fichero</title>
+<p>Esta práctica está muy desaconsejada por las siguientes razones:</p>
+<ul>
+<li><strong>Seguridad</strong>: mantener la clave privada en un fichero
+separado permite permisos de fichero más estrictos. El fichero de certificado
+puede ser legible por cualquiera (son datos públicos), mientras que el fichero
+de clave debería ser legible solo por root. Combinarlos en un único fichero
+significa que cualquier error de configuración o vulnerabilidad que expongan
+el fichero de certificado también exponen la clave privada.</li>
+<li><strong>Restricción de orden</strong>: si se usa un fichero combinado,
+todas las directivas <directive>SSLCertificateFile</directive> que hagan
+referencia a dichos ficheros combinados deben aparecer <em>después</em> de
+cualquier directiva <directive>SSLCertificateFile</directive> que use un
+fichero de clave separado. Incumplir este orden provocará errores en el
+arranque.</li>
+<li><strong>Mantenimiento</strong>: los ficheros separados dejan claro de
+forma inmediata qué fichero contiene qué, lo que simplifica la rotación de
+certificados y las auditorías.</li>
+</ul>
+<p>Si la clave privada está cifrada, el diálogo de solicitud de frase de paso
+se fuerza en el arranque.</p>
+</note>
+
+<p>Como alternativa a almacenar certificados y claves privadas en ficheros, se
+puede usar un identificador de certificado para identificar un certificado
+almacenado en un token. Actualmente, solo se reconocen como identificadores de
+certificado los URI PKCS#11 (<a href="http://www.ietf.org/rfc/rfc7512.txt">RFC
+7512</a>), y pueden usarse junto con el engine o proveedor
+<code>pkcs11</code> de OpenSSL. Si se omite <directive
+module="mod_ssl">SSLCertificateKeyFile</directive>, el certificado y la clave
+privada se pueden cargar a través del único identificador especificado con
+<directive module="mod_ssl">SSLCertificateFile</directive>.</p>
 
 <note>
 <title>Interoperabilidad de parámetro DH con primos > 1024 bits</title>
@@ -1036,45 +1106,79 @@ los de por defecto, este problema se puede evitar creando y configurándolos
 
 <example><title>Ejemplo</title>
 <highlight language="config">
+# Ejemplo usando un fichero codificado en PEM.
 SSLCertificateFile "/usr/local/apache2/conf/ssl.crt/server.crt"
+# Ejemplo de uso de un certificado y clave privada de un token PKCS#11:
+SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
+
+<p>Este fichero se lee en el arranque del servidor, mientras el servidor
+todavía se ejecuta como <code>root</code> (antes de ceder privilegios), por lo
+que puede pertenecer a <code>root</code> y ser legible solo por
+<code>root</code>. El fichero no se vuelve a leer durante el funcionamiento
+normal; se requiere un reinicio del servidor para que los cambios tengan
+efecto.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SSLCertificateKeyFile</name>
-<description>Fichero de clave privada de Servidor codificada en PEM</description>
-<syntax>SSLCertificateKeyFile <em>ruta-al-fichero</em></syntax>
+<description>Fichero de clave privada del servidor codificada en PEM, o
+identificador de clave</description>
+<syntax>SSLCertificateKeyFile <em>ruta-al-fichero</em>|<em>keyid</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility><em>keyid</em> disponible en la versión 2.4.42 y
+posteriores.</compatibility>
 
 <usage>
 <p>
-Esta directiva apunta al fichero de clave privada codificado en PEM para el 
-servidor. Si la clave privada contenida en el fichero está encriptada, se 
-forzará un diálogo de solicitud de contraseña en el arranque.</p>
+Esta directiva apunta al fichero de clave privada codificado en PEM para el
+servidor, o al ID de clave a través de un token criptográfico configurado. Si
+la clave privada contenida está cifrada, se forzará un diálogo de solicitud
+de frase de paso en el arranque.</p>
 
 <p>
-La directiva puede usarse múltiples veces (haciendo referencia a ficheros 
-distintos) para dar soporte a múltiples algoritmos de autenticación para el 
+La directiva puede usarse múltiples veces (haciendo referencia a ficheros
+distintos) para dar soporte a múltiples algoritmos de autenticación para el
 servidor. Por cada directiva
-<directive module="mod_ssl">SSLCertificateKeyFile</directive>
-directive, debe haber una directiva <directive>SSLCertificateFile</directive>
-relacionada.</p>
+<directive module="mod_ssl">SSLCertificateKeyFile</directive>,
+debe haber una directiva <directive>SSLCertificateFile</directive>
+correspondiente.</p>
 
-<p>
-La clave privada se puede combinar con el certificado en el fichero indicado en
-<directive module="mod_ssl">SSLCertificateFile</directive>, pero esta práctica
-es muy desaconsejable. Si se usa, los ficheros de certificado con la clave
-privada dentro deben configurarse después de los certificados que tienen una
-clave privada en otro fichero.</p>
+<note type="warning"><title>No combine la clave y el certificado en un mismo
+fichero</title>
+<p>La clave privada también se puede combinar con el certificado en el
+fichero indicado en <directive
+module="mod_ssl">SSLCertificateFile</directive>, pero esta práctica está muy
+desaconsejada. Consulte la advertencia en la documentación de
+<directive>SSLCertificateFile</directive> para una explicación completa de
+los riesgos y restricciones.</p>
+</note>
+
+<p>Como alternativa a almacenar claves privadas en ficheros, se puede usar un
+identificador de clave para identificar una clave privada almacenada en un
+token. Actualmente, solo se reconocen como identificadores de clave privada
+los URI PKCS#11 (<a href="http://www.ietf.org/rfc/rfc7512.txt">RFC 7512</a>),
+y pueden usarse junto con el engine o proveedor <code>pkcs11</code> de
+OpenSSL.</p>
 
 <example><title>Ejemplo</title>
 <highlight language="config">
+# Para usar una clave privada de un fichero codificado en PEM:
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
+# Para usar una clave privada de un token PKCS#11:
+SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
+
+<p>Este fichero se lee en el arranque del servidor, mientras el servidor
+todavía se ejecuta como <code>root</code> (antes de ceder privilegios), por lo
+que debería pertenecer a y ser legible solo por <code>root</code>, ya que
+contiene la clave privada. El fichero no se vuelve a leer durante el
+funcionamiento normal; se requiere un reinicio del servidor para que los
+cambios tengan efecto.</p>
 </usage>
 </directivesynopsis>
 
@@ -1126,6 +1230,12 @@ navegadores se confundirán en esta situación.</p>
 SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
+
+<p>Este fichero se lee en el arranque del servidor, mientras el servidor
+todavía se ejecuta como <code>root</code> (antes de ceder privilegios), por lo
+que puede pertenecer a y ser legible solo por <code>root</code>. El fichero
+no se vuelve a leer durante el funcionamiento normal; se requiere un reinicio
+del servidor para que los cambios tengan efecto.</p>
 </usage>
 </directivesynopsis>
 
@@ -1241,6 +1351,13 @@ este directorio contiene los enlaces simbólicos apropiados.</p>
 SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
+
+<p>Los ficheros de este directorio se leen en el arranque del servidor,
+mientras el servidor todavía se ejecuta como <code>root</code> (antes de
+ceder privilegios), por lo que pueden pertenecer a y ser legibles solo por
+<code>root</code>. Los ficheros no se vuelven a leer durante el funcionamiento
+normal; se requiere un reinicio del servidor para que los cambios tengan
+efecto.</p>
 </usage>
 </directivesynopsis>
 
@@ -1267,6 +1384,12 @@ alternativamente y/o adicionalmente a
 SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
+
+<p>Este fichero se lee en el arranque del servidor, mientras el servidor
+todavía se ejecuta como <code>root</code> (antes de ceder privilegios), por lo
+que puede pertenecer a y ser legible solo por <code>root</code>. El fichero
+no se vuelve a leer durante el funcionamiento normal; se requiere un reinicio
+del servidor para que los cambios tengan efecto.</p>
 </usage>
 </directivesynopsis>
 
@@ -1493,14 +1616,20 @@ que este directorio contiene los enlaces simbólicos apropiados.</p>
 SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </highlight>
 </example>
+
+<p>Los ficheros de este directorio se leen en el arranque del servidor,
+mientras el servidor todavía se ejecuta como <code>root</code> (antes de
+ceder privilegios), por lo que pueden pertenecer a y ser legibles solo por
+<code>root</code>. Los ficheros no se vuelven a leer durante el funcionamiento
+normal; se requiere un reinicio del servidor para que los cambios tengan
+efecto.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SSLCARevocationFile</name>
 <description>Fichero de CRL's de CA concatenados y codificados en PEM para la
-  Autenticación de ClienteFile of concatenated PEM-encoded CA CRLs for
-</description>
+  Autenticación de Cliente</description>
 <syntax>SSLCARevocationFile <em>ruta-al-fichero</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -1519,6 +1648,12 @@ preferencia. Esto se puede usar alternativamente a/o adicionalmente a
 SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 </highlight>
 </example>
+
+<p>Este fichero se lee en el arranque del servidor, mientras el servidor
+todavía se ejecuta como <code>root</code> (antes de ceder privilegios), por lo
+que puede pertenecer a y ser legible solo por <code>root</code>. El fichero
+no se vuelve a leer durante el funcionamiento normal; se requiere un reinicio
+del servidor para que los cambios tengan efecto.</p>
 </usage>
 </directivesynopsis>
 
@@ -1785,11 +1920,18 @@ Las <em>opciones</em> disponibles son:</p>
     el siguiente hash MD5 de la misma palabra:
      ``<code>$1$OXLyS...$Owx8s2/m9/gfkcRVXzgoE/</code>''.</p>
 
-    <p>Tenga en cuenta que 
+    <p>Tenga en cuenta que
     la directiva <directive module="mod_auth_basic">AuthBasicFake</directive>
     dentro de <module>mod_auth_basic</module> puede usarse como un mecanismo
-    general para fingir la autenticación básica, dando control sobre la 
+    general para fingir la autenticación básica, dando control sobre la
     estructura tanto del nombre como de la contraseña.</p>
+
+    <note>A diferencia de la opción <code>FakeBasicAuth</code>, la directiva
+    <directive module="mod_auth_basic">AuthBasicFake</directive> no establece
+    una cabecera Authorization con suficiente antelación para que la procesen
+    la autenticación y la autorización en el servidor local; solo está
+    pensada para servidores upstream.
+    </note>
 
     <note type="warning">
       <p>Los nombres de usuarios utilizados para <code>FakeBasicAuth</code> no
@@ -1800,18 +1942,17 @@ Las <em>opciones</em> disponibles son:</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    Esto <em>fuerza</em> acceso prohibido cuando <code>SSLRequireSSL</code> o
-    <code>SSLRequire</code> deciden satisfactoriamente que el acceso debería
-    denegarse. Generalmente por defecto en el caso donde se usa una
-    directiva ``<code>Satisfy any</code>'', y se pasan otras restricciones de 
-    acceso, se sobreescribe la denegación del acceso debido a 
-    <code>SSLRequireSSL</code> o <code>SSLRequire</code> (porque así es como
-    debería funcionar el mecanismo <code>Satisfy</code> de Apache .) Pero para
-    la restricción estricta de acceso puede usar <code>SSLRequireSSL</code> y/o 
-    <code>SSLRequire</code> en combinación con un 
-    ``<code>SSLOptions +StrictRequire</code>''. Entonces un 
-    ``<code>Satisfy Any</code>'' adicional no tiene oportunidad una vez que
-    mod_ssl ha decidido denegar el acceso.</p>
+    Esto <em>fuerza</em> la prohibición del acceso cuando <directive
+    module="mod_ssl">SSLRequireSSL</directive> o <directive
+    module="mod_ssl">SSLRequire</directive> ha decidido que el acceso debería
+    denegarse. Sin <code>StrictRequire</code>, es posible que otras
+    directivas de autorización (como <directive module="mod_authz_core"
+    type="section">RequireAny</directive>) anulen la denegación de acceso de
+    SSL y concedan el acceso de todas formas. Con
+    <code>SSLOptions +StrictRequire</code>, la denegación por parte de
+    <code>SSLRequireSSL</code> o <code>SSLRequire</code> se aplica de forma
+    incondicional, independientemente de otras configuraciones de
+    autorización.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -2073,8 +2214,18 @@ otro host virtual, los clientes no compatibles con SNI no tendrán acceso a ese
 host virtual en particular.
 </p>
 
+<p>
+Si se configura a <code>on</code> en el contexto de servidor (globalmente,
+fuera de cualquier bloque <directive module="core"
+type="section">VirtualHost</directive>), el valor se hereda por todos los
+hosts virtuales que no lo anulen. Esto tiene el mismo efecto que configurarlo
+a <code>on</code> en cada host virtual por defecto basado en nombre: a los
+clientes no-SNI se les denegará el acceso a cualquier host virtual basado en
+nombre.
+</p>
+
 <note type="warning"><p>
-Esta opción sólo está disponible si httpd fue compilado contra una versión 
+Esta opción sólo está disponible si httpd fue compilado contra una versión
 compatible con SNI de OpenSSL.
 </p></note>
 
@@ -2188,6 +2339,8 @@ SSLVHostSNIPolicy authonly
 <syntax>SSLProxyMachineCertificatePath <em>directorio</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>El contexto de sección proxy está permitido en httpd 2.4.30 y
+posterior</compatibility>
 
 <usage>
 <p>
@@ -2195,12 +2348,20 @@ Esta directiva configura el directorio donde se guardan los certificados y clave
 usadas para la autenticación del servidor proxy en servidores remotos.
 </p>
 
-<p>Los ficheros en este directorio deben ser codificados en PEM y accesibles
-con nombres de ficheros con hash. Además, debe crear enlaces simbólicos 
-llamados <code><em>valor-del-hash</em>.N</code>. Y siempre debería asegurarse
-de que este directorio contiene los enlaces simbólicos apropiados.</p>
+<p>
+mod_ssl intentará cargar cada fichero dentro del directorio indicado como si
+se hubiera configurado individualmente con <directive
+module="mod_ssl">SSLProxyMachineCertificateFile</directive>.
+</p>
 <note type="warning">
 <p>Actualmente no hay soporte para claves privadas encriptadas</p>
+</note>
+<note type="warning">
+<p>Solo se admiten claves codificadas en formato PKCS1 RSA, DSA o EC. Las
+claves codificadas en formato PKCS8, es decir, que empiezan por
+&quot;<code>-----BEGIN PRIVATE KEY-----</code>&quot;, deben convertirse, por
+ejemplo usando
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
 </note>
 <example><title>Ejemplo</title>
 <highlight language="config">
@@ -2218,6 +2379,10 @@ ser usadas por el proxy</description>
 <syntax>SSLProxyMachineCertificateFile <em>ruta-al-fichero</em></syntax>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>El contexto de sección proxy está permitido en httpd 2.4.30 y
+posterior<br/>
+La inclusión de certificados no-hoja (CA) solo está permitida en httpd 2.4.59
+y posterior.</compatibility>
 
 <usage>
 <p>
@@ -2225,12 +2390,45 @@ Esta directiva configura el fichero todo-en-uno donde guarda los certificados y
 claves usadas para la autenticación del servidor proxy en servidores remotos.
 </p>
 <p>
-Este fichero es simplemente la concatenación de varios ficheros de certificado
-codificados en PEM, en orden de preferencia. Use esta directiva alternativamente
-o adicionalmente a <code>SSLProxyMachineCertificatePath</code>.
-</p>
+Este fichero referenciado es simplemente la concatenación de varios ficheros
+de certificado codificados en PEM. Use esta directiva alternativamente o
+adicionalmente a <code>SSLProxyMachineCertificatePath</code>. El fichero
+referenciado puede contener cualquier número de pares de certificado cliente
+y su clave privada asociada. Cada par puede especificarse en orden
+(certificado, clave) o (clave, certificado). También se pueden incluir en el
+fichero certificados no-hoja (CA), que se tratan como si se hubieran
+configurado con <directive
+module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>.</p>
+
+<p>Cuando un servidor remoto solicita un certificado cliente, el servidor
+debería proporcionar en la solicitud una lista de <em>nombres de autoridad de
+certificación aceptables</em>. Si dicha lista <em>no</em> se proporciona,
+<module>mod_ssl</module> usará el primer par cliente cert/clave configurado.
+Si <em>sí</em> se proporciona una lista de nombres de CA, <module>mod_ssl</module>
+recorrerá esa lista e intentará encontrar un certificado cliente configurado
+que haya sido emitido directamente por esa CA, o indirectamente a través de
+cualquier número de certificados de CA intermedios. La cadena de certificados
+de CA intermedios puede construirse a partir de los incluidos en el fichero, o
+configurarse con <directive
+module="mod_ssl">SSLProxyMachineCertificateChainFile</directive>. El primer
+certificado configurado que coincida se proporcionará entonces en respuesta a
+la solicitud.</p>
+
+<p>Si el servidor remoto <em>sí</em> proporciona la lista de nombres de CA, y
+<em>no</em> se puede encontrar ningún certificado cliente coincidente,
+<module>mod_ssl</module> no proporcionará ningún certificado cliente, lo que
+probablemente hará fallar el saludo SSL/TLS (dependiendo de la configuración
+del servidor remoto).</p>
+
 <note type="warning">
 <p>Actualmente no hay soporte para claves privadas encriptadas</p>
+</note>
+<note type="warning">
+<p>Solo se admiten claves codificadas en formato PKCS1 RSA, DSA o EC. Las
+claves codificadas en formato PKCS8, es decir, que empiezan por
+&quot;<code>-----BEGIN PRIVATE KEY-----</code>&quot;, deben convertirse, por
+ejemplo usando
+&quot;<code>openssl rsa -in private-pkcs8.pem -outform pem</code>&quot;.</p>
 </note>
 <example><title>Ejemplo</title>
 <highlight language="config">
@@ -2619,10 +2817,12 @@ información adicional.
 <name>SSLProxyCipherSuite</name>
 <description>Conjunto de Cifrados disponibles para negociación en el saludo SSL
 de proxy</description>
-<syntax>SSLProxyCipherSuite <em>especificación-de-cifrado</em></syntax>
+<syntax>SSLProxyCipherSuite [<em>protocolo</em>] <em>especificación-de-cifrado</em></syntax>
 <default>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</default>
 <contextlist><context>server config</context> <context>virtual host</context>
 <context>proxy section</context></contextlist>
+<compatibility>El contexto de sección proxy está permitido en httpd 2.4.30 y
+posterior</compatibility>
 
 <usage>
 <p>Equivalente a <directive module="mod_ssl">SSLCipherSuite</directive>, pero 
@@ -2887,10 +3087,22 @@ defecto, en versiones Openssl 0.9.6 debe usarse "-engine".</p>
 
 <example><title>Ejemplo</title>
 <highlight language="config">
-# For a Broadcom accelerator:
+# Para un acelerador Broadcom:
 SSLCryptoDevice ubsec
 </highlight>
 </example>
+
+<p>
+Con OpenSSL 3.0 o posterior, si no se especifica ningún engine pero la clave o
+el certificado se especifican usando URI PKCS#11 (<a
+href="http://www.ietf.org/rfc/rfc7512.txt">RFC 7512</a>), se intentará cargar
+la clave y el certificado desde un proveedor de OpenSSL. El proveedor de
+OpenSSL a usar debe estar definido y configurado en el fichero de
+configuración de OpenSSL, y debe admitir el <a
+href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">método
+STORE</a> para URI PKCS#11 (<a
+href="http://www.ietf.org/rfc/rfc7512.txt">RFC 7512</a>).
+</p>
 </usage>
 </directivesynopsis>
 
@@ -2898,23 +3110,37 @@ SSLCryptoDevice ubsec
 <name>SSLOCSPEnable</name>
 <description>Activa la validación OCSP para la cadena de certificados del 
 cliente</description>
-<syntax>SSLOCSPEnable on|off</syntax>
+<syntax>SSLOCSPEnable on|leaf|off [<em>modificadores</em>]</syntax>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>El modo <em>leaf</em> está disponible en httpd 2.4.34 y
+posterior. El modificador <em>no_ocsp_for_cert_ok</em> está disponible en
+2.4.29 y posterior.</compatibility>
 
 <usage>
-<p>Esta opción activa la validación OCSP de la cadena de certificados del 
-cliente. Si esta opción está activada, los certificados en la cadena de 
+<p>Esta opción activa la validación OCSP de la cadena de certificados del
+cliente. Si esta opción está activada, los certificados en la cadena de
 certificados del cliente se validarán contra un respondedor OCSP después de que
-se hayan hecho las verificaciones normales (incluidas las comprobaciones de 
-CRL).</p>
+se hayan hecho las verificaciones normales (incluidas las comprobaciones de
+CRL). En el modo "leaf", solo se validará el propio certificado del
+cliente.</p>
 
-<p>El respondedor OCSP utilizado o bien se extrae del mismo certificado, o 
-derivado de la configuración; vea las directivas 
+<p>El respondedor OCSP utilizado o bien se extrae del mismo certificado, o
+derivado de la configuración; vea las directivas
 <directive module="mod_ssl">SSLOCSPDefaultResponder</directive> y
-<directive module="mod_ssl">SSLOCSPOverrideResponder</directive>
-directives.</p>
+<directive module="mod_ssl">SSLOCSPOverrideResponder</directive>.</p>
+
+<p>Los siguientes modificadores opcionales están disponibles:</p>
+<ul>
+<li><code>no_ocsp_for_cert_ok</code>
+    <p>Cuando la validación OCSP está activada, un certificado que no
+    contenga una URL de respondedor OCSP normalmente hará que la validación
+    falle. Añadir este modificador permite que esos certificados superen la
+    validación. Esto es útil en entornos en los que algunos certificados de
+    la cadena no incluyen información de respondedor OCSP.</p>
+</li>
+</ul>
 
 <example><title>Ejemplo</title>
 <highlight language="config">
@@ -2931,7 +3157,7 @@ SSLOCSPOverrideResponder on
 <name>SSLOCSPDefaultResponder</name>
 <description>Configura la URI por defecto del respondedor para la validación
 OCSP</description>
-<syntax>SSLOCSDefaultResponder <em>uri</em></syntax>
+<syntax>SSLOCSPDefaultResponder <em>uri</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -3030,7 +3256,7 @@ OCSP Responder), esta opción debería estar configuada a
 <description>Salta la verificación de certificados de respondedor 
   OCSP</description>
 <syntax>SSLOCSPNoverify <em>On/Off</em></syntax>
-<default>SSLOCSPNoverify Off</default>
+<default>SSLOCSPNoverify off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Disponible en httpd 2.4.26 y posterior, si se usa OpenSSL 0.9.7 o
@@ -3411,17 +3637,10 @@ cuando se añaden nuevas características a OpenSSL.</p>
 <directive>SSLOpenSSLConfCmd</directive> depende de la versión OpenSSL utilizada 
 para <module>mod_ssl</module> (al menos la versión 1.0.2 es necesaria). Para una 
 lista de nombres de comandos
-soportados, vea la sección <em>Comandos soportados para fichero de 
-configuración</em> en la página de manual 
-<a href="http://www.openssl.org/docs/man1.0.2/ssl/SSL_CONF_cmd.html#SUPPORTED-CONFIGURATION-FILE-COMMANDS">SSL_CONF_cmd(3)</a> 
+soportados, vea la sección <em>Supported configuration file commands</em> en
+la página de manual
+<a href="https://docs.openssl.org/master/man3/SSL_CONF_cmd/#supported-configuration-file-commands">SSL_CONF_cmd(3)</a>
 de OpenSSL.</p>
-
-<p>Algunos de los comandos de <directive>SSLOpenSSLConfCmd</directive> se pueden
-usar como alternativa a directivas existentes (tales como
-<directive module="mod_ssl">SSLCipherSuite</directive> o
-<directive module="mod_ssl">SSLProtocol</directive>),
-aunque debería tenerse en cuenta que la sintaxis / valores disponibles para
-parámetros pueden ser diferentes.</p>
 
 <example><title>Ejemplos</title>
 <highlight language="config">
@@ -3432,6 +3651,24 @@ SSLOpenSSLConfCmd Protocol "-ALL, TLSv1.2"
 SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256
 </highlight>
 </example>
+
+<note type="warning"><title>Advertencia de compatibilidad y
+estabilidad</title>
+
+<p>Algunos de los comandos de <directive>SSLOpenSSLConfCmd</directive> se
+pueden usar como alternativa a directivas existentes (tales como
+<directive module="mod_ssl">SSLCipherSuite</directive> o
+<directive module="mod_ssl">SSLProtocol</directive>),
+aunque la sintaxis / valores permitidos para los parámetros pueden a veces
+ser diferentes.</p>
+
+<p>Se recomienda usar las directivas proporcionadas por mod_ssl donde estén
+disponibles para configurar OpenSSL, y usar
+<directive>SSLOpenSSLConfCmd</directive> solo para funcionalidades de
+OpenSSL que no se puedan configurar con mod_ssl. Es posible que el
+comportamiento de mod_ssl cambie entre versiones de httpd cuando se usa
+<directive>SSLOpenSSLConfCmd</directive>.</p>
+</note>
 </usage>
 </directivesynopsis>
 

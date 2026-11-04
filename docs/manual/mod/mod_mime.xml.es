@@ -963,6 +963,9 @@ extensiones de archivo</description>
     deshagan cualquier asociación heredada de directorios superiores o de los
     archivos de configuración del servidor.</p>
 
+    <p>El argumento <var>extension</var> no distingue entre mayúsculas y
+    minúsculas, y puede especificarse con o sin el punto inicial.</p>
+
     <example><title>Ejemplo</title>
     <highlight language="config">
 RemoveOutputFilter shtml

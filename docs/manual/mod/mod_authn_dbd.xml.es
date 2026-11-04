@@ -126,7 +126,7 @@ la configuración necesarias en algunas aplicaciones web.
   <p>El hecho de que necesite preocuparse por la seguridad SQL depende de qué controlador DBD
   y backend use. Con la mayoría de los controladores no tiene que hacer nada:
   la sentencia es preparada por la base de datos en el arranque, y la entrada del usuario se
-  usa solo como datos. Pero puede necesitar depurar su entrada. En el momento
+  usa solo como datos. Pero puede necesitar sanear su entrada. En el momento
   de escribir esto, el único controlador que requiere que tenga cuidado es FreeTDS.</p>
   <p>Por favor, lea la documentación de <module>mod_dbd</module> para más información
   sobre la seguridad en este ámbito.</p>

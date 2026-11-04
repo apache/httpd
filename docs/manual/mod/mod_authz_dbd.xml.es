@@ -189,7 +189,7 @@ DBDExptime 300
   <p>Que necesite o no preocuparse por la seguridad SQL depende del driver DBD
   y del backend que use. Con la mayoría de los drivers no tiene que hacer nada:
   la instrucción la prepara la base de datos al arrancar, y la entrada del usuario se
-  usa solo como datos. Pero puede que necesite depurar su entrada. En el momento
+  usa solo como datos. Pero puede que necesite sanear su entrada. En el momento
   de escribir esto, el único driver que exige tener cuidado es FreeTDS.</p>
   <p>Por favor, consulte la documentación de <module>mod_dbd</module> para más información
   sobre la seguridad en este aspecto.</p>

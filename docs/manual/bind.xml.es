@@ -174,8 +174,8 @@ Listen 192.0.2.5:8000
     <strong>única</strong> forma para el manejo de IPv4 e IPv6 al mismo
     tiempo es mediante direcciones mapeadas.
     Si quieres que <code>httpd</code> maneje ambos tipos de conexiones IPv4 e IPv6
-    con el mínimo de sockets, lo cual requiere el uso de direcciones IPv6
-    mapeadas sobre IPv4, hay que especificar la opción
+    con el mínimo de sockets, lo cual requiere el uso de direcciones IPv4
+    mapeadas sobre IPv6, hay que especificar la opción
     <code>--enable-v4-mapped</code> al <program>
     configure</program>.</p>
 
