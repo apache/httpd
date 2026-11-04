@@ -88,6 +88,7 @@ SSL_CTX* h3q_tls_ctx_create(const h3q_config* cfg, char* err, size_t errlen)
         return NULL;
     }
 
+    SSL_CTX_set_domain_flags(ssl_ctx, SSL_DOMAIN_FLAG_MULTI_THREAD);
     SSL_CTX_set_min_proto_version(ssl_ctx, TLS1_3_VERSION);
     SSL_CTX_set_max_proto_version(ssl_ctx, TLS1_3_VERSION);
 

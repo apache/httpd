@@ -20,6 +20,7 @@
 #include <http_log.h>
 
 #include <apr_atomic.h>
+#include <apr_hash.h>
 
 #include "h3.h"
 #include "h3_io.h"
@@ -28,6 +29,8 @@
 #include "mod_http3.h"
 #include "quic/h3q.h"
 #include "quic/h3q_conn.h"
+
+#define H3_PUMP_BUDGET 32
 
 void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
 {
@@ -48,21 +51,27 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             wait_for_event(io);
         }
         work_pending = 0;
-        int pumped = h3q_engine_pump(io->qengine);
-        if (pumped < 0)
         {
-            if (!listener_failed)
-            {
-                listener_failed = 1;
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC listener event processing failed; no further datagrams will be handled");
-            }
-            /* Once latched, unread datagrams keep POLLIN hot; do not spin on them. */
-            apr_sleep(apr_time_from_msec(H3_LISTENER_FAILED_BACKOFF_MS));
-        }
-        else
-        {
-            listener_failed = 0;
-            work_pending = pumped;
+            int pump_rounds = 0;
+            int pumped;
+            do {
+                pumped = h3q_engine_pump(io->qengine);
+                if (pumped < 0)
+                {
+                    if (!listener_failed)
+                    {
+                        listener_failed = 1;
+                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC listener event processing failed; no further datagrams will be handled");
+                    }
+                    apr_sleep(apr_time_from_msec(H3_LISTENER_FAILED_BACKOFF_MS));
+                    break;
+                }
+                listener_failed = 0;
+                if (pumped > 0)
+                {
+                    work_pending = 1;
+                }
+            } while (pumped > 0 && ++pump_rounds < H3_PUMP_BUDGET);
         }
 
         if (io->thread_running && !io->draining)
@@ -92,8 +101,36 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
 
         for (int i = 0; i < io->active_sessions->nelts;)
         {
+            if (i > 0 && (i % 8) == 0)
+            {
+                int p = h3q_engine_pump(io->qengine);
+                if (p > 0)
+                {
+                    work_pending = 1;
+                }
+            }
+
             h3_session* session = ((h3_session**)io->active_sessions->elts)[i];
-            if (service_session_pass(io, session))
+
+            /* Skip sessions with no work: no active worker tasks, no streams,
+             * and not draining/stopping. Just check if the connection died. */
+            if (!io->draining && io->thread_running
+                && apr_atomic_read32(&session->active_tasks) == 0
+                && apr_hash_count(session->streams) == 0
+                && !session->aborted)
+            {
+                if (h3q_conn_is_closed(session->qconn))
+                {
+                    session->aborted = 1;
+                }
+                else
+                {
+                    i++;
+                    continue;
+                }
+            }
+
+            if (!session->aborted && service_session_pass(io, session))
             {
                 work_pending = 1;
             }
