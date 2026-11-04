@@ -35,9 +35,7 @@ class TestDavIfHeader:
         conf.install()
         assert env.apache_restart() == 0
 
-    @pytest.mark.skipif(sys.platform == 'win32',
-                        reason="crashes Apache child process on Windows")
-    def test_dav_003_01(self, env):
+    def test_dav_005_01_copy_with_trucated_not(self, env):
         """COPY with truncated 'Not' in If: header should return 400,
         not crash or succeed."""
         url = env.mkurl("http", "test1", "/dav-if/hello.txt")

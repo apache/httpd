@@ -71,14 +71,14 @@ class TestDavOperations:
                 '</D:lockinfo>')
 
     # HEAD request on a DAV resource returns 200
-    def test_dav_002_01(self, env):
+    def test_dav_004_01_head_req(self, env):
         self._write_dav_file(env, 'hello.txt', 'hello')
         url = self._dav_url(env, 'hello.txt')
         r = env.curl_raw(url, options=['-I'])
         assert r.response["status"] == 200
 
     # GET retrieves the correct file content
-    def test_dav_002_02(self, env):
+    def test_dav_004_02_get_req(self, env):
         self._write_dav_file(env, 'hello.txt', 'hello')
         url = self._dav_url(env, 'hello.txt')
         r = env.curl_raw(url)
@@ -86,8 +86,7 @@ class TestDavOperations:
         assert r.stdout.strip() == 'hello'
 
     # PUT uploads content, subsequent GET returns the same content
-
-    def test_dav_002_03(self, env):
+    def test_dav_004_03_put_req(self, env):
         self._remove_dav_file(env, 'put_test.txt')
         content = 'uploaded via put'
         fpath = self._write_temp(env, 'put_content.txt', content)
@@ -100,8 +99,7 @@ class TestDavOperations:
         assert r.stdout.strip() == content
 
     # COPY duplicates a file; the copy has the original content
-
-    def test_dav_002_04(self, env):
+    def test_dav_004_04_copy_req(self, env):
         self._write_dav_file(env, 'hello.txt', 'hello')
         self._remove_dav_file(env, 'hello_copy.txt')
         src_url = self._dav_url(env, 'hello.txt')
@@ -116,7 +114,7 @@ class TestDavOperations:
         assert r.stdout.strip() == 'hello'
 
     # MOVE transfers a file; the source returns 404 afterwards
-    def test_dav_002_05(self, env):
+    def test_dav_004_05_move_req(self, env):
         self._write_dav_file(env, 'move_src.txt', 'move me')
         self._remove_dav_file(env, 'move_dest.txt')
         src_url = self._dav_url(env, 'move_src.txt')
@@ -134,7 +132,7 @@ class TestDavOperations:
         assert r.stdout.strip() == 'move me'
 
     # DELETE removes a file; subsequent GET returns 404
-    def test_dav_002_06(self, env):
+    def test_dav_004_06_delete_req(self, env):
         self._write_dav_file(env, 'delete_me.txt', 'delete this')
         url = self._dav_url(env, 'delete_me.txt')
         r = env.curl_raw(url, options=['-X', 'DELETE'])
@@ -144,8 +142,7 @@ class TestDavOperations:
         assert r.response["status"] == 404
 
     # PROPFIND with Depth:1 returns a listing that includes file names
-
-    def test_dav_002_07(self, env):
+    def test_dav_004_07_prpfind_req(self, env):
         self._write_dav_file(env, 'hello.txt', 'hello')
         url = self._dav_url(env)
         r = env.curl_raw(url, options=[
@@ -155,8 +152,7 @@ class TestDavOperations:
         assert 'hello.txt' in r.stdout
 
     # MKCOL creates a collection; PROPFIND on the parent shows it
-
-    def test_dav_002_08(self, env):
+    def test_dav_004_08_mkcol_req(self, env):
         col_dir = os.path.join(env.gen_dir, 'dav-ops', 'newcol')
         shutil.rmtree(col_dir, ignore_errors=True)
         url = self._dav_url(env, 'newcol')
@@ -171,8 +167,7 @@ class TestDavOperations:
         assert 'newcol' in r.stdout
 
     # After LOCK, PUT/DELETE/MOVE fail with 423 Locked but GET still works
-
-    def test_dav_002_09(self, env):
+    def test_dav_004_09_check_fail(self, env):
         self._write_dav_file(env, 'lock_test.txt', 'lock me')
         url = self._dav_url(env, 'lock_test.txt')
         fpath = self._write_temp(env, 'lock_body.xml', self._lock_body())
@@ -202,7 +197,7 @@ class TestDavOperations:
             matches=[r'.*dav:error.*'])
 
     # After LOCK then UNLOCK, DELETE succeeds
-    def test_dav_002_10(self, env):
+    def test_dav_004_10_after_lock_unlock_delete(self, env):
         self._write_dav_file(env, 'unlock_test.txt', 'unlock me')
         url = self._dav_url(env, 'unlock_test.txt')
         fpath = self._write_temp(env, 'unlock_body.xml', self._lock_body())
