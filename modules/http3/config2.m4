@@ -141,8 +141,6 @@ AC_DEFUN([APACHE_CHECK_NGHTTP3],[
       AC_CHECK_HEADERS([nghttp3/nghttp3.h])
       dnl nghttp3_conn_server_new() is a macro around the versioned function
       AC_CHECK_FUNCS([nghttp3_conn_server_new_versioned], [], [liberrors="yes"])
-      dnl nghttp3 >= 1.16.0 replaces nghttp3_conn_is_drained()
-      AC_CHECK_FUNCS([nghttp3_conn_is_drained2])
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([nghttp3 library is unusable])
       fi

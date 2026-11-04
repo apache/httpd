@@ -45,7 +45,7 @@
 #include "quic/h3q_conn.h"
 #include "quic/h3q_stream.h"
 
-#ifdef HAVE_NGHTTP3_CONN_IS_DRAINED2
+#if NGHTTP3_VERSION_NUM >= 0x011000
 #define H3_NGHTTP3_CONN_IS_DRAINED(conn) nghttp3_conn_is_drained2(conn)
 #else
 /* nghttp3 < 1.16.0 has the same function, without the const argument */
@@ -429,13 +429,14 @@ int service_session_pass(h3_io_t* io, h3_session* session)
 
     if (io->draining || !io->thread_running)
     {
+        int drained;
         apr_thread_mutex_lock(session->lock);
         if (!session->goaway_sent)
         {
             nghttp3_conn_submit_shutdown_notice(session->ngh3);
         }
         flush_nghttp3(session);
-        int drained = H3_NGHTTP3_CONN_IS_DRAINED(session->ngh3);
+        drained = H3_NGHTTP3_CONN_IS_DRAINED(session->ngh3);
         apr_thread_mutex_unlock(session->lock);
         if (!session->goaway_sent)
         {
