@@ -51,6 +51,8 @@ apr_status_t h3_thread_safe_pool_create(apr_pool_t* parent, const char* tag, apr
     rv = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, *out);
     if (rv != APR_SUCCESS)
     {
+        apr_pool_destroy(*out);
+        *out = NULL;
         return rv;
     }
     apr_allocator_mutex_set(allocator, mutex);

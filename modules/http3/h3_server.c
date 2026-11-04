@@ -52,6 +52,7 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
     apr_pool_t* ptry = NULL;
     if (apr_pool_create(&ptry, args->pool) != APR_SUCCESS)
     {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, args->vhost, "port acquirer: could not create a pool");
         return NULL;
     }
     while (!child_stopping)
@@ -119,29 +120,30 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
 {
     server_rec* vhost = NULL;
     h3_server_conf* conf = find_h3_server(s, &vhost);
+    apr_pool_t* pool = NULL;
+    int udp_fd = -1;
+    apr_status_t rv;
     if (!conf)
     {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "h3_child_init: no H3 cert/key configured, skipping");
         return;
     }
     apr_pool_pre_cleanup_register(pchild, NULL, child_pool_cleanup);
-    apr_pool_t* pool = NULL;
     if (h3_thread_safe_pool_create(pchild, "h3_child", &pool) != APR_SUCCESS)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, APLOGNO() "h3_child_init: could not create the HTTP/3 pool");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "h3_child_init: could not create the HTTP/3 pool");
         return;
     }
 
-    int udp_fd = -1;
-    apr_status_t rv = h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pool, &udp_fd);
+    rv = h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pool, &udp_fd);
     if (rv == APR_EAGAIN)
     {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, vhost, "h3_child_init: pid=%d port already owned, will keep retrying in background", h3_getpid());
         struct port_acquire_args* args = apr_palloc(pool, sizeof(*args));
+        apr_threadattr_t* attr = NULL;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, vhost, "h3_child_init: pid=%d port already owned, will keep retrying in background", h3_getpid());
         args->pool = pool;
         args->vhost = vhost;
         args->conf = conf;
-        apr_threadattr_t* attr = NULL;
         if (apr_threadattr_create(&attr, pool) != APR_SUCCESS || apr_thread_create(&port_acquire_thread, attr, port_acquire_thread_fn, args, pool) != APR_SUCCESS)
         {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "h3_child_init: failed to start port acquirer thread");
