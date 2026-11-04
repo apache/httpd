@@ -53,10 +53,12 @@ void* APR_THREAD_FUNC worker_thread(apr_thread_t* thread, void* data);
 void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data);
 
 /**
- * Create a pool that may be allocated from by more than one thread: it has
- * an allocator of its own, with a mutex. Pools such as the child pool may
- * have an allocator without one; prefork shares it, unlocked, with the
- * pool of every request.
+ * Create a pool with an allocator of its own, which has a mutex, so that
+ * threads can create and destroy subpools of it concurrently. Pools such
+ * as the child pool may have an allocator without one; prefork shares it,
+ * unlocked, with the pool of every request. The mutex does not make
+ * allocating from the pool itself thread-safe: only one thread at a time
+ * may do that.
  *
  * @param parent The parent pool.
  * @param tag    The tag for the new pool.
