@@ -1,0 +1,2 @@
+  *) mod_cache_disk: Preserve cached response headers longer than
+     MAX_STRING_LEN when recalling entries.  [Oz Kaiser]
