@@ -622,6 +622,7 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
     CHECK(ptemp);
     CHECK(s);
     h3_server_conf* conf = NULL;
+    server_rec* owner = NULL;
 
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
     {
@@ -737,11 +738,10 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
             {
                 vc->h3_idle_timeout = H3_IDLE_TIMEOUT_DEFAULT;
             }
-            if (!conf)
-            {
-                conf = vc; /* the first host owns the listener; the rest still advertise it */
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, vs, "h3_post_config: pid=%d h3_port=%d mpm=%s threaded=%d forked=%d max_threads=%d", h3_getpid(), (int)vc->h3_port, ap_show_mpm(), mpm_query(AP_MPMQ_IS_THREADED), mpm_query(AP_MPMQ_IS_FORKED), mpm_query(AP_MPMQ_MAX_THREADS));
-            }
+            /* httpd prepends virtual hosts, so the last match is the first one defined:
+             * it owns the listener, as it is mod_ssl's default; the rest still advertise it. */
+            conf = vc;
+            owner = vs;
         }
     }
 
@@ -750,6 +750,7 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "mod_http3: no host serves HTTP/3: add h3 to Protocols on a host with SSLEngine on");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, owner, "h3_post_config: pid=%d h3_port=%d mpm=%s threaded=%d forked=%d max_threads=%d", h3_getpid(), (int)conf->h3_port, ap_show_mpm(), mpm_query(AP_MPMQ_IS_THREADED), mpm_query(AP_MPMQ_IS_FORKED), mpm_query(AP_MPMQ_MAX_THREADS));
 
     /* The listener serves conf's certificate by default and swaps by SNI. */
     SSL_CTX_set_cert_cb(conf->ssl_ctx, h3_sni_select_cert, sni);

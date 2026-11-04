@@ -12,7 +12,8 @@
   *) mod_http3: Select the HTTP/3 certificate by SNI, so each virtual host on
      a shared port serves its own certificate instead of the first host's.
      Names are matched as httpd matches virtual hosts, wildcard ServerAlias
-     included.
+     included. A name that matches no host gets the certificate of the first
+     virtual host defined, as with mod_ssl.
      [Alexander Gerasimov <codeguard gmail.com>]
 
   *) mod_http3: Give every virtual host its own mod_http3 configuration
