@@ -19,109 +19,240 @@
 #include <ws2tcpip.h>
 #endif
 
-#include <openssl/ssl.h>
+#include <assert.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include "quic/detail/h3q_impl.h"
 #include "quic/h3q_stream.h"
+
+static_assert(sizeof(h3q_vec) == sizeof(ngtcp2_vec) && offsetof(h3q_vec, len) == offsetof(ngtcp2_vec, len), "h3q_vec must match ngtcp2_vec");
+
+h3q_stream* h3q_stream_get(h3q_conn* conn, int64_t id)
+{
+    h3q_stream* st = ngtcp2_conn_get_stream_user_data(conn->qconn, id);
+    if (st)
+    {
+        return st;
+    }
+    st = calloc(1, sizeof(*st));
+    if (!st)
+    {
+        return NULL;
+    }
+    st->conn = conn;
+    st->id = id;
+    st->next = conn->streams_head;
+    conn->streams_head = st;
+    ngtcp2_conn_set_stream_user_data(conn->qconn, id, st);
+    return st;
+}
+
+int64_t h3q_stream_id(h3q_stream* st)
+{
+    return st ? st->id : -1;
+}
 
 h3q_write_result h3q_stream_write(h3q_stream* st, const h3q_vec* vec, size_t nvec, int fin)
 {
-    SSL* ssl = (SSL*)st;
     h3q_write_result res = {0};
-    size_t expected = 0;
-    for (size_t k = 0; k < nvec; k++)
+    if (!st || st->write_closed || st->conn->closed)
     {
-        expected += vec[k].len;
+        res.broken = 1;
+        return res;
     }
-    for (size_t k = 0; k < nvec; k++)
+    h3q_conn* conn = st->conn;
+    const ngtcp2_vec* datav = (const ngtcp2_vec*)vec;
+    size_t vi = 0;
+    size_t voff = 0;
+    uint8_t buf[H3Q_PKT_BUF];
+    for (;;)
     {
-        size_t w = 0;
-        int wrv = SSL_write_ex(ssl, vec[k].base, vec[k].len, &w);
-        if (wrv <= 0)
+        ngtcp2_vec head = {0};
+        size_t cnt = 0;
+        if (vi < nvec)
         {
-            if (SSL_get_error(ssl, wrv) == SSL_ERROR_WANT_WRITE)
+            head.base = datav[vi].base + voff;
+            head.len = datav[vi].len - voff;
+            cnt = 1;
+        }
+        int last = vi + 1 >= nvec;
+        uint32_t flags = (fin && last) ? NGTCP2_WRITE_STREAM_FLAG_FIN : NGTCP2_WRITE_STREAM_FLAG_NONE;
+        ngtcp2_ssize ndatalen = 0;
+        ngtcp2_pkt_info pi;
+        ngtcp2_path_storage ps;
+        ngtcp2_path_storage_zero(&ps);
+        ngtcp2_ssize n = ngtcp2_conn_writev_stream(conn->qconn, &ps.path, &pi, buf, sizeof(buf), &ndatalen, flags, st->id, cnt ? &head : NULL, cnt, h3q_now());
+        if (n < 0)
+        {
+            if (n == NGTCP2_ERR_STREAM_DATA_BLOCKED)
             {
                 res.blocked = 1;
             }
             else
             {
+                st->write_closed = 1;
                 res.broken = 1;
+                if (ngtcp2_err_is_fatal((int)n))
+                {
+                    h3q_conn_fail(conn, (int)n);
+                }
             }
             break;
         }
-        res.accepted += w;
-        if (w < vec[k].len)
+        if (n > 0)
         {
-            res.blocked = 1;
+            h3q_send(conn->engine, &ps.path, pi.ecn, buf, (size_t)n);
+        }
+        if (ndatalen > 0)
+        {
+            res.accepted += (size_t)ndatalen;
+            for (size_t left = (size_t)ndatalen; left > 0 && vi < nvec;)
+            {
+                size_t chunk = datav[vi].len - voff;
+                if (chunk > left)
+                {
+                    voff += left;
+                    left = 0;
+                }
+                else
+                {
+                    left -= chunk;
+                    vi++;
+                    voff = 0;
+                }
+            }
+        }
+        if (n == 0)
+        {
+            /* Congestion limited. An owed FIN counts as blocked, or the stream never ends. */
+            if (vi < nvec || fin)
+            {
+                res.blocked = 1;
+                st->fin_pending = vi >= nvec && fin;
+            }
+            break;
+        }
+        if (vi >= nvec)
+        {
+            if (flags & NGTCP2_WRITE_STREAM_FLAG_FIN)
+            {
+                /* ndatalen stays -1 when other frames crowded the STREAM frame out. */
+                st->fin_pending = ndatalen < 0;
+                st->write_closed = ndatalen >= 0;
+                res.blocked |= ndatalen < 0;
+            }
             break;
         }
     }
-    if (fin && !res.blocked && !res.broken && res.accepted == expected)
-    {
-        SSL_stream_conclude(ssl, 0);
-    }
+    h3q_conn_flush(conn);
     return res;
 }
 
 int h3q_stream_is_write_blocked(h3q_stream* st)
 {
-    SSL* ssl = (SSL*)st;
-    uint64_t avail = 0;
-    if (ssl && SSL_get_generic_value_uint(ssl, SSL_VALUE_STREAM_WRITE_BUF_AVAIL, &avail) == 1 && avail == 0)
+    if (!st || st->write_closed || st->conn->closed)
     {
         return 1;
     }
-    return 0;
+    return ngtcp2_conn_get_max_data_left(st->conn->qconn) == 0 || ngtcp2_conn_get_max_stream_data_left(st->conn->qconn, st->id) == 0;
 }
 
 int h3q_stream_read(h3q_stream* st, unsigned char* buf, size_t read_size, size_t* nread, int* fin)
 {
-    SSL* ssl = (SSL*)st;
+    *nread = 0;
     *fin = 0;
-    int rv = SSL_read_ex(ssl, buf, read_size, nread);
-    if (rv == 1 && *nread > 0)
+    if (!st)
     {
-        return 1;
+        return 0;
     }
-    if (rv == 1 || SSL_get_error(ssl, rv) == SSL_ERROR_ZERO_RETURN)
+    size_t avail = st->rx_len - st->rx_off;
+    if (avail == 0)
     {
-        *fin = 1;
+        *fin = st->fin;
+        return 0;
     }
-    return 0;
+    size_t n = read_size < avail ? read_size : avail;
+    memcpy(buf, st->rx + st->rx_off, n);
+    st->rx_off += n;
+    *nread = n;
+    if (st->rx_off == st->rx_len)
+    {
+        st->rx_off = 0;
+        st->rx_len = 0;
+        *fin = st->fin;
+    }
+    /* Consumed bytes give the peer window back. */
+    ngtcp2_conn_extend_max_stream_offset(st->conn->qconn, st->id, n);
+    ngtcp2_conn_extend_max_offset(st->conn->qconn, n);
+    if (st->rx_len == 0)
+    {
+        h3q_conn_flush(st->conn); /* Send the window now. A blocked peer sends nothing that causes a flush. */
+    }
+    return 1;
 }
 
 void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_finished)
 {
-    SSL* ssl = (SSL*)st;
-    int rstate = SSL_get_stream_read_state(ssl);
-    *read_finished = (rstate == SSL_STREAM_STATE_FINISHED || rstate == SSL_STREAM_STATE_RESET_REMOTE || rstate == SSL_STREAM_STATE_CONN_CLOSED);
-    int wstate = SSL_STREAM_STATE_FINISHED;
-    if (rstate != SSL_STREAM_STATE_CONN_CLOSED && rstate != SSL_STREAM_STATE_RESET_REMOTE)
+    if (!st)
     {
-        wstate = SSL_get_stream_write_state(ssl);
+        *read_finished = 1;
+        *write_finished = 1;
+        return;
     }
-    *write_finished = (wstate == SSL_STREAM_STATE_FINISHED || wstate == SSL_STREAM_STATE_RESET_LOCAL);
+    *read_finished = st->read_reset || (st->fin && st->rx_off >= st->rx_len);
+    /* Not write_closed: ngtcp2 resends from our buffers until it closes the stream. */
+    *write_finished = st->engine_closed || st->conn->closed;
+}
+
+int h3q_stream_is_early(h3q_stream* st)
+{
+    return st ? (int)st->early : 0;
 }
 
 void h3q_stream_reset(h3q_stream* st, uint64_t err)
+{
+    if (st && !st->conn->closed)
+    {
+        ngtcp2_conn_shutdown_stream_write(st->conn->qconn, 0, st->id, err);
+        st->write_closed = 1;
+    }
+}
+
+void h3q_stream_free(h3q_stream* st)
 {
     if (!st)
     {
         return;
     }
-    SSL_STREAM_RESET_ARGS args = {err};
-    SSL_stream_reset((SSL*)st, &args, sizeof(args));
-}
-
-void h3q_stream_free(h3q_stream* st)
-{
-    if (st)
+    h3q_conn* conn = st->conn;
+    if (!st->engine_closed && !conn->closed)
     {
-        SSL_free((SSL*)st);
+        /* Drop unsent data now: its owner frees it after this call. */
+        ngtcp2_conn_shutdown_stream_write(conn->qconn, 0, st->id, 0);
     }
-}
-
-int64_t h3q_stream_id(h3q_stream* st)
-{
-    SSL* ssl = (SSL*)st;
-    return ssl ? (int64_t)SSL_get_stream_id(ssl) : -1;
+    ngtcp2_conn_set_stream_user_data(conn->qconn, st->id, NULL);
+    for (h3q_stream** slot = &conn->streams_head; *slot; slot = &(*slot)->next)
+    {
+        if (*slot == st)
+        {
+            *slot = st->next;
+            break;
+        }
+    }
+    for (h3q_stream** slot = &conn->accept_head; *slot; slot = &(*slot)->next_accept)
+    {
+        if (*slot == st)
+        {
+            *slot = st->next_accept;
+            if (!*slot)
+            {
+                conn->accept_tail = NULL;
+            }
+            break;
+        }
+    }
+    free(st->rx);
+    free(st);
 }

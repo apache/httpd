@@ -40,7 +40,11 @@ static void register_hooks(apr_pool_t* p H3_UNUSED)
 {
     ap_hook_handler(h3_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
-    ap_hook_post_config(h3_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    /* mod_ssl hands out the certificate files it resolved before it loads them;
+     * post_config runs after it so those files are known by then. */
+    static const char* const after_ssl[] = {"mod_ssl.c", NULL};
+    ap_hook_ssl_add_cert_files(h3_ssl_add_cert_files, NULL, NULL, APR_HOOK_LAST);
+    ap_hook_post_config(h3_post_config, after_ssl, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(h3_hook_http_create_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_pre_read_request(h3_hook_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(h3_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
@@ -72,5 +76,5 @@ HTTP3_PUBLIC module http3_module = {
     h3_merge_server_config,  /* merge per-server config structures */
     h3_cmds,                 /* command apr_table_t */
     register_hooks,          /* register hooks */
-    AP_MODULE_FLAG_NONE      /* flags */
+    AP_MODULE_FLAG_ALWAYS_MERGE /* every vhost gets its own config, H3 directives or not */
 };

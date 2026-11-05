@@ -55,7 +55,7 @@ static void tune_buffers(apr_socket_t* sock, apr_size_t want, apr_port_t port, a
     }
 }
 
-apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int* out_fd)
+apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd)
 {
     CHECK(pool);
     CHECK(out_fd);
@@ -68,6 +68,16 @@ apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t*
     }
     apr_socket_opt_set(sock, APR_IPV6_V6ONLY, 0);
     tune_buffers(sock, buffer_size, port, pool);
+#ifdef SO_REUSEPORT
+    apr_os_sock_t reuse_sock = -1;
+    int on = 1;
+    if (reuse_port && apr_os_sock_get(&reuse_sock, sock) == APR_SUCCESS)
+    {
+        (void)setsockopt(reuse_sock, SOL_SOCKET, SO_REUSEPORT, (const char*)&on, sizeof(on));
+    }
+#else
+    (void)reuse_port;
+#endif
     apr_sockaddr_t* addr = NULL;
     rv = apr_sockaddr_info_get(&addr, NULL, APR_INET6, port, 0, pool);
     if (rv != APR_SUCCESS)

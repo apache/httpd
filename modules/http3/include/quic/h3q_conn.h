@@ -41,13 +41,11 @@ typedef struct h3q_tls_info
 int h3q_conn_tls_info(h3q_conn* conn, h3q_tls_info* out);
 
 /**
- * Apply the stream modes, incoming-stream policy and idle timeout a freshly
- * accepted connection needs before its handshake is driven.
- * @param conn              Connection to prepare; NULL reports failure.
- * @param idle_timeout_secs Idle timeout to apply, in seconds.
- * @return 1 on success, 0 on failure.
+ * Set the pointer the engine hands to the stream_acked callback.
+ * @param conn Connection to label; NULL is ignored.
+ * @param user Caller context; acknowledgements are dropped while it is NULL.
  */
-int h3q_conn_prepare(h3q_conn* conn, uint32_t idle_timeout_secs);
+void h3q_conn_set_user(h3q_conn* conn, void* user);
 
 /**
  * Open a server-initiated unidirectional stream.
@@ -70,6 +68,13 @@ h3q_stream* h3q_conn_accept_stream(h3q_conn* conn);
  * @return Non-zero once the handshake is done.
  */
 int h3q_conn_is_handshake_done(h3q_conn* conn);
+
+/**
+ * Whether 0-RTT request data waits while the handshake is still running.
+ * @param conn Connection to query; NULL reports 0.
+ * @return Non-zero when an early stream is ready before the handshake.
+ */
+int h3q_conn_has_early_data(h3q_conn* conn);
 
 /**
  * Whether the connection has finished closing.
@@ -96,8 +101,8 @@ void h3q_conn_free(h3q_conn* conn);
 
 /**
  * Describe why a connection closed, for logging. Reports the peer's error
- * code, frame type and reason string where OpenSSL has them, and whatever the
- * error queue holds otherwise.
+ * code, frame type and reason string where ngtcp2 has them, and whatever the
+ * OpenSSL error queue holds otherwise.
  * @param conn   Connection to inspect; NULL reports the error queue alone.
  * @param buf    Buffer receiving the description, always NUL-terminated.
  * @param buflen Capacity of @p buf; zero is ignored.

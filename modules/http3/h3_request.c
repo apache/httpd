@@ -22,6 +22,7 @@
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_vhost.h>
+#include <mpm_common.h>
 
 #include <apr_atomic.h>
 #include <apr_pools.h>
@@ -448,6 +449,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
         return;
     }
     apr_allocator_owner_set(c_alloc, cpool);
+    apr_allocator_max_free_set(c_alloc, ap_max_mem_free);
 
     conn_rec* c = apr_pcalloc(cpool, sizeof(*c));
     *c = *session->c;
