@@ -105,6 +105,8 @@ typedef struct crypto_ctx
     apr_crypto_block_key_mode_t *mode;
     apr_crypto_block_t *block;
     const unsigned char *iv;
+    unsigned char *ivbuf;
+    apr_size_t ivlen;
     apr_off_t remaining;
     apr_off_t written;
     apr_size_t osize;
@@ -589,18 +591,29 @@ static int init_decrypt(ap_filter_t * f)
 }
 
 /**
- * Run the crypto algorithm, write to ctx->out
+ * Run the crypto algorithm on in, appending the output to ctx->out.
+ *
+ * ctx->remaining counts the input bytes still to be consumed in this
+ * round, so a round ends on a fixed input boundary regardless of how
+ * much output the cipher has produced or is holding back. ctx->written
+ * counts the output bytes present in ctx->out.
  */
 static apr_status_t
 do_crypto(ap_filter_t * f, unsigned char *in, apr_off_t size, int finish)
 {
     apr_status_t rv;
     crypto_ctx *ctx = f->ctx;
-    apr_off_t extra = 0;
     apr_size_t blockSize = 0;
     int need_iv = (ctx->iv == NULL);
     unsigned char *out;
     apr_size_t written;
+
+    if (!ctx->out) {
+        ctx->out = apr_palloc(f->r->pool,
+                              ctx->osize + ctx->cipher->blocksize);
+        apr_crypto_clear(f->r->pool, ctx->out,
+                         ctx->osize + ctx->cipher->blocksize);
+    }
 
     /* encrypt the given buffer */
     if (ctx->encrypt) {
@@ -614,80 +627,49 @@ do_crypto(ap_filter_t * f, unsigned char *in, apr_off_t size, int finish)
                               APLOGNO(03421) "could not initialise encryption");
                 return rv;
             }
-        }
 
-        if (!ctx->out) {
-
+            /* no precomputed iv? send the generated iv as the first block
+             * of the stream, ahead of anything the cipher produces */
             if (need_iv && ctx->iv) {
-                ctx->osize += blockSize;
-            }
-
-            out = ctx->out = apr_palloc(f->r->pool,
-                                        ctx->osize + ctx->cipher->blocksize);
-            apr_crypto_clear(f->r->pool, ctx->out,
-                             ctx->osize + ctx->cipher->blocksize);
-
-            /* no precomputed iv? write the generated iv as the first block of the stream */
-            if (need_iv && ctx->iv) {
-                memcpy(out, ctx->iv, blockSize);
-                ctx->remaining += blockSize;
-                out += blockSize;
-                extra = blockSize;
-            }
-
-        }
-        else {
-            out = ctx->out + (ctx->osize - ctx->remaining);
-        }
-
-        if (!finish) {
-            rv = apr_crypto_block_encrypt(&out, &written, in, size,
-                                          ctx->block);
-            if (APR_SUCCESS != rv) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
-                              APLOGNO(03422) "crypto: attempt to encrypt failed");
-                return rv;
+                rv = apr_brigade_write(ctx->bb, NULL, NULL,
+                                       (const char *) ctx->iv, blockSize);
+                if (APR_SUCCESS != rv) {
+                    return rv;
+                }
             }
         }
 
-        else {
-            rv = apr_crypto_block_encrypt_finish(out, &written, ctx->block);
-            if (APR_SUCCESS != rv) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
-                              APLOGNO(03432) "crypto: attempt to finish encrypt failed");
-                return rv;
-            }
-        }
     }
 
     /* decrypt the given buffer */
     else {
 
-        if (!ctx->out) {
-            out = ctx->out = apr_palloc(f->r->pool,
-                                        ctx->osize + ctx->cipher->blocksize);
-            apr_crypto_clear(f->r->pool, ctx->out,
-                             ctx->osize + ctx->cipher->blocksize);
-        }
-        else {
-            out = ctx->out + (ctx->osize - ctx->remaining);
-        }
-
-        /* no precomputed iv? assume the first block in the stream is the iv */
+        /* no precomputed iv? the first block in the stream is the iv */
         if (need_iv) {
-            apr_off_t isize =
-                ctx->cipher->blocksize - (ctx->osize - ctx->remaining);
-            if (size < isize) {
-                memcpy(out, in, size);
-                ctx->remaining -= size;
+            apr_size_t want = ctx->cipher->blocksize - ctx->ivlen;
+
+            if (!ctx->ivbuf) {
+                ctx->ivbuf = apr_palloc(f->r->pool, ctx->cipher->blocksize);
+            }
+            if (want > (apr_size_t) size) {
+                want = (apr_size_t) size;
+            }
+            if (want) {
+                memcpy(ctx->ivbuf + ctx->ivlen, in, want);
+                ctx->ivlen += want;
+                ctx->remaining -= want;
+                in += want;
+                size -= want;
+            }
+            if (ctx->ivlen < ctx->cipher->blocksize) {
+                if (finish) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r, APLOGNO()
+                                  "crypto: stream ended before a full iv was read");
+                    return APR_EINCOMPLETE;
+                }
                 return APR_SUCCESS;
             }
-            else {
-                memcpy(out, in, isize);
-                ctx->remaining -= isize;
-                out += isize;
-                ctx->iv = ctx->out;
-            }
+            ctx->iv = ctx->ivbuf;
         }
 
         if (!ctx->block) {
@@ -700,6 +682,37 @@ do_crypto(ap_filter_t * f, unsigned char *in, apr_off_t size, int finish)
             }
         }
 
+    }
+
+    if (!finish && !size) {
+        return APR_SUCCESS;
+    }
+
+    /* output goes after what is already buffered. Drivers that take the
+     * passed length as the room available get the real figure. */
+    out = ctx->out + ctx->written;
+    written = ctx->osize + ctx->cipher->blocksize - ctx->written;
+
+    if (ctx->encrypt) {
+        if (!finish) {
+            rv = apr_crypto_block_encrypt(&out, &written, in, size,
+                                          ctx->block);
+            if (APR_SUCCESS != rv) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                              APLOGNO(03422) "crypto: attempt to encrypt failed");
+                return rv;
+            }
+        }
+        else {
+            rv = apr_crypto_block_encrypt_finish(out, &written, ctx->block);
+            if (APR_SUCCESS != rv) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                              APLOGNO(03432) "crypto: attempt to finish encrypt failed");
+                return rv;
+            }
+        }
+    }
+    else {
         if (!finish) {
             rv = apr_crypto_block_decrypt(&out, &written, in, size,
                                           ctx->block);
@@ -719,9 +732,23 @@ do_crypto(ap_filter_t * f, unsigned char *in, apr_off_t size, int finish)
         }
     }
 
-    ctx->remaining -= written;
+    ctx->remaining -= size;
     ctx->written += written;
-    ctx->written += extra;
+
+    return APR_SUCCESS;
+}
+
+/**
+ * Hand the output buffered in ctx->out to ctx->bb, and start a new round.
+ */
+static apr_status_t crypto_flush(crypto_ctx *ctx)
+{
+    apr_status_t rv;
+
+    rv = apr_brigade_write(ctx->bb, NULL, NULL, (const char *) ctx->out,
+                           ctx->written);
+    ctx->remaining = ctx->osize;
+    ctx->written = 0;
 
     return rv;
 }
@@ -732,7 +759,7 @@ do_crypto(ap_filter_t * f, unsigned char *in, apr_off_t size, int finish)
 static apr_status_t
 crypto_out_filter(ap_filter_t * f, apr_bucket_brigade * bb)
 {
-    apr_bucket *e, *after;
+    apr_bucket *e;
     crypto_ctx *ctx = f->ctx;
     apr_status_t rv = APR_SUCCESS;
 
@@ -747,11 +774,6 @@ crypto_out_filter(ap_filter_t * f, apr_bucket_brigade * bb)
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
-    /* make sure we fit in the buffer snugly */
-    if (APR_BRIGADE_EMPTY(ctx->bb)) {
-        apr_brigade_partition(bb, ctx->remaining, &after);
-    }
-
     while (APR_SUCCESS == rv && !APR_BRIGADE_EMPTY(bb)) {
         const char *data;
         apr_size_t size;
@@ -762,12 +784,14 @@ crypto_out_filter(ap_filter_t * f, apr_bucket_brigade * bb)
         if (APR_BUCKET_IS_EOS(e)) {
 
             /* handle any leftovers */
-            do_crypto(f, NULL, 0, 1);
-            apr_brigade_write(ctx->bb, NULL, NULL, (const char *) ctx->out,
-                              ctx->conf->size - ctx->remaining);
-            ctx->remaining = ctx->osize;
-            ctx->written = 0;
-            apr_brigade_partition(bb, ctx->remaining, &after);
+            rv = do_crypto(f, NULL, 0, 1);
+            if (APR_SUCCESS != rv) {
+                return rv;
+            }
+            rv = crypto_flush(ctx);
+            if (APR_SUCCESS != rv) {
+                return rv;
+            }
 
             /* pass the EOS across */
             APR_BUCKET_REMOVE(e);
@@ -812,16 +836,24 @@ crypto_out_filter(ap_filter_t * f, apr_bucket_brigade * bb)
         if (APR_SUCCESS
             == (rv = apr_bucket_read(e, &data, &size, APR_BLOCK_READ))) {
 
-            do_crypto(f, (unsigned char *) data, size, 0);
+            /* never feed more than is left in this round */
+            if ((apr_off_t) size > ctx->remaining) {
+                apr_bucket_split(e, (apr_size_t) ctx->remaining);
+                size = (apr_size_t) ctx->remaining;
+            }
+
+            rv = do_crypto(f, (unsigned char *) data, size, 0);
+            if (APR_SUCCESS != rv) {
+                return rv;
+            }
             apr_bucket_delete(e);
 
+            /* round complete, pass what we have down the chain */
             if (!ctx->remaining) {
-                apr_brigade_write(ctx->bb, NULL, NULL,
-                                  (const char *) ctx->out, ctx->written);
-                ctx->remaining = ctx->osize;
-                ctx->written = 0;
-                apr_brigade_partition(bb, ctx->remaining, &after);
-                rv = ap_pass_brigade(f->next, ctx->bb);
+                rv = crypto_flush(ctx);
+                if (APR_SUCCESS == rv) {
+                    rv = ap_pass_brigade(f->next, ctx->bb);
+                }
             }
 
         }
@@ -855,10 +887,9 @@ crypto_in_filter(ap_filter_t * f, apr_bucket_brigade * bb,
 
     /* if our buffer is empty, read off the network until the buffer is full */
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
-        ctx->remaining = ctx->osize;
-        ctx->written = 0;
+        int full = 0;
 
-        while (!ctx->seen_eos && ctx->remaining > 0) {
+        while (!ctx->seen_eos && !full) {
             const char *data;
             apr_size_t size = 0;
 
@@ -869,8 +900,8 @@ crypto_in_filter(ap_filter_t * f, apr_bucket_brigade * bb,
 
             /* if an error was received, bail out now. If the error is
              * EAGAIN and we have not yet seen an EOS, we will definitely
-             * be called again, at which point we will send our buffered
-             * data. Instead of sending EAGAIN, some filters return an
+             * be called again, at which point we will carry on filling
+             * our buffer. Instead of sending EAGAIN, some filters return an
              * empty brigade instead when data is not yet available. In
              * this case, we drop through and pass buffered data, if any.
              */
@@ -894,9 +925,14 @@ crypto_in_filter(ap_filter_t * f, apr_bucket_brigade * bb,
                 if (APR_BUCKET_IS_EOS(e)) {
 
                     /* handle any leftovers */
-                    do_crypto(f, NULL, 0, 1);
-                    apr_brigade_write(ctx->bb, NULL, NULL,
-                                      (const char *) ctx->out, ctx->written);
+                    rv = do_crypto(f, NULL, 0, 1);
+                    if (APR_SUCCESS != rv) {
+                        return rv;
+                    }
+                    rv = crypto_flush(ctx);
+                    if (APR_SUCCESS != rv) {
+                        return rv;
+                    }
 
                     APR_BUCKET_REMOVE(e);
                     APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
@@ -930,13 +966,28 @@ crypto_in_filter(ap_filter_t * f, apr_bucket_brigade * bb,
                     return rv;
                 }
 
-                do_crypto(f, (unsigned char *) data, size, 0);
-                if (!ctx->remaining || APR_STATUS_IS_EAGAIN(rv)) {
-                    apr_brigade_write(ctx->bb, NULL, NULL,
-                                      (const char *) ctx->out, ctx->written);
+                /* never feed more than is left in this round */
+                if ((apr_off_t) size > ctx->remaining) {
+                    apr_bucket_split(e, (apr_size_t) ctx->remaining);
+                    size = (apr_size_t) ctx->remaining;
                 }
 
+                rv = do_crypto(f, (unsigned char *) data, size, 0);
+                if (APR_SUCCESS != rv) {
+                    return rv;
+                }
                 apr_bucket_delete(e);
+
+                /* round complete, hand it over. Anything left in ctx->tmp
+                 * waits for the next round. */
+                if (!ctx->remaining) {
+                    rv = crypto_flush(ctx);
+                    if (APR_SUCCESS != rv) {
+                        return rv;
+                    }
+                    full = 1;
+                    break;
+                }
 
             }
         }
