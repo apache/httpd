@@ -51,8 +51,9 @@ int64_t h3q_stream_id(h3q_stream* st);
  * @param nvec Number of buffers in @p vec.
  * @param fin  Non-zero to close the stream after these bytes.
  * @return What was accepted, and whether the write blocked or broke.
- * @note Bytes count as acknowledged once accepted: OpenSSL reports no
- *       per-stream acknowledgements.
+ * @note ngtcp2 does not copy: accepted bytes must stay in place until the
+ *       stream_acked callback reports them, since loss recovery resends
+ *       from the caller's buffers.
  */
 h3q_write_result h3q_stream_write(h3q_stream* st, const h3q_vec* vec, size_t nvec, int fin);
 
@@ -81,6 +82,13 @@ int h3q_stream_read(h3q_stream* st, unsigned char* buf, size_t read_size, size_t
  * @param write_finished Out: non-zero if writing is finished or reset.
  */
 void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_finished);
+
+/**
+ * Whether any of the stream's data arrived as 0-RTT, so it may be a replay.
+ * @param st Stream to query; NULL reports 0.
+ * @return Non-zero for a stream with 0-RTT data.
+ */
+int h3q_stream_is_early(h3q_stream* st);
 
 /**
  * Abort the sending half of a stream.

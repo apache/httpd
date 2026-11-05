@@ -74,6 +74,7 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_idle_timeout = new->h3_idle_timeout ? new->h3_idle_timeout : base->h3_idle_timeout;
     merged->h3_socket_buffer_size = new->h3_socket_buffer_size ? new->h3_socket_buffer_size : base->h3_socket_buffer_size;
     merged->h3_session_tickets = new->h3_session_tickets != H3_FLAG_UNSET ? new->h3_session_tickets : base->h3_session_tickets;
+    merged->h3_early_data = new->h3_early_data != H3_FLAG_UNSET ? new->h3_early_data : base->h3_early_data;
     merged->h3_stream_timeout = new->h3_stream_timeout ? new->h3_stream_timeout : base->h3_stream_timeout;
     merged->h3_max_stream_errors = new->h3_max_stream_errors ? new->h3_max_stream_errors : base->h3_max_stream_errors;
     merged->h3_qpack_capacity_set = new->h3_qpack_capacity_set ? new->h3_qpack_capacity_set : base->h3_qpack_capacity_set;
@@ -520,6 +521,14 @@ static const char* set_h3_session_tickets(cmd_parms* cmd, void* dummy H3_UNUSED,
     return NULL;
 }
 
+static const char* set_h3_early_data(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
+{
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_early_data = flag ? H3_FLAG_ON : H3_FLAG_OFF;
+    return NULL;
+}
+
 static const char* set_h3_alt_svc(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
 {
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
@@ -727,6 +736,10 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
             {
                 vc->h3_session_tickets = H3_FLAG_ON;
             }
+            if (vc->h3_early_data == H3_FLAG_UNSET)
+            {
+                vc->h3_early_data = H3_FLAG_OFF;
+            }
             if (vc->h3_alt_svc_max_age == 0)
             {
                 vc->h3_alt_svc_max_age = H3_ALT_SVC_MAX_AGE_DEFAULT;
@@ -787,6 +800,7 @@ const command_rec h3_cmds[] = {
     AP_INIT_FLAG("H3AddressValidation", set_h3_address_validation, NULL, RSRC_CONF, "Whether to validate client addresses with a QUIC Retry packet before accepting a connection (default: on)"),
     AP_INIT_TAKE1("H3SocketBufferSize", set_h3_socket_buffer_size, NULL, RSRC_CONF, "Bytes requested for the QUIC socket send and receive buffers; the OS may grant less (default: 2097152)"),
     AP_INIT_FLAG("H3SessionTickets", set_h3_session_tickets, NULL, RSRC_CONF, "Whether to issue TLS session tickets so returning clients can resume instead of running a full handshake (default: on)"),
+    AP_INIT_FLAG("H3EarlyData", set_h3_early_data, NULL, RSRC_CONF, "Whether to accept 0-RTT request data on resumed connections; unsafe methods wait for the handshake (default: off)"),
     AP_INIT_TAKE1("H3StreamTimeout", set_h3_stream_timeout, NULL, RSRC_CONF, "Seconds a response may make no progress before the stream is aborted (default: the server Timeout)"),
     AP_INIT_TAKE1("H3MaxStreamErrors", set_h3_max_stream_errors, NULL, RSRC_CONF, "Stream errors one connection may cause before it is closed with H3_EXCESSIVE_LOAD (default: 8)"),
     AP_INIT_TAKE1("H3QpackTableCapacity", set_h3_qpack_table_capacity, NULL, RSRC_CONF, "Bytes of QPACK dynamic table a client may use for request headers; 0 disables it (default: 4096)"),

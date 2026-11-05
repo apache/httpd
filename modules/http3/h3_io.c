@@ -18,6 +18,7 @@
 
 #include <http_config.h>
 #include <http_log.h>
+#include <http_protocol.h>
 
 #include <apr_allocator.h>
 #include <apr_atomic.h>
@@ -132,6 +133,11 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     char qerr[H3Q_ERRLEN] = {0};
     h3q_config qcfg = {
         .ssl_ctx = conf->ssl_ctx,
+        .pool = pchild,
+        .stream_acked = h3_stream_acked,
+        .idle_timeout_secs = conf->h3_idle_timeout,
+        .max_streams_bidi = conf->h3_max_concurrent_streams,
+        .early_data = (conf->h3_early_data == H3_FLAG_ON),
         .address_validation = (conf->h3_address_validation != H3_FLAG_OFF),
     };
     io->qengine = h3q_engine_create(&qcfg, udp_fd, qerr, sizeof(qerr));
@@ -339,14 +345,14 @@ void progress_pending_handshakes(h3_io_t* io)
             rv = -1;
             why = "peer closed the connection during the handshake";
         }
-        else if (h3q_conn_is_handshake_done(conn))
+        else if (h3q_conn_is_handshake_done(conn) || h3q_conn_has_early_data(conn))
         {
             rv = 1;
         }
 
         if (rv == 1)
         {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, h3q_conn_is_handshake_done(conn) ? "QUIC handshake complete" : "QUIC 0-RTT request before the handshake");
             spawn_serviced_session(io, conn);
             remove_pending_handshake(io, i, 0);
             finished = 1;
@@ -370,13 +376,6 @@ void progress_pending_handshakes(h3_io_t* io)
 
 int prepare_accepted_connection(h3_io_t* io, h3q_conn* conn)
 {
-    h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
-    if (!h3q_conn_prepare(conn, conf->h3_idle_timeout))
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "h3q_conn_prepare failed for accepted connection - dropping it");
-        return 0;
-    }
-
     h3_pending_handshake* pending = (h3_pending_handshake*)apr_array_push(io->pending_handshakes);
     pending->conn = conn;
     pending->accepted_at = apr_time_now();
@@ -386,6 +385,13 @@ int prepare_accepted_connection(h3_io_t* io, h3q_conn* conn)
         io->note_conn_added();
     }
     return 1;
+}
+
+/* RFC 9110 section 9.2.1. */
+static int h3_method_is_safe(const char* method)
+{
+    int m = method ? ap_method_number_of(method) : M_INVALID;
+    return m == M_GET || m == M_OPTIONS || m == M_TRACE;
 }
 
 static void abandon_stalled_responses(h3_session* session, apr_interval_time_t stall_timeout)
@@ -460,7 +466,9 @@ int service_session_pass(h3_io_t* io, h3_session* session)
 
     if (h3q_conn_is_closed(conn))
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
+        char detail[H3Q_ERRLEN] = {0};
+        h3q_conn_close_reason(conn, detail, sizeof(detail));
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error) close=[%s]", detail);
         session->aborted = 1;
         return 0;
     }
@@ -508,6 +516,11 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     for (int i = 0; i < completed->nelts; i++)
     {
         h3_stream* h3s = ((h3_stream**)completed->elts)[i];
+        /* 0-RTT data can be a replay: unsafe methods wait for the handshake (RFC 8470 section 3). */
+        if (h3s->qstream && h3q_stream_is_early(h3s->qstream) && !h3q_conn_is_handshake_done(conn) && !h3_method_is_safe(h3s->method))
+        {
+            continue;
+        }
         h3_process_request(session, h3s);
     }
 

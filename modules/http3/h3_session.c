@@ -66,6 +66,7 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     session->s = s;
     session->pool = pool;
     session->qconn = qconn;
+    h3q_conn_set_user(qconn, session);
     session->streams = apr_hash_make(pool);
     session->pending_free = apr_array_make(pool, 8, sizeof(h3q_stream*));
     session->last_activity = apr_time_now();

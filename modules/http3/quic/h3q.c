@@ -19,103 +19,216 @@
 #include <ws2tcpip.h>
 #endif
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-#include <openssl/bio.h>
-#include <openssl/ssl.h>
+#include <openssl/rand.h>
 
 #include "h3_check.h"
 #include "h3_os.h"
-#include "quic/detail/h3q_addr.h"
+#include "quic/detail/h3q_impl.h"
 #include "quic/detail/h3q_tls.h"
 #include "quic/h3q.h"
+#include "quic/h3q_conn.h"
 
-#define H3Q_PUMP_INNER_BUDGET 64
+#ifdef _WIN32
+typedef int h3q_iolen; /* winsock takes int lengths */
+#else
+typedef size_t h3q_iolen;
+#endif
+
+/* ngtcp2 aborts if time goes back, so use a monotonic clock, never the wall clock. */
+ngtcp2_tstamp h3q_now(void)
+{
+#ifdef _WIN32
+    LARGE_INTEGER f, c;
+    QueryPerformanceFrequency(&f);
+    QueryPerformanceCounter(&c);
+    return (ngtcp2_tstamp)(c.QuadPart / f.QuadPart) * NGTCP2_SECONDS + (ngtcp2_tstamp)(c.QuadPart % f.QuadPart) * NGTCP2_SECONDS / (ngtcp2_tstamp)f.QuadPart;
+#else
+    struct timespec tp;
+    clock_gettime(CLOCK_MONOTONIC, &tp);
+    return (ngtcp2_tstamp)tp.tv_sec * NGTCP2_SECONDS + (ngtcp2_tstamp)tp.tv_nsec;
+#endif
+}
+
+static void send_raw(h3q_engine* engine, const struct sockaddr* dst, socklen_t dstlen, const uint8_t* buf, size_t len)
+{
+    /* A failed send is a lost datagram; loss recovery resends it. */
+    (void)sendto(engine->fd, (const char*)buf, (h3q_iolen)len, 0, dst, dstlen);
+}
+
+void h3q_send(h3q_engine* engine, const ngtcp2_path* path, const uint8_t* buf, size_t len)
+{
+    send_raw(engine, (const struct sockaddr*)path->remote.addr, (socklen_t)path->remote.addrlen, buf, len);
+}
+
+/* A peer that offers an unknown version is told which versions we speak. */
+static void send_version_negotiation(h3q_engine* engine, const ngtcp2_version_cid* vc, const struct sockaddr* peer, socklen_t peerlen)
+{
+    static const uint32_t versions[] = {NGTCP2_PROTO_VER_V1, NGTCP2_PROTO_VER_V2};
+    uint8_t rnd = 0;
+    uint8_t buf[H3Q_PKT_BUF];
+    if (RAND_bytes(&rnd, 1) != 1)
+    {
+        return;
+    }
+    ngtcp2_ssize n = ngtcp2_pkt_write_version_negotiation(buf, sizeof(buf), rnd, vc->scid, vc->scidlen, vc->dcid, vc->dcidlen, versions, 2);
+    if (n > 0)
+    {
+        send_raw(engine, peer, peerlen, buf, (size_t)n);
+    }
+}
+
+static void send_retry(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const struct sockaddr* peer, socklen_t peerlen)
+{
+    ngtcp2_cid scid = {.datalen = H3Q_SCIDLEN};
+    uint8_t token[NGTCP2_CRYPTO_MAX_RETRY_TOKENLEN2];
+    uint8_t buf[H3Q_PKT_BUF];
+    if (RAND_bytes(scid.data, (int)scid.datalen) != 1)
+    {
+        return;
+    }
+    ngtcp2_ssize tokenlen = ngtcp2_crypto_generate_retry_token2(token, engine->secret, sizeof(engine->secret), hd->version, (const ngtcp2_sockaddr*)peer, (ngtcp2_socklen)peerlen, &scid, &hd->dcid, h3q_now());
+    if (tokenlen < 0)
+    {
+        return;
+    }
+    ngtcp2_ssize n = ngtcp2_crypto_write_retry(buf, sizeof(buf), hd->version, &hd->scid, &scid, &hd->dcid, token, (size_t)tokenlen);
+    if (n > 0)
+    {
+        send_raw(engine, peer, peerlen, buf, (size_t)n);
+    }
+}
+
+static h3q_conn* accept_initial(h3q_engine* engine, const uint8_t* pkt, size_t pktlen, const struct sockaddr* peer, socklen_t peerlen)
+{
+    ngtcp2_pkt_hd hd;
+    if (ngtcp2_accept(&hd, pkt, pktlen) != 0)
+    {
+        return NULL;
+    }
+    if (!engine->address_validation)
+    {
+        return h3q_conn_new(engine, &hd, NULL, NULL, peer, peerlen);
+    }
+    ngtcp2_cid odcid;
+    if (hd.tokenlen == 0 || hd.token[0] != NGTCP2_CRYPTO_TOKEN_MAGIC_RETRY2 || ngtcp2_crypto_verify_retry_token2(&odcid, hd.token, hd.tokenlen, engine->secret, sizeof(engine->secret), hd.version, (const ngtcp2_sockaddr*)peer, (ngtcp2_socklen)peerlen, &hd.dcid, H3Q_RETRY_TOKEN_TIMEOUT, h3q_now()) != 0)
+    {
+        send_retry(engine, &hd, peer, peerlen);
+        return NULL;
+    }
+    return h3q_conn_new(engine, &hd, &odcid, &hd.dcid, peer, peerlen);
+}
+
+static void process_dgram(h3q_engine* engine, uint8_t* buf, size_t len, struct sockaddr_storage* peer, socklen_t peerlen)
+{
+    ngtcp2_version_cid vc;
+    int rv = ngtcp2_pkt_decode_version_cid(&vc, buf, len, H3Q_SCIDLEN);
+    if (rv != 0)
+    {
+        if (rv == NGTCP2_ERR_VERSION_NEGOTIATION)
+        {
+            send_version_negotiation(engine, &vc, (struct sockaddr*)peer, peerlen);
+        }
+        return;
+    }
+    h3q_conn* conn = apr_hash_get(engine->conns, vc.dcid, (apr_ssize_t)vc.dcidlen);
+    if (!conn)
+    {
+        conn = accept_initial(engine, buf, len, (struct sockaddr*)peer, peerlen);
+    }
+    if (conn && conn->close_len)
+    {
+        h3q_conn_resend_close(conn, (struct sockaddr*)peer, peerlen);
+        return;
+    }
+    if (!conn || conn->closed)
+    {
+        return;
+    }
+    ngtcp2_path path = {
+        .local = {.addr = (ngtcp2_sockaddr*)&engine->local, .addrlen = (ngtcp2_socklen)engine->local_len},
+        .remote = {.addr = (ngtcp2_sockaddr*)peer, .addrlen = (ngtcp2_socklen)peerlen},
+    };
+    ngtcp2_pkt_info pi = {0};
+    rv = ngtcp2_conn_read_pkt(conn->qconn, &path, &pi, buf, len, h3q_now());
+    switch (rv)
+    {
+    case 0:
+        h3q_conn_flush(conn);
+        return;
+    case NGTCP2_ERR_RETRY:
+    {
+        ngtcp2_pkt_hd hd;
+        if (ngtcp2_accept(&hd, buf, len) == 0)
+        {
+            send_retry(engine, &hd, (struct sockaddr*)peer, peerlen);
+        }
+        return;
+    }
+    case NGTCP2_ERR_DROP_CONN:
+    case NGTCP2_ERR_DRAINING:
+    case NGTCP2_ERR_CLOSING:
+        conn->closed = 1;
+        return;
+    default:
+        h3q_conn_fail(conn, rv);
+        return;
+    }
+}
+
+/* 0: nothing to read now. 1: that datagram is lost, read on. -1: the socket is broken. */
+static int recv_failed(void)
+{
+#ifdef _WIN32
+    int e = WSAGetLastError();
+    if (e == WSAEWOULDBLOCK)
+    {
+        return 0;
+    }
+    return (e == WSAEINTR || e == WSAECONNRESET || e == WSAEMSGSIZE) ? 1 : -1;
+#else
+    if (errno == EAGAIN)
+    {
+        return 0;
+    }
+    return (errno == EINTR || errno == ECONNREFUSED) ? 1 : -1;
+#endif
+}
 
 h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size_t errlen)
 {
     CHECK(cfg);
-    h3q_engine* engine = calloc(1, sizeof(*engine));
-    if (!engine)
+    if (!cfg->ssl_ctx || !cfg->pool)
     {
+        h3q_tls_error(err, errlen, "no TLS context to serve from");
+        return NULL;
+    }
+    h3q_engine* engine = calloc(1, sizeof(*engine));
+    if (!engine || apr_pool_create(&engine->pool, cfg->pool) != APR_SUCCESS)
+    {
+        free(engine);
         h3q_tls_error(err, errlen, "allocating the engine failed");
         return NULL;
     }
-    engine->peer_addr_ex_index = -1;
-
-    if (!cfg->ssl_ctx || !SSL_CTX_up_ref(cfg->ssl_ctx))
+    engine->conns = apr_hash_make(engine->pool);
+    engine->fd = udp_fd;
+    engine->stream_acked = cfg->stream_acked;
+    engine->idle_timeout_secs = cfg->idle_timeout_secs;
+    engine->max_streams_bidi = cfg->max_streams_bidi;
+    engine->address_validation = cfg->address_validation;
+    engine->early_data = cfg->early_data;
+    engine->local_len = (socklen_t)sizeof(engine->local);
+    if (getsockname(udp_fd, (struct sockaddr*)&engine->local, &engine->local_len) != 0 || RAND_bytes(engine->secret, (int)sizeof(engine->secret)) != 1 || !SSL_CTX_up_ref(cfg->ssl_ctx))
     {
-        h3q_tls_error(err, errlen, "no TLS context to serve from");
+        h3q_tls_error(err, errlen, "reading the local address of fd=%d failed", udp_fd);
         h3q_engine_destroy(engine);
         return NULL;
     }
     engine->ssl_ctx = cfg->ssl_ctx;
-
-    BIO_METHOD* bm = BIO_meth_new(BIO_TYPE_FILTER | BIO_get_new_index(), "h3q_peer_addr");
-    if (!bm)
-    {
-        h3q_tls_error(err, errlen, "BIO_meth_new failed");
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-    engine->peer_addr_bio_method = bm;
-    /* An unset handler installs fine and then drops every datagram. */
-    if (!BIO_meth_set_ctrl(bm, h3q_peer_addr_bio_ctrl) || !BIO_meth_set_sendmmsg(bm, h3q_peer_addr_bio_sendmmsg) || !BIO_meth_set_recvmmsg(bm, h3q_peer_addr_bio_recvmmsg) || !BIO_meth_set_destroy(bm, h3q_peer_addr_bio_destroy))
-    {
-        h3q_tls_error(err, errlen, "installing the peer address BIO handlers failed");
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-
-    engine->current_peer_addr = BIO_ADDR_new();
-    engine->peer_addr_ex_index = SSL_get_ex_new_index(0, NULL, NULL, NULL, h3q_peer_addr_ex_free);
-    if (!engine->current_peer_addr || engine->peer_addr_ex_index < 0)
-    {
-        h3q_tls_error(err, errlen, "initializing peer address recovery failed");
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-
-    SSL_CTX_set_new_pending_conn_cb(engine->ssl_ctx, h3q_new_pending_conn_cb, engine);
-
-    uint64_t listener_flags = cfg->address_validation ? 0 : (uint64_t)SSL_LISTENER_FLAG_NO_VALIDATE;
-    engine->ssl_listener = SSL_new_listener(engine->ssl_ctx, listener_flags);
-    if (!engine->ssl_listener)
-    {
-        h3q_tls_error(err, errlen, "SSL_new_listener failed");
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-
-    BIO* bio = BIO_new_dgram(udp_fd, BIO_NOCLOSE);
-    if (!bio)
-    {
-        h3q_tls_error(err, errlen, "BIO_new_dgram failed for fd=%d", udp_fd);
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-
-    BIO* filter_bio = BIO_new(bm);
-    if (!filter_bio)
-    {
-        h3q_tls_error(err, errlen, "BIO_new(h3q_peer_addr) failed");
-        BIO_free(bio);
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-
-    BIO_set_data(filter_bio, engine);
-    bio = BIO_push(filter_bio, bio);
-    SSL_set_bio(engine->ssl_listener, bio, bio);
-
-    if (!SSL_listen(engine->ssl_listener) || !SSL_set_blocking_mode(engine->ssl_listener, 0))
-    {
-        h3q_tls_error(err, errlen, "SSL_listen failed");
-        h3q_engine_destroy(engine);
-        return NULL;
-    }
-
     return engine;
 }
 
@@ -125,19 +238,11 @@ void h3q_engine_destroy(h3q_engine* engine)
     {
         return;
     }
-    h3q_peer_addr_queue_clear(engine);
-    if (engine->ssl_listener)
+    while (engine->conns_head)
     {
-        SSL_free(engine->ssl_listener);
+        h3q_conn_free(engine->conns_head);
     }
-    if (engine->current_peer_addr)
-    {
-        BIO_ADDR_free(engine->current_peer_addr);
-    }
-    if (engine->peer_addr_bio_method)
-    {
-        BIO_meth_free(engine->peer_addr_bio_method);
-    }
+    apr_pool_destroy(engine->pool);
     if (engine->ssl_ctx)
     {
         SSL_CTX_free(engine->ssl_ctx);
@@ -147,117 +252,103 @@ void h3q_engine_destroy(h3q_engine* engine)
 
 int h3q_engine_pump(h3q_engine* engine)
 {
-    int rounds = 0;
-    int had_queued;
-
-    if (!engine || !engine->ssl_listener)
+    if (!engine)
     {
         return 0;
     }
-    had_queued = (engine->peer_rx_head != NULL);
-    if (SSL_handle_events(engine->ssl_listener) != 1)
+    uint8_t buf[65536];
+    int work = 0;
+    for (int i = 0; i < H3Q_RECV_BUDGET; i++)
     {
-        return -1;
-    }
-    while (engine->peer_rx_head && ++rounds < H3Q_PUMP_INNER_BUDGET)
-    {
-        if (SSL_handle_events(engine->ssl_listener) != 1)
+        struct sockaddr_storage peer;
+        socklen_t peerlen = (socklen_t)sizeof(peer);
+        int n = (int)recvfrom(engine->fd, (char*)buf, (h3q_iolen)sizeof(buf), 0, (struct sockaddr*)&peer, &peerlen);
+        if (n < 0)
         {
-            return -1;
+            int why = recv_failed();
+            if (why == 0)
+            {
+                break;
+            }
+            if (why < 0)
+            {
+                return -1;
+            }
+            continue;
+        }
+        work = 1;
+        if (n > 0)
+        {
+            process_dgram(engine, buf, (size_t)n, &peer, peerlen);
         }
     }
-    if (engine->peer_rx_head)
+    ngtcp2_tstamp now = h3q_now();
+    for (h3q_conn* conn = engine->conns_head; conn; conn = conn->next)
     {
-        return 1;
+        if (conn->closed || ngtcp2_conn_get_expiry(conn->qconn) > now)
+        {
+            continue;
+        }
+        int rv = ngtcp2_conn_handle_expiry(conn->qconn, now);
+        if (rv != 0)
+        {
+            h3q_conn_fail(conn, rv);
+            continue;
+        }
+        h3q_conn_flush(conn);
     }
-    return (had_queued || rounds > 0) ? 1 : 0;
+    return work;
 }
 
 void h3q_engine_want(h3q_engine* engine, int* want_read, int* want_write, int* timeout_ms)
 {
-    if (!engine || !engine->ssl_listener)
+    *want_read = 1;
+    *want_write = 0;
+    if (!engine)
     {
-        *want_read = 0;
-        *want_write = 0;
-        *timeout_ms = 1000;
         return;
     }
-    *want_read = SSL_net_read_desired(engine->ssl_listener);
-    *want_write = SSL_net_write_desired(engine->ssl_listener);
-
-    struct timeval tv = {0};
-    int is_infinite = 0;
-    if (SSL_get_event_timeout(engine->ssl_listener, &tv, &is_infinite) && !is_infinite)
+    ngtcp2_tstamp now = h3q_now();
+    for (h3q_conn* conn = engine->conns_head; conn; conn = conn->next)
     {
-        /* long is 32-bit on Windows, so tv_sec * 1000 overflows it. */
-        int64_t ms = (int64_t)tv.tv_sec * 1000 + (int64_t)tv.tv_usec / 1000;
-        if (ms >= 0 && ms < (int64_t)*timeout_ms)
+        if (conn->closed)
+        {
+            continue;
+        }
+        ngtcp2_tstamp expiry = ngtcp2_conn_get_expiry(conn->qconn);
+        int64_t ms = expiry <= now ? 1 : (int64_t)((expiry - now) / NGTCP2_MILLISECONDS) + 1;
+        if (ms < *timeout_ms)
         {
             *timeout_ms = (int)ms;
         }
-    }
-    /* A zero would spin the caller's wait when a timer reports as due. */
-    if (*timeout_ms < 1)
-    {
-        *timeout_ms = 1;
     }
 }
 
 h3q_conn* h3q_engine_accept_conn(h3q_engine* engine)
 {
-    if (!engine || !engine->ssl_listener)
+    if (!engine || !engine->accept_head)
     {
         return NULL;
     }
-    SSL* conn = SSL_accept_connection(engine->ssl_listener, SSL_ACCEPT_CONNECTION_NO_BLOCK);
-    return (h3q_conn*)conn;
+    h3q_conn* conn = engine->accept_head;
+    engine->accept_head = conn->next_accept;
+    if (!engine->accept_head)
+    {
+        engine->accept_tail = NULL;
+    }
+    conn->next_accept = NULL;
+    conn->queued_accept = 0;
+    return conn;
 }
 
 int h3q_engine_peer_addr(h3q_engine* engine, h3q_conn* conn, struct sockaddr_storage* addr, socklen_t* addr_len)
 {
-    /* Report it: losing a client address is not worth aborting the child. */
-    if (!engine || !conn || !addr || !addr_len)
+    (void)engine;
+    if (!conn || !addr || !addr_len || conn->path.path.remote.addrlen == 0 || conn->path.path.remote.addrlen > sizeof(*addr))
     {
         return 0;
     }
-    if (engine->peer_addr_ex_index < 0)
-    {
-        return 0;
-    }
-
-    /* Recorded by h3q_new_pending_conn_cb when the connection first appeared. */
-    const BIO_ADDR* peer = SSL_get_ex_data((SSL*)conn, engine->peer_addr_ex_index);
-    if (!peer)
-    {
-        return 0;
-    }
-
-    memset(addr, 0, sizeof(*addr));
-    size_t rawlen = 0;
-    int family = BIO_ADDR_family(peer);
-    if (family == AF_INET)
-    {
-        struct sockaddr_in* sin = (struct sockaddr_in*)addr;
-        if (!BIO_ADDR_rawaddress(peer, &sin->sin_addr, &rawlen) || rawlen != sizeof(sin->sin_addr))
-        {
-            return 0;
-        }
-        sin->sin_family = AF_INET;
-        sin->sin_port = BIO_ADDR_rawport(peer);
-        *addr_len = sizeof(*sin);
-        return 1;
-    }
-    if (family == AF_INET6)
-    {
-        struct sockaddr_in6* sin6 = (struct sockaddr_in6*)addr;
-        if (!BIO_ADDR_rawaddress(peer, &sin6->sin6_addr, &rawlen) || rawlen != sizeof(sin6->sin6_addr))
-        {
-            return 0;
-        }
-        sin6->sin6_family = AF_INET6;
-        sin6->sin6_port = BIO_ADDR_rawport(peer);
-        *addr_len = sizeof(*sin6);
-        return 1;
-    }
-    return 0;
+    memcpy(addr, conn->path.path.remote.addr, conn->path.path.remote.addrlen);
+    *addr_len = (socklen_t)conn->path.path.remote.addrlen;
+    return 1;
 }
