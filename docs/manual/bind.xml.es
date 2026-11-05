@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1816110:1933438 (outdated) -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer lgilbernabe@apache.org-->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -24,7 +23,7 @@
 
 <manualpage metafile="bind.xml.meta">
 
-  <title>Mapeo de Direcciones y Puertos.</title>
+  <title>Mapeo de Direcciones y Puertos</title>
 
   <summary>
     <p>Configurando Apache HTTP Server para que escuche en una dirección y puertos específicos.</p>
@@ -70,7 +69,7 @@
      El servidor por tanto, responderá a las peticiones en cualquiera de las IP´s y puertos
      listados en la directiva.</p>
 
-    <p>Por ejemplo, para hacer que el servidor escuche en ambos puertos 80 y 8080 en todas 
+    <p>Por ejemplo, para hacer que el servidor escuche en ambos puertos 80 y 8000 en todas
     	sus interfaces de red, se usa lo siguiente:</p>
 
     <example>
@@ -80,7 +79,8 @@ Listen 8000
     </highlight>
     </example>
 
-    <p>Para hacer que el servidor acepte peticiones en el puerto 80 en una sola interfaz de red, usaremos:</p>
+    <p>Para hacer que el servidor acepte peticiones en el puerto 80 en una interfaz de red,
+    y en el puerto 8000 en otra, usaremos:</p>
 
     <example>
     <highlight language="config">
@@ -156,7 +156,7 @@ Listen 192.0.2.5:8000
 
     <p>Un creciente número de plataformas implementan ya IPv6, y 
     <glossary>APR</glossary> soporta IPv6 en la mayoría de estas plataformas, 
-    permitiendo así a httpd asignar sockets IPv6, y manejar las respuestas 
+    permitiendo así a httpd asignar sockets IPv6, y manejar las peticiones
     enviadas a través de IPv6.</p>
 
     <p>Un factor bastante complejo para un administrador del httpd 
@@ -164,22 +164,23 @@ Listen 192.0.2.5:8000
     como IPv4. El manejo por httpd de conexiones IPv4 con socket IPv6 
     se debe al mapeo de direcciones IPv4 sobre IPv6, que 
     está permitido por defecto en muchas plataformas, pero no lo está 
-    en sistemas FreeBSD, NetBSD y Open BSD, con el fin de que en estas 
+    en sistemas FreeBSD, NetBSD y OpenBSD, con el fin de que en estas
     plataformas, cumpla con la política del sistema.
     En los sistemas que no está permitido el mapeo por defecto, 
     existe un parámetro de <program>configure</program> especial 
     para cambiar éste comportamiento para httpd.</p>
 
-    <p>Por otro lado, en algunas plataformas, como Linux y True64, la 
-    <strong>única</strong> forma para el manejo de IPv4 e IPv6 al mismo 
+    <p>Por otro lado, en algunas plataformas, como Linux y Tru64, la
+    <strong>única</strong> forma para el manejo de IPv4 e IPv6 al mismo
     tiempo es mediante direcciones mapeadas.
-    Si quieres que <code>httpd</code> maneje amos tipos de conexiones IPv4 e IPv6
-    con el mínimo de sockets, hay que especificar la opción 
+    Si quieres que <code>httpd</code> maneje ambos tipos de conexiones IPv4 e IPv6
+    con el mínimo de sockets, lo cual requiere el uso de direcciones IPv4
+    mapeadas sobre IPv6, hay que especificar la opción
     <code>--enable-v4-mapped</code> al <program>
     configure</program>.</p>
 
     <p><code>--enable-v4-mapped</code> es la opción que está estipulada por defecto
-    en todos los sistemas menos en FreeBSD, NetBSD y Open BSD, por 
+    en todos los sistemas menos en FreeBSD, NetBSD y OpenBSD, por
     lo que es probablemente como se compiló su httpd.</p>
 
     <p>Si lo que quiere es manejar sólo conexiones IPv4, independientemente de 
@@ -224,7 +225,7 @@ Listen 192.0.2.1:80
   </section>
 
   <section id="virtualhost">
-    <title>Como Funciona en los Hosts Virtuales</title>
+    <title>Cómo Funciona en los Hosts Virtuales</title>
 
     <p> La directiva <directive
     module="mpm_common">Listen</directive> no implementa los
@@ -240,8 +241,8 @@ Listen 192.0.2.1:80
     que direcciones y puertos van a ser usados. 
     Después de esto, se deberá especificar una sección de la directiva
     <directive module="core" type="section">VirtualHost</directive> 
-    especificando direcciones y puertos que se van a usar en el Host Virtual
-    Note que si se configura un 
+    especificando direcciones y puertos que se van a usar en el Host Virtual.
+    Tenga en cuenta que si se configura un
     <directive module="core" type="section">VirtualHost</directive>
     para una dirección y puerto en el que el servidor no está escuchando,
     no se podrá acceder al Host Virtual.</p>

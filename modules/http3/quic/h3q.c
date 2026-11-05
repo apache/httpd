@@ -31,6 +31,8 @@
 #include "quic/detail/h3q_tls.h"
 #include "quic/h3q.h"
 
+#define H3Q_PUMP_INNER_BUDGET 64
+
 h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size_t errlen)
 {
     CHECK(cfg);
@@ -144,24 +146,30 @@ void h3q_engine_destroy(h3q_engine* engine)
 
 int h3q_engine_pump(h3q_engine* engine)
 {
+    int rounds = 0;
+    int had_queued;
+
     if (!engine || !engine->ssl_listener)
     {
         return 0;
     }
-    int work = 0;
+    had_queued = (engine->peer_rx_head != NULL);
     if (SSL_handle_events(engine->ssl_listener) != 1)
     {
         return -1;
     }
-    while (engine->peer_rx_head)
+    while (engine->peer_rx_head && ++rounds < H3Q_PUMP_INNER_BUDGET)
     {
         if (SSL_handle_events(engine->ssl_listener) != 1)
         {
             return -1;
         }
-        work = 1;
     }
-    return work;
+    if (engine->peer_rx_head)
+    {
+        return 1;
+    }
+    return (had_queued || rounds > 0) ? 1 : 0;
 }
 
 void h3q_engine_want(h3q_engine* engine, int* want_read, int* want_write, int* timeout_ms)

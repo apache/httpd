@@ -19,6 +19,7 @@
 #include <ws2tcpip.h>
 #endif
 
+#include <stdio.h>
 #include <string.h>
 
 #include <openssl/bio.h>
@@ -27,6 +28,75 @@
 
 #include "h3_os.h"
 #include "quic/detail/h3q_addr.h"
+
+#ifdef H3Q_DCID_DEBUG
+
+static void h3q_hex(char* out, const unsigned char* data, size_t len)
+{
+    size_t i;
+    for (i = 0; i < len; i++)
+        sprintf(out + i * 2, "%02x", data[i]);
+    out[len * 2] = '\0';
+}
+
+static void h3q_trace_quic(const char* direction, const unsigned char* data, size_t data_len)
+{
+    unsigned char dcid[20];
+    unsigned char scid[20];
+    size_t dcid_len = 0;
+    size_t scid_len = 0;
+    size_t off;
+    char dcid_hex[41];
+    char scid_hex[41];
+    FILE* f;
+
+    if (data_len < 1)
+        return;
+
+    if (data[0] & 0x80) {
+        /* Long header: [flags(1)][version(4)][dcid_len(1)][dcid...][scid_len(1)][scid...] */
+        if (data_len < 6)
+            return;
+        dcid_len = data[5];
+        if (dcid_len > 20 || data_len < 6 + dcid_len)
+            return;
+        memcpy(dcid, data + 6, dcid_len);
+
+        off = 6 + dcid_len;
+        if (data_len > off) {
+            scid_len = data[off];
+            if (scid_len <= 20 && data_len >= off + 1 + scid_len)
+                memcpy(scid, data + off + 1, scid_len);
+            else
+                scid_len = 0;
+        }
+
+        h3q_hex(dcid_hex, dcid, dcid_len);
+        h3q_hex(scid_hex, scid, scid_len);
+        f = fopen("/tmp/h3q_dcid.log", "a");
+        if (f) {
+            fprintf(f, "[h3q] %s long  DCID(%zu): %s  SCID(%zu): %s\n",
+                    direction, dcid_len, dcid_hex, scid_len, scid_hex);
+            fclose(f);
+        }
+    } else {
+        /* Short header: [flags(1)][dcid...] */
+        dcid_len = 8;
+        if (data_len < 1 + dcid_len)
+            return;
+        memcpy(dcid, data + 1, dcid_len);
+
+        h3q_hex(dcid_hex, dcid, dcid_len);
+        f = fopen("/tmp/h3q_dcid.log", "a");
+        if (f) {
+            fprintf(f, "[h3q] %s short DCID(%zu): %s\n",
+                    direction, dcid_len, dcid_hex);
+            fclose(f);
+        }
+    }
+}
+
+#endif /* H3Q_DCID_DEBUG */
 
 struct h3q_datagram
 {
@@ -81,6 +151,9 @@ static int h3q_queue_fill(h3q_engine* engine, BIO_MSG* msg, size_t stride, size_
             h3q_peer_addr_queue_clear(engine);
             return 0;
         }
+#ifdef H3Q_DCID_DEBUG
+        h3q_trace_quic("RECV", source->data, source->data_len);
+#endif
         item->data = OPENSSL_memdup(source->data, source->data_len);
         item->data_len = source->data_len;
         item->peer = source->peer ? BIO_ADDR_dup(source->peer) : NULL;
@@ -143,6 +216,18 @@ long h3q_peer_addr_bio_ctrl(BIO* bio, int cmd, long num, void* ptr)
 int h3q_peer_addr_bio_sendmmsg(BIO* bio, BIO_MSG* msg, size_t stride, size_t num_msg, uint64_t flags, size_t* msgs_processed)
 {
     BIO* next = BIO_next(bio);
+
+#ifdef H3Q_DCID_DEBUG
+    {
+        size_t i;
+        for (i = 0; i < num_msg; i++) {
+            BIO_MSG* m = (BIO_MSG*)((unsigned char*)msg + i * stride);
+            if (m->data && m->data_len > 0)
+                h3q_trace_quic("SEND", m->data, m->data_len);
+        }
+    }
+#endif
+
     return next ? BIO_sendmmsg(next, msg, stride, num_msg, flags, msgs_processed) : 0;
 }
 
@@ -150,47 +235,62 @@ int h3q_peer_addr_bio_recvmmsg(BIO* bio, BIO_MSG* msg, size_t stride, size_t num
 {
     h3q_engine* engine = BIO_get_data(bio);
     BIO* next = BIO_next(bio);
+    size_t count;
+
     if (!engine || !next || !msg || !msgs_processed || num_msg == 0)
     {
         return 0;
     }
 
     BIO_ADDR_clear(engine->current_peer_addr);
-    if (engine->peer_rx_head)
-    {
-        *msgs_processed = 0;
-        if (!h3q_queue_pop(engine, msg))
-        {
-            return 0;
-        }
-        *msgs_processed = 1;
-        if (msg->peer)
-        {
-            BIO_ADDR_copy(engine->current_peer_addr, msg->peer);
-        }
-        return 1;
-    }
 
-    size_t received = 0;
-    int rv = BIO_recvmmsg(next, msg, stride, num_msg, flags, &received);
-    if (rv && received > 0)
+    if (!engine->peer_rx_head)
     {
-        if (!h3q_queue_fill(engine, msg, stride, received) || !h3q_queue_pop(engine, msg))
+        size_t received = 0;
+        int rv = BIO_recvmmsg(next, msg, stride, num_msg, flags, &received);
+        if (!rv || received == 0)
+        {
+            *msgs_processed = received;
+            return rv;
+        }
+        if (!h3q_queue_fill(engine, msg, stride, received))
         {
             *msgs_processed = 0;
             return 0;
         }
-        *msgs_processed = 1;
-        if (msg->peer)
+    }
+
+    /* Pop from queue: batch short-header packets (existing connections);
+     * long-header packets go one at a time for peer-address capture. */
+    count = 0;
+    while (count < num_msg && engine->peer_rx_head)
+    {
+        h3q_datagram* head = engine->peer_rx_head;
+        int is_long = (head->data_len > 0 && (head->data[0] & 0x80));
+
+        if (is_long && count > 0)
         {
-            BIO_ADDR_copy(engine->current_peer_addr, msg->peer);
+            break;
+        }
+
+        BIO_MSG* dst = (BIO_MSG*)((unsigned char*)msg + count * stride);
+        if (!h3q_queue_pop(engine, dst))
+        {
+            break;
+        }
+        count++;
+
+        if (is_long)
+        {
+            if (dst->peer)
+            {
+                BIO_ADDR_copy(engine->current_peer_addr, dst->peer);
+            }
+            break;
         }
     }
-    else
-    {
-        *msgs_processed = received;
-    }
-    return rv;
+    *msgs_processed = count;
+    return count > 0 ? 1 : 0;
 }
 
 int h3q_peer_addr_bio_destroy(BIO* bio)
