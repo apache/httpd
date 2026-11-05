@@ -1,0 +1,4 @@
+  *) mod_vhost_alias: Reserve a byte for the terminating NUL when
+     interpolating VirtualDocumentRoot/VirtualScriptAlias, so a name of
+     a length that fills the buffer exactly cannot write one byte past
+     it.  [arshiya tabasum]
