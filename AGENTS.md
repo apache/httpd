@@ -55,10 +55,12 @@ Then verify the target actually shows up in the regenerated `Makefile`
 before relying on it (e.g. `grep '^new-target:' Makefile`).
 
 If any autoconf-level input has changed (`configure.in`, an `.m4` file,
-etc.), rerun `configure` exactly as it was originally invoked, rather than
-guessing the flags:
+etc.), regenerate `configure` with `buildconf` (nothing in the build does
+this for you), then rerun `configure` exactly as it was originally invoked,
+rather than guessing the flags:
 
 ```
+./buildconf --with-apr=/path/to/apr
 ./config.nice
 ```
 
