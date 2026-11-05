@@ -1,0 +1,4 @@
+  *) mod_autht_jwt: Fix silent bypass of JWT "exp" and "nbf" claim
+     enforcement when the claim value was not a JSON integer (for example a
+     float or a quoted string), which left expired or not-yet-valid tokens
+     accepted. PR 70275 [Arturo Bernal]
