@@ -24,15 +24,21 @@
 #include "quic/h3q.h"
 
 /**
- * Build the TLS context the listener serves from: certificate and key from
- * @p cfg, "h3" as the only ALPN protocol, and a key log when SSLKEYLOGFILE is
- * set.
- * @param cfg    Configuration supplying the certificate and key paths.
- * @param err    Buffer receiving the reason on failure; may be NULL.
- * @param errlen Capacity of @p err.
+ * Build the TLS context the listener serves from: the certificate chain files
+ * with their keys (one per key type, as mod_ssl allows; a missing key file
+ * means the key sits in the chain file), "h3" as the only ALPN protocol, and
+ * a key log when SSLKEYLOGFILE is set. Safe before the server forks and drops
+ * privileges; children inherit the loaded keys.
+ * @param cert_files      Certificate chain files; at least one.
+ * @param ncerts          Number of entries in @p cert_files.
+ * @param key_files       Private key files, matched by index to @p cert_files.
+ * @param nkeys           Number of entries in @p key_files; may be fewer.
+ * @param session_tickets Non-zero to issue TLS 1.3 session tickets.
+ * @param err             Buffer receiving the reason on failure; may be NULL.
+ * @param errlen          Capacity of @p err.
  * @return New context, or NULL on failure.
  */
-SSL_CTX* h3q_tls_ctx_create(const h3q_config* cfg, char* err, size_t errlen);
+SSL_CTX* h3q_tls_ctx_create(const char* const* cert_files, size_t ncerts, const char* const* key_files, size_t nkeys, int session_tickets, char* err, size_t errlen);
 
 /**
  * Record a message in a caller-supplied error buffer, appending the OpenSSL

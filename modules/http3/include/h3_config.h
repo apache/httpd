@@ -36,8 +36,9 @@ struct h3_server_conf
 {
     apr_port_t host_port;
 
-    const char* h3_cert_path;
-    const char* h3_key_path;
+    /** QUIC TLS context, built from mod_ssl's certificate when the host lists h3 in Protocols. */
+    struct ssl_ctx_st* ssl_ctx;
+
     apr_port_t h3_port;
     apr_uint32_t h3_max_concurrent_streams;
     apr_uint32_t h3_max_connections;
@@ -81,8 +82,7 @@ void* h3_create_server_config(apr_pool_t* p, server_rec* s);
 
 /**
  * ap_merge_server_config callback: produce a child vhost config that
- * inherits each unset field from the parent. cert/key/h3_port use the
- * new value if non-NULL/non-zero, else the base.
+ * inherits each unset field from the parent.
  * @param p         Pool for the merged config.
  * @param base_conf Parent h3_server_conf.
  * @param new_conf  Child h3_server_conf.
@@ -111,16 +111,27 @@ void* h3_create_dir_config(apr_pool_t* p, char* dir);
 void* h3_merge_dir_config(apr_pool_t* p, void* base, void* add);
 
 /**
- * ap_post_config hook: resolve cert/key/h3_port for the listening vhost
- * and log the resolved values. No-op in AP_SQ_MS_CREATE_PRE_CONFIG
- * (pre-config phase). Returns OK if a fully-configured vhost is found,
- * HTTP_INTERNAL_SERVER_ERROR otherwise.
- * @param p     Config pool (unused).
+ * ap_ssl_add_cert_files hook: mod_ssl runs it for every SSLEngine vhost with
+ * the certificate and key files it is about to load (SSLCertificateFile plus
+ * anything mod_md added). When the vhost lists h3 in Protocols, builds its
+ * QUIC TLS context from them, here, before the server drops privileges.
+ * @param s          The vhost being configured.
+ * @param p          Config pool; owns the context.
+ * @param cert_files Certificate chain files, const char* elements.
+ * @param key_files  Private key files, const char* elements.
+ * @return DECLINED, or HTTP_INTERNAL_SERVER_ERROR if the files do not load.
+ */
+int h3_ssl_add_cert_files(server_rec* s, apr_pool_t* p, apr_array_header_t* cert_files, apr_array_header_t* key_files);
+
+/**
+ * ap_post_config hook: fill in defaults on every vhost that serves HTTP/3;
+ * the first one owns the listener, and an SNI callback swaps in each other
+ * host's certificate by name. No-op in AP_SQ_MS_CREATE_PRE_CONFIG.
+ * @param p     Config pool; owns the SNI host table.
  * @param plog  Log pool (unused).
  * @param ptemp Temp pool (unused).
  * @param s     The first server_rec in the configuration.
- * @return OK, or HTTP_INTERNAL_SERVER_ERROR if no vhost has both
- *         H3CertificatePath and H3CertificateKeyPath set.
+ * @return OK, or HTTP_INTERNAL_SERVER_ERROR if no vhost serves HTTP/3.
  */
 int h3_post_config(apr_pool_t* p, apr_pool_t* plog, apr_pool_t* ptemp, server_rec* s);
 
