@@ -549,6 +549,10 @@ DAV_DECLARE(time_t) dav_get_timeout(request_rec *r)
     return dav_get_timeout_string(r, timeout_const);
 }
 
+/* Largest value a signed time_t can hold, as an apr_int64_t. */
+#define DAV_TIME_T_MAX \
+    ((apr_int64_t)((((apr_uint64_t)1) << (sizeof(time_t) * 8 - 1)) - 1))
+
 /* dav_get_timeout_string:  From a Timeout header value, return a time_t
  *    when this lock is expected to expire.  Otherwise, return
  *    a time_t of DAV_TIMEOUT_INFINITE.
@@ -577,12 +581,27 @@ DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
         }
 
         if (!strncmp(val, "Second-", 7)) {
+            apr_int64_t secs;
+            char *end;
+
             val += 7;
-            /* ### We need to handle overflow better:
-             * ### timeout will be <= 2^32 - 1
+            secs = apr_strtoi64(val, &end, 10);
+            if (end == val || (*end && *end != ',') || secs < 0) {
+                /* not a valid Second-xxx value, try the next one */
+                continue;
+            }
+            /* RFC 4918: the timeout MUST NOT be greater than 2^32 - 1 */
+            if (secs > APR_UINT32_MAX) {
+                secs = APR_UINT32_MAX;
+            }
+            /* The absolute expiry must also fit in a (signed) time_t,
+             * which may be only 32 bits wide.
              */
-            expires = atol(val);
-            now     = time(NULL);
+            now = time(NULL);
+            if (secs > DAV_TIME_T_MAX - (apr_int64_t)now) {
+                secs = DAV_TIME_T_MAX - (apr_int64_t)now;
+            }
+            expires = (time_t)secs;
             return now + expires;
         }
     }
