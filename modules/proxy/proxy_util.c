@@ -1848,18 +1848,20 @@ static int worker_matches(proxy_worker *worker,
                           unsigned int mask)
 {
     apr_size_t name_len = strlen(worker->s->name);
-    if (name_len <= url_len
-        && name_len > *max_match
+    if (name_len > *max_match
         /* min_match is the length of the scheme://host part only of url,
          * so it's used as a fast path to avoid the match when url is too
          * small, but it's irrelevant when the worker host contains globs
          * (i.e. ->is_host_matchable).
+         * The name of a matchable worker can be longer than the url, since
+         * a "$N" in it may match fewer than two characters.
          */
         && (worker->s->is_name_matchable
             ? ((mask & AP_PROXY_WORKER_IS_MATCH)
                && (worker->s->is_host_matchable || name_len >= min_match)
                && !ap_proxy_strcmp_ematch(url, worker->s->name))
             : ((mask & AP_PROXY_WORKER_IS_PREFIX)
+               && name_len <= url_len
                && (name_len >= min_match)
                && !strncmp(url, worker->s->name, name_len)))) {
         *max_match = name_len;
