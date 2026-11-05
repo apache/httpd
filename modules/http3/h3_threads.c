@@ -21,6 +21,8 @@
 
 #include <apr_atomic.h>
 #include <apr_hash.h>
+#include <apr_pools.h>
+#include <apr_thread_mutex.h>
 
 #include "h3.h"
 #include "h3_io.h"
@@ -31,6 +33,34 @@
 #include "quic/h3q_conn.h"
 
 #define H3_PUMP_BUDGET 32
+
+apr_status_t h3_thread_safe_pool_create(apr_pool_t* parent, const char* tag, apr_pool_t** out)
+{
+    apr_allocator_t* allocator = NULL;
+    apr_thread_mutex_t* mutex = NULL;
+    apr_status_t rv = apr_allocator_create(&allocator);
+    if (rv != APR_SUCCESS)
+    {
+        return rv;
+    }
+    rv = apr_pool_create_ex(out, parent, NULL, allocator);
+    if (rv != APR_SUCCESS)
+    {
+        apr_allocator_destroy(allocator);
+        return rv;
+    }
+    apr_allocator_owner_set(allocator, *out);
+    apr_pool_tag(*out, tag);
+    rv = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_DEFAULT, *out);
+    if (rv != APR_SUCCESS)
+    {
+        apr_pool_destroy(*out);
+        *out = NULL;
+        return rv;
+    }
+    apr_allocator_mutex_set(allocator, mutex);
+    return APR_SUCCESS;
+}
 
 void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
 {
