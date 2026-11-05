@@ -36,6 +36,7 @@
 #include "h3_io.h"
 #include "h3_os.h"
 #include "h3_request.h"
+#include "h3_server.h"
 #include "h3_session.h"
 #include "h3_socket.h"
 #include "h3_stream.h"
@@ -138,8 +139,10 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         .idle_timeout_secs = conf->h3_idle_timeout,
         .max_streams_bidi = conf->h3_max_concurrent_streams,
         .max_window = conf->h3_max_window,
+        .secret = h3_server_secret(s),
         .early_data = (conf->h3_early_data == H3_FLAG_ON),
         .address_validation = (conf->h3_address_validation != H3_FLAG_OFF),
+        .disable_migration = h3_server_buckets(s) > 1,
     };
     io->qengine = h3q_engine_create(&qcfg, udp_fd, qerr, sizeof(qerr));
     if (!io->qengine)

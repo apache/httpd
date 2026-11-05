@@ -45,9 +45,13 @@ typedef struct h3q_config
     uint32_t max_streams_bidi;
     /** Cap for flow-control window autotuning, per connection and per stream. */
     size_t max_window;
+    /** 32-byte key for Retry and stateless reset tokens, shared by all children; NULL makes a random one. */
+    const unsigned char* secret;
     unsigned address_validation : 1;
     /** Accept 0-RTT request data on resumed connections. */
     unsigned early_data : 1;
+    /** Tell clients not to migrate: with more than one SO_REUSEPORT socket a new address can reach another child. */
+    unsigned disable_migration : 1;
 } h3q_config;
 
 /**

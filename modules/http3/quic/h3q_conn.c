@@ -213,7 +213,7 @@ static int tls_init(h3q_conn* conn)
     return 1;
 }
 
-h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2_cid* odcid, const ngtcp2_cid* retry_scid, const struct sockaddr* peer, socklen_t peerlen)
+h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2_cid* odcid, const ngtcp2_cid* retry_scid, const ngtcp2_path* path)
 {
     h3q_conn* conn = calloc(1, sizeof(*conn));
     if (!conn)
@@ -230,7 +230,7 @@ h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
         return NULL;
     }
     conn->cids = apr_array_make(conn->pool, 4, sizeof(ngtcp2_cid));
-    ngtcp2_path_storage_init(&conn->path, (const ngtcp2_sockaddr*)&engine->local, (ngtcp2_socklen)engine->local_len, (const ngtcp2_sockaddr*)peer, (ngtcp2_socklen)peerlen, NULL);
+    ngtcp2_path_storage_init(&conn->path, path->local.addr, path->local.addrlen, path->remote.addr, path->remote.addrlen, NULL);
 
     ngtcp2_settings settings;
     ngtcp2_settings_default(&settings);
@@ -255,6 +255,7 @@ h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
         params.retry_scid = *retry_scid;
         params.retry_scid_present = 1;
     }
+    params.disable_active_migration = engine->disable_migration;
     params.stateless_reset_token_present = ngtcp2_crypto_generate_stateless_reset_token(params.stateless_reset_token, engine->secret, sizeof(engine->secret), &scid) == 0;
 
     ngtcp2_callbacks cb = {
@@ -326,7 +327,7 @@ static void retry_pending_fins(h3q_conn* conn)
         {
             continue; /* congestion limited; the next expiry retries */
         }
-        h3q_send(conn->engine, &ps.path, buf, (size_t)n);
+        h3q_send(conn->engine, &ps.path, pi.ecn, buf, (size_t)n);
         if (ndatalen >= 0)
         {
             st->fin_pending = 0;
@@ -358,7 +359,7 @@ void h3q_conn_flush(h3q_conn* conn)
         {
             break;
         }
-        h3q_send(conn->engine, &ps.path, buf, (size_t)n);
+        h3q_send(conn->engine, &ps.path, pi.ecn, buf, (size_t)n);
     }
     h3q_tx_flush(conn->engine);
     /* Without this ngtcp2 never paces and bursts the whole window. */
@@ -459,7 +460,7 @@ void h3q_conn_close(h3q_conn* conn, const ngtcp2_ccerr* ccerr)
         conn->close_len = (size_t)n;
         conn->close_until = h3q_now() + 3 * pto;
         conn->close_next = h3q_now() + pto;
-        h3q_send(conn->engine, &ps.path, conn->close_pkt, conn->close_len);
+        h3q_send(conn->engine, &ps.path, pi.ecn, conn->close_pkt, conn->close_len);
         h3q_tx_flush(conn->engine);
     }
 }
@@ -490,7 +491,7 @@ void h3q_conn_fail(h3q_conn* conn, int liberr)
 }
 
 /* Closing period: answer the peer with the stored close, at most once per PTO. */
-void h3q_conn_resend_close(h3q_conn* conn, const struct sockaddr* peer, socklen_t peerlen)
+void h3q_conn_resend_close(h3q_conn* conn, const ngtcp2_path* path)
 {
     ngtcp2_tstamp now = h3q_now();
     if (now < conn->close_next)
@@ -498,8 +499,7 @@ void h3q_conn_resend_close(h3q_conn* conn, const struct sockaddr* peer, socklen_
         return;
     }
     conn->close_next = now + ngtcp2_conn_get_pto(conn->qconn);
-    ngtcp2_path path = {.remote = {.addr = (ngtcp2_sockaddr*)peer, .addrlen = (ngtcp2_socklen)peerlen}};
-    h3q_send(conn->engine, &path, conn->close_pkt, conn->close_len);
+    h3q_send(conn->engine, path, NGTCP2_ECN_NOT_ECT, conn->close_pkt, conn->close_len);
     h3q_tx_flush(conn->engine);
 }
 

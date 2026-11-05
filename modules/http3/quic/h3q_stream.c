@@ -103,7 +103,7 @@ h3q_write_result h3q_stream_write(h3q_stream* st, const h3q_vec* vec, size_t nve
         }
         if (n > 0)
         {
-            h3q_send(conn->engine, &ps.path, buf, (size_t)n);
+            h3q_send(conn->engine, &ps.path, pi.ecn, buf, (size_t)n);
         }
         if (ndatalen > 0)
         {

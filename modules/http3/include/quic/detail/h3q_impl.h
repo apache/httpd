@@ -59,9 +59,14 @@ struct h3q_engine
     int tx_n;
     struct sockaddr_storage tx_dst;
     socklen_t tx_dstlen;
+    struct sockaddr_storage tx_src; /* the address the peer sent to; ss_family 0: the kernel picks */
+    uint32_t tx_ecn;
+    int sock_ecn; /* ECN codepoint now set on the socket */
     unsigned gso : 1;
+    unsigned pktinfo : 1; /* wildcard socket: reply from the address each packet came to */
     unsigned address_validation : 1;
     unsigned early_data : 1;
+    unsigned disable_migration : 1;
 };
 
 struct h3q_conn
@@ -110,13 +115,13 @@ struct h3q_stream
 };
 
 ngtcp2_tstamp h3q_now(void);
-void h3q_send(h3q_engine* engine, const ngtcp2_path* path, const uint8_t* buf, size_t len);
+void h3q_send(h3q_engine* engine, const ngtcp2_path* path, uint32_t ecn, const uint8_t* buf, size_t len);
 void h3q_tx_flush(h3q_engine* engine);
-h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2_cid* odcid, const ngtcp2_cid* retry_scid, const struct sockaddr* peer, socklen_t peerlen);
+h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2_cid* odcid, const ngtcp2_cid* retry_scid, const ngtcp2_path* path);
 void h3q_conn_flush(h3q_conn* conn);
 void h3q_conn_close(h3q_conn* conn, const ngtcp2_ccerr* ccerr);
 void h3q_conn_fail(h3q_conn* conn, int liberr);
-void h3q_conn_resend_close(h3q_conn* conn, const struct sockaddr* peer, socklen_t peerlen);
+void h3q_conn_resend_close(h3q_conn* conn, const ngtcp2_path* path);
 h3q_stream* h3q_stream_get(h3q_conn* conn, int64_t id);
 
 #endif /* H3Q_DETAIL_IMPL_H */

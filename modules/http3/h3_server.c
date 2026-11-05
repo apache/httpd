@@ -22,6 +22,7 @@
 #include <http_log.h>
 #include <util_cfgtree.h>
 
+#include <apr_general.h>
 #include <apr_pools.h>
 #include <apr_thread_proc.h>
 #include <apr_time.h>
@@ -234,8 +235,37 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     }
 }
 
+#define H3_SECRET_KEY "mod_http3.secret"
+#define H3_SECRET_LEN 32
+
+const unsigned char* h3_server_secret(server_rec* s)
+{
+    void* secret = NULL;
+    apr_pool_userdata_get(&secret, H3_SECRET_KEY, s->process->pool);
+    return secret;
+}
+
+int h3_server_buckets(server_rec* s)
+{
+#ifdef __linux__
+    h3_parent_socket* ps = parent_socket(s);
+    return ps && ps->n > 1 ? ps->n : 1;
+#else
+    (void)s;
+    return 1;
+#endif
+}
+
 void h3_server_post_config(server_rec* s)
 {
+    if (!h3_server_secret(s))
+    {
+        unsigned char* secret = apr_palloc(s->process->pool, H3_SECRET_LEN);
+        if (apr_generate_random_bytes(secret, H3_SECRET_LEN) == APR_SUCCESS)
+        {
+            apr_pool_userdata_set(secret, H3_SECRET_KEY, apr_pool_cleanup_null, s->process->pool);
+        }
+    }
 #ifdef __linux__
     h3_parent_socket* ps = parent_socket(s);
     if (!ps)
