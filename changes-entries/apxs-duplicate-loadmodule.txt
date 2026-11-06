@@ -1,0 +1,2 @@
+  *) apxs: Fix -A leaving a module enabled when its LoadModule line appears
+     more than once in the configuration file.  PR 70259.  [Arturo Bernal]
