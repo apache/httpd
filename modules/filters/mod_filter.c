@@ -57,6 +57,13 @@ typedef struct {
     ap_out_filter_func func;
     void *fctx;
     provider_ctx *init_ctx;
+    /* The provider's own filter_rec, with its real, unprefixed name. Used
+     * to swap f->frec while calling into the provider, so that providers
+     * which look up their own configuration by f->frec->name (such as
+     * mod_ext_filter and mod_lua) see their own name, not the "BYTYPE:"
+     * or "FilterProvider" wrapper name of the harness filter.
+     */
+    ap_filter_rec_t *frec;
 } harness_ctx;
 
 typedef struct mod_filter_chain {
@@ -113,7 +120,11 @@ static int filter_init(ap_filter_t *f)
         }
         else if (p->frec->filter_init_func) {
             f->ctx = NULL;
-            if ((err = p->frec->filter_init_func(f)) != OK) {
+            /* Let the provider see its own name in f->frec, not ours. */
+            f->frec = p->frec;
+            err = p->frec->filter_init_func(f);
+            f->frec = filter;
+            if (err != OK) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c, APLOGNO(01378)
                               "filter_init for %s failed", p->frec->name);
                 return err;   /* if anyone errors out here, so do we */
@@ -263,6 +274,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 }
             }
             ctx->func = provider->frec->filter_func.out_func;
+            ctx->frec = provider->frec;
             return 1;
         }
     }
@@ -316,13 +328,15 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
         AP_DEBUG_ASSERT(ctx->func != NULL);
     }
 
-    /* call the content filter with its own context, then restore our
-     * context
+    /* call the content filter with its own context and its own frec,
+     * then restore ours
      */
     f->ctx = ctx->fctx;
+    f->frec = ctx->frec;
     ret = ctx->func(f, bb);
     ctx->fctx = f->ctx;
     f->ctx = ctx;
+    f->frec = filter;
 
     return ret;
 }

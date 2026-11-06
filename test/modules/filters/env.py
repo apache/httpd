@@ -12,7 +12,7 @@ class FiltersTestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(FiltersTestSetup)))
-        self.add_modules(["substitute", "sed", "buffer"])
+        self.add_modules(["substitute", "sed", "buffer", "filter", "ext_filter"])
         self.add_cgi_module()
 
 
