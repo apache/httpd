@@ -1,0 +1,3 @@
+  *) mod_substitute: Fix a use-after-free when a line longer than
+     SubstituteMaxLineLength is seen.
+     [Alejandro Pacheco <alepacheco99 gmail.com>]
