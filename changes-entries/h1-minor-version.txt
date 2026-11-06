@@ -1,0 +1,5 @@
+  *) core: Process a request with a higher HTTP/1.x minor version, e.g.
+     HTTP/1.2, like HTTP/1.1, as RFC 9110 section 2.5 says. Such a request
+     was not given the HTTP/1 request body filter and stalled while waiting
+     for the end of its body.
+     [Arturo Bernal]
