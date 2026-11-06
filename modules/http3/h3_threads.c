@@ -100,7 +100,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
 
             if (session->aborted)
             {
-                int is_rapid = (!io->thread_running);
+                int is_rapid = (!io->thread_running || io->draining);
                 int shutdown_done = h3q_conn_shutdown(session->qconn, is_rapid, session->abort_quic_error_code, session->ngh3_dead ? session->abort_reason : NULL);
 
                 if (shutdown_done && apr_atomic_read32(&session->active_tasks) == 0)
