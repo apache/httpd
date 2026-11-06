@@ -12,7 +12,7 @@ class CoreTestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(CoreTestSetup)))
-        self.add_modules(["cgid","include","userdir","suexec","headers"])
+        self.add_modules(["cgid","include"])
 
 
 class CoreTestEnv(HttpdTestEnv):
@@ -22,4 +22,6 @@ class CoreTestEnv(HttpdTestEnv):
         self.add_httpd_log_modules(["http", "core"])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
-        super().setup_httpd(setup=CoreTestSetup(env=self))
+        if setup is None:
+            setup = CoreTestSetup(env=self)
+        super().setup_httpd(setup=setup)
