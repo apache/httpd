@@ -1,0 +1,3 @@
+  *) mod_cache_socache: Keep the cached body when the headers of an entry
+     are refreshed after a 304 response from the origin, instead of serving
+     the entry without a body afterwards. PR 62493.
