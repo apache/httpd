@@ -74,6 +74,7 @@ struct h3_session
 
     int control_streams_created;
     int goaway_sent;
+    int final_goaway_sent;
     apr_time_t goaway_deadline;
 
     apr_time_t last_activity;
