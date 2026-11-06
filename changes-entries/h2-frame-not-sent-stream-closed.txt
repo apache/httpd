@@ -1,0 +1,3 @@
+  *) mod_http2: Do not shut down the connection when a queued frame belongs to
+     a stream closed meanwhile by the client.  PR 70257.
+     [Arturo Bernal]
