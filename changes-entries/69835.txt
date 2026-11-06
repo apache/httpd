@@ -1,0 +1,7 @@
+  *) core: Fix "AllowOverride Nonfatal=Override" not applying to an
+     "Options=" restriction: an .htaccess Options value outside what
+     the restriction allows failed the whole request with a 500, even
+     though Nonfatal=Override was configured. Once ignored, such an
+     "Options" directive no longer affects the inherited options either.
+     PR 69835 [Arturo Bernal]
+
