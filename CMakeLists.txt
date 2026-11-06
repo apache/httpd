@@ -367,6 +367,7 @@ SET(MODULE_LIST
   "modules/examples/mod_case_filter_in+O+Example uppercase conversion input filter"
   "modules/examples/mod_example_hooks+O+Example hook callback handler module"
   "modules/examples/mod_example_ipc+O+Example of shared memory and mutex usage"
+  "modules/fcgid/mod_fcgid+I+FastCGI support (mod_fcgid)"
   "modules/filters/mod_brotli+i+Brotli compression support"
   "modules/filters/mod_buffer+I+Filter Buffering"
   "modules/filters/mod_charset_lite+i+character set translation"
@@ -557,6 +558,13 @@ IF(BROTLI_FOUND)
   SET(mod_brotli_extra_includes        ${BROTLI_INCLUDE_DIR})
   SET(mod_brotli_extra_libs            ${BROTLI_LIBRARIES})
 ENDIF()
+SET(mod_fcgid_extra_sources
+  modules/fcgid/fcgid_bridge.c       modules/fcgid/fcgid_bucket.c
+  modules/fcgid/fcgid_conf.c         modules/fcgid/fcgid_filter.c
+  modules/fcgid/fcgid_pm_main.c      modules/fcgid/fcgid_pm_win.c
+  modules/fcgid/fcgid_proc_win.c     modules/fcgid/fcgid_proctbl_win.c
+  modules/fcgid/fcgid_protocol.c     modules/fcgid/fcgid_spawn_ctl.c
+)
 SET(mod_firehose_requires            SOMEONE_TO_MAKE_IT_COMPILE_ON_WINDOWS)
 SET(mod_heartbeat_extra_libs         mod_watchdog)
 SET(mod_http2_requires               NGHTTP2_FOUND)
