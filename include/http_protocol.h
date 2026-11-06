@@ -1133,7 +1133,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_request_make(
 
 /**
  * Make the bucket passed in a request bucket
- * Uses all paramters without copying.
+ * Uses all parameters without copying.
  * @param b The bucket to make into a request bucket
  * @param method the HTTP method
  * @param uri the uri requested
