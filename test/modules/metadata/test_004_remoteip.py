@@ -12,7 +12,8 @@ from pyhttpd.conf import HttpdConf
 from .env import MetadataTestEnv
 
 # on the cases that fail without it (the others pass there as well)
-PER_VHOST = not_backported("r1938908", "mod_remoteip per-vhost lists")
+PER_VHOST = not_backported("r1938908", "mod_remoteip per-vhost lists",
+                           backported_in="2.4.71")
 
 
 @needs_dependency("mod_remoteip", MetadataTestEnv.has_shared_module("remoteip"),
@@ -210,14 +211,16 @@ class TestRemoteIp:
     # A LOCAL command (ver_cmd 0x20) is valid: the request is served as
     # coming from the connection's own address, and nothing is logged as
     # an error.  Bug 63893.
-    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error")
+    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error",
+                         backported_in="2.4.71")
     def test_metadata_004_04(self, env):
         self.pp_install(env)
         hdr = self.pp2_header(self.PP2_LOCAL, self.PP2_UNSPEC)
         assert self.pp_request(env, hdr) == (200, self.PEER)
 
     # LOCAL with an address block present: it must be ignored.
-    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error")
+    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error",
+                         backported_in="2.4.71")
     def test_metadata_004_05(self, env):
         self.pp_install(env)
         hdr = self.pp2_header(self.PP2_LOCAL, self.PP2_TCP4, self.PP2_ADDRS)
@@ -225,7 +228,8 @@ class TestRemoteIp:
 
     # A health check which connects, sends an incomplete header and goes
     # away is not an error worth logging (bug 63893 comment 12).
-    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error")
+    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error",
+                         backported_in="2.4.71")
     def test_metadata_004_06(self, env):
         self.pp_install(env)
         pos = env.httpd_error_log.current_pos()
