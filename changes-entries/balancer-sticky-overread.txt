@@ -1,0 +1,3 @@
+  *) mod_proxy_balancer: Fix a read past the end of the Cookie header or URL
+     when the stickysession name is found at its end without a value.
+     [Alejandro Pacheco <alepacheco99@gmail.com>]
