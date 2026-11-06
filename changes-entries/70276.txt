@@ -1,0 +1,4 @@
+  *) mod_autht_jwt: Fix a build failure against apr-util >= 1.7:
+     apr_jose_signature_make() was called with one fewer argument than
+     apr-util declares, omitting the ctx parameter.
+     PR 70276 [Arturo Bernal]
