@@ -1,0 +1,5 @@
+  *) core: Fix a crash in ap_varbuf_regsub() when the result is empty and
+     the buffer has not been allocated yet.  This made mod_substitute crash
+     when a regular expression rule replaced a whole line with an empty
+     string.  PR 70012.
+     [Arturo Bernal]
