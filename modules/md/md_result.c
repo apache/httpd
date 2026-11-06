@@ -210,6 +210,7 @@ void md_result_assign(md_result_t *dest, const md_result_t *src)
    dest->detail = src->detail;
    dest->activity = src->activity;
    dest->ready_at = src->ready_at;
+   dest->retry_at = src->retry_at;
    dest->subproblems = src->subproblems;
 }
 
@@ -220,6 +221,7 @@ void md_result_dup(md_result_t *dest, const md_result_t *src)
    dest->detail = src->detail? apr_pstrdup(dest->p, src->detail) : NULL; 
    dest->activity = src->activity? apr_pstrdup(dest->p, src->activity) : NULL; 
    dest->ready_at = src->ready_at;
+   dest->retry_at = src->retry_at;
    dest->subproblems = src->subproblems? md_json_clone(dest->p, src->subproblems) : NULL;
    on_change(dest);
 }
