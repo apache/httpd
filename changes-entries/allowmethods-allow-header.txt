@@ -1,0 +1,2 @@
+  *) mod_allowmethods: Send the configured methods in the Allow header of the
+     405 response instead of only TRACE.
