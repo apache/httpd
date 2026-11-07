@@ -1,0 +1,4 @@
+publish:
+  whoami: 2.4.x # the git branch
+  subdir: 2.4 # the website subdir
+  hostname: docs.httpd.apache.org
