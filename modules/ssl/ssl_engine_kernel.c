@@ -1465,11 +1465,16 @@ static authz_status ssl_authz_verify_client_check(request_rec *r,
                                                   const char *require_line,
                                                   const void *parsed)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
-    SSL *ssl = sslconn ? sslconn->ssl : NULL;
+    SSLConnRec *sslconn;
+    SSL *ssl;
 
-    if (!ssl)
+    /* On an HTTP/2 secondary connection, r->connection is a stream
+     * pseudo-connection with no SSLConnRec of its own; the handshake
+     * state lives on the master connection (see ssl_hook_Access()). */
+    if (!modssl_request_is_tls(r, &sslconn))
         return AUTHZ_DENIED;
+
+    ssl = sslconn->ssl;
 
     if (sslconn->verify_error == NULL &&
         sslconn->verify_info == NULL &&
