@@ -343,7 +343,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     return (char *)result;
 }
 
-static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn, 
+static char *ssl_var_lookup_ssl(apr_pool_t *p, SSLConnRec *sslconn,
                                 request_rec *r, char *var)
 {
     char *result;
@@ -598,7 +598,7 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xsname,
         var = apr_pstrmemdup(p, var, ptr - var);
         raw = 1;
     }
-    
+
     /* if an _N suffix is used, find the Nth attribute of given name */
     ptr = ap_strchr_c(var, '_');
     if (ptr != NULL && strspn(ptr + 1, "0123456789") == strlen(ptr + 1)) {
@@ -705,19 +705,19 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, const ASN1_TIME *tm)
     /* Fail if the time isn't a valid ASN.1 TIME; RFC3280 mandates
      * that the seconds digits are present even though ASN.1
      * doesn't. */
-    if ((tm->type == V_ASN1_UTCTIME && tm->length < 11) ||
-        (tm->type == V_ASN1_GENERALIZEDTIME && tm->length < 13) ||
+    if ((ASN1_STRING_type(tm) == V_ASN1_UTCTIME && ASN1_STRING_length(tm) < 11) ||
+        (ASN1_STRING_type(tm) == V_ASN1_GENERALIZEDTIME && ASN1_STRING_length(tm) < 13) ||
         !ASN1_TIME_check(tm)) {
         return apr_pstrdup(p, "0");
     }
 
-    if (tm->type == V_ASN1_UTCTIME) {
-        exp.tm_year = DIGIT2NUM(tm->data);
+    if (ASN1_STRING_type(tm) == V_ASN1_UTCTIME) {
+      exp.tm_year = DIGIT2NUM(ASN1_STRING_get0_data(tm));
         if (exp.tm_year <= 50) exp.tm_year += 100;
-        dp = tm->data + 2;
+        dp = ASN1_STRING_get0_data(tm) + 2;
     } else {
-        exp.tm_year = DIGIT2NUM(tm->data) * 100 + DIGIT2NUM(tm->data + 2) - 1900;
-        dp = tm->data + 4;
+          exp.tm_year = DIGIT2NUM(ASN1_STRING_get0_data(tm)) * 100 + DIGIT2NUM(ASN1_STRING_get0_data(tm) + 2) - 1900;
+          dp = ASN1_STRING_get0_data(tm) + 4;
     }
 
     exp.tm_mon = DIGIT2NUM(dp) - 1;
@@ -1241,5 +1241,3 @@ static const char *ssl_var_log_handler_x(request_rec *r, char *a)
     }
     return result;
 }
-
-
