@@ -8,7 +8,8 @@ from .env import H3Conf
 class TestGet:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.make_data_file(os.path.join(env.server_docs_dir, "test1"),
                            "data-1m", 1024 * 1024)
         H3Conf(env).add_h3_vhosts().install()

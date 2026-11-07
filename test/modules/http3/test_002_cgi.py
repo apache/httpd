@@ -6,7 +6,8 @@ from .env import H3Conf
 class TestCgi:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H3Conf(env).add_h3_vhosts().install()
         assert env.apache_restart() == 0
 
