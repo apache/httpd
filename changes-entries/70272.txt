@@ -1,0 +1,4 @@
+  *) mod_auth_digest: A child process that fails to attach to the shared
+     client table no longer destroys it for every other child; it now
+     just disables nonce-count/one-time-nonce tracking for itself.
+     PR 70272 [Arturo Bernal]
