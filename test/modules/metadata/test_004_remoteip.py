@@ -12,7 +12,8 @@ from pyhttpd.conf import HttpdConf
 from .env import MetadataTestEnv
 
 # on the cases that fail without it (the others pass there as well)
-PER_VHOST = not_backported("r1938908", "mod_remoteip per-vhost lists")
+PER_VHOST = not_backported("r1938908", "mod_remoteip per-vhost lists",
+                           backported_in="2.4.71")
 
 
 @needs_dependency("mod_remoteip", MetadataTestEnv.has_shared_module("remoteip"),
@@ -210,14 +211,16 @@ class TestRemoteIp:
     # A LOCAL command (ver_cmd 0x20) is valid: the request is served as
     # coming from the connection's own address, and nothing is logged as
     # an error.  Bug 63893.
-    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error")
+    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error",
+                         backported_in="2.4.71")
     def test_metadata_004_04(self, env):
         self.pp_install(env)
         hdr = self.pp2_header(self.PP2_LOCAL, self.PP2_UNSPEC)
         assert self.pp_request(env, hdr) == (200, self.PEER)
 
     # LOCAL with an address block present: it must be ignored.
-    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error")
+    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error",
+                         backported_in="2.4.71")
     def test_metadata_004_05(self, env):
         self.pp_install(env)
         hdr = self.pp2_header(self.PP2_LOCAL, self.PP2_TCP4, self.PP2_ADDRS)
@@ -225,7 +228,8 @@ class TestRemoteIp:
 
     # A health check which connects, sends an incomplete header and goes
     # away is not an error worth logging (bug 63893 comment 12).
-    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error")
+    @skip_not_backported("r1938927", "PROXY protocol EOF is not an error",
+                         backported_in="2.4.71")
     def test_metadata_004_06(self, env):
         self.pp_install(env)
         pos = env.httpd_error_log.current_pos()
@@ -233,3 +237,98 @@ class TestRemoteIp:
         logged = env.httpd_error_log.wait_for(re.compile(r".*AH10184"), pos,
                                               timeout=1)
         assert not logged, "peer going away mid-header was logged as an error"
+
+    # -- REMOTE_PORT -----------------------------------------------------
+
+    # The port the request came from must be the one mod_remoteip found,
+    # the same one %{remote}p logs and mod_rewrite's %{REMOTE_PORT} gives,
+    # wherever a configuration asks for it: the REMOTE_PORT variable of
+    # ap_expr (here via mod_headers) and the CGI/SSI REMOTE_PORT variable
+    # (here via mod_include).  Bug 70295.
+    REMOTE_PORT_FIX = not_backported("gh-896", "REMOTE_PORT from the useragent address")
+
+    def remote_port_install(self, env):
+        """A PROXY protocol vhost on http_port2 and an X-Forwarded-For one
+        on http_port, both exposing REMOTE_PORT three ways: the response
+        header 'X-Remote-Port' (ap_expr), the body of remote_port.shtml
+        (CGI variables via mod_include) and the access log (%{remote}p)."""
+        docs = os.path.join(env.server_docs_dir, "test1")
+        os.makedirs(docs, exist_ok=True)
+        with open(os.path.join(docs, "remote_port.shtml"), "w") as f:
+            f.write('<!--#echo var="REMOTE_PORT" -->\n')
+        exposed = [
+            'Header set X-Remote-Port "expr=%{REMOTE_PORT}"',
+            "Options +Includes",
+            "AddType text/html .shtml",
+            "AddOutputFilter INCLUDES .shtml",
+            f'CustomLog logs/{self.LOG_FILE} "%a %{{remote}}p"',
+        ]
+        conf = HttpdConf(env, extras={
+            "base": [
+                f"Listen {env.http_port2}",
+            ]
+        })
+        conf.start_vhost(domains=[f"test1.{env.http_tld}"], port=env.http_port2,
+                         doc_root="htdocs/test1")
+        conf.add(["RemoteIPProxyProtocol On"] + exposed)
+        conf.end_vhost()
+        conf.start_vhost(domains=[f"test1.{env.http_tld}"], port=env.http_port,
+                         doc_root="htdocs/test1")
+        conf.add(["RemoteIPHeader X-Forwarded-For",
+                  f"RemoteIPInternalProxy {self.PEER}"] + exposed)
+        conf.end_vhost()
+        conf.install()
+        assert env.apache_restart() == 0
+
+    def remote_port_logged(self, env):
+        log_path = os.path.join(env.server_logs_dir, self.LOG_FILE)
+        for _ in range(20):
+            with open(log_path) as f:
+                lines = [l.strip() for l in f if l.strip()]
+            if lines:
+                break
+            time.sleep(0.1)
+        assert len(lines) == 1, f"expected 1 log line, got {lines}"
+        return lines[0]
+
+    def remote_port_clear_log(self, env):
+        open(os.path.join(env.server_logs_dir, self.LOG_FILE), 'w').close()
+
+    # PROXY protocol: the client's port is known (4321 in PP2_ADDRS) and
+    # every place must report it, not the proxy's TCP source port.
+    @REMOTE_PORT_FIX
+    def test_metadata_004_07(self, env):
+        self.remote_port_install(env)
+        self.remote_port_clear_log(env)
+        hdr = self.pp2_header(self.PP2_PROXY, self.PP2_TCP4, self.PP2_ADDRS)
+        sock = socket.create_connection(("127.0.0.1", env.http_port2), timeout=5)
+        sock.sendall(hdr + f"GET /remote_port.shtml HTTP/1.0\r\n"
+                           f"Host: test1.{env.http_tld}\r\n\r\n".encode())
+        data = b""
+        while True:
+            chunk = sock.recv(65536)
+            if not chunk:
+                break
+            data += chunk
+        sock.close()
+        head, _, body = data.partition(b"\r\n\r\n")
+        lines = head.decode().split("\r\n")
+        assert lines[0].split(" ")[1] == "200", lines[0]
+        headers = {k.strip().lower(): v.strip() for k, v in
+                   (l.split(":", 1) for l in lines[1:] if ":" in l)}
+        assert self.remote_port_logged(env) == f"{self.CLIENT} 4321"
+        assert headers.get("x-remote-port") == "4321"
+        assert body.decode().strip() == "4321"
+
+    # RemoteIPHeader: the client's port is not known, mod_remoteip reports
+    # 0 for it rather than the proxy's, and so must every place.
+    @REMOTE_PORT_FIX
+    def test_metadata_004_08(self, env):
+        self.remote_port_install(env)
+        self.remote_port_clear_log(env)
+        r = env.curl_get(env.mkurl("http", "test1", "/remote_port.shtml"), options=[
+            '-H', f"X-Forwarded-For: {self.CLIENT}"])
+        assert r.response["status"] == 200
+        assert self.remote_port_logged(env) == f"{self.CLIENT} 0"
+        assert r.response["header"]["x-remote-port"] == "0"
+        assert r.response["body"].decode().strip() == "0"
