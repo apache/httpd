@@ -15,7 +15,8 @@ class AAATestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(AAATestSetup)))
-        self.add_modules(["auth_digest", "authn_file", "authn_core",
+        self.add_modules(["auth_digest", "auth_basic", "authn_socache",
+                          "socache_shmcb", "authn_file", "authn_core",
                           "authz_core", "authz_user", "proxy", "proxy_http"])
 
 
@@ -26,6 +27,11 @@ class AAATestEnv(HttpdTestEnv):
     DIGEST_PASSWORD = "digestpass2617"
     DIGEST_USER2 = "otheruser"
     DIGEST_PASSWORD2 = "otherpass2617"
+    # Basic auth accounts for the mod_authn_socache tests: the same user
+    # with a different password in each of two htpasswd files.
+    SOCACHE_USER = "socacheuser"
+    SOCACHE_PASSWORD_LOW = "lowpass2617"
+    SOCACHE_PASSWORD_HIGH = "highpass2617"
     # DIGEST_USER's password in the second file, for a vhost with its own
     # accounts under the same realm.
     DIGEST_PASSWORD_VHOST2 = "vhost2pass2617"
@@ -35,10 +41,33 @@ class AAATestEnv(HttpdTestEnv):
         self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core"])
         self._digest_pwfile = os.path.join(self.server_dir, "digest.passwd")
         self._digest_pwfile2 = os.path.join(self.server_dir, "digest2.passwd")
+        self._basic_pwfile_low = os.path.join(self.server_dir, "basic-low.passwd")
+        self._basic_pwfile_high = os.path.join(self.server_dir, "basic-high.passwd")
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=AAATestSetup(env=self))
         self._write_digest_pwfile()
+        self._write_basic_pwfiles()
+
+    def _write_basic_pwfiles(self):
+        import base64
+
+        def sha_entry(user, password):
+            digest = hashlib.sha1(password.encode()).digest()
+            return f"{user}:{{SHA}}{base64.b64encode(digest).decode()}\n"
+
+        with open(self._basic_pwfile_low, 'w') as fd:
+            fd.write(sha_entry(self.SOCACHE_USER, self.SOCACHE_PASSWORD_LOW))
+        with open(self._basic_pwfile_high, 'w') as fd:
+            fd.write(sha_entry(self.SOCACHE_USER, self.SOCACHE_PASSWORD_HIGH))
+
+    @property
+    def basic_pwfile_low(self) -> str:
+        return self._basic_pwfile_low
+
+    @property
+    def basic_pwfile_high(self) -> str:
+        return self._basic_pwfile_high
 
     def _write_digest_pwfile(self):
         def ha1(user, password):
