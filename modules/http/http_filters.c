@@ -90,11 +90,9 @@ typedef struct http_filter_ctx
 /**
  * Parse a chunk line with optional extension, detect overflow.
  * There are several error cases:
- *  1) If the chunk link is misformatted, APR_EINVAL is returned.
- *  2) If the conversion would require too many bits, APR_EGENERAL is returned.
- *  3) If the conversion used the correct number of bits, but an overflow
- *     caused only the sign bit to flip, then APR_ENOSPC is returned.
- * A negative chunk length always indicates an overflow error.
+ *  1) If the chunk line is misformatted, APR_EINVAL is returned.
+ *  2) If the chunk size cannot be represented in apr_off_t, or the line
+ *     exceeds its limit, APR_ENOSPC is returned.
  */
 static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                                      apr_size_t len, int linelimit, int strict)
@@ -144,11 +142,10 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 ctx->state = BODY_CHUNK_PART;
             }
             ctx->remaining = 0;
-            /* The maximum number of bits that can be handled in a
-             * chunk size is in theory sizeof(apr_off_t)*8-1 since
-             * off_t is signed, but use -4 to avoid undefined
-             * behaviour when bitshifting left. */
-            ctx->chunkbits = sizeof(apr_off_t) * 8 - 4;
+            /* Allow all positive apr_off_t values, including those using
+             * the last hexadecimal digit. Check that digit before shifting.
+             */
+            ctx->chunkbits = sizeof(apr_off_t) * 8;
             ctx->chunk_used = 0;
             ctx->chunk_bws = 0;
         }
@@ -239,12 +236,13 @@ static apr_status_t parse_chunk_size(http_ctx_t *ctx, const char *buffer,
                 return APR_EINVAL;
             }
 
-            ctx->remaining = (ctx->remaining << 4) | xvalue;
-            if (ctx->remaining < 0) {
-                /* Overflow - should be unreachable since the
-                 * chunkbits limit will be reached first. */
+            /* Shifting into the sign bit of apr_off_t is undefined. A
+             * smaller prefix leaves room for any final hex digit. */
+            if (ctx->remaining >= ((apr_off_t)1 <<
+                                   (sizeof(apr_off_t) * 8 - 5))) {
                 return APR_ENOSPC;
             }
+            ctx->remaining = (ctx->remaining << 4) | xvalue;
         }
         else {
             /* Should not happen */
