@@ -126,6 +126,10 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
                     h3q_conn_free(conn);
                 }
             }
+        }
+        if (io->thread_running)
+        {
+            /* Also while draining: a pending handshake counts as an MPM connection, so it must finish or time out. */
             progress_pending_handshakes(io);
         }
 
