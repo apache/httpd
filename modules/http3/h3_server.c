@@ -94,14 +94,17 @@ static h3_server_conf* find_h3_server(server_rec* s, server_rec** out_server)
     while (current)
     {
         h3_server_conf* tmp = ap_get_module_config(current->module_config, &http3_module);
-        if (tmp && tmp->h3_cert_path && tmp->h3_key_path && !conf)
+        /* httpd prepends virtual hosts: the last match is the first one defined, mod_ssl's default. */
+        if (tmp && tmp->ssl_ctx)
         {
             conf = tmp;
-            conf->host_port = get_server_port(current);
             *out_server = current;
-            break;
         }
         current = current->next;
+    }
+    if (conf)
+    {
+        conf->host_port = get_server_port(*out_server);
     }
     return conf;
 }

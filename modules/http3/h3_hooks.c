@@ -82,7 +82,7 @@ int h3_hook_fixups(request_rec* r)
 
     h3_server_conf* conf = ap_get_module_config(r->server->module_config, &http3_module);
 
-    if (!conf || !conf->h3_cert_path || !conf->h3_key_path || conf->h3_port == 0)
+    if (!conf || !conf->ssl_ctx || conf->h3_port == 0)
     {
         return DECLINED;
     }

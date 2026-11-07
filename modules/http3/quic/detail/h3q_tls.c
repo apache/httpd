@@ -77,9 +77,10 @@ static void h3q_tls_keylog_cb(const SSL* ssl, const char* line)
     }
 }
 
-SSL_CTX* h3q_tls_ctx_create(const h3q_config* cfg, char* err, size_t errlen)
+SSL_CTX* h3q_tls_ctx_create(const char* const* cert_files, size_t ncerts, const char* const* key_files, size_t nkeys, int session_tickets, char* err, size_t errlen)
 {
-    CHECK(cfg);
+    CHECK(cert_files && ncerts > 0);
+    CHECK(key_files || nkeys == 0);
 
     SSL_CTX* ssl_ctx = SSL_CTX_new(OSSL_QUIC_server_method());
     if (!ssl_ctx)
@@ -92,17 +93,21 @@ SSL_CTX* h3q_tls_ctx_create(const h3q_config* cfg, char* err, size_t errlen)
     SSL_CTX_set_min_proto_version(ssl_ctx, TLS1_3_VERSION);
     SSL_CTX_set_max_proto_version(ssl_ctx, TLS1_3_VERSION);
 
-    if (SSL_CTX_use_certificate_chain_file(ssl_ctx, cfg->cert_path) <= 0 || SSL_CTX_use_PrivateKey_file(ssl_ctx, cfg->key_path, SSL_FILETYPE_PEM) <= 0)
+    for (size_t i = 0; i < ncerts; i++)
     {
-        h3q_tls_error(err, errlen, "loading the certificate or private key failed");
-        SSL_CTX_free(ssl_ctx);
-        return NULL;
+        const char* key_file = i < nkeys ? key_files[i] : cert_files[i];
+        if (SSL_CTX_use_certificate_chain_file(ssl_ctx, cert_files[i]) <= 0 || SSL_CTX_use_PrivateKey_file(ssl_ctx, key_file, SSL_FILETYPE_PEM) <= 0)
+        {
+            h3q_tls_error(err, errlen, "loading certificate %s with key %s failed", cert_files[i], key_file);
+            SSL_CTX_free(ssl_ctx);
+            return NULL;
+        }
     }
 
     static const unsigned char sid_ctx[] = "mod_http3";
     SSL_CTX_set_session_id_context(ssl_ctx, sid_ctx, sizeof(sid_ctx) - 1);
 
-    if (!cfg->session_tickets)
+    if (!session_tickets)
     {
         /* TLS 1.3 resumption travels in tickets, so issuing none turns it off. */
         SSL_CTX_set_num_tickets(ssl_ctx, 0);
