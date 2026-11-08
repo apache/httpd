@@ -328,7 +328,7 @@ apr_time_t md_time_parse_rfc3339(const char *s)
 {
     apr_time_exp_t t;
     apr_time_t ts;
-    apr_size_t i = 0;
+    apr_size_t i = 0, digits = 0;
 
     memset(&t, 0, sizeof(t));
     if (!apr_isdigit(s[0]) || !apr_isdigit(s[1]) || !apr_isdigit(s[2]) ||
@@ -363,8 +363,16 @@ apr_time_t md_time_parse_rfc3339(const char *s)
 
     i = 19;
     if (s[i] == '.') {
-        for(i += 1; apr_isdigit(s[i]); ++i)
-            ; /* skip for now */
+        if (!apr_isdigit(s[++i])) return 0;
+        for (; apr_isdigit(s[i]); ++i) {
+            if (digits < 6) {
+                t.tm_usec = t.tm_usec * 10 + s[i] - '0';
+                ++digits;
+            }
+        }
+        for (; digits < 6; ++digits) {
+            t.tm_usec *= 10;
+        }
     }
 
     if ((s[i] == 'Z') || (s[i] == 'z')) {
@@ -378,7 +386,7 @@ apr_time_t md_time_parse_rfc3339(const char *s)
         /* tm_gmtoff is in seconds */
         t.tm_gmtoff = (s[i+1] - '0') * 10 * (60 * 60);
         t.tm_gmtoff += (s[i+2] - '0') * (60 * 60);
-        t.tm_gmtoff = (s[i+4] - '0') * 10 * 60;
+        t.tm_gmtoff += (s[i+4] - '0') * 10 * 60;
         t.tm_gmtoff += (s[i+5] - '0') * 60;
         if (s[i] == '-')
             t.tm_gmtoff *= -1;
