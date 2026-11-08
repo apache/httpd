@@ -785,12 +785,11 @@ APACHE_SUBST(UNITTEST_CFLAGS)
 APACHE_SUBST(UNITTEST_LIBS)
 
 if test -d "./test"; then
-   AC_PATH_PROG(PYTEST3, pytest-3)
-   if test -n "$ac_cv_path_PYTEST3"; then
+   AC_PATH_PROG(UV, uv)
+   if test -n "$ac_cv_path_UV"; then
       CHECK_TARGETS="$CHECK_TARGETS check-pytest"
    fi
 fi
-APACHE_SUBST(PYTEST3)
 
 prefix="$orig_prefix"
 APACHE_ENABLE_MODULES
