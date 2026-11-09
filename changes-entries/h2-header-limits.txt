@@ -1,2 +1,0 @@
-  *) mod_http2: Fix duplicate logging of header limit violations.
-     [Michael Kaufmann <mail michael-kaufmann.ch>]
