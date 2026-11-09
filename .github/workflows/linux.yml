@@ -271,7 +271,7 @@ jobs:
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.0.22
+              TEST_OPENSSL=3.0.22
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
@@ -282,7 +282,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.4.8
+              TEST_OPENSSL=3.4.8
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
@@ -292,7 +292,7 @@ jobs:
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.4.8
+              TEST_OPENSSL=3.4.8
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -304,7 +304,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.5.9
+              TEST_OPENSSL=3.5.9
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -316,7 +316,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=4.0.3
+              TEST_OPENSSL=4.0.3
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -393,7 +393,7 @@ jobs:
       if: env.ROOTID != ''
       with:
         path: ~/root
-        key: cache-libs-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
+        key: cache-libs-2-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
     # ~/perl5 does not vary by job: the module list is fixed and the
     # modules are always built with CC=gcc.  It varies only by the perl
     # ABI, which $PERLID identifies, and by the module list itself, so

@@ -71,11 +71,11 @@ if test -v TEST_MOD_TLS -a -v RUSTLS_VERSION; then
     CONFIG="$CONFIG --with-tls --with-rustls=$HOME/root/rustls"
 fi
 
-if test -v TEST_OPENSSL3; then
-    CONFIG="$CONFIG --with-ssl=$HOME/root/openssl3"
-    export PATH=$HOME/root/openssl3/bin:$PATH
+if test -v TEST_OPENSSL; then
+    CONFIG="$CONFIG --with-ssl=$HOME/root/openssl"
+    export PATH=$HOME/root/openssl/bin:$PATH
     # Force everything built to hard-code an RPATH
-    export LDFLAGS="-Wl,-rpath,$HOME/root/openssl3/lib -Wl,-rpath,$HOME/root/openssl3/lib64"
+    export LDFLAGS="-Wl,-rpath,$HOME/root/openssl/lib -Wl,-rpath,$HOME/root/openssl/lib64"
     openssl version
 fi
 
@@ -106,7 +106,7 @@ if test -v TEST_NGHTTP2; then
     fi
 fi
 
-if test -v TEST_OPENSSL3; then
+if test -v TEST_OPENSSL; then
    # Clear the library/run paths so that anything else run during
    # testing is not forced to use the custom OpenSSL build; e.g. perl,
    # php-fpm, ...
@@ -220,7 +220,7 @@ if ! test -v NO_TEST_FRAMEWORK; then
     fi
 fi
 
-if test \( -v TEST_SSL -o -v TEST_OPENSSL3 \) \
+if test \( -v TEST_SSL -o -v TEST_OPENSSL \) \
         -a -f test/perl-framework/t/logs/error_log; then
     : -- Check OpenSSL version used by mod_ssl at compile- and run-time --
     grep 'mod_ssl.*compiled against' test/perl-framework/t/logs/error_log | tail -n1 | grep --color=always 'OpenSSL/[^ ]*'
