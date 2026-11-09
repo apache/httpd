@@ -92,11 +92,28 @@ static const command_rec authn_dbd_cmds[] =
     {NULL}
 };
 
+/* Append "name=value\n" to *cache_extra, for a column already exported to
+ * r->subprocess_env, so a cache hit can restore it (see
+ * restore_cached_env() in mod_authn_socache.c). A value holding a '\n'
+ * is skipped: it would be misread back as the start of a new entry. Such
+ * a column is still set in this request's own environment above, only
+ * not preserved across a cache hit.
+ */
+static void authn_dbd_cache_append(apr_pool_t *p, const char **cache_extra,
+                                   const char *name, const char *value)
+{
+    if (value && !ap_strchr_c(value, '\n')) {
+        *cache_extra = apr_pstrcat(p, *cache_extra ? *cache_extra : "",
+                                   name, "=", value, "\n", NULL);
+    }
+}
+
 static authn_status authn_dbd_password(request_rec *r, const char *user,
                                        const char *password)
 {
     apr_status_t rv;
     const char *dbd_password = NULL;
+    const char *cache_extra = NULL;
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -165,6 +182,8 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                 }
                 apr_table_set(r->subprocess_env, str,
                               apr_dbd_get_entry(dbd->driver, row, i));
+                authn_dbd_cache_append(r->pool, &cache_extra, str,
+                                      apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
 
@@ -177,7 +196,9 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
     if (!dbd_password) {
         return AUTH_USER_NOT_FOUND;
     }
-    AUTHN_CACHE_STORE(r, user, NULL, dbd_password);
+    AUTHN_CACHE_STORE(r, user, NULL, cache_extra
+                      ? apr_pstrcat(r->pool, dbd_password, "\n", cache_extra, NULL)
+                      : dbd_password);
 
     rv = ap_password_validate(r, user, password, dbd_password);
 
@@ -193,6 +214,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
 {
     apr_status_t rv;
     const char *dbd_hash = NULL;
+    const char *cache_extra = NULL;
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -260,6 +282,8 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                 }
                 apr_table_set(r->subprocess_env, str,
                               apr_dbd_get_entry(dbd->driver, row, i));
+                authn_dbd_cache_append(r->pool, &cache_extra, str,
+                                      apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
 
@@ -272,7 +296,9 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
     if (!dbd_hash) {
         return AUTH_USER_NOT_FOUND;
     }
-    AUTHN_CACHE_STORE(r, user, realm, dbd_hash);
+    AUTHN_CACHE_STORE(r, user, realm, cache_extra
+                      ? apr_pstrcat(r->pool, dbd_hash, "\n", cache_extra, NULL)
+                      : dbd_hash);
     *rethash = apr_pstrdup(r->pool, dbd_hash);
     return AUTH_USER_FOUND;
 }

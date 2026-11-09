@@ -348,6 +348,50 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     }
 }
 
+/* A cached value may carry additional per-request environment entries
+ * after the password hash, one NAME=VALUE pair per line, appended by a
+ * provider whose real (uncached) lookup also populates
+ * r->subprocess_env (e.g. mod_authn_dbd's extra result columns, see
+ * authn_dbd_cache_append() there). Restore any such entries, and shrink
+ * *vallen to cover only the hash itself, as if they had never been
+ * appended, so a cache hit behaves like a real lookup to the caller.
+ */
+static void restore_cached_env(request_rec *r, char *val, unsigned int *vallen)
+{
+    unsigned int hashlen = 0;
+    char *extra;
+    unsigned int extralen;
+
+    while (hashlen < *vallen && val[hashlen] != '\n') {
+        hashlen++;
+    }
+    if (hashlen == *vallen) {
+        return;
+    }
+
+    extra = val + hashlen + 1;
+    extralen = *vallen - hashlen - 1;
+    *vallen = hashlen;
+
+    while (extralen) {
+        char *nl = memchr(extra, '\n', extralen);
+        apr_size_t linelen = nl ? (apr_size_t)(nl - extra) : extralen;
+        char *eq = memchr(extra, '=', linelen);
+
+        if (eq) {
+            apr_table_setn(r->subprocess_env,
+                          apr_pstrmemdup(r->pool, extra, eq - extra),
+                          apr_pstrmemdup(r->pool, eq + 1,
+                                        linelen - (eq - extra) - 1));
+        }
+        if (!nl) {
+            break;
+        }
+        extra = nl + 1;
+        extralen -= linelen + 1;
+    }
+}
+
 #define MAX_VAL_LEN 256
 static authn_status check_password(request_rec *r, const char *user,
                                    const char *password)
@@ -386,6 +430,7 @@ static authn_status check_password(request_rec *r, const char *user,
         /* OK, we got a value */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01685)
                       "Authn cache: found credentials for %s", user);
+        restore_cached_env(r, (char *)val, &vallen);
         val[vallen] = 0;
     }
     else {
@@ -431,6 +476,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
         /* OK, we got a value */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01688)
                       "Authn cache: found credentials for %s", user);
+        restore_cached_env(r, (char *)val, &vallen);
     }
     else {
         /* error: give up and pass the buck */
