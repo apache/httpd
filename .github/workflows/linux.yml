@@ -268,6 +268,19 @@ jobs:
           #     APU_VERSION=1.6.5
           # APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
+          # mod_md is built but not tested: its tests need pebble, and
+          # the system libcurl it uses links against OpenSSL 3.
+          - name: OpenSSL 1.1.1 -Werror
+            config: --enable-mods-shared=most --enable-maintainer-mode --enable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
+            env: |
+              TEST_OPENSSL=1.1.1w
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--without-crypto"
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/ssl
+          # -------------------------------------------------------------------------
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
