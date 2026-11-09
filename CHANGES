@@ -1,6 +1,45 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.71
 
+  *) mod_md: MDHttpProxy and MDCACertificateFile can now be set per MDomain.
+     New directive MDHttpProxyCACertificateFile sets the CA certificates
+     used to verify an HTTPS proxy.
+     [Michael Kaufmann <mail michael-kaufmann.ch>]
+
+  *) mod_deflate: Read the gzip extra-field (FEXTRA) length as unsigned so a
+     length byte with the high bit set is no longer sign-extended, fixing
+     inflation of gzip streams that carry an extra field.
+     [arshiya tabasum <arshi bugqore.com>]
+
+  *) mod_remoteip: Apply RemoteIP{Trusted,Internal}ProxyList to the virtual host
+     they are configured in, and merge the proxy entries of the main server
+     and of the virtual host, logging a warning when both have some.
+     PR 70207.  [Arturo Bernal]
+
+  *) mod_dav: Fix handling of invalid or overflowing "Timeout:"
+     request headers, which could silently grant a lock with an
+     already-expired timeout instead of the RFC 4918 maximum.
+     PR 65788 [Arturo Bernal]
+
+  *) mod_http2: Correctly handle the asterisk-form of OPTIONS requests
+     instead of rejecting them as malformed.  PR 70195.
+     [Arturo Bernal <abernal apache.org>]
+
+  *) mod_http2: Fix duplicate logging of header limit violations.
+     [Michael Kaufmann <mail michael-kaufmann.ch>]
+
+  *) mod_http2: Fix a crash creating an HTTP/2 session with
+     "H2PushDiarySize 0" and debug logging enabled.  [Joe Orton]
+
+  *) mod_dav_lock: Fix dav_generic_load_lock_record() reading the
+     indirect-lock key length with the wrong width, which could read
+     back a wrong length on big-endian platforms. PR 70299
+     [Arturo Bernal]
+
+  *) mod_remoteip: Log a connection closed before a complete PROXY protocol
+     header was received at info level rather than as an error.  PR 63893.
+     [Joe Orton]
+
 Changes with Apache 2.4.70
 
   *) mod_authnz_ldap: Fix crashes in 2.4.69 reported on Windows.

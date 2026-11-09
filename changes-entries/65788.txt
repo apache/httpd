@@ -1,4 +1,0 @@
-  *) mod_dav: Fix handling of invalid or overflowing "Timeout:"
-     request headers, which could silently grant a lock with an
-     already-expired timeout instead of the RFC 4918 maximum.
-     PR 65788 [Arturo Bernal]

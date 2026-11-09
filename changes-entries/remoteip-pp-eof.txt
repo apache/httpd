@@ -1,3 +1,0 @@
-  *) mod_remoteip: Log a connection closed before a complete PROXY protocol
-     header was received at info level rather than as an error.  PR 63893.
-     [Joe Orton]

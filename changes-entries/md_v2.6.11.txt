@@ -1,4 +1,0 @@
-  *) mod_md: MDHttpProxy and MDCACertificateFile can now be set per MDomain.
-     New directive MDHttpProxyCACertificateFile sets the CA certificates
-     used to verify an HTTPS proxy.
-     [Michael Kaufmann <mail michael-kaufmann.ch>]

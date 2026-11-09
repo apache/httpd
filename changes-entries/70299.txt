@@ -1,4 +1,0 @@
-  *) mod_dav_lock: Fix dav_generic_load_lock_record() reading the
-     indirect-lock key length with the wrong width, which could read
-     back a wrong length on big-endian platforms. PR 70299
-     [Arturo Bernal]
