@@ -452,6 +452,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     conn_rec* c = apr_pcalloc(cpool, sizeof(*c));
     *c = *session->c;
     c->pool = cpool;
+    c->id = (long)apr_atomic_inc32(&h3_conn_id_seq);
     c->master = session->c;
     c->sbh = NULL;
 #if H3_DEVEL
