@@ -101,3 +101,39 @@ def test_vhost_alias(http, vh):
     cgi_uri = f"/cgi-bin/{CGI_NAME}.{EXT}"
     actual = http.GET_BODY(cgi_uri, headers={"Host": vh}).rstrip("\r\n")
     assert t_cmp(actual, f"{CGI_STRING} {vh}"), "VirtualScriptAlias test"
+
+
+# VirtualDocumentRoot of the vhost_alias_bounds vhost is
+# BOUNDS_PREFIX + "%1/%0" + BOUNDS_SUFFIX, expanded into a HUGE_STRING_LEN
+# buffer that is flushed whenever the next piece would not fit.
+HUGE_STRING_LEN = 8192
+BOUNDS_PREFIX = "/vhost-alias-bounds/"
+BOUNDS_SUFFIX = "/end"
+
+
+def _bounds_host(total, first):
+    """A host whose expansion is ``total`` bytes, with a ``first``-byte %1."""
+    rest = total - len(BOUNDS_PREFIX) - len(BOUNDS_SUFFIX) - 2 - 2 * first
+    return "a" * first + "." + "b" * rest
+
+
+@need_module("vhost_alias", "headers")
+@pytest.mark.parametrize("total,first", [
+    # short of / exactly at / just past the buffer, on the final literal
+    (HUGE_STRING_LEN - 1, 2000),
+    (HUGE_STRING_LEN, 2000),
+    (HUGE_STRING_LEN + 1, 2000),
+    # %0 ends exactly at the buffer, "/end" goes after the flush
+    (HUGE_STRING_LEN + len(BOUNDS_SUFFIX), 2000),
+    # %0 does not fit and is flushed mid-expansion
+    (HUGE_STRING_LEN + 2834, 3000),
+])
+def test_vhost_alias_buffer_bounds(http, total, first):
+    host = _bounds_host(total, first)
+    expected = f"{BOUNDS_PREFIX}{'a' * first}/{host}{BOUNDS_SUFFIX}"
+    assert len(expected) == total
+
+    http.scheme("http")
+    http.module("vhost_alias_bounds")
+    res = http.GET("/", headers={"Host": host})
+    assert res.headers.get("X-Document-Root") == expected
