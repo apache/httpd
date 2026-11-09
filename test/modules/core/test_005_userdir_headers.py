@@ -3,7 +3,6 @@ import re
 import pytest
 
 from pyhttpd.conf import HttpdConf
-from .env import HttpdTestEnv, CoreTestSetup
 
 class TestUserdirHeaders:
 
