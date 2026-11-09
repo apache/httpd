@@ -124,7 +124,7 @@ SSI pages</description>
 <syntax>SetEnvFromFile <var>file-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
-<compatibility>Available in version 2.4.70 and later.</compatibility>
+<compatibility>Available in version 2.4.72 and later.</compatibility>
 
 <usage>
     <p>Sets internal environment variables read from a file, which are then
