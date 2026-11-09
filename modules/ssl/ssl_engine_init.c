@@ -2173,8 +2173,6 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
                                           modssl_ctx_t *mctx,
                                           apr_array_header_t *pphrases)
 {
-    const char *vhost_id = mctx->sc->vhost_id;
-
     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10610)
                 "Host %s: Server certificate URIs are not supported on this platform.",
                 mctx->sc->vhost_id);
@@ -2823,9 +2821,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
                                         apr_pool_t *ptemp,
                                         modssl_ctx_t *mctx)
 {
-    if (pkp->uris->nelts) {
-        const char *vhost_id = mctx->sc->vhost_id;
-
+    if (mctx->pkp->uris->nelts) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10615)
                     "Host %s: Proxy certificate URIs are not supported on this platform.",
                     mctx->sc->vhost_id);
@@ -3434,10 +3430,12 @@ int ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+#if MODSSL_HAVE_OPENSSL_STORE
 static int ssl_init_x509_name_cmp(const X509_NAME *const *a, const X509_NAME *const *b)
 {
     return X509_NAME_cmp(*a, *b);
 }
+#endif
 
 static apr_status_t ssl_init_ca_cert_uri(server_rec *s,
                                          apr_pool_t *ptemp,
