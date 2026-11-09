@@ -195,7 +195,12 @@ if test -v TEST_OPENSSL; then
                    git -C openssl-${TEST_OPENSSL} checkout -q ${OPENSSL_COMMIT}
                fi
            else
-               curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL}/openssl-${TEST_OPENSSL}.tar.gz" |
+               # Release tags were named OpenSSL_1_1_1w before 3.0.
+               case ${TEST_OPENSSL} in
+               1.*) tag=OpenSSL_`echo ${TEST_OPENSSL} | tr . _` ;;
+               *) tag=openssl-${TEST_OPENSSL} ;;
+               esac
+               curl -L "https://github.com/openssl/openssl/releases/download/${tag}/openssl-${TEST_OPENSSL}.tar.gz" |
                    tar -xzf -
            fi
            cd openssl-${TEST_OPENSSL}
