@@ -445,7 +445,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
             session->goaway_sent = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; letting in-flight streams finish");
         }
-        if (!io->thread_running && !session->goaway_deadline)
+        if ((!io->thread_running || io->draining) && !session->goaway_deadline)
         {
             session->goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "stopping: allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);

@@ -106,7 +106,11 @@ int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const ch
     {
         return 1;
     }
-    uint64_t flags = is_rapid ? (uint64_t)SSL_SHUTDOWN_FLAG_RAPID : 0;
+    /* A rapid shutdown happens when the child stops, after the GOAWAY grace
+     * period: do not wait for unacknowledged stream data either, or a peer
+     * that has gone away keeps the connection, and the child, alive until
+     * the idle timeout. */
+    uint64_t flags = is_rapid ? (uint64_t)(SSL_SHUTDOWN_FLAG_RAPID | SSL_SHUTDOWN_FLAG_NO_STREAM_FLUSH) : 0;
     int ret = 0;
     if (reason)
     {
