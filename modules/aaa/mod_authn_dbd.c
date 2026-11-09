@@ -38,9 +38,7 @@ typedef struct {
 static ap_dbd_t *(*authn_dbd_acquire_fn)(request_rec*) = NULL;
 static void (*authn_dbd_prepare_fn)(server_rec*, const char*, const char*) = NULL;
 static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store) *authn_cache_store = NULL;
-#define AUTHN_CACHE_STORE(r,user,realm,data) \
-    if (authn_cache_store != NULL) \
-        authn_cache_store((r), "dbd", (user), (realm), (data))
+static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store_env) *authn_cache_store_env = NULL;
 
 static void *authn_dbd_cr_conf(apr_pool_t *pool, char *dummy)
 {
@@ -92,11 +90,28 @@ static const command_rec authn_dbd_cmds[] =
     {NULL}
 };
 
+/* Cache a lookup, with the extra columns it exported as env. A cache
+ * which cannot keep them would answer a later login without them, so
+ * such a lookup is not cached there.
+ */
+static void authn_dbd_cache_store(request_rec *r, const char *user,
+                                  const char *realm, const char *data,
+                                  const apr_table_t *env)
+{
+    if (authn_cache_store_env != NULL) {
+        authn_cache_store_env(r, "dbd", user, realm, data, env);
+    }
+    else if (authn_cache_store != NULL && env == NULL) {
+        authn_cache_store(r, "dbd", user, realm, data);
+    }
+}
+
 static authn_status authn_dbd_password(request_rec *r, const char *user,
                                        const char *password)
 {
     apr_status_t rv;
     const char *dbd_password = NULL;
+    apr_table_t *env = NULL;
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -163,7 +178,10 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                     }
                     j++;
                 }
-                apr_table_set(r->subprocess_env, str,
+                if (env == NULL) {
+                    env = apr_table_make(r->pool, 2);
+                }
+                apr_table_set(env, str,
                               apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
@@ -174,10 +192,13 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
         /* we can't break out here or row won't get cleaned up */
     }
 
+    if (env != NULL) {
+        apr_table_overlap(r->subprocess_env, env, APR_OVERLAP_TABLES_SET);
+    }
     if (!dbd_password) {
         return AUTH_USER_NOT_FOUND;
     }
-    AUTHN_CACHE_STORE(r, user, NULL, dbd_password);
+    authn_dbd_cache_store(r, user, NULL, dbd_password, env);
 
     rv = ap_password_validate(r, user, password, dbd_password);
 
@@ -193,6 +214,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
 {
     apr_status_t rv;
     const char *dbd_hash = NULL;
+    apr_table_t *env = NULL;
     apr_dbd_prepared_t *statement;
     apr_dbd_results_t *res = NULL;
     apr_dbd_row_t *row = NULL;
@@ -258,7 +280,10 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                     }
                     j++;
                 }
-                apr_table_set(r->subprocess_env, str,
+                if (env == NULL) {
+                    env = apr_table_make(r->pool, 2);
+                }
+                apr_table_set(env, str,
                               apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
@@ -269,10 +294,13 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         /* we can't break out here or row won't get cleaned up */
     }
 
+    if (env != NULL) {
+        apr_table_overlap(r->subprocess_env, env, APR_OVERLAP_TABLES_SET);
+    }
     if (!dbd_hash) {
         return AUTH_USER_NOT_FOUND;
     }
-    AUTHN_CACHE_STORE(r, user, realm, dbd_hash);
+    authn_dbd_cache_store(r, user, realm, dbd_hash, env);
     *rethash = apr_pstrdup(r->pool, dbd_hash);
     return AUTH_USER_FOUND;
 }
@@ -280,6 +308,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
 static void opt_retr(void)
 {
     authn_cache_store = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store);
+    authn_cache_store_env = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store_env);
 }
 
 static void authn_dbd_hooks(apr_pool_t *p)
