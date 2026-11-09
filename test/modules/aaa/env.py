@@ -4,6 +4,7 @@ import hashlib
 import inspect
 import logging
 import os
+import sqlite3
 from typing import Dict, List, Optional
 
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
@@ -19,7 +20,9 @@ class AAATestSetup(HttpdTestSetup):
         self.add_source_dir(os.path.dirname(inspect.getfile(AAATestSetup)))
         self.add_modules(["auth_digest", "authn_file", "authn_core",
                           "authz_core", "authz_user", "proxy", "proxy_http",
-                          "authn_socache"])
+                          "authn_socache", "dbd", "authn_dbd", "auth_basic",
+                          "socache_shmcb"])
+        self.add_cgi_module()
 
 
 class AAATestEnv(HttpdTestEnv):
@@ -33,16 +36,48 @@ class AAATestEnv(HttpdTestEnv):
     # accounts under the same realm.
     DIGEST_PASSWORD_VHOST2 = "vhost2pass2617"
 
+    DBD_USER = "dbduser"
+    DBD_PASSWORD = "dbdpass2617"
+    DBD_ROLE = "editor"
+    # A role too long to be cached with the password hash.
+    DBD_LONG_USER = "dbdlonguser"
+    DBD_LONG_ROLE = "r" * 300
+
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core",
-                                    "authn_socache"])
+                                    "authn_socache", "authn_dbd", "dbd"])
         self._digest_pwfile = os.path.join(self.server_dir, "digest.passwd")
         self._digest_pwfile2 = os.path.join(self.server_dir, "digest2.passwd")
+        self._dbd_file = os.path.join(self.server_dir, "authn_dbd.sqlite3")
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=AAATestSetup(env=self))
         self._write_digest_pwfile()
+        self._write_dbd_file()
+
+    def _write_dbd_file(self):
+        if os.path.exists(self._dbd_file):
+            os.remove(self._dbd_file)
+        con = sqlite3.connect(self._dbd_file)
+        try:
+            con.execute("CREATE TABLE users (user TEXT, password TEXT, role TEXT)")
+            # "{SHA}" + base64(sha1(password)): the format ap_password_validate()
+            # checks itself, without depending on which crypt(3) algorithms the
+            # host libc offers.
+            digest = hashlib.sha1(self.DBD_PASSWORD.encode()).digest()
+            pw_hash = "{SHA}" + base64.b64encode(digest).decode()
+            for user, role in [(self.DBD_USER, self.DBD_ROLE),
+                               (self.DBD_LONG_USER, self.DBD_LONG_ROLE)]:
+                con.execute("INSERT INTO users (user, password, role) "
+                            "VALUES (?, ?, ?)", (user, pw_hash, role))
+            con.commit()
+        finally:
+            con.close()
+
+    @property
+    def dbd_file(self) -> str:
+        return self._dbd_file
 
     def _write_digest_pwfile(self):
         def ha1(user, password):

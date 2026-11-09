@@ -172,6 +172,21 @@ APR_DECLARE_OPTIONAL_FN(void, ap_authn_cache_store,
                         (request_rec*, const char*, const char*,
                          const char*, const char*));
 
+/* ap_authn_cache_store_env: As ap_authn_cache_store, for a provider
+ * whose lookup also sets variables in r->subprocess_env. The cache keeps
+ * them with the value and sets them again on a cache hit, as the lookup
+ * itself would have done.
+ * @param r The request rec
+ * @param module Module identifier
+ * @param user User name to authenticate
+ * @param realm Digest authn realm (NULL for basic authn)
+ * @param data The value looked up by the authn provider, to cache
+ * @param env The variables set by the lookup, or NULL for none
+ */
+APR_DECLARE_OPTIONAL_FN(void, ap_authn_cache_store_env,
+                        (request_rec*, const char*, const char*,
+                         const char*, const char*, const apr_table_t*));
+
 #ifdef __cplusplus
 }
 #endif
