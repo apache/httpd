@@ -39,6 +39,74 @@ if %ERRORLEVEL% EQU 0 goto :path_ok
     if defined POWERSHELL_DIR set "PATH=%PATH%;%POWERSHELL_DIR%"
 :path_ok
 
+rem --- python detection and install --------------------------------------------
+set PYTHON=
+for /f "delims=" %%P in ('where python.exe 2^>nul') do (
+    if not defined PYTHON (
+        echo %%P | findstr /i "hostedtoolcache" >nul
+        if not errorlevel 1 set "PYTHON=%%P"
+    )
+)
+if not defined PYTHON (
+    for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
+        if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+    )
+)
+if not defined PYTHON (
+    for /f "delims=" %%D in ('dir /b /o-n "%PROGRAMFILES%\Python3*" 2^>nul') do (
+        if not defined PYTHON set "PYTHON=%PROGRAMFILES%\%%D\python.exe"
+    )
+)
+if defined PYTHON (
+    echo build-win.bat: Python found at "!PYTHON!" >&2
+    goto :python_ok
+)
+
+echo build-win.bat: Python not found, installing... >&2
+rem Query the Python API for the latest stable release and extract the version
+set "PY_VERSION="
+curl -s -o "%TEMP%\pyrel.json" "https://www.python.org/api/v2/downloads/release/?is_published=true&pre_release=false&version=3"
+for /f "delims=" %%V in ('powershell -NoProfile -Command "$ProgressPreference='SilentlyContinue'; $j = Get-Content '%TEMP%\pyrel.json' -Raw | ConvertFrom-Json; ($j | Where-Object { $_.is_latest -eq $true }).name -replace 'Python ', ''" 2^>nul') do (
+    set "PY_VERSION=%%V"
+)
+del "%TEMP%\pyrel.json" 2>nul
+if not defined PY_VERSION (
+    echo build-win.bat: ERROR: could not detect latest Python version. >&2
+    echo   Install Python manually from https://www.python.org/downloads/windows/ >&2
+    exit /b 1
+)
+echo build-win.bat: latest Python version: %PY_VERSION% >&2
+
+set "PY_INSTALLER=python-%PY_VERSION%-amd64.exe"
+set "PY_URL=https://www.python.org/ftp/python/%PY_VERSION%/%PY_INSTALLER%"
+echo build-win.bat: downloading %PY_URL%... >&2
+curl -L -o "%TEMP%\%PY_INSTALLER%" "%PY_URL%"
+if errorlevel 1 (
+    echo build-win.bat: ERROR: download failed. >&2
+    exit /b 1
+)
+
+echo build-win.bat: installing Python %PY_VERSION%... >&2
+"%TEMP%\%PY_INSTALLER%" /quiet InstallAllUsers=0 PrependPath=0 Include_launcher=0
+if errorlevel 1 (
+    echo build-win.bat: ERROR: Python installation failed. >&2
+    exit /b 1
+)
+del "%TEMP%\%PY_INSTALLER%" 2>nul
+
+rem Re-detect after install
+set PYTHON=
+for /f "delims=" %%D in ('dir /b /o-n "%LOCALAPPDATA%\Programs\Python\Python3*" 2^>nul') do (
+    if not defined PYTHON set "PYTHON=%LOCALAPPDATA%\Programs\Python\%%D\python.exe"
+)
+if not defined PYTHON (
+    echo build-win.bat: ERROR: Python still not found after install. >&2
+    exit /b 1
+)
+echo build-win.bat: Python installed at "!PYTHON!" >&2
+
+:python_ok
+
 @REM -------------------------------------
 @REM check for git otherwise install it
 @REM -------------------------------------
