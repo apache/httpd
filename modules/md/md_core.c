@@ -165,6 +165,9 @@ md_t *md_get_by_name(struct apr_array_header_t *mds, const char *name)
 md_t *md_get_by_domain(struct apr_array_header_t *mds, const char *domain)
 {
     int i;
+    if (!domain) {
+        return NULL;
+    }
     for (i = 0; i < mds->nelts; ++i) {
         md_t *md = APR_ARRAY_IDX(mds, i, md_t *);
         if (md_contains(md, domain, 0)) {
