@@ -167,7 +167,7 @@ jobs:
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
-              PYTEST_ARGS=pytest_suite/tests
+              PYTEST_ARGS=test_build.py pytest_suite/tests
           # -------------------------------------------------------------------------
           # Test against a newer nghttp2 than in the Ubuntu images.
           - name: mod_http2 w/nghttp2 1.68.0
