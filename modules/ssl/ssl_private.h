@@ -161,6 +161,12 @@
 #define MODSSL_X509_EXT_CONST
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#define MODSSL_X509_NAME_CONST const
+#else
+#define MODSSL_X509_NAME_CONST
+#endif
+
 #if defined(LIBRESSL_VERSION_NUMBER)
 /* Missing from LibreSSL */
 #if LIBRESSL_VERSION_NUMBER < 0x2060000f
