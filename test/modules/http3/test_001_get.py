@@ -10,6 +10,7 @@ class TestGet:
     @pytest.fixture(autouse=True, scope='class')
     @classmethod
     def _class_scope(cls, env):
+        env.require_curl_http3()
         env.make_data_file(os.path.join(env.server_docs_dir, "test1"),
                            "data-1m", 1024 * 1024)
         H3Conf(env).add_h3_vhosts().install()

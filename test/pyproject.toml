@@ -12,6 +12,7 @@ dependencies = [
     "pyopenssl",
     "packaging",
     "websockets",
+    "aioquic",
 ]
 
 [tool.uv]

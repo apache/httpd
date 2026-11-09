@@ -27,8 +27,6 @@ def env(pytestconfig) -> H3TestEnv:
                 dep="mod_http3")
     env.require(env.has_shared_module("ssl"), "mod_ssl is not built",
                 dep="mod_ssl")
-    env.require(env.curl_has_http3(), "curl lacks HTTP/3 support",
-                dep="curl HTTP3", detected=env.curl_version_str())
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()

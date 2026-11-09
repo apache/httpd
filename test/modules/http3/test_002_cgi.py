@@ -8,6 +8,7 @@ class TestCgi:
     @pytest.fixture(autouse=True, scope='class')
     @classmethod
     def _class_scope(cls, env):
+        env.require_curl_http3()
         H3Conf(env).add_h3_vhosts().install()
         assert env.apache_restart() == 0
 
