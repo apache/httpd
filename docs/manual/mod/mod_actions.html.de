@@ -32,9 +32,6 @@
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese &Uuml;bersetzung ist m&ouml;glicherweise
-            nicht mehr aktuell. Bitte pr&uuml;fen Sie die englische Version auf
-            die neuesten &Auml;nderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Dieses Modul erm&ouml;glicht die Ausf&uuml;hrung von CGI-Skripten
   in Abh&auml;ngigkeit von Medientypen und Anfragemethoden.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Basis</td></tr>

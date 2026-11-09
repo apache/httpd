@@ -31,9 +31,6 @@
 <a href="../fr/mod/mpm_winnt.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese &Uuml;bersetzung ist m&ouml;glicherweise
-            nicht mehr aktuell. Bitte pr&uuml;fen Sie die englische Version auf
-            die neuesten &Auml;nderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td> Das Multi-Processing-Modul ist optimiert f&uuml;r
   Windows NT.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>

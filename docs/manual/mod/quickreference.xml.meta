@@ -12,8 +12,8 @@
     <variant>es</variant>
     <variant>fr</variant>
     <variant>ja</variant>
-    <variant outdated="yes">ko</variant>
+    <variant>ko</variant>
     <variant>tr</variant>
-    <variant outdated="yes">zh-cn</variant>
+    <variant>zh-cn</variant>
   </variants>
 </metafile>

@@ -28,7 +28,6 @@
 <a href="../ko/programs/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/suexec.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p><code><strong>suexec</strong></code>, CGI programlarını &ccedil;alıştırmadan
     &ouml;nce Apache HTTP Sunucusu tarafından kullanıcı değiştirmek i&ccedil;in kullanılır.

@@ -414,6 +414,7 @@ mdcontactemail	mod/mod_md.html#mdcontactemail
 mddrivemode	mod/mod_md.html#mddrivemode
 mdexternalaccountbinding	mod/mod_md.html#mdexternalaccountbinding
 mdhttpproxy	mod/mod_md.html#mdhttpproxy
+mdhttpproxycacertificatefile	mod/mod_md.html#mdhttpproxycacertificatefile
 mdinitialdelay	mod/mod_md.html#mdinitialdelay
 mdmatchnames	mod/mod_md.html#mdmatchnames
 mdmember	mod/mod_md.html#mdmember

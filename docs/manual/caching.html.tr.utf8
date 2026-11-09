@@ -27,7 +27,6 @@
 <a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p>Bu belge <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
       <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>

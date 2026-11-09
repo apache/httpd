@@ -30,7 +30,6 @@
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
      <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu g&uuml;nl&uuml;k
      dosyaları &ouml;zelliği ile birlikte kullanmak i&ccedil;in tasarlanmış basit bir

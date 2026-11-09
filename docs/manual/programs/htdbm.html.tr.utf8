@@ -27,7 +27,6 @@
 <a href="../fr/programs/htdbm.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/htdbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p><code><strong>htdbm</strong></code>,
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> &uuml;zerinden HTTP kullanıcılarının temel
