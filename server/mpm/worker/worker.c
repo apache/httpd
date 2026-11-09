@@ -741,6 +741,24 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
     return NULL;
 }
 
+/* A child which lost its process slot while some of its threads were still
+ * busy (see worker_note_child_lost_slot()) goes on running these threads.
+ * The entries of the slot are handed to the child which took it over as soon
+ * as the parent marks them dead, so a thread of the old child must only
+ * update its own entry while it still names this child.
+ */
+static void worker_update_own_status(int process_slot, int thread_slot,
+                                     int status)
+{
+    worker_score *ws = &ap_scoreboard_image->servers[process_slot][thread_slot];
+
+    if (ws->pid == ap_my_pid
+            && ws->generation == retained->mpm->my_generation) {
+        ap_update_child_status_from_indexes(process_slot, thread_slot,
+                                            status, NULL);
+    }
+}
+
 /* XXX For ungraceful termination/restart, we definitely don't want to
  *     wait for active connections to finish but we may want to wait
  *     for idle workers to get out of the queue code and release mutexes,
@@ -787,8 +805,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
             is_idle = 1;
         }
 
-        ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                            SERVER_READY, NULL);
+        worker_update_own_status(process_slot, thread_slot, SERVER_READY);
 worker_pop:
         if (workers_may_exit) {
             break;
@@ -833,9 +850,8 @@ worker_pop:
         last_ptrans = ptrans;
     }
 
-    ap_update_child_status_from_indexes(process_slot, thread_slot,
-                                        dying ? SERVER_DEAD
-                                              : SERVER_GRACEFUL, NULL);
+    worker_update_own_status(process_slot, thread_slot,
+                             dying ? SERVER_DEAD : SERVER_GRACEFUL);
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
