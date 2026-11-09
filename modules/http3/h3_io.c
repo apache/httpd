@@ -277,6 +277,13 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
         return APR_EGENERAL;
     }
     apr_allocator_owner_set(allocator, session_pool);
+    {
+        apr_thread_mutex_t* alloc_mutex;
+        if (apr_thread_mutex_create(&alloc_mutex, APR_THREAD_MUTEX_DEFAULT, session_pool) == APR_SUCCESS)
+        {
+            apr_allocator_mutex_set(allocator, alloc_mutex);
+        }
+    }
     apr_pool_tag(session_pool, "h3_session");
 
     h3_session* session = NULL;
