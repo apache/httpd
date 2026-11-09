@@ -1,6 +1,7 @@
 """Self-test for pyhttpd/build.py: one httpd under test for the whole session,
 whichever way it was named, and what is learned about it."""
 import os
+import re
 
 import pytest
 
@@ -49,6 +50,18 @@ def test_static_modules_count_as_available(pytestconfig):
     # mod_so is always compiled in, never a DSO
     assert "mod_so.c" in info.static_modules
     assert HttpdTestEnv.has_shared_module("so")
+
+
+def test_mpm_is_the_one_loaded(pytestconfig):
+    info = resolve_build(pytestconfig)
+    if info is None:
+        pytest.skip("no httpd build to test against")
+    # an unknown MPM silently skips every test for a particular MPM
+    assert info.mpm, "httpd -V names no MPM"
+    loaded = {m.group(1) for m in (re.match(r"mpm_(\w+)_module$", d.symbol)
+                                   for d in info.load_directives) if m}
+    if loaded:
+        assert info.mpm in loaded
 
 
 def test_loadmodule_lines(tmp_path):

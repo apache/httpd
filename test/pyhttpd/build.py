@@ -152,9 +152,18 @@ def probe_version(httpd: Path) -> tuple[int, int, int]:
     return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
 
 
-def probe_defines_and_mpm(httpd: Path) -> tuple[dict[str, str | bool], str]:
-    """Parse ``httpd -V`` for ``-D`` defines, server MPM, and module magic info."""
-    out = _run([str(httpd), "-V"])
+def probe_defines_and_mpm(httpd: Path, conf: Path | None = None,
+                          server_root: Path | None = None,
+                          ) -> tuple[dict[str, str | bool], str]:
+    """Parse ``httpd -V`` for ``-D`` defines, server MPM, and module magic info.
+
+    With a shared MPM ``-V`` needs a config, and an uninstalled build has
+    none at the compiled-in path.
+    """
+    cmd = [str(httpd)]
+    if conf is not None:
+        cmd += ["-d", str(server_root or conf.parent.parent), "-f", str(conf)]
+    out = _run(cmd + ["-V"])
     defines: dict[str, str | bool] = {}
     mpm = ""
     for line in out.splitlines():
@@ -266,7 +275,7 @@ def probe(
         (``apxs -q PREFIX``). Defaults to the parent of ``inherited_conf``'s dir.
     """
     version = probe_version(httpd)
-    defines, mpm = probe_defines_and_mpm(httpd)
+    defines, mpm = probe_defines_and_mpm(httpd, inherited_conf, server_root)
     static_modules = probe_static_modules(httpd)
     modules = set(static_modules)
     load_directives: list[LoadDirective] = []
