@@ -9,9 +9,6 @@ class TestUserdirHeaders:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
-        setup = CoreTestSetup(env=env)
-        setup.add_modules(["suexec"])
-        env.setup_httpd(setup=setup)
 
         userdir_base = os.path.join(env.server_dir, "htdocs", "userdir")
 
@@ -29,7 +26,6 @@ class TestUserdirHeaders:
         conf.install()
         assert env.apache_restart() == 0
 
-    @pytest.mark.skipif(condition=(not HttpdTestEnv.has_shared_module("suexec")), reason="Skipping as the suexec module hasn't been built and installed.")
     def test_core_005_01_requestheader_note_rejected(self, env):
         url = env.mkurl("http", "test1", "/~testuser/cgi-bin/test.cgi")
         r = env.curl_get(url)
@@ -39,7 +35,7 @@ class TestUserdirHeaders:
 
         directive_rejected = False
         try:
-            directive_rejected = env.httpd_error_log.wait_for(re_rejection, start_pos=0, timeout=25)
+            directive_rejected = env.httpd_error_log.scan_recent(re_rejection)
         except TimeoutError:
             pass
 

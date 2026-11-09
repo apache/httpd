@@ -22,6 +22,4 @@ class CoreTestEnv(HttpdTestEnv):
         self.add_httpd_log_modules(["http", "core"])
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
-        if setup is None:
-            setup = CoreTestSetup(env=self)
-        super().setup_httpd(setup=setup)
+        super().setup_httpd(setup=CoreTestSetup(env=self))
