@@ -412,7 +412,7 @@ static void abandon_stalled_responses(h3_session* session, apr_interval_time_t s
         {
             continue;
         }
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT " made no progress for %" APR_TIME_T_FMT " seconds; abandoning the response", h3s->stream_id, apr_time_sec(stall_timeout));
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT " made no progress for %" APR_TIME_T_FMT " seconds; abandoning the response", (apr_int64_t)h3s->stream_id, apr_time_sec(stall_timeout));
         h3_stream_response_cancel_locked(h3s);
     }
 }

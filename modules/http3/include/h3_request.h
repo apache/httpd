@@ -19,9 +19,8 @@
 
 #include <httpd.h>
 
+#include "h3_filter.h"
 #include "h3_session.h"
-
-typedef struct h3_conn_ctx_t h3_conn_ctx_t;
 
 /**
  * Resolve what the request path needs from other modules, once, at post_config.
