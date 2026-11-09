@@ -475,10 +475,24 @@ static apr_status_t cache_canonicalise_key(request_rec *r, apr_pool_t* p,
             hostname = conf->base_uri->hostname;
         }
         else {
-            /* Use _default_ as the hostname if none present, as in mod_vhost */
-            hostname = ap_get_server_name(r);
-            if (!hostname) {
-                hostname = "_default_";
+            /* Key by the Host the client actually sent, not by the vhost's
+             * canonical name: a handler behind this vhost (a reverse-proxied
+             * backend via ProxyPreserveHost/X-Forwarded-Host, a CGI, a
+             * RewriteRule) can see and vary its response by that exact raw
+             * value, so two differently-spelled Host headers that both
+             * match this vhost (case, a trailing dot, an explicit default
+             * port) must not collapse onto the one cache entry (PR 70029).
+             */
+            hostname = apr_table_get(r->headers_in, "Host");
+            if (!hostname || !*hostname) {
+                /* No Host header to key on (HTTP/0.9, or an absolute-URI
+                 * request line): fall back to the vhost's canonical name,
+                 * as in mod_vhost_alias.
+                 */
+                hostname = ap_get_server_name(r);
+                if (!hostname) {
+                    hostname = "_default_";
+                }
             }
         }
     }
