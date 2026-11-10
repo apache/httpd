@@ -49,7 +49,7 @@ class TestPropdbNsLimit:
             '--data-binary', f'@{fpath}'])
 
     # a modest number of distinct namespaces is accepted and stored
-    def test_dav_001_01(self, env):
+    def test_dav_001_01_simple_distinct_ns(self, env):
         r = self._proppatch(env, self._propertyupdate(100, 'a'))
         assert r.response["status"] == 207
         assert 'HTTP/1.1 200' in r.stdout
@@ -58,7 +58,7 @@ class TestPropdbNsLimit:
     # declaring more distinct namespaces than one property database will
     # record must be refused with 413 rather than accepted, and the resource
     # must remain usable afterwards
-    def test_dav_001_02(self, env):
+    def test_dav_001_02_complex_distinct_ns(self, env):
         r = self._proppatch(env, self._propertyupdate(2049, 'b'))
         # the refusal is logged at error level, and writing back the
         # oversized namespace table on close fails with a warning
