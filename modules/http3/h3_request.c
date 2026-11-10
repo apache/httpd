@@ -227,7 +227,7 @@ static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t 
     apr_thread_mutex_unlock(session->lock);
     if (rv != 0)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", h3s->stream_id, rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", (apr_int64_t)h3s->stream_id, rv);
         return APR_EGENERAL;
     }
     wake_event_thread();
@@ -320,7 +320,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
 
         const char* method = h3s->method ? h3s->method : "?";
         const char* overflow = h3s->request_body_overflow ? " (overflow)" : "";
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3 stream %" APR_INT64_T_FMT " %s body=%" APR_SIZE_T_FMT "%s", h3s->stream_id, method, h3s->request_body_len, overflow);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3 stream %" APR_INT64_T_FMT " %s body=%" APR_SIZE_T_FMT "%s", (apr_int64_t)h3s->stream_id, method, h3s->request_body_len, overflow);
     }
 
     apr_pool_t* c3reqpool = NULL;
@@ -342,10 +342,15 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
 
     ap_add_output_filter_handle(h3_proto_out_filter_handle, h3ctx, r, r->connection);
 
-    ap_update_vhost_from_headers(r);
+    /* Validate the request and select the vhost like HTTP/1.1 and HTTP/2 do
+     * (StrictHostCheck, a missing Host, Expect); on failure r->status holds
+     * the error.
+     */
+    ap_check_request_header(r);
     r->per_dir_config = r->server->lookup_defaults;
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "before ap_process_request");
+    int access_status;
     if (r->status != HTTP_OK)
     {
         int err = r->status;
@@ -355,6 +360,14 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     else if (h3s->request_body_overflow)
     {
         ap_die(HTTP_REQUEST_ENTITY_TOO_LARGE, r);
+    }
+    /* Run the post_read_request hooks (mod_setenvif, mod_remoteip,
+     * mod_headers "early", mod_proxy forward proxy detection, ...) and the
+     * core checks on the complete request, as HTTP/1.1 and HTTP/2 do.
+     */
+    else if ((access_status = ap_post_read_request(r)) != OK)
+    {
+        ap_die(access_status, r);
     }
     else
     {
@@ -404,11 +417,11 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     int64_t sid = h3s->stream_id;
     if (response_rv != APR_SUCCESS && response_rv != APR_ECONNABORTED)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, response_rv, s, "failed to queue response for stream %" APR_INT64_T_FMT, sid);
+        ap_log_error(APLOG_MARK, APLOG_ERR, response_rv, s, "failed to queue response for stream %" APR_INT64_T_FMT, (apr_int64_t)sid);
     }
     else if (response_rv == APR_SUCCESS)
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, sid, status, body_len);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, (apr_int64_t)sid, status, body_len);
     }
 
     apr_pool_destroy(c->pool);
@@ -452,6 +465,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     conn_rec* c = apr_pcalloc(cpool, sizeof(*c));
     *c = *session->c;
     c->pool = cpool;
+    c->id = (long)apr_atomic_inc32(&h3_conn_id_seq);
     c->master = session->c;
     c->sbh = NULL;
 #if H3_DEVEL

@@ -110,7 +110,7 @@ int on_recv_header(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, in
         /* No request can be built to answer 431 with, so RFC 9114 4.2.2 lets us reset the stream. */
         if (oversized)
         {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": pseudo-header '%.*s' exceeds LimitRequestFieldSize (%d); resetting the stream", stream->stream_id, (int)(nk.len > 32 ? 32 : nk.len), (const char*)nk.base, s->limit_req_fieldsize);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": pseudo-header '%.*s' exceeds LimitRequestFieldSize (%d); resetting the stream", (apr_int64_t)stream->stream_id, (int)(nk.len > 32 ? 32 : nk.len), (const char*)nk.base, s->limit_req_fieldsize);
             stream->malformed = 1;
             return 0;
         }
@@ -123,13 +123,13 @@ int on_recv_header(nghttp3_conn* conn H3_UNUSED, int64_t stream_id H3_UNUSED, in
 
     if (s->limit_req_fields > 0 && ++stream->header_count > s->limit_req_fields)
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": more than LimitRequestFields (%d) header fields; rejecting with 431", stream->stream_id, s->limit_req_fields);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": more than LimitRequestFields (%d) header fields; rejecting with 431", (apr_int64_t)stream->stream_id, s->limit_req_fields);
         stream->headers_too_large = 1;
         return 0;
     }
     if (oversized)
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": header field '%.*s' exceeds LimitRequestFieldSize (%d); rejecting with 431", stream->stream_id, (int)(nk.len > 32 ? 32 : nk.len), (const char*)nk.base, s->limit_req_fieldsize);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT ": header field '%.*s' exceeds LimitRequestFieldSize (%d); rejecting with 431", (apr_int64_t)stream->stream_id, (int)(nk.len > 32 ? 32 : nk.len), (const char*)nk.base, s->limit_req_fieldsize);
         stream->headers_too_large = 1;
         return 0;
     }
@@ -172,7 +172,7 @@ int on_recv_data(nghttp3_conn* conn H3_UNUSED, int64_t stream_id, const uint8_t*
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, stream->session->s,
                      "HTTP/3 request body for stream %" APR_INT64_T_FMT " exceeds H3MaxRequestBodySize "
                      "(%" APR_SIZE_T_FMT " bytes); remaining body bytes will be discarded",
-                     stream_id, conf->h3_max_request_body_size);
+                     (apr_int64_t)stream_id, conf->h3_max_request_body_size);
         return 0;
     }
     /* Grow the body buffer using a doubling strategy to avoid O(n^2) copies. */

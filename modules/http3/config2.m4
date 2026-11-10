@@ -139,7 +139,8 @@ AC_DEFUN([APACHE_CHECK_NGHTTP3],[
       dnl Run library and function checks
       liberrors=""
       AC_CHECK_HEADERS([nghttp3/nghttp3.h])
-      AC_CHECK_FUNCS([nghttp3_conn_server_new], [], [liberrors="yes"])
+      dnl nghttp3_conn_server_new() is a macro around the versioned function
+      AC_CHECK_FUNCS([nghttp3_conn_server_new_versioned], [], [liberrors="yes"])
       if test "x$liberrors" != "x"; then
         AC_MSG_WARN([nghttp3 library is unusable])
       fi

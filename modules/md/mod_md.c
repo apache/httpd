@@ -1414,6 +1414,11 @@ static int md_http_challenge_pr(request_rec *r)
         && !strncmp(ACME_CHALLENGE_PREFIX, r->parsed_uri.path, sizeof(ACME_CHALLENGE_PREFIX)-1)) {
         sc = ap_get_module_config(r->server->module_config, &md_module);
         if (sc && sc->mc) {
+            if (!r->hostname) {
+                /* No Host: (e.g. an HTTP/1.0 request without one) means no
+                 * domain to look up; leave the request to normal handling. */
+                return DECLINED;
+            }
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                           "access inside /.well-known/acme-challenge for %s%s",
                           r->hostname, r->parsed_uri.path);
