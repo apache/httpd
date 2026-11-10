@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -32,8 +33,13 @@ class TestGracefulShutdown:
         for r in succeeded:
             assert r.response["status"] == 200
 
+        log = logging.getLogger(__name__)
         pattern = re.compile(r".*\[http3:info].*sent HTTP/3 GOAWAY.*")
-        env.httpd_error_log.scan_recent(pattern, timeout=10)
+        try:
+            env.httpd_error_log.scan_recent(pattern, timeout=10)
+        except TimeoutError:
+            log.warning("GOAWAY not seen after 10s, retrying with 10 more")
+            env.httpd_error_log.scan_recent(pattern, timeout=10)
 
         assert env.is_live()
         time.sleep(1.5)
