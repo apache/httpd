@@ -39,7 +39,7 @@ class TestRewriteRedirect:
         yield
 
     # Redirect www.domain -> non-www domain
-    def test_rewrite_001_01(self, env):
+    def test_rewrite_001_01_domain_to_non_domain(self, env):
         url = f"http://www.rewrite.{env.http_tld}:{env.http_port}/"
         r = env.curl_raw(url, options=[])
         assert r.exit_code == 0, f"curl failed: {r}"
@@ -51,7 +51,7 @@ class TestRewriteRedirect:
         )
 
     # Redirect non-www domain -> www.domain
-    def test_rewrite_001_02(self, env):
+    def test_rewrite_001_02_non_domain_to_domain(self, env):
         url = f"http://rewrite.{env.http_tld}:{env.http_port}/"
         r = env.curl_raw(url, options=[])
         assert r.exit_code == 0, f"curl failed: {r}"

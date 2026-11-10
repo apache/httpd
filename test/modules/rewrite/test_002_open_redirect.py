@@ -27,7 +27,7 @@ class TestRewriteOpenRedirect:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_rewrite_002_01(self, env):
+    def test_rewrite_002_01_redirect_bad(self, env):
         url = env.mkurl("http", "test1", "/rhts/%0a.evilwebsite.com")
         r = env.curl_raw(url, options=['-v', '--max-redirs', '0'])
         if r.response is not None:
@@ -65,7 +65,7 @@ class TestRewriteEscapeSequences:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_rewrite_002_02(self, env):
+    def test_rewrite_002_02_escape_directs(self, env):
         start_pos = env.httpd_error_log.current_pos()
         url = env.mkurl("http", "test1", "/rhts2/path")
         env.curl_raw(url, options=['-v', '--max-redirs', '0'])
