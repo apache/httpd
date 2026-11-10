@@ -441,13 +441,13 @@ static apr_status_t session_dbd_save(request_rec * r, session_rec * z)
         /* create RFC2109 compliant cookie */
         if (conf->name_set) {
             ap_cookie_write(r, conf->name, newkey, conf->name_attrs, z->maxage,
-                            r->headers_out, r->err_headers_out, NULL);
+                            r->err_headers_out, NULL);
         }
 
         /* create RFC2965 compliant cookie */
         if (conf->name2_set) {
             ap_cookie_write2(r, conf->name2, newkey, conf->name2_attrs, z->maxage,
-                             r->headers_out, r->err_headers_out, NULL);
+                             r->err_headers_out, NULL);
         }
 
         return OK;
