@@ -95,7 +95,7 @@ jobs:
           # Runs every pytest-based test suite via `make check-all-pytest`.
           # See TEST_PYTEST/TEST_MD in test/travis_run_linux.sh.
           - name: Python pytest test suites
-            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all
+            config: --enable-mods-shared=reallyall --with-mpm=event --enable-mpms-shared=all --enable-proxy-beacon
             pkgs: nghttp2-client
             env: |
               APR_VERSION=1.7.6

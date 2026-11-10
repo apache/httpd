@@ -1,0 +1,3 @@
+  *) mod_proxy_beacon: Back-end reverse proxy servers can announce
+     themselves and be auto-added to their front-end proxy balancer.
+     [Jim Jagielski]

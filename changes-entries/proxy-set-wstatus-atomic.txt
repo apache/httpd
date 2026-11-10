@@ -1,0 +1,3 @@
+  *) mod_proxy: Update the shared worker status atomically, so that the
+     balancer-manager, health checks and mod_proxy_beacon changing different
+     bits at the same time cannot undo each other's change.  [Jim Jagielski]
