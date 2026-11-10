@@ -1837,6 +1837,11 @@ static int compare_certs_asc(const X509 *const *a, const X509 *const *b)
     return ASN1_TIME_compare(time_a, time_b);
 }
 
+/* Deprecated in OpenSSL 4.1; the replacement also verifies the chain. */
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 static int cert_match(apr_pool_t *p, X509 *cert, char *id)
 {
     if (id[0] == '[') {
@@ -1855,6 +1860,9 @@ static int cert_match(apr_pool_t *p, X509 *cert, char *id)
     }
     return 0;
 }
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
 
 static apr_status_t ssl_init_uri(server_rec *s,
                                  apr_pool_t *ptemp,
