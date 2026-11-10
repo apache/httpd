@@ -79,6 +79,15 @@ if test -v TEST_OPENSSL; then
     openssl version
 fi
 
+if test -v TEST_CURL_H3; then
+    # pyhttpd runs $CURL in place of the curl from config.ini.
+    export CURL=$HOME/root/curl/bin/curl
+    if ! $CURL -V | grep -q '^Features:.* HTTP3'; then
+        : $CURL was built without HTTP/3
+        exit 1
+    fi
+fi
+
 if test -v TEST_NGHTTP2; then
     # APACHE_CHECK_NGHTTP2 only yields -L, so an RPATH is needed here or
     # mod_http2.so resolves to the system libnghttp2 at run-time.

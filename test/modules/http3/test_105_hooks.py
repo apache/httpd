@@ -1,6 +1,6 @@
 import pytest
 
-from .env import H3Conf, known_bug
+from .env import H3Conf
 
 # each of these runs in the post_read_request hook
 CASES = {
@@ -36,5 +36,4 @@ class TestHooks:
         assert check(tcp.json), f"{name} not seen over HTTP/1.1: {tcp.json}"
         r = env.h3_client().get("/cgi/env.py", headers=headers)
         assert r.status == 200, f"{r}"
-        known_bug(not check(r.json), f"{name} does not run for HTTP/3 "
-                  "requests (no post_read_request)")
+        assert check(r.json), f"{name} not seen over HTTP/3: {r.json}"

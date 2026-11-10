@@ -65,6 +65,10 @@ if test -n "${TEST_NGHTTP2-}"; then
     root="${root} nghttp2-${TEST_NGHTTP2}"
 fi
 
+if test -n "${TEST_CURL_H3-}"; then
+    root="${root} curl-h3-${TEST_CURL_H3}"
+fi
+
 if test -n "$root"; then
     # The compiler and every flag which reaches the build are baked into
     # the libraries, NOTEST_* included: APR adds those to the build too,
