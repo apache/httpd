@@ -423,6 +423,7 @@ class TestConf:
         ("LETSEncrypt-TESt", "https://acme-staging-v02.api.letsencrypt.org/directory"),
         ("buypass", "https://api.buypass.com/acme/directory"),
         ("buypass-test", "https://api.test4.buypass.no/acme/directory"),
+        ("actalis", "https://acme-api.actalis.com/acme/directory"),
     ])
     def test_md_300_025(self, env, ca, url):
         domain = f"test1.{env.http_tld}"

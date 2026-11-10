@@ -518,8 +518,11 @@ check/modules/stamp: build/config_vars.mk
 	find server/mpm -name \*.so -exec ln -s $(top_builddir)/{} check/modules/ \;
 	date > $@
 
+# Run the pytest suites named by PYTEST_DIRS via test/runtests.sh, which
+# creates test/.venv with uv on first use and runs the venv's pytest so the
+# CGI scripts httpd forks see the same Python packages.
 check-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stamp
-	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(PYTEST3) $(PYTEST_DIRS)
+	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(SHELL) $(top_srcdir)/test/runtests.sh --apxs="$(top_builddir)/check/bin/apxs" $(PYTEST_DIRS)
 
 check-all-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stamp
 	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(SHELL) $(top_srcdir)/test/runtests.sh --apxs="$(top_builddir)/check/bin/apxs" $(PYTEST_ARGS)
@@ -564,3 +567,10 @@ test/httpdunit: $(httpdunit_OBJECTS) $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS) 
 
 check-unittests: test/httpdunit
 	test/httpdunit
+
+# Regression test for md_util_parse_retry_after(), shared by mod_md and
+# a2md (see support/a2md/Makefile.in). Only in $(CHECK_TARGETS) when a2md
+# itself is enabled (support/a2md/config2.m4).
+.PHONY: check-retry-after
+check-retry-after:
+	cd support/a2md && $(MAKE) $(MFLAGS) check

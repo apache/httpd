@@ -259,6 +259,13 @@ ProxyBeaconInterval  10
     stopped member stays stopped through any number of evictions and
     re-enablements.</p>
 
+    <p>Beacon enables members through the same code as the
+    <code>balancer-manager</code>, and like it does not wait for requests that
+    are being balanced at that moment. A member re-enabled while that happens
+    can miss the reset of the load-balancing counters that normally follows,
+    and requests may then be spread unevenly between members until the
+    counters settle.</p>
+
 </section>
 
 <section id="limits"><title>Message validation and limits</title>

@@ -38,6 +38,7 @@ if test "x$enable_a2md" != "xno"; then
     APR_ADDTO(A2MD_LIBS, [-lssl -lcrypto])
     APR_ADDTO(EXTRA_SBIN_PROGRAMS, [a2md/a2md])
     APR_ADDTO(EXTRA_CHECK_BINARIES, [check/bin/a2md])
+    CHECK_TARGETS="$CHECK_TARGETS check-retry-after"
     AC_MSG_NOTICE([a2md: enabled (curl + jansson + openssl found)])
   else
     if test "x$enable_a2md" = "xyes"; then

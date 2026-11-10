@@ -23,19 +23,13 @@
 #undef PACKAGE_NAME
 #undef PACKAGE_BUGREPORT
 
+#include "ap_release.h"
+
 /**
  * @macro
  * Version number of the http2 module as c string
  */
-#define MOD_HTTP2_VERSION "2.0.42"
-
-/**
- * @macro
- * Numerical representation of the version number of the http2 module
- * release. This is a 24 bit number with 8 bits for major number, 8 bits
- * for minor and 8 bits for patch. Version 1.2.3 becomes 0x010203.
- */
-#define MOD_HTTP2_VERSION_NUM 0x02002a
+#define MOD_HTTP2_VERSION AP_SERVER_BASEREVISION
 
 
 #endif /* mod_h2_h2_version_h */

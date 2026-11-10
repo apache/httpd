@@ -168,6 +168,14 @@ apr_status_t md_acme_setup(md_acme_t *acme, struct md_result_t *result);
 
 void md_acme_report_result(md_acme_t *acme, apr_status_t rv, struct md_result_t *result);
 
+/**
+ * Get the local time a response asks the client to wait for with its
+ * Retry-After header (RFC 9110, 10.2.3). An HTTP-date is read against the
+ * Date header of the response, so a skewed clock of the server does not matter.
+ * @return the time, or 0 if there is no valid Retry-After
+ */
+apr_time_t md_acme_retry_after(const struct apr_table_t *headers);
+
 /**************************************************************************************************/
 /* account handling */
 

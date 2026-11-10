@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1880986:1939372 (outdated) -->
+<!-- English Revision: 1939372 $ -->
 <!-- Translated by: Luis Gil de Bernabé Pfeiffer  -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -88,7 +88,7 @@ Documentación</title>
 
 <category id="platform"><title>Notas Sobre Plataformas Específicas</title>
     <page href="platform/windows.html">Microsoft Windows</page>
-    <page href="platform/rpm.html">Sistemas Basados en RPM (Redhat / CentOS / Fedora)</page>
+    <page href="platform/rpm.html">Sistemas Basados en RPM (Red Hat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
 </category>
 

@@ -373,7 +373,7 @@ BOOL modssl_X509_getSAN(apr_pool_t *p, X509 *x509, int type, const char *onf,
 /* return an array of (RFC 6125 coined) DNS-IDs and CN-IDs in a certificate */
 static BOOL getIDs(apr_pool_t *p, X509 *x509, apr_array_header_t **ids)
 {
-    const X509_NAME *subj;
+    MODSSL_X509_NAME_CONST X509_NAME *subj;
     int i = -1;
 
     /* First, the DNS-IDs (dNSName entries in the subjectAltName extension) */
