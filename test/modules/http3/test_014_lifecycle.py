@@ -58,6 +58,4 @@ class TestLifecycle:
         log.ignore_recent(matches=unclean + asan)
         known_bug(bool(lines) and env.mpm_module == "mpm_prefork",
                   "prefork children crash or fail to exit on stop")
-        known_bug(bool(asan_lines),
-                  "control-stream SSL* wrappers leak at child exit")
         assert not lines and not asan_lines, "".join(lines + asan_lines)
