@@ -6,6 +6,7 @@ from typing import List, Optional, Tuple
 
 from aioquic.asyncio.client import connect
 from aioquic.asyncio.protocol import QuicConnectionProtocol
+from aioquic.buffer import encode_uint_var
 from aioquic.h3.connection import H3_ALPN, H3Connection
 from aioquic.h3.events import DataReceived, HeadersReceived
 from aioquic.quic.configuration import QuicConfiguration
@@ -90,8 +91,16 @@ class _Protocol(QuicConnectionProtocol):
             if getattr(ev, "stream_ended", False):
                 self._finish(ev.stream_id)
 
-    def send_request(self, method, path, authority, headers, body):
+    def send_request(self, method, path, authority, headers, body,
+                     priority=None):
         sid = self._quic.get_next_available_stream_id()
+        if priority is not None:
+            # RFC 9218 PRIORITY_UPDATE for this request stream, on the control stream
+            payload = encode_uint_var(sid) + priority.encode()
+            frame = (encode_uint_var(0xF0700) + encode_uint_var(len(payload))
+                     + payload)
+            self._quic.send_stream_data(self.http._local_control_stream_id,
+                                        frame)
         hdrs = [(b":method", method.encode()), (b":scheme", b"https"),
                 (b":authority", authority.encode()), (b":path", path.encode())]
         hdrs.extend((k.lower().encode(), v.encode()) for k, v in headers)
@@ -136,18 +145,21 @@ class H3Client:
             results = []
             if sequential:
                 for r in reqs:
+                    await asyncio.sleep(r.pop("delay"))
                     results.append(await asyncio.wait_for(
                         proto.send_request(**r), self.timeout))
             else:
-                futs = [proto.send_request(**r) for r in reqs]
+                futs = [proto.send_request(**{k: v for k, v in r.items()
+                                              if k != "delay"}) for r in reqs]
                 results = await asyncio.wait_for(asyncio.gather(*futs),
                                                  self.timeout)
             return results
 
     def _req(self, method="GET", path="/", headers=None, body=None,
-             authority=None):
+             authority=None, priority=None, delay=0):
         return dict(method=method, path=path, headers=headers or [],
-                    body=body, authority=authority or f"{self.domain}:{self.port}")
+                    body=body, authority=authority or f"{self.domain}:{self.port}",
+                    priority=priority, delay=delay)
 
     def requests(self, reqs: List[dict], sequential=False) -> List[H3Response]:
         """Several requests on one connection; each a dict of request() args."""

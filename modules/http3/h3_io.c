@@ -498,6 +498,16 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         return 0;
     }
 
+    /* ngtcp2 gave the peer more streams: nghttp3 checks PRIORITY_UPDATE against its own copy of the limit. */
+    uint64_t max_bidi = h3q_conn_max_remote_streams_bidi(conn);
+    if (max_bidi > session->max_client_streams_bidi && session->ngh3 && !session->ngh3_dead)
+    {
+        apr_thread_mutex_lock(session->lock);
+        nghttp3_conn_set_max_client_streams_bidi(session->ngh3, max_bidi);
+        apr_thread_mutex_unlock(session->lock);
+        session->max_client_streams_bidi = max_bidi;
+    }
+
     apr_pool_t* scratch = NULL;
     if (apr_pool_create(&scratch, session->pool) != APR_SUCCESS)
     {

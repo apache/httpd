@@ -90,9 +90,11 @@ struct h3q_conn
     void* user;
     h3q_conn* next;
     h3q_conn* next_accept;
+    uint64_t max_remote_bidi; /* MAX_STREAMS given to the peer; 0 until first raised */
     unsigned handshake_done : 1;
     unsigned closed : 1;
     unsigned queued_accept : 1;
+    unsigned activity : 1; /* the engine touched the connection since the last take */
 };
 
 struct h3q_stream

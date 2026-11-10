@@ -193,14 +193,6 @@ static size_t build_response_nva(nghttp3_nv* nva, size_t nva_cap, request_rec* r
     return nvlen;
 }
 
-static void wake_event_thread(void)
-{
-    if (child_h3_io)
-    {
-        h3_wakeup_signal(&child_h3_io->wakeup);
-    }
-}
-
 static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t nvlen)
 {
     h3_session* session = h3s->session;
@@ -231,7 +223,7 @@ static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t 
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", (apr_int64_t)h3s->stream_id, rv);
         return APR_EGENERAL;
     }
-    wake_event_thread();
+    h3_session_wake(session);
     return APR_SUCCESS;
 }
 
@@ -417,6 +409,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     h3s->worker_done = 1;
     apr_thread_mutex_unlock(session->lock);
     apr_atomic_dec32(&session->active_tasks);
+    h3_session_wake(session); /* the event thread reclaims the stream */
     return NULL;
 }
 

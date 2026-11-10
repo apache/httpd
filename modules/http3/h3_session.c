@@ -19,6 +19,7 @@
 #include <http_config.h>
 #include <http_log.h>
 
+#include <apr_atomic.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
 #include <apr_thread_mutex.h>
@@ -49,8 +50,9 @@ struct h3_response_chunk
     uint8_t data[];
 };
 
-static void wake_event_thread(void)
+void h3_session_wake(h3_session* session)
 {
+    apr_atomic_set32(&session->wake, 1);
     if (child_h3_io)
     {
         h3_wakeup_signal(&child_h3_io->wakeup);
@@ -99,6 +101,7 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
 
     nghttp3_conn_set_max_concurrent_streams(session->ngh3, conf->h3_max_concurrent_streams);
     nghttp3_conn_set_max_client_streams_bidi(session->ngh3, conf->h3_max_concurrent_streams);
+    session->max_client_streams_bidi = conf->h3_max_concurrent_streams;
 
     h3q_tls_info tls = {0};
     if (h3q_conn_tls_info(qconn, &tls))
@@ -290,7 +293,7 @@ apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, s
         apr_thread_mutex_unlock(session->lock);
 
         offset += chunk_len;
-        wake_event_thread();
+        h3_session_wake(session);
     }
     return APR_SUCCESS;
 }
@@ -310,7 +313,7 @@ void h3_stream_response_complete(h3_stream* stream)
     }
     apr_thread_cond_broadcast(stream->response_cond);
     apr_thread_mutex_unlock(session->lock);
-    wake_event_thread();
+    h3_session_wake(session);
 }
 
 void h3_stream_response_ack_locked(h3_stream* stream, uint64_t datalen)

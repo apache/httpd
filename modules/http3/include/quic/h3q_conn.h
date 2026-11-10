@@ -84,6 +84,22 @@ int h3q_conn_has_early_data(h3q_conn* conn);
 int h3q_conn_is_closed(h3q_conn* conn);
 
 /**
+ * Cumulative number of bidirectional streams the peer may open, as last
+ * sent in MAX_STREAMS.
+ * @param conn Connection to query; NULL gives 0.
+ * @return 0 until the limit is first raised above the initial value.
+ */
+uint64_t h3q_conn_max_remote_streams_bidi(h3q_conn* conn);
+
+/**
+ * Read and clear the activity mark. The engine sets it when it receives a
+ * packet for the connection, runs its timers or raises its stream limit.
+ * @param conn Connection to query; NULL gives 0.
+ * @return Non-zero if the engine touched the connection since the last call.
+ */
+int h3q_conn_take_activity(h3q_conn* conn);
+
+/**
  * Begin or continue connection shutdown.
  * @param conn      Connection to close; NULL counts as already closed.
  * @param is_rapid  Non-zero to skip the drain, as on server exit.

@@ -79,8 +79,11 @@ struct h3_session
 
     apr_time_t last_activity;
     apr_uint32_t stream_errors;
+    uint64_t max_client_streams_bidi; /* last limit given to nghttp3 */
+    apr_time_t next_sweep;            /* serve an idle session at least this often, for its timeouts */
 
     volatile apr_uint32_t active_tasks;
+    volatile apr_uint32_t wake; /* set by a worker that has output for the event thread */
 
     struct
     {
@@ -164,6 +167,13 @@ apr_status_t h3_session_create_control_streams(h3_session* session);
  * @param session The session to destroy (may be NULL).
  */
 void h3_session_destroy(h3_session* session);
+
+/**
+ * Mark the session for the next event loop pass and wake the event thread.
+ * Workers call it when they have output or finish.
+ * @param session Session to mark.
+ */
+void h3_session_wake(h3_session* session);
 
 /**
  * Queue a QUIC stream object to be freed when the session lock is next

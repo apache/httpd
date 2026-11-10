@@ -391,6 +391,7 @@ static void process_dgram(h3q_engine* engine, uint8_t* buf, size_t len, const ng
     {
         return;
     }
+    conn->activity = 1;
     ngtcp2_pkt_info pi = {.ecn = (uint8_t)ecn};
     rv = ngtcp2_conn_read_pkt(conn->qconn, path, &pi, buf, len, h3q_now());
     switch (rv)
@@ -558,6 +559,7 @@ int h3q_engine_pump(h3q_engine* engine)
         {
             continue;
         }
+        conn->activity = 1;
         int rv = ngtcp2_conn_handle_expiry(conn->qconn, now);
         if (rv != 0)
         {

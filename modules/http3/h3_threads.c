@@ -20,7 +20,6 @@
 #include <http_log.h>
 
 #include <apr_atomic.h>
-#include <apr_hash.h>
 #include <apr_pools.h>
 #include <apr_thread_mutex.h>
 
@@ -133,6 +132,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             progress_pending_handshakes(io);
         }
 
+        apr_time_t now = apr_time_now();
         for (int i = 0; i < io->active_sessions->nelts;)
         {
             if (i > 0 && (i % 8) == 0)
@@ -146,27 +146,25 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
 
             h3_session* session = ((h3_session**)io->active_sessions->elts)[i];
 
-            /* Skip sessions with no work: no active worker tasks, no streams,
-             * and not draining/stopping. Just check if the connection died. */
-            if (!io->draining && io->thread_running
+            /* Skip a session with nothing new: no busy worker, no packet, timer or
+             * stream limit change in the engine, no worker output. The sweep still
+             * serves it once a second, for its idle and stream timeouts. Every session
+             * keeps its control streams, so a stream count cannot tell idle sessions. */
+            if (!io->draining && io->thread_running && !session->aborted
                 && apr_atomic_read32(&session->active_tasks) == 0
-                && apr_hash_count(session->streams) == 0
-                && !session->aborted)
+                && !h3q_conn_take_activity(session->qconn)
+                && !apr_atomic_xchg32(&session->wake, 0)
+                && now < session->next_sweep)
             {
-                if (h3q_conn_is_closed(session->qconn))
-                {
-                    session->aborted = 1;
-                }
-                else
-                {
-                    i++;
-                    continue;
-                }
+                i++;
+                continue;
             }
+            session->next_sweep = now + apr_time_from_sec(1);
 
             if (!session->aborted && service_session_pass(io, session))
             {
                 work_pending = 1;
+                apr_atomic_set32(&session->wake, 1); /* the pass ran out of budget: serve it again next round */
             }
 
             if (session->aborted)

@@ -161,6 +161,15 @@ static int cb_stream_close(ngtcp2_conn* qconn, uint32_t flags, int64_t stream_id
     return 0;
 }
 
+static int cb_extend_max_remote_streams_bidi(ngtcp2_conn* qconn, uint64_t max_streams, void* user_data)
+{
+    (void)qconn;
+    h3q_conn* conn = user_data;
+    conn->max_remote_bidi = max_streams;
+    conn->activity = 1;
+    return 0;
+}
+
 static int cb_stream_reset(ngtcp2_conn* qconn, int64_t stream_id, uint64_t final_size, uint64_t app_error_code, void* user_data, void* stream_user_data)
 {
     (void)qconn;
@@ -300,6 +309,7 @@ h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
         .acked_stream_data_offset = cb_acked_stream_data_offset,
         .stream_close = cb_stream_close,
         .stream_reset = cb_stream_reset,
+        .extend_max_remote_streams_bidi = cb_extend_max_remote_streams_bidi,
         .rand = cb_rand,
         .get_new_connection_id = cb_get_new_connection_id,
         .remove_connection_id = cb_remove_connection_id,
@@ -461,6 +471,21 @@ int h3q_conn_tls_info(h3q_conn* conn, h3q_tls_info* out)
 int h3q_conn_is_closed(h3q_conn* conn)
 {
     return !conn || conn->closed || ngtcp2_conn_in_closing_period(conn->qconn) || ngtcp2_conn_in_draining_period(conn->qconn);
+}
+
+uint64_t h3q_conn_max_remote_streams_bidi(h3q_conn* conn)
+{
+    return conn ? conn->max_remote_bidi : 0;
+}
+
+int h3q_conn_take_activity(h3q_conn* conn)
+{
+    if (!conn || !conn->activity)
+    {
+        return 0;
+    }
+    conn->activity = 0;
+    return 1;
 }
 
 /* Send CONNECTION_CLOSE once and keep it, so the closing period can resend it. */
