@@ -423,7 +423,7 @@ jobs:
               PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
           - name: OpenSSL 4.0
-            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            config: --enable-mods-shared=most --enable-maintainer-mode --enable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
               TEST_OPENSSL=4.0.3
