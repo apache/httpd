@@ -49,6 +49,8 @@ class TestAltSvc:
             assert env.apache_restart() == 0
             alt_svc = env.alt_svc()
             assert env.apache_stop() == 0
+        env.httpd_error_log.ignore_recent(
+            matches=[rf'.*\[http3:(error|warn)\].*\b{port}\b'])
         known_bug(alt_svc is not None, "Alt-Svc is sent when the UDP port "
                   "is held by another process")
 
