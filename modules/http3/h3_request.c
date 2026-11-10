@@ -342,10 +342,15 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
 
     ap_add_output_filter_handle(h3_proto_out_filter_handle, h3ctx, r, r->connection);
 
-    ap_update_vhost_from_headers(r);
+    /* Validate the request and select the vhost like HTTP/1.1 and HTTP/2 do
+     * (StrictHostCheck, a missing Host, Expect); on failure r->status holds
+     * the error.
+     */
+    ap_check_request_header(r);
     r->per_dir_config = r->server->lookup_defaults;
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "before ap_process_request");
+    int access_status;
     if (r->status != HTTP_OK)
     {
         int err = r->status;
@@ -355,6 +360,14 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     else if (h3s->request_body_overflow)
     {
         ap_die(HTTP_REQUEST_ENTITY_TOO_LARGE, r);
+    }
+    /* Run the post_read_request hooks (mod_setenvif, mod_remoteip,
+     * mod_headers "early", mod_proxy forward proxy detection, ...) and the
+     * core checks on the complete request, as HTTP/1.1 and HTTP/2 do.
+     */
+    else if ((access_status = ap_post_read_request(r)) != OK)
+    {
+        ap_die(access_status, r);
     }
     else
     {

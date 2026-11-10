@@ -40,7 +40,8 @@ class H3TestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(H3TestSetup)))
-        self.add_modules(["http3", "ssl", "unique_id", "remoteip", "include"])
+        self.add_modules(["http3", "ssl", "unique_id", "remoteip", "include",
+                          "setenvif", "headers"])
         self.add_cgi_module()
 
     def make(self):
