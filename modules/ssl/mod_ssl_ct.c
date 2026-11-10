@@ -78,6 +78,16 @@
 #include <openssl/x509v3.h>
 #include <openssl/ocsp.h>
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define ASN1_STRING_get0_data(x)   ((x)->data)
+#endif
+
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+#define SSL_CT_X509_EXT_CONST const
+#else
+#define SSL_CT_X509_EXT_CONST
+#endif
+
 #if OPENSSL_VERSION_NUMBER < 0x10002003L
 #error "mod_ssl_ct requires OpenSSL 1.0.2-beta3 or later"
 #endif
@@ -2006,9 +2016,10 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
 
     for (i = 0; i < OCSP_resp_count(br); i++) {
         const unsigned char *p;
-        X509_EXTENSION *ext;
+        SSL_CT_X509_EXT_CONST X509_EXTENSION *ext;
         int idx;
-        ASN1_OCTET_STRING *oct1, *oct2;
+        const ASN1_OCTET_STRING *oct1;
+        ASN1_OCTET_STRING *oct2;
 
         single = OCSP_resp_get0(br, i);
         if (!single) {
@@ -2028,12 +2039,14 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
         ext = OCSP_SINGLERESP_get_ext(single, idx);
         oct1 = X509_EXTENSION_get_data(ext); /* UNDOC */
 
-        p = oct1->data;
-        if ((oct2 = d2i_ASN1_OCTET_STRING(NULL, &p, oct1->length)) != NULL) {
+        p = ASN1_STRING_get0_data(oct1);
+        if ((oct2 = d2i_ASN1_OCTET_STRING(NULL, &p,
+                                          ASN1_STRING_length(oct1))) != NULL) {
             conncfg->ocsp_has_sct_list = 1;
             conncfg->peer_ct_aware = 1;
-            conncfg->ocsp_sct_list_size = oct2->length;
-            conncfg->ocsp_sct_list = apr_pmemdup(c->pool, oct2->data,
+            conncfg->ocsp_sct_list_size = ASN1_STRING_length(oct2);
+            conncfg->ocsp_sct_list = apr_pmemdup(c->pool,
+                                                 ASN1_STRING_get0_data(oct2),
                                                  conncfg->ocsp_sct_list_size);
             ASN1_OCTET_STRING_free(oct2);
         }
@@ -2155,9 +2168,9 @@ static int ssl_ct_ssl_proxy_verify(server_rec *s, conn_rec *c,
             /* as in Cert::OctetStringExtensionData */
             ASN1_OCTET_STRING *octet = (ASN1_OCTET_STRING *)ext_struct;
             conncfg->cert_sct_list = apr_pmemdup(p,
-                                                 octet->data,
-                                                 octet->length);
-            conncfg->cert_sct_list_size = octet->length;
+                                                 ASN1_STRING_get0_data(octet),
+                                                 ASN1_STRING_length(octet));
+            conncfg->cert_sct_list_size = ASN1_STRING_length(octet);
             ASN1_OCTET_STRING_free(octet); /* UNDOC */
         }
     }
