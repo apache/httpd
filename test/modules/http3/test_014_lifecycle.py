@@ -49,11 +49,15 @@ class TestLifecycle:
             assert env.apache_stop() == 0
         # crashed, or still there when the parent gave up waiting
         unclean = [log.RE_ERRLOG_CRASH.pattern, r'.*AH0004[56]: child process']
+        asan = [log.RE_ERRLOG_ASAN.pattern]
         with open(log.path) as fd:
             fd.seek(start)
-            lines = [line for line in fd
-                     if any(re.match(p, line) for p in unclean)]
-        log.ignore_recent(matches=unclean)
+            content = fd.readlines()
+        lines = [l for l in content if any(re.match(p, l) for p in unclean)]
+        asan_lines = [l for l in content if any(re.match(p, l) for p in asan)]
+        log.ignore_recent(matches=unclean + asan)
         known_bug(bool(lines) and env.mpm_module == "mpm_prefork",
                   "prefork children crash or fail to exit on stop")
-        assert not lines, "".join(lines)
+        known_bug(bool(asan_lines),
+                  "control-stream SSL* wrappers leak at child exit")
+        assert not lines and not asan_lines, "".join(lines + asan_lines)

@@ -1,0 +1,88 @@
+Control-stream SSL* wrappers leak at child exit
+================================================
+
+Symptom
+-------
+On ASAN/LSAN builds, LeakSanitizer reports leaked SSL objects every time an
+httpd child process exits (stop, restart, MaxConnectionsPerChild).  The leak
+is detected by test_h3_014_04_stop_cleanly which cycles through 20
+restart/stop pairs and scans the error log for sanitizer messages.
+
+The test is currently xfailed for this reason via known_bug().
+
+Root cause
+----------
+Each HTTP/3 session creates three unidirectional control streams (control,
+qpack_enc, qpack_dec) in h3_session_create_control_streams().  These call
+h3q_conn_open_uni_stream() which internally calls SSL_new_stream() on the
+parent QUIC connection, returning an SSL* "XSO" (eXternal Stream Object).
+
+The three XSO pointers are stored in h3_stream objects via track_stream().
+
+During normal operation, request streams are freed through nghttp3 callbacks
+(on_stream_close / on_stop_sending) which move the SSL* to
+session->pending_free.  flush_nghttp3() then drains that array, calling
+h3q_stream_free() -> SSL_free() on each one while the parent QUIC connection
+is still alive.
+
+Control streams are never closed by nghttp3 callbacks -- they live for the
+entire session.  When h3_session_destroy() runs at child exit, it:
+
+  1. Deletes nghttp3_conn (nghttp3_conn_del)
+  2. Iterates session->streams to cancel/cleanup response data
+  3. Drains pending_free
+  4. Calls h3q_conn_free() -> SSL_free() on the parent QUIC connection
+
+Step 2 never frees the control streams' SSL* XSOs because they were never
+moved to pending_free (no on_stream_close callback fires for them).
+
+Step 4 frees the parent QUIC connection.  OpenSSL's QUIC implementation
+releases the internal stream state owned by the parent, but does NOT free
+the XSO wrappers that were returned by SSL_new_stream().  Those XSOs leak.
+
+Why it cannot be fixed by adding SSL_free() in the destroy loop
+---------------------------------------------------------------
+The obvious fix -- calling h3q_stream_free(stream->qstream) for each
+stream in the destroy loop (step 2) -- was attempted and causes heap
+corruption:
+
+  - OpenSSL's QUIC stack has internal bookkeeping that ties child stream
+    XSOs to the parent QCSO (QUIC Connection Stream Object).
+  - Calling SSL_free() on a child XSO updates parent-internal data
+    structures.
+  - If this is done just before SSL_free() on the parent (step 4), the
+    parent's internal state becomes inconsistent.
+  - The corruption manifests as a double-free in apr_allocator_destroy()
+    during apr_thread_join() in h3_c1_child_stopping -- far from the
+    actual cause, making it hard to diagnose.
+
+Calling SSL_free() on the child XSOs AFTER the parent is freed (reversing
+the order) is also wrong: the parent's SSL_free releases the internal
+stream objects, so the XSO wrappers would reference freed memory.
+
+Possible solutions (not yet implemented)
+-----------------------------------------
+1. Explicitly close the three control streams before teardown by sending
+   a QUIC RESET_STREAM or FIN, which would trigger the normal
+   on_stream_close callback path and move them to pending_free while the
+   connection is still alive.
+
+2. Track the three control-stream SSL* pointers separately in h3_session
+   and free them in h3_session_destroy() before calling h3q_conn_free(),
+   but only after understanding the correct OpenSSL QUIC API sequence for
+   closing uni streams owned by the local endpoint.
+
+3. Use OpenSSL's SSL_free_buffers() or a future API that allows releasing
+   XSO wrappers without corrupting the parent connection state.
+
+Affected code
+-------------
+  modules/http3/h3_session.c     h3_session_create_control_streams()
+  modules/http3/h3_session.c     h3_session_destroy()
+  modules/http3/quic/h3q_conn.c  h3q_conn_open_uni_stream()
+  modules/http3/quic/h3q_conn.c  h3q_conn_free()
+
+Test workaround
+---------------
+  test/modules/http3/test_014_lifecycle.py  test_h3_014_04_stop_cleanly
+    -> xfailed via known_bug() when ASAN errors are detected
