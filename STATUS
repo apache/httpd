@@ -214,7 +214,7 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1939484
                   https://svn.apache.org/r1939487
                   https://svn.apache.org/r1939493
-     2.4.x patch: https://github.com/apache/httpd/pull/994
+     2.4.x patch: https://github.com/apache/httpd/pull/994.patch
      +1: jim,
 
   *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
@@ -237,7 +237,7 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1939480
                   https://svn.apache.org/r1939483
                   https://svn.apache.org/r1939486
-     2.4.x patch: https://github.com/apache/httpd/pull/995
+     2.4.x patch: https://github.com/apache/httpd/pull/995.patch
      +1: jim, 
 
   *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
@@ -261,14 +261,14 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      concurrent change of another.
      trunk patch: https://svn.apache.org/r1939352
                   https://svn.apache.org/r1939481
-     2.4.x patch: https://github.com/apache/httpd/pull/994 (with mod_proxy_beacon)
+     2.4.x patch: https://gist.github.com/jimjag/b09630a9a80be39cb475ecc1c98be0d3
      +1: jim,
 
   *) mod_proxy: Don't leave a half-defined worker in the balancer's (or
      conf's) worker array when ap_proxy_define_worker() fails on a too long
      hostname or UDS path.
      trunk patch: https://svn.apache.org/r1939349
-     2.4.x patch: https://github.com/apache/httpd/pull/994 (with mod_proxy_beacon)
+     2.4.x patch: https://gist.github.com/jimjag/490e576002ffe48f40153c1ee7bbe046
      +1: jim,
 
   *) mod_proxy_hcheck: Fix several health check problems: truncated
