@@ -1,0 +1,253 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "apr.h"
+#include "apr_atomic.h"
+#include "apr_portable.h"
+#include "apr_strings.h"
+#include "apr_thread_proc.h"
+#include "apr_signal.h"
+
+#define APR_WANT_STDIO
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#include "ap_config.h"
+#include "httpd.h"
+#include "mpm_default.h"
+#include "http_main.h"
+#include "http_log.h"
+#include "http_config.h"
+#include "http_core.h"          /* for get_remote_host */
+#include "http_protocol.h"      /* for pre_read_request hook */
+#include "http_connection.h"
+#include "scoreboard.h"
+#include "ap_mpm.h"
+#include "util_mutex.h"
+#include "unixd.h"
+#include "http_vhost.h"
+#include "mpm_common.h"
+#include "ap_listen.h"
+#include "ap_mmn.h"
+#include "apr_poll.h"
+#include "apr_skiplist.h"
+#include "apr_thread_pool.h"
+#include "util_time.h"
+
+#include <stdlib.h>
+
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
+#ifdef HAVE_SYS_PROCESSOR_H
+#include <sys/processor.h> /* for bindprocessor() */
+#endif
+
+#include <signal.h>
+#include <sys/times.h>
+
+/* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos, and to keep the
+ * scoreboard small enough that we can read the whole thing without worrying
+ * too much about the overhead.
+ */
+#ifndef MAX_SERVER_LIMIT
+#define MAX_SERVER_LIMIT 200000
+#endif
+
+/* ServerLimit defaults to the larger of this and twice StartServers. A graceful
+ * restart leaves the old children in their slots until their connections are
+ * done, and no replacement can start while every slot is taken, so the default
+ * must leave room for several restarts in a row.
+ */
+#ifndef DEFAULT_SERVER_LIMIT
+#define DEFAULT_SERVER_LIMIT 16
+#endif
+
+/* Limit on the threads per process.  Clients will be locked out if more than
+ * this are needed.
+ *
+ * We keep this for one reason it keeps the size of the scoreboard file small
+ * enough that we can read the whole thing without worrying too much about
+ * the overhead.
+ */
+#ifndef DEFAULT_THREAD_LIMIT
+#define DEFAULT_THREAD_LIMIT 64
+#endif
+
+/* Admin can't tune ThreadLimit beyond MAX_THREAD_LIMIT.  We want
+ * some sort of compile-time limit to help catch typos.
+ */
+#ifndef MAX_THREAD_LIMIT
+#define MAX_THREAD_LIMIT 100000
+#endif
+
+#define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
+
+/**
+ * typedefs
+ */
+/* data retained by prefork across load/unload of the module
+ * allocated on first call to pre-config hook; located on
+ * subsequent calls to pre-config hook
+ */
+typedef struct motorz_poller_t motorz_poller_t;
+
+typedef struct motorz_core_t motorz_core_t;
+struct motorz_core_t {
+    ap_unixd_mpm_retained_data *mpm;
+
+    /* ServerLimit/ThreadLimit as first configured: the scoreboard is sized
+     * from them once and survives graceful restarts, so they cannot change.
+     */
+    int first_server_limit;
+    int first_thread_limit;
+    int maxclients_reported;
+    /*
+     * The max child slot ever assigned, preserved across restarts.  Necessary
+     * to deal with MaxRequestWorkers changes across AP_SIG_GRACEFUL restarts.  We
+     * use this value to optimize routines that have to scan the entire scoreboard.
+     */
+    int max_daemons_limit;
+    apr_pool_t *pool;
+    /* Worker thread pool, shared by all pollers in this child. */
+    apr_thread_pool_t *workers;
+    /* Per-child array of pollers. Each owns its own pollset + timer ring +
+     * recycle list, so the single-poll-thread throughput ceiling scales with
+     * num_pollers. A connection is bound to one poller for its lifetime
+     * (scon->poller) and always re-arms there. See MOTORZ.README.
+     */
+    motorz_poller_t **pollers;
+    int num_pollers;
+};
+
+typedef struct motorz_recycled_pool motorz_recycled_pool;
+struct motorz_recycled_pool {
+    apr_pool_t *pool;
+    motorz_recycled_pool *next;
+};
+
+/* One poll thread's context. Each poller owns its pollset, timer ring and the
+ * mutex guarding that ring, plus its own lock-free transaction-pool recycle
+ * list and listener-admission state -- so pollers do not contend with each
+ * other. A connection is permanently bound to the poller that accepted it
+ * (scon->poller), which is what makes connection sharding across pollers
+ * correct: it always re-arms in, and recycles to, its own poller.
+ */
+struct motorz_poller_t {
+    motorz_core_t *mz;            /* back-pointer to the shared child core */
+    int index;                   /* 0 .. num_pollers-1 */
+    apr_pool_t *pool;            /* subpool of mz->pool for this poller */
+    apr_thread_t *thread;        /* the poll thread running motorz_poller_main */
+    apr_pollset_t *pollset;
+    apr_skiplist *timeout_ring;
+    apr_thread_mutex_t *mtx;     /* guards this poller's timeout_ring */
+    /* Lock-free (CAS) recycle free-list: multi-producer push (any worker), but
+     * single-consumer pop (THIS poller's thread only) -- the same MPSC
+     * contract as mpm_fdqueue.c's ap_queue_info_{push,pop}_pool.
+     */
+    struct motorz_recycled_pool *volatile recycled_pools;
+    apr_uint32_t num_recycled;
+    /* Listener admission control (poller that owns the listeners only). */
+    apr_pollfd_t **listener_pfds;
+    int num_listener_pfds;
+    int listeners_disabled;
+    apr_time_t last_enable_failure;  /* rate limits the error for it */
+};
+
+typedef struct motorz_child_bucket motorz_child_bucket;
+struct motorz_child_bucket {
+    ap_pod_t *pod;
+    ap_listen_rec *listeners;
+};
+
+typedef enum
+{
+    PT_CSD,
+    PT_ACCEPT,
+    PT_USER
+} motorz_poll_type_e;
+
+typedef struct motorz_sb_t motorz_sb_t;
+struct motorz_sb_t
+{
+    motorz_poll_type_e type;
+    void *baton;
+};
+
+typedef void (*motorz_timer_cb) (motorz_core_t *mz, void *baton);
+typedef void (*motorz_io_sock_cb) (motorz_core_t *mz, apr_socket_t *sock,
+                                   int flags, void *baton);
+typedef void (*motorz_io_file_cb) (motorz_core_t *mz, apr_socket_t *sock,
+                                   int flags, void *baton);
+
+
+typedef struct motorz_timer_t motorz_timer_t;
+struct motorz_timer_t
+{
+    apr_time_t expires;
+    motorz_timer_cb cb;
+    void *baton;
+    apr_pool_t *pool;
+    motorz_core_t *mz;
+    motorz_poller_t *poller;     /* the poller whose ring this timer is in */
+};
+
+typedef struct motorz_conn_t motorz_conn_t;
+struct motorz_conn_t
+{
+    apr_pool_t *pool;
+    motorz_core_t *mz;
+    /* The poller this connection does its I/O on for its whole lifetime: it
+     * re-arms in, and times out on, this poller's pollset/ring. Sharded across
+     * pollers at accept time to spread load. */
+    motorz_poller_t *poller;
+    /* The poller that owns this connection's transaction-pool recycling -- the
+     * poller that accepted it (and popped its ptrans). Recycling must return to
+     * the same single-consumer free-list it came from, which (unlike I/O) is
+     * NOT sharded: only the accepting poller pops, so only it may be the home.
+     */
+    motorz_poller_t *pool_poller;
+    apr_socket_t *sock;
+    apr_bucket_alloc_t *ba;
+    ap_sb_handle_t *sbh;
+    /** connection record this struct refers to */
+    conn_rec *c;
+    /** request record (if any) this struct refers to */
+    request_rec *r;
+    /** is the current conn_rec suspended by a module? (atomic: set by the
+     *  worker that parks it, cleared by whoever hands it back) */
+    apr_uint32_t suspended;
+    /** suspend_connection hooks ran and the resume_connection ones have not */
+    int suspend_notified;
+    /** has ap_start_lingering_close() been called for this conn? */
+    int linger_started;
+    /** absolute end of the lingering close; set once, only ever shortened */
+    apr_time_t linger_deadline;
+    /** poll file descriptor information */
+    apr_pollfd_t pfd;
+    /** public parts of the connection state */
+    conn_state_t cs;
+    /** timer associated with the connection */
+    motorz_timer_t timer;
+};
