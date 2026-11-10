@@ -401,6 +401,21 @@ static apr_status_t motorz_conn_pool_cleanup(void *baton)
     return APR_SUCCESS;
 }
 
+/* c->pool's: a module can end a suspended connection by destroying that pool
+ * instead of handing it back, and then it never reaches motorz_conn_done().
+ * Pre-cleanup, so that the resume hooks still see the request. */
+static apr_status_t motorz_conn_pool_pre_cleanup(void *baton)
+{
+    motorz_conn_t *scon = (motorz_conn_t *)baton;
+
+    if (apr_atomic_cas32(&scon->suspended, 0, 1) == 1) {
+        motorz_notify_resume(scon, 1);
+        apr_atomic_dec32(&conns_open);
+    }
+
+    return APR_SUCCESS;
+}
+
 static APR_INLINE apr_interval_time_t
 motorz_get_timeout(motorz_conn_t *scon)
 {
@@ -472,6 +487,8 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
     }
 
     scon->c->cs = &scon->cs;
+    apr_pool_pre_cleanup_register(scon->c->pool, scon,
+                                  motorz_conn_pool_pre_cleanup);
     sb = apr_pcalloc(scon->pool, sizeof(motorz_sb_t));
 
     /* Publish this scon in the connection's module config so the
@@ -1106,17 +1123,12 @@ static void motorz_pre_read_request(request_rec *r, conn_rec *c)
  */
 static void motorz_suspend_connection(motorz_conn_t *scon)
 {
-    conn_rec *c = scon->c;
-
     ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, ap_server_conf,
                  "motorz_suspend_connection(): scon: %pp", scon);
 
+    motorz_notify_suspend(scon);
+    /* Last: from here on the module may end the connection. */
     apr_atomic_set32(&scon->suspended, 1);
-    ap_run_suspend_connection(c, scon->r);
-    /* sbh is owned by the (now parked) connection; drop our reference like
-     * mpm_event's notify_suspend() does.
-     */
-    c->sbh = NULL;
 }
 
 static apr_status_t motorz_io_process(motorz_conn_t *scon)
