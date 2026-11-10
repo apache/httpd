@@ -1335,7 +1335,7 @@ int md_cert_covers_md(md_cert_t *cert, const md_t *md)
 
 const char *md_cert_get_issuer_name(const md_cert_t *cert, apr_pool_t *p)
 {
-    X509_NAME *xname = X509_get_issuer_name(cert->x509);
+    const X509_NAME *xname = X509_get_issuer_name(cert->x509);
     if (xname) {
       char *name, *s = X509_NAME_oneline(xname, NULL, 0);
       name = apr_pstrdup(p, s);
