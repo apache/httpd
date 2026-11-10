@@ -434,6 +434,18 @@ jobs:
               TEST_PYTEST=1
               PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
+          - name: OpenSSL 4.1
+            config: --enable-mods-shared=most --enable-maintainer-mode --enable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
+            env: |
+              TEST_OPENSSL=4.1.0
+              OPENSSL_CONFIG=
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--without-crypto"
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/ssl
+          # -------------------------------------------------------------------------
     runs-on: ${{ matrix.os == '' && 'ubuntu-latest' || matrix.os }}
     timeout-minutes: 30
     env:

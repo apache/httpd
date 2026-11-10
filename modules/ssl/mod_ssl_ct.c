@@ -81,6 +81,9 @@
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 #define ASN1_STRING_get0_data(x)   ((x)->data)
 #endif
+#if OPENSSL_VERSION_NUMBER < 0x40100000L
+#define ASN1_STRING_get_length(x)  ((size_t)ASN1_STRING_length(x))
+#endif
 
 #if OPENSSL_VERSION_NUMBER >= 0x40000000L
 #define SSL_CT_X509_EXT_CONST const
@@ -2041,10 +2044,10 @@ static int ocsp_resp_cb(SSL *ssl, void *arg)
 
         p = ASN1_STRING_get0_data(oct1);
         if ((oct2 = d2i_ASN1_OCTET_STRING(NULL, &p,
-                                          ASN1_STRING_length(oct1))) != NULL) {
+                                          ASN1_STRING_get_length(oct1))) != NULL) {
             conncfg->ocsp_has_sct_list = 1;
             conncfg->peer_ct_aware = 1;
-            conncfg->ocsp_sct_list_size = ASN1_STRING_length(oct2);
+            conncfg->ocsp_sct_list_size = ASN1_STRING_get_length(oct2);
             conncfg->ocsp_sct_list = apr_pmemdup(c->pool,
                                                  ASN1_STRING_get0_data(oct2),
                                                  conncfg->ocsp_sct_list_size);
@@ -2169,8 +2172,8 @@ static int ssl_ct_ssl_proxy_verify(server_rec *s, conn_rec *c,
             ASN1_OCTET_STRING *octet = (ASN1_OCTET_STRING *)ext_struct;
             conncfg->cert_sct_list = apr_pmemdup(p,
                                                  ASN1_STRING_get0_data(octet),
-                                                 ASN1_STRING_length(octet));
-            conncfg->cert_sct_list_size = ASN1_STRING_length(octet);
+                                                 ASN1_STRING_get_length(octet));
+            conncfg->cert_sct_list_size = ASN1_STRING_get_length(octet);
             ASN1_OCTET_STRING_free(octet); /* UNDOC */
         }
     }
