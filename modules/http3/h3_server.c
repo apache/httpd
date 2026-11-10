@@ -65,6 +65,7 @@ typedef struct
     int* fds;
     int n;
     apr_port_t port;
+    int routed; /* an eBPF program routes the packets by connection ID */
 } h3_parent_socket;
 
 /* The same count as httpd for ListenCoresBucketsRatio: online cores / ratio. Some MPMs count their buckets after post_config.
@@ -94,6 +95,7 @@ static h3_parent_socket* parent_socket(server_rec* s)
 
 /* The children inherit them; the child that binds the abstract name of a bucket owns its socket, and exit releases it. */
 static int owner_lock = -1;
+static int child_bucket = -1;
 
 static int own_port(apr_port_t port, int bucket)
 {
@@ -118,6 +120,7 @@ static apr_status_t acquire_port(apr_pool_t* pool, server_rec* s, h3_server_conf
         {
             if (own_port(ps->port, i))
             {
+                child_bucket = i;
                 *fd = ps->fds[i];
                 return APR_SUCCESS;
             }
@@ -284,6 +287,17 @@ int h3_server_buckets(server_rec* s)
 #endif
 }
 
+int h3_server_route_bucket(server_rec* s)
+{
+#ifdef __linux__
+    h3_parent_socket* ps = parent_socket(s);
+    return ps && ps->routed ? child_bucket : -1;
+#else
+    (void)s;
+    return -1;
+#endif
+}
+
 void h3_server_post_config(server_rec* s)
 {
     if (!h3_server_secret(s))
@@ -310,6 +324,7 @@ void h3_server_post_config(server_rec* s)
         apr_pool_destroy(ps->pool); /* closes the old sockets */
         ps->pool = NULL;
         ps->n = 0;
+        ps->routed = 0;
     }
     if (!conf || ps->n)
     {
@@ -336,6 +351,19 @@ void h3_server_post_config(server_rec* s)
     }
     ps->n = n;
     ps->port = conf->h3_port;
+    if (n > 1)
+    {
+        char err[128];
+        ps->routed = h3_socket_route_by_cid(ps->fds, n, err, sizeof(err));
+        if (ps->routed)
+        {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, vhost, "mod_http3: %d QUIC sockets, packets routed by connection ID", n);
+        }
+        else
+        {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, vhost, "mod_http3: QUIC routing by connection ID is off (%s); clients get disable_active_migration", err);
+        }
+    }
 #else
     (void)s;
 #endif

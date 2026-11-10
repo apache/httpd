@@ -140,6 +140,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     apr_thread_pool_idle_wait_set(io->h3_worker_pool, apr_time_from_sec(conf->h3_max_worker_idle_seconds));
 
     char qerr[H3Q_ERRLEN] = {0};
+    int bucket = h3_server_route_bucket(s);
     h3q_config qcfg = {
         .ssl_ctx = conf->ssl_ctx,
         .pool = pchild,
@@ -150,7 +151,9 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         .secret = h3_server_secret(s),
         .early_data = (conf->h3_early_data == H3_FLAG_ON),
         .address_validation = (conf->h3_address_validation != H3_FLAG_OFF),
-        .disable_migration = h3_server_buckets(s) > 1,
+        .route = bucket >= 0,
+        .bucket = (uint8_t)(bucket >= 0 ? bucket : 0),
+        .disable_migration = h3_server_buckets(s) > 1 && bucket < 0,
     };
     io->qengine = h3q_engine_create(&qcfg, udp_fd, qerr, sizeof(qerr));
     if (!io->qengine)

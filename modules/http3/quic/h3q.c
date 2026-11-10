@@ -332,6 +332,7 @@ static void send_retry(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
     {
         return;
     }
+    h3q_cid_route(engine, scid.data);
     ngtcp2_ssize tokenlen = ngtcp2_crypto_generate_retry_token2(token, engine->secret, sizeof(engine->secret), hd->version, path->remote.addr, path->remote.addrlen, &scid, &hd->dcid, h3q_now());
     if (tokenlen < 0)
     {
@@ -463,6 +464,8 @@ h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size
     engine->early_data = cfg->early_data;
     engine->local_len = (socklen_t)sizeof(engine->local);
     engine->disable_migration = cfg->disable_migration;
+    engine->route = cfg->route;
+    engine->bucket = cfg->bucket;
     engine->sock_ecn = -1;
     if (cfg->secret)
     {

@@ -200,6 +200,7 @@ static int cb_get_new_connection_id(ngtcp2_conn* qconn, ngtcp2_cid* cid, uint8_t
         return NGTCP2_ERR_CALLBACK_FAILURE;
     }
     cid->datalen = cidlen;
+    h3q_cid_route(conn->engine, cid->data);
     if (ngtcp2_crypto_generate_stateless_reset_token(token, conn->engine->secret, sizeof(conn->engine->secret), cid) != 0)
     {
         return NGTCP2_ERR_CALLBACK_FAILURE;
@@ -265,6 +266,7 @@ h3q_conn* h3q_conn_new(h3q_engine* engine, const ngtcp2_pkt_hd* hd, const ngtcp2
         h3q_conn_free(conn);
         return NULL;
     }
+    h3q_cid_route(engine, scid.data);
     ngtcp2_path_storage_init(&conn->path, path->local.addr, path->local.addrlen, path->remote.addr, path->remote.addrlen, NULL);
 
     ngtcp2_settings settings;

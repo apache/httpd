@@ -600,6 +600,7 @@ SET(mod_http3_extra_sources
   modules/http3/h3_io.c            modules/http3/h3_request.c
   modules/http3/h3_server.c        modules/http3/h3_session.c
   modules/http3/h3_socket.c        modules/http3/h3_socket_os.c
+  modules/http3/h3_socket_bpf.c
   modules/http3/h3_stream.c        modules/http3/h3_threads.c
   modules/http3/quic/h3q.c         modules/http3/quic/h3q_conn.c
   modules/http3/quic/h3q_stream.c

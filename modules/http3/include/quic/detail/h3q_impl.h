@@ -68,7 +68,18 @@ struct h3q_engine
     unsigned address_validation : 1;
     unsigned early_data : 1;
     unsigned disable_migration : 1;
+    unsigned route : 1;
+    uint8_t bucket;
 };
+
+/* Byte 0 of a server connection ID selects the socket (h3_socket_route_by_cid). */
+static inline void h3q_cid_route(const h3q_engine* engine, uint8_t* cid)
+{
+    if (engine->route)
+    {
+        cid[0] = engine->bucket;
+    }
+}
 
 struct h3q_conn
 {

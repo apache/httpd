@@ -52,6 +52,9 @@ typedef struct h3q_config
     unsigned early_data : 1;
     /** Tell clients not to migrate: with more than one SO_REUSEPORT socket a new address can reach another child. */
     unsigned disable_migration : 1;
+    /** Put @p bucket in byte 0 of each server connection ID, for the eBPF socket router. */
+    unsigned route : 1;
+    uint8_t bucket;
 } h3q_config;
 
 /**

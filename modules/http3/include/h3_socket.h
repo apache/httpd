@@ -41,6 +41,19 @@
 apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd);
 
 /**
+ * Route QUIC packets by connection ID: attach an SK_REUSEPORT eBPF program
+ * to the SO_REUSEPORT group of @p fds. A packet goes to fds[i] when byte 0
+ * of its destination connection ID is i; else the kernel hash applies.
+ * Needs Linux 4.19+ and CAP_SYS_ADMIN or CAP_BPF; call it as root.
+ * @param fds    The bound sockets of one group, in bucket order.
+ * @param n      Number of sockets, 2 to 256.
+ * @param err    Buffer for the reason on failure.
+ * @param errlen Capacity of @p err.
+ * @return 1 if attached, 0 if not (nothing changed).
+ */
+int h3_socket_route_by_cid(const int* fds, int n, char* err, size_t errlen);
+
+/**
  * Close a UDP socket previously returned by h3_socket_open.
  * Safe to call with a negative fd (no-op).
  * @param fd The OS-level fd to close.

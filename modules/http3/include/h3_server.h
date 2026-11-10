@@ -53,6 +53,12 @@ const unsigned char* h3_server_secret(server_rec* s);
 int h3_server_buckets(server_rec* s);
 
 /**
+ * @return The bucket index of this child when an eBPF program routes the
+ *         QUIC packets by connection ID, else -1.
+ */
+int h3_server_route_bucket(server_rec* s);
+
+/**
  * Child-stopping hook: stop retrying for the QUIC port, then either drain the
  * live connections (graceful) or tear the listener down at once (immediate).
  * No-op if the child never owned the listener.
