@@ -6,10 +6,7 @@ from .env import H3Conf
 class TestStreamLimit:
 
     def _setup(self, env):
-        # the H3 certificate comes from mod_ssl, on the host with h3 in Protocols
-        H3Conf(env).add_h3_vhost(with_certificate=False, directives=[
-            "Protocols h3 http/1.1",
-        ]).add("LogLevel http3:debug").install()
+        H3Conf(env).add_h3_vhost().add("LogLevel http3:debug").install()
         assert env.apache_restart() == 0
         assert env.wait_udp_port(env.https_port)
 

@@ -23,9 +23,6 @@ H3HandshakeTimeout 30
 
     Protocols h3 h2 http/1.1
 
-    H3CertificatePath     conf/localhost-fullchain.crt
-    H3CertificateKeyPath  conf/localhost.key
-
     DocumentRoot htdocs
     <Directory htdocs>
         Require all granted
