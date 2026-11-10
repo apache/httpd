@@ -1176,6 +1176,13 @@ SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_
 SET_TARGET_PROPERTIES(ApacheMonitor PROPERTIES LINK_FLAGS "/MANIFEST:NO") # do not emit intermediate manifest
 TARGET_LINK_LIBRARIES(ApacheMonitor ${EXTRA_LIBS} ${HTTPD_SYSTEM_LIBS} comctl32 wtsapi32)
 
+ADD_EXECUTABLE(wintty support/win32/wintty.c build/win32/httpd.rc)
+SET(install_targets ${install_targets} wintty)
+SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:wintty>)
+SET_TARGET_PROPERTIES(wintty PROPERTIES COMPILE_FLAGS "-DAPP_FILE -DLONG_NAME=wintty -DBIN_NAME=wintty.exe ${EXTRA_COMPILE_FLAGS}")
+TARGET_LINK_LIBRARIES(wintty ${EXTRA_LIBS} ${HTTPD_SYSTEM_LIBS})
+
+
 ###########  CONFIGURATION FILES ###########
 # Set up variables used in the .conf file templates
 SET(LoadModule          "${LoadModules}")
