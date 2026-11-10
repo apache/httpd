@@ -191,8 +191,16 @@ if defined VCPKG_DIR (
 
 rem Try vcpkg on PATH (e.g. GitHub Actions has C:\vcpkg)
 set "VCPKG_EXE="
+
+rem Try vcpkg on PATH (e.g. GitHub Actions has C:\vcpkg), skipping Visual Studio copies
+set "VCPKG_EXE="
 for /f "delims=" %%V in ('where vcpkg.exe 2^>nul') do (
-    if not defined VCPKG_EXE set "VCPKG_EXE=%%V"
+    if not defined VCPKG_EXE (
+        echo "%%V" | findstr /i /c:"Microsoft Visual Studio" >nul 2>&1
+        if errorlevel 1 (
+            set "VCPKG_EXE=%%V"
+        )
+    )
 )
 if defined VCPKG_EXE (
     echo install_tools.bat: using vcpkg from PATH: "!VCPKG_EXE!" >&2

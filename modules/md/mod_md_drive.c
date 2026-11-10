@@ -26,6 +26,7 @@
 #include <http_request.h>
 #include <http_log.h>
 
+#include "ap_mpm.h"
 #include "mod_watchdog.h"
 
 #include "md.h"
@@ -67,6 +68,15 @@ struct md_renew_ctx_t {
     
     apr_array_header_t *jobs;
 };
+
+static int server_is_stopping(void *baton)
+{
+    int state;
+
+    (void)baton;
+    return APR_SUCCESS == ap_mpm_query(AP_MPMQ_MPM_STATE, &state)
+        && AP_MPMQ_STOPPING == state;
+}
 
 static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *ptemp)
 {
@@ -202,6 +212,15 @@ static void process_drive_job(md_renew_ctx_t *dctx, md_job_t *job, apr_pool_t *p
                 md_job_notify(job, "renewed", result);
             }
         }
+        else if (APR_STATUS_IS_EINTR(result->status)) {
+            /* Not an error, so neither logged nor reported as one. Leave the
+             * last result in the job as it was. */
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, dctx->s,
+                         "md(%s): renewal interrupted by shutdown", job->mdomain);
+            if (job->last_result) md_result_assign(result, job->last_result);
+            else md_result_set(result, APR_SUCCESS, NULL);
+            goto leave;
+        }
         else {
             ap_log_error( APLOG_MARK, APLOG_ERR, result->status, dctx->s, APLOGNO(10056) 
                          "processing %s: %s", job->mdomain, result->detail);
@@ -263,6 +282,7 @@ static apr_status_t run_watchdog(int state, void *baton, apr_pool_t *ptemp)
      */
     switch (state) {
         case AP_WATCHDOG_STATE_STARTING:
+            md_util_interrupt_set(server_is_stopping, NULL);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, dctx->s, APLOGNO(10054)
                          "md watchdog start, auto drive %d mds", dctx->jobs->nelts);
             break;

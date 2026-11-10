@@ -680,10 +680,26 @@ void md_job_end_run(md_job_t *job, md_result_t *result)
         job->dirty = 1;
         md_job_log_append(job, "finished", NULL, NULL);
     }
+    else if (APR_STATUS_IS_EINTR(result->status)) {
+        /* Cancelled by a shutdown, not a failed run: no error is counted
+         * and no delay applies, the next process starts over. */
+        job->next_run = 0;
+        job->dirty = 1;
+    }
     else {
+        apr_time_t now = apr_time_now();
+        apr_time_t retry_at = result->retry_at;
+
         ++job->error_runs;
         job->dirty = 1;
-        job->next_run = apr_time_now() + md_job_delay_on_errors(job, job->error_runs, result->problem);
+        job->next_run = now + md_job_delay_on_errors(job, job->error_runs, result->problem);
+        /* honour a Retry-After of the CA, but not for longer than we ever back off */
+        if (retry_at > now + apr_time_from_sec(24*60*60)) {
+            retry_at = now + apr_time_from_sec(24*60*60);
+        }
+        if (retry_at > job->next_run) {
+            job->next_run = retry_at;
+        }
     }
     job_observation_end(job);
 }

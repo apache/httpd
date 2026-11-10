@@ -228,7 +228,7 @@ static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t 
     apr_thread_mutex_unlock(session->lock);
     if (rv != 0)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", h3s->stream_id, rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", (apr_int64_t)h3s->stream_id, rv);
         return APR_EGENERAL;
     }
     wake_event_thread();
@@ -321,7 +321,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
 
         const char* method = h3s->method ? h3s->method : "?";
         const char* overflow = h3s->request_body_overflow ? " (overflow)" : "";
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3 stream %" APR_INT64_T_FMT " %s body=%" APR_SIZE_T_FMT "%s", h3s->stream_id, method, h3s->request_body_len, overflow);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3 stream %" APR_INT64_T_FMT " %s body=%" APR_SIZE_T_FMT "%s", (apr_int64_t)h3s->stream_id, method, h3s->request_body_len, overflow);
     }
 
     apr_pool_t* c3reqpool = NULL;
@@ -405,11 +405,11 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     int64_t sid = h3s->stream_id;
     if (response_rv != APR_SUCCESS && response_rv != APR_ECONNABORTED)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, response_rv, s, "failed to queue response for stream %" APR_INT64_T_FMT, sid);
+        ap_log_error(APLOG_MARK, APLOG_ERR, response_rv, s, "failed to queue response for stream %" APR_INT64_T_FMT, (apr_int64_t)sid);
     }
     else if (response_rv == APR_SUCCESS)
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, sid, status, body_len);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, (apr_int64_t)sid, status, body_len);
     }
 
     apr_pool_destroy(c->pool);
@@ -454,6 +454,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     conn_rec* c = apr_pcalloc(cpool, sizeof(*c));
     *c = *session->c;
     c->pool = cpool;
+    c->id = (long)apr_atomic_inc32(&h3_conn_id_seq);
     c->master = session->c;
     c->sbh = NULL;
 #if H3_DEVEL

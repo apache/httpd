@@ -184,7 +184,7 @@ static void mark_ngh3_dead(h3_session* session, const char* op, int64_t stream_i
     session->ngh3_dead = 1;
     session->abort_quic_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
     session->abort_reason = nghttp3_strerror((int)liberr);
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "%s failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, op, stream_id, session->abort_reason, (apr_int64_t)liberr, session->abort_quic_error_code);
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "%s failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, op, (apr_int64_t)stream_id, session->abort_reason, (apr_int64_t)liberr, (apr_uint64_t)session->abort_quic_error_code);
 }
 
 /* nghttp3 reports an RFC 9114 4.x header violation as one of these non-fatal read errors. */
@@ -197,7 +197,7 @@ static int is_malformed_request_error(nghttp3_ssize liberr)
 static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3_ssize liberr)
 {
     uint64_t app_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "malformed HTTP/3 request on stream %" APR_INT64_T_FMT " (%s); rejecting with stream error 0x%" APR_UINT64_T_HEX_FMT, h3s->stream_id, nghttp3_strerror((int)liberr), app_error_code);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "malformed HTTP/3 request on stream %" APR_INT64_T_FMT " (%s); rejecting with stream error 0x%" APR_UINT64_T_HEX_FMT, (apr_int64_t)h3s->stream_id, nghttp3_strerror((int)liberr), (apr_uint64_t)app_error_code);
     if (h3s->qstream)
     {
         h3q_stream_reset(h3s->qstream, app_error_code);
@@ -238,7 +238,7 @@ static void feed_stream_fin(h3_session* session, h3_stream* h3s)
         }
         else
         {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "non-fatal nghttp3 error %" APR_INT64_T_FMT " on stream %" APR_INT64_T_FMT "; skipping further reads", (apr_int64_t)consumed, h3s->stream_id);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "non-fatal nghttp3 error %" APR_INT64_T_FMT " on stream %" APR_INT64_T_FMT "; skipping further reads", (apr_int64_t)consumed, (apr_int64_t)h3s->stream_id);
             h3s->skip_ngh3_read = 1;
         }
     }
@@ -330,7 +330,7 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
                     h3s->done = 1;
                     break;
                 }
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "non-fatal nghttp3 error %" APR_INT64_T_FMT " on stream %" APR_INT64_T_FMT "; skipping further reads", (apr_int64_t)consumed, h3s->stream_id);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "non-fatal nghttp3 error %" APR_INT64_T_FMT " on stream %" APR_INT64_T_FMT "; skipping further reads", (apr_int64_t)consumed, (apr_int64_t)h3s->stream_id);
                 h3s->skip_ngh3_read = 1;
                 break;
             }
