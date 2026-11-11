@@ -524,7 +524,7 @@ MDomain example2.org auto
             <p>
                 Les URLs auxquelles l'autorité de certication offre son service.
 		Plutôt que l'URL proprement dite, vous pouvez spécifier
-		'letsencrypt' ou 'buypass'.
+		'letsencrypt' ou 'actalis' ou 'buypass'.
             </p><p>
                 Si vous spécifiez plusieurs URLs, chacune d'entre elles est
 		testée en mode tourniquet ("round-robin") après un certain

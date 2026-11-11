@@ -164,43 +164,49 @@ fi
 
 # Build the requested version of OpenSSL if it's not already installed
 # in the cached ~/root
-if test -v TEST_OPENSSL3; then
-    # The cache key covers $TEST_OPENSSL3, $OPENSSL_CONFIG and, for a
+if test -v TEST_OPENSSL; then
+    # The cache key covers $TEST_OPENSSL, $OPENSSL_CONFIG and, for a
     # branch build, the resolved commit, so an install found here is
     # current.  Without $ROOTID it does not, so the commit built is
     # recorded, and a build of a branch is redone if the branch has moved.
     if ! test -v ROOTID; then
-        if test -v TEST_OPENSSL3_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
-            latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
+        if test -v TEST_OPENSSL_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL}; then
+            latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL_BRANCH} | cut -f1`
             : Got branch latest commit ${latest}
-            if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+            if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL}; then
                 : Cached repos already at ${latest}
             else
                 : Forcing rebuild
-                rm -f $HOME/root/openssl-is-${TEST_OPENSSL3}
+                rm -f $HOME/root/openssl-is-${TEST_OPENSSL}
             fi
         fi
-        test -f $HOME/root/openssl-is-${TEST_OPENSSL3} || rm -rf $HOME/root/openssl3
+        test -f $HOME/root/openssl-is-${TEST_OPENSSL} || rm -rf $HOME/root/openssl
     fi
 
-    if ! test -d $HOME/root/openssl3; then
+    if ! test -d $HOME/root/openssl; then
         mkdir -p build/openssl
         pushd build/openssl
-           if test -v TEST_OPENSSL3_BRANCH; then
-               git clone --depth=1 -b $TEST_OPENSSL3_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL3}
+           if test -v TEST_OPENSSL_BRANCH; then
+               git clone --depth=1 -b $TEST_OPENSSL_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL}
                # Build the commit named in the cache key, not whatever
                # the branch tip has become since it was resolved.
                if test -n "${OPENSSL_COMMIT-}"; then
-                   git -C openssl-${TEST_OPENSSL3} fetch -q --depth=1 origin ${OPENSSL_COMMIT}
-                   git -C openssl-${TEST_OPENSSL3} checkout -q ${OPENSSL_COMMIT}
+                   git -C openssl-${TEST_OPENSSL} fetch -q --depth=1 origin ${OPENSSL_COMMIT}
+                   git -C openssl-${TEST_OPENSSL} checkout -q ${OPENSSL_COMMIT}
                fi
            else
-               curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
+               # Release tags were named OpenSSL_1_1_1w before 3.0.
+               case ${TEST_OPENSSL} in
+               1.*) tag=OpenSSL_`echo ${TEST_OPENSSL} | tr . _` ;;
+               *) tag=openssl-${TEST_OPENSSL} ;;
+               esac
+               curl -L "https://github.com/openssl/openssl/releases/download/${tag}/openssl-${TEST_OPENSSL}.tar.gz" |
                    tar -xzf -
            fi
-           cd openssl-${TEST_OPENSSL3}
-           # Build with RPATH so ./bin/openssl doesn't require $LD_LIBRARY_PATH
-           ./Configure --prefix=$HOME/root/openssl3 \
+           cd openssl-${TEST_OPENSSL}
+           # Build with RPATH so ./bin/openssl doesn't require $LD_LIBRARY_PATH.
+           # ./config, since before 3.0 ./Configure needs an explicit target.
+           ./config --prefix=$HOME/root/openssl \
                        shared no-tests ${OPENSSL_CONFIG} \
                        '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
@@ -208,9 +214,9 @@ if test -v TEST_OPENSSL3; then
            if ! test -v ROOTID; then
                if test -d .git; then
                    : Caching git commit hash:
-                   git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL3}
+                   git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL}
                else
-                   touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+                   touch $HOME/root/openssl-is-${TEST_OPENSSL}
                fi
            fi
        popd
@@ -218,11 +224,11 @@ if test -v TEST_OPENSSL3; then
 
     # Point APR/APR-util at the installed version of OpenSSL.
     if test -v APU_VERSION; then
-        APU_CONFIG="${APU_CONFIG} --with-openssl=$HOME/root/openssl3"
+        APU_CONFIG="${APU_CONFIG} --with-openssl=$HOME/root/openssl"
     elif test -v APR_VERSION; then
-        APR_CONFIG="${APR_CONFIG} --with-openssl=$HOME/root/openssl3"
+        APR_CONFIG="${APR_CONFIG} --with-openssl=$HOME/root/openssl"
     else
-        : Non-system APR/APR-util must be used to build with OpenSSL 3 to avoid mismatch with system libraries
+        : Non-system APR/APR-util must be used to build with OpenSSL to avoid mismatch with system libraries
         exit 1
     fi
 fi
@@ -244,6 +250,28 @@ if test -v TEST_NGHTTP2; then
 
     : -- Using nghttp2 from $HOME/root/nghttp2 --
     grep -H '^Version' $HOME/root/nghttp2/lib/pkgconfig/libnghttp2.pc
+fi
+
+# Build the requested version of curl with HTTP/3, over OpenSSL's QUIC
+# stack and the packaged libnghttp3, if it's not already installed in
+# the cached ~/root. The packaged curl has no HTTP/3.
+if test -v TEST_CURL_H3; then
+    if ! test -x $HOME/root/curl/bin/curl; then
+        mkdir -p build/curl
+        pushd build/curl
+           curl -L "https://curl.se/download/curl-${TEST_CURL_H3}.tar.xz" |
+               tar -xJf -
+           cd curl-${TEST_CURL_H3}
+           ./configure --prefix=$HOME/root/curl --disable-shared \
+                       --with-openssl --with-openssl-quic --with-nghttp3 \
+                       --without-libpsl
+           make $MFLAGS
+           make install
+        popd
+    fi
+
+    : -- Using curl from $HOME/root/curl --
+    $HOME/root/curl/bin/curl -V
 fi
 
 if test -v APR_VERSION; then

@@ -443,7 +443,7 @@ MDomain example2.org auto
         <usage>
             <p>
                 The URL(s) where the CA offers its service.
-                Instead of the actual URL, you may use 'letsencrypt' or 'buypass'.
+                Instead of the actual URL, you may use 'letsencrypt', 'actalis', or 'buypass'.
             </p><p>
                 If you configure more than one URL, each one is tried in a round-robin
                 fashion after a number of failures. You can configure how quickly or

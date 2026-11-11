@@ -17,8 +17,9 @@
 #   ./runtests.sh modules/http2 -k 003 -v
 #   ./runtests.sh -m "not slow"          # markers and -k select across both
 #
-# A path relative to pytest_suite/ (tests/t/php, how the classic suite always
-# printed them) is accepted as well.
+# A path relative to the top of the tree (test/modules/http2, as make and
+# shell completion give it) or to pytest_suite/ (tests/t/php, how the classic
+# suite always printed them) is accepted as well.
 #
 # Environment (each used when the matching --flag is not given):
 #   APXS     path to apxs      (default: the build of this tree, named by the
@@ -78,8 +79,9 @@ fi
 PHP_FPM="${PHP_FPM:-$(discover php-fpm php-fpm8.3 php-fpm83 php-fpm8.2 php-fpm82 || true)}"
 
 # Arguments: a path that does not exist relative to test/ but does relative to
-# pytest_suite/ is a classic-suite path. Everything else is passed on as is,
-# the values of options included (`-k tests` must stay `-k tests`).
+# pytest_suite/ is a classic-suite path; one which only exists with a leading
+# test/ removed is relative to the top of the tree. Everything else is passed
+# on as is, the values of options included (`-k tests` must stay `-k tests`).
 # (A ::nodeid suffix is not part of the path.)
 have_server=0
 have_php=0
@@ -110,8 +112,12 @@ while [ "$n" -gt 0 ]; do
             fi ;;
         -*) ;;
         *)  p="${arg%%::*}"
-            if [ ! -e "$p" ] && [ -e "pytest_suite/$p" ]; then
+            if [ -e "$p" ]; then
+                :
+            elif [ -e "pytest_suite/$p" ]; then
                 arg="pytest_suite/$arg"
+            elif [ "${p#test/}" != "$p" ] && [ -e "${p#test/}" ]; then
+                arg="${arg#test/}"
             fi
             ;;
     esac

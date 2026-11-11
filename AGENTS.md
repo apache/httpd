@@ -55,10 +55,12 @@ Then verify the target actually shows up in the regenerated `Makefile`
 before relying on it (e.g. `grep '^new-target:' Makefile`).
 
 If any autoconf-level input has changed (`configure.in`, an `.m4` file,
-etc.), rerun `configure` exactly as it was originally invoked, rather than
-guessing the flags:
+etc.), regenerate `configure` with `buildconf` (nothing in the build does
+this for you), then rerun `configure` exactly as it was originally invoked,
+rather than guessing the flags:
 
 ```
+./buildconf --with-apr=/path/to/apr
 ./config.nice
 ```
 
@@ -144,6 +146,14 @@ doubt, ask rather than adding one by reflex.
 Before creating a pull request, show the proposed subject and description
 and wait for approval. Pushing the branch first is fine; it is the PR text
 that needs confirming.
+
+Push the branch to the contributor's own fork, never to the `apache/httpd`
+remote (commonly `origin`). Inspect `git remote -v` and choose the remote
+whose URL points at the fork (e.g. `github.com:<user>/httpd.git`); if none
+exists, ask rather than guessing. The PR is then opened from the fork branch
+against `apache/httpd` `trunk` (`--head <user>:<branch>`). If a branch was
+pushed to the `apache/httpd` remote by mistake, tell the user so they can
+delete it.
 
 Adding commits to a PR that is already pushed is fine as long as they are
 covered by the workflows' `paths-ignore` and so will not trigger CI:

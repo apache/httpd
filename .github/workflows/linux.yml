@@ -167,7 +167,7 @@ jobs:
               APU_CONFIG="--with-crypto"
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
-              PYTEST_ARGS=pytest_suite/tests
+              PYTEST_ARGS=test_build.py pytest_suite/tests
           # -------------------------------------------------------------------------
           # Test against a newer nghttp2 than in the Ubuntu images.
           - name: mod_http2 w/nghttp2 1.68.0
@@ -178,6 +178,20 @@ jobs:
               NO_TEST_FRAMEWORK=1
               TEST_PYTEST=1
               PYTEST_ARGS=modules/http2
+          # -------------------------------------------------------------------------
+          # mod_http3 needs OpenSSL >= 3.5 and libnghttp3, which Ubuntu
+          # 26.04 has. Its curl has no HTTP/3, so one is built from source.
+          # Strict mode turns a skip for a missing dependency into a failure.
+          - name: mod_http3
+            os: ubuntu-26.04
+            config: --enable-mods-shared=reallyall --enable-maintainer-mode --with-mpm=event --enable-http3
+            pkgs: libnghttp3-dev
+            env: |
+              TEST_CURL_H3=8.18.0
+              NO_TEST_FRAMEWORK=1
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/http3
+              PYHTTPD_STRICT_OPTIONAL=1
           # -------------------------------------------------------------------------
           - name: Default
             # Check the defaults expected for a default build on Linux.
@@ -350,11 +364,24 @@ jobs:
           #     APU_VERSION=1.6.5
           # APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
+          # mod_md is built but not tested: its tests need pebble, and
+          # the system libcurl it uses links against OpenSSL 3.
+          - name: OpenSSL 1.1.1 -Werror
+            config: --enable-mods-shared=most --enable-maintainer-mode --enable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
+            env: |
+              TEST_OPENSSL=1.1.1w
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--without-crypto"
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/ssl
+          # -------------------------------------------------------------------------
           - name: OpenSSL 3.0 LTS
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             config-no-output: HAVE_NGHTTP2 HAVE_CURL
             env: |
-              TEST_OPENSSL3=3.0.22
+              TEST_OPENSSL=3.0.22
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
@@ -365,7 +392,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.4.8
+              TEST_OPENSSL=3.4.8
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
               APU_CONFIG="--without-crypto"
@@ -375,7 +402,7 @@ jobs:
           - name: OpenSSL 3.4 no-engine
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             env: |
-              TEST_OPENSSL3=3.4.8
+              TEST_OPENSSL=3.4.8
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -387,7 +414,7 @@ jobs:
             config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=3.5.9
+              TEST_OPENSSL=3.5.9
               OPENSSL_CONFIG=no-engine
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -396,10 +423,22 @@ jobs:
               PYTEST_ARGS=modules/ssl
           # -------------------------------------------------------------------------
           - name: OpenSSL 4.0
-            config: --enable-mods-shared=most --enable-maintainer-mode --disable-md --disable-http2 --disable-ldap --disable-crypto
+            config: --enable-mods-shared=most --enable-maintainer-mode --enable-md --disable-http2 --disable-ldap --disable-crypto
             notest-cflags: -Werror -O2
             env: |
-              TEST_OPENSSL3=4.0.3
+              TEST_OPENSSL=4.0.3
+              OPENSSL_CONFIG=
+              APR_VERSION=1.7.6
+              APU_VERSION=1.6.5
+              APU_CONFIG="--without-crypto"
+              TEST_PYTEST=1
+              PYTEST_ARGS=modules/ssl
+          # -------------------------------------------------------------------------
+          - name: OpenSSL 4.1
+            config: --enable-mods-shared=most --enable-maintainer-mode --enable-md --disable-http2 --disable-ldap --disable-crypto
+            notest-cflags: -Werror -O2
+            env: |
+              TEST_OPENSSL=4.1.0
               OPENSSL_CONFIG=
               APR_VERSION=1.7.6
               APU_VERSION=1.6.5
@@ -477,7 +516,7 @@ jobs:
       if: env.ROOTID != ''
       with:
         path: ~/root
-        key: cache-libs-1-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
+        key: cache-libs-2-${{ env.IMAGEOS }}-${{ runner.arch }}-${{ env.ROOTID }}
     # ~/perl5 does not vary by job: the module list is fixed and the
     # modules are always built with CC=gcc.  It varies only by the perl
     # ABI, which $PERLID identifies, and by the module list itself, so

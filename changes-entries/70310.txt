@@ -1,0 +1,4 @@
+  *) core: Fix conditional requests evaluating If-Modified-Since even
+     when a matching If-None-Match was present, and If-Unmodified-Since
+     even when a satisfied If-Match was present, to comply with RFC 9110.
+     PR 70310 [Arturo Bernal]

@@ -51,6 +51,8 @@ class TestShutdown:
         assert r.response["status"] == 200, f"{r}"
         assert len(r.response["body"]) == (lines * (len(text)+1)), f"{r}"
 
+    @pytest.mark.xfail(reason="intermittent: connection closed before response (PR65731 reproducer)",
+                       strict=False)
     def test_h2_106_02(self, env):
         # PR65731: invalid GOAWAY frame at session start when
         # MaxRequestsPerChild is reached

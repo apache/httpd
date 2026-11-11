@@ -38,7 +38,8 @@
 module AP_MODULE_DECLARE_DATA mpm_motorz_module;
 
 static motorz_core_t *g_motorz_core;
-static int threads_per_child = 16;
+#define DEFAULT_THREADS_PER_CHILD 16
+static int threads_per_child = DEFAULT_THREADS_PER_CHILD;
 static int ap_num_kids = DEFAULT_START_DAEMON;
 /* Number of poll threads per child (#2 / scaling). 0 means "auto": derive from
  * online CPUs in child_main, capped so a small box doesn't over-thread. Each
@@ -399,6 +400,21 @@ static apr_status_t motorz_conn_pool_cleanup(void *baton)
     return APR_SUCCESS;
 }
 
+/* c->pool's: a module can end a suspended connection by destroying that pool
+ * instead of handing it back, and then it never reaches motorz_conn_done().
+ * Pre-cleanup, so that the resume hooks still see the request. */
+static apr_status_t motorz_conn_pool_pre_cleanup(void *baton)
+{
+    motorz_conn_t *scon = (motorz_conn_t *)baton;
+
+    if (apr_atomic_cas32(&scon->suspended, 0, 1) == 1) {
+        motorz_notify_resume(scon, 1);
+        apr_atomic_dec32(&conns_open);
+    }
+
+    return APR_SUCCESS;
+}
+
 static APR_INLINE apr_interval_time_t
 motorz_get_timeout(motorz_conn_t *scon)
 {
@@ -469,6 +485,8 @@ static void *motorz_io_setup_conn(apr_thread_t *thread, void *baton)
     }
 
     scon->c->cs = &scon->cs;
+    apr_pool_pre_cleanup_register(scon->c->pool, scon,
+                                  motorz_conn_pool_pre_cleanup);
     sb = apr_pcalloc(scon->pool, sizeof(motorz_sb_t));
 
     /* Publish this scon in the connection's module config so the
@@ -2790,11 +2808,31 @@ static int motorz_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
                      "could not duplicate listeners");
         return !OK;
     }
-    /* Every bucket needs a child, and the scoreboard (created after this, on
-     * the first start only) is sized from server_limit.
+    /* Every bucket needs a child. The scoreboard is sized from server_limit
+     * when it is created, on the first start only: after that a hard restart
+     * reuses it, so the buckets have to fit in it.
      */
-    if (!mz->mpm->was_graceful && server_limit < mz->mpm->num_buckets) {
-        server_limit = mz->first_server_limit = mz->mpm->num_buckets;
+    if (server_limit < mz->mpm->num_buckets) {
+        if (!ap_scoreboard_image) {
+            server_limit = mz->first_server_limit = mz->mpm->num_buckets;
+        }
+        else {
+            ap_listen_rec *lr;
+
+            ap_log_error(APLOG_MARK, APLOG_WARNING | level_flags, 0,
+                         (startup ? NULL : s), APLOGNO(10680)
+                         "ServerLimit of %d cannot be raised on a restart: "
+                         "using %d listener buckets instead of %d",
+                         server_limit, server_limit, mz->mpm->num_buckets);
+            /* Close the surplus duplicates, or the kernel keeps handing them
+             * connections that nobody accepts. */
+            for (i = server_limit; i < mz->mpm->num_buckets; i++) {
+                for (lr = listen_buckets[i]; lr; lr = lr->next) {
+                    apr_socket_close(lr->sd);
+                }
+            }
+            mz->mpm->num_buckets = ap_num_listen_buckets = server_limit;
+        }
     }
     all_buckets = apr_pcalloc(pconf, mz->mpm->num_buckets *
                                      sizeof(motorz_child_bucket));
@@ -2878,8 +2916,14 @@ static int motorz_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     parent_pid = ap_my_pid = getpid();
 
     ap_listen_pre_config();
+    /* Back to the defaults for every directive, so that one removed before a
+     * restart does not keep its old value (a static MPM is not reloaded). */
     ap_num_kids = DEFAULT_START_DAEMON;
+    threads_per_child = DEFAULT_THREADS_PER_CHILD;
+    thread_limit = DEFAULT_THREAD_LIMIT;
     server_limit = 0;
+    num_pollers = 0;
+    worker_factor = DEFAULT_WORKER_FACTOR * WORKER_FACTOR_SCALE;
     ap_extended_status = 0;
 
     return OK;

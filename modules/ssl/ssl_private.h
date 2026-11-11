@@ -161,6 +161,12 @@
 #define MODSSL_X509_EXT_CONST
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+#define MODSSL_X509_NAME_CONST const
+#else
+#define MODSSL_X509_NAME_CONST
+#endif
+
 #if defined(LIBRESSL_VERSION_NUMBER)
 /* Missing from LibreSSL */
 #if LIBRESSL_VERSION_NUMBER < 0x2060000f
@@ -301,6 +307,10 @@ void free_bio_methods(void);
 #if OPENSSL_VERSION_NUMBER < 0x10002000L || \
 	(defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000f)
 #define X509_STORE_CTX_get0_store(x) (x->ctx)
+#endif
+
+#if OPENSSL_VERSION_NUMBER < 0x40100000L
+#define ASN1_STRING_get_length(x)  ((size_t)ASN1_STRING_length(x))
 #endif
 
 #if OPENSSL_VERSION_NUMBER < 0x10000000L

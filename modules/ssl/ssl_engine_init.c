@@ -1837,6 +1837,11 @@ static int compare_certs_asc(const X509 *const *a, const X509 *const *b)
     return ASN1_TIME_compare(time_a, time_b);
 }
 
+/* Deprecated in OpenSSL 4.1; the replacement also verifies the chain. */
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 static int cert_match(apr_pool_t *p, X509 *cert, char *id)
 {
     if (id[0] == '[') {
@@ -1855,6 +1860,9 @@ static int cert_match(apr_pool_t *p, X509 *cert, char *id)
     }
     return 0;
 }
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
 
 static apr_status_t ssl_init_uri(server_rec *s,
                                  apr_pool_t *ptemp,
@@ -2173,8 +2181,6 @@ static apr_status_t ssl_init_server_uris(server_rec *s,
                                           modssl_ctx_t *mctx,
                                           apr_array_header_t *pphrases)
 {
-    const char *vhost_id = mctx->sc->vhost_id;
-
     ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10610)
                 "Host %s: Server certificate URIs are not supported on this platform.",
                 mctx->sc->vhost_id);
@@ -2823,9 +2829,7 @@ static apr_status_t ssl_init_proxy_uris(server_rec *s,
                                         apr_pool_t *ptemp,
                                         modssl_ctx_t *mctx)
 {
-    if (pkp->uris->nelts) {
-        const char *vhost_id = mctx->sc->vhost_id;
-
+    if (mctx->pkp->uris->nelts) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, APLOGNO(10615)
                     "Host %s: Proxy certificate URIs are not supported on this platform.",
                     mctx->sc->vhost_id);
@@ -3434,10 +3438,12 @@ int ssl_proxy_section_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+#if MODSSL_HAVE_OPENSSL_STORE
 static int ssl_init_x509_name_cmp(const X509_NAME *const *a, const X509_NAME *const *b)
 {
     return X509_NAME_cmp(*a, *b);
 }
+#endif
 
 static apr_status_t ssl_init_ca_cert_uri(server_rec *s,
                                          apr_pool_t *ptemp,

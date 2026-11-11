@@ -35,6 +35,7 @@ struct md_result_t {
     const struct md_json_t *subproblems;
     const char *activity;
     apr_time_t ready_at;
+    apr_time_t retry_at;        /* earliest time the server asked us to come back, or 0 */
     md_result_change_cb *on_change;
     void *on_change_data;
     md_result_raise_cb *on_raise;

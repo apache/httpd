@@ -18,6 +18,7 @@
 #define H3_THREADS_H
 
 #include "h3_io.h"
+#include <apr_pools.h>
 #include <apr_thread_proc.h>
 
 /**
@@ -50,5 +51,20 @@ void* APR_THREAD_FUNC worker_thread(apr_thread_t* thread, void* data);
  * @return NULL.
  */
 void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data);
+
+/**
+ * Create a pool with an allocator of its own, which has a mutex, so that
+ * threads can create and destroy subpools of it concurrently. Pools such
+ * as the child pool may have an allocator without one; prefork shares it,
+ * unlocked, with the pool of every request. The mutex does not make
+ * allocating from the pool itself thread-safe: only one thread at a time
+ * may do that.
+ *
+ * @param parent The parent pool.
+ * @param tag    The tag for the new pool.
+ * @param out    Receives the new pool.
+ * @return APR_SUCCESS, or the error from APR.
+ */
+apr_status_t h3_thread_safe_pool_create(apr_pool_t* parent, const char* tag, apr_pool_t** out);
 
 #endif /* H3_THREADS_H */

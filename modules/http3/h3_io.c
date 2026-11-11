@@ -45,6 +45,13 @@
 #include "quic/h3q_conn.h"
 #include "quic/h3q_stream.h"
 
+#if NGHTTP3_VERSION_NUM >= 0x011000
+#define H3_NGHTTP3_CONN_IS_DRAINED(conn) nghttp3_conn_is_drained2(conn)
+#else
+/* nghttp3 < 1.16.0 has the same function, without the const argument */
+#define H3_NGHTTP3_CONN_IS_DRAINED(conn) nghttp3_conn_is_drained(conn)
+#endif
+
 h3_io_t* child_h3_io = NULL;
 
 int h3_io_at_connection_limit(h3_io_t* io)
@@ -155,7 +162,10 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
 
     io->thread_running = 1;
     child_h3_io = io;
+    /* The event thread allocates from pchild too, so allocate everything
+     * from it here before the thread starts. */
     apr_threadattr_t* attr = NULL;
+    apr_pool_pre_cleanup_register(pchild, io, listen_stop_cleanup);
     if (apr_threadattr_create(&attr, pchild) != APR_SUCCESS || apr_thread_create(&io->event_thread, attr, h3_event_thread, io, pchild) != APR_SUCCESS)
     {
         io->thread_running = 0;
@@ -163,7 +173,6 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         child_h3_io = NULL;
         return APR_EGENERAL;
     }
-    apr_pool_pre_cleanup_register(pchild, io, listen_stop_cleanup);
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "mod_http3 loaded with version: %d (%s) on pid=%d port=%d; built against httpd %d.%d.%d MMN %d:%d (%s)", MOD_HTTP3_VERSION, MOD_HTTP3_VERSION_STRING, h3_getpid(), (int)conf->h3_port, AP_SERVER_MAJORVERSION_NUMBER, AP_SERVER_MINORVERSION_NUMBER,
                  AP_SERVER_PATCHLEVEL_NUMBER, MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR, H3_DEVEL ? "devel" : "stable");
     return APR_SUCCESS;
@@ -268,6 +277,13 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
         return APR_EGENERAL;
     }
     apr_allocator_owner_set(allocator, session_pool);
+    {
+        apr_thread_mutex_t* alloc_mutex;
+        if (apr_thread_mutex_create(&alloc_mutex, APR_THREAD_MUTEX_DEFAULT, session_pool) == APR_SUCCESS)
+        {
+            apr_allocator_mutex_set(allocator, alloc_mutex);
+        }
+    }
     apr_pool_tag(session_pool, "h3_session");
     /* Workers allocate from stream subpools while this thread makes its own: share the allocator safely. */
     apr_thread_mutex_t* alloc_mutex = NULL;
@@ -412,7 +428,7 @@ static void abandon_stalled_responses(h3_session* session, apr_interval_time_t s
         {
             continue;
         }
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT " made no progress for %" APR_TIME_T_FMT " seconds; abandoning the response", h3s->stream_id, apr_time_sec(stall_timeout));
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT " made no progress for %" APR_TIME_T_FMT " seconds; abandoning the response", (apr_int64_t)h3s->stream_id, apr_time_sec(stall_timeout));
         h3_stream_response_cancel_locked(h3s);
     }
 }
@@ -431,20 +447,26 @@ int service_session_pass(h3_io_t* io, h3_session* session)
 
     if (io->draining || !io->thread_running)
     {
+        int drained;
         apr_thread_mutex_lock(session->lock);
         if (!session->goaway_sent)
         {
             nghttp3_conn_submit_shutdown_notice(session->ngh3);
         }
+        if (!io->thread_running && !session->final_goaway_sent)
+        {
+            nghttp3_conn_shutdown(session->ngh3);
+            session->final_goaway_sent = 1;
+        }
         flush_nghttp3(session);
-        int drained = nghttp3_conn_is_drained2(session->ngh3);
+        drained = H3_NGHTTP3_CONN_IS_DRAINED(session->ngh3);
         apr_thread_mutex_unlock(session->lock);
         if (!session->goaway_sent)
         {
             session->goaway_sent = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; letting in-flight streams finish");
         }
-        if (!io->thread_running && !session->goaway_deadline)
+        if ((!io->thread_running || io->draining) && !session->goaway_deadline)
         {
             session->goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "stopping: allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
@@ -452,7 +474,11 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         if (drained || (session->goaway_deadline && apr_time_now() >= session->goaway_deadline))
         {
             apr_thread_mutex_lock(session->lock);
-            nghttp3_conn_shutdown(session->ngh3);
+            if (!session->final_goaway_sent)
+            {
+                nghttp3_conn_shutdown(session->ngh3);
+                session->final_goaway_sent = 1;
+            }
             flush_nghttp3(session);
             apr_thread_mutex_unlock(session->lock);
             session->aborted = 1;

@@ -47,22 +47,26 @@ function add_apx() {
 add_apx apr "${APR_VERSION-}" "${APR_CONFIG-}" APR_COMMIT
 add_apx apr-util "${APU_VERSION-}" "${APU_CONFIG-}" APU_COMMIT
 
-if test -n "${TEST_OPENSSL3-}"; then
-    if test -n "${TEST_OPENSSL3_BRANCH-}"; then
-        sha=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
+if test -n "${TEST_OPENSSL-}"; then
+    if test -n "${TEST_OPENSSL_BRANCH-}"; then
+        sha=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL_BRANCH} | cut -f1`
         if test -z "$sha"; then
-            : Could not resolve openssl branch ${TEST_OPENSSL3_BRANCH} - check branch is valid?
+            : Could not resolve openssl branch ${TEST_OPENSSL_BRANCH} - check branch is valid?
             exit 1
         fi
         echo "OPENSSL_COMMIT=${sha}" >> $GITHUB_ENV
-        root="${root} openssl-${TEST_OPENSSL3_BRANCH}-${sha}-${OPENSSL_CONFIG-}"
+        root="${root} openssl-${TEST_OPENSSL_BRANCH}-${sha}-${OPENSSL_CONFIG-}"
     else
-        root="${root} openssl-${TEST_OPENSSL3}-${OPENSSL_CONFIG-}"
+        root="${root} openssl-${TEST_OPENSSL}-${OPENSSL_CONFIG-}"
     fi
 fi
 
 if test -n "${TEST_NGHTTP2-}"; then
     root="${root} nghttp2-${TEST_NGHTTP2}"
+fi
+
+if test -n "${TEST_CURL_H3-}"; then
+    root="${root} curl-h3-${TEST_CURL_H3}"
 fi
 
 if test -n "$root"; then
