@@ -497,6 +497,14 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
 
         if (APR_BUCKET_IS_EOS(e)) {
+            /* The encoder state is about to be destroyed below. Remove
+             * ourselves from the filter chain now so that we can never be
+             * invoked again for this request, even if more data follows
+             * the EOS bucket (e.g. a backend forwarding data past the end
+             * of its own output stream through mod_proxy_fcgi; PR66168).
+             */
+            ap_remove_output_filter(f);
+
             rv = flush(ctx, BROTLI_OPERATION_FINISH, f);
             if (rv != APR_SUCCESS) {
                 return rv;
