@@ -8,14 +8,14 @@ from pyhttpd.conf import HttpdConf
 pytestmark = skip_not_backported("r1938506", "SetEnvFromFile")
 
 
-def _write_ssi_echo(path, names):
+def _write_ssi_echo(path, names, encoding="entity"):
     """An SSI page echoing each variable as NAME=[value].  An unset
     variable echoes the default "(none)", so a set-but-empty variable
     ("[]") is distinguishable from one that never made it into the table.
     """
     with open(path, "w") as f:
         for name in names:
-            f.write(f'{name}=[<!--#echo var="{name}" -->]\n')
+            f.write(f'{name}=[<!--#echo encoding="{encoding}" var="{name}" -->]\n')
 
 
 class TestSetEnvFromFile:
@@ -204,3 +204,163 @@ class TestSetEnvFromFileMissing:
         good.add_vhost_test1()
         good.install()
         assert env.apache_restart() == 0
+
+
+class TestSetEnvFromFileConfig:
+
+    def check_config(self, env, contents):
+        env_file = os.path.join(env.gen_dir, "setenv-read.env")
+        with open(env_file, "w", newline="") as f:
+            f.write(contents)
+
+        conf = HttpdConf(env, extras={
+            'base': f'SetEnvFromFile "{env_file}"',
+        })
+        conf.add_vhost_test1()
+        conf.install()
+        return env.run([os.path.join(env.bin_dir, "httpd"),
+                        "-t", "-d", env.server_dir,
+                        "-f", os.path.join(env.server_dir, "conf", "httpd.conf")])
+
+    @pytest.mark.parametrize("line_length", [8191, 8192, 16384])
+    @pytest.mark.parametrize("ending", ["\n", ""], ids=["newline", "eof"])
+    def test_metadata_002_05_long_line(self, env, line_length, ending):
+        line = "ENV_LONG=" + "x" * (line_length - len("ENV_LONG="))
+        contents = "ENV_BEFORE=before\n" + line + ending
+        if ending:
+            contents += "ENV_AFTER=after\n"
+        r = self.check_config(env, contents)
+        assert r.exit_code != 0, "oversized line was accepted"
+        assert "setenv-read.env at line 2: Line too long" in r.stderr
+
+    def test_metadata_002_06_long_continuation(self, env):
+        r = self.check_config(
+            env, "ENV_BEFORE=before\nENV_LONG=" + "x" * 4096
+            + "\\\n" + "y" * 4096 + "\nENV_AFTER=after\n")
+        assert r.exit_code != 0, "oversized continued line was accepted"
+        assert "setenv-read.env at line 3: Line too long" in r.stderr
+
+    # The 8192-byte buffer needs room for a newline and the terminating NUL.
+    @pytest.mark.parametrize("contents", [
+        pytest.param("", id="empty-file"),
+        pytest.param("ENV_OK=present", id="no-final-newline"),
+        pytest.param("ENV_OK=present\n", id="final-newline"),
+        pytest.param("ENV_LONG=" + "x" * (8190 - len("ENV_LONG=")),
+                     id="max-line-no-newline"),
+        pytest.param("ENV_LONG=" + "x" * (8190 - len("ENV_LONG=")) + "\n",
+                     id="max-line-with-newline"),
+        pytest.param("ENV_LONG=" + "x" * 4096 + "\\\n"
+                     + "y" * (8190 - len("ENV_LONG=") - 4096) + "\n",
+                     id="max-continued-line"),
+    ])
+    def test_metadata_002_07_normal_eof(self, env, contents):
+        r = self.check_config(env, contents)
+        assert r.exit_code == 0, r.stderr
+
+    @pytest.mark.parametrize("value, message", [
+        pytest.param('"unfinished', "Unterminated quoted value",
+                     id="unclosed-double"),
+        pytest.param("'unfinished", "Unterminated quoted value",
+                     id="unclosed-single"),
+        pytest.param('"', "Unterminated quoted value", id="double-quote-only"),
+        pytest.param("'", "Unterminated quoted value", id="single-quote-only"),
+        pytest.param(r'"escaped\"', "Unterminated quoted value",
+                     id="escaped-double-closer"),
+        pytest.param(r"'escaped\'", "Unterminated quoted value",
+                     id="escaped-single-closer"),
+        pytest.param('"closed"extra', "Unexpected text after quoted value",
+                     id="adjacent-text"),
+        pytest.param("'closed' extra", "Unexpected text after quoted value",
+                     id="separate-text"),
+        pytest.param('"" "extra"', "Unexpected text after quoted value",
+                     id="extra-quoted-token"),
+        pytest.param(' \t"unfinished', "Unterminated quoted value",
+                     id="unclosed-after-whitespace"),
+    ])
+    def test_metadata_002_11_malformed_quotes(self, env, value, message):
+        r = self.check_config(
+            env, f"ENV_BEFORE=before\nENV_BAD={value}\nENV_AFTER=after\n")
+        assert r.exit_code != 0, "malformed quoted value was accepted"
+        assert f"setenv-read.env at line 2: {message}" in r.stderr
+
+
+class TestSetEnvFromFileQuoted:
+
+    def check_value(self, env, file_value, expected):
+        env_file = os.path.join(env.gen_dir, "setenv-quoted.env")
+        with open(env_file, "w", newline="") as f:
+            f.write(f"ENV_FILE={file_value}\nENV_AFTER=present\n")
+
+        doc_dir = os.path.join(env.server_dir, "htdocs", "test1")
+        os.makedirs(doc_dir, exist_ok=True)
+        _write_ssi_echo(os.path.join(doc_dir, "quoted.shtml"),
+                        ["ENV_FILE", "ENV_DIRECT", "ENV_AFTER"], encoding="none")
+
+        direct_value = expected.replace("\\", "\\\\").replace('"', '\\"')
+        conf = HttpdConf(env, extras={
+            'base': f"""
+            SetEnvFromFile "{env_file}"
+            SetEnv ENV_DIRECT "{direct_value}"
+            <Directory "{doc_dir}">
+                Options +Includes
+                AddType text/html .shtml
+                AddOutputFilter INCLUDES .shtml
+            </Directory>
+            """,
+        })
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+
+        r = env.curl_get(env.mkurl("http", "test1", "/quoted.shtml"))
+        assert r.response, "no response: server may have crashed"
+        assert r.response["status"] == 200
+        assert r.response["body"].decode("utf-8").splitlines() == [
+            f"ENV_FILE=[{expected}]",
+            f"ENV_DIRECT=[{expected}]",
+            "ENV_AFTER=[present]",
+        ]
+
+    @pytest.mark.parametrize("quote", ['"', "'"], ids=["double", "single"])
+    @pytest.mark.parametrize("expected", [
+        pytest.param("hello", id="plain"),
+        pytest.param("hello ", id="trailing-space"),
+        pytest.param(" hello", id="leading-space"),
+        pytest.param(" hello ", id="surrounding-spaces"),
+        pytest.param("", id="empty"),
+        pytest.param(" \t ", id="whitespace-only"),
+        pytest.param("hello world", id="embedded-space"),
+        pytest.param('say "hello" and \'bye\'', id="quote-escaping"),
+        pytest.param(r"C:\app\file", id="backslash-escaping"),
+        pytest.param("C:\\app\\", id="trailing-backslash"),
+        pytest.param(r"\n\t", id="literal-escapes"),
+        pytest.param("key=value # literal", id="equals-and-hash"),
+    ])
+    def test_metadata_002_08_quoted(self, env, quote, expected):
+        value = expected.replace("\\", "\\\\").replace(quote, "\\" + quote)
+        self.check_value(env, quote + value + quote, expected)
+
+    @pytest.mark.parametrize("quote", ['"', "'"], ids=["double", "single"])
+    def test_metadata_002_09_quoted_whitespace(self, env, quote):
+        self.check_value(env, f" \t{quote} hello {quote} \t", " hello ")
+
+    @pytest.mark.parametrize("quote", ['"', "'"], ids=["double", "single"])
+    def test_metadata_002_10_quoted_continuation(self, env, quote):
+        self.check_value(env, f"{quote}first \\\nsecond {quote}", "first second ")
+
+    @pytest.mark.parametrize("file_value, expected", [
+        pytest.param("hello world", "hello world", id="embedded-space"),
+        pytest.param("  hello world  ", "  hello world", id="whitespace"),
+        pytest.param(r"C:\app\file", r"C:\app\file", id="literal-backslashes"),
+        pytest.param(r"a\\b", r"a\\b", id="doubled-backslash"),
+        pytest.param('hello "world"', 'hello "world"', id="embedded-quotes"),
+        pytest.param("", "", id="empty"),
+        pytest.param("   ", "", id="whitespace-only"),
+    ])
+    def test_metadata_002_12_unquoted(self, env, file_value, expected):
+        self.check_value(env, file_value, expected)
+
+    @pytest.mark.parametrize("quote", ['"', "'"], ids=["double", "single"])
+    def test_metadata_002_13_literal_escapes(self, env, quote):
+        value = r"C:\app\n\t"
+        self.check_value(env, quote + value + quote, value)
