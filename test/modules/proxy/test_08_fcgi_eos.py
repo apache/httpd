@@ -16,6 +16,13 @@ FCGI_PORT = 5210
 
 @pytest.fixture(autouse=True, scope="class")
 def _proxy_fcgi_eos_setup(env):
+    env.require(env.has_shared_module("proxy_fcgi"), "mod_proxy_fcgi not available",
+                dep="mod_proxy_fcgi",
+                detected=f"no mod_proxy_fcgi.so in {env.libexec_dir}")
+    env.require(env.has_shared_module("brotli"), "mod_brotli not available",
+                dep="mod_brotli",
+                detected=f"no mod_brotli.so in {env.libexec_dir}")
+
     faker = FcgiFaker(port=FCGI_PORT)
     faker.start()
 
