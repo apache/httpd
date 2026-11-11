@@ -3415,8 +3415,9 @@ static void perform_idle_server_maintenance(int child_bucket,
         }
         else if (free_length == 0) { /* scoreboard is full, can't fork */
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(03490)
-                         "scoreboard is full, not at MaxRequestWorkers."
-                         "Increase ServerLimit.");
+                         "scoreboard is full, not at MaxRequestWorkers. "
+                         "Increase ServerLimit (currently %d).",
+                         server_limit);
             retained->idle_spawn_rate[child_bucket] = 1;
         }
         else {
