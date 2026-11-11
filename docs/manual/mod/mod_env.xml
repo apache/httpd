@@ -121,7 +121,7 @@ SSI pages</description>
 <directivesynopsis>
 <name>SetEnvFromFile</name>
 <description>Sets environment variables from a file</description>
-<syntax>SetEnvFromFile <var>file-path</var></syntax>
+<syntax>SetEnvFromFile <var>file-path</var> [Quoted]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <compatibility>Available in version 2.5.1 and later.</compatibility>
@@ -145,22 +145,28 @@ SSI pages</description>
     (<code>\</code>) is continued on the following line, just as in the main
     configuration files.</p>
 
-    <p>A value may be enclosed in single or double quotes, as with
-    <directive module="mod_env">SetEnv</directive>. The surrounding quotes
-    are removed, and whitespace inside them is preserved. Whitespace before
-    the opening quote or after the closing quote is ignored. Within a quoted
-    value, a backslash escapes another backslash or the matching quote
-    character; other backslashes are preserved. Unquoted values may contain
-    spaces and are not unescaped. An unterminated quoted value or unexpected
-    text after the closing quote causes a configuration error.</p>
+    <p>By default, values are not unquoted or unescaped. Quote characters,
+    including unmatched quotes, remain part of the value. For example,
+    <code>NAME="value"</code> sets <code>NAME</code> to
+    <code>"value"</code>, including the surrounding quotes.</p>
+
+    <p>Use the optional <code>Quoted</code> argument to enable single- or
+    double-quoted values, as with <directive module="mod_env">SetEnv</directive>.
+    In this mode, the surrounding quotes are removed, and whitespace inside
+    them is preserved. Whitespace before the opening quote or after the closing
+    quote is ignored. Within a quoted value, a backslash escapes another
+    backslash or the matching quote character; other backslashes are preserved.
+    Unquoted values may contain spaces and are not unescaped. An unterminated
+    quoted value or unexpected text after the closing quote causes a
+    configuration error only when <code>Quoted</code> is specified.</p>
 
     <p>If the file cannot be read completely, including because a line
     (after joining continued lines) is too long, configuration parsing
     fails with an error identifying the file and line number.</p>
 
-    <example><title>Example</title>
+    <example><title>Example using quoted values</title>
     <highlight language="config">
-      SetEnvFromFile conf/app.env
+      SetEnvFromFile "conf/app.env" Quoted
       </highlight>
     </example>
 
