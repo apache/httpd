@@ -82,8 +82,9 @@ class ProxyTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(ProxyTestSetup)))
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
-                          "proxy_connect", "proxy_uwsgi", "lbmethod_byrequests",
-                          "remoteip"])
+                          "proxy_connect", "proxy_uwsgi",
+                          "lbmethod_byrequests", "remoteip"])
+        self.add_optional_modules(["proxy_fcgi", "brotli"])
 
 
 class ProxyTestEnv(HttpdTestEnv):

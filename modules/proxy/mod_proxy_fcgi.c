@@ -601,6 +601,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0, ignore_body = 0;
+    int seen_stdout_eos = 0, warned_stdout_after_eos = 0;
     apr_status_t rv = APR_SUCCESS;
     int script_error_status = HTTP_OK;
     conn_rec *c = r->connection;
@@ -815,6 +816,29 @@ recv_again:
 
             switch (type) {
             case AP_FCGI_STDOUT:
+                if (seen_stdout_eos) {
+                    /* The backend already signalled the end of its STDOUT
+                     * stream with a zero-length record, and we already
+                     * passed an EOS bucket down the output filter chain
+                     * because of it. Some backends (e.g. PHP-FPM, see
+                     * PHP bug #72185) can emit such a record too early and
+                     * keep sending STDOUT data afterwards; discard it
+                     * rather than forwarding more data past the EOS we
+                     * already sent (PR66168). */
+                    if (!warned_stdout_after_eos) {
+                        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10682)
+                                      "Ignoring FastCGI STDOUT data received "
+                                      "after the backend already signalled "
+                                      "the end of its output stream");
+                        warned_stdout_after_eos = 1;
+                    }
+                    if (clen > readbuflen) {
+                        clen -= readbuflen;
+                        goto recv_again;
+                    }
+                    break;
+                }
+
                 if (clen != 0) {
                     b = apr_bucket_transient_create(iobuf,
                                                     readbuflen,
@@ -941,6 +965,8 @@ recv_again:
                     }
                 } else {
                     /* XXX what if we haven't seen end of the headers yet? */
+
+                    seen_stdout_eos = 1;
 
                     if (script_error_status == HTTP_OK) {
                         b = apr_bucket_eos_create(c->bucket_alloc);
