@@ -1,0 +1,4 @@
+  *) mod_proxy_fcgi, mod_brotli: Fix a NULL pointer dereference (worker
+     crash) triggered by a FastCGI backend that sends a premature,
+     stream-ending empty FCGI_STDOUT record and keeps sending data
+     afterwards. PR 66168 [Arturo Bernal]
