@@ -1,0 +1,3 @@
+  *) mod_proxy: Honor connectiontimeout (falling back to timeout, ProxyTimeout,
+     Timeout) for Unix domain socket backends, which could block a worker
+     thread indefinitely on Linux.  [Lukáš Fendrych]
