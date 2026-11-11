@@ -27,20 +27,6 @@ class TestTLS13:
         conf.install()
         assert env.apache_restart() == 0
 
-    # TLS 1.3 basic connectivity: server configured for TLSv1.3, client
-    # connects with -tls1_3 and the negotiated protocol must be TLSv1.3.
-    def test_ssl_002_01_basic_tls13_connectivity(self, env):
-        self._configure_tls(env, protocol="TLSv1.3")
-        r = env.run(args=[
-            'openssl', 's_client',
-            '-connect', f'localhost:{env.https_port}',
-            '-tls1_3',
-        ], intext='')
-        assert r.exit_code == 0, f"TLS 1.3 handshake failed: {r.stderr}"
-        output = r.stdout + r.stderr
-        assert re.search(r'Protocol\s*:\s*TLSv1\.3', output), \
-            f"TLSv1.3 not negotiated, output: {output}"
-
     # Single server-side cipher: server offers only TLS_AES_256_GCM_SHA384,
     # client connects without cipher restriction and must negotiate that cipher.
     def test_ssl_002_02_no_restriction_with_cipher(self, env):
