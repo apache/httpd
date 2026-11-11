@@ -22,7 +22,7 @@ class TestBrotliCompression:
 
     # Request a small text file with Accept-Encoding: br.
     # Verify Content-Encoding: br header is present.
-    def test_brotli_001_01(self, env):
+    def test_brotli_004_01_br_header_present(self, env):
         url = env.mkurl("http", "test1", "/greeting.txt")
         r = env.curl_get(url, options=[
             "-H", "Accept-Encoding: br",
@@ -38,7 +38,7 @@ class TestBrotliCompression:
             "body should be compressed, not plain text"
 
     # Request a larger text file; verify brotli compression is applied.
-    def test_brotli_001_02(self, env):
+    def test_brotli_004_02_large_file(self, env):
         url = env.mkurl("http", "test1", "/lorem.txt")
         r = env.curl_get(url, options=[
             "-H", "Accept-Encoding: br",
@@ -55,7 +55,7 @@ class TestBrotliCompression:
 
     # When the client does not advertise Accept-Encoding: br the response
     # must be served uncompressed -- no Content-Encoding header.
-    def test_brotli_001_03(self, env):
+    def test_brotli_004_03_response_uncompressd(self, env):
         url = env.mkurl("http", "test1", "/greeting.txt")
         r = env.curl_get(url)
         assert r.response, "no response"
@@ -67,7 +67,7 @@ class TestBrotliCompression:
         assert body.strip() == "Good morning, fellow!"
 
     # Binary / non-matching content types must not be compressed.
-    def test_brotli_001_04(self, env):
+    def test_brotli_004_04_binary_no_match_no_compression(self, env):
         bin_dir = os.path.join(env.server_dir, "htdocs", "test1")
         bin_path = os.path.join(bin_dir, "pixel.png")
         with open(bin_path, "wb") as f:
