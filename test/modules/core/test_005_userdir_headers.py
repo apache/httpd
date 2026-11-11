@@ -14,7 +14,7 @@ class TestUserdirHeaders:
         conf = HttpdConf(env, extras={
             'base': f"""
         UserDir "{userdir_base}/*/public_html"
- 
+
         <Directory "{userdir_base}/*/public_html">
             AllowOverride FileInfo
             Options +ExecCGI

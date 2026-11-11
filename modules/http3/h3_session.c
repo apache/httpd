@@ -191,6 +191,11 @@ void h3_session_destroy(h3_session* session)
         {
             h3_stream_response_cancel_locked(stream);
             h3_stream_response_cleanup_locked(stream);
+            if (stream->qstream)
+            {
+                h3q_stream_free(stream->qstream);
+                stream->qstream = NULL;
+            }
         }
     }
     while (session->pending_free->nelts > 0)

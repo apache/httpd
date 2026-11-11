@@ -22,6 +22,7 @@
 #include <http_log.h>
 #include <util_cfgtree.h>
 
+#include <apr_atomic.h>
 #include <apr_general.h>
 #include <apr_pools.h>
 #include <apr_thread_proc.h>
@@ -47,7 +48,7 @@
 
 static volatile int child_stopping = 0;
 
-static apr_thread_t* port_acquire_thread = NULL;
+static volatile apr_uint32_t port_acquire_running = 0;
 
 struct port_acquire_args
 {
@@ -153,6 +154,7 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
     if (apr_pool_create(&ptry, args->pool) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, args->vhost, "port acquirer: could not create a pool");
+        apr_atomic_set32(&port_acquire_running, 0);
         return NULL;
     }
     while (!child_stopping)
@@ -184,6 +186,7 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, args->vhost, "port acquirer: pid=%d acquired QUIC port after retrying", h3_getpid());
         break;
     }
+    apr_atomic_set32(&port_acquire_running, 0);
     return NULL;
 }
 
@@ -247,10 +250,19 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
         args->pool = pool;
         args->vhost = vhost;
         args->conf = conf;
-        if (apr_threadattr_create(&attr, pool) != APR_SUCCESS || apr_thread_create(&port_acquire_thread, attr, port_acquire_thread_fn, args, pool) != APR_SUCCESS)
+        if (apr_threadattr_create(&attr, pool) != APR_SUCCESS || apr_threadattr_detach_set(attr, 1) != APR_SUCCESS)
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "h3_child_init: failed to start port acquirer thread");
-            port_acquire_thread = NULL;
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "h3_child_init: failed to create thread attributes");
+        }
+        else
+        {
+            apr_thread_t* thd = NULL;
+            apr_atomic_set32(&port_acquire_running, 1);
+            if (apr_thread_create(&thd, attr, port_acquire_thread_fn, args, pool) != APR_SUCCESS)
+            {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "h3_child_init: failed to start port acquirer thread");
+                apr_atomic_set32(&port_acquire_running, 0);
+            }
         }
         return;
     }
@@ -373,11 +385,9 @@ void h3_c1_child_stopping(apr_pool_t* p H3_UNUSED, int graceful)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "mod_http3: child stopping (graceful=%d)", graceful);
     child_stopping = 1;
-    if (port_acquire_thread)
+    while (apr_atomic_read32(&port_acquire_running))
     {
-        apr_status_t ignored;
-        apr_thread_join(&ignored, port_acquire_thread);
-        port_acquire_thread = NULL;
+        apr_sleep(apr_time_from_msec(5));
     }
     if (graceful)
     {
