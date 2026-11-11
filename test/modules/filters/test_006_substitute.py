@@ -41,7 +41,7 @@ class TestSubstitute:
             f"original text should not appear after substitution: {body!r}"
 
     # Without the Substitute directive the file is served unmodified.
-    def test_filters_004_02(self, env):
+    def test_filters_004_02_no_substitute_directive(self, env):
         conf = HttpdConf(env, extras={
             f"test1.{env.http_tld}": "",
         })
