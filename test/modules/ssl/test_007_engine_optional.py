@@ -9,7 +9,7 @@ class TestSslEngineOptional:
     hijacking via a man-in-the-middle attack.  The fix removes support
     for TLS upgrade, so 'SSLEngine optional' should be rejected."""
 
-    def test_ssl_004_01(self, env):
+    def test_ssl_007_01_optional_engine(self, env):
         """httpd should refuse to start with 'SSLEngine optional' and
         log that it is no longer supported."""
         conf = HttpdConf(env, extras={
