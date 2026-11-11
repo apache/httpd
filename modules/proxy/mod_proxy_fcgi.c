@@ -614,8 +614,12 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     char stack_iobuf[AP_IOBUFSIZE];
     apr_size_t iobuf_size = AP_IOBUFSIZE;
     char *iobuf = stack_iobuf;
+    apr_size_t header_line_size = HUGE_STRING_LEN;
 
     *err = NULL;
+    if (conn->worker->s->response_field_size_set) {
+        header_line_size = conn->worker->s->response_field_size;
+    }
     if (conn->worker->s->io_buffer_size_set) {
         iobuf_size = conn->worker->s->io_buffer_size;
         /* Allocate a buffer if the configured size is larger than the
@@ -830,8 +834,8 @@ recv_again:
                             int status;
                             seen_end_of_headers = 1;
 
-                            status = ap_scan_script_header_err_brigade_ex(r, ob,
-                                NULL, APLOG_MODULE_INDEX);
+                            status = ap_scan_script_header_err_brigade_limit(r, ob,
+                                NULL, APLOG_MODULE_INDEX, header_line_size);
 
                             /* FCGI has its own body framing mechanism which we don't
                              * match against any provided Content-Length, so let the
