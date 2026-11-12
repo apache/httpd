@@ -54,6 +54,7 @@ static void* APR_THREAD_FUNC port_acquire_thread_fn(apr_thread_t* thread H3_UNUS
     if (apr_pool_create(&ptry, args->pool) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, args->vhost, "port acquirer: could not create a pool");
+        apr_atomic_set32(&port_acquire_running, 0);
         return NULL;
     }
     while (!child_stopping)
