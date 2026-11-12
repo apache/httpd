@@ -891,26 +891,34 @@ static int lua_ap_sendfile(lua_State *L)
     apr_finfo_t file_info;
     const char  *filename;
     request_rec *r;
+    apr_pool_t  *p;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     filename = lua_tostring(L, 2);
-    apr_stat(&file_info, filename, APR_FINFO_MIN, r->pool);
-    if (file_info.filetype == APR_NOFILE || file_info.filetype == APR_DIR) {
+    p = lua_temp_pool(r);
+    if (apr_stat(&file_info, filename, APR_FINFO_MIN, p) != APR_SUCCESS
+        || file_info.filetype == APR_NOFILE || file_info.filetype == APR_DIR) {
         lua_pushboolean(L, 0);
     }
     else {
-        apr_size_t      sent;
         apr_status_t    rc;
         apr_file_t      *file;
 
-        rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT,
-                            r->pool);
+        rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT, p);
         if (rc == APR_SUCCESS) {
-            ap_send_fd(file, r, 0, (apr_size_t)file_info.size, &sent);
-            apr_file_close(file);
-            lua_pushinteger(L, sent);
+            apr_bucket_brigade *bb;
+
+            /* As ap_send_fd(), but with the brigade in the call pool.
+             * A filter which sets the file aside moves it to its own
+             * pool, so destroying this one does not close it. */
+            bb = apr_brigade_create(p, r->connection->bucket_alloc);
+            apr_brigade_insert_file(bb, file, 0, file_info.size, p);
+            rc = ap_pass_brigade(r->output_filters, bb);
+            apr_brigade_cleanup(bb);
+            lua_pushinteger(L, rc == APR_SUCCESS
+                               ? (lua_Integer) file_info.size : 0);
         }
         else {
             lua_pushboolean(L, 0);
