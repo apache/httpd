@@ -4290,7 +4290,10 @@ test_str_l:
                 rewritelog(r, 1, ctx->perdir,
                             "RewriteCond: expr='%s' evaluation failed: %s",
                             p->pattern - p->pskip, err);
-                rc = COND_RC_NOMATCH;
+                /* An evaluation error is neither a match nor a mismatch, so
+                 * don't let CONDFLAG_NOTMATCH turn it into a match.
+                 */
+                return COND_RC_NOMATCH;
             }
             else {
                 rc = (rc > 0) ? COND_RC_MATCH : COND_RC_NOMATCH;

@@ -275,6 +275,8 @@ def _condexpr():
         ("/modules/rewrite/expr/notgone/nottrue", 404),
         ("/modules/rewrite/expr/shouldredir/true", 303),
         ("/modules/rewrite/expr/shouldredir/notfalse", 303),
+        ("/modules/rewrite/expr/notgone/bangerror", 404),
+        ("/modules/rewrite/expr/notgone/noterror", 404),
     ]
 
 
