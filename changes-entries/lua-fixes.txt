@@ -1,3 +1,3 @@
   *) mod_lua: Fix r:wsread() handling of partially received, empty and
-     control websocket frames, and r:regex() with 25 capture groups.
-     [Joe Orton]
+     control websocket frames, r:regex() with 25 capture groups, and
+     r:set_document_root().  [Joe Orton]

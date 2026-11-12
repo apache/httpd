@@ -1509,7 +1509,7 @@ static int lua_ap_set_document_root(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     root = lua_tostring(L, 2);
-    ap_set_document_root(r, root);
+    ap_set_document_root(r, apr_pstrdup(r->pool, root));
     return 0;
 }
 
@@ -1676,7 +1676,8 @@ static int lua_ap_set_context_info(lua_State *L)
     prefix = lua_tostring(L, 2);
     luaL_checktype(L, 3, LUA_TSTRING);
     document_root = lua_tostring(L, 3);
-    ap_set_context_info(r, prefix, document_root);
+    ap_set_context_info(r, apr_pstrdup(r->pool, prefix),
+                        apr_pstrdup(r->pool, document_root));
     return 0;
 }
 
