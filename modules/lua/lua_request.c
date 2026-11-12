@@ -28,6 +28,7 @@
 #include "apr_thread_mutex.h"
 #include "apr_tables.h"
 #include "util_cookies.h"
+#include "util_charset.h"
 
 #define APR_WANT_BYTEFUNC
 #include "apr_want.h"
@@ -984,15 +985,24 @@ static int lua_ap_escape(lua_State *L)
  */
 static int lua_apr_md5(lua_State *L)
 {
+    unsigned char digest[APR_MD5_DIGESTSIZE];
+    apr_md5_ctx_t md5;
     const char     *buffer;
-    char           *result;
+    char           result[APR_MD5_DIGESTSIZE * 2 + 1];
     size_t len;
-    request_rec    *r;
 
-    r = ap_lua_check_request_rec(L, 1);
+    ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     buffer = lua_tolstring(L, 2, &len);
-    result = ap_md5_binary(r->pool, (const unsigned char *)buffer, len);
+    /* As ap_md5_binary(), which takes an int length. */
+    apr_md5_init(&md5);
+#if APR_CHARSET_EBCDIC
+    apr_md5_set_xlate(&md5, ap_hdrs_to_ascii);
+#endif
+    apr_md5_update(&md5, buffer, len);
+    apr_md5_final(digest, &md5);
+
+    ap_bin2hex(digest, sizeof(digest), result);
     lua_pushstring(L, result);
     return 1;
 }
@@ -1005,13 +1015,11 @@ static int lua_apr_sha1(lua_State *L)
     unsigned char digest[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t sha1;
     const char     *buffer;
-    char           *result;
+    char           result[APR_SHA1_DIGESTSIZE * 2 + 1];
     size_t len;
-    request_rec    *r;
 
-    r = ap_lua_check_request_rec(L, 1);
+    ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
-    result = apr_pcalloc(r->pool, sizeof(digest) * 2 + 1);
     buffer = lua_tolstring(L, 2, &len);
     apr_sha1_init(&sha1);
     apr_sha1_update(&sha1, buffer, len);
@@ -1327,7 +1335,7 @@ static int lua_ap_scoreboard_process(lua_State *L)
 static int lua_ap_scoreboard_worker(lua_State *L)
 {
     int i, j;
-    worker_score *ws_record = NULL;
+    worker_score ws_buf, *ws_record = &ws_buf;
     request_rec *r = NULL;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -1339,8 +1347,6 @@ static int lua_ap_scoreboard_worker(lua_State *L)
 
     i = lua_tointeger(L, 2);
     j = lua_tointeger(L, 3);
-    ws_record = apr_palloc(r->pool, sizeof *ws_record);
-
     ap_copy_scoreboard_worker(ws_record, i, j);
     if (ws_record) {
         lua_newtable(L);
@@ -2682,9 +2688,8 @@ static int req_newindex(lua_State *L)
 
 
 /* helper function for walking config trees */
-static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
+static void read_cfg_tree(lua_State *L, ap_directive_t *rcfg) {
     int x = 0;
-    const char* value;
     ap_directive_t *cfg;
     lua_newtable(L);
     
@@ -2692,9 +2697,8 @@ static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
         x++;
         lua_pushnumber(L, x);
         lua_newtable(L);
-        value = apr_psprintf(r->pool, "%s %s", cfg->directive, cfg->args);
         lua_pushstring(L, "directive");
-        lua_pushstring(L, value);
+        lua_pushfstring(L, "%s %s", cfg->directive, cfg->args);
         lua_settable(L, -3);
         lua_pushstring(L, "file");
         lua_pushstring(L, cfg->filename);
@@ -2704,7 +2708,7 @@ static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
         lua_settable(L, -3);
         if (cfg->first_child) {
             lua_pushstring(L, "children");
-            read_cfg_tree(L, r, cfg->first_child);
+            read_cfg_tree(L, cfg->first_child);
             lua_settable(L, -3);
         }
         lua_settable(L, -3);
@@ -2712,8 +2716,8 @@ static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
 }
 
 static int lua_ap_get_config(lua_State *L) {
-    request_rec *r = ap_lua_check_request_rec(L, 1);   
-    read_cfg_tree(L, r, ap_conftree);
+    ap_lua_check_request_rec(L, 1);   
+    read_cfg_tree(L, ap_conftree);
     
     return 1;
 }
@@ -2730,12 +2734,12 @@ static int lua_ap_get_active_config(lua_State *L) {
             for (subdir = dir->first_child; subdir; subdir = subdir->next) {
                 if (ap_strcasecmp_match(subdir->directive, "servername") &&
                         !ap_strcasecmp_match(r->hostname, subdir->args)) {
-                    read_cfg_tree(L, r, dir->first_child);
+                    read_cfg_tree(L, dir->first_child);
                     return 1;
                 }
                 if (ap_strcasecmp_match(subdir->directive, "serveralias") &&
                         !ap_strcasecmp_match(r->hostname, subdir->args)) {
-                    read_cfg_tree(L, r, dir->first_child);
+                    read_cfg_tree(L, dir->first_child);
                     return 1;
                 }
             }
