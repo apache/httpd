@@ -1,0 +1,3 @@
+  *) core: Add the unsatisfied Content-Range ("bytes */length") to the 416
+     responses of the byterange filter, as recommended by RFC 9110.
+     PR 70188.  [Arturo Bernal]
