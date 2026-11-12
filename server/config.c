@@ -2233,6 +2233,9 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     s->server_hostname = NULL;
     s->server_scheme = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
+    s->errorlog_altered = 0;
+    s->errorlog_provider = NULL;
+    s->errorlog_provider_argument = NULL;
     s->log.level = DEFAULT_LOGLEVEL;
     s->log.module_levels = NULL;
     s->limit_req_line = DEFAULT_LIMIT_REQUEST_LINE;
