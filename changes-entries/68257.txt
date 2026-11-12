@@ -1,0 +1,3 @@
+  *) mod_dir: Do not let FallbackResource make a DirectoryIndex file that does
+     not exist look like one that does, so that a later file of the list is
+     found. PR 68257 [Arturo Bernal]
