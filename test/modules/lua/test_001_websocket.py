@@ -178,3 +178,23 @@ class TestWebsocket:
             assert b"ok" not in data, data
         finally:
             sock.close()
+
+    # r:wspeek() is false with nothing to read.
+    def test_lua_001_07_wspeek_empty(self, env):
+        sock = self.upgrade(env)
+        try:
+            sock.sendall(self.frame(b"peek", opcode=0x1))
+            assert self.recv_frame(sock) == b"false"
+        finally:
+            sock.close()
+
+    # r:wspeek() does not consume what it finds.
+    def test_lua_001_08_wspeek_read(self, env):
+        sock = self.upgrade(env)
+        try:
+            sock.sendall(self.frame(b"peekread", opcode=0x1))
+            time.sleep(0.5)
+            sock.sendall(self.frame(b"hello", opcode=0x1))
+            assert self.recv_frame(sock) == b"hello"
+        finally:
+            sock.close()
