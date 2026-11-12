@@ -173,6 +173,11 @@ typedef struct {
       via_block,
       via_full
     } viaopt;                   /* how to deal with proxy Via: headers */
+    enum {
+        underscored_headers_allow,
+        underscored_headers_drop,
+        underscored_headers_reject
+    } underscored_headers;
     apr_size_t recv_buffer_size;
     apr_size_t io_buffer_size;
     long maxfwd;
@@ -194,6 +199,7 @@ typedef struct {
 
     unsigned int req_set:1;
     unsigned int viaopt_set:1;
+    unsigned int underscored_headers_set:1;
     unsigned int recv_buffer_size_set:1;
     unsigned int io_buffer_size_set:1;
     unsigned int maxfwd_set:1;
