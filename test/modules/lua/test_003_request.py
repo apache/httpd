@@ -1,0 +1,44 @@
+import textwrap
+
+import pytest
+
+from pyhttpd.conf import HttpdConf
+
+
+class TestRequest:
+
+    @pytest.fixture(autouse=True, scope='class')
+    def _class_scope(self, env):
+        env.require(env.has_shared_module("lua"), "mod_lua not built",
+                    dep="mod_lua")
+        conf = HttpdConf(env, extras={
+            'base': textwrap.dedent(f"""
+            <Directory "{env.server_docs_dir}/test1/lua">
+                SetHandler lua-script
+            </Directory>
+            """),
+        })
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+
+    def get(self, env, path):
+        r = env.curl_get(env.mkurl("http", "test1", path))
+        assert r.response["status"] == 200, r.response
+        return r.response["body"].decode().strip()
+
+    # MODLUA_MAX_REG_MATCH (25) capture groups are allowed, and the
+    # last of them is returned.
+    def test_lua_003_01_regex_max_groups(self, env):
+        assert self.get(env, "/lua/regex.lua?24") == "x"
+        assert self.get(env, "/lua/regex.lua?25") == "x"
+
+    # The document root and context info outlive the Lua strings they
+    # were set from.
+    def test_lua_003_02_set_document_root(self, env):
+        assert self.get(env, "/lua/docroot.lua?set_document_root") == \
+            "x" * 1000 + "/rootN"
+
+    def test_lua_003_03_set_context_info(self, env):
+        assert self.get(env, "/lua/docroot.lua?set_context_info") == \
+            "x" * 1000 + "/prefixN|" + "x" * 1000 + "/rootN"
