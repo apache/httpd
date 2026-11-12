@@ -295,6 +295,10 @@ void free_bio_methods(void);
 #define X509_STORE_CTX_get0_store(x) (x->ctx)
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x40100000L
+#define ASN1_STRING_get_length(x)  ((size_t)ASN1_STRING_length(x))
+#endif
+
 #if OPENSSL_VERSION_NUMBER < 0x10000000L
 #ifndef X509_STORE_CTX_get0_current_issuer
 #define X509_STORE_CTX_get0_current_issuer(x) (x->current_issuer)
