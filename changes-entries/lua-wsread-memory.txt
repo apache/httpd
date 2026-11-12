@@ -1,0 +1,1 @@
+  *) mod_lua: Cap memory use of r:wsread().  [Joe Orton]

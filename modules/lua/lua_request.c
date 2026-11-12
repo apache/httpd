@@ -546,6 +546,38 @@ static int req_add_output_filter(lua_State *L)
     return 0;
 }
 
+/* Per-request state for the temporary pool of a call from Lua. */
+typedef struct {
+    apr_pool_t *pool;
+} lua_temp_ctx_t;
+
+static lua_temp_ctx_t *lua_temp_ctx(request_rec *r)
+{
+    lua_temp_ctx_t *ctx;
+
+    apr_pool_userdata_get((void **)&ctx, "mod_lua_temp", r->pool);
+    if (ctx == NULL) {
+        ctx = apr_pcalloc(r->pool, sizeof *ctx);
+        apr_pool_userdata_setn(ctx, "mod_lua_temp", NULL, r->pool);
+    }
+    return ctx;
+}
+
+/* Returns a pool which lasts for the current call of a request method
+ * from Lua, created on first use.  req_call() destroys it when the
+ * call returns, since a script may call a method repeatedly for the
+ * life of the request. */
+static apr_pool_t *lua_temp_pool(request_rec *r)
+{
+    lua_temp_ctx_t *ctx = lua_temp_ctx(r);
+
+    if (ctx->pool == NULL) {
+        apr_pool_create(&ctx->pool, r->pool);
+        apr_pool_tag(ctx->pool, "lua_temp");
+    }
+    return ctx->pool;
+}
+
 /* wrap ap_construct_url as r:construct_url(String) */
 static int req_construct_url(lua_State *L)
 {
@@ -1868,6 +1900,27 @@ static int lua_ap_usleep(lua_State *L)
 
 /* END dispatch methods for request_rec fields */
 
+/* Calls the request method in upvalue 1 for the request in upvalue 2,
+ * then destroys any temporary pool it used.  The pool of an outer call
+ * is restored afterwards, since a method can run filters which call
+ * back into Lua for the same request. */
+static int req_call(lua_State *L)
+{
+    const req_fun_t *rft = lua_touserdata(L, lua_upvalueindex(1));
+    request_rec *r = lua_touserdata(L, lua_upvalueindex(2));
+    lua_temp_ctx_t *ctx = lua_temp_ctx(r);
+    apr_pool_t *outer = ctx->pool;
+    int n;
+
+    ctx->pool = NULL;
+    n = ((lua_CFunction)rft->fun)(L);
+    if (ctx->pool) {
+        apr_pool_destroy(ctx->pool);
+    }
+    ctx->pool = outer;
+    return n;
+}
+
 static int req_dispatch(lua_State *L)
 {
     apr_hash_t *dispatch;
@@ -1895,11 +1948,12 @@ static int req_dispatch(lua_State *L)
             }
 
         case APL_REQ_FUNTYPE_LUACFUN:{
-                lua_CFunction func = (lua_CFunction)rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01487)
                               "request_rec->dispatching %s -> lua_CFunction",
                               name);
-                lua_pushcfunction(L, func);
+                lua_pushlightuserdata(L, rft);
+                lua_pushlightuserdata(L, r);
+                lua_pushcclosure(L, req_call, 2);
                 return 1;
             }
         case APL_REQ_FUNTYPE_STRING:{
@@ -2283,17 +2337,17 @@ static int lua_websocket_read(lua_State *L)
     apr_size_t plen = 0;
     unsigned short payload_short = 0;
     apr_uint64_t payload_long = 0;
-    unsigned char *mask_bytes;
+    unsigned char mask_bytes[4];
     char byte;
+    apr_pool_t *pool;
     apr_bucket_brigade *brigade;
     conn_rec* c;
 
     request_rec *r = ap_lua_check_request_rec(L, 1);
     c = r->connection;
 
-    mask_bytes = apr_pcalloc(r->pool, 4);
-
-    brigade = apr_brigade_create(r->pool, c->bucket_alloc);
+    pool = lua_temp_pool(r);
+    brigade = apr_brigade_create(pool, c->bucket_alloc);
 
     while (do_read) {
         do_read = 0;
@@ -2355,7 +2409,7 @@ static int lua_websocket_read(lua_State *L)
                 }
                 if (plen < (HUGE_STRING_LEN*1024) && plen > 0) {
                     apr_size_t remaining = plen;
-                    char *buffer = apr_palloc(r->pool, plen+1);
+                    char *buffer = apr_palloc(pool, plen+1);
                     buffer[plen] = 0;
 
                     rv = lua_websocket_readbytes(c, brigade, buffer, remaining);
