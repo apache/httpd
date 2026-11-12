@@ -421,6 +421,11 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
     else {
         if (vb->strlen == AP_VARBUF_UNKNOWN)
             vb->strlen = strlen(vb->buf);
+        if (!len && !vb->avail) {
+            /* Nothing to add and no buffer yet, vb->buf is the shared
+             * empty string which must not be written to. */
+            return APR_SUCCESS;
+        }
         ap_varbuf_grow(vb, vb->strlen + len);
         dst = vb->buf + vb->strlen;
         vb->strlen += len;
