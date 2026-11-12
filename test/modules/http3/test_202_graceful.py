@@ -9,6 +9,8 @@ from .env import H3Conf, known_bug
 class TestGracefulShutdown:
     """Test HTTP/3 GOAWAY sending and connection wind-down on graceful restart."""
 
+    _LINGER_WARN = [r".*AH10644:.*connection\(s\) noted by modules did not finish.*"]
+
     @pytest.fixture(autouse=True, scope="class")
     @classmethod
     def _class_scope(cls, env):
@@ -37,6 +39,7 @@ class TestGracefulShutdown:
         except TimeoutError:
             known_bug(True, "no QUIC connection was active during graceful restart")
 
+        env.httpd_error_log.ignore_recent(matches=self._LINGER_WARN)
         assert env.is_live()
         assert env.wait_udp_port(env.https_port)
         r = env.curl_get(url, options=["--http3"])

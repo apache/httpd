@@ -1,6 +1,7 @@
 """A small synchronous HTTP/3 client on top of aioquic, for the tests."""
 import asyncio
 import json
+import socket
 import time
 from typing import List, Optional, Tuple
 
@@ -160,3 +161,72 @@ class H3Client:
 
     def get(self, path="/", **kwargs) -> H3Response:
         return self.request("GET", path, **kwargs)
+
+    async def _run_migration(self, path, server_addr):
+        """GET on one local port, rebind to a new port, GET again."""
+        loop = asyncio.get_running_loop()
+        cfg = self._config()
+        from aioquic.quic.connection import QuicConnection as QC
+        connection = QC(configuration=cfg,
+                        session_ticket_handler=self.received_tickets.append)
+
+        sock1 = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+        sock1.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+        sock1.bind(("::", 0))
+        port1 = sock1.getsockname()[1]
+
+        transport1, proto = await loop.create_datagram_endpoint(
+            lambda: _Protocol(connection), sock=sock1)
+        proto.connect(server_addr)
+        await proto.wait_connected()
+
+        authority = f"{self.domain}:{self.port}"
+        r1 = await asyncio.wait_for(
+            proto.send_request("GET", path, authority, [], None),
+            self.timeout)
+
+        # Rebind: create a second endpoint with a fresh protocol that
+        # forwards datagrams into the same QuicConnection, and send
+        # outgoing data from the new socket.
+        sock2 = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+        sock2.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+        sock2.bind(("::", 0))
+        port2 = sock2.getsockname()[1]
+
+        class _Relay(asyncio.DatagramProtocol):
+            """Receives on sock2 and feeds into the original protocol."""
+            def __init__(self, owner):
+                self.owner = owner
+            def datagram_received(self, data, addr):
+                self.owner.datagram_received(data, addr)
+
+        transport2, _ = await loop.create_datagram_endpoint(
+            lambda: _Relay(proto), sock=sock2)
+
+        # Stop receiving on the old socket; send from the new one.
+        transport1.close()
+        proto._transport = transport2
+
+        r2 = None
+        try:
+            r2 = await asyncio.wait_for(
+                proto.send_request("GET", path, authority, [], None),
+                self.timeout)
+        except (TimeoutError, asyncio.TimeoutError):
+            pass
+
+        proto.close()
+        try:
+            await asyncio.wait_for(proto.wait_closed(), 2)
+        except (TimeoutError, asyncio.TimeoutError):
+            pass
+        transport2.close()
+        return r1, r2, port1, port2
+
+    def migrate_and_get(self, path="/") -> Tuple:
+        """GET, rebind UDP socket (simulate NAT rebinding), GET again.
+
+        Returns (response_before, response_after, port_before, port_after).
+        """
+        addr = ("::ffff:127.0.0.1", self.port, 0, 0)
+        return asyncio.run(self._run_migration(path, addr))
