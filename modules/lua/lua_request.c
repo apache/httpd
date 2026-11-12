@@ -1239,7 +1239,7 @@ static int lua_ap_regex(lua_State *L)
         return 2;
     }
 
-    rv = ap_regexec(&regex, source, MODLUA_MAX_REG_MATCH, matches, 0);
+    rv = ap_regexec(&regex, source, MODLUA_MAX_REG_MATCH+1, matches, 0);
     if (rv == AP_REG_NOMATCH) {
         lua_pushboolean(L, 0);
         return 1;
