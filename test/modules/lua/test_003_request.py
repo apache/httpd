@@ -1,3 +1,4 @@
+import os
 import textwrap
 
 import pytest
@@ -54,3 +55,12 @@ class TestRequest:
         options, overrides = r.response["body"].decode().strip().split("|")
         assert "Indexes" in options.split()
         assert overrides.split() == ["FileInfo"]
+
+    # Output from r:sendfile() is kept in order with output around it.
+    @pytest.mark.parametrize("count", [1, 3])
+    def test_lua_003_05_sendfile(self, env, count):
+        with open(os.path.join(os.path.dirname(__file__),
+                               "htdocs/test1/lua/file.txt")) as f:
+            content = f.read()
+        assert self.get(env, f"/lua/sendfile.lua?{count}") + "\n" == \
+            (content + "--\n") * count
