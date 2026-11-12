@@ -1,0 +1,2 @@
+  *) mod_rewrite: Check UNCList before probing the first path segment of a
+     RewriteRule substitution on Windows. PR 70210.
