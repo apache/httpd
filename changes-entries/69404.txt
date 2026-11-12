@@ -1,0 +1,5 @@
+  *) htdbm: Reject combinations of "-n" or "-l" with "-v", "-x", or each
+     other as a usage error, instead of crashing (SIGSEGV), printing
+     "(null)", or silently exiting 0. Also report "-l" database read
+     failures with a non-zero exit code instead of always exiting 0.
+     PR 69404 [Arturo Bernal]
