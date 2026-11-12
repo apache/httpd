@@ -1,6 +1,8 @@
 import os
 import re
 import socket
+import sys
+import time
 from threading import Thread
 
 import pytest
@@ -51,6 +53,39 @@ Content-Length: 19
 
             except ConnectionAbortedError:
                 self._done = True
+
+
+class UDSStuck:
+    """A Unix domain socket backend that listens but never accepts, with its
+    listen backlog already full, like a busy or hung application server."""
+
+    def __init__(self, path):
+        self._uds_path = path
+        self._clients = []
+
+    def start(self):
+        try:
+            os.unlink(self._uds_path)
+        except OSError:
+            if os.path.exists(self._uds_path):
+                raise
+        self._socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self._socket.bind(self._uds_path)
+        self._socket.listen(0)
+        while True:
+            c = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            c.setblocking(False)
+            try:
+                c.connect(self._uds_path)
+            except BlockingIOError:
+                c.close()
+                break
+            self._clients.append(c)
+
+    def stop(self):
+        for c in self._clients:
+            c.close()
+        self._socket.close()
 
 
 class TestProxyUds:
@@ -193,3 +228,45 @@ Host: {domain}
             r.response["header"] = header
             r.response["body"] = body
         return r
+
+
+@pytest.mark.skipif(sys.platform != 'linux',
+                    reason="a full UDS backlog blocks connect() only on Linux")
+class TestProxyUdsConnectTimeout:
+
+    @pytest.fixture(autouse=True, scope='class')
+    def _class_scope(self, env):
+        # a reverse proxy to a unix: domain socket whose backlog is full,
+        # connectiontimeout must apply as it does for TCP backends
+        UDS_PATH = f"{env.gen_dir}/proxy_02_stuck.sock"
+        stuck = UDSStuck(path=UDS_PATH)
+        stuck.start()
+
+        try:
+            conf = HttpdConf(env)
+            conf.start_vhost(domains=[env.d_reverse], port=env.https_port)
+            conf.add([
+                f"ProxyPass / unix:{UDS_PATH}|"
+                f"http://127.0.0.1:{env.http_port}/ connectiontimeout=1"
+            ])
+            conf.end_vhost()
+            conf.install()
+            assert env.apache_restart() == 0
+            yield
+        finally:
+            stuck.stop()
+
+    def test_proxy_02_004(self, env):
+        start = time.monotonic()
+        r = env.curl_get(f"https://{env.d_reverse}:{env.https_port}/alive.json",
+                         options=['--max-time', '10'])
+        took = time.monotonic() - start
+        assert r.response, f"no response after {took:.1f}s: {r.stderr}"
+        assert r.response["status"] == 503
+        assert took < 5, f"took {took:.1f}s"
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH02454",  # attempt to connect to Unix domain socket failed
+                "AH01114",  # HTTP: failed to make connection to backend
+            ]
+        )

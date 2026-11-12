@@ -38,6 +38,12 @@
 #if APR_HAVE_SYS_UN_H
 #include <sys/un.h>
 #endif
+#if APR_HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+#if APR_HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
 #if (APR_MAJOR_VERSION < 2)
 #include "apr_support.h"        /* for apr_wait_for_io_or_timeout() */
 #endif
@@ -3685,6 +3691,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
     apr_interval_time_t t;
     struct sockaddr_un *sa;
     apr_socklen_t addrlen, pathlen;
+#if defined(SO_SNDTIMEO) && defined(O_NONBLOCK)
+    int flags = -1, timeo_set = 0;
+    struct timeval tv, otv;
+    apr_socklen_t otvlen = sizeof(otv);
+#endif
 
     rv = apr_os_sock_get(&rawsock, sock);
     if (rv != APR_SUCCESS) {
@@ -3703,9 +3714,56 @@ PROXY_DECLARE(apr_status_t) ap_proxy_connect_uds(apr_socket_t *sock,
     memcpy(sa->sun_path, uds_path, pathlen + 1);
     sa->sun_family = AF_UNIX;
 
+#if defined(SO_SNDTIMEO) && defined(O_NONBLOCK)
+    /* On Linux, connect() on a Unix domain socket does not return
+     * EINPROGRESS: when the listener's backlog is full, a non-blocking
+     * connect() fails with EAGAIN right away, while a blocking one sleeps
+     * until there is room in the backlog, bounded only by SO_SNDTIMEO. So
+     * honor the timeout by connecting in blocking mode with SO_SNDTIMEO,
+     * then restore the socket. If the socket options cannot be set, the
+     * connect() below runs on the socket as configured by the caller.
+     */
+    if (t > 0) {
+        tv.tv_sec = apr_time_sec(t);
+        tv.tv_usec = apr_time_usec(t);
+        if ((flags = fcntl(rawsock, F_GETFL)) != -1
+            && getsockopt(rawsock, SOL_SOCKET, SO_SNDTIMEO,
+                          (void *)&otv, &otvlen) == 0
+            && setsockopt(rawsock, SOL_SOCKET, SO_SNDTIMEO,
+                          (const void *)&tv, sizeof(tv)) == 0) {
+            if (!(flags & O_NONBLOCK)
+                || fcntl(rawsock, F_SETFL, flags & ~O_NONBLOCK) == 0) {
+                timeo_set = 1;
+            }
+            else {
+                setsockopt(rawsock, SOL_SOCKET, SO_SNDTIMEO,
+                           (const void *)&otv, otvlen);
+            }
+        }
+    }
+#endif
+
     do {
         rv = connect(rawsock, (struct sockaddr*)sa, addrlen);
     } while (rv == -1 && (rv = errno) == EINTR);
+
+#if defined(SO_SNDTIMEO) && defined(O_NONBLOCK)
+    if (timeo_set) {
+        if (APR_STATUS_IS_EAGAIN(rv)) {
+            /* SO_SNDTIMEO expired with the backlog still full */
+            rv = APR_TIMEUP;
+        }
+        if (setsockopt(rawsock, SOL_SOCKET, SO_SNDTIMEO,
+                       (const void *)&otv, otvlen) == -1
+            && rv == APR_SUCCESS) {
+            rv = errno;
+        }
+        if ((flags & O_NONBLOCK) && fcntl(rawsock, F_SETFL, flags) == -1
+            && rv == APR_SUCCESS) {
+            rv = errno;
+        }
+    }
+#endif
 
     if (rv && rv != EISCONN) {
         if ((rv == EINPROGRESS || rv == EALREADY) && (t > 0))  {
@@ -3820,6 +3878,25 @@ PROXY_DECLARE(apr_status_t) ap_proxy_check_connection(const char *scheme,
     return rv;
 }
 
+static void proxy_set_connect_timeout(apr_socket_t *sock,
+                                      proxy_worker *worker,
+                                      proxy_server_conf *conf,
+                                      server_rec *s)
+{
+    if (worker->s->conn_timeout_set) {
+        apr_socket_timeout_set(sock, worker->s->conn_timeout);
+    }
+    else if (worker->s->timeout_set) {
+        apr_socket_timeout_set(sock, worker->s->timeout);
+    }
+    else if (conf->timeout_set) {
+        apr_socket_timeout_set(sock, conf->timeout);
+    }
+    else {
+        apr_socket_timeout_set(sock, s->timeout);
+    }
+}
+
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
                                             proxy_worker *worker,
@@ -3870,6 +3947,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                 break;
             }
             conn->connection = NULL;
+
+            /* Set a timeout for connecting to the backend on the socket */
+            proxy_set_connect_timeout(newsock, worker, conf, s);
 
             rv = ap_proxy_connect_uds(newsock, conn->uds_path, conn->scpool);
             if (rv != APR_SUCCESS) {
@@ -3928,18 +4008,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             }
 
             /* Set a timeout for connecting to the backend on the socket */
-            if (worker->s->conn_timeout_set) {
-                apr_socket_timeout_set(newsock, worker->s->conn_timeout);
-            }
-            else if (worker->s->timeout_set) {
-                apr_socket_timeout_set(newsock, worker->s->timeout);
-            }
-            else if (conf->timeout_set) {
-                apr_socket_timeout_set(newsock, conf->timeout);
-            }
-            else {
-                apr_socket_timeout_set(newsock, s->timeout);
-            }
+            proxy_set_connect_timeout(newsock, worker, conf, s);
             /* Set a keepalive option */
             if (worker->s->keepalive) {
                 if ((rv = apr_socket_opt_set(newsock,
