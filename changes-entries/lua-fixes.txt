@@ -1,2 +1,2 @@
-  *) mod_lua: Fix r:wsread() handling of websocket frames which arrive
-     in parts.  [Joe Orton]
+  *) mod_lua: Fix r:wsread() handling of partially received, empty and
+     control websocket frames.  [Joe Orton]
