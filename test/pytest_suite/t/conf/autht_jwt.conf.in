@@ -1,0 +1,31 @@
+#
+# Test config for mod_autht_jwt (see BZ 69946)
+#
+# mod_autht_jwt.c may be present as a loadable module (satisfying
+# <IfModule>) but still be a non-functional stub that registers neither
+# the AuthtJwtVerify directive nor the "jwt" Autht provider, on any build
+# whose apr-util lacks apr_jose support (BZ 70276/70277). Guard on the
+# directive itself, not just the module, so this fragment never breaks
+# httpd startup -- and the whole pytest_suite session -- on such a build.
+<IfModule mod_autht_jwt.c>
+  <IfModule mod_auth_bearer.c>
+    <IfModule mod_autht_core.c>
+      <IfDirective AuthtJwtVerify>
+        # AuthtJwtVerify's HS256 path needs an apr_crypto driver, which
+        # mod_autht_jwt only initializes when a library is explicitly named
+        # (its own default library field is never marked "set" on its own).
+        # Without this, every token fails HMAC verification before the
+        # 'aud' claim is even inspected, masking the BZ 69946 fix either way.
+        AuthtJwtDriver @jwt_crypto_driver@
+
+        <Location /autht-jwt-test>
+          AuthType bearer
+          AuthName autht-jwt-test
+          AuthBearerProvider jwt
+          AuthtJwtVerify hs256 file "@SERVERROOT@/autht_jwt.secret"
+          Require valid-user
+        </Location>
+      </IfDirective>
+    </IfModule>
+  </IfModule>
+</IfModule>

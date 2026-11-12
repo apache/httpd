@@ -985,12 +985,41 @@ static autht_status check_token(request_rec *r, const char *type,
                 exp = kv->v->value.lnumber;
                 exp_set = 1;
             }
+            else if (kv->v->type == APR_JSON_DOUBLE
+                    /* (double) APR_INT64_MAX rounds up to 2^63 (not exactly
+                     * representable), one past the largest valid apr_int64_t;
+                     * the upper bound must stay a strict "<", not "<=", or a
+                     * claim of exactly 2^63 casts out of range below. */
+                    && kv->v->value.dnumber >= (double) APR_INT64_MIN
+                    && kv->v->value.dnumber < (double) APR_INT64_MAX) {
+                exp = (apr_int64_t) kv->v->value.dnumber;
+                exp_set = 1;
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                        APLOGNO(10680) "AuthtJwt: JWT token 'exp' value was not a valid NumericDate for URI '%s'",
+                        r->uri);
+                return AUTHT_DENIED;
+            }
         }
 
         if (!strncmp("nbf", kv->k->value.string.p, kv->k->value.string.len)) {
             if (kv->v->type == APR_JSON_LONG) {
                 nbf = kv->v->value.lnumber;
                 nbf_set = 1;
+            }
+            else if (kv->v->type == APR_JSON_DOUBLE
+                    /* see the matching comment on the 'exp' check above */
+                    && kv->v->value.dnumber >= (double) APR_INT64_MIN
+                    && kv->v->value.dnumber < (double) APR_INT64_MAX) {
+                nbf = (apr_int64_t) kv->v->value.dnumber;
+                nbf_set = 1;
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
+                        APLOGNO(10681) "AuthtJwt: JWT token 'nbf' value was not a valid NumericDate for URI '%s'",
+                        r->uri);
+                return AUTHT_DENIED;
             }
         }
 
