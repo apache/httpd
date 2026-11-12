@@ -583,7 +583,7 @@ static int req_construct_url(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
-    lua_pushstring(L, ap_construct_url(r->pool, name, r));
+    lua_pushstring(L, ap_construct_url(lua_temp_pool(r), name, r));
     return 1;
 }
 
@@ -592,7 +592,7 @@ static int req_escape_html(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *s = luaL_checkstring(L, 2);
-    lua_pushstring(L, ap_escape_html(r->pool, s));
+    lua_pushstring(L, ap_escape_html(lua_temp_pool(r), s));
     return 1;
 }
 
@@ -905,7 +905,7 @@ static int lua_apr_b64encode(lua_State *L)
     plain = lua_tolstring(L, 2, &plain_len);
     encoded_len = apr_base64_encode_len(plain_len);
     if (encoded_len) {
-        encoded = apr_palloc(r->pool, encoded_len);
+        encoded = apr_palloc(lua_temp_pool(r), encoded_len);
         encoded_len = apr_base64_encode(encoded, plain, plain_len);
         if (encoded_len > 0 && encoded[encoded_len - 1] == '\0')
             encoded_len--; 
@@ -930,7 +930,7 @@ static int lua_apr_b64decode(lua_State *L)
     encoded = lua_tolstring(L, 2, &encoded_len);
     decoded_len = apr_base64_decode_len(encoded);
     if (decoded_len) {
-        plain = apr_palloc(r->pool, decoded_len);
+        plain = apr_palloc(lua_temp_pool(r), decoded_len);
         decoded_len = apr_base64_decode(plain, encoded);
         if (decoded_len > 0 && plain[decoded_len - 1] == '\0')
             decoded_len--; 
@@ -953,7 +953,7 @@ static int lua_ap_unescape(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     escaped = lua_tolstring(L, 2, &x);
-    plain = apr_pstrdup(r->pool, escaped);
+    plain = apr_pstrdup(lua_temp_pool(r), escaped);
     y = ap_unescape_urlencoded(plain);
     if (!y) {
         lua_pushstring(L, plain);
@@ -974,7 +974,7 @@ static int lua_ap_escape(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &x);
-    escaped = ap_escape_urlencoded(r->pool, plain);
+    escaped = ap_escape_urlencoded(lua_temp_pool(r), plain);
     lua_pushstring(L, escaped);
     return 1;
 }
@@ -1033,11 +1033,11 @@ static int lua_apr_htpassword(lua_State *L)
 
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
-    ctx.passwd = apr_pstrdup(r->pool, lua_tostring(L, 2));
     ctx.alg = luaL_optinteger(L, 3, ALG_APMD5);
     ctx.cost = luaL_optinteger(L, 4, 0);
-    ctx.pool = r->pool;
-    ctx.out = apr_pcalloc(r->pool, MAX_PASSWD_LEN);
+    ctx.pool = lua_temp_pool(r);
+    ctx.passwd = apr_pstrdup(ctx.pool, lua_tostring(L, 2));
+    ctx.out = apr_pcalloc(ctx.pool, MAX_PASSWD_LEN);
     ctx.out_len = MAX_PASSWD_LEN;
     if (mk_password_hash(&ctx)) {
         lua_pushboolean(L, 0);
@@ -1165,6 +1165,7 @@ static int lua_ap_expr(lua_State *L)
     const char     *expr,
     *err;
     ap_expr_info_t res;
+    apr_pool_t     *p;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -1177,7 +1178,8 @@ static int lua_ap_expr(lua_State *L)
     res.line_number = 0;
     res.module_index = APLOG_MODULE_INDEX;
 
-    err = ap_expr_parse(r->pool, r->pool, &res, expr, NULL);
+    p = lua_temp_pool(r);
+    err = ap_expr_parse(p, p, &res, expr, NULL);
     if (!err) {
         x = ap_expr_exec(r, &res, &err);
         lua_pushboolean(L, x);
@@ -1492,7 +1494,7 @@ static int lua_ap_runtime_dir_relative(lua_State *L)
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     file = luaL_optstring(L, 2, ".");
-    lua_pushstring(L, ap_runtime_dir_relative(r->pool, file));
+    lua_pushstring(L, ap_runtime_dir_relative(lua_temp_pool(r), file));
     return 1;
 }
 
@@ -1529,7 +1531,7 @@ static int lua_ap_getdir(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     directory = lua_tostring(L, 2);
-    if (apr_dir_open(&thedir, directory, r->pool) == APR_SUCCESS) {
+    if (apr_dir_open(&thedir, directory, lua_temp_pool(r)) == APR_SUCCESS) {
         int i = 0;
         lua_newtable(L);
         do {
@@ -1703,7 +1705,7 @@ static int lua_ap_os_escape_path(lua_State *L)
     path = lua_tostring(L, 2);
     if (lua_isboolean(L, 3))
         partial = lua_toboolean(L, 3);
-    returnValue = ap_os_escape_path(r->pool, path, partial);
+    returnValue = ap_os_escape_path(lua_temp_pool(r), path, partial);
     lua_pushstring(L, returnValue);
     return 1;
 }
@@ -1725,7 +1727,7 @@ static int lua_ap_escape_logitem(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     str = lua_tostring(L, 2);
-    returnValue = ap_escape_logitem(r->pool, str);
+    returnValue = ap_escape_logitem(lua_temp_pool(r), str);
     lua_pushstring(L, returnValue);
     return 1;
 }
@@ -2048,7 +2050,7 @@ static int lua_ivm_get(lua_State *L)
     lua_ivm_object *object = NULL;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
-    raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
+    raw_key = apr_pstrcat(lua_temp_pool(r), "lua_ivm_", key, NULL);
     apr_global_mutex_lock(lua_ivm_mutex);
     pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
     apr_pool_userdata_get((void **)&object, raw_key, pool);
@@ -2076,7 +2078,7 @@ static int lua_ivm_set(lua_State *L)
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
     luaL_checkany(L, 3);
-    raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
+    raw_key = apr_pstrcat(lua_temp_pool(r), "lua_ivm_", key, NULL);
     
     apr_global_mutex_lock(lua_ivm_mutex);
     pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
