@@ -1,0 +1,5 @@
+  *) mod_cache_socache: Bound the cached-header parser to the retrieved entry
+     length so a truncated or corrupt socache record cannot advance the parse
+     position past the end of the data, which caused an apr_size_t underflow of
+     the body length and an out-of-bounds read when recalling the response.
+     [arshiya tabasum <arshi@bugqore.com>]
