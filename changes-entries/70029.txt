@@ -1,0 +1,8 @@
+  *) mod_cache: Key cache entries by the Host header the client sent
+     instead of the virtual host's canonical name, for requests that are
+     not forward-proxied. A handler behind the virtual host (a
+     reverse-proxied backend with ProxyPreserveHost, a CGI, a RewriteRule)
+     can still see and vary its response by that raw value, so Host
+     spellings differing only in case, a trailing dot, or an explicit
+     default port no longer share one cache entry. PR 70029.
+     [Arturo Bernal]
