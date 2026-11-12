@@ -76,7 +76,7 @@ jobs:
               core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Install dependencies
-        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
+        run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson brotli
 
       - uses: actions/checkout@v6
 
@@ -90,6 +90,8 @@ jobs:
                 -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} `
                 -DAPR_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 "-DAPR_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/libapr-1.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/libaprutil-1.lib" `
+                -DBROTLI_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
+                "-DBROTLI_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/brotlienc.lib;C:/vcpkg/installed/${{ matrix.triplet }}/lib/brotlidec.lib" `
                 -DNGHTTP2_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
                 -DNGHTTP2_LIBRARIES=C:/vcpkg/installed/${{ matrix.triplet }}/lib/nghttp2.lib `
                 -DJANSSON_INCLUDE_DIR=C:/vcpkg/installed/${{ matrix.triplet }}/include `
