@@ -69,14 +69,14 @@ class TestUpgrade:
         assert r.response
         assert "upgrade" not in r.response["header"]
         
-    # accessing https://test1, will advertise h2 in the response
+    # accessing https://test1, must not advertise h2 in the response: RFC 9113
+    # section 3.3 requires HTTP/2 over TLS to be negotiated via ALPN only.
     def test_h2_103_06(self, env):
         url = env.mkurl("https", "test1", "/index.html")
         r = env.curl_get(url, options=["--http1.1"])
         assert 0 == r.exit_code
         assert r.response
-        assert "upgrade" in r.response["header"]
-        assert "h2" == r.response["header"]["upgrade"]
+        assert "upgrade" not in r.response["header"]
         
     # accessing https://test3, will not send Upgrade since it is suppressed
     def test_h2_103_07(self, env):
