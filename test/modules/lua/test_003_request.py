@@ -15,6 +15,8 @@ class TestRequest:
             'base': textwrap.dedent(f"""
             <Directory "{env.server_docs_dir}/test1/lua">
                 SetHandler lua-script
+                Options +Indexes
+                AllowOverride FileInfo
             </Directory>
             """),
         })
@@ -42,3 +44,13 @@ class TestRequest:
     def test_lua_003_03_set_context_info(self, env):
         assert self.get(env, "/lua/docroot.lua?set_context_info") == \
             "x" * 1000 + "/prefixN|" + "x" * 1000 + "/rootN"
+
+    # Request tables read and written through repeated field accesses.
+    def test_lua_003_04_fields(self, env):
+        r = env.curl_get(env.mkurl("http", "test1", "/lua/fields.lua"))
+        assert r.response["status"] == 200, r.response
+        assert r.response["header"]["x-lua-notes"] == "12"
+        assert r.response["header"]["x-lua-host"].startswith("test1.")
+        options, overrides = r.response["body"].decode().strip().split("|")
+        assert "Indexes" in options.split()
+        assert overrides.split() == ["FileInfo"]

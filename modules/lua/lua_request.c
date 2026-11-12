@@ -739,49 +739,50 @@ static int req_assbackwards_field(request_rec *r)
     return r->assbackwards;
 }
 
+/* Returns the req_table_t for table t, created once per request and
+ * kept as r->pool userdata under key, since a script may read the
+ * field repeatedly for the life of the request. */
+static req_table_t *req_table(request_rec *r, apr_table_t *t,
+                              const char *key, const char *n)
+{
+    req_table_t *rt;
+
+    apr_pool_userdata_get((void **)&rt, key, r->pool);
+    if (rt == NULL || rt->t != t) {
+        rt = apr_palloc(r->pool, sizeof *rt);
+        rt->r = r;
+        rt->t = t;
+        rt->n = n;
+        apr_pool_userdata_setn(rt, key, NULL, r->pool);
+    }
+    return rt;
+}
+
 static req_table_t* req_headers_in(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->headers_in;
-  t->n = "headers_in";
-  return t;
+  return req_table(r, r->headers_in, "mod_lua_headers_in", "headers_in");
 }
 
 static req_table_t* req_headers_out(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->headers_out;
-  t->n = "headers_out";
-  return t;
+  return req_table(r, r->headers_out, "mod_lua_headers_out", "headers_out");
 }
 
 static req_table_t* req_err_headers_out(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->err_headers_out;
-  t->n = "err_headers_out";
-  return t;
+  return req_table(r, r->err_headers_out, "mod_lua_err_headers_out",
+                   "err_headers_out");
 }
 
 static req_table_t* req_subprocess_env(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->subprocess_env;
-  t->n = "subprocess_env";
-  return t;
+  return req_table(r, r->subprocess_env, "mod_lua_subprocess_env",
+                   "subprocess_env");
 }
 
 static req_table_t* req_notes(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->notes;
-  t->n = "notes";
-  return t;
+  return req_table(r, r->notes, "mod_lua_notes", "notes");
 }
 
 static int req_ssl_is_https_field(request_rec *r)
@@ -806,16 +807,42 @@ static int lua_ap_rflush (lua_State *L) {
 }
 
 
+/* A string built from a set of flags, kept as r->pool userdata under
+ * key and rebuilt only when the flags change, since a script may read
+ * the field repeatedly for the life of the request. */
+typedef struct {
+    int flags;
+    const char *s;
+} req_flags_string_t;
+
+static req_flags_string_t *req_flags_string(request_rec *r, const char *key)
+{
+    req_flags_string_t *fs;
+
+    apr_pool_userdata_get((void **)&fs, key, r->pool);
+    if (fs == NULL) {
+        fs = apr_pcalloc(r->pool, sizeof *fs);
+        apr_pool_userdata_setn(fs, key, NULL, r->pool);
+    }
+    return fs;
+}
+
 static const char* lua_ap_options(request_rec* r) 
 {
     int opts;
+    req_flags_string_t *fs = req_flags_string(r, "mod_lua_options");
     opts = ap_allow_options(r);
-    return apr_psprintf(r->pool, "%s %s %s %s %s %s", (opts&OPT_INDEXES) ? "Indexes" : "", (opts&OPT_INCLUDES) ? "Includes" : "", (opts&OPT_SYM_LINKS) ? "FollowSymLinks" : "", (opts&OPT_EXECCGI) ? "ExecCGI" : "", (opts&OPT_MULTI) ? "MultiViews" : "", (opts&OPT_ALL) == OPT_ALL ? "All" : "" );
+    if (fs->s == NULL || fs->flags != opts) {
+        fs->flags = opts;
+        fs->s = apr_psprintf(r->pool, "%s %s %s %s %s %s", (opts&OPT_INDEXES) ? "Indexes" : "", (opts&OPT_INCLUDES) ? "Includes" : "", (opts&OPT_SYM_LINKS) ? "FollowSymLinks" : "", (opts&OPT_EXECCGI) ? "ExecCGI" : "", (opts&OPT_MULTI) ? "MultiViews" : "", (opts&OPT_ALL) == OPT_ALL ? "All" : "" );
+    }
+    return fs->s;
 }
 
 static const char* lua_ap_allowoverrides(request_rec* r) 
 {
     int opts;
+    req_flags_string_t *fs;
     opts = ap_allow_overrides(r);
     if ( (opts & OR_ALL) == OR_ALL) {
         return "All";
@@ -823,8 +850,12 @@ static const char* lua_ap_allowoverrides(request_rec* r)
     else if (opts == OR_NONE) {
         return "None";
     }
-    return apr_psprintf(r->pool, "%s %s %s %s %s", (opts & OR_LIMIT) ? "Limit" : "", (opts & OR_OPTIONS) ? "Options" : "", (opts & OR_FILEINFO) ? "FileInfo" : "", (opts & OR_AUTHCFG) ? "AuthCfg" : "", (opts & OR_INDEXES) ? "Indexes" : "" );
-    
+    fs = req_flags_string(r, "mod_lua_allowoverrides");
+    if (fs->s == NULL || fs->flags != opts) {
+        fs->flags = opts;
+        fs->s = apr_psprintf(r->pool, "%s %s %s %s %s", (opts & OR_LIMIT) ? "Limit" : "", (opts & OR_OPTIONS) ? "Options" : "", (opts & OR_FILEINFO) ? "FileInfo" : "", (opts & OR_AUTHCFG) ? "AuthCfg" : "", (opts & OR_INDEXES) ? "Indexes" : "" );
+    }
+    return fs->s;
 }
 
 static int lua_ap_started(request_rec* r) 
