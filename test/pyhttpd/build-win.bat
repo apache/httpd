@@ -301,7 +301,7 @@ if NOT EXIST vcpkg\ (
 )
 
 @REM For some reason using the manifest doesn't install the default-features
-vcpkg.exe install --triplet %VCPKG_TRIPLET% apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson brotli
+vcpkg.exe install --triplet %VCPKG_TRIPLET% apr[private-headers] apr-util pcre2 openssl nghttp2 curl libxml2 jansson
 
 POPD
 
@@ -329,9 +329,7 @@ cmake "%HTTPD_SRC%" -B . ^
     -DNGHTTP2_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
     -DAPR_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
     -DJANSSON_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
-    -DBROTLI_INCLUDE_DIR=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/include ^
     "-DAPR_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/libapr-1.lib;%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/libaprutil-1.lib" ^
-    "-DBROTLI_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/brotlienc.lib;%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/brotlidec.lib" ^
     -DNGHTTP2_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/nghttp2.lib ^
     -DJANSSON_LIBRARIES=%CWD%/vcpkg/installed/%VCPKG_TRIPLET%/lib/jansson.lib ^
     -DENABLE_MIME_MAGIC=A ^
