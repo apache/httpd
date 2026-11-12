@@ -102,6 +102,25 @@ def env(pytestconfig) -> AAATestEnv:
         # AuthDigestProvider intentionally omitted: falls back to "file".
         f'AuthUserFile "{pwfile}"',
     ]))
+    # A Basic-auth location backed by the "socache dbd" provider pair, to
+    # exercise AuthDBDUserPWQuery columns beyond the password surviving a
+    # cached (as opposed to first, uncached) login (PR 65172).
+    conf.add([
+        'DBDriver sqlite3',
+        f'DBDParams "{env.dbd_file}"',
+        'AuthnCacheSOCache shmcb',
+        'AddHandler cgi-script .py',
+        f'<Directory "{docs}/dbd">',
+        '    Options +ExecCGI',
+        '    AuthType Basic',
+        '    AuthName "AAA DBD Socache Realm"',
+        '    AuthBasicProvider socache dbd',
+        '    AuthnCacheProvideFor dbd',
+        '    AuthDBDUserPWQuery "SELECT password, role FROM users WHERE user = %s"',
+        '    AuthnCacheTimeout 300',
+        '    Require valid-user',
+        '</Directory>',
+    ])
     # A request which fails header validation (e.g. no Host on HTTP/1.1)
     # is answered before the Digest module's post_read_request runs, so it
     # has no per-request Digest record; an ErrorDocument redirecting it into

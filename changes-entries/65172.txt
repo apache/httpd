@@ -1,0 +1,7 @@
+  *) mod_authn_dbd, mod_authn_socache: Preserve the extra AuthDBDUserPWQuery
+     columns exported as AUTHENTICATE_<NAME> environment variables across
+     a cached (AuthBasicProvider/AuthDigestProvider "socache dbd") login.
+     Previously, only the first, uncached login for a user carried those
+     variables; every following login served from the cache lost them
+     silently until the cache entry expired. PR 65172.
+     [Arturo Bernal]
