@@ -1,0 +1,3 @@
+  *) mod_autht_jwt: Fix an authentication bypass where a JWT claim whose
+     name was a prefix of "aud", "sub", "exp" or "nbf" (e.g. "a" or "au")
+     could be mistaken for that claim. PR 69946 [Arturo Bernal]
