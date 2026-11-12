@@ -37,6 +37,11 @@
       divulguer des informations à caractère privé aux clients. Veuillez
       vous assurer que les risques ainsi encourus ont été pris en compte
       avant d'activer le support des sessions sur votre serveur.</p>
+ 
+      <p>Lorsque vous utilisez une identification de session basée sur un cookie en conjonction avec
+      <module>mod_cache</module>, assurez-vous que l'en-tête <code>Set-Cookie</code> ne
+      sera pas mis en cache à l'aide de la directive <code>CacheIgnoreHeaders Set-Cookie</code>.
+      Ne pas le faire peut entraîner un détournement involontaire de session.</p>
     </note>
 
     <p>Ce module fournit le support d'une interface de session pour
