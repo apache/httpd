@@ -2358,20 +2358,18 @@ static apr_status_t lua_websocket_readbytes(conn_rec* c,
 static int lua_websocket_peek(lua_State *L) 
 {
     apr_status_t rv;
+    apr_off_t len = 0;
     apr_bucket_brigade *brigade;
     
     request_rec *r = ap_lua_check_request_rec(L, 1);
     
-    brigade = apr_brigade_create(r->connection->pool, 
-            r->connection->bucket_alloc);
+    brigade = apr_brigade_create(lua_temp_pool(r), r->connection->bucket_alloc);
     rv = ap_get_brigade(r->connection->input_filters, brigade, 
-            AP_MODE_READBYTES, APR_NONBLOCK_READ, 1);
+            AP_MODE_SPECULATIVE, APR_NONBLOCK_READ, 1);
     if (rv == APR_SUCCESS) {
-        lua_pushboolean(L, 1);
+        rv = apr_brigade_length(brigade, 1, &len);
     }
-    else {
-        lua_pushboolean(L, 0);
-    }
+    lua_pushboolean(L, rv == APR_SUCCESS && len > 0);
     apr_brigade_cleanup(brigade);
     return 1;
 }
