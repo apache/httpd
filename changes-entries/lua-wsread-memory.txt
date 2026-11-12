@@ -1,1 +1,2 @@
-  *) mod_lua: Cap memory use of r:wsread() and r:regex().  [Joe Orton]
+  *) mod_lua: Cap memory use of r:wsread(), r:regex() and other request
+     methods.  [Joe Orton]
