@@ -2290,22 +2290,30 @@ static int lua_websocket_greet(lua_State *L)
 
 static apr_status_t lua_websocket_readbytes(conn_rec* c,
                                             apr_bucket_brigade *brigade,
-                                            char* buffer, apr_off_t len)
+                                            char* buffer, apr_size_t len)
 {
     apr_size_t delivered;
     apr_status_t rv;
 
-    rv = ap_get_brigade(c->input_filters, brigade, AP_MODE_READBYTES, 
-            APR_BLOCK_READ, len);
-    if (rv == APR_SUCCESS) {
-        delivered = len;
-        rv = apr_brigade_flatten(brigade, buffer, &delivered);
-        if ((rv == APR_SUCCESS) && (delivered < len)) {
-            rv = APR_INCOMPLETE;
+    /* A READBYTES read may return fewer bytes than asked for. */
+    while (len > 0) {
+        rv = ap_get_brigade(c->input_filters, brigade, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, len);
+        if (rv == APR_SUCCESS) {
+            delivered = len;
+            rv = apr_brigade_flatten(brigade, buffer, &delivered);
         }
+        apr_brigade_cleanup(brigade);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        if (delivered == 0) {
+            return APR_EOF;
+        }
+        buffer += delivered;
+        len -= delivered;
     }
-    apr_brigade_cleanup(brigade);
-    return rv;
+    return APR_SUCCESS;
 }
 
 static int lua_websocket_peek(lua_State *L) 
