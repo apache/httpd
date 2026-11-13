@@ -63,11 +63,8 @@ Listen 4433 https
     # Enable HTTP/3, HTTP/2, and HTTP/1.1
     Protocols h3 h2 http/1.1
 
-    # HTTP/3 Certificate configuration
-    H3CertificatePath     conf/server.crt
-    H3CertificateKeyPath  conf/server.key
-
     DocumentRoot /var/www/html
+
 </VirtualHost>
 ```
 
@@ -87,8 +84,6 @@ Browsers caching this header will switch to HTTP/3 over QUIC on subsequent reque
 
 | Directive | Default | Context | Description |
 | :--- | :--- | :--- | :--- |
-| `H3CertificatePath` | *None* | `server config`, `virtual host` | Path to the TLS certificate file for HTTP/3/QUIC. |
-| `H3CertificateKeyPath` | *None* | `server config`, `virtual host` | Path to the TLS private key file for HTTP/3/QUIC. |
 | `H3Port` | *Server Port* | `server config`, `virtual host` | UDP port to listen on for QUIC/HTTP-3. |
 | `H3AltSvc` | `on` | `server config`, `virtual host` | Advertise HTTP/3 support via the `Alt-Svc` response header. |
 | `H3AltSvcMaxAge` | `86400` | `server config`, `virtual host` | `max-age` in seconds for the `Alt-Svc` header advertisement. |
