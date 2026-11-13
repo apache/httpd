@@ -43,9 +43,14 @@ class TestLifecycle:
         H3Conf(env).add_h3_vhost().install()
         log = env.httpd_error_log
         start = log.current_pos()
+        url = env.mkurl("https", "test1", "/001.html")
         for _ in range(20):
             assert env.apache_restart() == 0
             assert env.wait_udp_port(env.https_port)
+            # a live session, so stop also tears down its control streams
+            r = env.h3_get(url)
+            assert r.exit_code == 0, f"{r}"
+            assert r.response["protocol"] == "HTTP/3", f"{r}"
             assert env.apache_stop() == 0
         # crashed, or still there when the parent gave up waiting
         unclean = [log.RE_ERRLOG_CRASH.pattern, r'.*AH0004[56]: child process']

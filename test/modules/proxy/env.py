@@ -84,6 +84,7 @@ class ProxyTestSetup(HttpdTestSetup):
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
                           "proxy_connect", "proxy_uwsgi", "lbmethod_byrequests",
                           "remoteip"])
+        self.add_optional_modules(["proxy_hcheck"])
 
 
 class ProxyTestEnv(HttpdTestEnv):
@@ -96,9 +97,11 @@ class ProxyTestEnv(HttpdTestEnv):
         self._d_forward = f"forward.{self.http_tld}"
         self._d_mixed = f"mixed.{self.http_tld}"
 
-        self.add_httpd_log_modules(
-            ["proxy", "proxy_http", "proxy_balancer", "lbmethod_byrequests",
-             "ssl"])
+        log_modules = ["proxy", "proxy_http", "proxy_balancer",
+                       "lbmethod_byrequests", "ssl"]
+        if self.has_shared_module("proxy_hcheck"):
+            log_modules.append("proxy_hcheck")
+        self.add_httpd_log_modules(log_modules)
         self.add_cert_specs([
             CertificateSpec(domains=[
                 self._d_forward, self._d_reverse, self._d_mixed

@@ -542,9 +542,10 @@ static proxy_worker *hc_get_hcworker(sctx_t *ctx, proxy_worker *worker,
         port = (worker->s->port ? worker->s->port
                                 : ap_proxy_port_of_scheme(worker->s->scheme));
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s, APLOGNO(03248)
-                     "Creating hc worker %pp for %s://%s:%d",
+                     "Creating hc worker %pp for %s://%s:%d%s%s",
                      worker, worker->s->scheme, worker->s->hostname_ex,
-                     (int)port);
+                     (int)port,
+                     (*worker->s->hcuri ? " uri=" : ""), worker->s->hcuri);
 
         ap_proxy_define_worker(ctx->p, &hc, NULL, NULL, worker->s->name, 0);
         apr_snprintf(hc->s->name, sizeof hc->s->name, "%pp", worker);
@@ -1061,8 +1062,9 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
     apr_status_t rv;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(03256)
-                 "%sHealth checking %s", (thread ? "Threaded " : ""),
-                 worker->s->name);
+                 "%sHealth checking %s%s%s", (thread ? "Threaded " : ""),
+                 worker->s->name,
+                 (*hc->s->hcuri ? " uri=" : ""), hc->s->hcuri);
 
     if (hc->s->method == TCP) {
         rv = hc_check_tcp(baton);
@@ -1089,8 +1091,9 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
                 ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 0, worker);
                 worker->s->pcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03302)
-                             "%sHealth check ENABLING %s", (thread ? "Threaded " : ""),
-                             worker->s->name);
+                             "%sHealth check ENABLING %s%s%s", (thread ? "Threaded " : ""),
+                             worker->s->name,
+                             (*worker->s->hcuri ? " uri=" : ""), worker->s->hcuri);
 
             }
         }
@@ -1103,8 +1106,9 @@ static void * APR_THREAD_FUNC hc_check(apr_thread_t *thread, void *b)
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, 1, worker);
                 worker->s->fcount = 0;
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(03303)
-                             "%sHealth check DISABLING %s", (thread ? "Threaded " : ""),
-                             worker->s->name);
+                             "%sHealth check DISABLING %s%s%s", (thread ? "Threaded " : ""),
+                             worker->s->name,
+                             (*worker->s->hcuri ? " uri=" : ""), worker->s->hcuri);
             }
         }
     }
