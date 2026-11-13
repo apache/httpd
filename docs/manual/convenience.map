@@ -464,6 +464,7 @@ order	mod/mod_access_compat.html#order
 outputsed	mod/mod_sed.html#outputsed
 passenv	mod/mod_env.html#passenv
 pidfile	mod/mpm_common.html#pidfile
+pollersperchild	mod/motorz.html#pollersperchild
 privilegesmode	mod/mod_privileges.html#privilegesmode
 protocol	mod/core.html#protocol
 protocolecho	mod/mod_echo.html#protocolecho
