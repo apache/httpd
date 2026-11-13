@@ -1,0 +1,9 @@
+  *) mod_xml2enc: Fix a use-after-free when part of a character is carried
+     over to the next read while converting a charset with apr_xlate.
+     Fix child process aborts when the response body fails part way
+     through: when a backend fails (an error bucket arrives) before there
+     is enough data to sniff the charset or after a partial multibyte
+     sequence, or when reading the body fails (e.g. a CGI script timing
+     out).  Pass on the end of a response which ends with a partial
+     multibyte sequence rather than holding it back.
+     [Alejandro Pacheco <alepacheco99 gmail.com>]
