@@ -1546,7 +1546,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                                  get_canned_error_string(status, r, location),
                                  NULL);
 
-        if (recursive_error) {
+        if (recursive_error && ap_is_HTTP_ERROR(recursive_error)) {
             ap_rvputs_proto_in_ascii(r, "<p>Additionally, a ",
                       status_lines[ap_index_of_response(recursive_error)],
                       "\nerror was encountered while trying to use an "
