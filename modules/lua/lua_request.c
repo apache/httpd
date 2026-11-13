@@ -231,6 +231,8 @@ static int req_aprtable2luatable_cb_len(void *l, const char *key,
     requests. Used for multipart POST data.
  =======================================================================================================================
  */
+/* Reads the request body into *rbuf.  Returns OK, DONE if there is
+ * no body, or an HTTP status. */
 static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
         apr_off_t maxsize)
 {
@@ -245,24 +247,40 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
     if (ap_should_client_block(r)) {
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        apr_off_t    len_read = -1;
-        apr_off_t    rpos = 0;
+        char argsbuffer[HUGE_STRING_LEN];
+        long len_read;
         apr_off_t length = r->remaining;
+        apr_size_t total;
+        apr_bucket_brigade *bb;
+        char *buf;
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
         if (maxsize != 0 && length > maxsize) {
-            return APR_EINCOMPLETE; /* Only room for incomplete data chunk :( */
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
-        *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length) + 1);
-        while ((rpos < length)
-               && (len_read = ap_get_client_block(r, (char *) *rbuf + rpos,
-                                               length - rpos)) > 0) {
-            rpos += len_read;
+        /* The body and its NUL must fit in an apr_size_t. */
+        if ((apr_uint64_t) length >= APR_SIZE_MAX) {
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+
+        /* Collect the body as it arrives rather than allocating the
+         * Content-Length up front. */
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+        while ((len_read = ap_get_client_block(r, argsbuffer,
+                                               sizeof(argsbuffer))) > 0) {
+            apr_brigade_write(bb, NULL, NULL, argsbuffer, len_read);
         }
         if (len_read < 0) {
-            return APR_EINCOMPLETE;
+            apr_brigade_destroy(bb);
+            return HTTP_BAD_REQUEST;
         }
-        *size = rpos;
+        apr_brigade_length(bb, 1, size);
+        total = (apr_size_t) *size;
+        buf = apr_palloc(r->pool, total + 1);
+        apr_brigade_flatten(bb, buf, &total);
+        buf[total] = '\0';
+        apr_brigade_destroy(bb);
+        *rbuf = buf;
     }
     else {
         rc = DONE;
@@ -278,9 +296,12 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
  * and writes to a file.
  * =======================================================================================================================
  */
-static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *size)
+/* Stores the request body in the file filename.  Returns OK, DONE if
+ * there is no body, or an HTTP status. */
+static int lua_write_body(request_rec *r, const char *filename,
+                          apr_off_t *size, apr_off_t maxsize)
 {
-    apr_status_t rc = OK;
+    int rc;
 
     *size = 0;
 
@@ -292,22 +313,36 @@ static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *
                   len_read,
                   rpos = 0;
         apr_off_t length = r->remaining;
+        apr_file_t *file;
 
-        *size = length;
+        if (maxsize != 0 && length > maxsize) {
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+        if (apr_file_open(&file, filename,
+                          APR_FOPEN_CREATE | APR_FOPEN_WRITE
+                          | APR_FOPEN_TRUNCATE,
+                          APR_FPROT_OS_DEFAULT, r->pool) != APR_SUCCESS) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
         while ((len_read =
                     ap_get_client_block(r, argsbuffer,
                                         sizeof(argsbuffer))) > 0) {
             if ((rpos + len_read) > length)
-                rsize = (apr_size_t) length - rpos;
+                rsize = length - rpos;
             else
                 rsize = len_read;
 
-            rc = apr_file_write_full(file, argsbuffer, (apr_size_t) rsize,
-                                     NULL);
-            if (rc != APR_SUCCESS)
-                return rc;
+            if (apr_file_write_full(file, argsbuffer, (apr_size_t) rsize,
+                                    NULL) != APR_SUCCESS) {
+                apr_file_close(file);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
             rpos += rsize;
         }
+        apr_file_close(file);
+        if (len_read < 0)
+            return HTTP_BAD_REQUEST;
+        *size = rpos;
     }
     else {
         rc = DONE;
@@ -443,7 +478,7 @@ static int req_parsebody(lua_State *L)
                 size = (apr_size_t) len;
                 buffer = apr_palloc(r->pool, size + 1);
                 apr_brigade_flatten(pair->value, buffer, &size);
-                buffer[len] = 0;
+                buffer[size] = 0;
                 req_aprtable2luatable_cb(L, pair->name, buffer);
             }
         }
@@ -468,40 +503,37 @@ static int lua_ap_requestbody(lua_State *L)
 
     if (r) {
         apr_off_t size;
-        if (maxSize > 0 && r->remaining > maxSize) {
-            lua_pushnil(L);
-            lua_pushliteral(L, "Request body was larger than the permitted size.");
-            return 2;
-        }
+        int rc;
         if (r->method_number != M_POST && r->method_number != M_PUT)
             return (0);
         if (!filename) {
             const char     *data;
 
-            if (lua_read_body(r, &data, &size, maxSize) != OK)
+            rc = lua_read_body(r, &data, &size, maxSize);
+            if (rc == HTTP_REQUEST_ENTITY_TOO_LARGE) {
+                lua_pushnil(L);
+                lua_pushliteral(L, "Request body was larger than the permitted size.");
+                return 2;
+            }
+            if (rc != OK)
                 return (0);
 
             lua_pushlstring(L, data, (size_t) size);
             lua_pushinteger(L, (lua_Integer) size);
             return (2);
         } else {
-            apr_status_t rc;
-            apr_file_t     *file;
-
-            rc = apr_file_open(&file, filename, APR_CREATE | APR_FOPEN_WRITE,
-                               APR_FPROT_OS_DEFAULT, r->pool);
+            rc = lua_write_body(r, filename, &size, maxSize);
             lua_settop(L, 0);
-            if (rc == APR_SUCCESS) {
-                rc = lua_write_body(r, file, &size);
-                apr_file_close(file);
-                if (rc != OK) {
-                    lua_pushboolean(L, 0);
-                    return 1;
-                }
-                lua_pushinteger(L, (lua_Integer) size);
-                return (1);
-            } else
+            if (rc == HTTP_REQUEST_ENTITY_TOO_LARGE) {
+                lua_pushnil(L);
+                lua_pushliteral(L, "Request body was larger than the permitted size.");
+                return 2;
+            }
+            if (rc != OK) {
                 lua_pushboolean(L, 0);
+                return 1;
+            }
+            lua_pushinteger(L, (lua_Integer) size);
             return (1);
         }
     }
