@@ -83,3 +83,13 @@ class TestRequest:
     def test_lua_003_09_started(self, env):
         started = int(self.get(env, "/lua/info.lua?started"))
         assert 0 <= time.time() - started < 3600
+
+    def test_lua_003_10_digests(self, env):
+        assert self.get(env, "/lua/info.lua?md5") == \
+            "900150983cd24fb0d6963f7d28e17f72"
+        assert self.get(env, "/lua/info.lua?sha1") == \
+            "a9993e364706816aba3e25717850c26c9cd0d89d"
+
+    # r:base64_encode() takes at most 8MB.
+    def test_lua_003_11_base64_max(self, env):
+        assert self.get(env, "/lua/info.lua?base64_max") == "true|false"

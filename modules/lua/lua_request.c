@@ -43,6 +43,11 @@ APLOG_USE_MODULE(lua);
 #define MODLUA_MAX_REG_MATCH 25
 #endif
 
+/* The longest string r:base64_encode() and r:base64_decode() accept. */
+#ifndef MODLUA_MAX_BASE64
+#define MODLUA_MAX_BASE64 (HUGE_STRING_LEN*1024)
+#endif
+
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
 typedef apr_int64_t (*req_field_int64_f) (request_rec * r);
@@ -976,6 +981,7 @@ static int lua_apr_b64encode(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &plain_len);
+    luaL_argcheck(L, plain_len <= MODLUA_MAX_BASE64, 2, "string too long");
     encoded_len = apr_base64_encode_len(plain_len);
     if (encoded_len) {
         encoded = apr_palloc(lua_temp_pool(r), encoded_len);
@@ -1001,6 +1007,8 @@ static int lua_apr_b64decode(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     encoded = lua_tolstring(L, 2, &encoded_len);
+    luaL_argcheck(L, encoded_len <= MODLUA_MAX_BASE64, 2,
+                  "string too long");
     decoded_len = apr_base64_decode_len(encoded);
     if (decoded_len) {
         plain = apr_palloc(lua_temp_pool(r), decoded_len);
@@ -1094,7 +1102,14 @@ static int lua_apr_sha1(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     buffer = lua_tolstring(L, 2, &len);
     apr_sha1_init(&sha1);
-    apr_sha1_update(&sha1, buffer, len);
+    /* apr_sha1_update() takes an unsigned int length. */
+    while (len > 0) {
+        unsigned int n = len > UINT_MAX ? UINT_MAX : (unsigned int) len;
+
+        apr_sha1_update(&sha1, buffer, n);
+        buffer += n;
+        len -= n;
+    }
     apr_sha1_final(digest, &sha1);
     
     ap_bin2hex(digest, sizeof(digest), result);
