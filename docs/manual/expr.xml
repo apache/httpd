@@ -721,7 +721,7 @@ CustomLog logs/access-errors-specific.log common "expr=%{REQUEST_STATUS} -in {'4
     <code>SERVER_PROTOCOL_VERSION_MAJOR</code> and
     <code>SERVER_PROTOCOL_VERSION_MINOR</code>
     <a href="#vars">variables</a>
-    are available for versions 2.4.71 and later.</p>
+    are available for versions 2.4.72 and later.</p>
 </section>
 
 </manualpage>
