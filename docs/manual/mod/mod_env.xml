@@ -145,9 +145,25 @@ SSI pages</description>
     (<code>\</code>) is continued on the following line, just as in the main
     configuration files.</p>
 
-    <example><title>Example</title>
+    <p>A value beginning with a single or double quote (after any whitespace
+    following <code>=</code>) is treated as quoted, as with
+    <directive module="mod_env">SetEnv</directive>. The surrounding quotes
+    are removed, and whitespace inside them is preserved. Whitespace before
+    the opening quote or after the closing quote is ignored. Within a quoted
+    value, a backslash escapes another backslash or the matching quote
+    character; other backslashes are preserved. To include a literal quote,
+    escape it inside a quoted value or use the other quote character to
+    enclose the value. Unquoted values may contain spaces and are not
+    unescaped. An unterminated quoted value or unexpected text after the
+    closing quote causes a configuration error.</p>
+
+    <p>If the file cannot be read completely, including because a line
+    (after joining continued lines) is too long, configuration parsing
+    fails with an error identifying the file and line number.</p>
+
+    <example><title>Example using quoted values</title>
     <highlight language="config">
-      SetEnvFromFile conf/app.env
+      SetEnvFromFile "conf/app.env"
       </highlight>
     </example>
 
@@ -156,6 +172,10 @@ SSI pages</description>
       # Application settings
       APP_MODE=production
       SPECIAL_PATH=/foo/bin
+      PADDED_VALUE=" value with surrounding spaces "
+      EMPTY_VALUE=""
+      LITERAL_QUOTE="'value"
+      ESCAPED_QUOTE='\'value'
       </highlight>
     </example>
 
