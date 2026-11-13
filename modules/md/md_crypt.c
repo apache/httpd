@@ -179,7 +179,9 @@ apr_status_t md_rand_bytes(unsigned char *buf, apr_size_t len, apr_pool_t *p)
         return APR_ENOTIMPL;
     }
     if (APR_SUCCESS == (rv = md_crypt_init(p))) {
-        RAND_bytes((unsigned char*)buf, (int)len);
+        if (RAND_bytes((unsigned char*)buf, (int)len) != 1) {
+            rv = APR_EGENERAL;
+        }
     }
     return rv;
 }
