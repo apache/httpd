@@ -1,3 +1,3 @@
-  *) mod_lua: Fix r:wsread() handling of partial, empty and control
-     websocket frames, r:wspeek() consuming input, r:regex() with 25
-     capture groups, and r:set_document_root().  [Joe Orton]
+  *) mod_lua: Fix websocket frame handling in r:wsread() and r:wspeek(),
+     r:requestbody() size limits, r:regex() with 25 capture groups and
+     r:set_document_root().  [Joe Orton]
