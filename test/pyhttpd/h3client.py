@@ -53,11 +53,23 @@ class H3Response:
                 f"headers={self.headers}, body={self.body[:200]!r}]")
 
 
+class _H3Connection(H3Connection):
+    """aioquic checks content-length on HEAD responses too; RFC 9110 9.3.2 allows it."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.head_streams = set()
+
+    def _check_content_length(self, stream):
+        if stream.stream_id not in self.head_streams:
+            super()._check_content_length(stream)
+
+
 class _Protocol(QuicConnectionProtocol):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.http = H3Connection(self._quic)
+        self.http = _H3Connection(self._quic)
         self.pending = {}
         self.terminated = None
 
@@ -102,6 +114,8 @@ class _Protocol(QuicConnectionProtocol):
                      + payload)
             self._quic.send_stream_data(self.http._local_control_stream_id,
                                         frame)
+        if method == "HEAD":
+            self.http.head_streams.add(sid)
         hdrs = [(b":method", method.encode()), (b":scheme", b"https"),
                 (b":authority", authority.encode()), (b":path", path.encode())]
         hdrs.extend((k.lower().encode(), v.encode()) for k, v in headers)
