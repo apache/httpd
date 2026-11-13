@@ -246,7 +246,7 @@ class TestRemoteIp:
     # ap_expr (here via mod_headers) and the CGI/SSI REMOTE_PORT variable
     # (here via mod_include).  Bug 70295.
     REMOTE_PORT_FIX = not_backported("gh-896", "REMOTE_PORT from the useragent address",
-                                     backported_in="2.4.71")
+                                     backported_in="2.4.72")
 
     def remote_port_install(self, env):
         """A PROXY protocol vhost on http_port2 and an X-Forwarded-For one
