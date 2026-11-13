@@ -1257,6 +1257,12 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     expires. This enables to shut down the backend server for maintenance
     and bring it back online later. A value of 0 means always retry workers
     in an error state with no timeout.
+    <br />
+    A worker that is not a member of a load balancer only enters the error
+    state on a connection failure if its <a href="#status_table">status</a>
+    is explicitly set to <code>-I</code> (i.e. ignore-errors turned off);
+    such a worker ignores connection errors by default, in which case
+    <code>retry</code> has no effect.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
