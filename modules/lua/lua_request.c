@@ -1229,7 +1229,8 @@ static int lua_ap_mpm_query(lua_State *L)
         y;
 
     x = lua_tointeger(L, 1);
-    ap_mpm_query(x, &y);
+    if (ap_mpm_query(x, &y) != APR_SUCCESS)
+        return 0;
     lua_pushinteger(L, y);
     return 1;
 }
@@ -1418,8 +1419,8 @@ static int lua_ap_scoreboard_worker(lua_State *L)
 
     i = lua_tointeger(L, 2);
     j = lua_tointeger(L, 3);
-    ap_copy_scoreboard_worker(ws_record, i, j);
-    if (ws_record) {
+    if (ap_get_scoreboard_worker_from_indexes(i, j) != NULL) {
+        ap_copy_scoreboard_worker(ws_record, i, j);
         lua_newtable(L);
 
         lua_pushstring(L, "access_count");
