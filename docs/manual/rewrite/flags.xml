@@ -1154,15 +1154,15 @@ The <code>L</code> flag can be useful in this context to end the
 <section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
     <p> Setting this flag is required to allow a rewrite to continue If the
     HTTP request being written has an encoded question mark, '%3f', and the
-    rewritten result has a '?' in the substitution.  This protects from a malicious
+    rewritten result has a '?' in cases where the first question mark
+    would be interpreted as separating the substituted path from the substituted
+    query.  This protects from a malicious
     URL taking advantage of a capture and re-substitution of the encoded
-    question mark.</p>
+    question mark to truncate the path.</p>
 
 <highlight language="config">
-# A PHP front controller that routes all requests via a query parameter.
-# Without UnsafeAllow3F, a request like /page%3Fname=test would return
-# 403 Forbidden because the rewritten substitution contains '?' while
-# the original request contains an encoded '%3F'.
+# Without UnsafeAllow3F, a request like /page%3Fname=test would be
+# rejected because the path would be truncated.
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
 RewriteRule "(.+)" "index.php?route=$1" [L,QSA,UnsafeAllow3F]
