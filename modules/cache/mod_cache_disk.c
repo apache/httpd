@@ -762,7 +762,7 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
             rv = read_line_tail(r, file, buf, MAX_STRING_LEN - 1,
                                 p, &w, &p);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00716)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10682)
                               "Premature end of vary array.");
                 return rv;
             }
@@ -842,7 +842,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
             rv = read_line_tail(r, file, buf, MAX_STRING_LEN - 1,
                                 p, &w, &p);
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00717)
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10683)
                               "Premature end of cache headers.");
                 return rv;
             }
