@@ -19,6 +19,9 @@ class TestRequest:
                 Options +Indexes
                 AllowOverride FileInfo
             </Directory>
+            <Location "/lua/info.lua">
+                LimitRequestBody 5000000000
+            </Location>
             """),
         })
         conf.add_vhost_test1()
@@ -64,3 +67,13 @@ class TestRequest:
             content = f.read()
         assert self.get(env, f"/lua/sendfile.lua?{count}") + "\n" == \
             (content + "--\n") * count
+
+    # A limit over 2^32 is reported in full.
+    def test_lua_003_06_limit_req_body(self, env):
+        assert self.get(env, "/lua/info.lua?limit_req_body") == "5000000000"
+
+    def test_lua_003_07_mpm_query_unknown(self, env):
+        assert self.get(env, "/lua/info.lua?mpm_query") == "nil"
+
+    def test_lua_003_08_scoreboard_worker_range(self, env):
+        assert self.get(env, "/lua/info.lua?scoreboard_worker") == "nil"
