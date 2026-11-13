@@ -4,7 +4,8 @@ from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
 pytestmark = not_backported("r1410755",
-                            "SERVER_PROTOCOL_VERSION ap_expr variables")
+                            "SERVER_PROTOCOL_VERSION ap_expr variables",
+                            backported_in="2.4.72")
 
 
 # The variables do not parse on a server without them, so the restart
