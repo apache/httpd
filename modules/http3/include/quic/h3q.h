@@ -32,16 +32,15 @@ typedef struct h3q_stream h3q_stream;
  *  a per-connection setting, applied by h3q_conn_prepare(). */
 typedef struct h3q_config
 {
-    const char* cert_path;
-    const char* key_path;
+    /** TLS context from h3q_tls_ctx_create(); the engine takes its own reference. */
+    struct ssl_ctx_st* ssl_ctx;
     unsigned address_validation : 1;
-    unsigned session_tickets : 1;
 } h3q_config;
 
 /**
  * Build the QUIC listener on @p udp_fd, together with the filter BIO that
  * recovers peer addresses from OpenSSL's accept queue.
- * @param cfg    Certificate, key and address validation.
+ * @param cfg    TLS context and address validation.
  * @param udp_fd Pre-opened non-blocking UDP socket bound to the listen port,
  *               borrowed for the engine's lifetime.
  * @param err    Buffer receiving the reason on failure; may be NULL.

@@ -157,11 +157,12 @@ class H3TestEnv(HttpdTestEnv):
 class H3Conf(HttpdConf):
     """A configuration with HTTP/3 on the https port of the test1 vhost.
 
-    mod_http3 opens one UDP listener, with the certificate of the first
-    virtual host that has one configured, so test1 carries the H3
-    directives and every other vhost on the https port is reached through
-    the same QUIC connection by its Host header. The default certificate
-    covers all test domains.
+    mod_http3 serves HTTP/3 on a host that lists h3 in Protocols, with the
+    certificate mod_ssl has for it, and opens one UDP listener for the
+    first such virtual host defined. test1 carries the H3 directives and
+    every other vhost on the https port is reached through the same QUIC
+    connection by its Host header. The default certificate covers all test
+    domains.
     """
 
     def __init__(self, env: H3TestEnv, extras: Dict[str, Any] = None):
@@ -169,13 +170,10 @@ class H3Conf(HttpdConf):
 
     def add_h3_vhosts(self, test1: List[str] = None, test2: List[str] = None,
                       cgi: List[str] = None):
-        cred = self.env.get_credentials_for_name(f"test1.{self.env.http_tld}")[0]
         self.start_vhost(domains=[f"test1.{self.env.http_tld}"],
                          port=self.env.https_port, doc_root="htdocs/test1")
         self.add([
             "Protocols h3 http/1.1",
-            f"H3CertificatePath {cred.cert_file}",
-            f"H3CertificateKeyPath {cred.pkey_file}",
             f"H3Port {self.env.h3_port}",
         ])
         self.add(test1 or [])
@@ -191,26 +189,19 @@ class H3Conf(HttpdConf):
         self.end_vhost()
         return self
 
-    def add_h3_certificate(self, domain: str = None):
-        if domain is None:
-            domain = self.env.h3_domain
-        cred = self.env.get_credentials_for_name(domain)[0]
-        self.add([
-            f"H3CertificatePath {cred.cert_file}",
-            f"H3CertificateKeyPath {cred.pkey_file}",
-        ])
+    def add_h3_protocol(self):
+        """HTTP/3 with the certificate mod_ssl has for the host."""
+        self.add("Protocols h3 http/1.1")
         return self
 
-    def add_h3_vhost(self, directives: List[str] = None, domain: str = None,
-                     with_certificate: bool = True):
+    def add_h3_vhost(self, directives: List[str] = None, domain: str = None):
         """test1 alone on the https port, serving HTTP/3 and /cgi/."""
         if domain is None:
             domain = self.env.h3_domain
         self.start_vhost(domains=[domain], port=self.env.https_port,
                          doc_root="htdocs/test1")
         self.add(f'Alias /cgi/ "{self.env.server_docs_dir}/cgi/"')
-        if with_certificate:
-            self.add_h3_certificate(domain)
+        self.add_h3_protocol()
         if directives:
             self.add(directives)
         self.end_vhost()
