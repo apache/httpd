@@ -56,7 +56,8 @@ Content-Length: 19
 class TestProxyUds:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # setup 3 vhosts on https: for reverse, forward and
         # mixed proxying to a unix: domain socket
         # We setup a UDSFaker running that returns a fixed response

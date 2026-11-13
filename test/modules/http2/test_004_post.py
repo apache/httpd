@@ -18,7 +18,8 @@ from .env import H2Conf, H2TestEnv
 class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
         conf = H2Conf(env, extras={
             f'cgi.{env.http_tld}': [

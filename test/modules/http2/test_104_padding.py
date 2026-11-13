@@ -13,7 +13,8 @@ def frame_padding(payload, padbits):
 class TestPadding:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         def add_echo_handler(conf):
             conf.add([
                 "<Location \"/h2test/echo\">",

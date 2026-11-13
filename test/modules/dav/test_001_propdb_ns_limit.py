@@ -7,7 +7,8 @@ from pyhttpd.conf import HttpdConf
 class TestPropdbNsLimit:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         dav_dir = os.path.join(env.gen_dir, 'dav')
         os.makedirs(dav_dir, exist_ok=True)
         with open(os.path.join(dav_dir, 'file.txt'), 'w') as fd:

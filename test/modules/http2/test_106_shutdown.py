@@ -16,7 +16,8 @@ from pyhttpd.result import ExecResult
 class TestShutdown:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env)
         conf.add_vhost_cgi()
         conf.install()

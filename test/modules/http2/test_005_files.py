@@ -21,7 +21,8 @@ class TestFiles:
     URI_PATHS = []
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         docs_a = os.path.join(env.server_docs_dir, "cgi/files")
         uris = []
         file_count = 32
@@ -32,7 +33,7 @@ class TestFiles:
                 raise Exception("file sizes?: {0} {1}".format(i, fsize))
             fname = "{0}-{1}k.txt".format(i, fsize)
             mk_text_file(os.path.join(docs_a, fname), 8 * fsize)
-            self.URI_PATHS.append(f"/files/{fname}")
+            cls.URI_PATHS.append(f"/files/{fname}")
 
         H2Conf(env).add_vhost_cgi(
             proxy_self=True, h2proxy_self=True

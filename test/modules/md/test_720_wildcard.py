@@ -15,7 +15,8 @@ from .md_env import MDTestEnv
 class TestWildcard:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         env.APACHE_CONF_SRC = "data/test_auto"
         acme.start(config='default')
         env.check_acme()

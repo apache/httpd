@@ -9,7 +9,8 @@ from pyhttpd.conf import HttpdConf
 class TestProxyHttp:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # setup 3 vhosts on https: for reverse, forward and mixed proxying
         # setup 3 vhosts on http: with different document roots
         conf = HttpdConf(env)

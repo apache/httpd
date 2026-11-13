@@ -5,7 +5,8 @@ from pyhttpd.conf import HttpdConf
 class TestCGIEnvVars:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env, extras={
             'base': f"""
         <Directory "{env.gen_dir}">

@@ -70,7 +70,8 @@ class TestStatusLineCR:
     """
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env)
         conf.start_vhost(domains=[f"test1.{env.http_tld}"], port=env.http_port,
                          doc_root="htdocs", with_ssl=False)

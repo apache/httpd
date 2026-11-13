@@ -11,7 +11,8 @@ from .env import H1Conf
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H1Conf(env).add_vhost_cgi(proxy_self=True).install()
         assert env.apache_restart() == 0
 

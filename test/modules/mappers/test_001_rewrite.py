@@ -9,7 +9,8 @@ from pyhttpd.conf import HttpdConf
 class TestRewriteRedirect:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env)
         # VirtualHost that strips "www." prefix and redirects
         conf.start_vhost(
@@ -69,7 +70,8 @@ class TestRewriteRedirect:
 class TestRewriteOpenRedirect:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         doc_dir = os.path.join(env.server_dir, "htdocs", "test1")
         rhts_dir = os.path.join(doc_dir, "rhts")
         os.makedirs(rhts_dir, exist_ok=True)
@@ -107,7 +109,8 @@ class TestRewriteOpenRedirect:
 class TestRewriteEscapeSequences:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         doc_dir = os.path.join(env.server_dir, "htdocs", "test1")
         rhts_dir = os.path.join(doc_dir, "rhts2")
         os.makedirs(rhts_dir, exist_ok=True)

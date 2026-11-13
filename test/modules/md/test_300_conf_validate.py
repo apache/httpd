@@ -19,7 +19,8 @@ from .md_env import MDTestEnv
 class TestConf:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='default')
         env.purge_store()
 

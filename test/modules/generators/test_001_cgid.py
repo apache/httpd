@@ -18,7 +18,8 @@ SSI_ERROR = "[an error occurred while processing this directive]"
 class TestCgid:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.require(env.has_cgid_module, "mod_cgid not built",
                     dep="mod_cgid",
                     detected=f"not found in {env.libexec_dir}")
@@ -45,8 +46,8 @@ class TestCgid:
             <LocationMatch "^/sleep">
                 CGIDScriptTimeout 1
             </LocationMatch>
-            """) + self.setenv_location("/envcount.py/small", 300)
-              + self.setenv_location("/envcount.py/large", 4200),
+            """) + cls.setenv_location("/envcount.py/small", 300)
+              + cls.setenv_location("/envcount.py/large", 4200),
         })
         conf.add_vhost_cgi()
         conf.install()

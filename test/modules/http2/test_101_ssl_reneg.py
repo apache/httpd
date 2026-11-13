@@ -9,7 +9,8 @@ from .env import H2Conf, H2TestEnv
 class TestSslRenegotiation:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         domain = f"ssl.{env.http_tld}"
         conf = H2Conf(env, extras={
             'base': [

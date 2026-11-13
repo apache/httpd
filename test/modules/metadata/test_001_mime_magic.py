@@ -14,7 +14,8 @@ NOT_BACKPORTED = not_backported("r1938070, r1938258-r1938260", "mod_mime_magic f
 class TestMimeMagic:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # A small magic file: one entry giving both a type and an
         # encoding, and one with a file(1)-style descriptive note in
         # place of the encoding.  The token-based text detection is left

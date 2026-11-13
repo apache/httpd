@@ -45,7 +45,8 @@ class TestCompare:
     mod_mime_libmagic (vhost test2)."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.require(env.has_libmagic_module, "mod_mime_libmagic is not built",
                     dep="mod_libmagic",
                     detected=f"not found in {env.libexec_dir}")

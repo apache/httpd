@@ -107,7 +107,8 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
 class TestWebSockets:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # Apache config that CONNECT proxies a WebSocket server for paths starting
         # with '/ws/'
         # The WebSocket server is started in pytest fixture 'ws_server' below.
@@ -126,7 +127,8 @@ class TestWebSockets:
         conf.add_vhost_test1(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
-    def ws_check_alive(self, env, timeout=5):
+    @staticmethod
+    def ws_check_alive(env, timeout=5):
         url = f'http://localhost:{env.ws_port}/'
         end = datetime.now() + timedelta(seconds=timeout)
         while datetime.now() < end:
@@ -136,11 +138,13 @@ class TestWebSockets:
             time.sleep(.1)
         return False
 
-    def _mkpath(self, path):
+    @staticmethod
+    def _mkpath(path):
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def _rmrf(self, path):
+    @staticmethod
+    def _rmrf(path):
         if os.path.exists(path):
             return shutil.rmtree(path)
 
@@ -148,20 +152,21 @@ class TestWebSockets:
         return [info for info in infos if info != '[1] RST']
 
     @pytest.fixture(autouse=True, scope='class')
-    def ws_server(self, env):
+    @classmethod
+    def ws_server(cls, env):
         # Run our python websockets server that has some special behaviour
         # for the different path to CONNECT to.
         run_dir = os.path.join(env.gen_dir, 'ws-server')
         err_file = os.path.join(run_dir, 'stderr')
-        self._rmrf(run_dir)
-        self._mkpath(run_dir)
+        cls._rmrf(run_dir)
+        cls._mkpath(run_dir)
         with open(err_file, 'w') as cerr:
             cmd = os.path.join(os.path.dirname(inspect.getfile(TestWebSockets)),
                                'ws_server.py')
             args = ['python3', cmd, '--port', str(env.ws_port)]
             p = subprocess.Popen(args=args, cwd=run_dir, stderr=cerr,
                                  stdout=cerr)
-            if not self.ws_check_alive(env):
+            if not cls.ws_check_alive(env):
                 p.kill()
                 p.wait()
                 pytest.fail(f'ws_server did not start. stderr={open(err_file).readlines()}')

@@ -89,7 +89,7 @@ CASES = [
     ("GET http://localhost:80x/ HTTP/1.0\r\n\r\n", 400, None, None),
     ("GET http://localhost:80:80/ HTTP/1.0\r\n\r\n", 400, None, None),
     ("GET http://localhost::80/ HTTP/1.0\r\n\r\n", 400, None, None),
-    ("GET http://foo\@localhost:80/ HTTP/1.0\r\n\r\n", 200, 400, None),
+    ("GET http://foo@localhost:80/ HTTP/1.0\r\n\r\n", 200, 400, None),
     ("GET http://[::1]/ HTTP/1.0\r\n\r\n", 1, None, None),
     ("GET http://[::1:2]/ HTTP/1.0\r\n\r\n", 1, None, None),
     ("GET http://[4712::abcd]/ HTTP/1.0\r\n\r\n", 1, None, None),

@@ -18,14 +18,15 @@ from .md_env import MDTestEnv
 class TestStapling:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='default')
         env.check_acme()
         env.clear_store()
-        domain = env.get_class_domain(self.__class__)
+        domain = env.get_class_domain(cls)
         mdA = "a-" + domain
         mdB = "b-" + domain
-        self.configure_httpd(env, [mdA, mdB]).install()
+        cls.configure_httpd(env, [mdA, mdB]).install()
         env.apache_stop()
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([mdA, mdB])
@@ -40,7 +41,8 @@ class TestStapling:
         yield
         env.apache_stop()
 
-    def configure_httpd(self, env, domains=None, add_lines="", ssl_stapling=False):
+    @staticmethod
+    def configure_httpd(env, domains=None, add_lines="", ssl_stapling=False):
         if not isinstance(domains, list):
             domains = [domains] if domains else []
         conf = MDConf(env)

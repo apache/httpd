@@ -28,6 +28,7 @@ class TestProxyFwd:
         assert env.apache_restart() == 0
 
     @pytest.fixture(autouse=True, scope='class')
+    @classmethod
     def _class_scope(cls, env):
         cls.config_fwd_proxy(env)
 

@@ -13,7 +13,8 @@ class TestSystemdNotify:
     across the server lifecycle."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env)
         conf.add_vhost_test1()
         conf.install()

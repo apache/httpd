@@ -25,7 +25,8 @@ LOCK_BODY = (
 class TestLockTimeoutOverflow:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         dav_dir = os.path.join(env.gen_dir, 'dav-timeout-overflow')
         os.makedirs(dav_dir, exist_ok=True)
         for name in ('file1.txt', 'file2.txt', 'file3.txt'):

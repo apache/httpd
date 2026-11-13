@@ -18,7 +18,8 @@ def setup_data(env):
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         setup_data(env)
         conf = H2Conf(env, extras={
             f"cgi.{env.http_tld}": [

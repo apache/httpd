@@ -17,7 +17,8 @@ def get_type(env, path):
 class TestMimeLibmagic:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.require(env.has_libmagic_module, "mod_mime_libmagic is not built",
                     dep="mod_libmagic",
                     detected=f"not found in {env.libexec_dir}")
@@ -62,7 +63,8 @@ class TestMimeLibmagic:
 class TestMimeLibmagicCharset:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.require(env.has_libmagic_module, "mod_mime_libmagic is not built",
                     dep="mod_libmagic",
                     detected=f"not found in {env.libexec_dir}")

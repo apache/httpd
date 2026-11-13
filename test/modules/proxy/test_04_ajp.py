@@ -54,7 +54,8 @@ class _AJPFaker(TCPFaker):
 class TestProxyAjp:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.require(env.has_shared_module("proxy_ajp"), "mod_proxy_ajp not available",
                     dep="mod_proxy_ajp",
                     detected=f"no mod_proxy_ajp.so in {env.libexec_dir}")
