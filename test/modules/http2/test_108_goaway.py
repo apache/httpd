@@ -26,7 +26,8 @@ class TestGoaway:
     ERR_HTTP_1_1_REQUIRED = 0x0d
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env, extras={
             'base': [
                 "AcceptFilter http none",
@@ -88,7 +89,7 @@ class TestGoaway:
     # send that.)
     @(not_backported("r1939156", "HTTP/2 error codes in GOAWAY")
       if os.environ.get("MPM") == "worker" or sys.platform == "win32"
-      else pytest.mark.usefixtures())
+      else (lambda f: f))
     def test_h2_108_01_idle_timeout(self, env):
         error = self._goaway_error(env, self._tls_context())
         assert error == self.ERR_NO_ERROR, f"GOAWAY error code {error}"

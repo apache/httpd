@@ -13,7 +13,8 @@ from .md_env import MDTestEnv
 class TestEab:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='eab')
         env.check_acme()
         env.clear_store()

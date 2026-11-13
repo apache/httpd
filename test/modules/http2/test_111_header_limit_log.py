@@ -21,7 +21,8 @@ NHEADERS = 25
 class TestHeaderLimitLog:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env, extras={
             f"test1.{env.http_tld}": [
                 f"LimitRequestFields {LIMIT}",

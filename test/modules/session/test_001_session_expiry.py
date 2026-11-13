@@ -7,7 +7,8 @@ from pyhttpd.conf import HttpdConf
 
 class TestSessionExpiry:
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         cgi_dir = os.path.join(env.server_dir, "htdocs", "test1", "cgi")
         conf = HttpdConf(env, extras={
             f"test1.{env.http_tld}": f"""

@@ -13,7 +13,8 @@ class TestSystemdExtendedStatus:
     report, which changes what the rest of the server records too."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         yield
         conf = HttpdConf(env)
         conf.add_vhost_test1()

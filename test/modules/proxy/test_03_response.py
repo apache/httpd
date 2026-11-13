@@ -57,7 +57,8 @@ class _ResponseFaker(TCPFaker):
 class TestProxyResponse:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         faker = _ResponseFaker("127.0.0.1", env.http_port2)
         faker.start()
 

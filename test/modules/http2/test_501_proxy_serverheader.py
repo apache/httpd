@@ -7,7 +7,8 @@ from .env import H2Conf, H2TestEnv
 class TestProxyServerHeader:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env, extras={
             f'cgi.{env.http_tld}': [
                 "Header unset Server",

@@ -35,28 +35,29 @@ BOUNDED = ["--max-time", "30"]
 class TestSed:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
-        self.docdir = os.path.join(env.server_dir, "htdocs", "test1")
-        self.write(env, "sed.html", DOC)
+    @classmethod
+    def _class_scope(cls, env):
+        cls.docdir = os.path.join(env.server_dir, "htdocs", "test1")
+        cls.write(env, "sed.html", DOC)
         # Same text with no newline after the last line.
-        self.write(env, "nonl.html", DOC[:-1])
-        self.write(env, "empty.html", "")
+        cls.write(env, "nonl.html", DOC[:-1])
+        cls.write(env, "empty.html", "")
         # One line per 4 KB, well past MODSED_OUTBUF_SIZE and past the 50
         # transient buckets mod_sed flushes at.
-        self.write(env, "big.html",
+        cls.write(env, "big.html",
                    "".join(f"line {i:06d} monday {'x' * 4000}\n"
                            for i in range(500)))
         # A byte from each interesting class for the l command: printable,
         # tab, DEL and three high-bit bytes.
-        self.write_bytes(env, "bytes.html", b"a\tb\x7fc\xffd\x80e\xa9f\n")
-        self.write(env, "insert.txt", "INSERTED\n")
+        cls.write_bytes(env, "bytes.html", b"a\tb\x7fc\xffd\x80e\xa9f\n")
+        cls.write(env, "insert.txt", "INSERTED\n")
         # First line has nothing for \(a*\) to capture, second has "aa".
-        self.write(env, "backref.html", "b\naab\n")
+        cls.write(env, "backref.html", "b\naab\n")
         head = "".join(
             f"line {i:06d} monday ".ljust(HUGE_LINE_LEN, "y") + "\n"
             for i in range(HUGE_HEAD_LINES))
         assert len(head) == HUGE_HEAD_LEN
-        self.write(env, "huge.html", head + "z" * HUGE_TAIL_LEN + "\n")
+        cls.write(env, "huge.html", head + "z" * HUGE_TAIL_LEN + "\n")
 
     @staticmethod
     def write(env, name, text):

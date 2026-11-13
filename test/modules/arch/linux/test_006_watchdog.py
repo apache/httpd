@@ -42,7 +42,8 @@ class TestSystemdWatchdog:
     """
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # These run their own servers on the second port; the shared one
         # would only add its notifications to the same socket.
         assert env.apache_stop() == 0

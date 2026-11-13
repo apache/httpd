@@ -9,7 +9,8 @@ from .env import H2Conf, H2TestEnv
 class TestEarlyHints:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         if not env.httpd_is_at_least('2.4.58'):
             pytest.skip(f'needs httpd 2.4.58')
         H2Conf(env).start_vhost(domains=[f"hints.{env.http_tld}"],

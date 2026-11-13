@@ -10,7 +10,8 @@ from pyhttpd.conf import HttpdConf
 class TestDavOperations:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         dav_dir = os.path.join(env.gen_dir, 'dav-ops')
         if os.path.exists(dav_dir):
             shutil.rmtree(dav_dir)

@@ -9,7 +9,8 @@ from .env import H2Conf, H2TestEnv
 class TestInvalidHeaders:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).add_vhost_cgi().install()
         assert env.apache_restart() == 0
 

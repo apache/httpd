@@ -20,7 +20,8 @@ class TestSystemdSocketActivation:
     """
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # The activated servers use the same server root; keep the one
         # started by other tests out of the way.
         assert env.apache_stop() == 0

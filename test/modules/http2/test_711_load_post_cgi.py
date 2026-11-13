@@ -9,7 +9,8 @@ from .env import H2Conf, H2TestEnv
 class TestLoadCgi:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).add_vhost_cgi(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 

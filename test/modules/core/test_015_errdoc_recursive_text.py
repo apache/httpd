@@ -21,7 +21,8 @@ from pyhttpd.conf import HttpdConf
 class TestErrdocRecursiveText:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         docs = env.server_docs_dir
         conf = HttpdConf(env)
         conf.add([

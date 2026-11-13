@@ -13,7 +13,8 @@ class TestVhostCompatSecure:
     settings) than the handshake host are rejected with 421."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         alt_domain = f"test2.{env.http_tld}"
         alt_creds = env.ca.issue_cert(
             CertificateSpec(name="ssl005-alt", domains=[alt_domain],
@@ -192,7 +193,8 @@ class TestVhostCompatPolicy:
     way the policy blocks, and is served otherwise."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, policy):
+    @classmethod
+    def _class_scope(cls, env, policy):
         default_host = f"test1.{env.http_tld}"
         alt_creds = env.ca.issue_cert(
             CertificateSpec(name="ssl005-cert", domains=[f"cert.{env.http_tld}"],

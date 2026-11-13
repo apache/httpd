@@ -19,7 +19,8 @@ from .env import ProxyTestEnv
 class TestHcheckLogUri:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env)
         conf.add([
             '<Proxy "balancer://hcheckuri">',

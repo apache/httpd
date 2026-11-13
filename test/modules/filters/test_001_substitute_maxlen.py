@@ -26,7 +26,8 @@ EXACT = "x" + "a" * 8       # 9 bytes in, 10 out -- exactly at the limit
 class TestSubstituteMaxLineLength:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         doc_dir = os.path.join(env.server_dir, "htdocs", "test1")
         for name, text in [("over.html", OVER), ("over_mid.html", OVER_MID),
                            ("over_end.html", OVER_END), ("exact.html", EXACT)]:

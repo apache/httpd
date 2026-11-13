@@ -22,7 +22,8 @@ class TestSetEnvFromFile:
     """Parsing behaviour of a well-formed file."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # A plain name=value pair, an explicitly empty value, a line with
         # no '=' (also empty), a backslash line continuation, and a line
         # padded with surrounding whitespace that must be stripped.
@@ -85,7 +86,8 @@ class TestSetEnvFromFileMalformed:
     lines are still parsed."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env_file = os.path.join(env.gen_dir, "setenv-malformed.env")
         with open(env_file, "w") as f:
             f.write("# a line beginning with '=' has an empty name\n")
@@ -145,7 +147,8 @@ class TestSetEnvFromFileHtaccess:
     even where AllowOverride FileInfo would allow SetEnv itself."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         ht_dir = os.path.join(env.server_dir, "htdocs", "test1", "htaccess")
         os.makedirs(ht_dir, exist_ok=True)
         with open(os.path.join(ht_dir, "index.html"), "w") as f:

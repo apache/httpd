@@ -20,7 +20,8 @@ class TestNotify:
     domain = None
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='default')
         env.check_acme()
         env.clear_store()

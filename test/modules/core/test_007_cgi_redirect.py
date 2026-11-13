@@ -6,7 +6,8 @@ from pyhttpd.conf import HttpdConf
 class TestCGIRedirectHandler:
 
     @pytest.fixture(autouse=True, scope="class")
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env, extras={
             "base": textwrap.dedent(f"""
             <Directory "{env.server_docs_dir}/cgiredir">

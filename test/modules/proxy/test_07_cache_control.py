@@ -80,7 +80,8 @@ for _c in QUALIFIED:
 class TestCacheControl:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         faker = _CacheFaker("127.0.0.1", env.http_port2, CASES)
         faker.start()
         cache_dir = os.path.join(env.gen_dir, "cache-control")

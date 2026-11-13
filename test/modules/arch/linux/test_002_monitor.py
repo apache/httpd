@@ -15,7 +15,8 @@ class TestSystemdMonitor:
     "systemctl status httpd" shows below the unit description."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env, extras={
             'base': """
         <Location "/server-status">
@@ -42,7 +43,8 @@ class TestSystemdMonitor:
         return MONITOR_STATUS.match(msg['STATUS'])
 
     @pytest.fixture(scope='class')
-    def reports(self, env, _class_scope):
+    @classmethod
+    def reports(cls, env, _class_scope):
         """Two consecutive reports with requests served between them, and
         the mod_status report as of the second.
 
@@ -51,11 +53,11 @@ class TestSystemdMonitor:
         below share one pair rather than each waiting for its own.
         """
         env.notify.clear()
-        first = self.wait_report(env)
+        first = cls.wait_report(env)
         for _ in range(10):
             r = env.curl_get(env.mkurl("http", "test1", "/"))
             assert r.response['status'] == 200
-        second = self.wait_report(env, above=int(first.group('requests')))
+        second = cls.wait_report(env, above=int(first.group('requests')))
         r = env.curl_get(env.mkurl("http", "test1", "/server-status?auto"))
         assert r.response['status'] == 200
         auto = {}

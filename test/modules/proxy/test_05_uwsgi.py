@@ -32,7 +32,8 @@ class _UWSGIFaker(TCPFaker):
 class TestProxyUwsgi:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         env.require(env.has_shared_module("proxy_uwsgi"), "mod_proxy_uwsgi not available",
                     dep="mod_proxy_uwsgi",
                     detected=f"no mod_proxy_uwsgi.so in {env.libexec_dir}")

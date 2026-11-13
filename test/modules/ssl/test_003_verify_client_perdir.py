@@ -24,7 +24,8 @@ VHOSTS = {"unset": "", "optional": "SSLVerifyClient optional"}
 class TestVerifyClientPerDir:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         doc_dir = os.path.join(env.server_dir, "htdocs", "test1", "secure")
         os.makedirs(doc_dir, exist_ok=True)
         with open(os.path.join(doc_dir, "index.html"), "w") as f:

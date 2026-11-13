@@ -43,7 +43,8 @@ def _request(env, method, path):
 class TestOptionsTraceDisabled:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         _setup(env, "off")
 
     # TRACE is not offered while the server refuses it
@@ -63,7 +64,8 @@ class TestOptionsTraceEnabled:
 
     @pytest.fixture(autouse=True, scope='class',
                     params=["on", "extended"])
-    def _class_scope(self, env, request):
+    @classmethod
+    def _class_scope(cls, env, request):
         _setup(env, request.param)
 
     # unchanged: TRACE is offered and works

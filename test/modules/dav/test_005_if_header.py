@@ -11,7 +11,8 @@ class TestDavIfHeader:
     the malformed header with 400 Bad Request."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         dav_dir = os.path.join(env.gen_dir, 'dav-if')
         os.makedirs(dav_dir, exist_ok=True)
         with open(os.path.join(dav_dir, "hello.txt"), "w") as f:

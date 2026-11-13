@@ -18,7 +18,8 @@ class TestRanges:
     LOGFILE = ""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestRanges.LOGFILE = os.path.join(env.server_logs_dir, "test_008")
         TestRanges.SRCDIR = os.path.dirname(inspect.getfile(TestRanges))
         if os.path.isfile(TestRanges.LOGFILE):

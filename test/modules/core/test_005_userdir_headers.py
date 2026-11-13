@@ -7,7 +7,8 @@ from pyhttpd.conf import HttpdConf
 class TestUserdirHeaders:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
 
         userdir_base = os.path.join(env.server_dir, "htdocs", "userdir")
 

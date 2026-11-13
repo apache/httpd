@@ -21,7 +21,8 @@ from pyhttpd.conf import HttpdConf
 class TestCondPrecedence:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         HttpdConf(env).install()
         assert env.apache_restart() == 0
 

@@ -6,7 +6,8 @@ from .env import H3Conf
 class TestAccess:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H3Conf(env).add_h3_vhosts(test1=[
             'SetEnvIf User-Agent "^blocked-agent$" blocked',
             '<Location "/">',
@@ -43,7 +44,8 @@ class TestAccess:
 class TestRequestChecks:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H3Conf(env)
         conf.add("StrictHostCheck on")
         conf.add_h3_vhosts().install()

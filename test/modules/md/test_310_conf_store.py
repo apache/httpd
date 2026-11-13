@@ -21,7 +21,8 @@ NS_PER_DAY = MS_PER_DAY * 1000
 class TestConf:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='default')
         env.check_acme()
         env.httpd_error_log.add_ignored_lognos(["AH10045", "AH10105"])

@@ -27,7 +27,8 @@ from .env import H2Conf, H2TestEnv
 class TestSslVerifyClientAuthz:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         domain = f"ssl.{env.http_tld}"
         conf = H2Conf(env, extras={
             'base': [
@@ -50,7 +51,8 @@ class TestSslVerifyClientAuthz:
         assert env.apache_restart() == 0
 
     @pytest.fixture(scope='class')
-    def client_creds(self, env):
+    @classmethod
+    def client_creds(cls, env):
         return env.ca.issue_cert(
             CertificateSpec(name="verify-authz-client", client=True))
 

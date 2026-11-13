@@ -16,7 +16,8 @@ from .env import H1Conf
 class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
         H1Conf(env).add_vhost_cgi().install()
         assert env.apache_restart() == 0

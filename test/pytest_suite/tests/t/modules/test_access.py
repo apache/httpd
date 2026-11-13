@@ -4,7 +4,7 @@ Rewrites <t_dir>/htdocs/modules/access/htaccess/.htaccess with every
 combination of Order x Allow/Deny clauses and checks whether the index is
 served (GET_OK, i.e. 200) per the access-control logic.
 
-Perl original gated on ``\&need_access`` (the Order/Allow/Deny directives live
+Perl original gated on ``need_access`` (the Order/Allow/Deny directives live
 in mod_access_compat on 2.4); gated here with @need_module.
 """
 

@@ -8,7 +8,8 @@ from pyhttpd.conf import HttpdConf
 class TestAutoindex:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         domain = f"autoindex.{env.http_tld}"
         conf = HttpdConf(env, extras={
             'base': textwrap.dedent(f"""

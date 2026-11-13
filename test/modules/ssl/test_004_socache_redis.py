@@ -51,7 +51,8 @@ class SilentRedis:
 class TestSocacheRedis:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # storing the session of a TLSv1.2 handshake waits for the redis reply
         env.httpd_error_log.add_ignored_lognos(["AH03478"])
         yield

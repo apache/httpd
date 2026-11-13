@@ -24,7 +24,8 @@ class TestSystemdService:
     """
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         assert env.apache_stop() == 0
         yield
         assert env.apache_stop() == 0

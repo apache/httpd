@@ -10,7 +10,8 @@ from .env import H2Conf, H2TestEnv
 class TestPush:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).start_vhost(domains=[f"push.{env.http_tld}"],
                                 port=env.https_port, doc_root="htdocs/test1"
         ).add(r"""

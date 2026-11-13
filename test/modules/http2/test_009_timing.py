@@ -13,7 +13,8 @@ class TestTiming:
     LOGFILE = ""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestTiming.LOGFILE = os.path.join(env.server_logs_dir, "test_009")
         if os.path.isfile(TestTiming.LOGFILE):
             os.remove(TestTiming.LOGFILE)

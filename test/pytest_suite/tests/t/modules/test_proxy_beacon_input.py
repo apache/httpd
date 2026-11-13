@@ -229,7 +229,7 @@ def test_equivalent_spellings_are_one_member(http):
 
 
 @need
-@pytest.mark.parametrize("n,url", enumerate([
+@pytest.mark.parametrize("n,url", list(enumerate([
     "http://127.0.0.8:8083/one",            # path: would alias /one and /one/two
     "http://127.0.0.8:8083/one/two",
     "http://127.0.0.8:8083?x=1",            # query
@@ -243,7 +243,7 @@ def test_equivalent_spellings_are_one_member(http):
     "http://127.0.0.8:4294967376",          # 2^32 + 80: truncates to port 80
     "abcdefghijklmnop://127.0.0.8:8085",    # 16 chars: does not fit the worker
     "http://" + "h" * 256 + ":8086",         # host does not fit the worker
-]))
+])))
 def test_non_origin_urls_are_rejected(http, n, url):
     lines = inject(http, [url], f"http://127.0.0.3:{18100 + n}")
     assert not [m for m in added_members(lines) if "127.0.0.8" in m], (
@@ -251,11 +251,11 @@ def test_non_origin_urls_are_rejected(http, n, url):
 
 
 @need
-@pytest.mark.parametrize("n,url", enumerate([
+@pytest.mark.parametrize("n,url", list(enumerate([
     "https://127.0.0.9:8443",
     "uwsgi://127.0.0.9:3031",               # a mod_proxy scheme apr does not know
     "fcgi://127.0.0.9:9000",
-]))
+])))
 def test_proxy_scheme_origins_are_accepted(http, n, url):
     lines = inject(http, [url], f"http://127.0.0.3:{18121 + n}")
     assert url in added_members(lines)
@@ -460,7 +460,7 @@ def frame_cases():
 
 
 @need
-@pytest.mark.parametrize("n,case", enumerate(frame_cases()),
+@pytest.mark.parametrize("n,case", list(enumerate(frame_cases())),
                          ids=[c[0] for c in frame_cases()])
 def test_malformed_frames_are_dropped(http, n, case):
     name, build = case

@@ -8,7 +8,8 @@ from pyhttpd.conf import HttpdConf
 class TestTLS13:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env, extras={
             f"test1.{env.http_tld}": "SSLProtocol TLSv1.3",
         })
