@@ -1,5 +1,6 @@
 import os
 import textwrap
+import time
 
 import pytest
 
@@ -77,3 +78,8 @@ class TestRequest:
 
     def test_lua_003_08_scoreboard_worker_range(self, env):
         assert self.get(env, "/lua/info.lua?scoreboard_worker") == "nil"
+
+    # The server start time, in seconds since the epoch.
+    def test_lua_003_09_started(self, env):
+        started = int(self.get(env, "/lua/info.lua?started"))
+        assert 0 <= time.time() - started < 3600
