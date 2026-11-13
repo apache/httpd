@@ -150,147 +150,98 @@ class TestVhostCompatSecure:
             f"expected 421 on resumed connection, got: {r.stdout[:500]}"
 
 
-class TestVhostCompatAuthonly:
-    """Under 'authonly' SSLVHostSNIPolicy, vhosts with different server
-    certificates but identical authentication settings are compatible.
-    This is the regression fix for PR 69743: the 'secure' default was
-    too strict for deployments that intentionally use different certs on
-    the same IP:port."""
+# The policies of SSLVHostSNIPolicy, each with the classes of difference
+# between two vhosts which it blocks; this is the table in the
+# documentation of the directive.  "default" is the server without the
+# directive, which is documented to behave as "secure".
+POLICIES = {
+    "default": ("server", "client"),
+    "strict": ("vhost", "server", "client"),
+    "secure": ("server", "client"),
+    "authonly": ("client",),
+    "insecure": (),
+}
+
+# The vhosts tested against the handshake vhost, by the class of the
+# difference in their SSL configuration: "vhost" for none at all,
+# "server" for the server certificate/key and the protocol/cipher
+# restrictions, "client" for the client verification and authentication
+# settings.  Each name gets a vhost of its own with the given directives,
+# in which {cert}, {key} and {ca} are replaced; other than "test1", the
+# handshake vhost itself, which no policy blocks.
+VHOSTS = {
+    "test1": (None, None),
+    "same": ("vhost", ""),
+    "cert": ("server", """
+        SSLCertificateFile "{cert}"
+        SSLCertificateKeyFile "{key}"
+        """),
+    "ciphers": ("server", "SSLCipherSuite ECDHE+AESGCM"),
+    "protocol": ("server", "SSLProtocol -all +TLSv1.2 +TLSv1.3"),
+    "cacert": ("client", 'SSLCACertificateFile "{ca}"'),
+    "depth": ("client", "SSLVerifyDepth 7"),
+}
+
+
+@pytest.mark.need_min_apache_version("2.4.66")
+@pytest.mark.parametrize("policy", POLICIES, scope="class")
+@pytest.mark.parametrize("vhost", VHOSTS)
+class TestVhostCompatPolicy:
+    """Under each SSLVHostSNIPolicy, a request for a vhost other than
+    the handshake one gets a 421 if their SSL configurations differ in a
+    way the policy blocks, and is served otherwise."""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, request):
-        has_policy = env.has_directive("SSLVHostSNIPolicy")
-        if not has_policy:
-            request.applymarker(pytest.mark.xfail(
-                reason="SSLVHostSNIPolicy not available", strict=False))
-        alt_domain = f"test2.{env.http_tld}"
+    def _class_scope(self, env, policy):
+        default_host = f"test1.{env.http_tld}"
         alt_creds = env.ca.issue_cert(
-            CertificateSpec(name="ssl005-authonly", domains=[alt_domain],
+            CertificateSpec(name="ssl005-cert", domains=[f"cert.{env.http_tld}"],
                             key_type='rsa2048'))
-
-        for name in ("test1", "test2"):
-            doc = os.path.join(env.server_dir, "htdocs", name)
-            os.makedirs(doc, exist_ok=True)
-            with open(os.path.join(doc, "index.html"), "w") as f:
-                f.write(f"vhost {name}\n")
-
-        extras = {
-            f"test1.{env.http_tld}": "LogLevel ssl:debug",
-            alt_domain: f"""
-            LogLevel ssl:debug
-            SSLCertificateFile "{alt_creds.cert_file}"
-            SSLCertificateKeyFile "{alt_creds.pkey_file}"
-            """,
-        }
-        if has_policy:
-            extras['base'] = 'SSLVHostSNIPolicy authonly'
-        conf = HttpdConf(env, extras=extras)
-        conf.add_vhost_test1()
-        conf.start_vhost(domains=[alt_domain],
-                         port=env.https_port,
-                         doc_root="htdocs/test2",
-                         with_certificates=False)
-        conf.end_vhost()
-        conf.install()
-        assert env.apache_restart() == 0
-
-    # Under 'authonly', a Host: mismatch to a vhost with a different
-    # certificate but same auth settings is allowed.  This is the
-    # regression that PR 69743 fixed.
-    def test_ssl_005_10(self, env):
-        url = env.mkurl("https", "test1", "/index.html")
-        alt_host = f"test2.{env.http_tld}"
-        r = env.curl_get(url, options=[
-            "--http1.1", "-H", f"Host: {alt_host}",
-        ])
-        assert r.exit_code == 0, f"curl failed: {r.stderr}"
-        assert r.response["status"] == 200
-
-    # Same check without SNI — should also be allowed under 'authonly'
-    # when only the certificate differs.
-    def test_ssl_005_11(self, env):
-        alt_host = f"test2.{env.http_tld}"
-        r = env.run([
-            'openssl', 's_client',
-            '-connect', f'127.0.0.1:{env.https_port}',
-            '-CAfile', env.ca.cert_file,
-            '-noservername',
-            '-tls1_3',
-            '-ign_eof',
-        ], intext=(
-            f"GET /index.html HTTP/1.1\r\n"
-            f"Host: {alt_host}\r\n"
-            f"Connection: close\r\n"
-            f"\r\n"
-        ))
-        assert r.exit_code == 0, f"openssl s_client failed: {r.stderr}"
-        assert re.search(r'HTTP/1\.[01] 200', r.stdout), \
-            f"expected 200 in response, got: {r.stdout[:500]}"
-
-
-class TestVhostCompatAuthonlyAuth:
-    """Under 'authonly' SSLVHostSNIPolicy, vhosts with different client
-    authentication settings (different SSLCACertificateFile) must still
-    be blocked — this is the core CVE-2025-23048 scenario."""
-
-    @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, request):
-        has_policy = env.has_directive("SSLVHostSNIPolicy")
-        if not has_policy:
-            request.applymarker(pytest.mark.xfail(
-                reason="SSLVHostSNIPolicy not available", strict=False))
-        alt_domain = f"test2.{env.http_tld}"
-
-        sub_ca = env.ca.issue_cert(
-            CertificateSpec(name="ssl005-subca"))
+        sub_ca = env.ca.issue_cert(CertificateSpec(name="ssl005-subca"))
         sub_ca_file = os.path.join(env.server_dir, "ssl005-subca.pem")
         sub_ca.save_cert_pem(sub_ca_file)
 
-        for name in ("test1", "test2"):
-            doc = os.path.join(env.server_dir, "htdocs", name)
-            os.makedirs(doc, exist_ok=True)
-            with open(os.path.join(doc, "index.html"), "w") as f:
-                f.write(f"vhost {name}\n")
-
-        extras = {
-            f"test1.{env.http_tld}": f"""
-            LogLevel ssl:debug
-            SSLVerifyClient optional
-            SSLCACertificateFile "{env.ca.cert_file}"
-            """,
-            alt_domain: f"""
-            LogLevel ssl:debug
-            SSLVerifyClient optional
-            SSLCACertificateFile "{sub_ca_file}"
-            """,
-        }
-        if has_policy:
-            extras['base'] = 'SSLVHostSNIPolicy authonly'
-        conf = HttpdConf(env, extras=extras)
+        conf = HttpdConf(env, extras={
+            'base': "" if policy == "default"
+                    else f"SSLVHostSNIPolicy {policy}",
+        })
         conf.add_vhost_test1()
-        conf.start_vhost(domains=[alt_domain],
-                         port=env.https_port,
-                         doc_root="htdocs/test2")
-        conf.end_vhost()
+        for name, (_, directives) in VHOSTS.items():
+            if directives is None:
+                continue
+            conf.start_vhost(domains=[f"{name}.{env.http_tld}"],
+                             port=env.https_port,
+                             doc_root="htdocs/test1",
+                             with_certificates=False)
+            # The certificate of the handshake vhost, which a later
+            # SSLCertificateFile in the directives replaces.
+            if name != "cert":
+                for cred in env.get_credentials_for_name(default_host):
+                    conf.add_certificate(cred.cert_file, cred.pkey_file)
+            conf.add(directives.format(cert=alt_creds.cert_file,
+                                       key=alt_creds.pkey_file,
+                                       ca=sub_ca_file))
+            conf.end_vhost()
         conf.install()
+        # AH01909: the vhosts use a certificate without their name in it.
+        env.httpd_error_log.add_ignored_lognos(["AH01909", "AH02032"])
         assert env.apache_restart() == 0
 
-        env.httpd_error_log.add_ignored_lognos(["AH02032"])
+    @staticmethod
+    def expected(policy, vhost):
+        return 421 if VHOSTS[vhost][0] in POLICIES[policy] else 200
 
-    # Even under 'authonly', different SSLCACertificateFile between
-    # vhosts must return 421.
-    def test_ssl_005_20(self, env):
+    # SNI selects the handshake vhost, Host: names the other one.
+    def test_ssl_005_10(self, env, policy, vhost):
         url = env.mkurl("https", "test1", "/index.html")
-        alt_host = f"test2.{env.http_tld}"
         r = env.curl_get(url, options=[
-            "--http1.1", "-H", f"Host: {alt_host}",
+            "--http1.1", "-H", f"Host: {vhost}.{env.http_tld}",
         ])
         assert r.exit_code == 0, f"curl failed: {r.stderr}"
-        assert r.response["status"] == 421
+        assert r.response["status"] == self.expected(policy, vhost)
 
-    # Without SNI, same scenario — must also be 421.
-    def test_ssl_005_21(self, env):
-        alt_host = f"test2.{env.http_tld}"
+    # No SNI, so the default vhost is the handshake one.
+    def test_ssl_005_11(self, env, policy, vhost):
         r = env.run([
             'openssl', 's_client',
             '-connect', f'127.0.0.1:{env.https_port}',
@@ -300,10 +251,11 @@ class TestVhostCompatAuthonlyAuth:
             '-ign_eof',
         ], intext=(
             f"GET /index.html HTTP/1.1\r\n"
-            f"Host: {alt_host}\r\n"
+            f"Host: {vhost}.{env.http_tld}\r\n"
             f"Connection: close\r\n"
             f"\r\n"
         ))
         assert r.exit_code == 0, f"openssl s_client failed: {r.stderr}"
-        assert re.search(r'HTTP/1\.[01] 421', r.stdout), \
-            f"expected 421 in response, got: {r.stdout[:500]}"
+        status = self.expected(policy, vhost)
+        assert re.search(rf'HTTP/1\.[01] {status}', r.stdout), \
+            f"expected {status} in response, got: {r.stdout[:500]}"
