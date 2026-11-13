@@ -1597,7 +1597,9 @@ static void perform_idle_server_maintenance(int child_bucket)
             else {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              ap_server_conf, APLOGNO(00288)
-                             "scoreboard is full, not at MaxRequestWorkers");
+                             "scoreboard is full, not at MaxRequestWorkers. "
+                             "Increase ServerLimit (currently %d).",
+                             server_limit);
             }
             retained->idle_spawn_rate[child_bucket] = 1;
         }
