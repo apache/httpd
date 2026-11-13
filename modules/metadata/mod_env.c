@@ -148,19 +148,13 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd, void *sconf_,
 }
 
 static const char *add_env_module_vars_from_file(cmd_parms *cmd, void *sconf_,
-                                                 const char *arg,
-                                                 const char *option)
+                                                 const char *arg)
 {
     env_dir_config_rec *sconf = sconf_;
     const char *fname;
     ap_configfile_t *file;
     apr_status_t rv;
     char line[MAX_STRING_LEN];
-
-    if (option && ap_cstr_casecmp(option, "Quoted") != 0) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name, ": Invalid option ",
-                           option, "; expected Quoted", NULL);
-    }
 
     fname = ap_server_root_relative(cmd->temp_pool, arg);
     if (!fname) {
@@ -201,7 +195,7 @@ static const char *add_env_module_vars_from_file(cmd_parms *cmd, void *sconf_,
         while (apr_isspace(*quoted)) {
             ++quoted;
         }
-        if (option && (*quoted == '"' || *quoted == '\'')) {
+        if (*quoted == '"' || *quoted == '\'') {
             const char *end;
 
             /* ap_getword_conf() does not report unterminated quotes. */
@@ -250,10 +244,9 @@ AP_INIT_TAKE12("SetEnv", add_env_module_vars_set, NULL,
      OR_FILEINFO, "an environment variable name and optional value to pass to CGI."),
 AP_INIT_ITERATE("UnsetEnv", add_env_module_vars_unset, NULL,
      OR_FILEINFO, "a list of variables to remove from the CGI environment."),
-AP_INIT_TAKE12("SetEnvFromFile", add_env_module_vars_from_file, NULL,
+AP_INIT_TAKE1("SetEnvFromFile", add_env_module_vars_from_file, NULL,
      RSRC_CONF | ACCESS_CONF,
-     "the path to a file of name=value lines to pass to CGI, "
-     "optionally followed by Quoted."),
+     "the path to a file of name=value lines to pass to CGI."),
     {NULL},
 };
 

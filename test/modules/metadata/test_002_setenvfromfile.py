@@ -182,11 +182,10 @@ class TestSetEnvFromFileHtaccess:
 class TestSetEnvFromFileMissing:
     """Pointing at a file that cannot be opened is a fatal config error."""
 
-    @pytest.mark.parametrize("option", ["", "Quoted"], ids=["default", "quoted"])
-    def test_metadata_002_04_missing_file(self, env, option):
+    def test_metadata_002_04_missing_file(self, env):
         missing = os.path.join(env.gen_dir, "does-not-exist.env")
         conf = HttpdConf(env, extras={
-            'base': f'SetEnvFromFile "{missing}" {option}',
+            'base': f'SetEnvFromFile "{missing}"',
         })
         conf.add_vhost_test1()
         conf.install()
@@ -209,13 +208,13 @@ class TestSetEnvFromFileMissing:
 
 class TestSetEnvFromFileConfig:
 
-    def check_config(self, env, contents, option=""):
+    def check_config(self, env, contents):
         env_file = os.path.join(env.gen_dir, "setenv-read.env")
         with open(env_file, "w", newline="") as f:
             f.write(contents)
 
         conf = HttpdConf(env, extras={
-            'base': f'SetEnvFromFile "{env_file}" {option}',
+            'base': f'SetEnvFromFile "{env_file}"',
         })
         conf.add_vhost_test1()
         conf.install()
@@ -223,28 +222,25 @@ class TestSetEnvFromFileConfig:
                         "-t", "-d", env.server_dir,
                         "-f", os.path.join(env.server_dir, "conf", "httpd.conf")])
 
-    @pytest.mark.parametrize("option", ["", "Quoted"], ids=["default", "quoted"])
     @pytest.mark.parametrize("line_length", [8191, 8192, 16384])
     @pytest.mark.parametrize("ending", ["\n", ""], ids=["newline", "eof"])
-    def test_metadata_002_05_long_line(self, env, line_length, ending, option):
+    def test_metadata_002_05_long_line(self, env, line_length, ending):
         line = "ENV_LONG=" + "x" * (line_length - len("ENV_LONG="))
         contents = "ENV_BEFORE=before\n" + line + ending
         if ending:
             contents += "ENV_AFTER=after\n"
-        r = self.check_config(env, contents, option=option)
+        r = self.check_config(env, contents)
         assert r.exit_code != 0, "oversized line was accepted"
         assert "setenv-read.env at line 2: Line too long" in r.stderr
 
-    @pytest.mark.parametrize("option", ["", "Quoted"], ids=["default", "quoted"])
-    def test_metadata_002_06_long_continuation(self, env, option):
+    def test_metadata_002_06_long_continuation(self, env):
         r = self.check_config(
             env, "ENV_BEFORE=before\nENV_LONG=" + "x" * 4096
-            + "\\\n" + "y" * 4096 + "\nENV_AFTER=after\n", option=option)
+            + "\\\n" + "y" * 4096 + "\nENV_AFTER=after\n")
         assert r.exit_code != 0, "oversized continued line was accepted"
         assert "setenv-read.env at line 3: Line too long" in r.stderr
 
     # The 8192-byte buffer needs room for a newline and the terminating NUL.
-    @pytest.mark.parametrize("option", ["", "Quoted"], ids=["default", "quoted"])
     @pytest.mark.parametrize("contents", [
         pytest.param("", id="empty-file"),
         pytest.param("ENV_OK=present", id="no-final-newline"),
@@ -257,8 +253,8 @@ class TestSetEnvFromFileConfig:
                      + "y" * (8190 - len("ENV_LONG=") - 4096) + "\n",
                      id="max-continued-line"),
     ])
-    def test_metadata_002_07_normal_eof(self, env, contents, option):
-        r = self.check_config(env, contents, option=option)
+    def test_metadata_002_07_normal_eof(self, env, contents):
+        r = self.check_config(env, contents)
         assert r.exit_code == 0, r.stderr
 
     @pytest.mark.parametrize("value, message", [
@@ -283,27 +279,14 @@ class TestSetEnvFromFileConfig:
     ])
     def test_metadata_002_11_malformed_quotes(self, env, value, message):
         r = self.check_config(
-            env, f"ENV_BEFORE=before\nENV_BAD={value}\nENV_AFTER=after\n",
-            option="Quoted")
+            env, f"ENV_BEFORE=before\nENV_BAD={value}\nENV_AFTER=after\n")
         assert r.exit_code != 0, "malformed quoted value was accepted"
         assert f"setenv-read.env at line 2: {message}" in r.stderr
-
-    @pytest.mark.parametrize("option", ["Raw", "Unknown", "Quotedx"])
-    def test_metadata_002_16_invalid_option(self, env, option):
-        r = self.check_config(env, "ENV_OK=present\n", option=option)
-        assert r.exit_code != 0, "invalid option was accepted"
-        assert (f"SetEnvFromFile: Invalid option {option}; expected Quoted"
-                in r.stderr)
-
-    def test_metadata_002_17_extra_argument(self, env):
-        r = self.check_config(env, "ENV_OK=present\n", option="Quoted extra")
-        assert r.exit_code != 0, "extra argument was accepted"
-        assert "SetEnvFromFile takes 1-2 arguments" in r.stderr
 
 
 class TestSetEnvFromFileQuoted:
 
-    def check_value(self, env, file_value, expected, option="Quoted"):
+    def check_value(self, env, file_value, expected):
         env_file = os.path.join(env.gen_dir, "setenv-quoted.env")
         with open(env_file, "w", newline="") as f:
             f.write(f"ENV_FILE={file_value}\nENV_AFTER=present\n")
@@ -316,7 +299,7 @@ class TestSetEnvFromFileQuoted:
         direct_value = expected.replace("\\", "\\\\").replace('"', '\\"')
         conf = HttpdConf(env, extras={
             'base': f"""
-            SetEnvFromFile "{env_file}" {option}
+            SetEnvFromFile "{env_file}"
             SetEnv ENV_DIRECT "{direct_value}"
             <Directory "{doc_dir}">
                 Options +Includes
@@ -348,6 +331,10 @@ class TestSetEnvFromFileQuoted:
         pytest.param(" \t ", id="whitespace-only"),
         pytest.param("hello world", id="embedded-space"),
         pytest.param('say "hello" and \'bye\'', id="quote-escaping"),
+        pytest.param('"unfinished', id="literal-double-quote-prefix"),
+        pytest.param("'unfinished", id="literal-single-quote-prefix"),
+        pytest.param('"hello"', id="literal-double-quotes"),
+        pytest.param("'hello'", id="literal-single-quotes"),
         pytest.param(r"C:\app\file", id="backslash-escaping"),
         pytest.param("C:\\app\\", id="trailing-backslash"),
         pytest.param(r"\n\t", id="literal-escapes"),
@@ -365,7 +352,6 @@ class TestSetEnvFromFileQuoted:
     def test_metadata_002_10_quoted_continuation(self, env, quote):
         self.check_value(env, f"{quote}first \\\nsecond {quote}", "first second ")
 
-    @pytest.mark.parametrize("option", ["", "Quoted"], ids=["default", "quoted"])
     @pytest.mark.parametrize("file_value, expected", [
         pytest.param("hello world", "hello world", id="embedded-space"),
         pytest.param("  hello world  ", "  hello world", id="whitespace"),
@@ -375,43 +361,10 @@ class TestSetEnvFromFileQuoted:
         pytest.param("", "", id="empty"),
         pytest.param("   ", "", id="whitespace-only"),
     ])
-    def test_metadata_002_12_unquoted(self, env, file_value, expected, option):
-        self.check_value(env, file_value, expected, option=option)
+    def test_metadata_002_12_unquoted(self, env, file_value, expected):
+        self.check_value(env, file_value, expected)
 
     @pytest.mark.parametrize("quote", ['"', "'"], ids=["double", "single"])
     def test_metadata_002_13_literal_escapes(self, env, quote):
         value = r"C:\app\n\t"
         self.check_value(env, quote + value + quote, value)
-
-    @pytest.mark.parametrize("file_value, expected", [
-        pytest.param('"hello"', '"hello"', id="double-quoted"),
-        pytest.param("'hello'", "'hello'", id="single-quoted"),
-        pytest.param('" hello "', '" hello "', id="quoted-whitespace"),
-        pytest.param('""', '""', id="empty-double-quotes"),
-        pytest.param("''", "''", id="empty-single-quotes"),
-        pytest.param('"unfinished', '"unfinished', id="unclosed-double"),
-        pytest.param("'unfinished", "'unfinished", id="unclosed-single"),
-        pytest.param('"', '"', id="double-quote-only"),
-        pytest.param("'", "'", id="single-quote-only"),
-        pytest.param(r'"escaped\"', r'"escaped\"', id="escaped-double-closer"),
-        pytest.param(r"'escaped\'", r"'escaped\'", id="escaped-single-closer"),
-        pytest.param('"closed"extra', '"closed"extra', id="adjacent-text"),
-        pytest.param("'closed' extra", "'closed' extra", id="separate-text"),
-        pytest.param('"" "extra"', '"" "extra"', id="extra-quoted-token"),
-        pytest.param(' \t"unfinished', ' \t"unfinished',
-                     id="unclosed-after-whitespace"),
-        pytest.param(' \t"hello" \t', ' \t"hello"', id="outside-whitespace"),
-        pytest.param(r'"hello"\n', r'"hello"\n', id="flattened-final-newline"),
-        pytest.param(r"'hello'\r\n", r"'hello'\r\n",
-                     id="flattened-final-crlf"),
-        pytest.param(r'"C:\\app\\file"', r'"C:\\app\\file"',
-                     id="quoted-doubled-backslashes"),
-        pytest.param(r"line1\nline2\r", r"line1\nline2\r",
-                     id="flattened-multiline"),
-    ])
-    def test_metadata_002_14_default_literal(self, env, file_value, expected):
-        self.check_value(env, file_value, expected, option="")
-
-    @pytest.mark.parametrize("option", ["quoted", "QUOTED", "qUoTeD"])
-    def test_metadata_002_15_option_case(self, env, option):
-        self.check_value(env, '"hello "', "hello ", option=option)
