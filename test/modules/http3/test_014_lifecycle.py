@@ -43,17 +43,24 @@ class TestLifecycle:
         H3Conf(env).add_h3_vhost().install()
         log = env.httpd_error_log
         start = log.current_pos()
+        url = env.mkurl("https", "test1", "/001.html")
         for _ in range(20):
             assert env.apache_restart() == 0
             assert env.wait_udp_port(env.https_port)
+            # a live session, so stop also tears down its control streams
+            r = env.h3_get(url)
+            assert r.exit_code == 0, f"{r}"
+            assert r.response["protocol"] == "HTTP/3", f"{r}"
             assert env.apache_stop() == 0
         # crashed, or still there when the parent gave up waiting
         unclean = [log.RE_ERRLOG_CRASH.pattern, r'.*AH0004[56]: child process']
+        asan = [log.RE_ERRLOG_ASAN.pattern]
         with open(log.path) as fd:
             fd.seek(start)
-            lines = [line for line in fd
-                     if any(re.match(p, line) for p in unclean)]
-        log.ignore_recent(matches=unclean)
+            content = fd.readlines()
+        lines = [l for l in content if any(re.match(p, l) for p in unclean)]
+        asan_lines = [l for l in content if any(re.match(p, l) for p in asan)]
+        log.ignore_recent(matches=unclean + asan)
         known_bug(bool(lines) and env.mpm_module == "mpm_prefork",
                   "prefork children crash or fail to exit on stop")
-        assert not lines, "".join(lines)
+        assert not lines and not asan_lines, "".join(lines + asan_lines)

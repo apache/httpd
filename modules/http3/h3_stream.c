@@ -126,13 +126,14 @@ void flush_nghttp3(h3_session* session)
         nghttp3_conn_add_ack_offset(session->ngh3, sid, res.accepted);
         if (res.blocked)
         {
-            /* Send buffer full: skip this stream instead of busy-looping on the same vec. */
+            /* Send buffer full: skip this stream instead of busy-looping on the same vec.
+             * Block it again every time: resume_stream reschedules a blocked stream. */
             if (!h3s->write_blocked)
             {
                 h3s->write_blocked = 1;
                 session->blocked_streams++;
-                nghttp3_conn_block_stream(session->ngh3, sid);
             }
+            nghttp3_conn_block_stream(session->ngh3, sid);
             continue;
         }
     }

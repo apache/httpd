@@ -89,7 +89,7 @@ class H3TestEnv(HttpdTestEnv):
         self.require(self.has_python_package("aioquic"),
                      "python package 'aioquic' is not installed",
                      dep="aioquic")
-        from .h3client import H3Client
+        from pyhttpd.h3client import H3Client
         return H3Client(self, **kwargs)
 
     @property

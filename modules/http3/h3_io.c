@@ -264,6 +264,9 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
 {
     apr_allocator_t* allocator = NULL;
     apr_pool_t* session_pool = NULL;
+    apr_thread_mutex_t* alloc_mutex = NULL;
+    h3_session* session = NULL;
+    conn_rec* c;
     if (apr_allocator_create(&allocator) != APR_SUCCESS || apr_pool_create_ex(&session_pool, io->pool, NULL, allocator) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to create session pool for new connection");
@@ -275,16 +278,15 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
         return APR_EGENERAL;
     }
     apr_allocator_owner_set(allocator, session_pool);
-    {
-        apr_thread_mutex_t* alloc_mutex;
-        if (apr_thread_mutex_create(&alloc_mutex, APR_THREAD_MUTEX_DEFAULT, session_pool) == APR_SUCCESS)
-        {
-            apr_allocator_mutex_set(allocator, alloc_mutex);
-        }
-    }
     apr_pool_tag(session_pool, "h3_session");
+    if (apr_thread_mutex_create(&alloc_mutex, APR_THREAD_MUTEX_DEFAULT, session_pool) != APR_SUCCESS)
+    {
+        apr_pool_destroy(session_pool);
+        h3q_conn_free(conn);
+        return APR_EGENERAL;
+    }
+    apr_allocator_mutex_set(allocator, alloc_mutex);
 
-    h3_session* session = NULL;
     if (h3_session_create(&session, io->server, conn, session_pool) != APR_SUCCESS)
     {
         h3q_conn_free(conn);
@@ -301,7 +303,7 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, h3q_conn* conn)
         h3_session_destroy(session);
         return APR_EGENERAL;
     }
-    conn_rec* c = h3_synth_conn(session);
+    c = h3_synth_conn(session);
     if (!c)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "h3_synth_conn failed");

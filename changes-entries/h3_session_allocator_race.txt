@@ -1,0 +1,3 @@
+  *) mod_http3: Fixed a heap race that crashed the child: worker threads and
+     the event thread allocated from one session allocator that had no mutex.
+     [Alexander Gerasimov <codeguard gmail.com>]
