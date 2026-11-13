@@ -45,6 +45,7 @@ APLOG_USE_MODULE(lua);
 
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
+typedef apr_int64_t (*req_field_int64_f) (request_rec * r);
 typedef req_table_t *(*req_field_apr_table_f) (request_rec * r);
 
 
@@ -890,9 +891,9 @@ static const char* lua_ap_allowoverrides(request_rec* r)
     return fs->s;
 }
 
-static int lua_ap_started(request_rec* r) 
+static apr_int64_t lua_ap_started(request_rec* r) 
 {
-    return (int)(ap_scoreboard_image->global->restart_time / 1000000);
+    return apr_time_sec(ap_scoreboard_image->global->restart_time);
 }
 
 static const char* lua_ap_basic_auth_pw(request_rec* r) 
@@ -902,9 +903,9 @@ static const char* lua_ap_basic_auth_pw(request_rec* r)
     return pw ? pw : "";
 }
 
-static int lua_ap_limit_req_body(request_rec* r) 
+static apr_int64_t lua_ap_limit_req_body(request_rec* r) 
 {
-    return (int) ap_get_limit_req_body(r);
+    return ap_get_limit_req_body(r);
 }
 
 static int lua_ap_is_initial_req(request_rec *r)
@@ -2054,6 +2055,20 @@ static int req_dispatch(lua_State *L)
                 lua_pushinteger(L, rs);
                 return 1;
             }
+        case APL_REQ_FUNTYPE_INT64:{
+                req_field_int64_f func = (req_field_int64_f)rft->fun;
+                apr_int64_t rs;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "request_rec->dispatching %s -> int64", name);
+                rs = (*func) (r);
+                /* lua_Integer may be narrower, as with Lua 5.1 on a
+                 * 32-bit platform. */
+                if (sizeof(lua_Integer) >= sizeof(rs))
+                    lua_pushinteger(L, (lua_Integer) rs);
+                else
+                    lua_pushnumber(L, (lua_Number) rs);
+                return 1;
+            }
         case APL_REQ_FUNTYPE_BOOLEAN:{
                 req_field_int_f func = (req_field_int_f)rft->fun;
                 int rs;
@@ -2998,11 +3013,11 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "allowoverrides", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_allowoverrides, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "started", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_started, APL_REQ_FUNTYPE_INT, p));
+                 makefun(&lua_ap_started, APL_REQ_FUNTYPE_INT64, p));
     apr_hash_set(dispatch, "basic_auth_pw", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_basic_auth_pw, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "limit_req_body", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_limit_req_body, APL_REQ_FUNTYPE_INT, p));
+                 makefun(&lua_ap_limit_req_body, APL_REQ_FUNTYPE_INT64, p));
     apr_hash_set(dispatch, "server_built", APR_HASH_KEY_STRING,
                  makefun(&ap_get_server_built, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "is_initial_req", APR_HASH_KEY_STRING,
