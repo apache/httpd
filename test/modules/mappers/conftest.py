@@ -4,20 +4,20 @@ import sys
 
 import pytest
 
-from .env import RewriteTestEnv
+from .env import MappersTestEnv
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 
 def pytest_report_header(config, start_path):
-    env = RewriteTestEnv()
+    env = MappersTestEnv()
     return f"rewrite [apache: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 
 
 @pytest.fixture(scope="package")
-def env(pytestconfig) -> RewriteTestEnv:
+def env(pytestconfig) -> MappersTestEnv:
     logging.getLogger('').setLevel(level=logging.INFO)
-    env = RewriteTestEnv(pytestconfig=pytestconfig)
+    env = MappersTestEnv(pytestconfig=pytestconfig)
     env.setup_httpd()
     env.apache_access_log_clear()
     env.httpd_error_log.clear_log()
