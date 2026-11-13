@@ -39,3 +39,7 @@ github:
 notifications:
   commits: cvs@httpd.apache.org
   pullrequests: cvs@httpd.apache.org
+publish:
+  whoami: trunk  # the git branch
+  subdir: trunk  # the website subdir
+  hostname: docs.httpd.apache.org
