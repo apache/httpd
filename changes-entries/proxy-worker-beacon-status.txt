@@ -1,0 +1,3 @@
+  *) mod_proxy: Add the PROXY_WORKER_BEACON worker status bit (flag 'B',
+     shown as "Bcn" in the balancer-manager) to mark workers created and
+     managed by mod_proxy_beacon.  [Jim Jagielski]

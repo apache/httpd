@@ -1,0 +1,221 @@
+mod_proxy_beacon
+
+Self-registering reverse-proxy balancer membership: backend servers announce
+themselves to a front-end proxy over UDP datagrams, and the proxy adds, enables,
+and evicts them as live balancer members. See
+docs/manual/mod/mod_proxy_beacon.xml for the user-facing directive reference;
+this file describes the architecture.
+
+The transport is plain APR UDP sockets -- small, periodic, fire-and-forget
+announcements with no third-party dependency.
+
+
+Dependencies:
+  Requires mod_watchdog and mod_proxy_balancer. No external library: the UDP
+  transport uses APR sockets and authentication uses SipHash from APR-util (no
+  OpenSSL dependency).
+
+
+Transport (unicast UDP, not multicast):
+  Each backend sends a point-to-point UDP datagram (apr_socket_sendto) to the
+  proxy's configured address. This is deliberately UNICAST -- unlike
+  mod_heartbeat, which multicasts to a group. Multicast is filtered on most
+  networks and does not traverse the public Internet, so a cross-host control
+  plane must be unicast. The socket-handling pattern is adapted from
+  mod_heartmonitor's unicast receive path.
+
+  Datagrams are fire-and-forget. The design tolerates UDP loss and reordering
+  without a reconnect or framing layer: a lost announcement just delays an update
+  by one interval (announcements are periodic and idempotent), and an out-of-order
+  datagram is rejected by the per-url monotonic timestamp (see Authentication).
+
+
+Roles:
+  Backend  = sender   (ProxyBeaconAddress): sends to the proxy, advertising its
+             own routable URL (ProxyBeaconAdvertise) periodically.
+  Proxy    = receiver (ProxyBeaconListen): binds a stable address, receives
+             announcements, and manages balancer://<name> (ProxyBeaconBalancer).
+
+  The proxy is the fixed unicast rendezvous; each backend is configured with its
+  address. One proxy receiver serves many backend senders. A leading scheme in
+  an address (e.g. tcp://) is accepted and ignored.
+
+  ProxyBeaconListen's host and port are both optional: an omitted host/port (or
+  no argument at all) is inherited from the server's own address/port. Since UDP
+  and TCP are independent port spaces, the beacon socket can share the server's
+  service port without colliding with its TCP listener -- so a backend can beacon
+  to the proxy at its real service endpoint. (The listener binds in an
+  unprivileged watchdog child, so privileged ports like 80/443 cannot be shared
+  this way.) The sender's ProxyBeaconAddress targets the proxy and must be given
+  in full.
+
+
+Where it runs:
+  All background work runs in a single mod_watchdog SINGLETON callback -- exactly
+  one child process owns the socket (so only one process binds the receive port
+  and performs membership changes). The watchdog fires every ~100ms:
+
+    STARTING  open the UDP socket; receiver binds, sender resolves its dest.
+    RUNNING   sender:   send a throttled announcement (ProxyBeaconInterval).
+              receiver: drain the socket, then run a throttled (~1s) eviction
+                        sweep.
+    STOPPING  close the socket.
+
+  Because this relies on a singleton watchdog child, it is inactive under the
+  prefork MPM.
+
+
+Adding/removing members (reuses the balancer-manager path):
+  Runtime worker *removal* does not exist in httpd, so membership is managed
+  entirely as status-flag changes via mod_proxy_balancer's exported
+  balancer_manage() optional function -- the same code the balancer-manager web
+  UI calls. The receiver synthesizes a minimal request_rec (no real client
+  request exists in the watchdog thread; see beacon_make_fake_request) and calls:
+
+    add     b=<name> b_nwrkr=<url> b_wyes=1 b_nwrkr_flags=B
+                                                (worker created, disabled, marked)
+    enable  b=<name> w=<url> w_status_D=0       (cleared -> serves traffic)
+    evict   b=<name> w=<url> w_status_D=1       (disabled -> out of rotation)
+
+  Adds bump the balancer's shm "updated" timestamp, so every other child picks
+  up the new worker through the normal ap_proxy_sync_balancer() path -- the
+  change made in the singleton propagates fleet-wide. The target balancer must
+  have spare slots (ProxySet growth / BalancerGrowth).
+
+  Per-backend state (last-seen time, added/evicted flags) is kept in a hash in
+  the singleton's own pool -- no shared memory is needed, since the singleton is
+  the only process that adds or evicts. A re-announcement after eviction
+  re-enables the worker; the flags make these transitions idempotent.
+
+
+Message format:
+  Plain ASCII, space-separated key=value tokens, one datagram per announcement:
+
+    BEACON url=http://host:port host=<h> pid=<n> seq=<n> ts=<usec> mac=<hex>
+
+  url= is the routable backend origin the proxy adds as a BalancerMember. ts=
+  (microseconds since the epoch) and mac= authenticate the message and are always
+  present, since a shared secret is required (see below). host=/pid=/seq= are
+  informational.
+
+Member identity:
+  url= names an ORIGIN -- scheme://host[:port] -- and nothing else.  The receiver
+  canonicalizes it (lower-case scheme and host, the scheme's default port dropped,
+  one trailing "/" ignored) and uses that single string as the member's identity:
+  the key of its lease/replay record in ctx->seen, the worker name handed to
+  balancer_manage(), and the name used for every later enable/evict.  Keeping
+  those equal matters because the balancer finds a worker by LONGEST-PREFIX match
+  (ap_proxy_get_worker) while ap_proxy_define_worker() stores a normalized name:
+  tracking the raw announced string made "http://h:80" never find its worker
+  "http://h" (member added but left disabled, add still logged as a success), and
+  let "http://h/one" and "http://h/one/two" hold two leases over one worker.
+
+  Anything that is not an origin -- a path other than "/", query, fragment,
+  userinfo, a bad port, or the "unix:/path|url" worker syntax (no host part) -- is
+  dropped with a rate-limited "unacceptable url" log.  ProxyBeaconAdvertise applies
+  the same rule at config time and announces the canonical form.  After an add,
+  and before any enable/evict, the worker is looked up again and the operation is
+  reported as failed if it is not there, since balancer_manage() returns success
+  when it finds no such worker.  Path-based routing belongs in ProxyPass on the
+  proxy, not in the advertised URL.
+
+  A UDP datagram is delivered whole, so the receiver reads each message into a
+  fixed stack buffer and NUL-terminates it (buf[len] = '\0') before parsing.
+  The sender transmits strlen(msg) bytes (no trailing NUL on the wire).
+
+
+Ownership and watchdog hand-off:
+  Every worker beacon creates is marked PROXY_WORKER_BEACON (status 'B', "Bcn" in
+  the balancer-manager) in the worker's SHARED state.  Beacon enables/evicts only
+  marked workers; a same-named worker without the mark (configured, or added by
+  an administrator) is left alone and the announcement is dropped ("member not
+  managed by beacon").
+
+  The leases (ctx->seen) are private to the process that owns the watchdog
+  singleton, but the members they describe live in shared memory and outlive that
+  process.  When ownership moves (owner crashed, was recycled, or the server was
+  restarted), the new owner starts with an empty table and would never evict a
+  member that has since gone silent.  So, once at the start of ownership
+  (beacon_reconcile(), first RUNNING tick of a listener), it syncs the balancer
+  (ap_proxy_sync_balancer()) and adopts every marked member: last_seen = now, so
+  a silent member is evicted one ProxyBeaconTimeout later; a member that is
+  already DISABLED is recorded as evicted, so its next announcement re-enables it.
+
+  Not recovered: the per-member replay high-water mark (last_ts restarts at 0).
+  The global freshness window (ProxyBeaconMaxSkew) still applies, so a captured
+  announcement can be replayed once per member after a hand-off, refreshing that
+  one lease for one timeout.  Keeping that state across hand-off would need a
+  shared lease table; the marker + reconcile design was chosen as the smaller,
+  ABI-safe change (the status field is existing shared state, bit 0x1000 is new).
+
+  A new owner can only start once the watchdog-callback mutex is released by the
+  dead one.  If the default mechanism is not released when its holder is killed on
+  a platform, use e.g. "Mutex sysvsem watchdog-callback".
+
+Operator control:
+  Beacon owns the DISABLED flag of its members (lease expiry sets it, a new
+  announcement clears it).  It never touches STOPPED, DRAIN or the hcheck
+  failure flag, so an administrator who needs a member held out of rotation uses
+  Stopped/Drain; a manual "Disable" is overridden by the next announcement after
+  an eviction.  (After a hand-off a DISABLED beacon member is assumed to have been
+  evicted, for the same reason.)
+
+Receiver validation:
+  Datagrams > BEACON_MAX_MSG_LEN (2048) are dropped, not truncated (recvfrom is
+  asked for one byte more to tell); a datagram containing a NUL is dropped.  The
+  MAC is verified on every path, including log-only (no ProxyBeaconBalancer).
+  After the MAC: strict grammar (beacon_frame_check(): "BEACON " marker,
+  single-space key=value tokens, known fields not repeated), ts= strictly 1-18
+  decimal digits (beacon_parse_ts()), freshness compared in microseconds so a
+  sub-second ProxyBeaconMaxSkew is honoured.  The url must be printable ASCII
+  and an origin (see Member identity).
+
+Capacity:
+  At most BEACON_MAX_MEMBERS (256) urls are tracked.  beacon_sweep() also frees
+  records that are evicted or whose add failed once they have been silent for
+  2 * max_skew + 1s: the record doubles as the replay high-water mark, and a
+  message accepted at time A carries ts within max_skew of A, so it is stale after
+  A + 2 * max_skew; nothing is lost by forgetting it then.  A reclaimed member that
+  announces again is re-adopted from the balancer (try_add finds the marked worker).
+  Records come from a free list: memory is bounded by the cap however often they
+  are recycled.  A flood of distinct urls from a secret holder can still fill the
+  table until it falls silent.
+
+Socket open:
+  A failed open/bind/resolve is retried with back-off (30s doubling to 10min),
+  not on every tick and not never.  The address lookup is synchronous on the one
+  watchdog thread shared by all beacon contexts; prefer IP literals.
+
+Authentication (ProxyBeaconSecret, REQUIRED):
+  ProxyBeaconSecret must be set on every participating server (the receiver and
+  every sender); startup fails otherwise. There is no unauthenticated mode:
+  without a MAC, anyone who can reach the receiver port could announce a URL and
+  hijack client traffic, and a UDP source address is trivially spoofable, so
+  authentication matters at least as much here as it would over a connection.
+
+  With ProxyBeaconSecret set identically on the proxy and all backends, each
+  announcement is signed with a SipHash-2-4 MAC over the message prefix (the key
+  is derived from the passphrase via apr_md5, as in mod_session_crypto). The
+  receiver recomputes the MAC (constant-time compare) and rejects anything that
+  does not match -- before the URL is parsed or acted on. Replay protection has
+  two parts, both keyed on the signed ts= (microseconds): (1) a freshness window
+  (ProxyBeaconMaxSkew) rejects messages whose timestamp is too far from now,
+  which assumes proxy and backend clocks are roughly synchronized (NTP); (2) a
+  per-url high-water mark rejects any ts= that does not strictly exceed the last
+  one accepted for that url, so a byte-identical replay (same ts, same MAC) --
+  e.g. replaying a dead backend's last announcement to keep it from being evicted
+  -- is dropped even within the freshness window. Microsecond granularity ensures
+  genuine sub-second announcements always advance. seq= is NOT used for replay
+  (it resets when a backend restarts); the wall-clock ts= does not.
+
+  "hex:<32 hex digits>" is the 128-bit SipHash key itself (openssl rand -hex 16):
+  no passphrase, nothing to guess.  Any other value is a passphrase of at least 16
+  characters; the key is then MD5(passphrase) and the tag is 64 bits, so a
+  captured announcement permits offline guessing at full speed.  A valid MAC shows possession of the
+  secret, nothing more: every holder can register any reachable origin, speak for
+  other members and consume slots/records.  The secret is a membership-
+  administrator credential, not a boundary between partially trusted workloads.
+
+  Announcements are authenticated, not encrypted -- the payload is operational
+  metadata, not secret. For transport confidentiality, DTLS would be a separate,
+  orthogonal future layer.

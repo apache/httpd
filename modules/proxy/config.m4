@@ -70,6 +70,19 @@ APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module.  Requires --enable-p
 APACHE_MODULE(proxy_express, mass reverse-proxy module. Requires --enable-proxy., , , most, , proxy)
 APACHE_MODULE(proxy_hcheck, [reverse-proxy health-check module. Requires --enable-proxy and --enable-watchdog.], , , most, , [proxy,watchdog])
 
+proxy_beacon_objs="mod_proxy_beacon.lo"
+APACHE_MODULE(proxy_beacon, [reverse-proxy UDP member announcement; backends self-register as balancer members. Requires --enable-proxy, --enable-proxy-balancer and --enable-watchdog.], $proxy_beacon_objs, , no, [
+  dnl apr_siphash.h is in APR-util 1.6 and later (and APR 2.x)
+  saved_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES"
+  AC_TRY_COMPILE([#include <apr_siphash.h>], [], [ap_have_apr_siphash=yes], [ap_have_apr_siphash=no])
+  CPPFLAGS="$saved_CPPFLAGS"
+  if test "$ap_have_apr_siphash" = "no"; then
+    AC_MSG_WARN([mod_proxy_beacon needs apr_siphash.h, from APR-util 1.6 or later])
+    enable_proxy_beacon=no
+  fi
+], [proxy,watchdog,proxy_balancer])
+
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current -I\$(top_srcdir)/modules/http2])
 
 module_selection=$save_module_selection

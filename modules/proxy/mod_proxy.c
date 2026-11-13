@@ -71,6 +71,7 @@ proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
     {PROXY_WORKER_HOT_SPARE,     PROXY_WORKER_HOT_SPARE_FLAG,     "Spar "},
     {PROXY_WORKER_FREE,          PROXY_WORKER_FREE_FLAG,          "Free "},
     {PROXY_WORKER_HC_FAIL,       PROXY_WORKER_HC_FAIL_FLAG,       "HcFl "},
+    {PROXY_WORKER_BEACON,        PROXY_WORKER_BEACON_FLAG,        "Bcn "},
     {0x0, '\0', NULL}
 };
 
@@ -1480,7 +1481,7 @@ static int proxy_handler(request_rec *r)
              */
             if (balancer
                 && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
                 worker->s->error_time = apr_time_now();
             }
             break;
@@ -1492,7 +1493,7 @@ static int proxy_handler(request_rec *r)
              */
             if (balancer
                 && !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
                 worker->s->error_time = apr_time_now();
             }
         }
