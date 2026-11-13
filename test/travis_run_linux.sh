@@ -95,6 +95,12 @@ if test -v TEST_NGHTTP2; then
     export LDFLAGS="${LDFLAGS:-} -Wl,-rpath,$HOME/root/nghttp2/lib"
 fi
 
+if [[ ${CONFIG-} == *--enable-http3* ]]; then
+    # Same as nghttp2: an RPATH, or the system libngtcp2 loads at run-time.
+    CONFIG="$CONFIG --with-ngtcp2=$HOME/root/ngtcp2"
+    export LDFLAGS="${LDFLAGS:-} -Wl,-rpath,$HOME/root/ngtcp2/lib"
+fi
+
 srcdir=$PWD
 
 if test -v TEST_VPATH; then
@@ -111,6 +117,13 @@ if test -v TEST_NGHTTP2; then
     ldd modules/http2/.libs/mod_http2.so | grep --color=always nghttp2
     if ! ldd modules/http2/.libs/mod_http2.so | grep -q "$HOME/root/nghttp2/lib"; then
         : mod_http2 is not linked against the nghttp2 built from source
+        exit 1
+    fi
+fi
+
+if [[ ${CONFIG-} == *--enable-http3* ]]; then
+    if ! ldd modules/http3/.libs/mod_http3.so | grep -q "$HOME/root/ngtcp2/lib"; then
+        : mod_http3 is not linked against the ngtcp2 built from source
         exit 1
     fi
 fi
