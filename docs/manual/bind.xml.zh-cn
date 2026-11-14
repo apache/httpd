@@ -85,7 +85,7 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <note type="warning"><p>重复的<directive
+    <note type="warning"><p>相互重叠或冲突的<directive
     module="mpm_common">Listen</directive>指令会产生致命错误，从而导致服务器无法正常启动。</p>
 
     <example>
