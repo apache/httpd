@@ -782,9 +782,25 @@ static void clean_child_exit(int code)
     exit(code);
 }
 
+/* just_die() is the SIGTERM handler installed in the child immediately
+ * after fork(), before child_main() has done its allocator-heavy early
+ * startup work (thread/pool creation). A signal handler runs on the
+ * thread it interrupts, so if that thread is itself inside malloc(),
+ * calling clean_child_exit() here -- which runs hook callbacks, calls
+ * apr_pool_destroy() (more malloc/free), and exit() (which is not
+ * async-signal-safe either, e.g. it may flush stdio or run atexit
+ * handlers that themselves allocate) -- can re-enter the allocator
+ * while it is already running on this same thread, which is not
+ * guaranteed to be safe and can deadlock or corrupt it. This window
+ * closes once child_main() installs its real, async-signal-safe
+ * SIGTERM handling (a no-op handler that only unblocks a syscall, with
+ * the actual shutdown processed synchronously outside signal context);
+ * just_die() only needs to cover the brief gap before that, when
+ * nothing meaningful has been set up yet to justify the hook/pool
+ * cleanup. Just exit immediately and safely instead. */
 static void just_die(int sig)
 {
-    clean_child_exit(0);
+    _exit(0);
 }
 
 /*****************************************************************
