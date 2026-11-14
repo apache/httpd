@@ -51,11 +51,11 @@ The CI scripts use the following environment variables:
 * TEST_SSL - set for job with SSL/TLS testing variants (encrypted
   private keys, session cache backends via redis/memcache/shmcb, etc.)
 
-* TEST_OPENSSL3 - if set to a version string (e.g. "3.4.7"), that
+* TEST_OPENSSL - if set to a version string (e.g. "3.4.7"), that
   version of OpenSSL is built from source and used for mod_ssl.
   Requires non-system APR/APR-util (APR_VERSION must also be set).
 
-* TEST_OPENSSL3_BRANCH - if set together with TEST_OPENSSL3, the
+* TEST_OPENSSL_BRANCH - if set together with TEST_OPENSSL, the
   OpenSSL source is cloned from the named git branch instead of
   downloading a release tarball.
 
@@ -117,7 +117,7 @@ which builds no dependencies gets no $ROOTID and does not use the cache
 at all.
 
 For anything built from a branch rather than a tag - APR_VERSION=trunk
-or 1.7.x, and TEST_OPENSSL3_BRANCH - the version alone does not identify
+or 1.7.x, and TEST_OPENSSL_BRANCH - the version alone does not identify
 what gets built, so the branch is resolved to a commit and that goes
 into $ROOTID too.  The commit is exported as
 $APR_COMMIT/$APU_COMMIT/$OPENSSL_COMMIT so that the build uses exactly
@@ -292,6 +292,6 @@ When the workflow does not set $ROOTID, its cache key does not say what
 was built, so the scripts check for themselves.  APR and APR-util are
 rebuilt unless $HOME/root/.key-apr (.key-apr-util) names the same
 version, commit, configuration and $CC; OpenSSL is rebuilt unless
-$HOME/root/openssl-is-$TEST_OPENSSL3 exists and, for a branch, names its
+$HOME/root/openssl-is-$TEST_OPENSSL exists and, for a branch, names its
 current commit; the CPAN modules are rebuilt when the output of
 "perl -V" differs from the one saved in $HOME/perl5/.perlver.
