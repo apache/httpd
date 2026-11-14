@@ -46,7 +46,7 @@
     </related>
 
 
-    <p>httpd在启动时会到本地机器的某些端口和地址，以接受入站请求。
+    <p>httpd在启动时会绑定到本地机器的某些端口和地址，以接受入站请求。
     默认情况下，httpd会监听本地机器的所有地址。不过，有时可能需要对其进行配置，
     指定它监听哪些端口、仅监听哪些特定地址，或者同时指定端口和地址。
     这通常会与<a href="vhosts/">虚拟主机</a>功能结合使用，决定<code>httpd</code>如何响应发往
@@ -59,7 +59,7 @@
     监听多个地址和端口，服务器会响应任何来自列在<directive module="mpm_common">Listen</directive>指令中
     端口和地址的请求。</p>
 
-    <p>例如如果按下面的配置设置，服务器会接受所有接口中来自80、8000端口的连接：</p>
+    <p>例如，如果按下面的配置设置，服务器会接受所有接口中来自80、8000端口的连接：</p>
 
     <example>
     <highlight language="config">
@@ -124,7 +124,7 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <p>如果想要进行此类修改，就必须先停止服务器，然后再重新启动服务器。</p>
+    <p>如果想要此类修改生效，就必须先停止服务器，然后再重新启动服务器。</p>
     
   </section>
 
@@ -135,8 +135,8 @@ Listen 192.0.2.5:8000
     这使得httpd可以分配IPv6套接字，并能够处理通过IPv6发送的请求。
 
     对于httpd管理员而言，有一个比较复杂的问题，即IPv6套接字是否能够同时处理IPv4和IPv6连接。
-    在大多数平台上，默认情况下可以使用IPv4映射的IPv6地址来在IPv6套接字上处理IPv4连接。但是由于
-    FreeBSD、NetBSD、OpenBSD的系统策略，在这些平台上默认是禁止使用IPv4映射的IPv6地址的。对于禁止
+    在大多数平台上，默认情况下可以使用IPv4映射的IPv6地址来在IPv6套接字上处理IPv4连接。为保持与
+    FreeBSD、NetBSD、OpenBSD的系统策略一致，在这些平台上默认是禁止使用IPv4映射的IPv6地址的。对于禁止
     使用IPv4映射的IPv6地址的系统上，可以使用一个特殊的<program>configure</program>参数来改变httpd的行为。</p>
 
     <p>此外，在某些平台（例如Linux和Tru64）上则是<strong>只能</strong>使用IPv4映射的IPv6地址来同时处理IPv6和IPv4连接。
@@ -182,7 +182,7 @@ Listen 192.0.2.1:80
     module="mpm_common">Listen</directive>指令本身不能实现虚拟主机的功能，它仅用于告知主服务器需要监听哪些地址和端口。
     如果没有指定<directive module="core" type="section">VirtualHost</directive>指令，那么服务器将以相同方式处理接收到的所有请求。
     可以使用<directive module="core" type="section">VirtualHost</directive>指令来为一个或多个特定的地址或端口给服务器设置不同的行为。
-    要实现虚拟主机，首先需要指示服务器监听所要使用的地址和端口。然后设置<directive module="core" type="section">VirtualHost</directive>
+    要实现虚拟主机功能，首先需要指示服务器监听所要使用的地址和端口。然后设置<directive module="core" type="section">VirtualHost</directive>
     区块，为该虚拟主机设置相应的地址、端口，以及服务器处理请求时的行为。
     注意，如果<directive module="core" type="section">VirtualHost</directive>中指示的地址和端口并未被服务器监听，那么客户端无法访问虚拟主机。</p>
   </section>
