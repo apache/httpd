@@ -1,0 +1,2 @@
+  *) mod_lua: Inline <LuaHook...> blocks now work when built against
+     Lua 5.5. [Eric Covener]

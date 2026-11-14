@@ -395,16 +395,44 @@ static apr_status_t vm_construct(lua_State **vm, void *params, apr_pool_t *lifec
     return APR_SUCCESS;
 }
 
+/* Deep-copy an array of strings; apr_array_copy() copies only the
+ * pointers, and the strings may live in a shorter-lived pool.
+ */
+static apr_array_header_t *copy_string_array(apr_pool_t *pool,
+                                             const apr_array_header_t *arr)
+{
+    apr_array_header_t *copy;
+    int i;
+
+    if (arr == NULL) {
+        return NULL;
+    }
+    copy = apr_array_copy(pool, arr);
+    for (i = 0; i < copy->nelts; i++) {
+        APR_ARRAY_IDX(copy, i, const char *) =
+            apr_pstrdup(pool, APR_ARRAY_IDX(copy, i, const char *));
+    }
+    return copy;
+}
+
+/* Copy a VM spec into a longer-lived pool for the server-scoped VM pool.
+ * Everything the spec points to has to be copied too, since the original
+ * may belong to a request (or .htaccess) pool.
+ */
 static ap_lua_vm_spec* copy_vm_spec(apr_pool_t* pool, ap_lua_vm_spec* spec) 
 {
     ap_lua_vm_spec* copied_spec = apr_pcalloc(pool, sizeof(ap_lua_vm_spec));
     copied_spec->bytecode_len = spec->bytecode_len;
-    copied_spec->bytecode = apr_pstrdup(pool, spec->bytecode);
+    if (spec->bytecode && spec->bytecode_len > 0) {
+        /* bytecode is binary and contains NUL bytes; not a C string */
+        copied_spec->bytecode = apr_pmemdup(pool, spec->bytecode,
+                                            spec->bytecode_len);
+    }
     copied_spec->cb = spec->cb;
     copied_spec->cb_arg = NULL;
     copied_spec->file = apr_pstrdup(pool, spec->file);
-    copied_spec->package_cpaths = apr_array_copy(pool, spec->package_cpaths);
-    copied_spec->package_paths = apr_array_copy(pool, spec->package_paths);
+    copied_spec->package_cpaths = copy_string_array(pool, spec->package_cpaths);
+    copied_spec->package_paths = copy_string_array(pool, spec->package_paths);
     copied_spec->pool = pool;
     copied_spec->scope = AP_LUA_SCOPE_SERVER;
     copied_spec->codecache = spec->codecache;
