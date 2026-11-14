@@ -96,3 +96,47 @@ class TestProxyHttp:
         r = env.curl_get(f"https://{domain}:{env.https_port}/proxy/alive.json", 5)
         assert r.response["status"] == 200
         assert r.json['host'] == "test1"
+
+    # stickysession routes taken from a cookie or the query string
+    def test_proxy_01_004(self, env):
+        domain = f"test1.{env.http_tld}"
+        conf = HttpdConf(env)
+        conf.add([
+            "ProxyPreserveHost on",
+            "<Proxy balancer://sticky>",
+            f"  BalancerMember http://localhost:{env.http_port} route=r1",
+            f"  BalancerMember http://127.0.0.1:{env.http_port} route=r2",
+            "  ProxySet stickysession=ROUTEID|routeid",
+            "</Proxy>",
+        ])
+        conf.start_vhost(domains=[domain], port=env.https_port, doc_root="htdocs/test1")
+        conf.add([
+            "ProxyPass /sticky balancer://sticky",
+            'Header set X-Route "%{BALANCER_WORKER_ROUTE}e"',
+        ])
+        conf.end_vhost()
+        conf.add_vhost(domains=[domain], port=env.http_port, doc_root="htdocs/test1")
+        conf.install()
+        assert env.apache_restart() == 0
+        url = f"https://{domain}:{env.https_port}/sticky/alive.json"
+        for route in ["r1", "r2"]:
+            for _ in range(3):
+                r = env.curl_get(url, options=["-H", f"Cookie: ROUTEID=s.{route}"])
+                assert r.response["status"] == 200
+                assert r.response["header"]["x-route"] == route
+                r = env.curl_get(f"{url}?routeid=s.{route}")
+                assert r.response["status"] == 200
+                assert r.response["header"]["x-route"] == route
+        # a session name without a value selects no route
+        for cookie in ["ROUTEID", "a=b; ROUTEID", "ROUTEID ", "ROUTEID="]:
+            r = env.curl_get(url, options=["-H", f"Cookie: {cookie}"])
+            assert r.response["status"] == 200
+            assert r.response["header"]["x-route"] in ["r1", "r2"]
+        for query in ["routeid", "a=b&routeid", "routeid="]:
+            r = env.curl_get(f"{url}?{query}")
+            assert r.response["status"] == 200
+            assert r.response["header"]["x-route"] in ["r1", "r2"]
+        # a later cookie with a value is still found
+        r = env.curl_get(url, options=["-H", "Cookie: ROUTEID; ROUTEID=s.r2"])
+        assert r.response["status"] == 200
+        assert r.response["header"]["x-route"] == "r2"
