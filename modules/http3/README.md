@@ -4,7 +4,7 @@
 
 HTTP/3 runs over UDP rather than TCP and integrates TLS 1.3 encryption natively inside QUIC, eliminating TCP head-of-line blocking and providing faster connection establishment (0-RTT / 1-RTT).
 
-> **Experimental Notice:** `mod_http3` is currently experimental and intended for testing and development. OpenSSL QUIC server support is evolving and performance is being actively optimized; do not use it in critical production environments yet.
+> **Experimental Notice:** `mod_http3` is currently experimental and intended for testing and development. Do not use it in production yet.
 
 ---
 
@@ -12,7 +12,8 @@ HTTP/3 runs over UDP rather than TCP and integrates TLS 1.3 encryption natively 
 
 `mod_http3` relies on:
 1. **[libnghttp3](https://nghttp2.org/nghttp3/)** (>= 1.0.0): Handles HTTP/3 framing and QPACK header compression ([RFC 9204](https://datatracker.ietf.org/doc/html/rfc9204)).
-2. **OpenSSL** (with QUIC Server Support): Handles QUIC transport, packet processing, and TLS 1.3 handshakes.
+2. **[ngtcp2](https://nghttp2.org/ngtcp2/)** (>= 1.22.1) with its OpenSSL crypto helper (`libngtcp2_crypto_ossl`): Handles the QUIC transport.
+3. **OpenSSL** (>= 3.5): Handles the TLS 1.3 handshake.
 
 ---
 
@@ -20,7 +21,7 @@ HTTP/3 runs over UDP rather than TCP and integrates TLS 1.3 encryption natively 
 
 ### Prerequisites
 
-Ensure you have OpenSSL (with QUIC support enabled) and `libnghttp3` installed on your system.
+Install OpenSSL, `libnghttp3` and `libngtcp2` with `libngtcp2_crypto_ossl`.
 
 ### Configuration
 
@@ -30,10 +31,10 @@ To build `mod_http3`, add `--enable-http3` to your `httpd` `./configure` command
 ./configure --enable-ssl --enable-http2 --enable-http3 [other options...]
 ```
 
-If `libnghttp3` is installed in a non-standard location:
+If `libnghttp3` or `libngtcp2` is installed in a non-standard location:
 
 ```bash
-./configure --enable-http3 --with-nghttp3=/path/to/nghttp3 [other options...]
+./configure --enable-http3 --with-nghttp3=/path/to/nghttp3 --with-ngtcp2=/path/to/ngtcp2 [other options...]
 ```
 
 If `pkg-config` is available on your system, `libnghttp3.pc` will be automatically detected via `PKG_CONFIG_PATH`.
@@ -141,6 +142,6 @@ curl --alt-svc /tmp/altsvc.cache -v https://localhost:4433/
 
 ## Current Limitations & Notes
 
-- **Multi-Process UDP Listener**: In standard multi-process MPMs, one child process manages the UDP listening socket while others coordinate in the background.
-- **Connection Migration**: QUIC connection migration (RFC 9000 §9) is currently subject to OpenSSL QUIC stack capabilities (see [`QUIC_CONNECTION_MIGRATION.md`](QUIC_CONNECTION_MIGRATION.md)).
+- **Multi-Process UDP Listener**: On Linux, the parent binds the UDP port before the privilege drop. Without `ListenCoresBucketsRatio`, one child serves the port. With it, each child serves one `SO_REUSEPORT` socket per listener bucket. On other platforms, one child binds the port.
+- **Connection Migration**: ngtcp2 supports QUIC connection migration (RFC 9000 §9). With more than one QUIC socket, migration needs eBPF routing by connection ID (see [`QUIC_CONNECTION_MIGRATION.md`](QUIC_CONNECTION_MIGRATION.md)).
 - **TLS Certificates**: Modern browsers reject self-signed or invalid certificates for HTTP/3 more strictly than for HTTP/1.1 or HTTP/2. Use trusted certificates or valid local CA certificates during testing.

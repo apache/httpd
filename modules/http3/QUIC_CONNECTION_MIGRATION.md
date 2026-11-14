@@ -7,10 +7,9 @@ address to change mid-connection — for example when a mobile device switches
 networks or a NAT rebinds the client port. The server must continue serving
 the connection at the new address.
 
-mod_http3 currently does not support connection migration. Two independent
-issues block it.
+mod_http3 supports connection migration. Two parts are necessary.
 
-## 1. OpenSSL does not update the peer address
+## 1. The QUIC stack updates the peer address
 
 When the server receives a valid QUIC packet from a new source address,
 RFC 9000 Section 9.3 requires:
@@ -27,17 +26,7 @@ RFC 9000 Section 9.3.1 specifically covers NAT rebinding (same IP, different
 port). Even when the `disable_active_migration` transport parameter is set
 (Section 18.2), the server must still handle NAT rebinding.
 
-OpenSSL's QUIC server implementation (as of 3.5.x):
-
-- Hardcodes `disable_active_migration = 1` in `quic_port.c`.
-- Accepts packets from a changed source address on the server side (no
-  address check in `ch_rx_handle_packet` for `is_server`).
-- **Never updates `cur_peer_addr`** after the initial handshake. The TX
-  packetiser sends responses to the stale address, so the client never
-  receives them.
-- Marks this as future work with `TODO(QUIC FUTURE)` comments.
-
-For comparison, ngtcp2 fully implements server-side migration in
+mod_http3 uses ngtcp2. ngtcp2 fully implements server-side migration in
 `conn_recv_non_probing_pkt_on_new_path()`: it updates the peer address
 immediately, distinguishes NAT rebinding from full IP changes, resets
 congestion state on IP changes (Section 9.4), and runs path validation
@@ -45,7 +34,8 @@ with fallback to the old path.
 
 ## 2. Multi-child UDP socket routing (SO_REUSEPORT)
 
-When multiple httpd children share the QUIC port via `SO_REUSEPORT`, the
+On Linux with `ListenCoresBucketsRatio`, the parent binds one `SO_REUSEPORT`
+socket per listener bucket, and each child serves one of them. The
 kernel hashes each UDP datagram independently by 4-tuple (source IP, source
 port, destination IP, destination port). Unlike TCP — where `SO_REUSEPORT`
 only matters at `accept()` time and all subsequent packets follow the
@@ -57,14 +47,13 @@ this connection, so the packet is dropped.
 
 The solution is `SO_ATTACH_REUSEPORT_EBPF`: a BPF program attached to the
 socket group that reads the QUIC Destination Connection ID from each incoming
-packet and steers it to the correct socket regardless of source address. This
-is implemented in the `h3bench_improvements` branch (`h3q_reuseport.c`,
-`h3q_reuseport_kern.c`).
+packet and steers it to the correct socket regardless of source address.
+`h3_socket_bpf.c` implements it. Each child puts its bucket index in the
+connection IDs that it issues.
 
-Note: the current trunk code does not use `SO_REUSEPORT` at all — only one
-child binds the UDP port; the others retry in the background. This means
-issue #1 (OpenSSL) is the only blocker in trunk today; issue #2 becomes
-relevant once multi-child QUIC socket sharing is enabled.
+If the BPF program does not attach, the server logs a warning and sends the
+`disable_active_migration` transport parameter. With one QUIC socket, one
+child serves all connections and this routing is not necessary.
 
 ## Test
 
@@ -76,7 +65,8 @@ relevant once multi-child QUIC socket sharing is enabled.
 4. Sends a second GET request on the same QUIC connection.
 5. Asserts the second request succeeds.
 
-The test currently xfails because OpenSSL responds to the old address.
+`test/modules/http3/test_016_cid_routing.py` does the same test with more
+than one bucket.
 
 ## References
 
@@ -85,6 +75,4 @@ The test currently xfails because OpenSSL responds to the old address.
 - RFC 9000 Section 9.3.1: Peer Address Spoofing / NAT Rebinding
 - RFC 9000 Section 9.4: Loss Detection and Congestion Control (reset on migration)
 - RFC 9000 Section 18.2: `disable_active_migration` transport parameter
-- OpenSSL `ssl/quic/quic_port.c`: `disable_active_migration = 1` (hardcoded)
-- OpenSSL `ssl/quic/quic_channel.c`: `cur_peer_addr` never updated after handshake
-- ngtcp2 `lib/ngtcp2_conn.c`: `conn_recv_non_probing_pkt_on_new_path()` — full implementation
+- ngtcp2 `lib/ngtcp2_conn.c`: `conn_recv_non_probing_pkt_on_new_path()`
