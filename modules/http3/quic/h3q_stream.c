@@ -241,14 +241,14 @@ void h3q_stream_free(h3q_stream* st)
             break;
         }
     }
-    for (h3q_stream** slot = &conn->accept_head; *slot; slot = &(*slot)->next_accept)
+    for (h3q_stream *prev = NULL, **slot = &conn->accept_head; *slot; prev = *slot, slot = &(*slot)->next_accept)
     {
         if (*slot == st)
         {
             *slot = st->next_accept;
-            if (!*slot)
+            if (conn->accept_tail == st)
             {
-                conn->accept_tail = NULL;
+                conn->accept_tail = prev;
             }
             break;
         }

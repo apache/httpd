@@ -419,8 +419,8 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     apr_thread_mutex_lock(session->lock);
     h3s->worker_done = 1;
     apr_thread_mutex_unlock(session->lock);
-    apr_atomic_dec32(&session->active_tasks);
     h3_session_wake(session); /* the event thread reclaims the stream */
+    apr_atomic_dec32(&session->active_tasks); /* last: at zero the event thread can free the session */
     return NULL;
 }
 
