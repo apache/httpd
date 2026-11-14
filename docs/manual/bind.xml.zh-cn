@@ -176,25 +176,14 @@ Listen 192.0.2.1:80
   </section>
 
   <section id="virtualhost">
-    <title>How This Works With Virtual Hosts</title>
+    <title>虚拟主机如何工作</title>
 
-    <p> The <directive
-    module="mpm_common">Listen</directive> directive does not implement
-    Virtual Hosts - it only tells the
-    main server what addresses and ports to listen on. If no
-    <directive module="core" type="section">VirtualHost</directive>
-    directives are used, the server will behave
-    in the same way for all accepted requests. However,
-    <directive module="core" type="section">VirtualHost</directive>
-    can be used to specify a different behavior
-    for one or more of the addresses or ports. To implement a
-    VirtualHost, the server must first be told to listen to the
-    address and port to be used. Then a
-    <directive module="core" type="section">VirtualHost</directive> section
-    should be created for the specified address and port to set the
-    behavior of this virtual host. Note that if the
-    <directive module="core" type="section">VirtualHost</directive>
-    is set for an address and port that the
-    server is not listening to, it cannot be accessed.</p>
+    <p><directive
+    module="mpm_common">Listen</directive>指令本身不能实现虚拟主机的功能，它仅用于告知主服务器需要监听哪些地址和端口。
+    如果没有指定<directive module="core" type="section">VirtualHost</directive>指令，那么服务器将以相同方式处理接收到的所有请求。
+    可以使用<directive module="core" type="section">VirtualHost</directive>指令来为一个或多个特定的地址或端口给服务器设置不同的行为。
+    要实现虚拟主机，首先需要指示服务器监听所要使用的地址和端口。然后设置<directive module="core" type="section">VirtualHost</directive>
+    区块，为该虚拟主机设置相应的地址、端口，以及服务器处理请求时的行为。
+    注意，如果<directive module="core" type="section">VirtualHost</directive>中指示的地址和端口并未被服务器监听，那么客户端无法访问虚拟主机。</p>
   </section>
 </manualpage>
