@@ -161,18 +161,12 @@ Listen 192.0.2.1:80
   </section>
 
   <section id="protocol">
-    <title>Specifying the protocol with Listen</title>
-    <p>The optional second <var>protocol</var> argument of
-       <directive module="mpm_common">Listen</directive>
-       is not required for most
-       configurations. If not specified, <code>https</code> is the default for
-       port 443 and <code>http</code> the default for all other ports.  The
-       protocol is used to determine which module should handle a request, and
-       to apply protocol specific optimizations with the
-       <directive module="core">AcceptFilter</directive> directive.</p>
+    <title>指定监听的协议</title>
+    <p><directive module="mpm_common">Listen</directive>指令中可选的第二个参数，大多数情况下不是必须的。
+    如果没有指定，443端口的默认协议是<code>https</code>，其他端口的默认协议则是<code>http</code>。该参数用于
+    确定由哪个模块处理请求，以及适用通过<directive module="core">AcceptFilter</directive>指令设置的针对特定协议的优化。</p>
 
-    <p>You only need to set the protocol if you are running on non-standard
-       ports.  For example, running an <code>https</code> site on port 8443:</p>
+    <p>只有在使用非标准端口时，才需要设置协议参数。例如，在8443端口上运行一个<code>https</code>网站。</p>
 
     <example>
     <highlight language="config">
