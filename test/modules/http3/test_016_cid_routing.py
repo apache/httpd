@@ -101,6 +101,8 @@ class TestCidRouting:
 
     @pytest.fixture(autouse=True, scope="class")
     def _class_scope(self, env):
+        if env.h3_ossl_backend:
+            pytest.skip("routing by connection ID needs the ngtcp2 backend")
         cpus = os.cpu_count() or 1
         if cpus < 2:
             pytest.skip("two buckets need two cores")

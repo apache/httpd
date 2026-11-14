@@ -279,6 +279,9 @@ class TestRemoteIp:
                   f"RemoteIPInternalProxy {self.PEER}"] + exposed)
         conf.end_vhost()
         conf.install()
+        # drop what an earlier test logged, so that remote_port_clear_log()
+        # waits for the probe of this restart and not for a stale line
+        open(os.path.join(env.server_logs_dir, self.LOG_FILE), 'w').close()
         assert env.apache_restart() == 0
 
     def remote_port_logged(self, env):
@@ -293,7 +296,15 @@ class TestRemoteIp:
         return lines[0]
 
     def remote_port_clear_log(self, env):
-        open(os.path.join(env.server_logs_dir, self.LOG_FILE), 'w').close()
+        # The readiness probe of apache_restart() is logged after its
+        # response is sent, so it can land after the restart returned:
+        # wait for that line, or it would be taken for the test's own.
+        log_path = os.path.join(env.server_logs_dir, self.LOG_FILE)
+        for _ in range(20):
+            if os.path.getsize(log_path) > 0:
+                break
+            time.sleep(0.1)
+        open(log_path, 'w').close()
 
     # PROXY protocol: the client's port is known (4321 in PP2_ADDRS) and
     # every place must report it, not the proxy's TCP source port.
