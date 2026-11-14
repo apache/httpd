@@ -2374,6 +2374,7 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *src1,
      /* allocate +3 for '/' delimiter, trailing NULL and overallocate
       * one extra byte to allow the caller to add a trailing '/'
       */
+    ap_assert(len2 <= APR_SIZE_MAX - 3 && len1 <= APR_SIZE_MAX - 3 - len2);
     path = (char *)apr_palloc(a, len1 + len2 + 3);
     if (len1 == 0) {
         *path = '/';
