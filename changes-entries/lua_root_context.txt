@@ -1,0 +1,3 @@
+  *) mod_lua: LuaRoot is now allowed only in server config and virtual
+     host context, matching where it has always taken effect.
+     [fattylin0110 <fatty0110 gmail.com>]
