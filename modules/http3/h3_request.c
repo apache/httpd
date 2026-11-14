@@ -290,11 +290,9 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     r->header_only = (r->method_number == M_GET && r->method[0] == 'H');
     h3s->r = r;
 
-    if (h3s->path)
-    {
-        ap_parse_uri(r, h3s->path);
-        r->the_request = apr_pstrcat(r->pool, r->method, " ", r->unparsed_uri, " ", r->protocol, NULL);
-    }
+    /* CONNECT has no :path; its target is the authority, as in HTTP/1.1. */
+    ap_parse_uri(r, h3s->path ? h3s->path : h3s->authority ? h3s->authority : "");
+    r->the_request = apr_pstrcat(r->pool, r->method, " ", r->unparsed_uri, " ", r->protocol, NULL);
     if (h3s->authority)
     {
         apr_table_setn(r->headers_in, "Host", apr_pstrdup(r->pool, h3s->authority));

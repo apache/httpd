@@ -24,6 +24,8 @@ class TestMisc:
             "  SetOutputFilter INCLUDES",
             "</Files>",
             f"ProxyPass /proxy/ http://127.0.0.1:{env.http_port}/",
+            "<Location /h3-location>",
+            "</Location>",
         ]).install()
         assert env.apache_restart() == 0
 
@@ -59,3 +61,10 @@ class TestMisc:
                                               body=body)
         assert r.status == 200, f"{r}"
         assert r.body == body
+
+    def test_h3_108_07_connect_no_path(self, env):
+        # A CONNECT has no :path. The location walk must not get a NULL URI.
+        r1, r2 = env.h3_client().requests([dict(method="CONNECT"), dict(path="/")],
+                                          sequential=True)
+        assert 400 <= r1.status < 500, f"{r1}"
+        assert r2.status == 200, f"{r2}"
