@@ -1,3 +1,4 @@
+import glob
 import os
 import re
 
@@ -31,6 +32,11 @@ class TestLockTimeoutOverflow:
         for name in ('file1.txt', 'file2.txt', 'file3.txt'):
             with open(os.path.join(dav_dir, name), 'w') as fd:
                 fd.write('hello\n')
+
+        # the locks outlive the server: file1.txt stays locked for 2^32-1
+        # seconds, so a lock database left by an earlier run answers 423
+        for f in glob.glob(f"{env.gen_dir}/davlock-timeout-overflow*"):
+            os.remove(f)
 
         conf = HttpdConf(env, extras={
             'base': f"""

@@ -77,6 +77,18 @@ class H3TestEnv(HttpdTestEnv):
         super().setup_httpd(setup=H3TestSetup(env=self))
 
     @property
+    def h3_ossl_backend(self) -> bool:
+        """Whether mod_http3 runs on OpenSSL's own QUIC stack
+        (--with-http3-quic=openssl) and not on ngtcp2, which has no 0-RTT,
+        connection ID routing or connection migration."""
+        path = os.path.join(self.LIBEXEC_DIR, "mod_http3.so")
+        try:
+            with open(path, "rb") as fd:
+                return b"ngtcp2" not in fd.read()
+        except OSError:
+            return False
+
+    @property
     def h3_port(self) -> int:
         # the QUIC listener shares the number of the TLS port, over UDP
         return self.https_port
