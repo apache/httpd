@@ -28,6 +28,7 @@
 #include "apr_thread_mutex.h"
 #include "apr_tables.h"
 #include "util_cookies.h"
+#include "util_charset.h"
 
 #define APR_WANT_BYTEFUNC
 #include "apr_want.h"
@@ -42,8 +43,14 @@ APLOG_USE_MODULE(lua);
 #define MODLUA_MAX_REG_MATCH 25
 #endif
 
+/* The longest string r:base64_encode() and r:base64_decode() accept. */
+#ifndef MODLUA_MAX_BASE64
+#define MODLUA_MAX_BASE64 (HUGE_STRING_LEN*1024)
+#endif
+
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
+typedef apr_int64_t (*req_field_int64_f) (request_rec * r);
 typedef req_table_t *(*req_field_apr_table_f) (request_rec * r);
 
 
@@ -230,6 +237,8 @@ static int req_aprtable2luatable_cb_len(void *l, const char *key,
     requests. Used for multipart POST data.
  =======================================================================================================================
  */
+/* Reads the request body into *rbuf.  Returns OK, DONE if there is
+ * no body, or an HTTP status. */
 static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
         apr_off_t maxsize)
 {
@@ -244,24 +253,40 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
     if (ap_should_client_block(r)) {
 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-        apr_off_t    len_read = -1;
-        apr_off_t    rpos = 0;
+        char argsbuffer[HUGE_STRING_LEN];
+        long len_read;
         apr_off_t length = r->remaining;
+        apr_size_t total;
+        apr_bucket_brigade *bb;
+        char *buf;
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
         if (maxsize != 0 && length > maxsize) {
-            return APR_EINCOMPLETE; /* Only room for incomplete data chunk :( */
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
-        *rbuf = (const char *) apr_pcalloc(r->pool, (apr_size_t) (length) + 1);
-        while ((rpos < length)
-               && (len_read = ap_get_client_block(r, (char *) *rbuf + rpos,
-                                               length - rpos)) > 0) {
-            rpos += len_read;
+        /* The body and its NUL must fit in an apr_size_t. */
+        if ((apr_uint64_t) length >= APR_SIZE_MAX) {
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+
+        /* Collect the body as it arrives rather than allocating the
+         * Content-Length up front. */
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+        while ((len_read = ap_get_client_block(r, argsbuffer,
+                                               sizeof(argsbuffer))) > 0) {
+            apr_brigade_write(bb, NULL, NULL, argsbuffer, len_read);
         }
         if (len_read < 0) {
-            return APR_EINCOMPLETE;
+            apr_brigade_destroy(bb);
+            return HTTP_BAD_REQUEST;
         }
-        *size = rpos;
+        apr_brigade_length(bb, 1, size);
+        total = (apr_size_t) *size;
+        buf = apr_palloc(r->pool, total + 1);
+        apr_brigade_flatten(bb, buf, &total);
+        buf[total] = '\0';
+        apr_brigade_destroy(bb);
+        *rbuf = buf;
     }
     else {
         rc = DONE;
@@ -277,9 +302,12 @@ static int lua_read_body(request_rec *r, const char **rbuf, apr_off_t *size,
  * and writes to a file.
  * =======================================================================================================================
  */
-static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *size)
+/* Stores the request body in the file filename.  Returns OK, DONE if
+ * there is no body, or an HTTP status. */
+static int lua_write_body(request_rec *r, const char *filename,
+                          apr_off_t *size, apr_off_t maxsize)
 {
-    apr_status_t rc = OK;
+    int rc;
 
     *size = 0;
 
@@ -291,22 +319,36 @@ static apr_status_t lua_write_body(request_rec *r, apr_file_t *file, apr_off_t *
                   len_read,
                   rpos = 0;
         apr_off_t length = r->remaining;
+        apr_file_t *file;
 
-        *size = length;
+        if (maxsize != 0 && length > maxsize) {
+            return HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
+        if (apr_file_open(&file, filename,
+                          APR_FOPEN_CREATE | APR_FOPEN_WRITE
+                          | APR_FOPEN_TRUNCATE,
+                          APR_FPROT_OS_DEFAULT, r->pool) != APR_SUCCESS) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
         while ((len_read =
                     ap_get_client_block(r, argsbuffer,
                                         sizeof(argsbuffer))) > 0) {
             if ((rpos + len_read) > length)
-                rsize = (apr_size_t) length - rpos;
+                rsize = length - rpos;
             else
                 rsize = len_read;
 
-            rc = apr_file_write_full(file, argsbuffer, (apr_size_t) rsize,
-                                     NULL);
-            if (rc != APR_SUCCESS)
-                return rc;
+            if (apr_file_write_full(file, argsbuffer, (apr_size_t) rsize,
+                                    NULL) != APR_SUCCESS) {
+                apr_file_close(file);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
             rpos += rsize;
         }
+        apr_file_close(file);
+        if (len_read < 0)
+            return HTTP_BAD_REQUEST;
+        *size = rpos;
     }
     else {
         rc = DONE;
@@ -442,7 +484,7 @@ static int req_parsebody(lua_State *L)
                 size = (apr_size_t) len;
                 buffer = apr_palloc(r->pool, size + 1);
                 apr_brigade_flatten(pair->value, buffer, &size);
-                buffer[len] = 0;
+                buffer[size] = 0;
                 req_aprtable2luatable_cb(L, pair->name, buffer);
             }
         }
@@ -467,40 +509,37 @@ static int lua_ap_requestbody(lua_State *L)
 
     if (r) {
         apr_off_t size;
-        if (maxSize > 0 && r->remaining > maxSize) {
-            lua_pushnil(L);
-            lua_pushliteral(L, "Request body was larger than the permitted size.");
-            return 2;
-        }
+        int rc;
         if (r->method_number != M_POST && r->method_number != M_PUT)
             return (0);
         if (!filename) {
             const char     *data;
 
-            if (lua_read_body(r, &data, &size, maxSize) != OK)
+            rc = lua_read_body(r, &data, &size, maxSize);
+            if (rc == HTTP_REQUEST_ENTITY_TOO_LARGE) {
+                lua_pushnil(L);
+                lua_pushliteral(L, "Request body was larger than the permitted size.");
+                return 2;
+            }
+            if (rc != OK)
                 return (0);
 
             lua_pushlstring(L, data, (size_t) size);
             lua_pushinteger(L, (lua_Integer) size);
             return (2);
         } else {
-            apr_status_t rc;
-            apr_file_t     *file;
-
-            rc = apr_file_open(&file, filename, APR_CREATE | APR_FOPEN_WRITE,
-                               APR_FPROT_OS_DEFAULT, r->pool);
+            rc = lua_write_body(r, filename, &size, maxSize);
             lua_settop(L, 0);
-            if (rc == APR_SUCCESS) {
-                rc = lua_write_body(r, file, &size);
-                apr_file_close(file);
-                if (rc != OK) {
-                    lua_pushboolean(L, 0);
-                    return 1;
-                }
-                lua_pushinteger(L, (lua_Integer) size);
-                return (1);
-            } else
+            if (rc == HTTP_REQUEST_ENTITY_TOO_LARGE) {
+                lua_pushnil(L);
+                lua_pushliteral(L, "Request body was larger than the permitted size.");
+                return 2;
+            }
+            if (rc != OK) {
                 lua_pushboolean(L, 0);
+                return 1;
+            }
+            lua_pushinteger(L, (lua_Integer) size);
             return (1);
         }
     }
@@ -546,12 +585,44 @@ static int req_add_output_filter(lua_State *L)
     return 0;
 }
 
+/* Per-request state for the temporary pool of a call from Lua. */
+typedef struct {
+    apr_pool_t *pool;
+} lua_temp_ctx_t;
+
+static lua_temp_ctx_t *lua_temp_ctx(request_rec *r)
+{
+    lua_temp_ctx_t *ctx;
+
+    apr_pool_userdata_get((void **)&ctx, "mod_lua_temp", r->pool);
+    if (ctx == NULL) {
+        ctx = apr_pcalloc(r->pool, sizeof *ctx);
+        apr_pool_userdata_setn(ctx, "mod_lua_temp", NULL, r->pool);
+    }
+    return ctx;
+}
+
+/* Returns a pool which lasts for the current call of a request method
+ * from Lua, created on first use.  req_call() destroys it when the
+ * call returns, since a script may call a method repeatedly for the
+ * life of the request. */
+static apr_pool_t *lua_temp_pool(request_rec *r)
+{
+    lua_temp_ctx_t *ctx = lua_temp_ctx(r);
+
+    if (ctx->pool == NULL) {
+        apr_pool_create(&ctx->pool, r->pool);
+        apr_pool_tag(ctx->pool, "lua_temp");
+    }
+    return ctx->pool;
+}
+
 /* wrap ap_construct_url as r:construct_url(String) */
 static int req_construct_url(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
-    lua_pushstring(L, ap_construct_url(r->pool, name, r));
+    lua_pushstring(L, ap_construct_url(lua_temp_pool(r), name, r));
     return 1;
 }
 
@@ -560,7 +631,7 @@ static int req_escape_html(lua_State *L)
 {
     request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *s = luaL_checkstring(L, 2);
-    lua_pushstring(L, ap_escape_html(r->pool, s));
+    lua_pushstring(L, ap_escape_html(lua_temp_pool(r), s));
     return 1;
 }
 
@@ -706,49 +777,50 @@ static int req_assbackwards_field(request_rec *r)
     return r->assbackwards;
 }
 
+/* Returns the req_table_t for table t, created once per request and
+ * kept as r->pool userdata under key, since a script may read the
+ * field repeatedly for the life of the request. */
+static req_table_t *req_table(request_rec *r, apr_table_t *t,
+                              const char *key, const char *n)
+{
+    req_table_t *rt;
+
+    apr_pool_userdata_get((void **)&rt, key, r->pool);
+    if (rt == NULL || rt->t != t) {
+        rt = apr_palloc(r->pool, sizeof *rt);
+        rt->r = r;
+        rt->t = t;
+        rt->n = n;
+        apr_pool_userdata_setn(rt, key, NULL, r->pool);
+    }
+    return rt;
+}
+
 static req_table_t* req_headers_in(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->headers_in;
-  t->n = "headers_in";
-  return t;
+  return req_table(r, r->headers_in, "mod_lua_headers_in", "headers_in");
 }
 
 static req_table_t* req_headers_out(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->headers_out;
-  t->n = "headers_out";
-  return t;
+  return req_table(r, r->headers_out, "mod_lua_headers_out", "headers_out");
 }
 
 static req_table_t* req_err_headers_out(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->err_headers_out;
-  t->n = "err_headers_out";
-  return t;
+  return req_table(r, r->err_headers_out, "mod_lua_err_headers_out",
+                   "err_headers_out");
 }
 
 static req_table_t* req_subprocess_env(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->subprocess_env;
-  t->n = "subprocess_env";
-  return t;
+  return req_table(r, r->subprocess_env, "mod_lua_subprocess_env",
+                   "subprocess_env");
 }
 
 static req_table_t* req_notes(request_rec *r)
 {
-  req_table_t* t = apr_palloc(r->pool, sizeof(req_table_t));
-  t->r = r;
-  t->t = r->notes;
-  t->n = "notes";
-  return t;
+  return req_table(r, r->notes, "mod_lua_notes", "notes");
 }
 
 static int req_ssl_is_https_field(request_rec *r)
@@ -773,16 +845,42 @@ static int lua_ap_rflush (lua_State *L) {
 }
 
 
+/* A string built from a set of flags, kept as r->pool userdata under
+ * key and rebuilt only when the flags change, since a script may read
+ * the field repeatedly for the life of the request. */
+typedef struct {
+    int flags;
+    const char *s;
+} req_flags_string_t;
+
+static req_flags_string_t *req_flags_string(request_rec *r, const char *key)
+{
+    req_flags_string_t *fs;
+
+    apr_pool_userdata_get((void **)&fs, key, r->pool);
+    if (fs == NULL) {
+        fs = apr_pcalloc(r->pool, sizeof *fs);
+        apr_pool_userdata_setn(fs, key, NULL, r->pool);
+    }
+    return fs;
+}
+
 static const char* lua_ap_options(request_rec* r) 
 {
     int opts;
+    req_flags_string_t *fs = req_flags_string(r, "mod_lua_options");
     opts = ap_allow_options(r);
-    return apr_psprintf(r->pool, "%s %s %s %s %s %s", (opts&OPT_INDEXES) ? "Indexes" : "", (opts&OPT_INCLUDES) ? "Includes" : "", (opts&OPT_SYM_LINKS) ? "FollowSymLinks" : "", (opts&OPT_EXECCGI) ? "ExecCGI" : "", (opts&OPT_MULTI) ? "MultiViews" : "", (opts&OPT_ALL) == OPT_ALL ? "All" : "" );
+    if (fs->s == NULL || fs->flags != opts) {
+        fs->flags = opts;
+        fs->s = apr_psprintf(r->pool, "%s %s %s %s %s %s", (opts&OPT_INDEXES) ? "Indexes" : "", (opts&OPT_INCLUDES) ? "Includes" : "", (opts&OPT_SYM_LINKS) ? "FollowSymLinks" : "", (opts&OPT_EXECCGI) ? "ExecCGI" : "", (opts&OPT_MULTI) ? "MultiViews" : "", (opts&OPT_ALL) == OPT_ALL ? "All" : "" );
+    }
+    return fs->s;
 }
 
 static const char* lua_ap_allowoverrides(request_rec* r) 
 {
     int opts;
+    req_flags_string_t *fs;
     opts = ap_allow_overrides(r);
     if ( (opts & OR_ALL) == OR_ALL) {
         return "All";
@@ -790,13 +888,17 @@ static const char* lua_ap_allowoverrides(request_rec* r)
     else if (opts == OR_NONE) {
         return "None";
     }
-    return apr_psprintf(r->pool, "%s %s %s %s %s", (opts & OR_LIMIT) ? "Limit" : "", (opts & OR_OPTIONS) ? "Options" : "", (opts & OR_FILEINFO) ? "FileInfo" : "", (opts & OR_AUTHCFG) ? "AuthCfg" : "", (opts & OR_INDEXES) ? "Indexes" : "" );
-    
+    fs = req_flags_string(r, "mod_lua_allowoverrides");
+    if (fs->s == NULL || fs->flags != opts) {
+        fs->flags = opts;
+        fs->s = apr_psprintf(r->pool, "%s %s %s %s %s", (opts & OR_LIMIT) ? "Limit" : "", (opts & OR_OPTIONS) ? "Options" : "", (opts & OR_FILEINFO) ? "FileInfo" : "", (opts & OR_AUTHCFG) ? "AuthCfg" : "", (opts & OR_INDEXES) ? "Indexes" : "" );
+    }
+    return fs->s;
 }
 
-static int lua_ap_started(request_rec* r) 
+static apr_int64_t lua_ap_started(request_rec* r) 
 {
-    return (int)(ap_scoreboard_image->global->restart_time / 1000000);
+    return apr_time_sec(ap_scoreboard_image->global->restart_time);
 }
 
 static const char* lua_ap_basic_auth_pw(request_rec* r) 
@@ -806,9 +908,9 @@ static const char* lua_ap_basic_auth_pw(request_rec* r)
     return pw ? pw : "";
 }
 
-static int lua_ap_limit_req_body(request_rec* r) 
+static apr_int64_t lua_ap_limit_req_body(request_rec* r) 
 {
-    return (int) ap_get_limit_req_body(r);
+    return ap_get_limit_req_body(r);
 }
 
 static int lua_ap_is_initial_req(request_rec *r)
@@ -827,26 +929,34 @@ static int lua_ap_sendfile(lua_State *L)
     apr_finfo_t file_info;
     const char  *filename;
     request_rec *r;
+    apr_pool_t  *p;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     filename = lua_tostring(L, 2);
-    apr_stat(&file_info, filename, APR_FINFO_MIN, r->pool);
-    if (file_info.filetype == APR_NOFILE || file_info.filetype == APR_DIR) {
+    p = lua_temp_pool(r);
+    if (apr_stat(&file_info, filename, APR_FINFO_MIN, p) != APR_SUCCESS
+        || file_info.filetype == APR_NOFILE || file_info.filetype == APR_DIR) {
         lua_pushboolean(L, 0);
     }
     else {
-        apr_size_t      sent;
         apr_status_t    rc;
         apr_file_t      *file;
 
-        rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT,
-                            r->pool);
+        rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT, p);
         if (rc == APR_SUCCESS) {
-            ap_send_fd(file, r, 0, (apr_size_t)file_info.size, &sent);
-            apr_file_close(file);
-            lua_pushinteger(L, sent);
+            apr_bucket_brigade *bb;
+
+            /* As ap_send_fd(), but with the brigade in the call pool.
+             * A filter which sets the file aside moves it to its own
+             * pool, so destroying this one does not close it. */
+            bb = apr_brigade_create(p, r->connection->bucket_alloc);
+            apr_brigade_insert_file(bb, file, 0, file_info.size, p);
+            rc = ap_pass_brigade(r->output_filters, bb);
+            apr_brigade_cleanup(bb);
+            lua_pushinteger(L, rc == APR_SUCCESS
+                               ? (lua_Integer) file_info.size : 0);
         }
         else {
             lua_pushboolean(L, 0);
@@ -871,9 +981,10 @@ static int lua_apr_b64encode(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &plain_len);
+    luaL_argcheck(L, plain_len <= MODLUA_MAX_BASE64, 2, "string too long");
     encoded_len = apr_base64_encode_len(plain_len);
     if (encoded_len) {
-        encoded = apr_palloc(r->pool, encoded_len);
+        encoded = apr_palloc(lua_temp_pool(r), encoded_len);
         encoded_len = apr_base64_encode(encoded, plain, plain_len);
         if (encoded_len > 0 && encoded[encoded_len - 1] == '\0')
             encoded_len--; 
@@ -896,9 +1007,11 @@ static int lua_apr_b64decode(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     encoded = lua_tolstring(L, 2, &encoded_len);
+    luaL_argcheck(L, encoded_len <= MODLUA_MAX_BASE64, 2,
+                  "string too long");
     decoded_len = apr_base64_decode_len(encoded);
     if (decoded_len) {
-        plain = apr_palloc(r->pool, decoded_len);
+        plain = apr_palloc(lua_temp_pool(r), decoded_len);
         decoded_len = apr_base64_decode(plain, encoded);
         if (decoded_len > 0 && plain[decoded_len - 1] == '\0')
             decoded_len--; 
@@ -921,7 +1034,7 @@ static int lua_ap_unescape(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     escaped = lua_tolstring(L, 2, &x);
-    plain = apr_pstrdup(r->pool, escaped);
+    plain = apr_pstrdup(lua_temp_pool(r), escaped);
     y = ap_unescape_urlencoded(plain);
     if (!y) {
         lua_pushstring(L, plain);
@@ -942,7 +1055,7 @@ static int lua_ap_escape(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     plain = lua_tolstring(L, 2, &x);
-    escaped = ap_escape_urlencoded(r->pool, plain);
+    escaped = ap_escape_urlencoded(lua_temp_pool(r), plain);
     lua_pushstring(L, escaped);
     return 1;
 }
@@ -952,15 +1065,24 @@ static int lua_ap_escape(lua_State *L)
  */
 static int lua_apr_md5(lua_State *L)
 {
+    unsigned char digest[APR_MD5_DIGESTSIZE];
+    apr_md5_ctx_t md5;
     const char     *buffer;
-    char           *result;
+    char           result[APR_MD5_DIGESTSIZE * 2 + 1];
     size_t len;
-    request_rec    *r;
 
-    r = ap_lua_check_request_rec(L, 1);
+    ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     buffer = lua_tolstring(L, 2, &len);
-    result = ap_md5_binary(r->pool, (const unsigned char *)buffer, len);
+    /* As ap_md5_binary(), which takes an int length. */
+    apr_md5_init(&md5);
+#if APR_CHARSET_EBCDIC
+    apr_md5_set_xlate(&md5, ap_hdrs_to_ascii);
+#endif
+    apr_md5_update(&md5, buffer, len);
+    apr_md5_final(digest, &md5);
+
+    ap_bin2hex(digest, sizeof(digest), result);
     lua_pushstring(L, result);
     return 1;
 }
@@ -973,16 +1095,21 @@ static int lua_apr_sha1(lua_State *L)
     unsigned char digest[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t sha1;
     const char     *buffer;
-    char           *result;
+    char           result[APR_SHA1_DIGESTSIZE * 2 + 1];
     size_t len;
-    request_rec    *r;
 
-    r = ap_lua_check_request_rec(L, 1);
+    ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
-    result = apr_pcalloc(r->pool, sizeof(digest) * 2 + 1);
     buffer = lua_tolstring(L, 2, &len);
     apr_sha1_init(&sha1);
-    apr_sha1_update(&sha1, buffer, len);
+    /* apr_sha1_update() takes an unsigned int length. */
+    while (len > 0) {
+        unsigned int n = len > UINT_MAX ? UINT_MAX : (unsigned int) len;
+
+        apr_sha1_update(&sha1, buffer, n);
+        buffer += n;
+        len -= n;
+    }
     apr_sha1_final(digest, &sha1);
     
     ap_bin2hex(digest, sizeof(digest), result);
@@ -1001,11 +1128,11 @@ static int lua_apr_htpassword(lua_State *L)
 
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
-    ctx.passwd = apr_pstrdup(r->pool, lua_tostring(L, 2));
     ctx.alg = luaL_optinteger(L, 3, ALG_APMD5);
     ctx.cost = luaL_optinteger(L, 4, 0);
-    ctx.pool = r->pool;
-    ctx.out = apr_pcalloc(r->pool, MAX_PASSWD_LEN);
+    ctx.pool = lua_temp_pool(r);
+    ctx.passwd = apr_pstrdup(ctx.pool, lua_tostring(L, 2));
+    ctx.out = apr_pcalloc(ctx.pool, MAX_PASSWD_LEN);
     ctx.out_len = MAX_PASSWD_LEN;
     if (mk_password_hash(&ctx)) {
         lua_pushboolean(L, 0);
@@ -1118,7 +1245,8 @@ static int lua_ap_mpm_query(lua_State *L)
         y;
 
     x = lua_tointeger(L, 1);
-    ap_mpm_query(x, &y);
+    if (ap_mpm_query(x, &y) != APR_SUCCESS)
+        return 0;
     lua_pushinteger(L, y);
     return 1;
 }
@@ -1133,6 +1261,7 @@ static int lua_ap_expr(lua_State *L)
     const char     *expr,
     *err;
     ap_expr_info_t res;
+    apr_pool_t     *p;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
@@ -1145,7 +1274,8 @@ static int lua_ap_expr(lua_State *L)
     res.line_number = 0;
     res.module_index = APLOG_MODULE_INDEX;
 
-    err = ap_expr_parse(r->pool, r->pool, &res, expr, NULL);
+    p = lua_temp_pool(r);
+    err = ap_expr_parse(p, p, &res, expr, NULL);
     if (!err) {
         x = ap_expr_exec(r, &res, &err);
         lua_pushboolean(L, x);
@@ -1170,20 +1300,19 @@ static int lua_ap_expr(lua_State *L)
  */
 static int lua_ap_regex(lua_State *L)
 {
-    request_rec    *r;
     int i,
         rv,
         flags;
     const char     *pattern,
     *source;
-    char           *err;
+    char           err[256];
     ap_regex_t regex;
     ap_regmatch_t matches[MODLUA_MAX_REG_MATCH+1];
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
     luaL_checktype(L, 2, LUA_TSTRING);
     luaL_checktype(L, 3, LUA_TSTRING);
-    r = ap_lua_check_request_rec(L, 1);
+    ap_lua_check_request_rec(L, 1);
     source = lua_tostring(L, 2);
     pattern = lua_tostring(L, 3);
     flags = luaL_optinteger(L, 4, 0);
@@ -1191,24 +1320,24 @@ static int lua_ap_regex(lua_State *L)
     rv = ap_regcomp(&regex, pattern, flags);
     if (rv) {
         lua_pushboolean(L, 0);
-        err = apr_palloc(r->pool, 256);
-        ap_regerror(rv, &regex, err, 256);
+        ap_regerror(rv, &regex, err, sizeof err);
         lua_pushstring(L, err);
         return 2;
     }
 
     if (regex.re_nsub > MODLUA_MAX_REG_MATCH) {
         lua_pushboolean(L, 0);
-        err = apr_palloc(r->pool, 64);
-        apr_snprintf(err, 64,
+        apr_snprintf(err, sizeof err,
                      "regcomp found %d matches; only %d allowed.",
                      regex.re_nsub, MODLUA_MAX_REG_MATCH);
+        ap_regfree(&regex);
         lua_pushstring(L, err);
         return 2;
     }
 
-    rv = ap_regexec(&regex, source, MODLUA_MAX_REG_MATCH, matches, 0);
+    rv = ap_regexec(&regex, source, MODLUA_MAX_REG_MATCH+1, matches, 0);
     if (rv == AP_REG_NOMATCH) {
+        ap_regfree(&regex);
         lua_pushboolean(L, 0);
         return 1;
     }
@@ -1217,14 +1346,14 @@ static int lua_ap_regex(lua_State *L)
     for (i = 0; i <= regex.re_nsub; i++) {
         lua_pushinteger(L, i);
         if (matches[i].rm_so >= 0 && matches[i].rm_eo >= 0)
-            lua_pushstring(L,
-                           apr_pstrndup(r->pool, source + matches[i].rm_so,
-                                        matches[i].rm_eo - matches[i].rm_so));
+            lua_pushlstring(L, source + matches[i].rm_so,
+                            matches[i].rm_eo - matches[i].rm_so);
         else
             lua_pushnil(L);
         lua_settable(L, -3);
 
     }
+    ap_regfree(&regex);
     return 1;
 }
 
@@ -1294,7 +1423,7 @@ static int lua_ap_scoreboard_process(lua_State *L)
 static int lua_ap_scoreboard_worker(lua_State *L)
 {
     int i, j;
-    worker_score *ws_record = NULL;
+    worker_score ws_buf, *ws_record = &ws_buf;
     request_rec *r = NULL;
 
     luaL_checktype(L, 1, LUA_TUSERDATA);
@@ -1306,10 +1435,8 @@ static int lua_ap_scoreboard_worker(lua_State *L)
 
     i = lua_tointeger(L, 2);
     j = lua_tointeger(L, 3);
-    ws_record = apr_palloc(r->pool, sizeof *ws_record);
-
-    ap_copy_scoreboard_worker(ws_record, i, j);
-    if (ws_record) {
+    if (ap_get_scoreboard_worker_from_indexes(i, j) != NULL) {
+        ap_copy_scoreboard_worker(ws_record, i, j);
         lua_newtable(L);
 
         lua_pushstring(L, "access_count");
@@ -1461,7 +1588,7 @@ static int lua_ap_runtime_dir_relative(lua_State *L)
     luaL_checktype(L, 1, LUA_TUSERDATA);
     r = ap_lua_check_request_rec(L, 1);
     file = luaL_optstring(L, 2, ".");
-    lua_pushstring(L, ap_runtime_dir_relative(r->pool, file));
+    lua_pushstring(L, ap_runtime_dir_relative(lua_temp_pool(r), file));
     return 1;
 }
 
@@ -1478,7 +1605,7 @@ static int lua_ap_set_document_root(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     root = lua_tostring(L, 2);
-    ap_set_document_root(r, root);
+    ap_set_document_root(r, apr_pstrdup(r->pool, root));
     return 0;
 }
 
@@ -1498,7 +1625,7 @@ static int lua_ap_getdir(lua_State *L)
     luaL_checktype(L, 2, LUA_TSTRING);
     r = ap_lua_check_request_rec(L, 1);
     directory = lua_tostring(L, 2);
-    if (apr_dir_open(&thedir, directory, r->pool) == APR_SUCCESS) {
+    if (apr_dir_open(&thedir, directory, lua_temp_pool(r)) == APR_SUCCESS) {
         int i = 0;
         lua_newtable(L);
         do {
@@ -1645,7 +1772,8 @@ static int lua_ap_set_context_info(lua_State *L)
     prefix = lua_tostring(L, 2);
     luaL_checktype(L, 3, LUA_TSTRING);
     document_root = lua_tostring(L, 3);
-    ap_set_context_info(r, prefix, document_root);
+    ap_set_context_info(r, apr_pstrdup(r->pool, prefix),
+                        apr_pstrdup(r->pool, document_root));
     return 0;
 }
 
@@ -1671,7 +1799,7 @@ static int lua_ap_os_escape_path(lua_State *L)
     path = lua_tostring(L, 2);
     if (lua_isboolean(L, 3))
         partial = lua_toboolean(L, 3);
-    returnValue = ap_os_escape_path(r->pool, path, partial);
+    returnValue = ap_os_escape_path(lua_temp_pool(r), path, partial);
     lua_pushstring(L, returnValue);
     return 1;
 }
@@ -1693,7 +1821,7 @@ static int lua_ap_escape_logitem(lua_State *L)
     r = ap_lua_check_request_rec(L, 1);
     luaL_checktype(L, 2, LUA_TSTRING);
     str = lua_tostring(L, 2);
-    returnValue = ap_escape_logitem(r->pool, str);
+    returnValue = ap_escape_logitem(lua_temp_pool(r), str);
     lua_pushstring(L, returnValue);
     return 1;
 }
@@ -1868,6 +1996,27 @@ static int lua_ap_usleep(lua_State *L)
 
 /* END dispatch methods for request_rec fields */
 
+/* Calls the request method in upvalue 1 for the request in upvalue 2,
+ * then destroys any temporary pool it used.  The pool of an outer call
+ * is restored afterwards, since a method can run filters which call
+ * back into Lua for the same request. */
+static int req_call(lua_State *L)
+{
+    const req_fun_t *rft = lua_touserdata(L, lua_upvalueindex(1));
+    request_rec *r = lua_touserdata(L, lua_upvalueindex(2));
+    lua_temp_ctx_t *ctx = lua_temp_ctx(r);
+    apr_pool_t *outer = ctx->pool;
+    int n;
+
+    ctx->pool = NULL;
+    n = ((lua_CFunction)rft->fun)(L);
+    if (ctx->pool) {
+        apr_pool_destroy(ctx->pool);
+    }
+    ctx->pool = outer;
+    return n;
+}
+
 static int req_dispatch(lua_State *L)
 {
     apr_hash_t *dispatch;
@@ -1895,11 +2044,12 @@ static int req_dispatch(lua_State *L)
             }
 
         case APL_REQ_FUNTYPE_LUACFUN:{
-                lua_CFunction func = (lua_CFunction)rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01487)
                               "request_rec->dispatching %s -> lua_CFunction",
                               name);
-                lua_pushcfunction(L, func);
+                lua_pushlightuserdata(L, rft);
+                lua_pushlightuserdata(L, r);
+                lua_pushcclosure(L, req_call, 2);
                 return 1;
             }
         case APL_REQ_FUNTYPE_STRING:{
@@ -1918,6 +2068,20 @@ static int req_dispatch(lua_State *L)
                               "request_rec->dispatching %s -> int", name);
                 rs = (*func) (r);
                 lua_pushinteger(L, rs);
+                return 1;
+            }
+        case APL_REQ_FUNTYPE_INT64:{
+                req_field_int64_f func = (req_field_int64_f)rft->fun;
+                apr_int64_t rs;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "request_rec->dispatching %s -> int64", name);
+                rs = (*func) (r);
+                /* lua_Integer may be narrower, as with Lua 5.1 on a
+                 * 32-bit platform. */
+                if (sizeof(lua_Integer) >= sizeof(rs))
+                    lua_pushinteger(L, (lua_Integer) rs);
+                else
+                    lua_pushnumber(L, (lua_Number) rs);
                 return 1;
             }
         case APL_REQ_FUNTYPE_BOOLEAN:{
@@ -1994,7 +2158,7 @@ static int lua_ivm_get(lua_State *L)
     lua_ivm_object *object = NULL;
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
-    raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
+    raw_key = apr_pstrcat(lua_temp_pool(r), "lua_ivm_", key, NULL);
     apr_global_mutex_lock(lua_ivm_mutex);
     pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
     apr_pool_userdata_get((void **)&object, raw_key, pool);
@@ -2022,7 +2186,7 @@ static int lua_ivm_set(lua_State *L)
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
     luaL_checkany(L, 3);
-    raw_key = apr_pstrcat(r->pool, "lua_ivm_", key, NULL);
+    raw_key = apr_pstrcat(lua_temp_pool(r), "lua_ivm_", key, NULL);
     
     apr_global_mutex_lock(lua_ivm_mutex);
     pool = *((apr_pool_t**) apr_shm_baseaddr_get(lua_ivm_shm));
@@ -2236,41 +2400,47 @@ static int lua_websocket_greet(lua_State *L)
 
 static apr_status_t lua_websocket_readbytes(conn_rec* c,
                                             apr_bucket_brigade *brigade,
-                                            char* buffer, apr_off_t len)
+                                            char* buffer, apr_size_t len)
 {
     apr_size_t delivered;
     apr_status_t rv;
 
-    rv = ap_get_brigade(c->input_filters, brigade, AP_MODE_READBYTES, 
-            APR_BLOCK_READ, len);
-    if (rv == APR_SUCCESS) {
-        delivered = len;
-        rv = apr_brigade_flatten(brigade, buffer, &delivered);
-        if ((rv == APR_SUCCESS) && (delivered < len)) {
-            rv = APR_INCOMPLETE;
+    /* A READBYTES read may return fewer bytes than asked for. */
+    while (len > 0) {
+        rv = ap_get_brigade(c->input_filters, brigade, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, len);
+        if (rv == APR_SUCCESS) {
+            delivered = len;
+            rv = apr_brigade_flatten(brigade, buffer, &delivered);
         }
+        apr_brigade_cleanup(brigade);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        if (delivered == 0) {
+            return APR_EOF;
+        }
+        buffer += delivered;
+        len -= delivered;
     }
-    apr_brigade_cleanup(brigade);
-    return rv;
+    return APR_SUCCESS;
 }
 
 static int lua_websocket_peek(lua_State *L) 
 {
     apr_status_t rv;
+    apr_off_t len = 0;
     apr_bucket_brigade *brigade;
     
     request_rec *r = ap_lua_check_request_rec(L, 1);
     
-    brigade = apr_brigade_create(r->connection->pool, 
-            r->connection->bucket_alloc);
+    brigade = apr_brigade_create(lua_temp_pool(r), r->connection->bucket_alloc);
     rv = ap_get_brigade(r->connection->input_filters, brigade, 
-            AP_MODE_READBYTES, APR_NONBLOCK_READ, 1);
+            AP_MODE_SPECULATIVE, APR_NONBLOCK_READ, 1);
     if (rv == APR_SUCCESS) {
-        lua_pushboolean(L, 1);
+        rv = apr_brigade_length(brigade, 1, &len);
     }
-    else {
-        lua_pushboolean(L, 0);
-    }
+    lua_pushboolean(L, rv == APR_SUCCESS && len > 0);
     apr_brigade_cleanup(brigade);
     return 1;
 }
@@ -2278,131 +2448,131 @@ static int lua_websocket_peek(lua_State *L)
 static int lua_websocket_read(lua_State *L) 
 {
     apr_status_t rv;
-    int do_read = 1;
-    int n = 0;
-    apr_size_t plen = 0;
+    int ret = 0;
+    apr_size_t n, plen;
     unsigned short payload_short = 0;
     apr_uint64_t payload_long = 0;
-    unsigned char *mask_bytes;
-    char byte;
+    unsigned char mask_bytes[4];
+    unsigned char header[2];
+    apr_pool_t *pool;
     apr_bucket_brigade *brigade;
     conn_rec* c;
 
     request_rec *r = ap_lua_check_request_rec(L, 1);
     c = r->connection;
 
-    mask_bytes = apr_pcalloc(r->pool, 4);
+    pool = lua_temp_pool(r);
+    brigade = apr_brigade_create(pool, c->bucket_alloc);
 
-    brigade = apr_brigade_create(r->pool, c->bucket_alloc);
+    for (;;) {
+        unsigned char fin, opcode, mask;
+        char *buffer;
 
-    while (do_read) {
-        do_read = 0;
-        /* Get opcode and FIN bit */
-        rv = lua_websocket_readbytes(c, brigade, &byte, 1);
-        if (rv == APR_SUCCESS) {
-            unsigned char ubyte, fin, opcode, mask, payload;
-            ubyte = (unsigned char)byte;
-            /* fin bit is the first bit */
-            fin = ubyte >> (CHAR_BIT - 1);
-            /* opcode is the last four bits (there's 3 reserved bits we don't care about) */
-            opcode = ubyte & 0xf;
-
-            /* Get the payload length and mask bit */
-            rv = lua_websocket_readbytes(c, brigade, &byte, 1);
-            if (rv == APR_SUCCESS) {
-                ubyte = (unsigned char)byte;
-                /* Mask is the first bit */
-                mask = ubyte >> (CHAR_BIT - 1);
-                /* Payload is the last 7 bits */
-                payload = ubyte & 0x7f;
-                plen = payload;
-
-                /* Extended payload? */
-                if (payload == 126) {
-                    rv = lua_websocket_readbytes(c, brigade,
-                                                 (char*) &payload_short, 2);
-
-                    if (rv != APR_SUCCESS) {
-                        return 0;
-                    }
-
-                    plen = ntohs(payload_short);
-                }
-                /* Super duper extended payload? */
-                if (payload == 127) {
-                    rv = lua_websocket_readbytes(c, brigade,
-                                                 (char*) &payload_long, 8);
-
-                    if (rv != APR_SUCCESS) {
-                        return 0;
-                    }
-
-                    plen = ap_ntoh64(&payload_long);
-                }
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03210)
-                              "Websocket: Reading %" APR_SIZE_T_FMT " (%s) bytes, masking is %s. %s", 
-                              plen,
-                              (payload >= 126) ? "extra payload" : "no extra payload", 
-                              mask ? "on" : "off", 
-                              fin ? "This is a final frame" : "more to follow");
-                if (mask) {
-                    rv = lua_websocket_readbytes(c, brigade,
-                                                 (char*) mask_bytes, 4);
-
-                    if (rv != APR_SUCCESS) {
-                        return 0;
-                    }
-                }
-                if (plen < (HUGE_STRING_LEN*1024) && plen > 0) {
-                    apr_size_t remaining = plen;
-                    char *buffer = apr_palloc(r->pool, plen+1);
-                    buffer[plen] = 0;
-
-                    rv = lua_websocket_readbytes(c, brigade, buffer, remaining);
-
-                    if (rv != APR_SUCCESS) {
-                        return 0;
-                    }
-
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                                  "Websocket: Frame contained %" APR_SIZE_T_FMT \
-                                  " bytes, pushed to Lua stack", remaining);
-                    if (mask) {
-                        for (n = 0; n < plen; n++) {
-                            buffer[n] ^= mask_bytes[n%4];
-                        }
-                    }
-
-                    lua_pushlstring(L, buffer, (size_t) plen); /* push to stack */
-                    lua_pushboolean(L, fin); /* push FIN bit to stack as boolean */
-                    return 2;
-                }
-
-                /* Decide if we need to react to the opcode or not */
-                if (opcode == 0x09) { /* ping */
-                    char frame[2];
-                    apr_bucket *b;
-
-                    frame[0] = 0x8A;
-                    frame[1] = 0;
-
-                    /* Pong! */
-                    b = apr_bucket_transient_create(frame, 2, c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(brigade, b);
-
-                    rv = ap_pass_brigade(c->output_filters, brigade);
-                    apr_brigade_cleanup(brigade);
-
-                    if (rv != APR_SUCCESS) {
-                        return 0;
-                    }
-
-                    do_read = 1;
-                }
-            }
+        /* FIN bit, opcode, mask bit and payload length */
+        rv = lua_websocket_readbytes(c, brigade, (char *) header, 2);
+        if (rv != APR_SUCCESS) {
+            break;
         }
+        fin = header[0] >> (CHAR_BIT - 1);
+        /* opcode is the last four bits (there's 3 reserved bits we don't care about) */
+        opcode = header[0] & 0xf;
+        mask = header[1] >> (CHAR_BIT - 1);
+        plen = header[1] & 0x7f;
+
+        /* Extended payload? */
+        if (plen == 126) {
+            rv = lua_websocket_readbytes(c, brigade,
+                                         (char*) &payload_short, 2);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+            plen = ntohs(payload_short);
+        }
+        /* Super duper extended payload? */
+        else if (plen == 127) {
+            apr_uint64_t len64;
+
+            rv = lua_websocket_readbytes(c, brigade,
+                                         (char*) &payload_long, 8);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+            len64 = ap_ntoh64(&payload_long);
+            if (len64 >= HUGE_STRING_LEN*1024) {
+                break;
+            }
+            plen = (apr_size_t) len64;
+        }
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03210)
+                      "Websocket: Reading %" APR_SIZE_T_FMT " (%s) bytes, masking is %s. %s", 
+                      plen,
+                      ((header[1] & 0x7f) >= 126) ? "extra payload" : "no extra payload", 
+                      mask ? "on" : "off", 
+                      fin ? "This is a final frame" : "more to follow");
+
+        /* Every client frame is masked (RFC 6455 5.1), a control frame
+         * carries at most 125 bytes (5.5), and anything larger than
+         * HUGE_STRING_LEN*1024 is refused. */
+        if (!mask || plen >= HUGE_STRING_LEN*1024
+            || ((opcode & 0x8) && plen > 125)) {
+            break;
+        }
+
+        rv = lua_websocket_readbytes(c, brigade, (char*) mask_bytes, 4);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+
+        buffer = apr_palloc(pool, plen + 1);
+        buffer[plen] = 0;
+        rv = lua_websocket_readbytes(c, brigade, buffer, plen);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+        for (n = 0; n < plen; n++) {
+            buffer[n] ^= mask_bytes[n%4];
+        }
+
+        if (opcode == 0x09) { /* ping */
+            apr_bucket *b;
+
+            header[0] = 0x8A;
+            header[1] = (unsigned char) plen;
+
+            /* Pong, with the ping's payload */
+            b = apr_bucket_transient_create((char *) header, 2,
+                                            c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(brigade, b);
+            b = apr_bucket_transient_create(buffer, plen, c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(brigade, b);
+            b = apr_bucket_flush_create(c->bucket_alloc);
+            APR_BRIGADE_INSERT_TAIL(brigade, b);
+
+            rv = ap_pass_brigade(c->output_filters, brigade);
+            apr_brigade_cleanup(brigade);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+            continue;
+        }
+        if (opcode == 0x0A) { /* unsolicited pong */
+            continue;
+        }
+        if (opcode == 0x08) { /* close */
+            break;
+        }
+
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                      "Websocket: Frame contained %" APR_SIZE_T_FMT \
+                      " bytes, pushed to Lua stack", plen);
+
+        lua_pushlstring(L, buffer, plen); /* push to stack */
+        lua_pushboolean(L, fin); /* push FIN bit to stack as boolean */
+        ret = 2;
+        break;
     }
-    return 0;
+
+    return ret;
 }
 
 
@@ -2618,9 +2788,8 @@ static int req_newindex(lua_State *L)
 
 
 /* helper function for walking config trees */
-static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
+static void read_cfg_tree(lua_State *L, ap_directive_t *rcfg) {
     int x = 0;
-    const char* value;
     ap_directive_t *cfg;
     lua_newtable(L);
     
@@ -2628,9 +2797,8 @@ static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
         x++;
         lua_pushnumber(L, x);
         lua_newtable(L);
-        value = apr_psprintf(r->pool, "%s %s", cfg->directive, cfg->args);
         lua_pushstring(L, "directive");
-        lua_pushstring(L, value);
+        lua_pushfstring(L, "%s %s", cfg->directive, cfg->args);
         lua_settable(L, -3);
         lua_pushstring(L, "file");
         lua_pushstring(L, cfg->filename);
@@ -2640,7 +2808,7 @@ static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
         lua_settable(L, -3);
         if (cfg->first_child) {
             lua_pushstring(L, "children");
-            read_cfg_tree(L, r, cfg->first_child);
+            read_cfg_tree(L, cfg->first_child);
             lua_settable(L, -3);
         }
         lua_settable(L, -3);
@@ -2648,8 +2816,8 @@ static void read_cfg_tree(lua_State *L, request_rec *r, ap_directive_t *rcfg) {
 }
 
 static int lua_ap_get_config(lua_State *L) {
-    request_rec *r = ap_lua_check_request_rec(L, 1);   
-    read_cfg_tree(L, r, ap_conftree);
+    ap_lua_check_request_rec(L, 1);   
+    read_cfg_tree(L, ap_conftree);
     
     return 1;
 }
@@ -2666,12 +2834,12 @@ static int lua_ap_get_active_config(lua_State *L) {
             for (subdir = dir->first_child; subdir; subdir = subdir->next) {
                 if (ap_strcasecmp_match(subdir->directive, "servername") &&
                         !ap_strcasecmp_match(r->hostname, subdir->args)) {
-                    read_cfg_tree(L, r, dir->first_child);
+                    read_cfg_tree(L, dir->first_child);
                     return 1;
                 }
                 if (ap_strcasecmp_match(subdir->directive, "serveralias") &&
                         !ap_strcasecmp_match(r->hostname, subdir->args)) {
-                    read_cfg_tree(L, r, dir->first_child);
+                    read_cfg_tree(L, dir->first_child);
                     return 1;
                 }
             }
@@ -2860,11 +3028,11 @@ void ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
     apr_hash_set(dispatch, "allowoverrides", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_allowoverrides, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "started", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_started, APL_REQ_FUNTYPE_INT, p));
+                 makefun(&lua_ap_started, APL_REQ_FUNTYPE_INT64, p));
     apr_hash_set(dispatch, "basic_auth_pw", APR_HASH_KEY_STRING,
                  makefun(&lua_ap_basic_auth_pw, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "limit_req_body", APR_HASH_KEY_STRING,
-                 makefun(&lua_ap_limit_req_body, APL_REQ_FUNTYPE_INT, p));
+                 makefun(&lua_ap_limit_req_body, APL_REQ_FUNTYPE_INT64, p));
     apr_hash_set(dispatch, "server_built", APR_HASH_KEY_STRING,
                  makefun(&ap_get_server_built, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "is_initial_req", APR_HASH_KEY_STRING,

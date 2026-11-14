@@ -1,0 +1,2 @@
+  *) mod_lua: Cap memory use of r:wsread(), r:requestbody(), r:regex()
+     and other request methods.  [Joe Orton]
