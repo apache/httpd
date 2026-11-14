@@ -293,6 +293,14 @@ ProxyBeaconInterval  10
     bail, si bien qu’un membre <code>Stopped</code> le restera quel que soit le
     nombre d’évictions et de réactivations.</p>
 
+    <p>Beacon active les membres avec le même code que le <code>répartiteur de
+    charge</code>, et comme lui, il n’attend pas que les requêtes en cours de
+    répartition soient traitées. Un membre réactivé pendant que cela se produit
+    peut manquer la réinitialisation des compteurs de la répartition de charge
+    qui suit normalement, et les requêtes pourront alors être réparties de
+    manière non équitable entre les membres jusqu’à ce que les compteurs se
+    stabilisent.</p>
+
 </section>
 
 <section id="limits"><title>Validation de message et limites</title>
