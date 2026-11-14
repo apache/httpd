@@ -595,15 +595,31 @@ static int cpystrn(char *buf, const char *arg, int buflen)
 }
 
 
+static int log_formatted_address(const char *ip, apr_port_t port,
+                                  const char *arg, char *buf, int buflen)
+{
+    /* RFC 5952, section 6: an IPv6 address combined with a port is
+     * written as "[address]:port" to keep the port's colon from being
+     * read as part of the address. Opt-in via the 'b' arg flag, since
+     * existing ErrorLogFormat consumers may already parse the
+     * bracket-less "address:port" this directive has always produced.
+     */
+    if (arg && ap_strchr_c(arg, 'b') && ap_strchr_c(ip, ':'))
+        return apr_snprintf(buf, buflen, "[%s]:%d", ip, port);
+    return apr_snprintf(buf, buflen, "%s:%d", ip, port);
+}
+
 static int log_remote_address(const ap_errorlog_info *info, const char *arg,
                               char *buf, int buflen)
 {
-    if (info->r && !(arg && *arg == 'c'))
-        return apr_snprintf(buf, buflen, "%s:%d", info->r->useragent_ip,
-                            info->r->useragent_addr ? info->r->useragent_addr->port : 0);
+    if (info->r && !(arg && ap_strchr_c(arg, 'c')))
+        return log_formatted_address(info->r->useragent_ip,
+                                     info->r->useragent_addr ? info->r->useragent_addr->port : 0,
+                                     arg, buf, buflen);
     else if (info->c)
-        return apr_snprintf(buf, buflen, "%s:%d", info->c->client_ip,
-                            info->c->client_addr ? info->c->client_addr->port : 0);
+        return log_formatted_address(info->c->client_ip,
+                                     info->c->client_addr ? info->c->client_addr->port : 0,
+                                     arg, buf, buflen);
     else
         return 0;
 }
@@ -612,8 +628,9 @@ static int log_local_address(const ap_errorlog_info *info, const char *arg,
                              char *buf, int buflen)
 {
     if (info->c)
-        return apr_snprintf(buf, buflen, "%s:%d", info->c->local_ip,
-                            info->c->local_addr->port);
+        return log_formatted_address(info->c->local_ip,
+                                     info->c->local_addr->port,
+                                     arg, buf, buflen);
     else
         return 0;
 }
