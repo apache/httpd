@@ -129,38 +129,24 @@ Listen 192.0.2.5:8000
   </section>
 
     <section id="ipv6">
-    <title>Special IPv6 Considerations</title>
+    <title>IPv6特别注意事项</title>
 
-    <p>A growing number of platforms implement IPv6, and
-    <glossary>APR</glossary> supports IPv6 on most of these platforms,
-    allowing httpd to allocate IPv6 sockets, and to handle requests sent
-    over IPv6.</p>
+    <p>越来越多的平台开始支持IPv6，而<glossary>APR</glossary>在大多数平台上也都支持IPv6，
+    这使得httpd可以分配IPv6套接字，并能够处理通过IPv6发送的请求。
 
-    <p>One complicating factor for httpd administrators is whether or
-    not an IPv6 socket can handle both IPv4 connections and IPv6
-    connections. Handling IPv4 connections with an IPv6 socket uses
-    IPv4-mapped IPv6 addresses, which are allowed by default on most
-    platforms, but are disallowed by default on FreeBSD, NetBSD, and
-    OpenBSD, in order to match the system-wide policy on those
-    platforms. On systems where it is disallowed by default, a
-    special <program>configure</program> parameter can change this behavior
-    for httpd.</p>
+    对于httpd管理员而言，有一个比较复杂的问题，即IPv6套接字是否能够同时处理IPv4和IPv6连接。
+    在大多数平台上，默认情况下可以使用IPv4映射的IPv6地址来在IPv6套接字上处理IPv4连接。但是由于
+    FreeBSD、NetBSD、OpenBSD的系统策略，在这些平台上默认是禁止使用IPv4映射的IPv6地址的。对于禁止
+    使用IPv4映射的IPv6地址的系统上，可以使用一个特殊的<program>configure</program>参数来改变httpd的行为。</p>
 
-    <p>On the other hand, on some platforms, such as Linux and Tru64, the
-    <strong>only</strong> way to handle both IPv6 and IPv4 is to use
-    mapped addresses. If you want <code>httpd</code> to handle IPv4 and IPv6 connections
-    with a minimum of sockets, which requires using IPv4-mapped IPv6
-    addresses, specify the <code>--enable-v4-mapped</code> <program>
-    configure</program> option.</p>
+    <p>此外，在某些平台（例如Linux和Tru64）上则是<strong>只能</strong>使用IPv4映射的IPv6地址来同时处理IPv6和IPv4连接。
+    如果您希望使用尽可能少的套接字来处理IPv4和IPv6连接，请指定<code>--enable-v4-mapped</code><program>
+    configure</program>选项以启用IPv4映射的IPv6地址。</p>
 
-    <p><code>--enable-v4-mapped</code> is the default on all platforms except
-    FreeBSD, NetBSD, and OpenBSD, so this is probably how your httpd was
-    built.</p>
+    <p>除FreeBSD、NetBSD、OpenBSD外，所有平台都默认启用<code>--enable-v4-mapped</code>。</p>
 
-    <p>If you want httpd to handle IPv4 connections only, regardless of
-    what your platform and APR will support, specify an IPv4 address on all
-    <directive module="mpm_common">Listen</directive> directives, as in the
-    following examples:</p>
+    <p>如果您希望httpd不考虑平台和APR支持的功能，只处理IPv4连接，请如下例所示，在所有<directive module="mpm_common">Listen</directive>
+    指令处指定IPv4地址。</p>
 
     <example>
     <highlight language="config">
@@ -169,11 +155,9 @@ Listen 192.0.2.1:80
     </highlight>
     </example>
 
-    <p>If your platform supports it and you want httpd to handle IPv4 and
-    IPv6 connections on separate sockets (i.e., to disable IPv4-mapped
-    addresses), specify the <code>--disable-v4-mapped</code> <program>
-    configure</program> option. <code>--disable-v4-mapped</code> is the
-    default on FreeBSD, NetBSD, and OpenBSD.</p>
+    <p>如果您正在使用的平台支持，且您希望httpd通过独立的套接字处理IPv4和IPv6连接（即禁用IPv4映射的IPv6地址），
+    请指定<program>configure</program>的<code>--disable-v4-mapped</code>选项。在FreeBSD、NetBSD、OpenBSD上，
+    <code>--disable-v4-mapped</code>是默认选项。</p>
   </section>
 
   <section id="protocol">
