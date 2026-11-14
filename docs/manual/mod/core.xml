@@ -1761,8 +1761,19 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
         <td>Underlying peer IP address and port of the connection (see the
             <module>mod_remoteip</module> module)</td></tr>
 
+    <tr><td><code>%{b}a</code></td>
+        <td>Like <code>%a</code>, but an IPv6 address is written in
+            brackets, as <code>[address]:port</code>, per
+            <a href="https://www.rfc-editor.org/rfc/rfc5952#section-6">RFC
+            5952, section 6</a>. The <code>b</code> and <code>c</code>
+            flags can be combined, as in <code>%{bc}a</code></td></tr>
+
     <tr><td><code>%A</code></td>
         <td>Local IP-address and port</td></tr>
+
+    <tr><td><code>%{b}A</code></td>
+        <td>Like <code>%A</code>, but an IPv6 address is written in
+            brackets, as with <code>%{b}a</code></td></tr>
 
     <tr><td><code>%{<em>name</em>}e</code></td>
         <td>Request environment variable <em>name</em></td></tr>
