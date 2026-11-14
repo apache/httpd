@@ -1,0 +1,5 @@
+  *) mod_http3: Added H3MaxWindow (default 6 MiB). Flow-control windows for
+     client uploads now grow when a client fills them within a few round
+     trips, up to this cap, so uploads on long, fast paths are no longer held
+     to a fixed 1 MiB window.
+     [Alexander Gerasimov <codeguard gmail.com>]

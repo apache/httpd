@@ -51,7 +51,9 @@ struct h3_server_conf
     apr_uint32_t h3_handshake_timeout;
     apr_uint32_t h3_idle_timeout;
     apr_size_t h3_socket_buffer_size;
+    apr_size_t h3_max_window;
     h3_tri_flag h3_session_tickets;
+    h3_tri_flag h3_early_data;
     apr_uint32_t h3_stream_timeout;
     apr_uint32_t h3_max_stream_errors;
     int h3_qpack_capacity_set;

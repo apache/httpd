@@ -116,6 +116,8 @@ SET(NGHTTP2_INCLUDE_DIR   "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Direct
 SET(NGHTTP2_LIBRARIES     ${default_nghttp2_libraries}   CACHE STRING "NGHTTP2 libraries to link with")
 SET(NGHTTP3_INCLUDE_DIR   "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with NGHTTP3 include files within nghttp3 subdirectory")
 SET(NGHTTP3_LIBRARIES     ${default_nghttp3_libraries}   CACHE STRING "NGHTTP3 libraries to link with")
+SET(NGTCP2_INCLUDE_DIR    "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with NGTCP2 include files within ngtcp2 subdirectory")
+SET(NGTCP2_LIBRARIES      "${CMAKE_INSTALL_PREFIX}/lib/ngtcp2.lib" "${CMAKE_INSTALL_PREFIX}/lib/ngtcp2_crypto_ossl.lib" CACHE STRING "NGTCP2 libraries to link with")
 SET(PCRE_CFLAGS           "${default_pcre_cflags}"       CACHE STRING "PCRE flags for util_pcre.c compilation")
 SET(PCRE_INCLUDE_DIR      "${CMAKE_INSTALL_PREFIX}/include" CACHE STRING "Directory with PCRE include files")
 SET(PCRE_LIBRARIES        ${default_pcre_libraries}      CACHE STRING "PCRE libraries to link with")
@@ -244,6 +246,18 @@ ELSE()
   SET(NGHTTP3_FOUND FALSE)
 ENDIF()
 
+# See if ngtcp2 exists in a configured or defaulted location
+SET(NGTCP2_FOUND TRUE)
+IF(EXISTS "${NGTCP2_INCLUDE_DIR}/ngtcp2/ngtcp2_crypto_ossl.h")
+  FOREACH(onelib ${NGTCP2_LIBRARIES})
+    IF(NOT EXISTS ${onelib})
+      SET(NGTCP2_FOUND FALSE)
+    ENDIF()
+  ENDFOREACH()
+ELSE()
+  SET(NGTCP2_FOUND FALSE)
+ENDIF()
+
 # See if we have Brotli
 SET(BROTLI_FOUND TRUE)
 IF(EXISTS "${BROTLI_INCLUDE_DIR}/brotli/encode.h")
@@ -288,6 +302,7 @@ MESSAGE(STATUS "LIBXML2_FOUND ............ : ${LIBXML2_FOUND}")
 MESSAGE(STATUS "LUA51_FOUND .............. : ${LUA51_FOUND}")
 MESSAGE(STATUS "NGHTTP2_FOUND ............ : ${NGHTTP2_FOUND}")
 MESSAGE(STATUS "NGHTTP3_FOUND ............ : ${NGHTTP3_FOUND}")
+MESSAGE(STATUS "NGTCP2_FOUND ............. : ${NGTCP2_FOUND}")
 MESSAGE(STATUS "OPENSSL_FOUND ............ : ${OPENSSL_FOUND}")
 MESSAGE(STATUS "ZLIB_FOUND ............... : ${ZLIB_FOUND}")
 MESSAGE(STATUS "BROTLI_FOUND ............. : ${BROTLI_FOUND}")
@@ -575,9 +590,9 @@ SET(mod_http2_extra_sources
   modules/http2/h2_util.c            modules/http2/h2_workers.c
   modules/http2/h2_ws.c
 )
-SET(mod_http3_requires               NGHTTP3_FOUND)
-SET(mod_http3_extra_includes         ${NGHTTP3_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/modules/http3/include ${OPENSSL_INCLUDE_DIR})
-SET(mod_http3_extra_libs             ${NGHTTP3_LIBRARIES} ${OPENSSL_LIBRARIES})
+SET(mod_http3_requires               NGHTTP3_FOUND NGTCP2_FOUND)
+SET(mod_http3_extra_includes         ${NGHTTP3_INCLUDE_DIR} ${NGTCP2_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/modules/http3/include ${OPENSSL_INCLUDE_DIR})
+SET(mod_http3_extra_libs             ${NGHTTP3_LIBRARIES} ${NGTCP2_LIBRARIES} ${OPENSSL_LIBRARIES})
 SET(mod_http3_main_source            modules/http3/mod_http3.c)
 SET(mod_http3_extra_sources
   modules/http3/h3_callbacks.c     modules/http3/h3_config.c
@@ -585,10 +600,10 @@ SET(mod_http3_extra_sources
   modules/http3/h3_io.c            modules/http3/h3_request.c
   modules/http3/h3_server.c        modules/http3/h3_session.c
   modules/http3/h3_socket.c        modules/http3/h3_socket_os.c
+  modules/http3/h3_socket_bpf.c
   modules/http3/h3_stream.c        modules/http3/h3_threads.c
   modules/http3/quic/h3q.c         modules/http3/quic/h3q_conn.c
   modules/http3/quic/h3q_stream.c
-  modules/http3/quic/detail/h3q_addr.c
   modules/http3/quic/detail/h3q_tls.c
 )
 SET(mod_ldap_extra_defines           LDAP_DECLARE_EXPORT)

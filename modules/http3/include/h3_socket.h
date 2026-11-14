@@ -24,20 +24,34 @@
 
 /**
  * Open a non-blocking IPv6 dual-stack UDP socket and bind it to the given port.
- * Sets SO_REUSEADDR; on non-Windows also tries SO_REUSEPORT so multiple
- * children can share the port.
+ * With @p reuse_port, sets SO_REUSEPORT (where the OS has it), so several
+ * sockets can share the port and the kernel spreads the peers over them.
  * Also asks for @p buffer_size on the send and receive buffers, which the OS
  * may cap; a refused or capped buffer is logged, never fatal.
  * @param port  Port to bind; 0 lets the OS pick.
  * @param buffer_size Bytes requested for SO_RCVBUF and SO_SNDBUF; 0 keeps the
  *               OS default.
  * @param pool  Pool used for the underlying apr_socket_t lifetime.
+ * @param reuse_port Nonzero to set SO_REUSEPORT.
  * @param out_fd Out parameter: the resulting OS-level fd (suitable for
  *               SSL_set_fd on OpenSSL QUIC).
  * @return APR_SUCCESS, APR_EAGAIN if the port is already bound, or another
  *         APR error code.
  */
-apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int* out_fd);
+apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd);
+
+/**
+ * Route QUIC packets by connection ID: attach an SK_REUSEPORT eBPF program
+ * to the SO_REUSEPORT group of @p fds. A packet goes to fds[i] when byte 0
+ * of its destination connection ID is i; else the kernel hash applies.
+ * Needs Linux 4.19+ and CAP_SYS_ADMIN or CAP_BPF; call it as root.
+ * @param fds    The bound sockets of one group, in bucket order.
+ * @param n      Number of sockets, 2 to 256.
+ * @param err    Buffer for the reason on failure.
+ * @param errlen Capacity of @p err.
+ * @return 1 if attached, 0 if not (nothing changed).
+ */
+int h3_socket_route_by_cid(const int* fds, int n, char* err, size_t errlen);
 
 /**
  * Close a UDP socket previously returned by h3_socket_open.

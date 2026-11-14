@@ -31,12 +31,12 @@ h3_server.lo dnl
 h3_session.lo dnl
 h3_socket.lo dnl
 h3_socket_os.lo dnl
+h3_socket_bpf.lo dnl
 h3_stream.lo dnl
 h3_threads.lo dnl
 h3q.lo dnl
 h3q_conn.lo dnl
 h3q_stream.lo dnl
-h3q_addr.lo dnl
 h3q_tls.lo dnl
 "
 
@@ -159,11 +159,57 @@ AC_DEFUN([APACHE_CHECK_NGHTTP3],[
 ])
 
 
+dnl
+dnl APACHE_CHECK_NGTCP2
+dnl
+dnl Configure for ngtcp2 and its OpenSSL crypto helper, giving preference
+dnl to "--with-ngtcp2=<path>" if it was specified.
+dnl
+AC_DEFUN([APACHE_CHECK_NGTCP2],[
+  AC_CACHE_CHECK([for ngtcp2], [ac_cv_ngtcp2], [
+    ac_cv_ngtcp2=no
+    ap_ngtcp2_base=""
+    AC_ARG_WITH(ngtcp2, APACHE_HELP_STRING(--with-ngtcp2=PATH, ngtcp2 installation directory), [
+      if test "x$withval" != "xyes" -a "x$withval" != "x"; then
+        ap_ngtcp2_base="`cd $withval ; pwd`"
+      fi
+    ])
+
+    saved_CPPFLAGS="$CPPFLAGS"
+    saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+    if test "x$ap_ngtcp2_base" != "x"; then
+      PKG_CONFIG_PATH="${ap_ngtcp2_base}/lib/pkgconfig:${ap_ngtcp2_base}/lib64/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+      export PKG_CONFIG_PATH
+    fi
+    if test -n "$PKGCONFIG" && $PKGCONFIG --exists libngtcp2 libngtcp2_crypto_ossl; then
+      ap_ngtcp2_cflags="`$PKGCONFIG --cflags libngtcp2 libngtcp2_crypto_ossl`"
+      ap_ngtcp2_libs="`$PKGCONFIG --libs libngtcp2 libngtcp2_crypto_ossl`"
+    elif test "x$ap_ngtcp2_base" != "x"; then
+      ap_ngtcp2_cflags="-I$ap_ngtcp2_base/include"
+      ap_ngtcp2_libs="-L$ap_ngtcp2_base/lib -lngtcp2_crypto_ossl -lngtcp2"
+    else
+      ap_ngtcp2_cflags=""
+      ap_ngtcp2_libs="-lngtcp2_crypto_ossl -lngtcp2"
+    fi
+    PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
+
+    CPPFLAGS="$CPPFLAGS $ap_ngtcp2_cflags"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <ngtcp2/ngtcp2.h>]],[[
+#if NGTCP2_VERSION_NUM < 0x011601
+#error "ngtcp2 1.22.1 or later is required"
+#endif]])],
+      [ac_cv_ngtcp2=yes
+       APR_ADDTO(MOD_CFLAGS, [$ap_ngtcp2_cflags])
+       APR_ADDTO(MOD_LDFLAGS, [$ap_ngtcp2_libs])])
+    CPPFLAGS="$saved_CPPFLAGS"
+  ])
+])
+
 dnl # hook module into the Autoconf mechanism (--enable-http3)
 APACHE_MODULE(http3, [HTTP/3 protocol handling in addition to HTTP protocol
-handling. Implemented by mod_http3. This module requires a libnghttp3
-installation and OpenSSL with QUIC support.
-See --with-nghttp3 on how to manage non-standard locations. This module
+handling. Implemented by mod_http3. This module requires libnghttp3,
+libngtcp2 with its OpenSSL crypto helper, and OpenSSL with the QUIC TLS API.
+See --with-nghttp3 and --with-ngtcp2 on how to manage non-standard locations. This module
 is usually linked shared and requires loading. ], $http3_objs, , no, [
     APACHE_CHECK_OPENSSL
     if test "$ac_cv_openssl" = "yes" ; then
@@ -174,7 +220,8 @@ is usually linked shared and requires loading. ], $http3_objs, , no, [
 
     if test "$enable_http3" != "no" ; then
         APACHE_CHECK_NGHTTP3
-        if test "$ac_cv_nghttp3" = "yes" ; then
+        APACHE_CHECK_NGTCP2
+        if test "$ac_cv_nghttp3" = "yes" -a "$ac_cv_ngtcp2" = "yes" ; then
             APR_ADDTO(MOD_CFLAGS, [-I\$(top_srcdir)/$modpath_current/include])
             if test "x$enable_http3" = "xshared"; then
                # The only symbol which needs to be exported is the module

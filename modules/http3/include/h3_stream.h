@@ -62,4 +62,7 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
  */
 h3_stream* h3_stream_find(h3_session* session, int64_t sid);
 
+/** h3q stream_acked callback: hand acknowledged bytes to nghttp3. */
+void h3_stream_acked(void* user, int64_t stream_id, size_t len);
+
 #endif /* H3_STREAM_H */

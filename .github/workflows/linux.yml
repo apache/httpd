@@ -180,7 +180,8 @@ jobs:
               PYTEST_ARGS=modules/http2
           # -------------------------------------------------------------------------
           # mod_http3 needs OpenSSL >= 3.5 and libnghttp3, which Ubuntu
-          # 26.04 has. Its curl has no HTTP/3, so one is built from source.
+          # 26.04 has, and ngtcp2 >= 1.22.1, which it has not. Its curl
+          # has no HTTP/3. ngtcp2 and curl are built from source.
           # Strict mode turns a skip for a missing dependency into a failure.
           - name: mod_http3
             os: ubuntu-26.04
@@ -451,6 +452,8 @@ jobs:
     env:
       NOTEST_CFLAGS: ${{ matrix.notest-cflags }}
       CONFIG: ${{ matrix.config }}
+      # Built from source for a job with --enable-http3.
+      NGTCP2_VERSION: 1.25.0
     name: ${{ matrix.name }}
     steps:
     # JOBID names the artifacts uploaded on failure; see "Artifacts" in

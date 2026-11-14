@@ -123,7 +123,6 @@ void flush_nghttp3(h3_session* session)
             continue;
         }
         nghttp3_conn_add_write_offset(session->ngh3, sid, res.accepted);
-        nghttp3_conn_add_ack_offset(session->ngh3, sid, res.accepted);
         if (res.blocked)
         {
             /* Send buffer full: skip this stream instead of busy-looping on the same vec.
@@ -451,4 +450,15 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
     }
 
     return completed;
+}
+
+void h3_stream_acked(void* user, int64_t stream_id, size_t len)
+{
+    h3_session* session = user;
+    apr_thread_mutex_lock(session->lock);
+    if (!session->ngh3_dead)
+    {
+        (void)nghttp3_conn_add_ack_offset(session->ngh3, stream_id, len);
+    }
+    apr_thread_mutex_unlock(session->lock);
 }

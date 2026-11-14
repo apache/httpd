@@ -1,0 +1,5 @@
+  *) mod_http3: On Linux the parent binds the QUIC socket while it still runs
+     as root, so H3Port 443 works without CAP_NET_BIND_SERVICE. The socket
+     stays bound across graceful restarts and the children inherit it; one
+     child at a time serves it.
+     [Alexander Gerasimov <codeguard gmail.com>]
