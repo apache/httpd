@@ -46,7 +46,7 @@
     </related>
 
 
-    <p>httpd在启动时会绑定到本地机器的某些端口和地址，以接受入站请求。
+    <p>httpd在启动时会到本地机器的某些端口和地址，以接受入站请求。
     默认情况下，httpd会监听本地机器的所有地址。不过，有时可能需要对其进行配置，
     指定它监听哪些端口、仅监听哪些特定地址，或者同时指定端口和地址。
     这通常会与<a href="vhosts/">虚拟主机</a>功能结合使用，决定<code>httpd</code>如何响应发往
@@ -104,7 +104,7 @@ Listen 192.0.2.5:8000
     <title>Changing Listen configuration on restart</title>
 
     <p>重启httpd时，需要特别注意与<directive module="mpm_common">Listen</directive>指令相关的更改。
-    重启过程中，httpd会保持原有绑定端口（即原始配置中指示服务器绑定的端口）不变以避免其他客户端在尝试连接
+    重启过程中，httpd会保持原有绑定端口（即原始配置中指示服务器绑定的端口）的绑定状态不变以避免其他客户端在尝试连接
     服务器时出现“Connection refused”错误。如果修改后的<directive module="mpm_common">Listen</directive>指令与原有配置冲突，
     那么服务器将会停止运行。</p>
 
