@@ -1416,14 +1416,9 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
     }
     ap_destroy_sub_req(rr);
     /*
-     * We don't need to take any special action for the file size key.
-     * If we did, it would go here.
+     * We don't need to take any special action for the file size or
+     * last-modified keys.  If we did, it would go here.
      */
-    if (keyid == K_LAST_MOD) {
-        if (p->lm < 0) {
-            p->lm = 0;
-        }
-    }
     return (p);
 }
 
