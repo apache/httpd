@@ -85,17 +85,16 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <note type="warning"><p>Overlapping <directive
-    module="mpm_common">Listen</directive> directives will result in a
-    fatal error which will prevent the server from starting up.</p>
+    <note type="warning"><p>重复的<directive
+    module="mpm_common">Listen</directive>指令会产生致命错误，从而导致服务器无法正常启动。</p>
 
     <example>
       (48)Address already in use: make_sock: could not bind to address [::]:80
     </example>
 
-    <p>See <a
-    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">the
-    discussion in the wiki</a> for further troubleshooting tips.</p>
+    <p>请查阅<a
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki上的相关讨论</a>
+    以进一步了解如何排查问题。</p>
 
 </note>
 
@@ -104,15 +103,12 @@ Listen 192.0.2.5:8000
   <section id="reload">
     <title>Changing Listen configuration on restart</title>
 
-    <p>When httpd is restarted, special consideration must be made for
-    changes to <directive module="mpm_common">Listen</directive> directives.  During a restart, httpd keeps ports
-    bound (as in the original configuration) to avoid generating
-    "Connection refused" errors for any new attempts to connect to the
-    server. If changes are made to the set of <directive module="mpm_common">Listen</directive> directives used
-    which conflict with the old configuration, configuration will fail
-    and the server will terminate.</p>
+    <p>重启httpd时，需要特别注意与<directive module="mpm_common">Listen</directive>指令相关的更改。
+    重启过程中，httpd会保持原有绑定端口（即原始配置中指示服务器绑定的端口）不变以避免其他客户端在尝试连接
+    服务器时出现“Connection refused”错误。如果修改后的<directive module="mpm_common">Listen</directive>指令与原有配置冲突，
+    那么服务器将会停止运行。</p>
 
-    <p>For example, changing from configuration:</p>
+    <p>例如下面的配置</p>
     
     <example>
     <highlight language="config">
@@ -120,9 +116,7 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <p>to the following may fail, because binding to port 80 across
-    all addresses conflicts with binding to port 80 on just
-    127.0.0.1.</p>
+    <p>修改为下面的配置可能会失败，因为在所有IP地址绑定80端口与仅在127.0.0.1绑定端口相冲突。</p>
     
     <example>
     <highlight language="config">
@@ -130,8 +124,7 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <p>To have such configuration changes take effect, it is necessary
-    to stop and then start the server.</p>
+    <p>如果想要进行此类修改，就必须先停止服务器，然后再重新启动服务器。</p>
     
   </section>
 
