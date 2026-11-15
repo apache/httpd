@@ -73,6 +73,10 @@ typedef struct
  * ponytail: top-level directive only, not one inside <IfModule>. */
 static int listen_buckets(void)
 {
+#ifdef H3Q_BACKEND_OSSL
+    /* Routing by connection ID needs ngtcp2 to put the bucket in the connection IDs. */
+    return 1;
+#endif
     for (ap_directive_t* d = ap_conftree; d; d = d->next)
     {
         if (ap_have_so_reuseport > 0 && !ap_cstr_casecmp(d->directive, "ListenCoresBucketsRatio"))

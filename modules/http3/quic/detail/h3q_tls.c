@@ -23,7 +23,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifndef H3Q_BACKEND_OSSL
 #include <ngtcp2/ngtcp2_crypto_ossl.h>
+#endif
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 
@@ -83,17 +85,26 @@ SSL_CTX* h3q_tls_ctx_create(const char* const* cert_files, size_t ncerts, const 
     CHECK(cert_files && ncerts > 0);
     CHECK(key_files || nkeys == 0);
 
+#ifdef H3Q_BACKEND_OSSL
+    /* OpenSSL runs the whole QUIC transport. */
+    SSL_CTX* ssl_ctx = SSL_CTX_new(OSSL_QUIC_server_method());
+#else
+    /* ngtcp2 runs the transport; OpenSSL only does the TLS 1.3 handshake. */
     if (ngtcp2_crypto_ossl_init() != 0)
     {
         h3q_tls_error(err, errlen, "ngtcp2_crypto_ossl_init failed; OpenSSL lacks the QUIC TLS API");
         return NULL;
     }
     SSL_CTX* ssl_ctx = SSL_CTX_new(TLS_server_method());
+#endif
     if (!ssl_ctx)
     {
         h3q_tls_error(err, errlen, "SSL_CTX_new failed");
         return NULL;
     }
+#ifdef H3Q_BACKEND_OSSL
+    SSL_CTX_set_domain_flags(ssl_ctx, SSL_DOMAIN_FLAG_MULTI_THREAD);
+#endif
 
     SSL_CTX_set_min_proto_version(ssl_ctx, TLS1_3_VERSION);
     SSL_CTX_set_max_proto_version(ssl_ctx, TLS1_3_VERSION);
@@ -117,7 +128,9 @@ SSL_CTX* h3q_tls_ctx_create(const char* const* cert_files, size_t ncerts, const 
      * with it off invites none. OpenSSL's anti-replay is built for TLS over TCP
      * and refuses QUIC resumption with early data; QUIC 0-RTT replay safety comes
      * from accepting only safe methods before the handshake (RFC 8470), in h3_io. */
+#ifndef H3Q_BACKEND_OSSL
     SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_ANTI_REPLAY);
+#endif
 
     if (!session_tickets)
     {

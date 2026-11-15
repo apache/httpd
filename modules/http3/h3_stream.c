@@ -123,6 +123,10 @@ void flush_nghttp3(h3_session* session)
             continue;
         }
         nghttp3_conn_add_write_offset(session->ngh3, sid, res.accepted);
+#ifdef H3Q_BACKEND_OSSL
+        /* OpenSSL copies what it accepts and reports no acknowledgements. */
+        nghttp3_conn_add_ack_offset(session->ngh3, sid, res.accepted);
+#endif
         if (res.blocked)
         {
             /* Send buffer full: skip this stream instead of busy-looping on the same vec.
