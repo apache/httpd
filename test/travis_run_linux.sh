@@ -335,12 +335,19 @@ fi
 # "pool concurrency check": printed by APR built with
 # --enable-thread-debug when an APR pool concurrency check aborts
 
-for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:' 'Assertion.*failed'; do
-    # Ignore IO/debug logs
-    if grep -v ':\(debug\|trace[12345678]\)\]' test/perl-framework/t/logs/error_log | grep -q "$phrase"; then
-        grep --color=always -C5 "$phrase" test/perl-framework/t/logs/error_log
-        RV=2
-    fi
+# Each test framework keeps its own error log; a job has only the
+# logs of the frameworks it ran.
+for log in test/perl-framework/t/logs/error_log \
+           test/pytest_suite/t/logs/error_log \
+           test/gen/apache/logs/error_log; do
+    test -f "$log" || continue
+    for phrase in 'Segmentation fault' 'glibc detected' 'pool concurrency check:' 'Assertion.*failed'; do
+        # Ignore IO/debug logs
+        if grep -v ':\(debug\|trace[12345678]\)\]' "$log" | grep -q "$phrase"; then
+            grep --color=always -C5 "$phrase" "$log"
+            RV=2
+        fi
+    done
 done
 
 if test -v TEST_UBSAN && test -n "`ls ubsan.log.* 2>/dev/null`"; then
@@ -357,7 +364,11 @@ if test -v TEST_ASAN && test -n "`ls asan.log.* 2>/dev/null`"; then
     fi
 fi
 
-for core in `ls test/perl-framework/t/core{,.*} test/gen/apache/core{,.*} 2>/dev/null`; do
+# Cores are dumped in the ServerRoot of whichever framework ran the
+# server.
+for core in `ls test/perl-framework/t/core{,.*} \
+                test/pytest_suite/t/core{,.*} \
+                test/gen/apache/core{,.*} 2>/dev/null`; do
     gdb -ex 'thread apply all backtrace full' -batch ./httpd "$core"
     RV=5
 done
