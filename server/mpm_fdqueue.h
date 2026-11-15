@@ -104,6 +104,53 @@ AP_DECLARE(apr_status_t) ap_queue_interrupt_all(fd_queue_t *queue);
 AP_DECLARE(apr_status_t) ap_queue_interrupt_one(fd_queue_t *queue);
 AP_DECLARE(apr_status_t) ap_queue_term(fd_queue_t *queue);
 
+/* The workers' sockets, for the child's main thread to shut them down on an
+ * ungraceful stop. A worker publishes its connection's socket in its slot
+ * (NULL otherwise) and unpublishes it (CAS socket -> NULL) before closing it,
+ * clearing its pool or handing the connection over. One thread at a time owns
+ * the socket:
+ * - on an ungraceful stop the MPM stores AP_WORKERS_STOPPING in its
+ *   workers_may_exit (passed at create), then the main thread takes each
+ *   published socket (xchg) and shuts it down, never closing it nor touching
+ *   its pool, then stores AP_WORKERS_STOPPED (ap_worker_sockets_shutdown());
+ * - a worker whose unpublish fails waits for AP_WORKERS_STOPPED, then owns
+ *   the socket and pool again;
+ * - after publishing, a worker re-reads the flag and shuts its socket down if
+ *   set, so a socket published after the main thread's scan is shut down too
+ *   (the main thread stores the flag before swapping the slot, the worker
+ *   swaps the slot before re-reading the flag: their swaps on the same slot
+ *   order them, so at least one sees the other).
+ */
+typedef struct ap_worker_sockets_t ap_worker_sockets_t; /* opaque */
+
+/* The values of an MPM's workers_may_exit (an apr_uint32_t, read and written
+ * with apr_atomic_*32()): nonzero once the workers must exit; on an
+ * ungraceful stop, AP_WORKERS_STOPPING while ap_worker_sockets_shutdown()
+ * shuts the published sockets down, then AP_WORKERS_STOPPED.
+ */
+#define AP_WORKERS_RUNNING  0
+#define AP_WORKERS_STOPPING 1
+#define AP_WORKERS_STOPPED  2
+
+/* nslots worker slots, ordered with the MPM's workers_may_exit */
+AP_DECLARE(apr_status_t) ap_worker_sockets_create(ap_worker_sockets_t **ws,
+                                                  int nslots,
+                                                  apr_uint32_t *may_exit,
+                                                  apr_pool_t *p);
+/* Publish the connection's socket in the worker's slot; if the workers may
+ * exit already, shut it down so that the connection ends at once */
+AP_DECLARE(void) ap_worker_sockets_publish(ap_worker_sockets_t *ws, int slot,
+                                           apr_socket_t *csd);
+/* Unpublish it before closing it or handing its connection over; if
+ * ap_worker_sockets_shutdown() took it, wait until it's done with it (not
+ * long) and return 0: the child is exiting */
+AP_DECLARE(int) ap_worker_sockets_unpublish(ap_worker_sockets_t *ws, int slot,
+                                            apr_socket_t *csd);
+/* On an ungraceful stop, after the MPM set *may_exit to AP_WORKERS_STOPPING:
+ * shut the published sockets down (never closing them), then set
+ * AP_WORKERS_STOPPED */
+AP_DECLARE(void) ap_worker_sockets_shutdown(ap_worker_sockets_t *ws);
+
 #endif /* APR_HAS_THREADS */
 
 #endif /* MPM_FDQUEUE_H */
