@@ -2129,7 +2129,6 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
     apr_time_t last_log;
 
     last_log = apr_time_now();
-    free(ti);
 
 #if HAVE_SERF
     init_serf(apr_thread_pool_get(thd));
@@ -2639,8 +2638,6 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     apr_status_t rv;
     int is_idle = 0;
 
-    free(ti);
-
     ap_scoreboard_image->servers[process_slot][thread_slot].pid = ap_my_pid;
     ap_scoreboard_image->servers[process_slot][thread_slot].tid = apr_os_thread_current();
     ap_scoreboard_image->servers[process_slot][thread_slot].generation = retained->mpm->my_generation;
@@ -2777,7 +2774,7 @@ static void create_listener_thread(thread_starter * ts)
     proc_info *my_info;
     apr_status_t rv;
 
-    my_info = (proc_info *) ap_malloc(sizeof(proc_info));
+    my_info = apr_palloc(pruntime, sizeof(proc_info));
     my_info->pslot = my_child_num;
     my_info->tslot = -1;      /* listener thread doesn't have a thread slot */
     rv = ap_thread_create(&ts->listener, thread_attr, listener_thread,
@@ -2976,7 +2973,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                 continue;
             }
 
-            my_info = (proc_info *) ap_malloc(sizeof(proc_info));
+            my_info = apr_palloc(pruntime, sizeof(proc_info));
             my_info->pslot = my_child_num;
             my_info->tslot = i;
 
@@ -3058,12 +3055,12 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
     return NULL;
 }
 
-static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
+static void join_workers(thread_starter *ts)
 {
     int i, joined_all = 1;
     apr_status_t rv, thread_rv;
 
-    if (listener) {
+    if (ts->listener) {
         int iter;
 
         /* deal with a rare timing window which affects waking up the
@@ -3091,7 +3088,7 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
             joined_all = 0;
         }
         else {
-            rv = apr_thread_join(&thread_rv, listener);
+            rv = apr_thread_join(&thread_rv, ts->listener);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00476)
                              "apr_thread_join: unable to join listener thread");
@@ -3107,8 +3104,8 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
     ap_queue_term(worker_queue);
 
     for (i = 0; i < threads_per_child; i++) {
-        if (threads[i]) {       /* if we ever created this thread */
-            rv = apr_thread_join(&thread_rv, threads[i]);
+        if (ts->threads[i]) {   /* if we ever created this thread */
+            rv = apr_thread_join(&thread_rv, ts->threads[i]);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00477)
                              "apr_thread_join: unable to join worker "
@@ -3138,10 +3135,8 @@ static void join_start_thread(apr_thread_t * start_thread_id)
 
 static void child_main(int child_num_arg, int child_bucket)
 {
-    apr_thread_t **threads;
     apr_status_t rv;
     thread_starter *ts;
-    apr_threadattr_t *thread_attr;
     apr_thread_t *start_thread_id;
     int i;
 
@@ -3235,15 +3230,17 @@ static void child_main(int child_num_arg, int child_bucket)
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
      */
-    threads = ap_calloc(threads_per_child, sizeof(apr_thread_t *));
-    ts = apr_palloc(pchild, sizeof(*ts));
+    ts = apr_pcalloc(pruntime, sizeof(*ts));
+    ts->threads = apr_pcalloc(pruntime,
+                              threads_per_child * sizeof(apr_thread_t *));
+    ts->child_num_arg = child_num_arg;
 
-    apr_threadattr_create(&thread_attr, pchild);
+    apr_threadattr_create(&ts->threadattr, pruntime);
     /* 0 means PTHREAD_CREATE_JOINABLE */
-    apr_threadattr_detach_set(thread_attr, 0);
+    apr_threadattr_detach_set(ts->threadattr, 0);
 
     if (ap_thread_stacksize != 0) {
-        rv = apr_threadattr_stacksize_set(thread_attr, ap_thread_stacksize);
+        rv = apr_threadattr_stacksize_set(ts->threadattr, ap_thread_stacksize);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, APLOGNO(02436)
                          "WARNING: ThreadStackSize of %" APR_SIZE_T_FMT " is "
@@ -3252,13 +3249,9 @@ static void child_main(int child_num_arg, int child_bucket)
         }
     }
 
-    ts->threads = threads;
-    ts->listener = NULL;
-    ts->child_num_arg = child_num_arg;
-    ts->threadattr = thread_attr;
-
-    rv = ap_thread_create(&start_thread_id, thread_attr, start_threads,
-                          ts, pchild);
+    /* The start thread allocates from pruntime, don't use it after here. */
+    rv = ap_thread_create(&start_thread_id, ts->threadattr, start_threads,
+                          ts, pruntime);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(00480)
                      "ap_thread_create: unable to create worker thread");
@@ -3294,7 +3287,7 @@ static void child_main(int child_num_arg, int child_bucket)
          *   If the worker hasn't exited, then this blocks until
          *   they have (then cleans up).
          */
-        join_workers(ts->listener, threads);
+        join_workers(ts);
     }
     else {                      /* !one_process */
         /* remove SIGTERM from the set of blocked signals...  if one of
@@ -3338,7 +3331,7 @@ static void child_main(int child_num_arg, int child_bucket)
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                      "%s termination received, joining workers",
                      rv == AP_MPM_PODX_GRACEFUL ? "graceful" : "ungraceful");
-        join_workers(ts->listener, threads);
+        join_workers(ts);
         ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                      "%s termination, workers joined, exiting",
                      rv == AP_MPM_PODX_GRACEFUL ? "graceful" : "ungraceful");
@@ -3347,8 +3340,6 @@ static void child_main(int child_num_arg, int child_bucket)
     if (terminate_mode == ST_GRACEFUL) {
         ap_mpm_wait_for_extra_connections();
     }
-
-    free(threads);
 
     clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
 }
