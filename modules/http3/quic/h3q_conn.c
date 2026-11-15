@@ -590,14 +590,14 @@ void h3q_conn_free(h3q_conn* conn)
             break;
         }
     }
-    for (h3q_conn** slot = &engine->accept_head; *slot; slot = &(*slot)->next_accept)
+    for (h3q_conn *prev = NULL, **slot = &engine->accept_head; *slot; prev = *slot, slot = &(*slot)->next_accept)
     {
         if (*slot == conn)
         {
             *slot = conn->next_accept;
-            if (!*slot)
+            if (engine->accept_tail == conn)
             {
-                engine->accept_tail = NULL;
+                engine->accept_tail = prev;
             }
             break;
         }

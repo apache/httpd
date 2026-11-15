@@ -118,6 +118,9 @@ class _Protocol(QuicConnectionProtocol):
             self.http.head_streams.add(sid)
         hdrs = [(b":method", method.encode()), (b":scheme", b"https"),
                 (b":authority", authority.encode()), (b":path", path.encode())]
+        if method == "CONNECT":
+            # RFC 9114 4.4: no :scheme and no :path
+            hdrs = [hdrs[0], hdrs[2]]
         hdrs.extend((k.lower().encode(), v.encode()) for k, v in headers)
         self.http.send_headers(sid, hdrs, end_stream=body is None)
         if body is not None:

@@ -1,0 +1,4 @@
+  *) mod_http3: Fix a write to a freed session when a request completes on
+     a closed connection, lost entries in the QUIC accept queues, and new
+     connections that stay allocated during a graceful stop.
+     [Alexander Gerasimov <repo codeit.guru>]

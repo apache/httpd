@@ -103,7 +103,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             } while (pumped > 0 && ++pump_rounds < H3_PUMP_BUDGET);
         }
 
-        if (io->thread_running && !io->draining)
+        if (io->thread_running)
         {
             for (;;)
             {
@@ -111,6 +111,11 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
                 if (!conn)
                 {
                     break;
+                }
+                if (io->draining)
+                {
+                    h3q_conn_free(conn); /* no new connections during a graceful stop */
+                    continue;
                 }
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "accepted new QUIC connection");
                 if (h3_io_at_connection_limit(io))
