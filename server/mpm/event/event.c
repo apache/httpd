@@ -1610,11 +1610,6 @@ static void init_serf(apr_pool_t *p)
 }
 #endif
 
-static apr_status_t push_timer2worker(timer_event_t* te)
-{
-    return ap_queue_push_timer(worker_queue, te);
-}
-
 /*
  * Pre-condition: cs is neither in event_pollset nor a timeout queue
  * this function may only be called by the listener
@@ -1630,13 +1625,29 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
     }
     rc = ap_queue_push_socket(worker_queue, csd, cs, ptrans);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf, APLOGNO(00471)
-                     "push2worker: ap_queue_push_socket failed");
+        int stopping = APR_STATUS_IS_EOF(rc);
+        if (stopping) {
+            /* The workers' queue is terminated, the child is stopping */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf,
+                         "push2worker: workers' queue terminated, "
+                         "closing the connection");
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rc, ap_server_conf,
+                         APLOGNO(00471) "push2worker: "
+                         "ap_queue_push_socket failed");
+        }
         /* trash the connection; we couldn't queue the connected
          * socket to a worker
          */
         if (cs) {
-            shutdown_connection(cs);
+            if (stopping) {
+                /* No worker would take a deferred lingering close */
+                close_connection(cs);
+            }
+            else {
+                shutdown_connection(cs);
+            }
         }
         else {
             if (csd) {
@@ -1646,7 +1657,9 @@ static apr_status_t push2worker(event_conn_state_t *cs, apr_socket_t *csd,
                 ap_queue_info_push_pool(worker_queue_info, ptrans);
             }
         }
-        signal_threads(ST_GRACEFUL);
+        if (!stopping) {
+            signal_threads(ST_GRACEFUL);
+        }
     }
 
     return rc;
@@ -1725,6 +1738,27 @@ static int timer_comp(void *a, void *b)
 }
 
 static apr_thread_mutex_t *g_timer_skiplist_mtx;
+
+/* Push a timer event to a worker, or drop it if it can't be queued, e.g.
+ * once the workers' queue is terminated (the child is stopping): back to
+ * timer_free_ring, its callback not called. Pre-condition: the caller holds
+ * g_timer_skiplist_mtx if locked is set.
+ */
+static void push_timer2worker(timer_event_t* te, int locked)
+{
+    apr_status_t rc = ap_queue_push_timer(worker_queue, te);
+    if (rc != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf,
+                     "push_timer2worker: timer event dropped");
+        if (!locked) {
+            apr_thread_mutex_lock(g_timer_skiplist_mtx);
+        }
+        APR_RING_INSERT_TAIL(&timer_free_ring.link, te, timer_event_t, link);
+        if (!locked) {
+            apr_thread_mutex_unlock(g_timer_skiplist_mtx);
+        }
+    }
+}
 
 static timer_event_t * event_get_timer_event(apr_time_t t,
                                              ap_mpm_callback_fn_t *cbfn,
@@ -2192,7 +2226,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         apr_pool_cleanup_run(te->pfds->pool, te->pfds,
                                              event_cleanup_poll_callback);
                     }
-                    push_timer2worker(te);
+                    push_timer2worker(te, 1);
                 }
                 else {
                     APR_RING_INSERT_TAIL(&timer_free_ring.link, te,
@@ -2467,7 +2501,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                        baton->user_baton, 
                                        0, /* don't insert it */
                                        NULL /* no associated socket callback */);
-            push_timer2worker(te);
+            push_timer2worker(te, 0);
         }
 
         /* We process the timeout queues here only when the global
@@ -3065,6 +3099,12 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
             }
         }
     }
+
+    /* The listener terminates the queue when it exits, but if it is stuck
+     * (not joined above) the workers would wait for it forever on a graceful
+     * stop. A noop if the listener did it already.
+     */
+    ap_queue_term(worker_queue);
 
     for (i = 0; i < threads_per_child; i++) {
         if (threads[i]) {       /* if we ever created this thread */

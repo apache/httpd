@@ -378,6 +378,7 @@ apr_status_t ap_queue_create(fd_queue_t **pqueue, int capacity, apr_pool_t *p)
  *
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
+ * Returns APR_EOF if the queue is terminated, the socket is not queued.
  */
 apr_status_t ap_queue_push_socket(fd_queue_t *queue,
                                   apr_socket_t *sd, void *sd_baton,
@@ -390,7 +391,11 @@ apr_status_t ap_queue_push_socket(fd_queue_t *queue,
         return rv;
     }
 
-    AP_DEBUG_ASSERT(!queue->terminated);
+    /* Terminated (stopping), the caller drops the socket */
+    if (queue->terminated) {
+        apr_thread_mutex_unlock(queue->one_big_mutex);
+        return APR_EOF;
+    }
     AP_DEBUG_ASSERT(!ap_queue_full(queue));
 
     elem = &queue->data[queue->in++];
@@ -414,7 +419,11 @@ apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te)
         return rv;
     }
 
-    AP_DEBUG_ASSERT(!queue->terminated);
+    /* Terminated (stopping), the caller drops the timer */
+    if (queue->terminated) {
+        apr_thread_mutex_unlock(queue->one_big_mutex);
+        return APR_EOF;
+    }
 
     APR_RING_INSERT_TAIL(&queue->timers, te, timer_event_t, link);
 

@@ -780,8 +780,18 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                      * socket to a worker
                      */
                     apr_socket_close(csd);
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03138)
-                                 "ap_queue_push_socket failed");
+                    if (APR_STATUS_IS_EOF(rv)) {
+                        /* The workers' queue is terminated (stopping) */
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv,
+                                     ap_server_conf,
+                                     "workers' queue terminated, "
+                                     "connection closed");
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK, APLOG_CRIT, rv,
+                                     ap_server_conf, APLOGNO(03138)
+                                     "ap_queue_push_socket failed");
+                    }
                 }
                 else {
                     have_idle_worker = 0;
