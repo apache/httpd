@@ -251,12 +251,6 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jorton, covener
      covener: docs need fixup for "2.5.1" 
 
-   *) ab: remove SVN keywords in copyright msg
-      trunk patch:   https://svn.apache.org/r1939247
-     +1: covener
-     covener: trivial patch probably needs to manually re-applied due to the 
-              keyword expansion.
-
   *) mod_proxy: Update the shared worker status word atomically, so a
      change to one status bit (error, initialized, ...) can't be lost to a
      concurrent change of another.
