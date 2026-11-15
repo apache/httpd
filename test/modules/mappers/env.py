@@ -12,7 +12,7 @@ class MappersTestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(MappersTestSetup)))
-        self.add_modules(["rewrite", "proxy", "proxy_http"])
+        self.add_modules(["rewrite", "proxy", "proxy_http", "negotiation"])
 
 
 class MappersTestEnv(HttpdTestEnv):
