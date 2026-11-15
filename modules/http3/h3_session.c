@@ -100,8 +100,14 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     }
 
     nghttp3_conn_set_max_concurrent_streams(session->ngh3, conf->h3_max_concurrent_streams);
-    nghttp3_conn_set_max_client_streams_bidi(session->ngh3, conf->h3_max_concurrent_streams);
+#ifdef H3Q_BACKEND_OSSL
+    /* OpenSSL raises the peer's stream limit by itself and does not report it:
+     * give nghttp3 a limit that no client reaches. */
+    session->max_client_streams_bidi = (uint64_t)1 << 30;
+#else
     session->max_client_streams_bidi = conf->h3_max_concurrent_streams;
+#endif
+    nghttp3_conn_set_max_client_streams_bidi(session->ngh3, session->max_client_streams_bidi);
 
     h3q_tls_info tls = {0};
     if (h3q_conn_tls_info(qconn, &tls))

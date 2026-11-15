@@ -34,11 +34,10 @@ h3_socket_os.lo dnl
 h3_socket_bpf.lo dnl
 h3_stream.lo dnl
 h3_threads.lo dnl
-h3q.lo dnl
-h3q_conn.lo dnl
-h3q_stream.lo dnl
 h3q_tls.lo dnl
 "
+dnl #  The QUIC transport objects depend on --with-http3-quic and are added
+dnl #  to http3_objs by the module's prerequisite checks below.
 
 dnl
 dnl APACHE_CHECK_NGHTTP3
@@ -205,11 +204,36 @@ AC_DEFUN([APACHE_CHECK_NGTCP2],[
   ])
 ])
 
+dnl
+dnl APACHE_CHECK_H3_OSSL_QUIC
+dnl
+dnl Check that OpenSSL has its own QUIC server (3.5 or later), for
+dnl "--with-http3-quic=openssl". OpenSSL itself is found by
+dnl APACHE_CHECK_OPENSSL.
+dnl
+AC_DEFUN([APACHE_CHECK_H3_OSSL_QUIC],[
+  AC_CACHE_CHECK([for the OpenSSL QUIC server API], [ac_cv_h3_ossl_quic], [
+    ac_cv_h3_ossl_quic=no
+    saved_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS $MOD_CFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <openssl/ssl.h>]],[[
+#if OPENSSL_VERSION_NUMBER < 0x30500000L
+#error "OpenSSL 3.5 or later is required"
+#endif
+(void)SSL_new_listener;
+(void)OSSL_QUIC_server_method;]])],
+      [ac_cv_h3_ossl_quic=yes])
+    CPPFLAGS="$saved_CPPFLAGS"
+  ])
+])
+
 dnl # hook module into the Autoconf mechanism (--enable-http3)
 APACHE_MODULE(http3, [HTTP/3 protocol handling in addition to HTTP protocol
-handling. Implemented by mod_http3. This module requires libnghttp3,
-libngtcp2 with its OpenSSL crypto helper, and OpenSSL with the QUIC TLS API.
-See --with-nghttp3 and --with-ngtcp2 on how to manage non-standard locations. This module
+handling. Implemented by mod_http3. This module requires libnghttp3 and
+either libngtcp2 with its OpenSSL crypto helper and OpenSSL with the QUIC TLS
+API (the default), or OpenSSL 3.5 or later with its own QUIC server
+(--with-http3-quic=openssl). See --with-nghttp3 and --with-ngtcp2 on how to
+manage non-standard locations. This module
 is usually linked shared and requires loading. ], $http3_objs, , no, [
     APACHE_CHECK_OPENSSL
     if test "$ac_cv_openssl" = "yes" ; then
@@ -219,9 +243,35 @@ is usually linked shared and requires loading. ], $http3_objs, , no, [
     fi
 
     if test "$enable_http3" != "no" ; then
+        AC_ARG_WITH(http3-quic, APACHE_HELP_STRING(--with-http3-quic=ngtcp2|openssl, [QUIC transport of mod_http3: ngtcp2 (default; supports 0-RTT and connection ID routing) or the OpenSSL QUIC server]), [
+          ap_h3_quic="$withval"
+        ], [
+          ap_h3_quic=ngtcp2
+        ])
+        if test "x$ap_h3_quic" = "xyes" -o "x$ap_h3_quic" = "x"; then
+            ap_h3_quic=ngtcp2
+        fi
+        if test "x$ap_h3_quic" != "xngtcp2" -a "x$ap_h3_quic" != "xopenssl"; then
+            AC_MSG_ERROR([--with-http3-quic must be ngtcp2 or openssl, not $ap_h3_quic])
+        fi
+
         APACHE_CHECK_NGHTTP3
-        APACHE_CHECK_NGTCP2
-        if test "$ac_cv_nghttp3" = "yes" -a "$ac_cv_ngtcp2" = "yes" ; then
+        ap_h3_quic_ok=no
+        if test "$ap_h3_quic" = "openssl"; then
+            APACHE_CHECK_H3_OSSL_QUIC
+            if test "$ac_cv_h3_ossl_quic" = "yes"; then
+                ap_h3_quic_ok=yes
+                http3_objs="$http3_objs h3q_ossl.lo h3q_ossl_conn.lo h3q_ossl_stream.lo h3q_ossl_addr.lo"
+                APR_ADDTO(MOD_CPPFLAGS, ["-DH3Q_BACKEND_OSSL"])
+            fi
+        else
+            APACHE_CHECK_NGTCP2
+            if test "$ac_cv_ngtcp2" = "yes"; then
+                ap_h3_quic_ok=yes
+                http3_objs="$http3_objs h3q.lo h3q_conn.lo h3q_stream.lo"
+            fi
+        fi
+        if test "$ac_cv_nghttp3" = "yes" -a "$ap_h3_quic_ok" = "yes" ; then
             APR_ADDTO(MOD_CFLAGS, [-I\$(top_srcdir)/$modpath_current/include])
             if test "x$enable_http3" = "xshared"; then
                # The only symbol which needs to be exported is the module

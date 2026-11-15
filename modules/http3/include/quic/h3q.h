@@ -30,6 +30,15 @@ typedef struct h3q_stream h3q_stream;
 
 #define H3Q_ERRLEN 256
 
+/**
+ * The QUIC transport behind this API is chosen at build time with
+ * --with-http3-quic: ngtcp2 (the default, which defines nothing) or OpenSSL's
+ * own QUIC stack, which defines H3Q_BACKEND_OSSL. The OpenSSL backend copies
+ * written stream bytes, so they count as acknowledged once accepted; it has no
+ * 0-RTT, no stateless-reset/Retry secret, no window autotuning cap and no
+ * connection ID routing, and ignores those h3q_config fields.
+ */
+
 /** Everything the listener needs to exist. */
 typedef struct h3q_config
 {

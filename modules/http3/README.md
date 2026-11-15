@@ -144,3 +144,17 @@ curl --alt-svc /tmp/altsvc.cache -v https://localhost:4433/
 - **Multi-Process UDP Listener**: In standard multi-process MPMs, one child process manages the UDP listening socket while others coordinate in the background.
 - **Connection Migration**: QUIC connection migration (RFC 9000 §9) is currently subject to OpenSSL QUIC stack capabilities (see [`QUIC_CONNECTION_MIGRATION.md`](QUIC_CONNECTION_MIGRATION.md)).
 - **TLS Certificates**: Modern browsers reject self-signed or invalid certificates for HTTP/3 more strictly than for HTTP/1.1 or HTTP/2. Use trusted certificates or valid local CA certificates during testing.
+
+---
+
+## Choosing the QUIC transport (`--with-http3-quic`)
+
+Measured with `h3bench` (`openssl-h3-examples`), one run per transport on the same machine, so only compare numbers from the same run:
+
+- **Idle connections:** `ngtcp2` holds 4000 idle connections with no errors at about 50% CPU. `openssl` uses about 4 times the CPU at 1000 connections, gets errors at 2000 and none connect at 4000.
+- **Loaded, 1 to 32 connections:** `openssl` serves about 30 to 60% more requests per second, with lower p50 and p99 latency (for example 32 connections of 32 streams: 875 against 577 rps, p50 1.5 s against 2.3 s).
+- **One connection, one request at a time (`1x1`):** `ngtcp2` answers in about 1 ms. `openssl` stalls (0.2 rps, p50 over 1 s); the cause is not found yet.
+- **Not the transport:** both servers sit near 2000% CPU in every loaded case, even `1x1`, so something outside the QUIC layer, probably the event loop or the worker threads, uses CPU it should not. Look at that before reading much into the throughput gap.
+- **Features:** only `ngtcp2` has 0-RTT, routing by connection ID across child processes and connection migration.
+
+Use `ngtcp2` (the default) unless you need to avoid the ngtcp2 dependency.

@@ -537,6 +537,12 @@ static const char* set_h3_session_tickets(cmd_parms* cmd, void* dummy H3_UNUSED,
 
 static const char* set_h3_early_data(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
 {
+#ifdef H3Q_BACKEND_OSSL
+    if (flag)
+    {
+        return "H3EarlyData is not supported when mod_http3 is built with --with-http3-quic=openssl";
+    }
+#endif
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
     CHECK(conf);
     conf->h3_early_data = flag ? H3_FLAG_ON : H3_FLAG_OFF;
