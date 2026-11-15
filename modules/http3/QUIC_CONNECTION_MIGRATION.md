@@ -7,7 +7,8 @@ address to change mid-connection — for example when a mobile device switches
 networks or a NAT rebinds the client port. The server must continue serving
 the connection at the new address.
 
-mod_http3 supports connection migration. Two parts are necessary.
+mod_http3 supports connection migration with the ngtcp2 transport (the
+default), not with `--with-http3-quic=openssl`. Two parts are necessary.
 
 ## 1. The QUIC stack updates the peer address
 

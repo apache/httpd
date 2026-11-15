@@ -13,7 +13,7 @@ HTTP/3 runs over UDP rather than TCP and integrates TLS 1.3 encryption natively 
 `mod_http3` relies on:
 1. **[libnghttp3](https://nghttp2.org/nghttp3/)** (>= 1.0.0): Handles HTTP/3 framing and QPACK header compression ([RFC 9204](https://datatracker.ietf.org/doc/html/rfc9204)).
 2. **[ngtcp2](https://nghttp2.org/ngtcp2/)** (>= 1.22.1) with its OpenSSL crypto helper (`libngtcp2_crypto_ossl`): Handles the QUIC transport.
-3. **OpenSSL** (>= 3.5): Handles the TLS 1.3 handshake.
+3. **OpenSSL** (>= 3.5): Handles the TLS 1.3 handshake. With `--with-http3-quic=openssl`, it also handles the QUIC transport and ngtcp2 is not needed.
 
 ---
 
@@ -143,5 +143,5 @@ curl --alt-svc /tmp/altsvc.cache -v https://localhost:4433/
 ## Current Limitations & Notes
 
 - **Multi-Process UDP Listener**: On Linux, the parent binds the UDP port before the privilege drop. Without `ListenCoresBucketsRatio`, one child serves the port. With it, each child serves one `SO_REUSEPORT` socket per listener bucket. On other platforms, one child binds the port.
-- **Connection Migration**: ngtcp2 supports QUIC connection migration (RFC 9000 §9). With more than one QUIC socket, migration needs eBPF routing by connection ID (see [`QUIC_CONNECTION_MIGRATION.md`](QUIC_CONNECTION_MIGRATION.md)).
+- **Connection Migration**: The ngtcp2 transport supports QUIC connection migration (RFC 9000 §9); the OpenSSL transport does not. With more than one QUIC socket, migration needs eBPF routing by connection ID (see [`QUIC_CONNECTION_MIGRATION.md`](QUIC_CONNECTION_MIGRATION.md)).
 - **TLS Certificates**: Modern browsers reject self-signed or invalid certificates for HTTP/3 more strictly than for HTTP/1.1 or HTTP/2. Use trusted certificates or valid local CA certificates during testing.
