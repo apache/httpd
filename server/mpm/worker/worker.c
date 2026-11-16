@@ -336,7 +336,7 @@ static void worker_lingering_close(conn_rec *c, apr_socket_t *sock, int slot)
     apr_socket_close(csd);
 }
 
-static void wakeup_listener(void)
+static void shutdown_listener(void)
 {
     listener_may_exit = 1;
 
@@ -385,7 +385,7 @@ static void signal_threads(int mode)
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
      */
-    wakeup_listener();
+    shutdown_listener();
 
     /* for ungraceful termination, let the workers exit now;
      * for graceful termination, the listener thread will notify the
@@ -1167,7 +1167,7 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads,
             /* listener has not stopped accepting yet */
             ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                          "listener has not stopped accepting yet (%d iter)", iter);
-            wakeup_listener();
+            shutdown_listener();
         }
         if (iter > 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00276)
