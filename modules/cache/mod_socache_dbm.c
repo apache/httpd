@@ -361,7 +361,12 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
         apr_dbm_close(dbm);
         return APR_NOTFOUND;
     }
-    if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(apr_time_t)) {
+    if (dbmval.dptr == NULL) {
+        /* apr_dbm_fetch() succeeds for a key which is not there. */
+        apr_dbm_close(dbm);
+        return APR_NOTFOUND;
+    }
+    if (dbmval.dsize <= sizeof(apr_time_t)) {
         apr_dbm_close(dbm);
         return APR_EGENERAL;
     }

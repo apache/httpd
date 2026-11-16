@@ -1,0 +1,3 @@
+  *) mod_socache_dbm: Stop mod_authn_socache logging "Error accessing
+     authentication cache" for every user not yet in the cache.
+     [Joe Orton]
