@@ -40,14 +40,14 @@ class TestForwardProxy:
 
     # Long DNS name (>14 chars) must not trigger AH10262 "overlong proxy
     # URL scheme".
-    def test_proxy_007_01(self, env):
+    def test_proxy_010_01(self, env):
         long_host = "www.thisisaverylonghostaddressblablablabla123.com"
         start_pos = self._proxy_connect(env, long_host)
         found = self._check_no_ah10262(env, start_pos)
         assert not found, "Long hostname should not trigger AH10262"
 
     # Short DNS name — control test.
-    def test_proxy_007_02(self, env):
+    def test_proxy_010_02(self, env):
         short_host = "www.vshn.com"
         start_pos = self._proxy_connect(env, short_host)
         found = self._check_no_ah10262(env, start_pos)

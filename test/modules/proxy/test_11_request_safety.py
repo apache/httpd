@@ -21,7 +21,7 @@ class TestForwardProxySsrf:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_proxy_008_01(self, env):
+    def test_proxy_011_01(self, env):
         """Forward proxy request with unix: prefix should not attempt
         to connect to a Unix Domain Socket (SSRF)."""
         start_pos = env.httpd_error_log.current_pos()
@@ -61,7 +61,7 @@ class TestProxyH2MalformedRequest:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_proxy_008_02(self, env):
+    def test_proxy_011_02(self, env):
         """Malformed request through h2c proxy should produce a log
         message about HTTP/0.9 with no host line, not an assertion
         failure or crash."""
@@ -99,7 +99,7 @@ class TestProxyErrorPageXss:
         conf.install()
         assert env.apache_restart() == 0
 
-    def test_proxy_008_03(self, env):
+    def test_proxy_011_03(self, env):
         """Proxy error page should not echo the request URI unescaped."""
         request_uri = "http:%2f%2fgoogle.org"
         url = env.mkurl("http", "test1", f"/{request_uri}")
