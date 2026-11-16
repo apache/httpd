@@ -90,10 +90,58 @@ AuthnCacheSOCache dbm
     <p>Module developers should note that their modules must be enabled
     for caching with <module>mod_authn_socache</module>.  A single optional API function
     <var>ap_authn_cache_store</var> is provided to cache credentials
-    a provider has just looked up or generated.  Usage examples are
-    available in <a
-    href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072"
-    >r957072</a>, in which three authn providers are enabled for caching.</p>
+    a provider has just looked up or generated.  It is declared in
+    <code>mod_auth.h</code>:</p>
+
+    <highlight language="c">
+void ap_authn_cache_store(request_rec *r, const char *module,
+                          const char *user, const char *realm,
+                          const char *data);
+    </highlight>
+
+    <p>Here <var>module</var> is the name by which the provider is
+    listed in <directive module="mod_authn_socache"
+    >AuthnCacheProvideFor</directive>, <var>realm</var> is
+    <code>NULL</code> for basic authentication, and <var>data</var> is
+    the password hash, or the digest authentication hash, found for
+    <var>user</var>.</p>
+
+    <p>A provider retrieves the function once the configuration has been
+    loaded, since <module>mod_authn_socache</module> may not be present,
+    and calls it whenever it has found a user's credentials:</p>
+
+    <highlight language="c">
+static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store) *authn_cache_store = NULL;
+
+static void opt_retr(void)
+{
+    authn_cache_store = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store);
+}
+
+static authn_status check_password(request_rec *r, const char *user,
+                                   const char *password)
+{
+    const char *hash;
+
+    /* ... look up the password hash for user ... */
+
+    if (authn_cache_store != NULL) {
+        authn_cache_store(r, "example", user, NULL, hash);
+    }
+
+    /* ... validate password against hash ... */
+}
+
+static void register_hooks(apr_pool_t *p)
+{
+    /* ... */
+    ap_hook_optional_fn_retrieve(opt_retr, NULL, NULL, APR_HOOK_MIDDLE);
+}
+    </highlight>
+
+    <p>The providers in <module>mod_authn_file</module>,
+    <module>mod_authn_dbm</module>, and <module>mod_authn_dbd</module>
+    are enabled for caching in this way.</p>
 </section>
 
 <directivesynopsis>
