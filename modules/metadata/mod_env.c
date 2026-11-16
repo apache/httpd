@@ -15,6 +15,7 @@
  */
 
 #include "apr.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 
 #if APR_HAVE_STDLIB_H
@@ -173,9 +174,9 @@ static const char *add_env_module_vars_from_file(cmd_parms *cmd, void *sconf_,
      * table used by SetEnv, so they merge and reach r->subprocess_env the
      * same way.
      */
-    while (!ap_cfg_getline(line, sizeof(line), file)) {
+    while ((rv = ap_cfg_getline(line, sizeof(line), file)) == APR_SUCCESS) {
         const char *rest = line;
-        const char *name, *value;
+        const char *name, *value, *quoted;
 
         if (line[0] == '#' || line[0] == '\0') {
             continue;
@@ -190,11 +191,47 @@ static const char *add_env_module_vars_from_file(cmd_parms *cmd, void *sconf_,
         }
 
         /* rest points just past the '='; no '=' means an empty value. */
-        value = apr_pstrdup(cmd->pool, rest);
+        quoted = rest;
+        while (apr_isspace(*quoted)) {
+            ++quoted;
+        }
+        if (*quoted == '"' || *quoted == '\'') {
+            const char *end;
+
+            /* ap_getword_conf() does not report unterminated quotes. */
+            for (end = quoted + 1; *end && *end != *quoted; ++end) {
+                if (*end == '\\' && (end[1] == *quoted || end[1] == '\\')) {
+                    ++end;
+                }
+            }
+            if (!*end) {
+                ap_cfg_closefile(file);
+                return apr_psprintf(cmd->pool,
+                                    "%s: Error reading %s at line %u: "
+                                    "Unterminated quoted value",
+                                    cmd->cmd->name, fname, file->line_number);
+            }
+
+            value = ap_getword_conf(cmd->pool, &quoted);
+            if (*quoted) {
+                ap_cfg_closefile(file);
+                return apr_psprintf(cmd->pool,
+                                    "%s: Error reading %s at line %u: "
+                                    "Unexpected text after quoted value",
+                                    cmd->cmd->name, fname, file->line_number);
+            }
+        }
+        else {
+            value = apr_pstrdup(cmd->pool, rest);
+        }
         apr_table_setn(sconf->vars, name, value);
     }
 
     ap_cfg_closefile(file);
+
+    if (rv != APR_EOF) {
+        return ap_pcfg_strerror(cmd->pool, file, rv);
+    }
 
     return NULL;
 }
