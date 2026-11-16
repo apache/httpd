@@ -270,6 +270,12 @@ static const char *construct_key(request_rec *r, const char *context,
                                  const char *provider, const char *user,
                                  const char *realm)
 {
+    const char *type = ap_auth_type(r);
+    char *ltype = apr_pstrdup(r->pool, type ? type : "");
+
+    /* AuthType is not case-sensitive. */
+    ap_str_tolower(ltype);
+
     /* handle "special" context values */
     if (!strcmp(context, directory)) {
         const char *slash = ap_strrchr_c(r->uri, '/');
@@ -313,15 +319,17 @@ static const char *construct_key(request_rec *r, const char *context,
     /* The key is bound to the provider that produced the entry, so a
      * hash stored by one credential source is never validated against
      * a request for another, and to the realm, so entries are not
-     * shared between protection spaces.
+     * shared between protection spaces.  It is bound to the auth type
+     * since what is cached differs between them: a password hash for
+     * Basic, the hash of user, realm and password for Digest.
      */
     if (realm == NULL) {
-        return apr_pstrcat(r->pool, context, ":", provider, ":", user,
-                           NULL);
+        return apr_pstrcat(r->pool, context, ":", provider, ":", ltype,
+                           ":", user, NULL);
     }
     else {
-        return apr_pstrcat(r->pool, context, ":", provider, ":", user,
-                           ":", realm, NULL);
+        return apr_pstrcat(r->pool, context, ":", provider, ":", ltype,
+                           ":", user, ":", realm, NULL);
     }
 }
 
