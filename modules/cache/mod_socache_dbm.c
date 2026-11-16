@@ -28,10 +28,7 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 #include "apr_dbm.h"
-#include "apr_version.h"
-#if !APR_VERSION_AT_LEAST(2,0,0)
 #include "apu_version.h"
-#endif
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
