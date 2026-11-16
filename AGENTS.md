@@ -30,6 +30,42 @@ extension GCC accepts. A C99 feature may be used only under
 in `include/ap_config.h`, with a C89 fallback in the `#else` branch; see
 `include/http_log.h`.
 
+## APR and APR-util versions
+
+httpd builds against APR 1.x plus APR-util 1.x, and against APR 2.x
+(APR trunk), which has APR-util merged into it. Code conditional on an
+APR-util feature must come out right for both.
+
+Include `apu_version.h` unconditionally before testing
+`APU_MAJOR_VERSION` or `APU_MINOR_VERSION`. APR 2.x ships that header
+too, defining the `APU_*_VERSION` macros to the `APR_*_VERSION` ones, so
+one test covers both:
+
+```c
+#include "apu_version.h"
+
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 7)
+/* APR-util 1.7 API */
+#else
+/* fallback */
+#endif
+```
+
+Do not wrap the include in `#if !APR_VERSION_AT_LEAST(2,0,0)` or
+`#if APR_MAJOR_VERSION < 2`, as some existing code does. Without the
+header an undefined `APU_MAJOR_VERSION` evaluates to 0 in `#if`, so
+under APR 2.x the test is silently false and the fallback is compiled.
+
+Mind the minimum versions too. `configure` on trunk requires APR 1.6
+and APR-util 1.6; on 2.4.x it requires only APR 1.4 and APR-util 1.3.
+Trunk code which is a candidate for backport must therefore either keep
+to the APIs of those older versions, or put anything newer under a
+version test with a fallback, or the backport will need rewriting.
+
+Either branch may never have been compiled locally, so build against
+both an APR-util older than the version tested for and APR trunk when
+touching such code, or say which was not built.
+
 ## Building
 
 A git checkout has no `configure` script; generate it with `buildconf`,
