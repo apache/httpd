@@ -53,6 +53,9 @@ RELEASE SHOWSTOPPERS:
 * PR 69946 (https://bz.apache.org/bugzilla/show_bug.cgi?id=69946)
   Authentication Bypass in mod_autht_jwt via JWT Claim Prefix Matching Inbox
 
+* mod_autht_jwt is a noop since aee4aad725 from 2023, HAVE_APU_JOSE is
+  never defined and the entire module is #ifdef'ed-out
+
 * PR 70051 (https://bz.apache.org/bugzilla/show_bug.cgi?id=70051)
   This is one of several security issues reported in the new MS-WDV code.
 
@@ -114,6 +117,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     - OpenSSL < 3 support (mod_ssl/ab)
     - MPMs: simple
     - mod_dav MS-WDV support has various unfixed problems
+    - mod_autht_jwt - module code is a noop since aee4aad725
 
   * Ditch platforms/89/old prereqs or anything else?
 
