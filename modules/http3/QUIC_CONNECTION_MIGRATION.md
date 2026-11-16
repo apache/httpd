@@ -56,6 +56,33 @@ If the BPF program does not attach, the server logs a warning and sends the
 `disable_active_migration` transport parameter. With one QUIC socket, one
 child serves all connections and this routing is not necessary.
 
+## 3. OpenSSL does not update the peer address
+
+When the server receives a valid QUIC packet from a new source address,
+RFC 9000 Section 9.3 requires:
+
+- The server **MUST** start path validation (PATH_CHALLENGE) to the new
+  address.
+- The server **MUST** update the address it sends responses to, based on the
+  highest-numbered non-probing packet from the new address.
+- Before validation completes, the server **MUST NOT** send more than a
+  minimum congestion window's worth of data to the unvalidated address
+  (anti-amplification, Section 9.3).
+
+RFC 9000 Section 9.3.1 specifically covers NAT rebinding (same IP, different
+port). Even when the `disable_active_migration` transport parameter is set
+(Section 18.2), the server must still handle NAT rebinding.
+
+OpenSSL's QUIC server implementation (as of 3.5.x):
+
+- Hardcodes `disable_active_migration = 1` in `quic_port.c`.
+- Accepts packets from a changed source address on the server side (no
+  address check in `ch_rx_handle_packet` for `is_server`).
+- **Never updates `cur_peer_addr`** after the initial handshake. The TX
+  packetiser sends responses to the stale address, so the client never
+  receives them.
+- Marks this as future work with `TODO(QUIC FUTURE)` comments.
+
 ## Test
 
 `test/modules/http3/test_109_migration.py` exercises NAT rebinding:
