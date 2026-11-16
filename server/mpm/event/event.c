@@ -864,9 +864,14 @@ static void clean_child_exit(int code)
 
     if (one_process) {
         event_note_child_stopped(/* slot */ 0, 0, 0);
+        /* Run ap_terminate() as an atexit() handler. */
+        exit(code);
     }
 
-    exit(code);
+    /* A forked child does not run the atexit() handlers inherited from the
+     * parent process (e.g. OpenSSL's, registered by default).
+     */
+    _exit(code);
 }
 
 /* just_die() is the SIGTERM handler installed in the child immediately
