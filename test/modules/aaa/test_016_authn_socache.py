@@ -380,8 +380,8 @@ class TestAuthnSocache(_SocacheBase):
 class TestAuthnSocacheHtaccess(_SocacheBase):
     """AuthnCacheProvideFor given only in .htaccess files."""
 
-    @pytest.fixture(autouse=True, scope='class', params=[True],
-                    ids=["enabled"])
+    @pytest.fixture(autouse=True, scope='class', params=[True, False],
+                    ids=["enabled", "not-enabled"])
     @classmethod
     def enabled(cls, env, request, basic_pwfile):
         AAATestEnv.write_basic_pwfile(basic_pwfile, {})

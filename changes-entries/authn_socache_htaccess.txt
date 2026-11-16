@@ -1,0 +1,3 @@
+  *) mod_authn_socache: Fix a crash if AuthnCacheProvideFor is used in
+     an htaccess file while caching is not otherwise enabled.
+     [Joe Orton]
