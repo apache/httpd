@@ -531,6 +531,10 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 **
 */
 
+/* largest value this platform's (signed) time_t can hold */
+#define DAV_TIME_T_MAX \
+    ((time_t) (((apr_uint64_t) 1 << (sizeof(time_t) * 8 - 1)) - 1))
+
 /* dav_get_timeout:  If the Timeout: header exists, return a time_t
  *    when this lock is expected to expire.  Otherwise, return
  *    a time_t of DAV_TIMEOUT_INFINITE.
@@ -559,12 +563,50 @@ DAV_DECLARE(time_t) dav_get_timeout(request_rec *r)
         }
 
         if (!strncmp(val, "Second-", 7)) {
+            char *endp;
+            apr_int64_t sec;
+
             val += 7;
-            /* ### We need to handle overflow better:
-             * ### timeout will be <= 2^32 - 1
+
+            /* atol() has no overflow detection: a long enough digit
+             * string overflows it, and "now + expires" below can then
+             * overflow time_t too, yielding a nonsensical (e.g.
+             * negative, already-expired) stored timeout instead of
+             * the large-but-finite one the client asked for. Use an
+             * overflow-checked parse, and clamp to the RFC 4918
+             * TimeOut maximum of 2^32 - 1 instead of propagating the
+             * overflow.
              */
-            expires = atol(val);
-            now     = time(NULL);
+            errno = 0;
+            sec = apr_strtoi64(val, &endp, 10);
+            if (endp == val) {
+                /* not a number at all -- same as atol(), treat as 0
+                 * (an immediately-expired lock), not as Infinite
+                 */
+                sec = 0;
+            }
+            else if (errno == ERANGE || sec > APR_UINT32_MAX) {
+                sec = APR_UINT32_MAX;
+            }
+            else if (sec < 0) {
+                sec = 0;
+            }
+
+            now = time(NULL);
+
+            /* The RFC 4918 maximum of 2^32 - 1 does not necessarily
+             * fit a time_t on platforms where time_t is 32 bits.
+             * Cap "sec" so "now + sec" cannot itself overflow time_t
+             * -- undefined behavior for a signed type, and in
+             * practice a silent wraparound to an already-expired
+             * value, i.e. exactly the bug this change fixes,
+             * reintroduced through the cast below.
+             */
+            if (sec > (apr_int64_t) (DAV_TIME_T_MAX - now)) {
+                sec = (apr_int64_t) (DAV_TIME_T_MAX - now);
+            }
+
+            expires = (time_t) sec;
             return now + expires;
         }
     }

@@ -678,6 +678,16 @@ class TestAutov2:
         stat = env.get_md_status(domain)
         assert stat["proto"]["acme-tls/1"] == []
         MDConf(env).install()
+        if not env.httpd_is_at_least("2.5.0"):
+            # On 2.4.x, mod_watchdog does not stop its threads before a
+            # child exits, so the renewal can still be signing when
+            # OpenSSL's atexit handler has run, failing with APR_ENOTIMPL.
+            # Logged by the exiting child after the restart, so possibly
+            # after this test: ignore it from here on.
+            env.httpd_error_log.add_ignored_matches([
+                r'.*\(70023\)[^:]*: (signing|jwk signed message)$',
+                r'.*\(70023\)[^:]*: md\[test-md-702-041-[^]]*\]$',
+            ])
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.httpd_error_log.ignore_recent(matches=[
             r'.*None of offered challenge types for domain.*',

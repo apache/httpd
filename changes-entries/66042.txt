@@ -1,0 +1,4 @@
+  *) mod_proxy_hcheck: Include the configured health check URI in the
+     "Health checking", "Health check ENABLING/DISABLING" and "Creating
+     hc worker" log messages, instead of only the worker's base URL.
+     PR 66042 [Arturo Bernal]

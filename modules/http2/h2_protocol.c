@@ -45,15 +45,15 @@
 #include "h2_protocol.h"
 #include "mod_http2.h"
 
-const char *h2_protocol_ids_tls[] = {
+const char *const h2_protocol_ids_tls[] = {
     "h2", NULL
 };
 
-const char *h2_protocol_ids_clear[] = {
+const char *const h2_protocol_ids_clear[] = {
     "h2c", NULL
 };
 
-const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
+const char *const H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
 /*******************************************************************************
  * HTTP/2 error stuff

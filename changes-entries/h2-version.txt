@@ -1,0 +1,2 @@
+  *) mod_http2: Internally identify as the httpd release version (2.4.x)
+     rather than carrying an independent version string.  [Joe Orton]

@@ -1,0 +1,3 @@
+  *) core: Fail startup or restart when a duplicated listening socket
+     cannot be initialized, instead of continuing with a broken listener.
+     PR 70106. [Xuqing Yang]

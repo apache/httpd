@@ -385,7 +385,7 @@ static apr_status_t cha_tls_alpn_01_setup(md_acme_authz_cha_t *cha, md_acme_auth
                 rv = md_store_save(store, p, MD_SG_CHALLENGES, authz->domain, cfn,
                                    MD_SV_CERT, (void*)cha_cert, 0);
             }
-            ++notify_server;
+            notify_server = 1;
         }
     }
     

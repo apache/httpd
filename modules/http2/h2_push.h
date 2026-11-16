@@ -140,19 +140,4 @@ apr_array_header_t *h2_push_collect_update(struct h2_stream *stream,
                                            const struct h2_headers *res);
 #endif
 
-/**
- * Get a cache digest as described in 
- * https://datatracker.ietf.org/doc/draft-kazuho-h2-cache-digest/
- * from the contents of the push diary.
- *
- * @param diary the diary to calculdate the digest from
- * @param p the pool to use
- * @param authority the authority to get the data for, use NULL/"*" for all
- * @param pdata on successful return, the binary cache digest
- * @param plen on successful return, the length of the binary data
- */
-apr_status_t h2_push_diary_digest_get(h2_push_diary *diary, apr_pool_t *p, 
-                                      int maxP, const char *authority, 
-                                      const char **pdata, apr_size_t *plen);
-
 #endif /* defined(__mod_h2__h2_push__) */

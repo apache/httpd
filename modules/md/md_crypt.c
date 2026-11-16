@@ -73,6 +73,10 @@
 #define MD_OPENSSL_10x
 #endif
 
+#if OPENSSL_VERSION_NUMBER < 0x40100000L
+#define ASN1_STRING_get_length(x)  ((size_t)ASN1_STRING_length(x))
+#endif
+
 static int initialized;
 
 struct md_pkey_t {
@@ -1335,7 +1339,7 @@ int md_cert_covers_md(md_cert_t *cert, const md_t *md)
 
 const char *md_cert_get_issuer_name(const md_cert_t *cert, apr_pool_t *p)
 {
-    X509_NAME *xname = X509_get_issuer_name(cert->x509);
+    const X509_NAME *xname = X509_get_issuer_name(cert->x509);
     if (xname) {
       char *name, *s = X509_NAME_oneline(xname, NULL, 0);
       name = apr_pstrdup(p, s);
@@ -1384,7 +1388,7 @@ apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t 
     if (xalt_names) {
         GENERAL_NAME *cval;
         const unsigned char *ip;
-        int len;
+        apr_size_t len;
         
         names = apr_array_make(p, sk_GENERAL_NAME_num(xalt_names), sizeof(char *));
         for (i = 0; i < sk_GENERAL_NAME_num(xalt_names); ++i) {
@@ -1397,7 +1401,7 @@ apr_status_t md_cert_get_alt_names(apr_array_header_t **pnames, const md_cert_t 
                     OPENSSL_free(buf);
                     break;
                 case GEN_IPADD:
-                    len = ASN1_STRING_length(cval->d.iPAddress);
+                    len = ASN1_STRING_get_length(cval->d.iPAddress);
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
                     ip = ASN1_STRING_data(cval->d.iPAddress);
 #else
@@ -2253,7 +2257,7 @@ apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
                       "cert has no authority key id in extension");
         return APR_ENOENT;
     }
-    akid_buf.len = (apr_size_t)ASN1_STRING_length(aki);
+    akid_buf.len = (apr_size_t)ASN1_STRING_get_length(aki);
     akid_buf.data = (const char *)ASN1_STRING_get0_data(aki);
     akid_buf.free_data = NULL;
 

@@ -548,6 +548,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 {
     int not_modified = -1; /* unset by default */
     ap_condition_e cond;
+    int has_if_match, has_if_none_match;
 
     /* Check for conditional requests --- note that we only want to do
      * this if we are successful so far and we are not processing a
@@ -570,6 +571,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      *     respond with a status of 412 (Precondition Failed).
      */
     cond = ap_condition_if_match(r, r->headers_out);
+    has_if_match = (AP_CONDITION_NONE != cond);
     if (AP_CONDITION_NOMATCH == cond) {
         return HTTP_PRECONDITION_FAILED;
     }
@@ -578,13 +580,19 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      * AND the requested resource has been modified since the time
      * specified in this field, then the server MUST
      *     respond with a status of 412 (Precondition Failed).
+     *
+     * A recipient MUST ignore If-Unmodified-Since if the request also
+     * carries an If-Match field (RFC 9110 13.1.4): If-Match is the more
+     * accurate condition and has already decided the outcome above.
      */
-    cond = ap_condition_if_unmodified_since(r, r->headers_out);
-    if (AP_CONDITION_NOMATCH == cond) {
-        not_modified = 0;
-    }
-    else if (cond >= AP_CONDITION_WEAK) {
-        return HTTP_PRECONDITION_FAILED;
+    if (!has_if_match) {
+        cond = ap_condition_if_unmodified_since(r, r->headers_out);
+        if (AP_CONDITION_NOMATCH == cond) {
+            not_modified = 0;
+        }
+        else if (cond >= AP_CONDITION_WEAK) {
+            return HTTP_PRECONDITION_FAILED;
+        }
     }
 
     /* If an If-None-Match request-header field was given
@@ -600,6 +608,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      * strong comparison.  We can only use weak if it's not a range request.
      */
     cond = ap_condition_if_none_match(r, r->headers_out);
+    has_if_none_match = (AP_CONDITION_NONE != cond);
     if (AP_CONDITION_NOMATCH == cond) {
         not_modified = 0;
     }
@@ -620,15 +629,22 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      * specified in this field, then the server MUST
      *    respond with a status of 304 (Not Modified).
      * A date later than the server's current request time is invalid.
+     *
+     * A recipient MUST ignore If-Modified-Since if the request also
+     * carries an If-None-Match field (RFC 9110 13.1.3): If-None-Match is
+     * the more accurate condition and has already decided the outcome
+     * above.
      */
-    cond = ap_condition_if_modified_since(r, r->headers_out);
-    if (AP_CONDITION_NOMATCH == cond) {
-        not_modified = 0;
-    }
-    else if (cond >= AP_CONDITION_WEAK) {
-        if (r->method_number == M_GET) {
-            if (not_modified) {
-                not_modified = 1;
+    if (!has_if_none_match) {
+        cond = ap_condition_if_modified_since(r, r->headers_out);
+        if (AP_CONDITION_NOMATCH == cond) {
+            not_modified = 0;
+        }
+        else if (cond >= AP_CONDITION_WEAK) {
+            if (r->method_number == M_GET) {
+                if (not_modified) {
+                    not_modified = 1;
+                }
             }
         }
     }

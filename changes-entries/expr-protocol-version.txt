@@ -1,0 +1,2 @@
+  *) ap_expr: Add SERVER_PROTOCOL_VERSION, ..._MAJOR, and ..._MINOR
+     variables. [Stefan Fritsch]

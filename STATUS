@@ -12,7 +12,9 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.4.70  : In development
+    2.4.72  : In development
+    2.4.71  : Released on November 11, 2026
+    2.4.70  : Released on November 06, 2026
     2.4.69  : Released on October 01, 2026
     2.4.68  : Released on June 08, 2026
     2.4.67  : Released on May 04, 2026
@@ -141,6 +143,41 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
 
+PATCHES APPROVED TO BACKPORT FROM TRUNK:
+
+  *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
+     MONOTONIC_USEC on reload, fix graceful restart with socket
+     activation and the status line; add a systemd test suite.
+     trunk patch: https://svn.apache.org/r1909769
+                  https://svn.apache.org/r1928356
+                  https://svn.apache.org/r1937596
+                  https://svn.apache.org/r1937597
+                  https://svn.apache.org/r1937598
+                  https://svn.apache.org/r1937599
+                  https://svn.apache.org/r1937600
+                  https://svn.apache.org/r1937601
+                  https://svn.apache.org/r1937602
+                  https://svn.apache.org/r1937635
+                  https://svn.apache.org/r1937644
+                  https://svn.apache.org/r1937646
+                  https://svn.apache.org/r1937647
+     2.4.x patch: https://github.com/apache/httpd/pull/773.patch
+     +1: jorton, covener, jim
+
+  *) mod_remoteip: Various fixes and improvements from trunk.
+     trunk patch: https://svn.apache.org/r1874344
+                  https://svn.apache.org/r1933436
+                  https://svn.apache.org/r1936258
+                  https://svn.apache.org/r1936357
+                  https://svn.apache.org/r1936366
+                  https://svn.apache.org/r1938292
+                  https://svn.apache.org/r1938908
+                  https://svn.apache.org/r1938909
+                  https://svn.apache.org/r1938927
+                  https://svn.apache.org/r1938928
+     2.4.x patch: https://github.com/apache/httpd/pull/819.patch
+     +1: jorton, covener, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -161,7 +198,7 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      announcement -- backends self-register as balancer members over UDP.
      Also adds the PROXY_WORKER_BEACON worker status bit (MMN minor bump) and
      lets the balancer-manager create a worker with initial status flags.
-     Apply after the "Update the shared worker status word atomically" and
+     Includes the "Update the shared worker status word atomically" and
      "Don't leave a half-defined worker" mod_proxy proposals below.
      trunk patch: https://svn.apache.org/r1934995
                   https://svn.apache.org/r1935040
@@ -178,7 +215,7 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1939484
                   https://svn.apache.org/r1939487
                   https://svn.apache.org/r1939493
-     2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
+     2.4.x patch: https://github.com/apache/httpd/pull/994.patch
      +1: jim,
 
   *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
@@ -201,27 +238,8 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1939480
                   https://svn.apache.org/r1939483
                   https://svn.apache.org/r1939486
-     2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
+     2.4.x patch: https://github.com/apache/httpd/pull/995.patch
      +1: jim, 
-
-  *) mod_systemd: Add watchdog support, send STOPPING=1 on shutdown and
-     MONOTONIC_USEC on reload, fix graceful restart with socket
-     activation and the status line; add a systemd test suite.
-     trunk patch: https://svn.apache.org/r1909769
-                  https://svn.apache.org/r1928356
-                  https://svn.apache.org/r1937596
-                  https://svn.apache.org/r1937597
-                  https://svn.apache.org/r1937598
-                  https://svn.apache.org/r1937599
-                  https://svn.apache.org/r1937600
-                  https://svn.apache.org/r1937601
-                  https://svn.apache.org/r1937602
-                  https://svn.apache.org/r1937635
-                  https://svn.apache.org/r1937644
-                  https://svn.apache.org/r1937646
-                  https://svn.apache.org/r1937647
-     2.4.x patch: https://github.com/apache/httpd/pull/773.patch
-     +1: jorton, covener
 
   *) mod_dav_fs: Add DAVLockDBType directive to select the lock database
      type, and serialize lock database access with a global mutex since
@@ -232,26 +250,6 @@ HISTORIC PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/399.patch
      +1: jorton, covener
      covener: docs need fixup for "2.5.1" 
-
-  *) mod_remoteip: Various fixes and improvements from trunk.
-     trunk patch: https://svn.apache.org/r1874344
-                  https://svn.apache.org/r1933436
-                  https://svn.apache.org/r1936258
-                  https://svn.apache.org/r1936357
-                  https://svn.apache.org/r1936366
-                  https://svn.apache.org/r1938292
-                  https://svn.apache.org/r1938908
-                  https://svn.apache.org/r1938909
-                  https://svn.apache.org/r1938927
-                  https://svn.apache.org/r1938928
-     2.4.x patch: https://github.com/apache/httpd/pull/819.patch
-     +1: jorton, covener
-
-   *) ab: remove SVN keywords in copyright msg
-      trunk patch:   https://svn.apache.org/r1939247
-     +1: covener
-     covener: trivial patch probably needs to manually re-applied due to the 
-              keyword expansion.
 
   *) mod_proxy: Update the shared worker status word atomically, so a
      change to one status bit (error, initialized, ...) can't be lost to a

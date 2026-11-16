@@ -350,7 +350,7 @@ static void assign_headers(request_rec *r, const h2_request *req,
                 /* If we have a content-type, but already seen eos, no more
                  * data will come. Signal a zero content length explicitly.
                  */
-                apr_table_setn(req->headers, "Content-Length", "0");
+                apr_table_setn(r->headers_in, "Content-Length", "0");
             }
         }
 #if !AP_HAS_RESPONSE_BUCKETS

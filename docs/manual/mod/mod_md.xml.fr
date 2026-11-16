@@ -626,7 +626,7 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <contextlist>
             <context>server config</context>
         </contextlist>
-	<compatibility>À partir de la version 2.4.69, un mandataire peut être
+	<compatibility>À partir de la version 2.4.70, un mandataire peut être
 	configuré séparément pour chaque MDomain.</compatibility>
         <usage>
 	    <p>Utiliser l’URL du serveur http mandataire direct donné
@@ -647,7 +647,7 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <contextlist>
             <context>server config</context>
         </contextlist>
-        <compatibility>Disponible à partir de la version 2.4.69 du serveur HTTP
+        <compatibility>Disponible à partir de la version 2.4.70 du serveur HTTP
 	Apache</compatibility>
          <usage>
             <p>
@@ -1963,7 +1963,7 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
-	<compatibility>Depuis la version 2.4.69, cette directive peut être
+	<compatibility>Depuis la version 2.4.70, cette directive peut être
 	définie séparément pour chaque MDomain.</compatibility>
         <usage>
             <p>

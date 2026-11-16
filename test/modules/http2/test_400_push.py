@@ -199,3 +199,20 @@ class TestPush:
         assert r.response["status"] == 200
         promises = r.results["streams"][r.response["id"]]["promises"]
         assert 1 == len(promises)
+
+
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+class TestPushNoDiary:
+
+    # push diary disabled, with debug logging
+    def test_h2_400_60(self, env):
+        conf = H2Conf(env)
+        conf.add("""
+            H2PushDiarySize 0
+            LogLevel http2:debug
+            """)
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+        r = env.curl_get(env.mkurl("https", "test1", "/index.html"))
+        assert r.response["status"] == 200

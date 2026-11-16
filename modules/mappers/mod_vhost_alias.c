@@ -244,7 +244,7 @@ static APR_INLINE int vhost_alias_checkspace(request_rec *r, char *buf,
                       "VirtualDocumentRoot expansion too large");
         return HTTP_REQUEST_URI_TOO_LARGE;
     }
-    if (*pdest + size > buf + HUGE_STRING_LEN) {
+    if (*pdest + size >= buf + HUGE_STRING_LEN) {
         **pdest = '\0';
         if (r->filename) {
             r->filename = apr_pstrcat(r->pool, r->filename, buf, NULL);
