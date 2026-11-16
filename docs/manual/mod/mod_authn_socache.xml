@@ -233,8 +233,9 @@ AuthnCacheProvideFor dbd myprovider
 
 <usage>
     <p>This directive specifies a string to be used along with the name of
-    the provider that produced the entry, the supplied username, and the
-    realm (for Basic Authentication, the protection space named by
+    the provider that produced the entry, the <directive
+    module="mod_authn_core">AuthType</directive>, the supplied username,
+    and the realm (for Basic Authentication, the protection space named by
     <directive module="mod_authn_core">AuthName</directive>) in
     constructing a cache key.  This serves to disambiguate identical
     usernames serving different authentication areas on the server.</p>

@@ -1,3 +1,3 @@
   *) mod_authn_socache: Keep cached credentials separate for each
-     AuthName and authn provider, and for each server port unless
-     AuthnCacheContext names a custom context.  [Hafiar]
+     AuthType, AuthName and authn provider, and for each server port
+     unless AuthnCacheContext names a custom context.  [Hafiar]

@@ -193,9 +193,16 @@ class TestAuthnSocache(_SocacheBase):
         for name, cache_lines in [
             ("digest", cached),
             ("digest-none", []),
+            ("mixed-digest", cached + ['AuthnCacheContext mixed']),
         ]:
             conf.add(_directory(env, name,
                                 _digest_lines(digest_pwfile, cache_lines)))
+        # Basic, with the context and AuthName of "mixed-digest".
+        conf.add(_directory(env, "mixed-basic", [
+            *_basic_lines(basic_pwfile,
+                          cached + ['AuthnCacheContext mixed']),
+            f'AuthName "{AAATestEnv.REALM}"',
+        ]))
         # A second server of the same name on another port, to which the
         # sections above apply as well.
         conf.add(f'Listen {env.http_port2}')
@@ -446,6 +453,27 @@ class TestAuthnSocache(_SocacheBase):
         AAATestEnv.write_basic_pwfile(basic_pwfile, {})
         assert self.basic(env, name, user, P1) == 200
         assert self.basic(env, name, user, P2, port=port2) == 200
+
+    @pytest.mark.parametrize("first", ["basic", "digest"])
+    def test_authn_socache_179_auth_type(
+            self, env, basic_pwfile, digest_pwfile, first):
+        """Basic and Digest locations with the same AuthnCacheContext
+        and AuthName do not share entries, which are of no use to each
+        other."""
+        user = f"user179{first}"
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {user: P1})
+        env.write_digest_pwfile(digest_pwfile, {user: P1})
+        if first == "basic":
+            assert self.basic(env, "mixed-basic", user, P1) == 200
+            assert self.digest(env, "mixed-digest", user, P1) == 200
+        else:
+            assert self.digest(env, "mixed-digest", user, P1) == 200
+            assert self.basic(env, "mixed-basic", user, P1) == 200
+        # and both are now cached
+        AAATestEnv.write_basic_pwfile(basic_pwfile, {})
+        env.write_digest_pwfile(digest_pwfile, {})
+        assert self.basic(env, "mixed-basic", user, P1) == 200
+        assert self.digest(env, "mixed-digest", user, P1) == 200
 
 
 class TestAuthnSocacheHtaccess(_SocacheBase):
