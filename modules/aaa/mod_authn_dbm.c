@@ -38,10 +38,7 @@
 
 #include "mod_auth.h"
 
-#include "apr_version.h"
-#if !APR_VERSION_AT_LEAST(2,0,0)
 #include "apu_version.h"
-#endif
 
 static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store) *authn_cache_store = NULL;
 #define AUTHN_CACHE_STORE(r,user,realm,data) \

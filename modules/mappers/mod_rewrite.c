@@ -55,10 +55,7 @@
 #include "apr_dbm.h"
 #include "apr_dbd.h"
 
-#include "apr_version.h"
-#if !APR_VERSION_AT_LEAST(2,0,0)
 #include "apu_version.h"
-#endif
 
 #include "mod_dbd.h"
 

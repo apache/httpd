@@ -20,10 +20,7 @@
 #include "apr_dbm.h"
 #include "apr_md5.h"
 
-#include "apr_version.h"
-#if !APR_VERSION_AT_LEAST(2,0,0)
 #include "apu_version.h"
-#endif
 
 #include "httpd.h"
 #include "http_config.h"
