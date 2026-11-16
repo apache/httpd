@@ -8,7 +8,7 @@ from pyhttpd.conf import HttpdConf
 # noe-tests ModSubstituteHttpdTest.groovy.
 
 
-class TestSubstitute:
+class TestModSubstitute:
 
     @pytest.fixture(autouse=True, scope='class')
     def _class_scope(self, env):
@@ -19,7 +19,7 @@ class TestSubstitute:
             f.write("Hello World!")
 
     # With a Substitute directive active, "World" is replaced by "Folks".
-    def test_filters_004_01(self, env):
+    def test_mod_substitute_006_01_with_substitute_directive(self, env):
         conf = HttpdConf(env, extras={
             f"test1.{env.http_tld}": """
             <Location "/hello/">
@@ -41,7 +41,7 @@ class TestSubstitute:
             f"original text should not appear after substitution: {body!r}"
 
     # Without the Substitute directive the file is served unmodified.
-    def test_filters_004_02_no_substitute_directive(self, env):
+    def test_mod_substitute_006_02_no_substitute_directive(self, env):
         conf = HttpdConf(env, extras={
             f"test1.{env.http_tld}": "",
         })
