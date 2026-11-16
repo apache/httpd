@@ -76,6 +76,13 @@ typedef struct
 {
     apr_bucket_brigade *tmpBucket;
     lua_State *L;
+    /* The state L was made a coroutine of, via lua_newthread(); for a
+     * cached (non-request-scoped) VM, L stays rooted on parent's stack
+     * for as long as this filter holds on to it, and must be popped off
+     * once released, or parent accumulates one more live reference to a
+     * throwaway coroutine on every request it ever filters.
+     */
+    lua_State *parent;
     ap_lua_vm_spec *spec;
     int broken;
 } lua_filter_ctx;
@@ -340,8 +347,8 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
     apr_pool_t *pool;
     ap_lua_vm_spec *spec;
     int n, rc, nres;
-    lua_State *L;
-    lua_filter_ctx *ctx;    
+    lua_State *L, *parent;
+    lua_filter_ctx *ctx;
     ap_lua_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
                                                         &lua_module);
     const ap_lua_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
@@ -368,7 +375,8 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
                                     0,
                                     hook_spec->function_name,
                                     "filter");
-            L = ap_lua_get_lua_state(pool, spec, r);
+            parent = ap_lua_get_lua_state(pool, spec, r);
+            L = parent;
             if (L) {
                 L = lua_newthread(L);
             }
@@ -387,6 +395,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
                                 "lua: Unable to find entry function '%s' in %s (not a valid function)",
                                     hook_spec->function_name,
                                     hook_spec->file_name);
+                    lua_pop(parent, 1);
                     ap_lua_release_state(L, spec, r);
                     return APR_EGENERAL;
                 }
@@ -402,14 +411,15 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
                 lua_settop(L, t);
             }
             ctx->L = L;
+            ctx->parent = parent;
             ctx->spec = spec;
-            
-            /* If a Lua filter is interested in filtering a request, it must first do a yield, 
+
+            /* If a Lua filter is interested in filtering a request, it must first do a yield,
              * otherwise we'll assume that it's not interested and pretend we didn't find it.
              */
             rc = lua_resume(L, 1, &nres);
             if (rc == LUA_YIELD) {
-                if (f->frec->providers == NULL) { 
+                if (f->frec->providers == NULL) {
                     /* Not wired by mod_filter */
                     apr_table_unset(r->headers_out, "Content-Length");
                     apr_table_unset(r->headers_out, "Content-MD5");
@@ -418,6 +428,7 @@ static apr_status_t lua_setup_filter_ctx(ap_filter_t* f, request_rec* r, lua_fil
                 return OK;
             }
             else {
+                lua_pop(parent, 1);
                 ap_lua_release_state(L, spec, r);
                 return APR_ENOENT;
             }
@@ -507,6 +518,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             }
             else {
                 ctx->broken = 1;
+                lua_pop(ctx->parent, 1);
                 ap_lua_release_state(L, ctx->spec, r);
                 ap_remove_output_filter(f);
                 apr_brigade_cleanup(pbbIn);
@@ -536,6 +548,7 @@ static apr_status_t lua_output_filter_handle(ap_filter_t *f, apr_bucket_brigade 
             }
             pbktEOS = apr_bucket_eos_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->tmpBucket, pbktEOS);
+            lua_pop(ctx->parent, 1);
             ap_lua_release_state(L, ctx->spec, r);
             rv = ap_pass_brigade(f->next, ctx->tmpBucket);
             apr_brigade_cleanup(ctx->tmpBucket);
@@ -631,8 +644,9 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
             }
             else {
                 ctx->broken = 1;
+                lua_pop(ctx->parent, 1);
                 ap_lua_release_state(L, ctx->spec, r);
-                ap_remove_input_filter(f); 
+                ap_remove_input_filter(f);
                 apr_bucket_delete(pbktIn);
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
@@ -651,7 +665,14 @@ static apr_status_t lua_input_filter_handle(ap_filter_t *f,
                 APR_BRIGADE_INSERT_TAIL(pbbOut, pbktOut);
             }
             APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
+            lua_pop(ctx->parent, 1);
             ap_lua_release_state(L, ctx->spec, r);
+            /* Core re-enters input filters with an EOS-only brigade after
+             * EOS has already been signalled once (e.g. via
+             * ap_discard_request_body()). Without this, lastCall == 0
+             * would be true again on that later call and this block would
+             * pop/release the coroutine a second time. */
+            ctx->broken = 1;
         }
     }
     return APR_SUCCESS;
