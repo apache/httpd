@@ -472,6 +472,9 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
     apr_bucket *b;
     apr_bucket_brigade *ob;
     apr_size_t orspbuflen = 0;
+    apr_size_t rspbuf_used = 0; /* bytes of rspbuf already filled in, across
+                                  * however many STDOUT records the body
+                                  * arrives in */
     apr_status_t rv = APR_SUCCESS;
     const char *fn = "handle_response";
     int header_state = HDR_STATE_READING_HEADERS;
@@ -578,26 +581,6 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                             apr_table_unset(r->headers_out, "Content-Length");
                         apr_table_unset(r->headers_out, "Transfer-Encoding");
 
-                        if (rspbuf) { /* caller wants to see response body,
-                                       * if any
-                                       */
-                            apr_status_t tmprv;
-
-                            if (rspbuflen) {
-                                *rspbuflen = orspbuflen;
-                            }
-                            tmprv = apr_brigade_flatten(ob, rspbuf, rspbuflen);
-                            if (tmprv != APR_SUCCESS) {
-                                /* should not occur for these bucket types;
-                                 * does not indicate overflow
-                                 */
-                                ap_log_rerror(APLOG_MARK, APLOG_ERR, tmprv, r,
-                                              APLOGNO(02505) "%s: error "
-                                              "flattening response body",
-                                              fn);
-                            }
-                        }
-
                         if (status != OK) {
                             r->status = status;
                             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -615,6 +598,55 @@ static apr_status_t handle_response(const fcgi_provider_conf *conf,
                          * to persist. */
                         apr_bucket_setaside(b, temp_pool);
                     }
+                }
+
+                if (seen_end_of_headers && rspbuf) {
+                    /* Caller wants to see the response body, if any. The
+                     * FastCGI authenticator may flush its socket between
+                     * the headers and the body, or between body chunks,
+                     * so the body can arrive over several STDOUT records
+                     * after the headers are already complete. Collect on
+                     * every such record (not only the one that completed
+                     * the headers), or the later chunks are silently
+                     * dropped.
+                     *
+                     * ob holds only not-yet-collected body data at this
+                     * point: header bytes were already consumed by
+                     * ap_scan_script_header_err_brigade_ex() above, and
+                     * apr_brigade_cleanup() below removes what gets
+                     * collected here, so each call only ever flattens the
+                     * bytes new to this record -- append them after
+                     * rspbuf_used rather than overwriting from the start.
+                     *
+                     * Once rspbuf is full, stop flattening into it -- but
+                     * still clean the brigade out below, on every record,
+                     * so a response body longer than rspbuf doesn't leave
+                     * its trailing records piling up unflattened in ob for
+                     * the rest of the exchange, each holding a bucket set
+                     * aside onto this iteration's on-stack readbuf.
+                     */
+                    if (rspbuf_used < orspbuflen) {
+                        apr_status_t tmprv;
+                        apr_size_t len = orspbuflen - rspbuf_used;
+
+                        tmprv = apr_brigade_flatten(ob, rspbuf + rspbuf_used, &len);
+                        if (tmprv != APR_SUCCESS) {
+                            /* should not occur for these bucket types;
+                             * does not indicate overflow
+                             */
+                            ap_log_rerror(APLOG_MARK, APLOG_ERR, tmprv, r,
+                                          APLOGNO(02505) "%s: error "
+                                          "flattening response body",
+                                          fn);
+                        }
+                        else {
+                            rspbuf_used += len;
+                            if (rspbuflen) {
+                                *rspbuflen = rspbuf_used;
+                            }
+                        }
+                    }
+                    apr_brigade_cleanup(ob);
                 }
 
                 /* If we didn't read all the data go back and get the

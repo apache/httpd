@@ -1,0 +1,5 @@
+  *) mod_authnz_fcgi: Fix the FastCGI authenticator's non-200 response
+     body being silently dropped when it was sent in a separate
+     FCGI_STDOUT record from the one carrying the end of the response
+     headers (e.g. because the authenticator flushed its output stream
+     between the two). PR 65984 [Arturo Bernal]
