@@ -26,6 +26,7 @@
 #include "util_filter.h"
 #include "util_script.h"
 #include "util_charset.h"
+#include "util_varbuf.h"
 
 /*
  * mod_cache_disk: Disk Based HTTP 1.1 Cache.
@@ -709,14 +710,46 @@ static int remove_url(cache_handle_t *h, request_rec *r)
     return OK;
 }
 
+static apr_status_t read_line_tail(request_rec *r, apr_file_t *file,
+                                   char *buf, apr_size_t buf_size,
+                                   apr_size_t first_len, char **line,
+                                   apr_size_t *line_len)
+{
+    struct ap_varbuf vb;
+    apr_size_t len;
+    apr_status_t rv;
+
+    ap_varbuf_init(r->pool, &vb, MAX_STRING_LEN);
+    vb.strlen = 0;
+    vb.buf[0] = '\0';
+    ap_varbuf_strmemcat(&vb, buf, first_len);
+
+    do {
+        rv = apr_file_gets(buf, buf_size, file);
+        if (rv != APR_SUCCESS) {
+            ap_varbuf_free(&vb);
+            return rv;
+        }
+        len = strlen(buf);
+        ap_varbuf_strmemcat(&vb, buf, len);
+    } while (len == 0 || buf[len - 1] != '\n');
+
+    *line_len = vb.strlen;
+    *line = ap_varbuf_pdup(r->pool, &vb, NULL, 0, NULL, 0, NULL);
+    ap_varbuf_free(&vb);
+    return APR_SUCCESS;
+}
+
 static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
                                apr_file_t *file)
 {
-    char w[MAX_STRING_LEN];
+    char buf[MAX_STRING_LEN];
+    char *w;
     apr_size_t p;
     apr_status_t rv;
 
     while (1) {
+        w = buf;
         rv = apr_file_gets(w, MAX_STRING_LEN - 1, file);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00716)
@@ -725,6 +758,15 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
         }
 
         p = strlen(w);
+        if (p == 0 || w[p - 1] != '\n') {
+            rv = read_line_tail(r, file, buf, MAX_STRING_LEN - 1,
+                                p, &w, &p);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10682)
+                              "Premature end of vary array.");
+                return rv;
+            }
+        }
         if (p > 0 && w[p - 1] == '\n') {
             if (p > 1 && w[p - 2] == CR) {
                 w[p - 2] = '\0';
@@ -776,7 +818,8 @@ static apr_status_t store_array(apr_file_t *fd, apr_array_header_t* arr)
 static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
                                apr_table_t *table, apr_file_t *file)
 {
-    char w[MAX_STRING_LEN];
+    char buf[MAX_STRING_LEN];
+    char *w;
     char *l;
     apr_size_t p;
     apr_status_t rv;
@@ -784,6 +827,7 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
     while (1) {
 
         /* ### What about APR_EOF? */
+        w = buf;
         rv = apr_file_gets(w, MAX_STRING_LEN - 1, file);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(00717)
@@ -794,6 +838,15 @@ static apr_status_t read_table(cache_handle_t *handle, request_rec *r,
         /* Delete terminal (CR?)LF */
 
         p = strlen(w);
+        if (p == 0 || w[p - 1] != '\n') {
+            rv = read_line_tail(r, file, buf, MAX_STRING_LEN - 1,
+                                p, &w, &p);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, APLOGNO(10683)
+                              "Premature end of cache headers.");
+                return rv;
+            }
+        }
         /* Indeed, the host's '\n':
            '\012' for UNIX; '\015' for MacOS; '\025' for OS/390
            -- whatever the script generates.

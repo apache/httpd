@@ -20,6 +20,10 @@
             CacheDirLength 1
 
    </IfModule>
+   <IfModule mod_headers.c>
+            Header echo ^TS
+            Header set Cache-Control "public, max-age=600"
+   </IfModule>
    DocumentRoot @SERVERROOT@/htdocs/modules/cache
    </VirtualHost>
 </IfModule>
