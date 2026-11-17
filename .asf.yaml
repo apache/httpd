@@ -30,6 +30,7 @@ github:
     squash: true
     merge: false
     rebase: true
+    squash_commit_message: PR_TITLE_AND_COMMIT_DETAILS
   features:
     projects: true
     # Disable all extraneous repo features
