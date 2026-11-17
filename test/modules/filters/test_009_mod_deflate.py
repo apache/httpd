@@ -72,3 +72,32 @@ class TestModDeflateFilters:
         body = r.response["body"].decode()
         assert "Good morning, fellow!" in body, \
             f"expected original content (decompressed by curl), got: {body!r}"
+
+    @pytest.mark.parametrize("body", [False, True], ids=["no-body", "gzip-body"])
+    def test_filters_009_03(self, env, body):
+        """An input DEFLATE filter inflates the request body only; the
+        Content-Encoding of the response must be left alone (PR 66149)."""
+        conf = HttpdConf(env, extras={
+            f"test1.{env.http_tld}": """
+            <Location "/filtertest/">
+                AddEncoding x-gzip .gz
+                SetInputFilter DEFLATE
+            </Location>
+            """,
+        })
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("http", "test1", "/filtertest/hello.txt.gz")
+        options = []
+        if body:
+            # A gzipped body is inflated while it is read and discarded.
+            body_path = os.path.join(env.gen_dir, "body_009_03.gz")
+            with open(body_path, "wb") as f:
+                f.write(gzip.compress(b"request body"))
+            options = ["-X", "GET", "-H", "Content-Encoding: gzip",
+                       "--data-binary", f"@{body_path}"]
+        r = env.curl_get(url, options=options)
+        assert r.response, "no response"
+        assert r.response["status"] == 200
+        assert r.response["header"].get("content-encoding") == "x-gzip"
