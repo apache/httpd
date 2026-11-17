@@ -1,0 +1,3 @@
+  *) mpm_motorz: Add the MotorZ MPM, an event-driven MPM with multi-poller
+     scale-out (new PollersPerChild directive), asynchronous keep-alive and
+     HTTP/2 handling, and graceful drain of connections.  [Jim Jagielski]

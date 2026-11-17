@@ -75,13 +75,9 @@ class PrivateServer:
         self.port = free_port()
         self.instance = None
 
-    def start(self):
+    def write_config(self):
         tmp_path = self.tmp_path
         docroot = tmp_path / "htdocs"
-        docroot.mkdir()
-        (docroot / "big.bin").write_bytes(b"x" * self.big_length)
-        (docroot / "small.txt").write_bytes(b"y" * SMALL_LENGTH)
-
         conf = tmp_path / "httpd.conf"
         conf.write_text(
             "\n".join(
@@ -104,6 +100,15 @@ class PrivateServer:
                 ]
             )
         )
+        return conf
+
+    def start(self):
+        tmp_path = self.tmp_path
+        docroot = tmp_path / "htdocs"
+        docroot.mkdir()
+        (docroot / "big.bin").write_bytes(b"x" * self.big_length)
+        (docroot / "small.txt").write_bytes(b"y" * SMALL_LENGTH)
+        conf = self.write_config()
         # Its own process group, so that the children go away with the parent.
         self.instance = HttpdInstance(
             self.config.info.httpd, ["-f", str(conf)],
@@ -132,6 +137,14 @@ class PrivateServer:
         test that goes on before that is not restarting the server when it
         thinks it is."""
         self.instance.restart(graceful=True, timeout=timeout)
+
+    def restart(self, extra=None, timeout=30):
+        """Hard restart (SIGHUP), with the config rewritten first if extra is
+        given. Returns whether the new generation came up."""
+        if extra is not None:
+            self.extra = list(extra)
+            self.write_config()
+        return self.instance.restart(graceful=False, timeout=timeout)
 
     def error_log(self):
         return (self.tmp_path / "error_log").read_text(errors="replace")
