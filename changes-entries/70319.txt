@@ -1,0 +1,4 @@
+  *) mod_ldap: Fix a memory leak: util_ald_create_caches() leaked the
+     three per-URL caches it had just created whenever the shared URL
+     cache was full and the purge could not free an entry. PR 70319
+     [Arturo Bernal]
