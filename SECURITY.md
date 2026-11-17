@@ -97,7 +97,9 @@ server is at worst proportional to the volume of network traffic.
 Memory consumption by a single request should be capped, with
 configurable limits; e.g. LimitRequestFields limits the RAM
 consumption by HTTP headers, LimitXMLRequestBody limits the RAM
-consumption by parsing XML request documents.
+consumption by parsing XML request documents (see the
+[mod_dav](#mod_dav-mod_dav_fs) section for the costs of XML processing
+within that limit).
 
 Example vulnerabilities which violated the model: CVE-2004-0942.
 
@@ -339,10 +341,13 @@ scope.
 ### mod_ssl, mod_md
 
 Certificate, key, CA, CRL and OpenSSL configuration files and
-`SSLOpenSSLConfCmd` are trusted. Client certificate data is untrusted
-input; identity derived from it is meaningful only when verification
-succeeds against a configured CA, and `SSLVerifyClient optional_no_ca`
-provides no authentication. TLS to backends authenticates the backend
+`SSLOpenSSLConfCmd` are trusted. A client certificate which verifies
+against a configured CA was issued by a trusted party, and its
+contents (subject, extensions, etc.) are trusted data. A certificate
+which has not been verified is untrusted client input: in particular
+`SSLVerifyClient optional_no_ca` accepts any certificate, so its
+contents are client-controlled and provide no authentication. TLS to
+backends authenticates the backend
 only with `SSLProxyVerify require`. In `mod_md`, requests to the ACME
 challenge paths, `acme-tls/1` handshakes and the public
 `certificate-status` handler are untrusted client input; the ACME
@@ -369,6 +374,12 @@ confinement, but the documented denial-of-service possibilities open
 to authorized users (filling the disk, `DavDepthInfinity`,
 `DavHonorMtimeHeader`) are out of scope. Locks are not a security
 feature, issues in the locking model are out of scope.
+
+Processing of XML request bodies (as used by e.g. `PROPFIND`,
+`PROPPATCH`, `LOCK` and `REPORT`) may have non-linear processing or
+memory costs relative to the size of the body. The body size is
+capped by `LimitXMLRequestBody`; computational costs of XML processing
+within that limit are outside the model.
 
 ### mod_cache, mod_cache_disk
 
