@@ -1,0 +1,3 @@
+  *) mod_proxy_balancer: Add a worker to a balancer at run time under the
+     balancer's lock and only once it is complete, so that request threads
+     cannot find a half-built worker.  [Jim Jagielski]
