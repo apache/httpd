@@ -1,0 +1,4 @@
+  *) core: Reject a request whose decoded %2f leaves a ".." segment that
+     escapes the document root, instead of silently continuing, when
+     "AllowEncodedSlashes on" is in effect.
+     PR 69994 [Arturo Bernal]
