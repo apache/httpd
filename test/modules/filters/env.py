@@ -14,6 +14,7 @@ class FiltersTestSetup(HttpdTestSetup):
         self.add_source_dir(os.path.dirname(inspect.getfile(FiltersTestSetup)))
         self.add_modules(["substitute", "sed"])
         self.add_cgi_module()
+        self.add_optional_modules(["xml2enc", "proxy_html"])
 
 
 class FiltersTestEnv(HttpdTestEnv):
