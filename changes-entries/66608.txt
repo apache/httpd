@@ -1,0 +1,3 @@
+  *) mod_proxy_fcgi: Fix SCRIPT_NAME when proxy-fcgi-pathinfo is set and the
+     URL path contains %-escapes; it held the whole path instead of the part
+     before PATH_INFO.  PR 66608.  [Arturo Bernal]

@@ -84,7 +84,7 @@ class ProxyTestSetup(HttpdTestSetup):
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
                           "proxy_connect", "proxy_uwsgi", "lbmethod_byrequests",
                           "remoteip"])
-        self.add_optional_modules(["proxy_hcheck"])
+        self.add_optional_modules(["proxy_hcheck", "proxy_fcgi", "include"])
 
 
 class ProxyTestEnv(HttpdTestEnv):
