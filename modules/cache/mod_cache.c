@@ -1115,7 +1115,12 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         reason = "Authorization required";
     }
-    else if (ap_find_token(NULL, apr_table_get(r->headers_out, "Vary"), "*")) {
+    else if (ap_find_token(NULL, apr_table_get(r->headers_out, "Vary"), "*")
+            || ap_find_token(NULL, apr_table_get(r->err_headers_out, "Vary"), "*")) {
+        /* err_headers_out carries a Vary set via "Header always", which
+         * is merged into headers_out only when the response is actually
+         * stored (see cache_merge_headers_out()); check it here too so
+         * that decision matches what gets stored. */
         reason = "Vary header contains '*'";
     }
     else if (apr_table_get(r->subprocess_env, "no-cache") != NULL) {

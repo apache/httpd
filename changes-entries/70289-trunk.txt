@@ -1,0 +1,4 @@
+  *) mod_cache: Do not store or serve a response whose "Vary: *" was set
+     via "Header always", which was missed by the cacheability check,
+     letting one client's response be served to another. PR 70289
+     [Arturo Bernal]
