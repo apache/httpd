@@ -1,0 +1,3 @@
+  *) mod_proxy_fcgi: Handle CGI Local Redirect Responses according to
+     RFC 3875 section 6.2.2. PR 61430.
+     [Arturo Bernal]

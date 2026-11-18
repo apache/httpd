@@ -82,7 +82,8 @@ class ProxyTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(ProxyTestSetup)))
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
-                          "proxy_connect", "proxy_uwsgi", "lbmethod_byrequests",
+                          "proxy_connect", "proxy_uwsgi", "proxy_fcgi",
+                          "lbmethod_byrequests",
                           "remoteip"])
         self.add_optional_modules(["proxy_hcheck"])
 
@@ -97,7 +98,7 @@ class ProxyTestEnv(HttpdTestEnv):
         self._d_forward = f"forward.{self.http_tld}"
         self._d_mixed = f"mixed.{self.http_tld}"
 
-        log_modules = ["proxy", "proxy_http", "proxy_balancer",
+        log_modules = ["proxy", "proxy_http", "proxy_fcgi", "proxy_balancer",
                        "lbmethod_byrequests", "ssl"]
         if self.has_shared_module("proxy_hcheck"):
             log_modules.append("proxy_hcheck")
