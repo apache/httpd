@@ -1926,8 +1926,19 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 	connexion (voir le module
 	<module>mod_remoteip</module>)</td></tr>
 
+    <tr><td><code>%{b}a</code></td>
+	<td>Identique à <code>%a</code>, mais une adresse IPv6 est écrite entre
+	crochets comme dans <code>[adresse]:port</code>, en accord avec la <a
+	href="https://www.rfc-editor.org/rfc/rfc5952#section-6">RFC 5952,
+	section 6</a>. Les drapeaux <code>b</code> et <code>c</code> peuvent
+	être combinés, comme dans <code>%{bc}a</code></td></tr>
+
     <tr><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
+
+    <tr><td><code>%{b}A</code></td>
+        <td>Identique à <code>%A</code>, mais une adresse IPv6 est écrite entre
+	crochets comme dans <code>%{b}a</code></td></tr>
 
     <tr><td><code>%{<em>name</em>}e</code></td>
         <td>Variable d'environnement de requête <em>name</em></td></tr>

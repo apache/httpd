@@ -1452,6 +1452,13 @@ ProxyPass "/mirror/foo/i" "!"
 	0 implique de toujours essayer les serveurs cibles dans un état d'erreur
 	sans délai. Utilise la syntaxe <a
 	href="directive-dict.html#Syntax">time-interval</a>.
+	<br />
+    Un nœud de travail (« worker ») qui ne fait pas partie d'un répartiteur de
+    charge ne passe en état d'erreur en cas d'échec de connexion que si son <a
+    href="#status_table">état</a> est explicitement défini à <code>-I</code>
+    (c'est-à-dire si l'option « ignore-errors » est désactivée) ; par défaut, un
+    tel nœud ignore les erreurs de connexion, auquel cas le paramètre
+    <code>retry</code> est sans effet.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
