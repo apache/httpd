@@ -20,14 +20,17 @@
  * of JWT bearer tokens, and as an acceptor of JWT Bearer tokens for authentication.
  */
 
-/* apr_jose support requires >= 1.7 */
-#if APU_MAJOR_VERSION > 1 || \
-    (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION > 6)
-#define HAVE_APU_JOSE 1
-#endif
-
 #include "httpd.h"
 #include "http_config.h"
+#include "apu_version.h"
+#include "apu.h"
+
+/* apr_jose support requires >= 1.7, and a crypto backend for the
+ * apr_crypto HMAC signing this module relies on. */
+#if (APU_MAJOR_VERSION > 1 || \
+    (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION > 6)) && APU_HAVE_CRYPTO
+#define HAVE_APU_JOSE 1
+#endif
 
 #ifdef HAVE_APU_JOSE
 
@@ -668,7 +671,7 @@ static const char *jwt_get_token(request_rec *r)
                         APR_JSON_VALUE_STRING), r->pool);
     }
 
-    apr_jose_signature_make(&signature, NULL, protect, r->pool);
+    apr_jose_signature_make(&signature, NULL, protect, NULL, r->pool);
     apr_jose_jws_make(&jws, &signature, NULL, &jwt, r->pool);
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
@@ -731,6 +734,7 @@ static apr_status_t verify_cb(apr_bucket_brigade *bb,
                                                        &autht_jwt_module);
 
     int alg_supported = 0;
+    int i;
 
     if (signature) {
         apr_json_value_t *ph = signature->protected_header;
@@ -762,7 +766,7 @@ static apr_status_t verify_cb(apr_bucket_brigade *bb,
     }
 
     /* first pass, is our algorithm supported? */
-    for (int i = 0; i < conf->verifies->nelts; i++) {
+    for (i = 0; i < conf->verifies->nelts; i++) {
     	auth_bearer_signature_rec *srec = &APR_ARRAY_IDX(conf->verifies,
     			i, auth_bearer_signature_rec);
 
@@ -797,7 +801,7 @@ static apr_status_t verify_cb(apr_bucket_brigade *bb,
     }
 
     /* second pass, does the signature match? */
-    for (int i = 0; i < conf->verifies->nelts; i++) {
+    for (i = 0; i < conf->verifies->nelts; i++) {
     	auth_bearer_signature_rec *srec = &APR_ARRAY_IDX(conf->verifies,
     			i, auth_bearer_signature_rec);
 
@@ -924,8 +928,8 @@ static autht_status check_token(request_rec *r, const char *type,
     const char *aud = NULL;
     const char *sub = NULL;
 
-    apr_int64_t exp;
-    apr_int64_t nbf;
+    apr_int64_t exp = 0;
+    apr_int64_t nbf = 0;
 
     int exp_set = 0;
     int nbf_set = 0;
