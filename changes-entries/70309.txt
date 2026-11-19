@@ -1,0 +1,4 @@
+  *) mod_md: Fix the ARI renewal time sometimes falling before the
+     CA's suggested window, never reaching its second half, and
+     parsing the hours of a non-UTC timezone offset as zero.
+     PR 70309 [Arturo Bernal]
