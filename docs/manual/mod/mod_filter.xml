@@ -260,7 +260,9 @@ FilterProvider repack png_pack  "%{CONTENT_TYPE} = 'image/png'"
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Had severe limitations before
-being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
+being moved to <module>mod_filter</module> in version 2.3.7.
+Wildcard media-types (<code>type/*</code>) are available in 2.5.1
+and later</compatibility>
 
 <usage>
     <p>This directive activates a particular output <a
@@ -275,6 +277,15 @@ being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
 
     <highlight language="config">
       AddOutputFilterByType DEFLATE text/html text/plain
+    </highlight>
+
+    <p>A <var>media-type</var> may end with <code>/*</code> to match
+    every subtype of the given type. The following example compresses
+    all output labeled as <code>text/html</code>, <code>text/plain</code>,
+    <code>text/css</code> or any other <code>text/</code> subtype.</p>
+
+    <highlight language="config">
+      AddOutputFilterByType DEFLATE text/*
     </highlight>
 
     <p>If you want the content to be processed by more than one filter, their

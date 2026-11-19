@@ -1,0 +1,2 @@
+  *) mod_filter: Allow wildcard media-types like "text/*" in
+     AddOutputFilterByType. [Andreas Treichel <gmblar+github gmail.com>]
