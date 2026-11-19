@@ -79,6 +79,7 @@ PER_FILE = {
         r".*\(20023\)The given path was above the root path:.*unable to include file",
         r".*\[include:error\].* unable to include \""]),
     "test_ldap.py": (["AH01617", "AH01631"], []),
+    "test_mod_autht_jwt.py": (["AH10428"], []),
     "test_mergeslashes.py": (["AH01630"], []),
     "test_negotiation.py": (["AH00690"], []),
     "test_ocsp.py": (["AH03239", "AH10373"], []),

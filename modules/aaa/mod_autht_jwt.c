@@ -966,28 +966,32 @@ static autht_status check_token(request_rec *r, const char *type,
             continue;
         }
 
-        if (!strncmp("aud", kv->k->value.string.p, kv->k->value.string.len)) {
+        if (kv->k->value.string.len == (sizeof("aud") - 1)
+                && !strncmp("aud", kv->k->value.string.p, kv->k->value.string.len)) {
             if (kv->v->type == APR_JSON_STRING) {
                 aud = apr_pstrndup(r->pool, kv->v->value.string.p,
                         kv->v->value.string.len);
             }
         }
 
-        if (!strncmp("sub", kv->k->value.string.p, kv->k->value.string.len)) {
+        if (kv->k->value.string.len == (sizeof("sub") - 1)
+                && !strncmp("sub", kv->k->value.string.p, kv->k->value.string.len)) {
             if (kv->v->type == APR_JSON_STRING) {
                 sub = apr_pstrndup(r->pool, kv->v->value.string.p,
                         kv->v->value.string.len);
             }
         }
 
-        if (!strncmp("exp", kv->k->value.string.p, kv->k->value.string.len)) {
+        if (kv->k->value.string.len == (sizeof("exp") - 1)
+                && !strncmp("exp", kv->k->value.string.p, kv->k->value.string.len)) {
             if (kv->v->type == APR_JSON_LONG) {
                 exp = kv->v->value.lnumber;
                 exp_set = 1;
             }
         }
 
-        if (!strncmp("nbf", kv->k->value.string.p, kv->k->value.string.len)) {
+        if (kv->k->value.string.len == (sizeof("nbf") - 1)
+                && !strncmp("nbf", kv->k->value.string.p, kv->k->value.string.len)) {
             if (kv->v->type == APR_JSON_LONG) {
                 nbf = kv->v->value.lnumber;
                 nbf_set = 1;
