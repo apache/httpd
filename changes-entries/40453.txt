@@ -1,0 +1,4 @@
+  *) mod_rewrite: Compare the strings of the lexicographic RewriteCond
+     operators <, >, <= and >= by their characters, not first by their
+     length, as it is already done with the [NC] flag.  PR 40453
+     [Arturo Bernal]
