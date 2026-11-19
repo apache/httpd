@@ -165,7 +165,7 @@ h3_stream* track_stream(h3_session* session, int64_t sid, h3q_stream* qstream)
     }
     apr_pool_t* stream_pool = NULL;
     CHECK(apr_pool_create(&stream_pool, session->pool) == APR_SUCCESS);
-    h3s = apr_pcalloc(session->pool, sizeof(*h3s));
+    h3s = apr_pcalloc(stream_pool, sizeof(*h3s));
     h3s->session = session;
     h3s->pool = stream_pool;
     h3s->stream_id = sid;
@@ -295,6 +295,13 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
         if (h3s->qstream && write_finished)
         {
             nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, NGHTTP3_H3_NO_ERROR);
+            if (!h3s->is_bidi && h3s->qstream)
+            {
+                /* on_stream_close only frees streams nghttp3 has our user data for, which uni streams never are. */
+                h3_session_queue_free(session, h3s->qstream);
+                h3s->qstream = NULL;
+                h3s->done = 1;
+            }
         }
         return h3s->is_bidi && !h3s->done && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
     }
@@ -435,12 +442,17 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         h3_stream* h3s = ((h3_stream**)snapshot->elts)[i];
         if (h3s)
         {
-            /* Only request streams are reclaimed; control streams live for the connection. */
-            if (h3s->is_bidi && !H3_SID_IS_SERVER(h3s->stream_id))
+            /* Our own control and QPACK streams live for the connection. */
+            if (!H3_SID_IS_SERVER(h3s->stream_id))
             {
-                if (h3s->done && h3s->qstream == NULL && h3s->dispatched && h3s->worker_done)
+                if (h3s->done && h3s->qstream == NULL && (!h3s->dispatched || h3s->worker_done))
                 {
-                    /* Closed, QUIC stream freed, worker returned: no other thread can reach its pool. */
+                    /* Closed, QUIC stream freed, no worker: no other thread can reach its pool.
+                     * nghttp3 may still hold a stream it rejected through on_stop_sending. */
+                    if (session->ngh3)
+                    {
+                        nghttp3_conn_set_stream_user_data(session->ngh3, h3s->stream_id, NULL);
+                    }
                     if (h3s->write_blocked)
                     {
                         h3s->write_blocked = 0;

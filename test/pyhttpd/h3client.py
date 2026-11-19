@@ -203,6 +203,51 @@ class H3Client:
     def get(self, path="/", **kwargs) -> H3Response:
         return self.request("GET", path, **kwargs)
 
+    async def _run_probed(self, batches, probe):
+        async with connect("127.0.0.1", self.port, configuration=self._config(),
+                           create_protocol=_Protocol) as proto:
+            probed = []
+            for batch in batches:
+                for r in batch:
+                    r.pop("delay")
+                    await proto.send_request(**r)
+                probed.append(probe())
+            return probed
+
+    def requests_probed(self, batches: List[List[dict]], probe) -> list:
+        """On one connection, each batch of requests in turn, then probe()."""
+        reqs = [[self._req(**r) for r in batch] for batch in batches]
+        return asyncio.run(asyncio.wait_for(self._run_probed(reqs, probe),
+                                            self.timeout))
+
+    async def _run_uni_streams(self, counts, probe):
+        async with connect("127.0.0.1", self.port, configuration=self._config(),
+                           create_protocol=_Protocol) as proto:
+            quic = proto._quic
+            probed = []
+            for n in counts:
+                sids = []
+                for _ in range(n):
+                    sid = quic.get_next_available_stream_id(is_unidirectional=True)
+                    # a reserved stream type, which the server has to ignore
+                    quic.send_stream_data(sid, encode_uint_var(0x21) + b"x" * 100,
+                                          end_stream=True)
+                    sids.append(sid)
+                proto.transmit()
+                while not all(quic._streams[sid].sender.is_finished
+                              for sid in sids if sid in quic._streams):
+                    await asyncio.sleep(0.01)
+                probed.append(probe())
+            resp = await proto.send_request("GET", "/", f"{self.domain}:{self.port}",
+                                            [], None)
+            return probed, resp
+
+    def uni_streams(self, counts: List[int], probe) -> Tuple[list, H3Response]:
+        """On one connection, open counts[i] short client uni streams and call
+        probe() once they are all acknowledged; then a GET."""
+        return asyncio.run(asyncio.wait_for(self._run_uni_streams(counts, probe),
+                                            self.timeout))
+
     async def _run_migration(self, path, server_addr):
         """GET on one local port, rebind to a new port, GET again."""
         loop = asyncio.get_running_loop()
