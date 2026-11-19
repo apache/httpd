@@ -2418,8 +2418,13 @@ static long modssl_io_cb(BIO *bio, int cmd, const char *argp,
          */
         int ok = (rc > 0);
 #else
-        apr_size_t requested_len = (apr_size_t)argi;
+        apr_size_t requested_len;
         int ok = (rc >= 0);
+
+        if (argi < 0)
+            return rc;
+
+        requested_len = (apr_size_t)argi;
 #endif
         if (ok) {
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
