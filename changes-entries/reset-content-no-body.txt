@@ -1,0 +1,3 @@
+  *) core: Do not generate response content for HTTP 205 Reset Content,
+     as required by RFC 9110 section 15.3.6. PR 69186.
+     [Arturo Bernal]
