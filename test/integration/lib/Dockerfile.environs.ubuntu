@@ -1,0 +1,18 @@
+FROM ubuntu
+ENV container docker
+
+ENV LANG en_US.UTF-8
+
+RUN apt update
+# files needed for test
+RUN apt -y install git-core wget tar m4 curl sudo tidy
+ENV DEBIAN_FRONTEND=noninteractive
+# httpd build dependencies
+RUN apt -y install libtool libapr1 libaprutil1 libapr1-dev libaprutil1-dev debianutils gcc libpcre3-dev libserf-1-1 libserf-dev libnghttp2-14 libnghttp2-dev libcurl4 libcurl4-gnutls-dev make
+
+WORKDIR /opt
+RUN git clone https://github.com/andrii-suse/environs
+WORKDIR /opt/environs
+RUN git clone --depth=1 https://github.com/apache/apr
+
+ENTRYPOINT ["/usr/bin/tail", "-f", "/dev/null"]

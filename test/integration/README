@@ -1,0 +1,58 @@
+
+Integration testing
+---------
+
+Integration tests allow to check functionality on particular platform.
+Currently supported platforms:
+
+* Local environment, assuming all build prerequisites satisfied.
+  prerequisites: All build dependencies of httpd, bash, m4, git, curl, tidy
+* ubuntu or opensuse leap using Docker;
+  prerequisites: docker configured to run without sudo, 
+  internet connection to build docker image
+
+Integration tests use environs framework, which provides wrappers to 
+simplify and unify scripting scenarios for various services, including
+Apache httpd.
+
+To run tests in local environment (Linux only):
+---------
+
+1. Clone wrapper generators https://github.com/andrii-suse/environs
+2. Change working directory to environs: `cd environs`
+3. Create soft link to your source tree: `ln -s /path/to/source/httpd httpd`
+   or jsut `git clone --depth=1 https://github.com/apache/httpd`
+4. Create soft link to apr source tree: `ln -s /path/to/source/apr apr`
+   or jsut `git clone --depth=1 https://github.com/apache/apr`
+5. Run particular test:
+   bash -x httpd/test/integration/environs/001-smoke.sh
+6. Examine exit code
+
+To run test in docker
+---------
+
+WARNING: docker container will map your source tree and build inside it.
+Containers also will reuse the binaries between test runs.
+So, backup your changes just in case and clean ap ny artefacts and 
+leftovers from previous builds:
+  $ make clean
+  $ rm Makefile
+  $ rm configure
+
+1. Make sure docker is running and doesn't require sudo, e.g. execute:
+  $ docker info
+
+2. Naviage to test directory:
+  $ cd test/integration/environs
+
+3. Start test executable, which will use shebang to build container and 
+  execute the test script in it:
+  $ ./001-smoke.sh
+
+4. Examine last messages in output and exit code
+
+5. By default docker will use following docker file to build test 
+   environment: test/integration/environs/Dockerfile.environs.ubuntu
+   Use ENVIRON_DOCKERFILE variable to pick another docker file in the 
+   location, e.g.:
+  $ ENVIRON_DOCKERFILE=Dockerfile.environs.opensuse.leap ./001-smoke.sh
