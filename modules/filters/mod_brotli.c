@@ -343,8 +343,6 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (!ctx) {
         const char *encoding;
         const char *token;
-        const char *accepts;
-        const char *q = NULL;
 
         /* Only work on main request, not subrequests, that are not
          * a 204 response with no content, and are not tagged with the
@@ -392,41 +390,53 @@ static apr_status_t compress_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          */
         apr_table_mergen(r->headers_out, "Vary", "Accept-Encoding");
 
-        accepts = apr_table_get(r->headers_in, "Accept-Encoding");
-        if (!accepts) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
+        /* force-brotli will just force it out regardless if the browser
+         * can actually do anything with it.
+         */
+        if (!apr_table_get(r->subprocess_env, "force-brotli")) {
+            const char *accepts;
+            const char *q = NULL;
+
+            accepts = apr_table_get(r->headers_in, "Accept-Encoding");
+            if (!accepts) {
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, bb);
+            }
+
+            /* Do we have Accept-Encoding: br? */
+            token = ap_get_token(r->pool, &accepts, 0);
+            while (token && token[0] && ap_cstr_casecmp(token, "br") != 0) {
+                while (*accepts == ';') {
+                    ++accepts;
+                    ap_get_token(r->pool, &accepts, 1);
+                }
+
+                if (*accepts == ',') {
+                    ++accepts;
+                }
+                token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
+            }
+
+            /* Find the qvalue, if provided */
+            if (*accepts) {
+                while (*accepts == ';') {
+                    ++accepts;
+                }
+                q = ap_get_token(r->pool, &accepts, 1);
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
+                              "token: '%s' - q: '%s'", token ? token : "NULL", q);
+            }
+
+            /* No acceptable token found or q=0 */
+            if (!token || token[0] == '\0' ||
+                (q && strlen(q) >= 3 && strncmp("q=0.000", q, strlen(q)) == 0)) {
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, bb);
+            }
         }
-
-        /* Do we have Accept-Encoding: br? */
-        token = ap_get_token(r->pool, &accepts, 0);
-        while (token && token[0] && ap_cstr_casecmp(token, "br") != 0) {
-            while (*accepts == ';') {
-                ++accepts;
-                ap_get_token(r->pool, &accepts, 1);
-            }
-
-            if (*accepts == ',') {
-                ++accepts;
-            }
-            token = (*accepts) ? ap_get_token(r->pool, &accepts, 0) : NULL;
-        }
-
-        /* Find the qvalue, if provided */
-        if (*accepts) {
-            while (*accepts == ';') {
-                ++accepts;
-            }
-            q = ap_get_token(r->pool, &accepts, 1);
+        else {
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
-                          "token: '%s' - q: '%s'", token ? token : "NULL", q);
-        }
-
-        /* No acceptable token found or q=0 */
-        if (!token || token[0] == '\0' ||
-            (q && strlen(q) >= 3 && strncmp("q=0.000", q, strlen(q)) == 0)) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
+                          "Forcing compression (force-brotli set)");
         }
 
         /* If the entire Content-Encoding is "identity", we can replace it. */
