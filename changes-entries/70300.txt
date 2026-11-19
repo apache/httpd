@@ -1,0 +1,5 @@
+  *) mod_md: Log the specific reason an ACME server request failed (e.g.
+     a bad or missing CA bundle file) at error level, instead of only at
+     debug level with just a generic "Internal error (specific
+     information not available)" visible otherwise. PR 70300
+     [Arturo Bernal]
