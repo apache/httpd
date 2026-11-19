@@ -294,7 +294,7 @@ static void io_loop(apr_pool_t *p, server_rec *s, apr_proc_t *proc,
         int i;
         int read = 0;
 
-        for (i = 0; i < sizeof fds / sizeof fds[0]; i++) {
+        for (i = 0; i < AP_ARRAY_LEN(fds); i++) {
             if (!fds[i]) {
                 continue;
             }

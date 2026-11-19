@@ -28,6 +28,7 @@
 
 #if APR_VERSION_AT_LEAST(1,7,0)
 #include <apr_encode.h>
+#include <ap_config.h>
 #endif
 
 #if APR_HAVE_STDLIB_H
@@ -489,7 +490,7 @@ apr_status_t md_text_fread8k(const char **ptext, apr_pool_t *p, const char *fpat
 
     *ptext = NULL;
     if (APR_SUCCESS == (rv = apr_file_open(&f, fpath, APR_FOPEN_READ, 0, p))) {
-        apr_size_t blen = sizeof(buffer)/sizeof(buffer[0]) - 1;
+        apr_size_t blen = AP_ARRAY_LEN(buffer) - 1;
         rv = apr_file_read_full(f, buffer, blen, &blen);
         if (APR_SUCCESS == rv || APR_STATUS_IS_EOF(rv)) {
             *ptext = apr_pstrndup(p, buffer, blen);
