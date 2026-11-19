@@ -90,22 +90,21 @@ static const char *get_lock_owner(request_rec *r, dav_lock *lock)
 
 static const char *mswdv_urlencode(request_rec *r, const char *str)
 {
-    const char *ip = str;
+    static const char hexdigit[] = "0123456789ABCDEF";
+    const unsigned char *ip;
     char *output;
     char *op;
 
     output = apr_palloc(r->pool, 3 * strlen(str) + 1);
     op = output;
 
-    for (ip = str; *ip; ip++) {
+    for (ip = (const unsigned char *)str; *ip; ip++) {
         if (apr_isalnum(*ip)) {
             *op++ = *ip;
         } else {
-            char msb = (*ip >> 4);
-            char lsb = (*ip & 0x0f);
             *op++ = '%';
-            *op++ = msb > 10 ? 'A' + msb - 10 : '0' +msb;
-            *op++ = lsb > 10 ? 'A' + lsb - 10 : '0' +lsb;
+            *op++ = hexdigit[*ip >> 4];
+            *op++ = hexdigit[*ip & 0x0f];
         }
     }
     *op++ = '\0';
