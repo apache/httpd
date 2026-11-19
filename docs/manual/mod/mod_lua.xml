@@ -1309,15 +1309,22 @@ collectgarbage() -- close the handle via GC
 <description>Specify the base path for resolving relative paths for <module>mod_lua</module> directives</description>
 <syntax>LuaRoot /path/to/a/directory</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
 </contextlist>
-<override>All</override>
+<compatibility>Allowed only in server config and virtual host context
+in version 2.5.1 and later; earlier versions also accepted it in
+directory and .htaccess context, where it applied to the whole
+virtual host.</compatibility>
 
 <usage>
     <p>Specify the base path which will be used to evaluate all
     relative paths within <module>mod_lua</module>. If not specified they
     will be resolved relative to the current working directory,
     which may not always work well for a server.</p>
+
+    <p>The directive applies to the whole virtual host and must appear
+    before any <directive module="mod_lua">LuaPackagePath</directive> or
+    <directive module="mod_lua">LuaPackageCPath</directive> directive whose
+    argument it should resolve.</p>
 </usage>
 </directivesynopsis>
 
