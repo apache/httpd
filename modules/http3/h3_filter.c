@@ -48,9 +48,25 @@ ap_filter_rec_t* h3_net_out_filter_handle;
 ap_filter_rec_t* h3_proto_out_filter_handle;
 ap_filter_rec_t* h3_proto_in_filter_handle;
 
-apr_status_t h3_filter_out(ap_filter_t* f H3_UNUSED, apr_bucket_brigade* bb)
+apr_status_t h3_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
 {
+    CHECK(f);
     CHECK(bb);
+    /* Destroying the EOR frees the request, which the stream worker still uses. */
+    apr_bucket_brigade* eor_bb = ap_get_module_config(f->c->conn_config, &http3_module);
+    if (eor_bb)
+    {
+        for (apr_bucket* b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb);)
+        {
+            apr_bucket* next = APR_BUCKET_NEXT(b);
+            if (AP_BUCKET_IS_EOR(b))
+            {
+                APR_BUCKET_REMOVE(b);
+                APR_BRIGADE_INSERT_TAIL(eor_bb, b);
+            }
+            b = next;
+        }
+    }
     apr_brigade_cleanup(bb);
     return APR_SUCCESS;
 }

@@ -340,6 +340,10 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     ap_check_request_header(r);
     r->per_dir_config = r->server->lookup_defaults;
 
+    /* H3_NET_OUT sets the EOR aside here, so r outlives ap_process_request(). */
+    apr_bucket_brigade* eor_bb = apr_brigade_create(c->pool, c->bucket_alloc);
+    ap_set_module_config(c->conn_config, &http3_module, eor_bb);
+
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "before ap_process_request");
     int access_status;
     if (r->status != HTTP_OK)
@@ -415,6 +419,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, (apr_int64_t)sid, status, body_len);
     }
 
+    apr_brigade_cleanup(eor_bb); /* logs the request and frees r */
     apr_pool_destroy(c->pool);
     apr_thread_mutex_lock(session->lock);
     h3s->worker_done = 1;
