@@ -1,0 +1,3 @@
+  *) core: Ignore If-Modified-Since and If-Unmodified-Since for a resource
+     without a modification date, instead of comparing them to the current
+     time, which could answer 304 or 412 wrongly. PR 39287.

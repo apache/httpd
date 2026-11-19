@@ -381,7 +381,13 @@ AP_DECLARE(ap_condition_e) ap_condition_if_unmodified_since(request_rec *r,
         mtime = apr_time_sec(apr_date_parse_http(
                         apr_table_get(headers, "Last-Modified")));
         if (mtime == APR_DATE_BAD) {
-            mtime = apr_time_sec(r->mtime ? r->mtime : apr_time_now());
+            if (!r->mtime) {
+                /* No modification date available, the condition must be
+                 * ignored (RFC 9110, section 13.1.4).
+                 */
+                return AP_CONDITION_NONE;
+            }
+            mtime = apr_time_sec(r->mtime);
         }
 
         reqtime = apr_time_sec(apr_date_parse_http(
@@ -470,7 +476,13 @@ AP_DECLARE(ap_condition_e) ap_condition_if_modified_since(request_rec *r,
         mtime = apr_time_sec(apr_date_parse_http(
                         apr_table_get(headers, "Last-Modified")));
         if (mtime == APR_DATE_BAD) {
-            mtime = apr_time_sec(r->mtime ? r->mtime : apr_time_now());
+            if (!r->mtime) {
+                /* No modification date available, the condition must be
+                 * ignored (RFC 9110, section 13.1.3).
+                 */
+                return AP_CONDITION_NONE;
+            }
+            mtime = apr_time_sec(r->mtime);
         }
 
         reqtime = apr_time_sec(apr_date_parse_http(
