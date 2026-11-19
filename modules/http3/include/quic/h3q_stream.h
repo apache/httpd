@@ -84,6 +84,13 @@ int h3q_stream_read(h3q_stream* st, unsigned char* buf, size_t read_size, size_t
 void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_finished);
 
 /**
+ * Whether the peer reset the stream's read side (RESET_STREAM).
+ * @param st Stream to query; NULL reports 0.
+ * @return Non-zero for a stream the peer reset.
+ */
+int h3q_stream_is_read_reset(h3q_stream* st);
+
+/**
  * Whether any of the stream's data arrived as 0-RTT, so it may be a replay.
  * @param st Stream to query; NULL reports 0.
  * @return Non-zero for a stream with 0-RTT data.

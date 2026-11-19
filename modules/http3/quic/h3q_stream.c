@@ -206,6 +206,11 @@ void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_
     *write_finished = st->engine_closed || st->conn->closed;
 }
 
+int h3q_stream_is_read_reset(h3q_stream* st)
+{
+    return st ? (int)st->read_reset : 0;
+}
+
 int h3q_stream_is_early(h3q_stream* st)
 {
     return st ? (int)st->early : 0;
