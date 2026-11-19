@@ -575,6 +575,14 @@ int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const ch
     return is_rapid || conn->close_len == 0 || h3q_now() >= conn->close_until;
 }
 
+void h3q_conn_refuse(h3q_conn* conn)
+{
+    ngtcp2_ccerr ccerr;
+    ngtcp2_ccerr_default(&ccerr);
+    ngtcp2_ccerr_set_transport_error(&ccerr, NGTCP2_CONNECTION_REFUSED, NULL, 0);
+    h3q_conn_close(conn, &ccerr);
+}
+
 void h3q_conn_free(h3q_conn* conn)
 {
     if (!conn)

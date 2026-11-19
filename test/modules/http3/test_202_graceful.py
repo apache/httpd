@@ -1,4 +1,5 @@
 import re
+import time
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
@@ -22,13 +23,19 @@ class TestGracefulShutdown:
         url = env.mkurl("https", "test1", "/001.html")
 
         def do_get(_i):
-            return env.curl_get(url, options=["--http3"])
+            start = time.monotonic()
+            r = env.curl_get(url, options=["--http3", "--max-time", "30"])
+            return r, time.monotonic() - start
 
         with ThreadPoolExecutor(max_workers=10) as pool:
             futures = [pool.submit(do_get, i) for i in range(10)]
             assert env.apache_reload() == 0
-            results = [f.result() for f in futures]
+            timed = [f.result() for f in futures]
 
+        # a connection the stopping child turns away has to fail fast, not idle out
+        hung = [round(t) for _, t in timed if t >= 20]
+        assert not hung, f"requests hung across the graceful restart for {hung}s"
+        results = [r for r, _ in timed]
         succeeded = [r for r in results if r.exit_code == 0 and r.response is not None]
         for r in succeeded:
             assert r.response["status"] == 200
