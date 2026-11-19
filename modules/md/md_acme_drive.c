@@ -1174,7 +1174,7 @@ static apr_status_t acme_get_ari(md_proto_driver_t *d,
         const char *renew_start, *renew_end;
         apr_time_t start, end;
         md_json_t *json;
-        unsigned char c;
+        apr_uint64_t n, window, threshold;
 
         cert = APR_ARRAY_IDX(certs, i, md_cert_t*);
         if (md_cert_get_ari_cert_id(&ari_cert_id, cert, d->p) != APR_SUCCESS)
@@ -1218,7 +1218,7 @@ static apr_status_t acme_get_ari(md_proto_driver_t *d,
                           renew_end);
             continue;
         }
-        if (start > end) {
+        if (start >= end) {
             md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
                           "CA advises weird renewal between '%s' and '%s'",
                           renew_start, renew_end);
@@ -1229,9 +1229,19 @@ static apr_status_t acme_get_ari(md_proto_driver_t *d,
                       " (explantion: %s)",
                       renew_start, renew_end,
                       ari_expl_url? ari_expl_url : "none given");
-        /* select a random value between start and end */
-        md_rand_bytes(&c, sizeof(c), d->p);
-        start += apr_time_from_sec((apr_time_sec(end - start) * (c - 128)) / 256);
+        /* Select a uniform random time in the suggested window. */
+        window = (apr_uint64_t)end - (apr_uint64_t)start;
+        threshold = ((apr_uint64_t)0 - window) % window;
+        do {
+            rv = md_rand_bytes((unsigned char *)&n, sizeof(n), d->p);
+            if (rv != APR_SUCCESS) {
+                md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
+                              APLOGNO() "error selecting ARI renewal time");
+                break;
+            }
+        } while (n < threshold);
+        if (rv != APR_SUCCESS) continue;
+        start = (apr_time_t)((apr_uint64_t)start + (n % window));
         if (!*prenew_at || (start < *prenew_at)) {
           *prenew_at = start;
           *purl = apr_pstrdup(d->p, ari_expl_url);
