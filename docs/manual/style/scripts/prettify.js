@@ -889,13 +889,11 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|[!=]=?=?|\\#|%=?|&&?=?|\\(|\\*=?|[
     }
 
     if (options['strings']) {
-        var strings = ("" + options['strings']).replace(/^ | $/g, '').replace(/-/g, '\\-');
-        fallthroughStylePatterns.push(
-            [PR_STRING,
-            new RegExp('(?:' + strings.replace(/[\s,]+/g, '|') + ')'),
-            , null]
-        );
-    }
+       var strings = ("" + options['strings']).replace(/^ | $/g, '').replace(/\\/g, '\\\\').replace(/-/g, '\\-');
+       fallthroughStylePatterns.push(
+           [PR_STRING,new RegExp('(?:' + strings.replace(/[\s,]+/g, '|') + ')'),null]
+       );
+   }
     
     var keywords = ("" + options['keywords']).replace(/^ | $/g, '');
     if (keywords.length) {
