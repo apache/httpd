@@ -831,6 +831,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     h2_proxy_stream *stream;
     apr_uri_t puri;
     const char *authority, *scheme, *path, *orig_host;
+    apr_table_t *headers;
     apr_status_t status;
     proxy_dir_conf *dconf;
 
@@ -872,7 +873,6 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
                           "and preserve host set, "
                           "forcing hostname to be %s for uri %s",
                           authority, r->uri);
-            apr_table_setn(r->headers_in, "Host", authority);
         }
     }
     else {
@@ -887,9 +887,13 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
                       authority, puri.hostname, puri.port);
     }
     /* See #235, we use only :authority when available and remove Host:
-     * since differing values are not acceptable, see RFC 9113 ch. 8.3.1 */
+     * since differing values are not acceptable, see RFC 9113 ch. 8.3.1.
+     * Remove it from a copy: the request may be submitted again on a new
+     * connection, and r->headers_in must keep the Host the client sent. */
+    headers = r->headers_in;
     if (authority && strlen(authority)) {
-        apr_table_unset(r->headers_in, "Host");
+        headers = apr_table_copy(stream->pool, r->headers_in);
+        apr_table_unset(headers, "Host");
     }
 
     /* we need this for mapping relative uris in headers ("Link") back
@@ -899,7 +903,7 @@ static apr_status_t open_stream(h2_proxy_session *session, const char *url,
     path = apr_uri_unparse(stream->pool, &puri, APR_URI_UNP_OMITSITEPART);
 
     h2_proxy_req_make(stream->req, stream->pool, r->method, scheme,
-                authority, path, r->headers_in);
+                authority, path, headers);
 
     if (dconf->add_forwarded_headers) {
         if (PROXYREQ_REVERSE == r->proxyreq) {

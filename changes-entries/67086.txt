@@ -1,0 +1,5 @@
+  *) mod_proxy_http2: Keep the port of the client's Host in ":authority"
+     (with ProxyPreserveHost) and in X-Forwarded-Host when a request is
+     retried on a new backend connection, and keep the Host request
+     header visible to logging after the request is proxied.
+     PR 67086 [Arturo Bernal]
