@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from .env import H3Conf, data_bytes
@@ -60,3 +62,27 @@ class TestRequestReset:
             self._check_rejected(r)
         assert rs[-1].status == 200, f"{rs[-1]}"
         assert rs[-1].body == body
+
+
+class TestRejectedStream:
+
+    @pytest.fixture(autouse=True, scope="class")
+    @classmethod
+    def _class_scope(cls, env):
+        H3Conf(env).add_h3_vhost().install()
+        assert env.apache_restart() == 0
+
+    def test_h3_111_10_nothing_after_reject(self, env):
+        # whatever the client sends on a stream after it was rejected is no request
+        authority = f"{env.h3_domain}:{env.https_port}"
+        late = [(":method", "GET"), (":scheme", "https"),
+                (":authority", authority), (":path", "/h3data-1k?late")]
+        r1, r2 = env.h3_client().requests([
+            dict(path="/h3data-1k", headers=[("connection", "close")], fin=False,
+                 after_reset=late),
+            dict(path="/h3data-1k", delay=0.5),
+        ], sequential=True)
+        assert r1.status is None and r1.reset is not None, f"{r1}"
+        assert r2.status == 200, f"{r2}"
+        with open(os.path.join(env.server_logs_dir, "access_log")) as fd:
+            assert "?late" not in fd.read()

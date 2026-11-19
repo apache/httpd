@@ -225,6 +225,15 @@ void h3q_stream_reset(h3q_stream* st, uint64_t err)
     }
 }
 
+void h3q_stream_abort(h3q_stream* st, uint64_t err)
+{
+    if (st && !st->conn->closed)
+    {
+        ngtcp2_conn_shutdown_stream(st->conn->qconn, 0, st->id, err);
+        st->write_closed = 1;
+    }
+}
+
 void h3q_stream_free(h3q_stream* st)
 {
     if (!st)

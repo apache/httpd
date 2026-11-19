@@ -105,6 +105,14 @@ int h3q_stream_is_early(h3q_stream* st);
 void h3q_stream_reset(h3q_stream* st, uint64_t err);
 
 /**
+ * Abort both halves of a stream: reset the sending half, and send
+ * STOP_SENDING so the peer's further data is discarded.
+ * @param st  Stream to abort; NULL is ignored.
+ * @param err Application error code to report.
+ */
+void h3q_stream_abort(h3q_stream* st, uint64_t err);
+
+/**
  * Free a stream handle.
  * @param st Stream to free; NULL is ignored.
  */

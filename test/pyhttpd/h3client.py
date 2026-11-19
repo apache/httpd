@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple
 from aioquic.asyncio.client import connect
 from aioquic.asyncio.protocol import QuicConnectionProtocol
 from aioquic.buffer import encode_uint_var
-from aioquic.h3.connection import H3_ALPN, H3Connection
+from aioquic.h3.connection import H3_ALPN, H3Connection, encode_frame
 from aioquic.h3.events import DataReceived, HeadersReceived
 from aioquic.quic.configuration import QuicConfiguration
 from aioquic.quic.events import ConnectionTerminated, StreamReset
@@ -72,6 +72,7 @@ class _Protocol(QuicConnectionProtocol):
         self.http = _H3Connection(self._quic)
         self.pending = {}
         self.terminated = None
+        self.after_reset = {}
 
     def _finish(self, sid):
         resp, fut = self.pending.pop(sid)
@@ -87,6 +88,7 @@ class _Protocol(QuicConnectionProtocol):
         if isinstance(event, StreamReset) and event.stream_id in self.pending:
             self.pending[event.stream_id][0].reset = event.error_code
             self._finish(event.stream_id)
+            self._send_after_reset(event.stream_id)
             return
         for ev in self.http.handle_event(event):
             if ev.stream_id not in self.pending:
@@ -104,8 +106,22 @@ class _Protocol(QuicConnectionProtocol):
             if getattr(ev, "stream_ended", False):
                 self._finish(ev.stream_id)
 
+    def _send_after_reset(self, sid):
+        hdrs = self.after_reset.pop(sid, None)
+        if hdrs is None:
+            return
+        # a raw HEADERS frame; the server may have stopped the stream already
+        frame = encode_frame(0x1, self.http._encode_headers(
+            sid, [(k.encode(), v.encode()) for k, v in hdrs]))
+        try:
+            self._quic.send_stream_data(sid, frame, end_stream=True)
+        except Exception:
+            pass
+        self.transmit()
+
     def send_request(self, method, path, authority, headers, body,
-                     priority=None, reset=None, reset_wait=True):
+                     priority=None, reset=None, reset_wait=True, fin=True,
+                     after_reset=None):
         sid = self._quic.get_next_available_stream_id()
         if priority is not None:
             # RFC 9218 PRIORITY_UPDATE for this request stream, on the control stream
@@ -122,8 +138,10 @@ class _Protocol(QuicConnectionProtocol):
             # RFC 9114 4.4: no :scheme and no :path
             hdrs = [hdrs[0], hdrs[2]]
         hdrs.extend((k.lower().encode(), v.encode()) for k, v in headers)
+        if after_reset is not None:
+            self.after_reset[sid] = after_reset
         self.http.send_headers(sid, hdrs,
-                               end_stream=body is None and reset is None)
+                               end_stream=body is None and reset is None and fin)
         if body is not None:
             self.http.send_data(sid, body, end_stream=reset is None)
         fut = asyncio.get_running_loop().create_future()
@@ -191,11 +209,11 @@ class H3Client:
 
     def _req(self, method="GET", path="/", headers=None, body=None,
              authority=None, priority=None, delay=0, reset=None,
-             reset_wait=True):
+             reset_wait=True, fin=True, after_reset=None):
         return dict(method=method, path=path, headers=headers or [],
                     body=body, authority=authority or f"{self.domain}:{self.port}",
                     priority=priority, delay=delay, reset=reset,
-                    reset_wait=reset_wait)
+                    reset_wait=reset_wait, fin=fin, after_reset=after_reset)
 
     def requests(self, reqs: List[dict], sequential=False) -> List[H3Response]:
         """Several requests on one connection; each a dict of request() args."""

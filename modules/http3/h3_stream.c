@@ -202,7 +202,8 @@ static void abort_request_stream(h3_session* session, h3_stream* h3s, uint64_t a
 {
     if (h3s->qstream)
     {
-        h3q_stream_reset(h3s->qstream, app_error_code);
+        /* Stop the read side too, or later data on the stream makes it anew. */
+        h3q_stream_abort(h3s->qstream, app_error_code);
     }
     nghttp3_conn_shutdown_stream_read(session->ngh3, h3s->stream_id);
     nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, app_error_code);
