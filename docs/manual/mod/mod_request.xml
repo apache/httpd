@@ -75,7 +75,7 @@ mod_include.</description>
 
     <p>If the request size sent by the client exceeds the maximum
     size allocated by this directive, the server will return
-    <code>413 Request Entity Too Large</code>.</p>
+    <code>413 Content Too Large</code>.</p>
 
 </usage>
 
