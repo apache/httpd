@@ -39,3 +39,11 @@ class TestStreamReclaim:
             [[cancelled] * 200, [cancelled] * 2000], lambda: children_rss_kb(env))
         assert after - before < 8 * 1024, \
             f"httpd children grew from {before} to {after} KB over 2000 cancelled requests"
+
+    def test_h3_112_03_reset_with_request(self, env):
+        # the reset can come before the server has read the request at all
+        cancelled = dict(path="/h3data-1k", reset=0x10c, reset_wait=False)
+        before, after = env.h3_client(timeout=60).requests_probed(
+            [[cancelled] * 200, [cancelled] * 2000], lambda: children_rss_kb(env))
+        assert after - before < 8 * 1024, \
+            f"httpd children grew from {before} to {after} KB over 2000 reset requests"

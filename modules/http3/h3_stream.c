@@ -206,6 +206,12 @@ static void abort_request_stream(h3_session* session, h3_stream* h3s, uint64_t a
     }
     nghttp3_conn_shutdown_stream_read(session->ngh3, h3s->stream_id);
     nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, app_error_code);
+    if (h3s->qstream)
+    {
+        /* nghttp3 had none of our user data before HEADERS, so on_stream_close did not free it. */
+        h3_session_queue_free(session, h3s->qstream);
+        h3s->qstream = NULL;
+    }
     h3s->done = 1;
     h3s->body_complete = 1;
 }

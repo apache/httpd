@@ -105,7 +105,7 @@ class _Protocol(QuicConnectionProtocol):
                 self._finish(ev.stream_id)
 
     def send_request(self, method, path, authority, headers, body,
-                     priority=None, reset=None):
+                     priority=None, reset=None, reset_wait=True):
         sid = self._quic.get_next_available_stream_id()
         if priority is not None:
             # RFC 9218 PRIORITY_UPDATE for this request stream, on the control stream
@@ -129,8 +129,12 @@ class _Protocol(QuicConnectionProtocol):
         fut = asyncio.get_running_loop().create_future()
         self.pending[sid] = (H3Response(sid), fut)
         self.transmit()
-        if reset is not None:
+        if reset is not None and reset_wait:
             asyncio.ensure_future(self._reset_when_acked(sid, reset))
+        elif reset is not None:
+            # right behind the request, likely in the same receive batch
+            self._quic.reset_stream(sid, reset)
+            self.transmit()
         return fut
 
     async def _reset_when_acked(self, sid, error_code):
@@ -186,10 +190,12 @@ class H3Client:
             return results
 
     def _req(self, method="GET", path="/", headers=None, body=None,
-             authority=None, priority=None, delay=0, reset=None):
+             authority=None, priority=None, delay=0, reset=None,
+             reset_wait=True):
         return dict(method=method, path=path, headers=headers or [],
                     body=body, authority=authority or f"{self.domain}:{self.port}",
-                    priority=priority, delay=delay, reset=reset)
+                    priority=priority, delay=delay, reset=reset,
+                    reset_wait=reset_wait)
 
     def requests(self, reqs: List[dict], sequential=False) -> List[H3Response]:
         """Several requests on one connection; each a dict of request() args."""
