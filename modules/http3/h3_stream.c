@@ -197,11 +197,9 @@ static int is_malformed_request_error(nghttp3_ssize liberr)
     return liberr == NGHTTP3_ERR_MALFORMED_HTTP_HEADER || liberr == NGHTTP3_ERR_MALFORMED_HTTP_MESSAGING;
 }
 
-/* RFC 9114 4.1.2: reject the offending stream, keep the connection serving. Session lock held. */
-static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3_ssize liberr)
+/* Abort both directions of a request stream, keep the connection serving. Session lock held. */
+static void abort_request_stream(h3_session* session, h3_stream* h3s, uint64_t app_error_code)
 {
-    uint64_t app_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "malformed HTTP/3 request on stream %" APR_INT64_T_FMT " (%s); rejecting with stream error 0x%" APR_UINT64_T_HEX_FMT, (apr_int64_t)h3s->stream_id, nghttp3_strerror((int)liberr), (apr_uint64_t)app_error_code);
     if (h3s->qstream)
     {
         h3q_stream_reset(h3s->qstream, app_error_code);
@@ -210,6 +208,14 @@ static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3
     nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, app_error_code);
     h3s->done = 1;
     h3s->body_complete = 1;
+}
+
+/* RFC 9114 4.1.2: reject the offending stream, keep the connection serving. Session lock held. */
+static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3_ssize liberr)
+{
+    uint64_t app_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "malformed HTTP/3 request on stream %" APR_INT64_T_FMT " (%s); rejecting with stream error 0x%" APR_UINT64_T_HEX_FMT, (apr_int64_t)h3s->stream_id, nghttp3_strerror((int)liberr), (apr_uint64_t)app_error_code);
+    abort_request_stream(session, h3s, app_error_code);
 
     h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
     apr_uint32_t limit = conf ? conf->h3_max_stream_errors : H3_MAX_STREAM_ERRORS_DEFAULT;
@@ -276,7 +282,13 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read,
     }
     if (read_finished)
     {
-        if (!h3s->body_complete)
+        if (!h3s->body_complete && h3s->is_bidi && h3q_stream_is_read_reset(h3s->qstream))
+        {
+            /* RFC 9114 4.1.2: the client cancelled the request before its end, so it is not processed. */
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, session->s, "HTTP/3 request on stream %" APR_INT64_T_FMT " reset by the client before its end; rejecting it", (apr_int64_t)h3s->stream_id);
+            abort_request_stream(session, h3s, NGHTTP3_H3_REQUEST_REJECTED);
+        }
+        else if (!h3s->body_complete)
         {
             feed_stream_fin(session, h3s);
         }

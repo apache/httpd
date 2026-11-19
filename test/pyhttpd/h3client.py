@@ -105,7 +105,7 @@ class _Protocol(QuicConnectionProtocol):
                 self._finish(ev.stream_id)
 
     def send_request(self, method, path, authority, headers, body,
-                     priority=None):
+                     priority=None, reset=None):
         sid = self._quic.get_next_available_stream_id()
         if priority is not None:
             # RFC 9218 PRIORITY_UPDATE for this request stream, on the control stream
@@ -122,13 +122,25 @@ class _Protocol(QuicConnectionProtocol):
             # RFC 9114 4.4: no :scheme and no :path
             hdrs = [hdrs[0], hdrs[2]]
         hdrs.extend((k.lower().encode(), v.encode()) for k, v in headers)
-        self.http.send_headers(sid, hdrs, end_stream=body is None)
+        self.http.send_headers(sid, hdrs,
+                               end_stream=body is None and reset is None)
         if body is not None:
-            self.http.send_data(sid, body, end_stream=True)
+            self.http.send_data(sid, body, end_stream=reset is None)
         fut = asyncio.get_running_loop().create_future()
         self.pending[sid] = (H3Response(sid), fut)
         self.transmit()
+        if reset is not None:
+            asyncio.ensure_future(self._reset_when_acked(sid, reset))
         return fut
+
+    async def _reset_when_acked(self, sid, error_code):
+        # aioquic drops unsent data on a reset; send RESET_STREAM in place of
+        # the FIN only once the server has acknowledged everything else
+        sender = self._quic._streams[sid].sender
+        while sender._buffer_start < sender._buffer_stop:
+            await asyncio.sleep(0.005)
+        self._quic.reset_stream(sid, error_code)
+        self.transmit()
 
 
 class H3Client:
@@ -174,10 +186,10 @@ class H3Client:
             return results
 
     def _req(self, method="GET", path="/", headers=None, body=None,
-             authority=None, priority=None, delay=0):
+             authority=None, priority=None, delay=0, reset=None):
         return dict(method=method, path=path, headers=headers or [],
                     body=body, authority=authority or f"{self.domain}:{self.port}",
-                    priority=priority, delay=delay)
+                    priority=priority, delay=delay, reset=reset)
 
     def requests(self, reqs: List[dict], sequential=False) -> List[H3Response]:
         """Several requests on one connection; each a dict of request() args."""
