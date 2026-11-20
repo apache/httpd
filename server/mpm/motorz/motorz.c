@@ -15,6 +15,7 @@
  */
 
 #include "motorz.h"
+#include "mpm_fdqueue.h"
 
 /* Upper bound on the number of transaction pools kept on the recycle
  * free-list (motorz_ptrans_get/put). Beyond this, freed pools are destroyed
@@ -124,6 +125,22 @@ static int my_child_num;
 static apr_threadkey_t *worker_slot_key;
 static apr_uint32_t next_worker_slot;
 static ap_sb_handle_t **worker_sbhs;
+/* What a worker thread's worker_slot_key points to: its scoreboard handle and
+ * its slot in worker_sockets (-1 for none). threads_per_child entries for the
+ * pool's threads, then as many for any thread past those.
+ */
+typedef struct motorz_worker_slot_t {
+    ap_sb_handle_t *sbh;
+    int sock_slot;
+} motorz_worker_slot_t;
+static motorz_worker_slot_t *worker_slots;
+/* The sockets the workers are blocked on, per worker slot, for an ungraceful
+ * stop to shut them down (ap_worker_sockets_*() in mpm_fdqueue.h).
+ */
+static /*atomic*/ apr_uint32_t workers_may_exit = AP_WORKERS_RUNNING;
+static ap_worker_sockets_t *worker_sockets;
+/* Set by child_main() when a graceful stop ran to completion. */
+static int drain_completed = 0;
 /* Number of connections accepted by this child so far; compared against
  * ap_max_requests_per_child. Written by the accepting poller thread
  * (motorz_io_accept) and read by the supervisor on the main thread
@@ -205,19 +222,75 @@ static motorz_core_t *motorz_core_get(void)
     return g_motorz_core;
 }
 
-/* The calling worker thread's scoreboard handle (see worker_sbhs). */
-static ap_sb_handle_t *motorz_worker_sbh(void)
+/* The calling worker thread's slot (see worker_sbhs). */
+static motorz_worker_slot_t *motorz_worker_slot(void)
 {
-    void *sbh = NULL;
+    void *ws = NULL;
 
-    apr_threadkey_private_get(&sbh, worker_slot_key);
-    if (!sbh) {
+    apr_threadkey_private_get(&ws, worker_slot_key);
+    if (!ws) {
         apr_uint32_t n = apr_atomic_inc32(&next_worker_slot);
 
-        sbh = worker_sbhs[n % (apr_uint32_t)threads_per_child];
-        apr_threadkey_private_set(sbh, worker_slot_key);
+        /* Should the pool ever replace a thread, the newcomer shares a
+         * scoreboard slot and must not share a socket slot: it gets none.
+         */
+        if (n < (apr_uint32_t)threads_per_child) {
+            ws = &worker_slots[n];
+        }
+        else {
+            ws = &worker_slots[threads_per_child
+                               + n % (apr_uint32_t)threads_per_child];
+        }
+        apr_threadkey_private_set(ws, worker_slot_key);
     }
-    return sbh;
+    return ws;
+}
+
+static ap_sb_handle_t *motorz_worker_sbh(void)
+{
+    return motorz_worker_slot()->sbh;
+}
+
+/* Publish the connection's socket while the calling worker may block on it, so
+ * that an ungraceful stop can shut it down. Returns the slot to pass to
+ * motorz_unpublish_socket(), -1 if not published.
+ */
+static int motorz_publish_socket(motorz_conn_t *scon)
+{
+    int slot = motorz_worker_slot()->sock_slot;
+
+    if (slot < 0 || !worker_sockets || scon->c->master || !scon->sock) {
+        return -1;
+    }
+    ap_worker_sockets_publish(worker_sockets, slot, scon->sock);
+    return slot;
+}
+
+/* Returns 0 if an ungraceful stop took the socket: the child is exiting, close
+ * the connection rather than hand it over.
+ */
+static int motorz_unpublish_socket(motorz_conn_t *scon, int slot)
+{
+    if (slot < 0) {
+        return 1;
+    }
+    return ap_worker_sockets_unpublish(worker_sockets, slot, scon->sock);
+}
+
+/* Run the process_connection hooks with the socket published. If a stop took
+ * it, the connection is closed rather than handed back to a poller, unless a
+ * module suspended it: that module owns it from now on.
+ */
+static void motorz_run_process_connection(motorz_conn_t *scon)
+{
+    int slot = motorz_publish_socket(scon);
+
+    ap_run_process_connection(scon->c);
+    if (!motorz_unpublish_socket(scon, slot)
+            && scon->cs.state != CONN_STATE_SUSPENDED) {
+        scon->c->aborted = 1;
+        scon->cs.state = CONN_STATE_LINGER;
+    }
 }
 
 static long motorz_sbh_conn_id(ap_sb_handle_t *sbh)
@@ -1042,15 +1115,22 @@ static void motorz_start_lingering_close(motorz_conn_t *scon)
 {
     conn_rec *c = scon->c;
     apr_socket_t *csd = scon->sock;
+    int slot, closing;
 
     scon->cs.state = CONN_STATE_LINGER;
 
     /* ap_start_lingering_close() flushes and shuts down the write side; bound
      * the flush as mpm_event does. A true return means there is nothing to
      * linger over (aborted or no half-close needed), so close immediately.
+     * The flush may block, so the socket is published meanwhile.
      */
     apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
-    if (ap_start_lingering_close(c)) {
+    slot = motorz_publish_socket(scon);
+    closing = ap_start_lingering_close(c);
+    if (!motorz_unpublish_socket(scon, slot)) {
+        closing = 1;
+    }
+    if (closing) {
         motorz_conn_done(scon);
         return;
     }
@@ -1157,7 +1237,7 @@ static apr_status_t motorz_io_process(motorz_conn_t *scon)
          * is inside ap_run_process_connection() -- a use-after-free race.
          */
         motorz_conn_claim(scon->poller, scon);
-        ap_run_process_connection(scon->c);
+        motorz_run_process_connection(scon);
         /* The process_connection hooks set the next connection state on
          * return; honor it and let the dispatch below act on it, mirroring
          * the event MPM (see event.c:process_socket()). Async modules reach
@@ -1224,7 +1304,7 @@ read_request:
                          APLOGNO(03328) "motorz_io_process(): processing");
             if (!c->aborted) {
                 ap_update_child_status(scon->sbh, SERVER_BUSY_READ, NULL);
-                ap_run_process_connection(c);
+                motorz_run_process_connection(scon);
                 /* state will be updated upon return
                  * fall thru to either wait for readability/timeout or
                  * do lingering close
@@ -1589,8 +1669,14 @@ static void clean_child_exit(int code)
      * apr_thread_pool_destroy() joins all worker threads before returning.
      * mz->workers is NULL only if motorz_setup_workers() was never called
      * (i.e. we're exiting very early, before child_main set up workers).
+     * Unless a graceful stop completed, shut down the sockets the workers
+     * are blocked on first, or the join waits for their clients.
      */
     if (mz->workers) {
+        if (worker_sockets && !drain_completed) {
+            apr_atomic_set32(&workers_may_exit, AP_WORKERS_STOPPING);
+            ap_worker_sockets_shutdown(worker_sockets);
+        }
         apr_thread_pool_destroy(mz->workers);
         mz->workers = NULL;
     }
@@ -1605,7 +1691,13 @@ static void clean_child_exit(int code)
     }
 
     ap_mpm_pod_close(my_bucket->pod);
-    exit(code);
+    if (one_process) {
+        exit(code);
+    }
+    /* Not the parent's atexit() handlers (e.g. OpenSSL's), maybe while
+     * threads we could not join still use what they clean up.
+     */
+    _exit(code);
 }
 
 static int motorz_query(int query_code, int *result, apr_status_t *rv)
@@ -2187,7 +2279,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
 
 #if APR_HAS_THREADS
     osthd = apr_os_thread_current();
-    apr_os_thread_put(&thd, &osthd, pchild);
+    apr_os_thread_put(&thd, &osthd, pconf);
 #endif
 
     /* close unused listeners and pods */
@@ -2198,10 +2290,12 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
         }
     }
 
-    /* needs to be done before we switch UIDs so we have permissions */
-    ap_reopen_scoreboard(pchild, NULL, 0);
+    /* needs to be done before we switch UIDs so we have permissions; on
+     * pconf, as what the child keeps until it exits (pchild goes first)
+     */
+    ap_reopen_scoreboard(pconf, NULL, 0);
 
-    if (ap_run_drop_privileges(pchild, ap_server_conf)) {
+    if (ap_run_drop_privileges(pconf, ap_server_conf)) {
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -2216,10 +2310,18 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
     }
     next_worker_slot = 0;
     worker_sbhs = apr_pcalloc(pchild, threads_per_child * sizeof(*worker_sbhs));
+    worker_slots = apr_pcalloc(pchild,
+                               2 * threads_per_child * sizeof(*worker_slots));
     for (i = 0; i < threads_per_child; i++) {
         ap_create_sb_handle(&worker_sbhs[i], pchild, my_child_num, i);
         ap_update_child_status(worker_sbhs[i], SERVER_READY, NULL);
+        worker_slots[i].sbh = worker_sbhs[i];
+        worker_slots[i].sock_slot = i;
+        worker_slots[threads_per_child + i].sbh = worker_sbhs[i];
+        worker_slots[threads_per_child + i].sock_slot = -1;
     }
+    ap_worker_sockets_create(&worker_sockets, threads_per_child,
+                             &workers_may_exit, pchild);
 
     status = motorz_setup_workers(mz);
     if (status != APR_SUCCESS) {
@@ -2299,6 +2401,7 @@ static void child_main(motorz_core_t *mz, int child_num_arg, int child_bucket)
      * completed drain, not a SIGTERM, waits for module-noted connections.
      */
     drained = draining && !die_now;
+    drain_completed = drained;
     die_now = 1;
     motorz_join_pollers(mz);
 

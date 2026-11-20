@@ -269,9 +269,6 @@ class TestUngracefulExit:
         """Busy connections: a request not yet complete (holding a worker
         with either MPM), a response being written (holding a worker with
         mpm_worker, mostly in write completion with mpm_event)."""
-        if env.mpm_module == 'mpm_motorz':
-            pytest.skip("mpm_motorz doesn't wake a child reading a request "
-                        "on an ungraceful stop or restart")
         pid = env.read_pid_file()
         with _Sockets(env) as c:
             c.partial_request()
