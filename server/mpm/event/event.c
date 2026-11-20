@@ -293,8 +293,11 @@ static volatile apr_time_t  queues_next_expiry;
 /*
  * Macros for accessing struct timeout_queue.
  * For TO_QUEUE_APPEND and TO_QUEUE_REMOVE, timeout_mutex must be held.
+ * TO_QUEUE_APPEND returns whether the listener has to be woken up to update
+ * its poll()ing timeout, for the caller to do it once the mutex released
+ * (wakeup_listener()).
  */
-static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
+static int TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
 {
     apr_time_t elem_expiry;
     apr_time_t next_expiry;
@@ -311,10 +314,17 @@ static void TO_QUEUE_APPEND(struct timeout_queue *q, event_conn_state_t *el)
     next_expiry = queues_next_expiry;
     if (!next_expiry || next_expiry > elem_expiry + TIMEOUT_FUDGE_FACTOR) {
         queues_next_expiry = elem_expiry;
-        /* Unblock the poll()ing listener for it to update its timeout. */
-        if (listener_is_wakeable) {
-            apr_pollset_wakeup(event_pollset);
-        }
+        return 1;
+    }
+    return 0;
+}
+
+/* Wake up the listener if it's poll()ing, for it to see what changed (its
+ * timeout) */
+static APR_INLINE void wakeup_listener(void)
+{
+    if (listener_is_wakeable) {
+        apr_pollset_wakeup(event_pollset);
     }
 }
 
@@ -603,10 +613,10 @@ static int unpublish_worker_socket(event_conn_state_t *cs)
                                        cs->pfd.desc.s);
 }
 
-static void wakeup_listener(void)
+static void shutdown_listener(void)
 {
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                 "wake up listener%s", listener_may_exit ? " again" : "");
+                 "shutting down listener%s", listener_may_exit ? " again" : "");
 
     listener_may_exit = 1;
     disable_listensocks();
@@ -658,7 +668,7 @@ static void signal_threads(int mode)
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
      */
-    wakeup_listener();
+    shutdown_listener();
 
     /* for ungraceful termination, let the workers exit now;
      * for graceful termination, the listener thread will notify the
@@ -1078,6 +1088,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     int clogging = 0;
     apr_status_t rv;
     int rc = OK;
+    int wakeup;
 
     if (cs == NULL) {           /* This is a new connection */
         listener_poll_type *pt = apr_pcalloc(p, sizeof(*pt));
@@ -1243,7 +1254,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             return;
         }
         apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->io_q, cs);
+        wakeup = TO_QUEUE_APPEND(cs->sc->io_q, cs);
         rv = apr_pollset_add(event_pollset, &cs->pfd);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
             AP_DEBUG_ASSERT(0);
@@ -1257,6 +1268,9 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         }
         else {
             apr_thread_mutex_unlock(timeout_mutex);
+            if (wakeup) {
+                wakeup_listener();
+            }
         }
         return;
     }
@@ -1296,7 +1310,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
                 return;
             }
             apr_thread_mutex_lock(timeout_mutex);
-            TO_QUEUE_APPEND(cs->sc->wc_q, cs);
+            wakeup = TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             rv = apr_pollset_add(event_pollset, &cs->pfd);
             if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
                 AP_DEBUG_ASSERT(0);
@@ -1310,6 +1324,9 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             }
             else {
                 apr_thread_mutex_unlock(timeout_mutex);
+                if (wakeup) {
+                    wakeup_listener();
+                }
             }
             return;
         }
@@ -1352,7 +1369,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
             return;
         }
         apr_thread_mutex_lock(timeout_mutex);
-        TO_QUEUE_APPEND(cs->sc->ka_q, cs);
+        wakeup = TO_QUEUE_APPEND(cs->sc->ka_q, cs);
         rv = apr_pollset_add(event_pollset, &cs->pfd);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
             AP_DEBUG_ASSERT(0);
@@ -1366,6 +1383,9 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         }
         else {
             apr_thread_mutex_unlock(timeout_mutex);
+            if (wakeup) {
+                wakeup_listener();
+            }
         }
         return;
     }
@@ -1570,6 +1590,8 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
                                                   void *baton)
 {
     timer_event_t *te;
+    int wakeup = 0;
+
     /* oh yeah, and make locking smarter/fine grained. */
     apr_thread_mutex_lock(g_timer_skiplist_mtx);
 
@@ -1599,14 +1621,18 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
         next_expiry = timers_next_expiry;
         if (!next_expiry || next_expiry > te->when + EVENT_FUDGE_FACTOR) {
             timers_next_expiry = te->when;
-            /* Unblock the poll()ing listener for it to update its timeout. */
-            if (listener_is_wakeable) {
-                apr_pollset_wakeup(event_pollset);
-            }
+            wakeup = listener_is_wakeable;
         }
     }
 
     apr_thread_mutex_unlock(g_timer_skiplist_mtx);
+
+    /* Unblock the poll()ing listener for it to update its timeout, out of the
+     * mutex (a syscall).
+     */
+    if (wakeup) {
+        apr_pollset_wakeup(event_pollset);
+    }
 
     return APR_SUCCESS;
 }
@@ -1629,6 +1655,7 @@ static void process_lingering_close(event_conn_state_t *cs)
     apr_size_t nbytes;
     apr_status_t rv;
     struct timeout_queue *q;
+    int wakeup;
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
                   "lingering close from state %i", (int)cs->pub.state);
@@ -1697,7 +1724,7 @@ static void process_lingering_close(event_conn_state_t *cs)
         return;
     }
     apr_thread_mutex_lock(timeout_mutex);
-    TO_QUEUE_APPEND(q, cs);
+    wakeup = TO_QUEUE_APPEND(q, cs);
     rv = apr_pollset_add(event_pollset, &cs->pfd);
     if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
         AP_DEBUG_ASSERT(0);
@@ -1710,6 +1737,9 @@ static void process_lingering_close(event_conn_state_t *cs)
         return;
     }
     apr_thread_mutex_unlock(timeout_mutex);
+    if (wakeup) {
+        wakeup_listener();
+    }
 }
 
 /* call 'func' for all elements of 'q' above 'expiry'.
@@ -2691,7 +2721,7 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
             /* listener has not stopped accepting yet */
             ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                          "listener has not stopped accepting yet (%d iter)", iter);
-            wakeup_listener();
+            shutdown_listener();
         }
         if (iter > 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00475)
