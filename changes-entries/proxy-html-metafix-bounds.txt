@@ -1,0 +1,3 @@
+  *) mod_proxy_html: Fix out-of-bounds reads in metafix() when a
+     <meta http-equiv> tag appears at the end of the response buffer with
+     ProxyHTMLMeta enabled.  [Arshiya Tabasum]
