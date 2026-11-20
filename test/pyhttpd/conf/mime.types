@@ -291,6 +291,7 @@ application/vnd.anser-web-funds-transfer-initiation	fti
 application/vnd.antix.game-component		atx
 application/vnd.apple.installer+xml		mpkg
 application/vnd.apple.mpegurl			m3u8
+application/vnd.apple.pkpass			pkpass
 # application/vnd.arastra.swi
 application/vnd.aristanetworks.swi		swi
 application/vnd.astraea-software.iota		iota
@@ -1092,6 +1093,7 @@ application/x-msterminal			trm
 application/x-mswrite				wri
 application/x-netcdf				nc cdf
 application/x-nzb				nzb
+application/x-openvpn-profile			ovpn
 application/x-pkcs12				p12 pfx
 application/x-pkcs7-certificates		p7b spc
 application/x-pkcs7-certreqresp			p7r
