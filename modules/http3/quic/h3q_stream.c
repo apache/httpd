@@ -130,6 +130,7 @@ h3q_write_result h3q_stream_write(h3q_stream* st, const h3q_vec* vec, size_t nve
             if (vi < nvec || fin)
             {
                 res.blocked = 1;
+                res.conn_blocked = 1;
                 st->fin_pending = vi >= nvec && fin;
             }
             break;

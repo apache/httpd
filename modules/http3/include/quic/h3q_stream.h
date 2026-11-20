@@ -35,6 +35,7 @@ typedef struct h3q_write_result
     size_t accepted;
     unsigned blocked : 1;
     unsigned broken : 1;
+    unsigned conn_blocked : 1; /**< the connection may send nothing now (congestion, pacing) */
 } h3q_write_result;
 
 /**

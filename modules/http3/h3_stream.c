@@ -137,6 +137,12 @@ void flush_nghttp3(h3_session* session)
                 session->blocked_streams++;
             }
             nghttp3_conn_block_stream(session->ngh3, sid);
+            if (res.conn_blocked)
+            {
+                /* A stream written later in this pass could overtake this one,
+                 * e.g. HEADERS overtaking the QPACK inserts they reference. */
+                break;
+            }
             continue;
         }
     }

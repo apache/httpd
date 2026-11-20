@@ -1,0 +1,4 @@
+  *) mod_http3: Fix response headers sent ahead of the QPACK table updates
+     they need when the connection was congestion or pacing limited, which
+     stalled the response at the client and made some clients drop it.
+     [Jim Jagielski]
