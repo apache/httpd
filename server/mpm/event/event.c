@@ -174,9 +174,9 @@ static int server_limit = 0;                /* ServerLimit */
 static int thread_limit = 0;                /* ThreadLimit */
 static int had_healthy_child = 0;
 static volatile int dying = 0;
-static volatile int workers_may_exit = 0;
 static volatile int start_thread_may_exit = 0;
 static volatile int listener_may_exit = 0;
+static /*atomic*/ apr_uint32_t workers_may_exit = AP_WORKERS_RUNNING;
 static int listener_is_wakeable = 0;        /* Pollset supports APR_POLLSET_WAKEABLE */
 static int num_listensocks = 0;
 static apr_int32_t conns_this_child;        /* MaxConnectionsPerChild, only access
@@ -248,6 +248,10 @@ struct event_conn_state_t {
     conn_state_t pub;
     /** chaining in defer_linger_chain */
     struct event_conn_state_t *chain;
+    /** the worker thread whose slot in worker_sockets publishes the
+     *  connection's socket while it processes it, -1 once unpublished (see
+     *  unpublish_worker_socket()) */
+    int tslot;
     unsigned int 
         /** Is lingering close from defer_lingering_close()? */
         deferred_linger :1,
@@ -465,10 +469,10 @@ static int ap_child_slot;       /* Current child process slot in scoreboard */
  */
 #define LISTENER_SIGNAL     SIGHUP
 
-/* An array of socket descriptors in use by each thread used to
- * perform a non-graceful (forced) shutdown of the server.
+/* The socket descriptors in use by each thread used to perform a
+ * non-graceful (forced) shutdown of the server (see mpm_fdqueue.h).
  */
-static apr_socket_t **worker_sockets;
+static ap_worker_sockets_t *worker_sockets;
 
 static volatile apr_uint32_t listensocks_disabled;
 
@@ -547,7 +551,7 @@ static void close_socket_nonblocking_(apr_socket_t *csd,
     apr_status_t rv;
     apr_os_sock_t fd = -1;
 
-    /* close_worker_sockets() may have closed it already */
+    /* Closed already? */
     rv = apr_os_sock_get(&fd, csd);
     ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, ap_server_conf,
                 "closing socket %i/%pp from %s:%i", (int)fd, csd, from, line);
@@ -566,16 +570,35 @@ static void close_socket_nonblocking_(apr_socket_t *csd,
 #define close_socket_nonblocking(csd) \
     close_socket_nonblocking_(csd, __FUNCTION__, __LINE__)
 
-static void close_worker_sockets(void)
+/* A worker publishes its connection's socket in worker_sockets while it
+ * processes the connection (see mpm_fdqueue.h for the protocol), cs->tslot
+ * recording the slot, and unpublishes it before closing the connection
+ * (close_connection()) or handing it over (to the listener's queues and
+ * pollset, or to the module suspending it); if ap_worker_sockets_shutdown()
+ * took it, the worker closes the connection rather than hand it over to the
+ * listener.
+ */
+static void publish_worker_socket(event_conn_state_t *cs, int tslot)
 {
-    int i;
-    for (i = 0; i < threads_per_child; i++) {
-        apr_socket_t *csd = worker_sockets[i];
-        if (csd) {
-            worker_sockets[i] = NULL;
-            close_socket_nonblocking(csd);
-        }
+    cs->tslot = tslot;
+    ap_worker_sockets_publish(worker_sockets, tslot, cs->pfd.desc.s);
+}
+
+/* Unpublish the connection's socket before closing the connection or handing
+ * it over (a noop if this thread didn't publish it). Returns zero if
+ * ap_worker_sockets_shutdown() took it: the child is exiting, the caller
+ * closes the connection rather than hand it over.
+ */
+static int unpublish_worker_socket(event_conn_state_t *cs)
+{
+    int tslot = cs->tslot;
+
+    if (tslot < 0) {
+        return 1;
     }
+    cs->tslot = -1;
+    return ap_worker_sockets_unpublish(worker_sockets, tslot,
+                                       cs->pfd.desc.s);
 }
 
 static void wakeup_listener(void)
@@ -640,9 +663,11 @@ static void signal_threads(int mode)
      * workers to exit once it has stopped accepting new connections
      */
     if (mode == ST_UNGRACEFUL) {
-        workers_may_exit = 1;
+        /* ap_worker_sockets_shutdown() sets AP_WORKERS_STOPPED once done */
+        apr_atomic_set32(&workers_may_exit, AP_WORKERS_STOPPING);
         ap_queue_interrupt_all(worker_queue);
-        close_worker_sockets(); /* forcefully kill all current connections */
+        /* forcefully kill all current connections */
+        ap_worker_sockets_shutdown(worker_sockets);
     }
 
     ap_run_child_stopping(pchild, mode == ST_GRACEFUL);
@@ -899,6 +924,8 @@ static void close_connection(event_conn_state_t *cs)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, cs->c,
                   "closing connection from state %i", (int)cs->pub.state);
 
+    /* Ours again either way, see unpublish_worker_socket() */
+    (void)unpublish_worker_socket(cs);
     close_socket_nonblocking(cs->pfd.desc.s);
     ap_queue_info_push_pool(worker_queue_info, cs->p);
 }
@@ -1031,6 +1058,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     if (cs == NULL) {           /* This is a new connection */
         listener_poll_type *pt = apr_pcalloc(p, sizeof(*pt));
         cs = apr_pcalloc(p, sizeof(event_conn_state_t));
+        cs->tslot = -1;
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         ap_create_sb_handle(&cs->sbh, p, my_child_num, my_thread_num);
         c = ap_run_create_connection(p, ap_server_conf, sock,
@@ -1056,6 +1084,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         cs->pfd.client_data = pt;
         apr_pool_pre_cleanup_register(p, cs, ptrans_pre_cleanup);
         TO_QUEUE_ELEM_INIT(cs);
+        publish_worker_socket(cs, my_thread_num);
 
         ap_update_vhost_given_ip(c);
 
@@ -1085,6 +1114,7 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
     else {
         c = cs->c;
+        publish_worker_socket(cs, my_thread_num);
         ap_update_sb_handle(cs->sbh, my_child_num, my_thread_num);
         notify_resume(cs, 0);
         c->current_thread = thd;
@@ -1183,6 +1213,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
          * the default is CONN_SENSE_WANT_READ still.
          */
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
+        if (!unpublish_worker_socket(cs)) {
+            /* The child is exiting, close rather than hand it over */
+            close_connection(cs);
+            return;
+        }
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(cs->sc->io_q, cs);
         rv = apr_pollset_add(event_pollset, &cs->pfd);
@@ -1231,6 +1266,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
 
             /* Add work to pollset. */
             update_reqevents_from_sense(cs, CONN_SENSE_WANT_WRITE);
+            if (!unpublish_worker_socket(cs)) {
+                /* The child is exiting, close rather than hand it over */
+                close_connection(cs);
+                return;
+            }
             apr_thread_mutex_lock(timeout_mutex);
             TO_QUEUE_APPEND(cs->sc->wc_q, cs);
             rv = apr_pollset_add(event_pollset, &cs->pfd);
@@ -1282,6 +1322,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
         /* Add work to pollset. */
         cs->pub.sense = CONN_SENSE_DEFAULT;
         update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
+        if (!unpublish_worker_socket(cs)) {
+            /* The child is exiting, close rather than hand it over */
+            close_connection(cs);
+            return;
+        }
         apr_thread_mutex_lock(timeout_mutex);
         TO_QUEUE_APPEND(cs->sc->ka_q, cs);
         rv = apr_pollset_add(event_pollset, &cs->pfd);
@@ -1302,6 +1347,11 @@ static void process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * soc
     }
 
     if (cs->pub.state == CONN_STATE_SUSPENDED) {
+        /* The connection is the suspending module's from now on, even if
+         * the child is exiting (ap_worker_sockets_shutdown() took the socket
+         * and shut it down): it owns the connection's pool
+         */
+        (void)unpublish_worker_socket(cs);
         apr_atomic_inc32(&suspended_count);
         notify_suspend(cs);
         return;
@@ -1617,6 +1667,11 @@ static void process_lingering_close(event_conn_state_t *cs)
     /* (Re)queue the connection to come back when readable */
     update_reqevents_from_sense(cs, CONN_SENSE_WANT_READ);
     q = (cs->pub.state == CONN_STATE_LINGER_SHORT) ? short_linger_q : linger_q;
+    if (!unpublish_worker_socket(cs)) {
+        /* The child is exiting, close rather than hand it over */
+        close_connection(cs);
+        return;
+    }
     apr_thread_mutex_lock(timeout_mutex);
     TO_QUEUE_APPEND(q, cs);
     rv = apr_pollset_add(event_pollset, &cs->pfd);
@@ -2214,7 +2269,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                                             dying ? SERVER_GRACEFUL
                                                   : SERVER_READY, NULL);
       worker_pop:
-        if (workers_may_exit) {
+        if (apr_atomic_read32(&workers_may_exit)) {
             break;
         }
         if (dying && worker_thread_should_exit_early()) {
@@ -2246,7 +2301,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
                 goto worker_pop;
             }
             /* We got some other error. */
-            else if (!workers_may_exit) {
+            else if (!apr_atomic_read32(&workers_may_exit)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
                              APLOGNO(03099) "ap_queue_pop_socket failed");
             }
@@ -2264,14 +2319,16 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         else {
             is_idle = 0;
             if (csd != NULL) {
-                worker_sockets[thread_slot] = csd;
+                /* process_socket() publishes the socket (worker_sockets)
+                 * and unpublishes it before closing the connection or
+                 * handing it over (see unpublish_worker_socket())
+                 */
                 process_socket(thd, ptrans, csd, cs, process_slot, thread_slot);
-                worker_sockets[thread_slot] = NULL;
             }
         }
 
         /* If there are deferred lingering closes, handle them now. */
-        while (!workers_may_exit) {
+        while (!apr_atomic_read32(&workers_may_exit)) {
             cs = defer_linger_chain;
             if (!cs) {
                 break;
@@ -2284,9 +2341,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             cs->chain = NULL;
             AP_DEBUG_ASSERT(cs->pub.state == CONN_STATE_LINGER);
 
-            worker_sockets[thread_slot] = csd = cs->pfd.desc.s;
+            csd = cs->pfd.desc.s;
             process_socket(thd, cs->p, csd, cs, process_slot, thread_slot);
-            worker_sockets[thread_slot] = NULL;
         }
     }
 
@@ -2466,8 +2522,8 @@ static void setup_threads_runtime(void)
         lr->accept_func = ap_unixd_accept;
     }
 
-    worker_sockets = apr_pcalloc(pruntime, threads_per_child *
-                                           sizeof(apr_socket_t *));
+    ap_worker_sockets_create(&worker_sockets, threads_per_child,
+                             &workers_may_exit, pruntime);
 }
 
 /* XXX under some circumstances not understood, children can get stuck
@@ -2531,7 +2587,9 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
                     resource_shortage = 1;
                     signal_threads(ST_GRACEFUL);
                     if (!listener_started) {
-                        workers_may_exit = 1;
+                        /* No ap_worker_sockets_shutdown() to wait for */
+                        apr_atomic_set32(&workers_may_exit,
+                                         AP_WORKERS_STOPPED);
                         ap_queue_term(worker_queue);
                         /* wake up main POD thread too */
                         kill(ap_my_pid, SIGTERM);
@@ -3503,6 +3561,7 @@ static void setup_slave_conn(conn_rec *c, void *csd)
     mcs = ap_get_module_config(c->master->conn_config, &mpm_event_module);
     
     cs = apr_pcalloc(c->pool, sizeof(*cs));
+    cs->tslot = -1;
     cs->c = c;
     cs->r = NULL;
     cs->sc = mcs->sc;
