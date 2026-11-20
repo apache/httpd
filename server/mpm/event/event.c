@@ -486,6 +486,8 @@ int raise_sigstop_flags;
 static apr_pool_t *pconf;       /* Pool for config stuff */
 static apr_pool_t *pchild;      /* Pool for httpd child stuff */
 static apr_pool_t *pruntime;    /* Pool for MPM threads stuff */
+static apr_pool_t *pconns;      /* Parent of the connections' pools */
+static int threads_joined;      /* Set once join_workers() joined them all */
 
 static pid_t ap_my_pid;         /* Linux getpid() doesn't work except in main
                                    thread. Use this instead */
@@ -839,6 +841,23 @@ static void clean_child_exit(int code)
     }
 
     if (pchild) {
+        if (one_process) {
+            /* What pconf's destruction at exit would otherwise get wrong. The
+             * idle pools, children of pconns created after pruntime, would be
+             * destroyed with pconns and again by pruntime's cleanup of the
+             * queue info: free them first. The connections still held
+             * (queued, polled, suspended...) would go after pchild: destroy
+             * pconns before child_stopped and pchild, unless an MPM thread
+             * may still run, pconns then going with pconf (see child_main()).
+             */
+            if (worker_queue_info) {
+                ap_queue_info_free_idle_pools(worker_queue_info);
+            }
+            if (pconns && threads_joined) {
+                apr_pool_destroy(pconns);
+                pconns = NULL;
+            }
+        }
         ap_run_child_stopped(pchild, terminate_mode == ST_GRACEFUL);
         apr_pool_destroy(pchild);
     }
@@ -2318,7 +2337,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                         if (rc == APR_SUCCESS) {
                             apr_allocator_max_free_set(allocator,
                                                        ap_max_mem_free);
-                            rc = apr_pool_create_ex(&ptrans, pconf, NULL,
+                            rc = apr_pool_create_ex(&ptrans, pconns, NULL,
                                                     allocator);
                             if (rc == APR_SUCCESS) {
                                 apr_pool_tag(ptrans, "transaction");
@@ -2719,10 +2738,11 @@ static void setup_threads_runtime(void)
     /* Event's skiplist operations will happen concurrently with other modules'
      * runtime so they need their own pool for allocations, and its lifetime
      * should be at least the one of the connections (ptrans). Thus pskip is
-     * created as a subpool of pconf like/before ptrans (before so that it's
-     * destroyed after). In forked mode pconf is never destroyed so we are good
-     * anyway, but in ONE_PROCESS mode this ensures that the skiplist works
-     * from connection/ptrans cleanups (even after pchild is destroyed).
+     * created as a subpool of pconf before pconns, the ptrans' parent (so that
+     * it's destroyed after). In forked mode pconf is never destroyed so we are
+     * good anyway, but in ONE_PROCESS mode this ensures that the skiplist works
+     * from connection/ptrans cleanups, including when pconns is left to pconf
+     * at exit (after pchild is destroyed).
      */
     apr_pool_create(&pskip, pconf);
     apr_pool_tag(pskip, "mpm_skiplist");
@@ -2736,10 +2756,10 @@ static void setup_threads_runtime(void)
      * the connections they handle (i.e. ptrans). We can't use this thread's
      * self pool because all these objects survive it, nor use pchild or pconf
      * directly because this starter thread races with other modules' runtime,
-     * nor finally pchild (or subpool thereof) because it is killed explicitly
-     * before pconf (thus connections/ptrans can live longer, which matters in
-     * ONE_PROCESS mode). So this leaves us with a subpool of pconf, created
-     * before any ptrans hence destroyed after.
+     * nor finally pchild (or subpool thereof) because the connections can
+     * outlive it (in ONE_PROCESS mode, when pconns is left to pconf at exit).
+     * So this leaves us with a subpool of pconf, created before pconns (the
+     * ptrans' parent) hence destroyed after.
      */
     apr_pool_create(&pruntime, pconf);
     apr_pool_tag(pruntime, "mpm_runtime");
@@ -2968,7 +2988,7 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
 
 static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
 {
-    int i;
+    int i, joined_all = 1;
     apr_status_t rv, thread_rv;
 
     if (listener) {
@@ -2996,12 +3016,14 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
         if (iter > 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00475)
                          "the listener thread didn't stop accepting");
+            joined_all = 0;
         }
         else {
             rv = apr_thread_join(&thread_rv, listener);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00476)
                              "apr_thread_join: unable to join listener thread");
+                joined_all = 0;
             }
         }
     }
@@ -3013,9 +3035,12 @@ static void join_workers(apr_thread_t * listener, apr_thread_t ** threads)
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(00477)
                              "apr_thread_join: unable to join worker "
                              "thread %d", i);
+                joined_all = 0;
             }
         }
     }
+
+    threads_joined = joined_all;
 }
 
 static void join_start_thread(apr_thread_t * start_thread_id)
@@ -3112,6 +3137,22 @@ static void child_main(int child_num_arg, int child_bucket)
 
     /* Globals used by signal_threads() so to be initialized before */
     setup_threads_runtime();
+
+    /* Parent of the connections' pools (ptrans), so that they can all be
+     * destroyed at once. Only clean_child_exit() does it, in one-process mode:
+     * there pconf is destroyed at exit, after pchild, too late for the modules'
+     * cleanups of the connections still held, which may use their child state.
+     * A forked child never destroys pconns (nor pconf).
+     *
+     * A child of pconf created here, after pruntime and pskip:
+     * - not of pchild, whose destruction runs its pre-cleanups (e.g. the
+     *   shutdown of mod_http2's workers) before destroying its subpools;
+     * - after pruntime and pskip, so that when it is left to pconf (a thread
+     *   not joined), pconf destroys it before them: the connections' cleanups
+     *   may still use the MPM's queues and timers.
+     */
+    apr_pool_create(&pconns, pconf);
+    apr_pool_tag(pconns, "mpm_connections");
 
     /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
