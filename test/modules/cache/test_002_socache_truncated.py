@@ -137,6 +137,7 @@ class TestSocacheTruncated:
 
             status, xcache, body = self._get(env, conn)
             assert status == 200
+            assert xcache.startswith("HIT"), xcache
             assert len(body) <= len(self.BODY)
         finally:
             conn.close()
