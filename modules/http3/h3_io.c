@@ -70,7 +70,7 @@ static void teardown(h3_io_t* io)
     if (io->event_thread)
     {
         io->thread_running = 0;
-        h3_wakeup_signal(&io->wakeup);
+        h3_wakeup_signal_always(&io->wakeup);
         apr_status_t status;
         apr_thread_join(&status, io->event_thread);
         io->event_thread = NULL;
@@ -196,7 +196,7 @@ void h3_io_listen_drain(h3_io_t* io)
     {
         io->draining = 1;
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "graceful stop: draining %d connection(s), the MPM waits for them to finish", io->active_sessions ? io->active_sessions->nelts : 0);
-        h3_wakeup_signal(&io->wakeup);
+        h3_wakeup_signal_always(&io->wakeup);
     }
 }
 

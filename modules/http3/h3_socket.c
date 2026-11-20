@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <apr_atomic.h>
 #include <apr_portable.h>
 
 #include <string.h>
@@ -202,15 +203,39 @@ fail:
     return rv;
 }
 
+static apr_status_t wakeup_send(h3_wakeup* w)
+{
+    char byte = '1';
+    apr_size_t len = 1;
+    return apr_socket_send(w->writer, &byte, &len);
+}
+
 void h3_wakeup_signal(h3_wakeup* w)
 {
     if (!w || !w->writer)
     {
         return;
     }
-    char byte = '1';
-    apr_size_t len = 1;
-    (void)apr_socket_send(w->writer, &byte, &len);
+    /* One datagram at most: a send per response chunk from every worker kept
+     * them contending in the kernel for most of their CPU time. */
+    if (apr_atomic_cas32(&w->pending, 1, 0) != 0)
+    {
+        return;
+    }
+    /* Retry once: signals coalesced onto this one are lost if it fails. */
+    if (wakeup_send(w) != APR_SUCCESS && wakeup_send(w) != APR_SUCCESS)
+    {
+        apr_atomic_set32(&w->pending, 0);
+    }
+}
+
+void h3_wakeup_signal_always(h3_wakeup* w)
+{
+    if (!w || !w->writer)
+    {
+        return;
+    }
+    (void)wakeup_send(w);
 }
 
 void h3_wakeup_drain(h3_wakeup* w)
@@ -226,7 +251,10 @@ void h3_wakeup_drain(h3_wakeup* w)
         apr_size_t len = sizeof(buf);
         if (apr_socket_recv(w->reader, buf, &len) != APR_SUCCESS || len == 0)
         {
-            return;
+            break;
         }
     }
+    /* Only now: cleared before the reads, it could stay set with nothing queued,
+     * and no wakeup would be sent again. */
+    apr_atomic_set32(&w->pending, 0);
 }

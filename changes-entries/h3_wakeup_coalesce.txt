@@ -1,0 +1,3 @@
+  *) mod_http3: Use much less CPU under load: the request workers no longer
+     wake the HTTP/3 event thread once for every response chunk.
+     [Jim Jagielski]

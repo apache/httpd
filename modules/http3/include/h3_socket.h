@@ -70,6 +70,7 @@ typedef struct h3_wakeup
     apr_socket_t* reader;
     apr_socket_t* writer;
     apr_os_sock_t reader_fd; /**< The reader's native socket, for the poll set. */
+    volatile apr_uint32_t pending; /**< A wakeup is sent and not drained yet. */
 } h3_wakeup;
 
 /**
@@ -81,10 +82,21 @@ typedef struct h3_wakeup
 apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w);
 
 /**
- * Wake the event thread. Safe from any thread; a blocked send is dropped.
+ * Wake the event thread. Safe from any thread. No datagram is sent while one
+ * is pending: the event thread sees state stored before the call by an atomic
+ * read-modify-write (not apr_atomic_set32, a plain store with APR 1.6) when it
+ * drains that one. If the send fails twice, this and the wakeups coalesced
+ * onto it wait for the poll timeout.
  * @param w The pair to signal; NULL or uncreated is ignored.
  */
 void h3_wakeup_signal(h3_wakeup* w);
+
+/**
+ * Wake the event thread with a datagram of its own, for state it reads without
+ * apr_atomic_*() (thread_running, draining): the send and receive order it.
+ * @param w The pair to signal; NULL or uncreated is ignored.
+ */
+void h3_wakeup_signal_always(h3_wakeup* w);
 
 /**
  * Discard everything queued on the reader, after poll reports it readable.

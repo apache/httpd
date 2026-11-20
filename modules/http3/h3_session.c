@@ -52,7 +52,9 @@ struct h3_response_chunk
 
 void h3_session_wake(h3_session* session)
 {
-    apr_atomic_set32(&session->wake, 1);
+    /* xchg, not set: APR 1.6's set32 is a plain store, which could pass the
+     * signal's read of the wakeup's pending flag. */
+    (void)apr_atomic_xchg32(&session->wake, 1);
     if (child_h3_io)
     {
         h3_wakeup_signal(&child_h3_io->wakeup);
