@@ -378,6 +378,7 @@ apr_status_t ap_queue_create(fd_queue_t **pqueue, int capacity, apr_pool_t *p)
  *
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
+ * Returns APR_EOF if the queue is terminated, the socket is not queued.
  */
 apr_status_t ap_queue_push_socket(fd_queue_t *queue,
                                   apr_socket_t *sd, void *sd_baton,
@@ -390,7 +391,11 @@ apr_status_t ap_queue_push_socket(fd_queue_t *queue,
         return rv;
     }
 
-    AP_DEBUG_ASSERT(!queue->terminated);
+    /* Terminated (stopping), the caller drops the socket */
+    if (queue->terminated) {
+        apr_thread_mutex_unlock(queue->one_big_mutex);
+        return APR_EOF;
+    }
     AP_DEBUG_ASSERT(!ap_queue_full(queue));
 
     elem = &queue->data[queue->in++];
@@ -414,7 +419,11 @@ apr_status_t ap_queue_push_timer(fd_queue_t *queue, timer_event_t *te)
         return rv;
     }
 
-    AP_DEBUG_ASSERT(!queue->terminated);
+    /* Terminated (stopping), the caller drops the timer */
+    if (queue->terminated) {
+        apr_thread_mutex_unlock(queue->one_big_mutex);
+        return APR_EOF;
+    }
 
     APR_RING_INSERT_TAIL(&queue->timers, te, timer_event_t, link);
 
@@ -529,6 +538,72 @@ apr_status_t ap_queue_interrupt_one(fd_queue_t *queue)
 apr_status_t ap_queue_term(fd_queue_t *queue)
 {
     return queue_interrupt(queue, 1, 1);
+}
+
+struct ap_worker_sockets_t
+{
+    apr_socket_t **slots;   /* one per worker thread, atomic */
+    int nslots;
+    apr_uint32_t *may_exit; /* the MPM's workers_may_exit, atomic */
+};
+
+apr_status_t ap_worker_sockets_create(ap_worker_sockets_t **pws,
+                                      int nslots, apr_uint32_t *may_exit,
+                                      apr_pool_t *p)
+{
+    ap_worker_sockets_t *ws = apr_pcalloc(p, sizeof(*ws));
+
+    ws->slots = apr_pcalloc(p, nslots * sizeof(apr_socket_t *));
+    ws->nslots = nslots;
+    ws->may_exit = may_exit;
+    *pws = ws;
+    return APR_SUCCESS;
+}
+
+void ap_worker_sockets_publish(ap_worker_sockets_t *ws, int slot,
+                               apr_socket_t *csd)
+{
+    apr_socket_t *prev;
+
+    prev = apr_atomic_xchgptr((void *)&ws->slots[slot], csd);
+    AP_DEBUG_ASSERT(prev == NULL);
+    (void)prev;
+    /* After the publication (ap_worker_sockets_shutdown() may have scanned
+     * the slots before it)
+     */
+    if (apr_atomic_read32(ws->may_exit)) {
+        apr_socket_shutdown(csd, APR_SHUTDOWN_READWRITE);
+    }
+}
+
+int ap_worker_sockets_unpublish(ap_worker_sockets_t *ws, int slot,
+                                apr_socket_t *csd)
+{
+    if (apr_atomic_casptr((void *)&ws->slots[slot], NULL, csd) == csd) {
+        return 1;
+    }
+    /* ap_worker_sockets_shutdown() took it: wait until it's done with it,
+     * which doesn't take long (a shutdown() per published socket, waiting
+     * for no worker)
+     */
+    while (apr_atomic_read32(ws->may_exit) == AP_WORKERS_STOPPING) {
+        apr_sleep(apr_time_from_msec(1));
+    }
+    return 0;
+}
+
+void ap_worker_sockets_shutdown(ap_worker_sockets_t *ws)
+{
+    int i;
+
+    AP_DEBUG_ASSERT(apr_atomic_read32(ws->may_exit) == AP_WORKERS_STOPPING);
+    for (i = 0; i < ws->nslots; i++) {
+        apr_socket_t *csd = apr_atomic_xchgptr((void *)&ws->slots[i], NULL);
+        if (csd) {
+            apr_socket_shutdown(csd, APR_SHUTDOWN_READWRITE);
+        }
+    }
+    apr_atomic_set32(ws->may_exit, AP_WORKERS_STOPPED);
 }
 
 #endif /* APR_HAS_THREADS */

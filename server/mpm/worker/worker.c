@@ -30,6 +30,7 @@
 #include "apr_thread_mutex.h"
 #include "apr_proc_mutex.h"
 #include "apr_poll.h"
+#include "apr_atomic.h"
 
 #include <stdlib.h>
 
@@ -126,9 +127,9 @@ static int server_limit = 0;
 static int thread_limit = 0;
 static int had_healthy_child = 0;
 static volatile int dying = 0;
-static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
 static int listener_may_exit = 0;
+static /*atomic*/ apr_uint32_t workers_may_exit = AP_WORKERS_RUNNING;
 static int listener_is_wakeable = 0; /* Pollset supports APR_POLLSET_WAKEABLE */
 static int requests_this_child;
 static int num_listensocks = 0;
@@ -247,7 +248,7 @@ static apr_os_thread_t *listener_os_thread;
  * This ensures that on systems (i.e., Linux) where closing the worker
  * socket doesn't awake the worker thread when it is polling on the socket
  * (especially in apr_wait_for_io_or_timeout() when handling
- * Keep-Alive connections), close_worker_sockets() and join_workers()
+ * Keep-Alive connections), ap_worker_sockets_shutdown() and join_workers()
  * still function in timely manner and allow ungraceful shutdowns to
  * proceed to completion.  Otherwise join_workers() doesn't return
  * before the main process decides the child process is non-responsive
@@ -255,22 +256,83 @@ static apr_os_thread_t *listener_os_thread;
  */
 #define WORKER_SIGNAL       AP_SIG_GRACEFUL
 
-/* An array of socket descriptors in use by each thread used to
- * perform a non-graceful (forced) shutdown of the server. */
-static apr_socket_t **worker_sockets;
+/* The socket descriptors in use by each thread used to perform a
+ * non-graceful (forced) shutdown of the server (see mpm_fdqueue.h). A worker
+ * publishes its connection's socket once the connection is created and
+ * unpublishes it after the lingering reads (worker_lingering_close()),
+ * before closing it or clearing its pool.
+ */
+static ap_worker_sockets_t *worker_sockets;
 
-static void close_worker_sockets(void)
+/* The lingering close timeouts of the core's ap_lingering_close(), which
+ * connection.c defines locally (not exported, mpm_event mirrors them too).
+ */
+#ifndef MAX_SECS_TO_LINGER
+#define MAX_SECS_TO_LINGER 30
+#endif
+#define SECONDS_TO_LINGER  2
+
+/* The core's ap_lingering_close(), but with the socket still published in
+ * the worker's slot during the lingering reads, so that an ungraceful stop
+ * (ap_worker_sockets_shutdown()'s shutdown()) makes them return at once; the
+ * socket is unpublished before it is closed.
+ */
+static void worker_lingering_close(conn_rec *c, apr_socket_t *sock, int slot)
 {
-    int i;
-    for (i = 0; i < threads_per_child; i++) {
-        if (worker_sockets[i]) {
-            apr_socket_close(worker_sockets[i]);
-            worker_sockets[i] = NULL;
-        }
+    char dummybuf[512];
+    apr_size_t nbytes;
+    apr_time_t now, timeup = 0;
+    apr_socket_t *csd = ap_get_conn_socket(c);
+
+    if (!csd) {
+        /* Be safe with third-party modules that:
+         *   ap_set_core_module_config(c->conn_config, NULL)
+         * to no-op ap_lingering_close(); sock is unpublished here since
+         * clearing the connection's pool closes it.
+         */
+        c->aborted = 1;
+        (void)ap_worker_sockets_unpublish(worker_sockets, slot, sock);
+        return;
     }
+
+    if (!ap_start_lingering_close(c)) {
+        /* Read available data from the client whilst it continues sending
+         * it, for a maximum time of MAX_SECS_TO_LINGER.  If the client
+         * does not send any data within SECONDS_TO_LINGER, give up.
+         */
+        apr_socket_timeout_set(csd, apr_time_from_sec(SECONDS_TO_LINGER));
+        apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
+
+        /* The common path here is that the initial apr_socket_recv() call
+         * will return 0 bytes read; so that case must avoid the expensive
+         * apr_time_now() call and time arithmetic. */
+        do {
+            nbytes = sizeof(dummybuf);
+            if (apr_socket_recv(csd, dummybuf, &nbytes) || nbytes == 0)
+                break;
+
+            now = apr_time_now();
+            if (timeup == 0) {
+                /* First time through: wait for MAX_SECS_TO_LINGER, or
+                 * SECONDS_TO_LINGER only if some module requested a
+                 * shortened waiting period (e.g. mitigating DoS attacks).
+                 */
+                if (apr_table_get(c->notes, "short-lingering-close")) {
+                    timeup = now + apr_time_from_sec(SECONDS_TO_LINGER);
+                }
+                else {
+                    timeup = now + apr_time_from_sec(MAX_SECS_TO_LINGER);
+                }
+                continue;
+            }
+        } while (now < timeup);
+    }
+
+    (void)ap_worker_sockets_unpublish(worker_sockets, slot, sock);
+    apr_socket_close(csd);
 }
 
-static void wakeup_listener(void)
+static void shutdown_listener(void)
 {
     listener_may_exit = 1;
 
@@ -319,16 +381,18 @@ static void signal_threads(int mode)
     /* in case we weren't called from the listener thread, wake up the
      * listener thread
      */
-    wakeup_listener();
+    shutdown_listener();
 
     /* for ungraceful termination, let the workers exit now;
      * for graceful termination, the listener thread will notify the
      * workers to exit once it has stopped accepting new connections
      */
     if (mode == ST_UNGRACEFUL) {
-        workers_may_exit = 1;
+        /* ap_worker_sockets_shutdown() sets AP_WORKERS_STOPPED once done */
+        apr_atomic_set32(&workers_may_exit, AP_WORKERS_STOPPING);
         ap_queue_interrupt_all(worker_queue);
-        close_worker_sockets(); /* forcefully kill all current connections */
+        /* forcefully kill all current connections */
+        ap_worker_sockets_shutdown(worker_sockets);
     }
 
     ap_run_child_stopping(pchild, mode == ST_GRACEFUL);
@@ -445,14 +509,27 @@ static void clean_child_exit(int code)
     }
 
     if (pchild) {
+        if (one_process) {
+            /* What pconf's destruction would otherwise get wrong at exit */
+            if (worker_queue_info) {
+                /* the idle pools would be destroyed twice: as pconf's children,
+                 * then from the queue info's cleanup */
+                ap_queue_info_free_idle_pools(worker_queue_info);
+            }
+        }
         apr_pool_destroy(pchild);
     }
 
     if (one_process) {
         worker_note_child_killed(/* slot */ 0, 0, 0);
+        /* Run ap_terminate() as an atexit() handler. */
+        exit(code);
     }
 
-    exit(code);
+    /* A forked child does not run the atexit() handlers inherited from the
+     * parent process (e.g. OpenSSL's, registered by default).
+     */
+    _exit(code);
 }
 
 static void just_die(int sig)
@@ -487,9 +564,10 @@ static void process_socket(apr_thread_t *thd, apr_pool_t *p, apr_socket_t *sock,
     current_conn = ap_run_create_connection(p, ap_server_conf, sock,
                                             conn_id, sbh, bucket_alloc);
     if (current_conn) {
+        ap_worker_sockets_publish(worker_sockets, my_thread_num, sock);
         current_conn->current_thread = thd;
         ap_process_connection(current_conn, sock);
-        ap_lingering_close(current_conn);
+        worker_lingering_close(current_conn, sock, my_thread_num);
     }
 }
 
@@ -693,8 +771,18 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
                      * socket to a worker
                      */
                     apr_socket_close(csd);
-                    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03138)
-                                 "ap_queue_push_socket failed");
+                    if (APR_STATUS_IS_EOF(rv)) {
+                        /* The workers' queue is terminated (stopping) */
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv,
+                                     ap_server_conf,
+                                     "workers' queue terminated, "
+                                     "connection closed");
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK, APLOG_CRIT, rv,
+                                     ap_server_conf, APLOGNO(03138)
+                                     "ap_queue_push_socket failed");
+                    }
                 }
                 else {
                     have_idle_worker = 0;
@@ -764,7 +852,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     unblock_signal(WORKER_SIGNAL);
 #endif
 
-    while (!workers_may_exit) {
+    while (!apr_atomic_read32(&workers_may_exit)) {
         if (!is_idle) {
             rv = ap_queue_info_set_idle(worker_queue_info, last_ptrans);
             last_ptrans = NULL;
@@ -781,7 +869,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         ap_update_child_status_from_indexes(process_slot, thread_slot,
                                             SERVER_READY, NULL);
 worker_pop:
-        if (workers_may_exit) {
+        if (apr_atomic_read32(&workers_may_exit)) {
             break;
         }
         rv = ap_queue_pop_socket(worker_queue, &csd, &ptrans);
@@ -808,17 +896,19 @@ worker_pop:
                 goto worker_pop;
             }
             /* We got some other error. */
-            else if (!workers_may_exit) {
+            else if (!apr_atomic_read32(&workers_may_exit)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf, APLOGNO(03139)
                              "ap_queue_pop_socket failed");
             }
             continue;
         }
         is_idle = 0;
-        worker_sockets[thread_slot] = csd;
         bucket_alloc = apr_bucket_alloc_create(ptrans);
+        /* Publishes csd once the connection is created (worker_sockets),
+         * and unpublishes it before closing it or clearing ptrans (see
+         * worker_lingering_close())
+         */
         process_socket(thd, ptrans, csd, process_slot, thread_slot, bucket_alloc);
-        worker_sockets[thread_slot] = NULL;
         requests_this_child--;
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
@@ -943,8 +1033,8 @@ static void setup_threads_runtime(void)
         lr->accept_func = ap_unixd_accept;
     }
 
-    worker_sockets = apr_pcalloc(pruntime, threads_per_child *
-                                           sizeof(apr_socket_t *));
+    ap_worker_sockets_create(&worker_sockets, threads_per_child,
+                             &workers_may_exit, pruntime);
 }
 
 /* XXX under some circumstances not understood, children can get stuck
@@ -989,9 +1079,29 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
             rv = ap_thread_create(&threads[i], thread_attr,
                                   worker_thread, my_info, pruntime);
             if (rv != APR_SUCCESS) {
+                ap_update_child_status_from_indexes(my_child_num, i, SERVER_DEAD, NULL);
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf, APLOGNO(03142)
                              "ap_thread_create: unable to create worker thread");
-                /* let the parent decide how bad this really is */
+                 /* Let the parent decide how bad this really is by returning
+                 * APEXIT_CHILDSICK. If threads were created already let them
+                 * stop cleanly first to avoid deadlocks in clean_child_exit(),
+                 * just stop creating new ones here (but set resource_shortage
+                 * to return APEXIT_CHILDSICK still when the child exists).
+                 */
+                if (threads_created) {
+                    resource_shortage = 1;
+                    signal_threads(ST_GRACEFUL);
+                    if (!listener_started) {
+                        /* No ap_worker_sockets_shutdown() to wait for */
+                        apr_atomic_set32(&workers_may_exit,
+                                         AP_WORKERS_STOPPED);
+                        ap_queue_term(worker_queue);
+                        /* wake up main POD thread too */
+                        kill(ap_my_pid, SIGTERM);
+                    }
+                    apr_thread_exit(thd, APR_SUCCESS);
+                    return NULL;
+                }
                 clean_child_exit(APEXIT_CHILDSICK);
             }
             threads_created++;
@@ -1058,7 +1168,7 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads,
             /* listener has not stopped accepting yet */
             ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, ap_server_conf,
                          "listener has not stopped accepting yet (%d iter)", iter);
-            wakeup_listener();
+            shutdown_listener();
         }
         if (iter > 10) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, APLOGNO(00276)
