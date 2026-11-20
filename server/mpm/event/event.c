@@ -2828,7 +2828,7 @@ static void child_main(int child_num_arg, int child_bucket)
 #if AP_HAS_THREAD_LOCAL
     if (!one_process) {
         apr_thread_t *thd = NULL;
-        if ((rv = ap_thread_main_create(&thd, pchild))) {
+        if ((rv = ap_thread_main_create(&thd, pconf))) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf, APLOGNO(10377)
                          "Couldn't initialize child main thread");
             clean_child_exit(APEXIT_CHILDFATAL);
@@ -2845,10 +2845,10 @@ static void child_main(int child_num_arg, int child_bucket)
     }
 
     /*stuff to do before we switch id's, so we have permissions. */
-    ap_reopen_scoreboard(pchild, NULL, 0);
+    ap_reopen_scoreboard(pconf, NULL, 0);
 
     /* done with init critical section */
-    if (ap_run_drop_privileges(pchild, ap_server_conf)) {
+    if (ap_run_drop_privileges(pconf, ap_server_conf)) {
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
