@@ -140,20 +140,31 @@ static char *get_path_param(apr_pool_t *pool, char *url,
     char *path = NULL;
     char *pathdelims = "?&";
 
+    if (!*name) {
+        /* "stickysession=NAME|" leaves an empty path name, which
+         * strstr() would match at every position up to and including
+         * the terminating NUL.
+         */
+        return NULL;
+    }
     if (scolon_sep) {
         pathdelims = ";?&";
     }
+    /* The loop variable must stay where strstr() found the name: the
+     * value may be missing at the end of the string, so stepping past
+     * the name and its '=' with it would make the next strstr() start
+     * past the terminating NUL.
+     */
     for (path = strstr(url, name); path; path = strstr(path + 1, name)) {
-        path += strlen(name);
-        if (*path == '=') {
+        char *val = path + strlen(name);
+        if (*val == '=') {
             /*
              * Session path was found, get its value
              */
-            ++path;
-            if (*path) {
+            ++val;
+            if (*val) {
                 char *q;
-                path = apr_strtok(apr_pstrdup(pool, path), pathdelims, &q);
-                return path;
+                return apr_strtok(apr_pstrdup(pool, val), pathdelims, &q);
             }
         }
     }
@@ -173,15 +184,19 @@ static char *get_cookie_param(request_rec *r, const char *name)
                 start_cookie[-1] == ',' ||
                 apr_isspace(start_cookie[-1])) {
 
-                start_cookie += strlen(name);
-                while(*start_cookie && apr_isspace(*start_cookie))
-                    ++start_cookie;
-                if (*start_cookie++ == '=' && *start_cookie) {
+                /* As in get_path_param(), leave start_cookie where
+                 * strstr() found the name so that the next search starts
+                 * inside the header even if it ends right after the name.
+                 */
+                const char *val = start_cookie + strlen(name);
+                while (*val && apr_isspace(*val))
+                    ++val;
+                if (*val == '=' && *++val) {
                     /*
                      * Session cookie was found, get its value
                      */
                     char *end_cookie, *cookie;
-                    cookie = apr_pstrdup(r->pool, start_cookie);
+                    cookie = apr_pstrdup(r->pool, val);
                     if ((end_cookie = strchr(cookie, ';')) != NULL)
                         *end_cookie = '\0';
                     if((end_cookie = strchr(cookie, ',')) != NULL)
