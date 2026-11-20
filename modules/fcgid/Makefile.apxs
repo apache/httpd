@@ -1,0 +1,29 @@
+##
+##  Makefile.apxs -- Build procedure for mod_fcgid Apache module
+##
+##  Do not use this target; build from the mod_fcgid dir root
+##
+ 
+# top_builddir and top_srcdir are misnomers, because build/*.mk
+# scripts expect it them be the parent of the build directory,
+# and fail to trust the installbuilddir.
+exp_installbuilddir=$(shell $(APXS) -q exp_installbuilddir)
+top_srcdir=$(installbuilddir)/..
+top_builddir=$(installbuilddir)/..
+
+fcgid_builddir=../..
+fcgid_srcdir=../..
+builddir=.
+srcdir=.
+
+MOD_FCGID_LDADD = -export-symbols-regex fcgid_module
+CLEAN_TARGETS = *.loT
+include $(exp_installbuilddir)/special.mk
+
+all: local-shared-build all-recursive
+
+#   additional defines, includes and libraries
+DEFS=-DFCGID_APXS_BUILD
+INCLUDES=-I$(builddir) -I$(srcdir) -I$(fcgid_srcdir)/include
+#LIBS=-Lmy/lib/dir -lmylib
+

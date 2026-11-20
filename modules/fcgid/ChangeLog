@@ -1,0 +1,185 @@
+Note: A log of changes released after moving to the ASF (releases after 2.2)
+is in the file CHANGES-FCGID.
+
+version 2.2
+1. Support configuration "PassHeader"
+	Thank Hans Christian Saustrup for the suggestion.
+2. Support apr_shm_remove() in httpd.2.0.X
+	Thank Hans Christian Saustrup for bug report.
+3. Support configuration "TimeScore"
+	Thank Tim Jensen for the patch.
+4. Support new configurations "MaxRequestInMem" and "MaxRequestLen"
+	If the length of http request longer than "MaxRequestInMem", it will store in tmp file.
+	It the length of http request longer than "MaxRequestLen", it will return internal server error.
+	Thank Gabriel Barazer(gabriel at oxeva.fr) for the bug report.
+	Thank Steffen(info at apachelounge.com) for the help on this issue.
+5. Fix miner Sanity check bug
+	Thank Yuya Tanaka for bug report
+
+version 2.1 ( Feb 15th 2007 )
+1. Add missing config.m4 and Makefile.in for static linking
+	Thank Mark Drago for notice
+2. FCGIWrapper disallowed in .htaccess
+	Thank Balinares for patch
+3. Bug fix. Authoritative flag reversed
+	Thank Chris Darroch for the patch
+4. Support arguments in FCGIWrapper
+	Thank Andre Nathan for suggestion and great help on testing it.
+5. Support new config "SharememPath", which specifies the location of share memory path.
+6. Check running user is root or not, while suexec is enabled.
+	Thank Chris Holleman for the bug report.
+7. Bug fix. Should not pass respond to auth checkers.
+	Thank Szabolcs Hock for bug report.
+
+version 2.0 ( Oct 29th 2006 )
+1. Support FastCGI Authorizer protocols now.
+2. Add apxs compile instruction in INSTALL.txt.
+	Thank Hans Christian Saustrup, hc at saustrup.net for the suggestion.
+3. Bug fix. (Win32 only) PHP script can not create socket on Win32.
+	Thank bbscool at zjip.com for the bug report and the help.
+4. GREAT patchs from Robert L Mathews, rob at tigertech.com
+	Fix compile warnings
+	Adds a MaxRequestsPerProcess parameter that allows mod_fcgid to exit after handling a certain number of requests
+	Close socket before fork 
+	avoid the 1-second sleep the first time a process is spawned
+5. Print warning log while read data error from FastCGI process.
+6. Apply patch from Scott Lamb, Fix mod_fcgid 1.10 warnings on x86_64
+
+version 1.10 ( Jul 3rd 2006 )
+1. Use poll() instead of select() in UNIX. "It becomes problematic on apache2 with
+large number of logfiles. Apache2 calls poll() (when OS supports it), and in that
+case it doesn't need to be recompiled with larger FD_SETSIZE. select() is
+still limited to FD_SETSIZE." 
+	Thank Piotr Gackiewicz gacek at intertele.pl for the patch.
+2. Bug fix: "Some requests fail with HTTP 500 and no errorlog entry is generated"
+	Thank Piotr Gackiewicz gacek at intertele.pl for the patch.
+3. Use anonymouse share memeory to make OS X happy.
+	Thank andkjar at obtech.net for the patch.
+4. Add config.m4, mod_fcgid now can be static linked in httpd(See INSTALL.txt)
+
+version 1.09 ( Apr 25th 2006 )
+1. Add configuration DefaultMinClassProcessCount(default 3). Idle fastcgi will not be killed if their count 
+	less than DefaultMinClassProcessCount.  
+	(Thank Finn Smith, finn at timeghost.net for suggestion)
+2. Add  configuration PHP_Fix_Pathinfo_Enable(default 0). If you are using PHP and set cgi.fix_pathinfo=1 in
+	php.ini, please add "PHP_Fix_Pathinfo_Enable 1" in httpd.conf.  
+	(Thank Florian Munz,  flo at myhosting.de for bug report)?
+3. Split error log whle '\r' or '\n' are inside the text send to "stderr". 
+	(Thank frederic at jolliton.com for the patch)
+
+version 1.08 ( Jan 22nd 2006 )
+1. apr_bucket_copy() does not work with buckets from mod_ssl, use apr_bucket_heap_create() instead :(
+	(Thank Grzegorz Sampolski, gs at blink.pl for the bug report)
+2. Wrapper binary can be stored in a different location to the web content (like /usr/local/apache2/fcgi-bin)
+	(Patch from Stephen Grier, s.e.grier at qmul.ac.uk)
+3. Support Apache 2.2 now
+	(Patch from RyoYazaki, yazaki.ryo at mind.co.jp, and many other people report the compiling problem)
+4. Support "\r\n\r\n " HTTP header from CGI
+	(Thank Grzegorz Sampolski, gs at blink.pl for the bug report)
+
+version 1.07 ( Nov 10th 2005 )
+1. Configuration IPCConnectTimeout, IPCCommTimeout, BusyTimeout can be overwrite in VirtualHost section
+	(Thank cthulhu at planet-multiplayer.de for the suggestion)
+2. Add EXTRA_CFLAGS = -I$(builddir) in Makefile
+	(Thank contagion at gmail.com for the suggestion)
+3. Support Apache 2.1 now (Patch by nick at webthing.com)
+	(Thank nick at webthing.com for the excellent patch)
+4. Support "\r\n\t" HTTP header from CGI
+
+version 1.06 ( Apr 27th 2005 )
+1. "DefaultInitEnv" now can be placed inside VirtualHost section
+2. Bug fix. "FCGIWrapper" now stores in a per-directory config structure. (The old implementation
+	stores it in a per-server config structure, which may be overwrited by another 
+	<VirtualHost> section)
+	(Thank phyre at rogers.com for bug report and the great help for the bug fix AGAIN)
+
+version 1.05 ( Mar 4th 2005 )
+1. Bug fix. suEXEC wrapper in virtualhost environment will shares the process interpreters.
+	(Thank phyre at rogers.com for bug report and the great help for the bug fix)
+
+version 1.04 ( Dec 2nd 2004 )
+1. Bug fix. ap_scan_script_header_err_core can return non OK without errors.
+	e.g. CGI outputs Last-Modified header and browser request with
+	If-Mofieided-Since header, ap_scan_script_header_err_core() may
+	returns 302(Not Modified)
+	(Thank Tatsuki Sugiura, sugi at nemui.org for the bug fix patch)
+2. Choose FCGI wrappers based on file extentions.
+	e.g.
+	FCGIWrapper /usr/local/bin/php .php
+	Tells mod_fcgid calling all *.php scripts with wrapper /usr/local/bin/php.
+	(Thank Mathijs Brands, mathijs at crooked.net for the suggestion)
+
+verison 1.03 ( Nov 3rd 2004 )
+1. Add configuration "OutputBufferSize". The old implementation keep CGI output in a 64k bytes buffer,
+	before send them to web browser(for better network IO performance). 
+	If FCGI_Fflush() is called in your application, please add "OutputBufferSize 0" in you 
+	httpd.conf, which will not keep any CGI output in cache buffer.
+	The default value of OutputBufferSize is 64k byte.
+	(Thank Grzegorz Sampolski, gs at blink.pl)
+2. Return HTTP_SERVICE_UNAVAILABLE instead of HTTP_INTERNAL_SERVER_ERROR, while mod_fcgid can not
+	apply a FastCGI process slot. (Thank Grzegorz Sampolski, gs at blink.pl for the suggestion)
+
+version 1.02 ( Oct 1st 2004 )
+1. Bug fix. (Win32 only) Forward request to incorrect process when a script is a directory in the URL.
+	For example, if in the "cgi-bin" directory there are two programs, "a.exe" and "b.exe".  
+	If you go to the URL "http://localhost/cgi-bin/a.exe/defghi" then a.exe will start.
+	Then if you go to the URL "http://localhost/cgi-bin/b.exe/uvwxyz"  the request will be
+	processed by the already running a.exe. (Thank rripley at amadvertising.com)
+
+version 1.01 ( Sep 21st 2004 )
+1. More graceful implementation of suEXEC on UNIX. (Thank radek at karnet.pl for the advice)
+
+version 1.00 ( Sep 10th 2004 )
+1. Release FastCGI process slot before sending buffer back to browser. (less process count)
+
+version 0.88 ( Sep 3rd 2004 )
+1. Bug fix. File descriptor is closed twice if connect to UNIX domain socket error.
+2. Bug fix. Get server last active time incorrectly.
+
+version 0.87 ( Aug 26th 2004 )
+1. suEXEC supported.
+
+version 0.86 ( Aug 22th 2004 )
+Some major changes for performance. (Hits/Second is 30% greater than the old implementation)
+1. Socket bucket instead of heap bucket. (less memory)
+2. Pass buffer to browser, once the size of buffer exceed 64k bytes. (less memory)
+3. Non-block unix domain socket on UNIX. (better I/O performance)
+4. writev() instead of write() on UNIX. (better I/O performance)
+5. Try to read at least 8k bytes each single reading. (better I/O perormance)
+6. Disconnect FastCGI server, once browser disconnect. (less process count)
+
+version 0.80 ( Jul 27th 2004 )
+1. Duplex channel added, Apache now will get notification once FastCGI process is spawned.
+2. Bug fix. The FastCGI process share the signal handler with PM(Process Manager) process, if 
+	the FastCGI process get signal after fork() and before execve(), it will corrupt the
+	share memory. ( It's a very short interval between fork() and execve(), so this rarely happens )
+
+version 0.77 ( Jul 9th 2004 )
+1. Organize the configuration again
+	1) add "FCGIWrapperGroup" setting
+	2) "FCGIWrapper" now takes only one argument
+	3) remove "ServerConfig" setting, because it't not work with wrapper yet
+Please visit http://fastcgi.coremail.cn/doc.htm for more information about configuration
+
+version 0.76 ( Jul 6th 2004 )
+1. Code fix. Replace the depreciated BRIGADE_FOREACH macro, which compile against httpd 2.1-Dev.
+	(Patch by Paul Querna(chip at force-elite.com))
+2. PHP FastCGI Wrapper now can be run both with "share" and "non-share" mode.
+
+version 0.74 ( Jun 23rd 2004 )
+1. Bug fix. Ignore script checking while running in Win32 PHP wrapper mode.
+2. Indent the code with K&R style.
+
+version 0.72 ( Jun 13rd 2004 )
+1. Bug fix. Trim the padding nuls at the end of data. (Thank rick.stewart at theinternetco.net)
+
+version 0.7 ( May 22nd 2004 )
+1. PHP FastCGI Wrapper is supported on UNIX and Windows.
+
+version 0.62 ( May 18th 2004 )
+1. Unix version now compilable with gcc2.95.2
+2. Unix version is tested on Solaris7 & Solaris8
+
+version 0.6 ( May 8th 2004 )
+1. Unix version is tested on Redhat8(gcc3)
+2. Windows version is tested on Win2k(VC6)
