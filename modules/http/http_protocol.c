@@ -1169,6 +1169,9 @@ static const char *get_canned_error_string(int status,
         return(add_optional_notes(r, 
                "<p>Access to this URL has been denied for legal reasons.<br />\n",
                "error-notes", "</p>\n"));
+    case HTTP_VERSION_NOT_SUPPORTED:
+        return("<p>The server does not support the version of HTTP\n"
+               "used in the request.</p>\n");
     default:                    /* HTTP_INTERNAL_SERVER_ERROR */
         /*
          * This comparison to expose error-notes could be modified to
