@@ -509,6 +509,14 @@ static void clean_child_exit(int code)
     }
 
     if (pchild) {
+        if (one_process) {
+            /* What pconf's destruction would otherwise get wrong at exit */
+            if (worker_queue_info) {
+                /* the idle pools would be destroyed twice: as pconf's children,
+                 * then from the queue info's cleanup */
+                ap_queue_info_free_idle_pools(worker_queue_info);
+            }
+        }
         apr_pool_destroy(pchild);
     }
 
