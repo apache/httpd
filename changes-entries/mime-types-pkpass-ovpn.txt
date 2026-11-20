@@ -1,0 +1,2 @@
+  *) Updated conf/mime.types: added vnd.apple.pkpass and x-openvpn-profile.
+     PR 70363.  [Predrag Zečević <Predrag.Zecevic 2e-Systems.com>]
