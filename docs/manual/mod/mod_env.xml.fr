@@ -159,9 +159,29 @@ shell</description>
     une controblique (<code>\</code>) continue à la ligne suivante, comme dans
     les fichiers de configuration principaux.</p>
 
-    <example><title>Exemple</title>
+    <p>Une valeur commençant par un guillemet droit simple ou double (après une
+    espace suivant <code>=</code>) est traitée en tant que valeur entre
+    guillemets, comme avec la directive <directive
+    module="mod_env">SetEnv</directive>. Les guillemets qui entourent la valeur
+    sont supprimés et les espaces qu’elle contient sont préservées. Les espaces
+    avant le guillemet ouvrant ou après le guillemet fermant sont ignorées. Dans
+    une valeur entre guillemets, une controblique échappe une autre controblique
+    ou le caractère guillemet correspondant ; les autres controbliques sont
+    préservées. Pour inclure un guillemet littéral, échappez le à l’intérieur
+    d’une valeur entre guillemets ou utilisez l’autre caractère guillemet pour
+    entourer la valeur. Les valeurs non délimitées par des guillemets peuvent
+    contenir des espaces et ne font pas l’objet d’une suppression des caractères
+    d’échappement. Une valeur entre guillemets non terminée ou la présence de
+    texte inattendu après le guillemet fermant provoque une erreur de
+    configuration.</p>
+
+    <p>Si le fichier ne peut pas être lu, y compris à cause d’une ligne trop
+    longue (après jointure d’une ligne continuée), l’analyse de la configuration
+    échoue avec une erreur qui identifie le fichier et le numéro de la ligne.</p>
+
+    <example><title>Exemple d’utilisation de valeurs entre guillemets</title>
     <highlight language="config">
-      SetEnvFromFile conf/app.env
+      SetEnvFromFile "conf/app.env"
       </highlight>
     </example>
 
@@ -170,6 +190,10 @@ shell</description>
       # Application settings
       APP_MODE=production
       SPECIAL_PATH=/foo/bin
+      PADDED_VALUE=" value with surrounding spaces "
+      EMPTY_VALUE=""
+      LITERAL_QUOTE="'value"
+      ESCAPED_QUOTE='\'value'
       </highlight>
     </example>
 

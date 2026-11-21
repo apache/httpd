@@ -1209,16 +1209,15 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     <p>Il est nécessaire de définir ce drapeau pour permettre à une réécriture
     de continuer si la requête HTTP en cours d'écriture possède un point
     d'interrogation encodé, «&nbsp;%3f&nbsp;», et si le résultat réécrit
-    contient un «&nbsp;?&nbsp;» dans la substitution. Cela protège d'une URL
-    malveillante tirant avantage d'une capture et d'une resubstitution du point
-    d'interrogation encodé.</p>
+    contient un «&nbsp;?&nbsp;» au cas où le premier point d’interrogation
+    serait interprété comme séparant le chemin substitué de la requête
+    substituée. Cela protège d'une URL malveillante tirant avantage d'une
+    capture et d'une resubstitution du point d'interrogation encodé pour
+    tronquer le chemin.</p>
 
 <highlight language="config">
-# Un contrôleur frontal PHP qui route toutes les requêtes via un élément de la
-# chaîne de paramètres.
-# Sans UnsafeAllow3F, une requête comme /page%3Fname=test renverrait 403 Forbidden,
-# car le substitution réécrite contient '?' alors que la requête originelle
-# contient un caractère encodé '%3F'.
+# Sans UnsafeAllow3F, une requête comme /page%3Fname=test serait
+# rejetée, car le chemin serait tronqué.
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
 RewriteRule "(.+)" "index.php?route=$1" [L,QSA,UnsafeAllow3F]
