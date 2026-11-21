@@ -1,8 +1,74 @@
 import pytest
 import re
 import socket
+import threading
 
 from .env import H2Conf, H2TestEnv
+
+
+class DropFirstRelay:
+    """TCP relay to an h2c backend that closes its first connection once
+    the request HEADERS frame arrives, so mod_proxy_http2 has to retry."""
+
+    PREFACE = b"PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n"
+
+    def __init__(self, backend_port):
+        self._backend_port = backend_port
+        self._sock = socket.create_server(("127.0.0.1", 0))
+        self.port = self._sock.getsockname()[1]
+        self.accepted = 0
+
+    def start(self):
+        threading.Thread(target=self._serve, daemon=True).start()
+
+    def stop(self):
+        self._sock.close()
+
+    def _serve(self):
+        while True:
+            try:
+                conn, _ = self._sock.accept()
+            except OSError:
+                return
+            self.accepted += 1
+            target = self._drop if self.accepted == 1 else self._relay
+            threading.Thread(target=target, args=(conn,), daemon=True).start()
+
+    def _drop(self, conn):
+        buf = b""
+        with conn:
+            while True:
+                data = conn.recv(65536)
+                if not data:
+                    return
+                buf += data
+                pos = len(self.PREFACE)
+                while len(buf) >= pos + 9:
+                    flen = int.from_bytes(buf[pos:pos + 3], "big")
+                    if buf[pos + 3] == 0x1:  # HEADERS
+                        return
+                    pos += 9 + flen
+
+    def _relay(self, conn):
+        backend = socket.create_connection(("127.0.0.1", self._backend_port))
+
+        def pipe(src, dst):
+            try:
+                while True:
+                    data = src.recv(65536)
+                    if not data:
+                        break
+                    dst.sendall(data)
+            except OSError:
+                pass
+            for s in (src, dst):
+                try:
+                    s.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    pass
+
+        threading.Thread(target=pipe, args=(backend, conn), daemon=True).start()
+        pipe(conn, backend)
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
@@ -159,6 +225,85 @@ class TestH2Proxy:
         assert r2.response["status"] == 200
         for key in ['x-forwarded-for', 'x-forwarded-host','x-forwarded-server']:
             assert r1.json[key] == r2.json[key], f'{key} differs proxy_http != proxy_http2'
+
+    # a request retried on a new backend connection must keep the Host
+    # the client sent, port included (PR 67086)
+    def test_h2_600_07(self, env):
+        relay = DropFirstRelay(env.http_port)
+        relay.start()
+        try:
+            conf = H2Conf(env, extras={
+                f'cgi.{env.http_tld}': [
+                    "SetEnvIf Host (.+) X_HOST=$1",
+                    "ProxyPreserveHost on",
+                    f"ProxyPass /h2c/ h2c://127.0.0.1:{relay.port}/",
+                ]
+            })
+            conf.add_vhost_cgi()
+            conf.install()
+            assert env.apache_restart() == 0
+            url = env.mkurl("https", "cgi", "/h2c/hello.py")
+            r = env.curl_get(url, 5)
+            assert relay.accepted == 2, f'{r}'
+            assert r.response["status"] == 200
+            front = f"cgi.{env.http_tld}:{env.https_port}"
+            assert r.response["json"]["host"] == front
+            assert r.response["json"]["x-forwarded-host"] == front
+        finally:
+            relay.stop()
+
+    # the Host header of the request stays visible after proxying
+    def test_h2_600_08(self, env):
+        conf = H2Conf(env, extras={
+            f'cgi.{env.http_tld}': [
+                "ProxyPreserveHost on",
+                f"ProxyPass /h2c/ h2c://127.0.0.1:{env.http_port}/",
+                'Header set X-Front-Host "expr=%{req:Host}"',
+            ]
+        })
+        conf.add_vhost_cgi()
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "cgi", "/h2c/hello.py")
+        r = env.curl_get(url, 5)
+        assert r.response["status"] == 200
+        assert r.response["header"]["x-front-host"] == \
+            f"cgi.{env.http_tld}:{env.https_port}"
+
+    # a request without Host gets no Host invented after proxying
+    def test_h2_600_09(self, env):
+        conf = H2Conf(env, extras={
+            'base': [
+                'ProxyPreserveHost on',
+                f'ProxyPass /test/ h2c://127.0.0.1:{env.http_port}/',
+                '<Location /test/>',
+                '  Header always set X-Front-Host "expr=%{req:Host}"',
+                '</Location>',
+            ],
+        })
+        conf.install()
+        assert env.apache_restart() == 0
+        with socket.create_connection(
+                ('localhost', int(env.http_port)), timeout=5) as sock:
+            sock.sendall(b"GET /test/ HTTP/1.0\r\n\r\n")
+            data = b""
+            while b"\r\n\r\n" not in data:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                data += chunk
+        assert env.httpd_error_log.scan_recent(
+            re.compile(r'.*AH10511: incoming HTTP/0\.9 request'), timeout=5)
+        env.httpd_error_log.ignore_recent(matches=[
+            r'.*HTTP/0\.9 request \(with no Host header\).*', ],
+            lognos=["AH10511"])
+        head = data.split(b"\r\n\r\n")[0].decode("latin-1").split("\r\n")
+        assert head[0].startswith("HTTP/1.1 "), f'{data!r}'
+        headers = {}
+        for line in head[1:]:
+            name, _, value = line.partition(":")
+            headers[name.strip().lower()] = value.strip()
+        assert headers.get("x-front-host") == "", f'{head}'
 
     # lets do some error tests
     def test_h2_600_30(self, env):
