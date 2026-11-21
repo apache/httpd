@@ -1399,6 +1399,11 @@ EnableSendfile On
         to service their internal private network.</p>
       </note>
 
+      <p>In <code>Strict</code> mode, a <code>QUERY</code> request
+      (<rfc>10008</rfc>) without <code>Content-Type</code> is answered with 400, as
+      the media type is part of what defines the query. <code>Unsafe</code>
+      passes such requests on to the handler.</p>
+
       <example>
         <title>Example of a request leading to HTTP 400 with Strict mode</title>
         # Missing CRLF<br />
@@ -2866,7 +2871,8 @@ methods</description>
     <code>CONNECT</code>, <code>OPTIONS</code>,
     <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
     <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
-    <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
+    <code>LOCK</code>, <code>UNLOCK</code>, and <code>QUERY</code>.
+    <strong>The method name is
     case-sensitive.</strong> If <code>GET</code> is used, it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
     cannot be limited (see <directive module="core"

@@ -810,6 +810,26 @@ AP_DECLARE(int) ap_method_number_of(const char *method);
  */
 AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum);
 
+/**
+ * Determine whether a built-in method is "safe" in the sense of
+ * RFC 9110, Section 9.2.1 (GET, HEAD, OPTIONS, TRACE, and the read-only
+ * WebDAV methods PROPFIND and REPORT) or RFC 10008 (QUERY).
+ * Methods registered at runtime are never considered safe.
+ * @param methnum The method number (e.g. r->method_number)
+ * @return 1 if the method is safe, 0 otherwise
+ */
+AP_DECLARE(int) ap_method_is_safe(int methnum);
+
+/**
+ * Determine whether a built-in method is idempotent in the sense of
+ * RFC 9110, Section 9.2.2: all safe methods (see ap_method_is_safe())
+ * plus PUT and DELETE.
+ * Methods registered at runtime are never considered idempotent.
+ * @param methnum The method number (e.g. r->method_number)
+ * @return 1 if the method is idempotent, 0 otherwise
+ */
+AP_DECLARE(int) ap_method_is_idempotent(int methnum);
+
 
 /* Hooks */
 /*

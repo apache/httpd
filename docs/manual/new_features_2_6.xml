@@ -87,7 +87,13 @@
       specified in an IPv6 link-local address used with the
       <directive module="mpm_common">Listen</directive> or
       <directive module="core">VirtualHost</directive> directive.</dd>
-      
+
+      <dt>HTTP QUERY method</dt>
+      <dd>The <code>QUERY</code> method of <rfc>10008</rfc>, a safe and idempotent
+      request with content, is a built-in method. QUERY requests are routed
+      to applications like <code>POST</code>, and conditional QUERY requests
+      are answered with <code>304</code> like <code>GET</code>.</dd>
+
     </dl>
   </section>
 
@@ -202,6 +208,13 @@
   <section id="developer">
     <title>Module Developer Changes</title>
     <dl>
+      <dt>QUERY method</dt>
+      <dd>The new built-in method <code>M_QUERY</code> moves
+      <code>M_INVALID</code> from 26 to 27, so modules that use
+      <code>M_INVALID</code> need to be recompiled.
+      <code>ap_method_is_safe()</code> and
+      <code>ap_method_is_idempotent()</code> classify built-in methods.</dd>
+
       <dt>Core / HTTP module separation</dt>
 
       <dd>A large amount of code has been moved out of the

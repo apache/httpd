@@ -101,3 +101,25 @@ class TestBody:
         self.post(env, "file")
         assert self.post(env, "fileover", b"abc") == \
             f"3|nil|{hashlib.md5(b'abc').hexdigest()}"
+
+    # r:requestbody() returns the body of the methods that carry content
+    # to an application, which includes QUERY (RFC 10008), and nothing
+    # for the others.
+    @pytest.mark.parametrize(["method", "has_body"], [
+        ["POST", True],
+        ["PUT", True],
+        ["QUERY", True],
+        ["DELETE", False],
+    ])
+    def test_lua_004_07_methods(self, env, method, has_body):
+        url = env.mkurl("http", "test1", "/lua/body.lua?read")
+        r = env.curl_raw([url], options=[
+            "-X", method, "-H", "Content-Type: text/plain",
+            "--data-binary", "select=surname"])
+        assert r.response["status"] == 200, r.response
+        length, digest, _ = r.response["body"].decode().split()
+        if has_body:
+            assert length == str(len("select=surname"))
+            assert digest == hashlib.md5(b"select=surname").hexdigest()
+        else:
+            assert (length, digest) == ("nil", "-")

@@ -199,6 +199,12 @@ AP_IMPLEMENT_HOOK_VOID(insert_error_filter, (request_rec *r), (r))
  */
 #define METHOD_NUMBER_LAST  62
 
+/* GET, HEAD and QUERY (RFC 10008, Section 2.6) share the GET semantics
+ * of conditional requests: weak ETag comparison and 304 (Not Modified).
+ */
+#define IS_GET_OR_QUERY(r) ((r)->method_number == M_GET \
+                            || (r)->method_number == M_QUERY)
+
 static int is_mpm_running(void)
 {
     int mpm_state = 0;
@@ -426,9 +432,10 @@ AP_DECLARE(ap_condition_e) ap_condition_if_none_match(request_rec *r,
 
         /* See section 13.3.3 for rules on how to determine if two entities tags
          * match. The weak comparison function can only be used with GET or HEAD
-         * requests.
+         * requests, and with QUERY whose selected representation is defined
+         * like GET's (RFC 10008, Section 2.6).
          */
-        if (r->method_number == M_GET) {
+        if (IS_GET_OR_QUERY(r)) {
             if ((etag = apr_table_get(headers, "ETag")) != NULL) {
                 if (apr_table_get(r->headers_in, "Range")) {
                     if (ap_find_etag_strong(r->pool, if_nonematch, etag)) {
@@ -616,13 +623,14 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      * AND the field value is "*" (meaning match anything)
      *     OR our ETag matches any of the entity tags in that field, fail.
      *
-     * If the request method was GET or HEAD, failure means the server
+     * If the request method was GET, HEAD or QUERY, failure means the server
      *    SHOULD respond with a 304 (Not Modified) response.
      * For all other request methods, failure means the server MUST
      *    respond with a status of 412 (Precondition Failed).
      *
-     * GET or HEAD allow weak etag comparison, all other methods require
-     * strong comparison.  We can only use weak if it's not a range request.
+     * GET, HEAD or QUERY allow weak etag comparison, all other methods
+     * require strong comparison.  We can only use weak if it's not a range
+     * request.
      */
     cond = ap_condition_if_none_match(r, r->headers_out);
     has_if_none_match = (AP_CONDITION_NONE != cond);
@@ -630,7 +638,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
         not_modified = 0;
     }
     else if (cond >= AP_CONDITION_WEAK) {
-        if (r->method_number == M_GET) {
+        if (IS_GET_OR_QUERY(r)) {
             if (not_modified) {
                 not_modified = 1;
             }
@@ -641,7 +649,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     }
 
     /* If a valid If-Modified-Since request-header field was given
-     * AND it is a GET or HEAD request
+     * AND it is a GET, HEAD or QUERY request
      * AND the requested resource has not been modified since the time
      * specified in this field, then the server MUST
      *    respond with a status of 304 (Not Modified).
@@ -658,7 +666,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
             not_modified = 0;
         }
         else if (cond >= AP_CONDITION_WEAK) {
-            if (r->method_number == M_GET) {
+            if (IS_GET_OR_QUERY(r)) {
                 if (not_modified) {
                     not_modified = 1;
                 }
@@ -750,6 +758,7 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
     register_one_method(p, "MKACTIVITY", M_MKACTIVITY);
     register_one_method(p, "BASELINE-CONTROL", M_BASELINE_CONTROL);
     register_one_method(p, "MERGE", M_MERGE);
+    register_one_method(p, "QUERY", M_QUERY);
 }
 
 AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
@@ -802,6 +811,32 @@ AP_DECLARE(int) ap_method_number_of(const char *method)
     }
 
     return M_INVALID;
+}
+
+AP_DECLARE(int) ap_method_is_safe(int methnum)
+{
+    switch (methnum) {
+    case M_GET:         /* includes HEAD */
+    case M_OPTIONS:
+    case M_TRACE:
+    case M_PROPFIND:
+    case M_REPORT:
+    case M_QUERY:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+AP_DECLARE(int) ap_method_is_idempotent(int methnum)
+{
+    switch (methnum) {
+    case M_PUT:
+    case M_DELETE:
+        return 1;
+    default:
+        return ap_method_is_safe(methnum);
+    }
 }
 
 /*

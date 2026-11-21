@@ -1,0 +1,3 @@
+  *) mod_proxy_ajp: Retry QUERY (RFC 10008), PROPFIND and REPORT requests
+     without content after a backend failure, like GET.
+     [Michiel W. Beijen]

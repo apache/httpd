@@ -1546,6 +1546,25 @@ AP_DECLARE(int) ap_post_read_request(request_rec *r)
         return HTTP_BAD_REQUEST;
     }
 
+    /* RFC 10008, Section 2: the content and its media type define a
+     * QUERY, so servers MUST fail a QUERY request without Content-Type.
+     * Forward proxy requests are left alone (the origin server decides),
+     * as are servers configured with "HttpProtocolOptions Unsafe".
+     */
+    if (r->method_number == M_QUERY
+            && r->proxyreq != PROXYREQ_PROXY
+            && !apr_table_get(r->headers_in, "Content-Type")) {
+        core_server_config *conf;
+
+        conf = ap_get_core_module_config(r->server->module_config);
+        if (conf->http_conformance != AP_HTTP_CONFORMANCE_UNSAFE) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO()
+                          "QUERY request without Content-Type: %s",
+                          r->uri);
+            return HTTP_BAD_REQUEST;
+        }
+    }
+
     return OK;
 }
 

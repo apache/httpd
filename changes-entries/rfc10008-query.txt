@@ -1,0 +1,3 @@
+  *) core: Add the QUERY method of RFC 10008 as a built-in method.  QUERY
+     requests without Content-Type get 400, and conditional QUERY requests
+     get 304 like GET.  [Michiel W. Beijen]

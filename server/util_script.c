@@ -572,7 +572,9 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
              * ap_meets_conditions returns anything interesting.
              * That would be safer wrt HTTP, but would break CGI.
              */
-            if ((cgi_status == HTTP_UNSET) && (r->method_number == M_GET)) {
+            if ((cgi_status == HTTP_UNSET)
+                && (r->method_number == M_GET
+                    || r->method_number == M_QUERY)) {
                 cond_status = ap_meets_conditions(r);
             }
             apr_table_overlap(r->err_headers_out, merge,
