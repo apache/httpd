@@ -322,14 +322,30 @@ static const char *construct_key(request_rec *r, const char *context,
      * shared between protection spaces.  It is bound to the auth type
      * since what is cached differs between them: a password hash for
      * Basic, the hash of user, realm and password for Digest.
+     *
+     * Each field is joined with its byte length prefixed so that the
+     * key is injective: a field that itself contains the ':' delimiter
+     * (a form-submitted or Digest username, a realm, or a "host:port"
+     * context) cannot shift a field boundary and collide with a
+     * different (user, realm) tuple in another protection space.
      */
-    if (realm == NULL) {
-        return apr_pstrcat(r->pool, context, ":", provider, ":", ltype,
-                           ":", user, NULL);
-    }
-    else {
-        return apr_pstrcat(r->pool, context, ":", provider, ":", ltype,
-                           ":", user, ":", realm, NULL);
+    {
+        const char *fields[5];
+        const char *key = "";
+        int i, n = 0;
+
+        fields[n++] = context;
+        fields[n++] = provider;
+        fields[n++] = ltype;
+        fields[n++] = user;
+        if (realm != NULL) {
+            fields[n++] = realm;
+        }
+        for (i = 0; i < n; i++) {
+            key = apr_psprintf(r->pool, "%s%" APR_SIZE_T_FMT ":%s", key,
+                               (apr_size_t)strlen(fields[i]), fields[i]);
+        }
+        return key;
     }
 }
 
