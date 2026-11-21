@@ -1793,9 +1793,17 @@ PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
     /* Find in worker->s->upgrade list (if any) */
     const char *worker_upgrade = worker->s->upgrade;
     if (*worker_upgrade) {
-        return (strcmp(worker_upgrade, "*") == 0
-                || ap_cstr_casecmp(worker_upgrade, upgrade) == 0
-                || ap_find_token(p, worker_upgrade, upgrade));
+        const char *item;
+        if (strcmp(worker_upgrade, "*") == 0
+                || ap_cstr_casecmp(worker_upgrade, upgrade) == 0) {
+            return 1;
+        }
+        while ((item = ap_get_list_item(p, &worker_upgrade)) != NULL) {
+            if (ap_cstr_casecmp(item, upgrade) == 0) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     /* Compare to the provided default (if any) */
