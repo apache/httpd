@@ -99,7 +99,7 @@ class TestSocacheTruncated:
         })
         conf.add_vhost_test1()
         conf.install()
-        assert env.apache_restart() == 0
+        assert env.apache_restart() == 0, env.apachectl_stderr
 
     @staticmethod
     def _get(env, conn):
