@@ -810,8 +810,10 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
                 *cp++ = c;
             }
 
-            *cp++ = '\n';
-            *cp = '\0';
+            if (cp < buf_end - 1) {
+                *cp++ = '\n';
+                *cp = '\0';
+            }
         }
         else {
 
