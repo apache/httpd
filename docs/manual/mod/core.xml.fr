@@ -4,6 +4,7 @@
 <!-- English Revision: 1934980 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision$ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1893,8 +1894,19 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 	connexion (voir le module
 	<module>mod_remoteip</module>)</td></tr>
 
+    <tr><td><code>%{b}a</code></td>
+        <td>Identique à <code>%a</code>, mais une adresse IPv6 est écrite entre
+	crochets, comme <code>[adresse]:port</code>, en accord avec la <a
+	href="https://www.rfc-editor.org/rfc/rfc5952#section-6">RFC 5952,
+	section 6</a>. Les drapeaux <code>b</code> et <code>c</code> peuvent
+	être combinés, comme dans <code>%{bc}a</code></td></tr>
+
     <tr><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
+
+    <tr><td><code>%{b}A</code></td>
+        <td>Identique à <code>%A</code>, mais une adresse IPv6 est écrite entre
+	crochets, comme avec <code>%{b}a</code></td></tr>	
 
     <tr><td><code>%{<em>name</em>}e</code></td>
         <td>Variable d'environnement de requête <em>name</em></td></tr>
@@ -4017,7 +4029,7 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
 	Consultez la documentation du module pour plus d'informations.</p></li>
 
         <li><code>posixsem</code>
-        <p>Une variante de mutex basée sur un sémaphore Posix.</p>
+        <p>Une variante de mutex basée sur un sémaphore POSIX.</p>
 
         <note type="warning"><title>Avertissement</title>
         <p>La propriété du sémaphore n'est pas restituée si un thread du
@@ -4045,11 +4057,11 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
 
         <li><code>sem</code>
         <p>Sélection de la "meilleure" implémentation des sémaphores
-	disponible ; le choix s'effectue entre les sémaphores posix et
+	disponible ; le choix s'effectue entre les sémaphores POSIX et
 	IPC SystemV, dans cet ordre.</p></li>
 
         <li><code>pthread</code>
-        <p>Une variante de mutex à base de mutex de thread Posix
+        <p>Une variante de mutex à base de mutex de thread POSIX
 	inter-processus.</p>
 
         <note type="warning"><title>Avertissement</title>
