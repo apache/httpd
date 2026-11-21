@@ -1,0 +1,3 @@
+  *) mod_lua: Fix a crash in LuaInputFilter/LuaOutputFilter that could
+     occur after enough requests on a VM cached with "LuaScope conn",
+     "thread" or "server". PR 69592. [Arturo Bernal]
