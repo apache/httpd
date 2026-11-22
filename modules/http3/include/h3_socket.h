@@ -23,12 +23,14 @@
 #include <apr_portable.h>
 
 /**
- * Open a non-blocking IPv6 dual-stack UDP socket and bind it to the given port.
+ * Open a non-blocking UDP socket and bind it to @p addr. The IPv6 wildcard
+ * is bound dual-stack, so it takes IPv4 too; any other address is bound
+ * alone, in its own family.
  * With @p reuse_port, sets SO_REUSEPORT (where the OS has it), so several
  * sockets can share the port and the kernel spreads the peers over them.
  * Also asks for @p buffer_size on the send and receive buffers, which the OS
  * may cap; a refused or capped buffer is logged, never fatal.
- * @param port  Port to bind; 0 lets the OS pick.
+ * @param addr  Address and port to bind; port 0 lets the OS pick.
  * @param buffer_size Bytes requested for SO_RCVBUF and SO_SNDBUF; 0 keeps the
  *               OS default.
  * @param pool  Pool used for the underlying apr_socket_t lifetime.
@@ -38,7 +40,7 @@
  * @return APR_SUCCESS, APR_EAGAIN if the port is already bound, or another
  *         APR error code.
  */
-apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd);
+apr_status_t h3_socket_open(apr_sockaddr_t* addr, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd);
 
 /**
  * Route QUIC packets by connection ID: attach an SK_REUSEPORT eBPF program

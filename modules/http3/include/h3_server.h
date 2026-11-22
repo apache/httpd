@@ -34,11 +34,19 @@
 void h3_child_init(apr_pool_t* pchild, server_rec* s);
 
 /**
- * Bind the QUIC socket in the parent while it is still privileged (Linux), and
+ * Choose the address of the QUIC socket from the Listen directives, then
+ * bind the socket in the parent while it is still privileged (Linux), and
  * keep it across graceful restarts for the children to inherit.
+ * @param p Configuration pool.
  * @param s Main server.
  */
-void h3_server_post_config(server_rec* s);
+void h3_server_post_config(apr_pool_t* p, server_rec* s);
+
+/**
+ * @return Nonzero unless the Listen directives name addresses that the one
+ *         QUIC socket cannot serve alone, which leaves HTTP/3 off.
+ */
+int h3_server_enabled(void);
 
 /**
  * The QUIC token key. The parent makes it once and keeps it across restarts,

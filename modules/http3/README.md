@@ -69,6 +69,8 @@ Listen 4433 https
 </VirtualHost>
 ```
 
+The QUIC socket follows the address of `Listen`: `Listen 192.0.2.1:4433` serves HTTP/3 on 192.0.2.1 only, as for TCP. When `Listen` gives the HTTP/3 host several addresses, one QUIC socket cannot serve them alone and HTTP/3 is not started.
+
 ### 2. Client Discovery via `Alt-Svc`
 
 Because HTTP/3 runs over UDP, web browsers typically connect via TCP (HTTP/1.1 or HTTP/2) first. `mod_http3` automatically injects the `Alt-Svc` header into responses:

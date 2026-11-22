@@ -37,6 +37,7 @@
 #include "h3_hooks.h"
 #include "h3_io.h"
 #include "h3_os.h"
+#include "h3_server.h"
 #include "h3_session.h"
 #include "mod_http3.h"
 
@@ -82,7 +83,7 @@ int h3_hook_fixups(request_rec* r)
 
     h3_server_conf* conf = ap_get_module_config(r->server->module_config, &http3_module);
 
-    if (!conf || !conf->ssl_ctx || conf->h3_port == 0)
+    if (!conf || !conf->ssl_ctx || conf->h3_port == 0 || !h3_server_enabled())
     {
         return DECLINED;
     }

@@ -57,6 +57,58 @@ struct port_acquire_args
     h3_server_conf* conf;
 };
 
+/* The address the QUIC socket binds, chosen in post_config; NULL while
+ * HTTP/3 is off. The children inherit it. */
+static apr_sockaddr_t* quic_addr = NULL;
+static int quic_refused = 0;
+
+/* The QUIC socket serves the addresses httpd listens on for the TCP port of
+ * the HTTP/3 host: Alt-Svc names no host, so a client comes back over UDP to
+ * the address it reached over TCP. A host with no port (the main server, or
+ * a <VirtualHost> without one) is served by every listener. A wildcard Listen
+ * keeps the dual-stack wildcard, as does a port no Listen names. One QUIC
+ * socket cannot serve several addresses alone, which gives APR_EINVAL. */
+static apr_status_t choose_quic_addr(apr_pool_t* p, apr_port_t tcp_port, apr_port_t h3_port, apr_sockaddr_t** out)
+{
+    apr_sockaddr_t* one = NULL;
+    int wild4 = 0;
+    int wild6 = 0;
+    int several = 0;
+    for (ap_listen_rec* lr = ap_listeners; lr; lr = lr->next)
+    {
+        apr_sockaddr_t* sa = lr->bind_addr;
+        if (!sa || (tcp_port && sa->port != tcp_port))
+        {
+            continue;
+        }
+        if (apr_sockaddr_is_wildcard(sa))
+        {
+            wild4 |= sa->family == APR_INET;
+            wild6 |= sa->family == APR_INET6;
+        }
+        else if (!one)
+        {
+            one = sa;
+        }
+        else if (one->family != sa->family || !apr_sockaddr_equal(one, sa))
+        {
+            several = 1;
+        }
+    }
+    if (several || (one && (wild4 || wild6)))
+    {
+        return APR_EINVAL;
+    }
+    if (one)
+    {
+        /* By its text, which keeps the zone of a link-local address. */
+        char ip[64];
+        apr_status_t rv = apr_sockaddr_ip_getbuf(ip, sizeof(ip), one);
+        return rv == APR_SUCCESS ? apr_sockaddr_info_get(out, ip, one->family, h3_port, 0, p) : rv;
+    }
+    return apr_sockaddr_info_get(out, NULL, wild4 && !wild6 ? APR_INET : APR_INET6, h3_port, 0, p);
+}
+
 #ifdef __linux__
 /* The parent binds the QUIC sockets while still privileged and keeps them across restarts.
  * One SO_REUSEPORT socket per httpd listener bucket (ListenCoresBucketsRatio), so the kernel hash stays stable when children come and go. */
@@ -66,8 +118,14 @@ typedef struct
     int* fds;
     int n;
     apr_port_t port;
+    apr_sockaddr_t* addr; /* the bound address, from pool */
     int routed; /* an eBPF program routes the packets by connection ID */
 } h3_parent_socket;
+
+static int same_addr(const apr_sockaddr_t* a, const apr_sockaddr_t* b)
+{
+    return a && b && a->family == b->family && apr_sockaddr_equal(a, b);
+}
 
 /* The same count as httpd for ListenCoresBucketsRatio: online cores / ratio. Some MPMs count their buckets after post_config.
  * ponytail: top-level directive only, not one inside <IfModule>. */
@@ -133,7 +191,7 @@ static apr_status_t acquire_port(apr_pool_t* pool, server_rec* s, h3_server_conf
         return APR_EAGAIN;
     }
 #endif
-    return h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, pool, 0, fd);
+    return h3_socket_open(quic_addr, conf->h3_socket_buffer_size, pool, 0, fd);
 }
 
 /* Give the port back when this child cannot serve it after all. */
@@ -238,6 +296,10 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "h3_child_init: no H3 cert/key configured, skipping");
         return;
     }
+    if (!quic_addr)
+    {
+        return; /* refused in post_config, which logged why */
+    }
     apr_pool_pre_cleanup_register(pchild, NULL, child_pool_cleanup);
     if (h3_thread_safe_pool_create(pchild, "h3_child", &pool) != APR_SUCCESS)
     {
@@ -314,7 +376,12 @@ int h3_server_route_bucket(server_rec* s)
 #endif
 }
 
-void h3_server_post_config(server_rec* s)
+int h3_server_enabled(void)
+{
+    return !quic_refused;
+}
+
+void h3_server_post_config(apr_pool_t* p, server_rec* s)
 {
     if (!h3_server_secret(s))
     {
@@ -324,6 +391,29 @@ void h3_server_post_config(server_rec* s)
             apr_pool_userdata_set(secret, H3_SECRET_KEY, apr_pool_cleanup_null, s->process->pool);
         }
     }
+    server_rec* vhost = NULL;
+    h3_server_conf* conf = find_h3_server(s, &vhost);
+    quic_addr = NULL;
+    quic_refused = 0;
+    if (conf)
+    {
+        apr_status_t rv = choose_quic_addr(p, conf->host_port, conf->h3_port, &quic_addr);
+        if (rv != APR_SUCCESS)
+        {
+            /* Binding the wildcard instead would serve addresses httpd was told not to. */
+            if (rv == APR_EINVAL)
+            {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, vhost, "mod_http3: Listen gives the HTTP/3 host several addresses, which one QUIC socket cannot serve alone; HTTP/3 is not started");
+            }
+            else
+            {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, vhost, "mod_http3: no address for the QUIC socket on port %d; HTTP/3 is not started", (int)conf->h3_port);
+            }
+            quic_addr = NULL;
+            quic_refused = 1;
+            conf = NULL;
+        }
+    }
 #ifdef __linux__
     h3_parent_socket* ps = parent_socket(s);
     if (!ps)
@@ -331,14 +421,13 @@ void h3_server_post_config(server_rec* s)
         ps = apr_pcalloc(s->process->pool, sizeof(*ps));
         apr_pool_userdata_set(ps, "mod_http3.parent_socket", apr_pool_cleanup_null, s->process->pool);
     }
-    server_rec* vhost = NULL;
-    h3_server_conf* conf = find_h3_server(s, &vhost);
     int n = listen_buckets();
-    /* ponytail: a new port or bucket count binds again. An old single socket without SO_REUSEPORT blocks this until its children stop. */
-    if (ps->n && (!conf || conf->h3_port != ps->port || n != ps->n))
+    /* ponytail: a new address, port or bucket count binds again. An old single socket without SO_REUSEPORT blocks this until its children stop. */
+    if (ps->n && (!conf || conf->h3_port != ps->port || n != ps->n || !same_addr(ps->addr, quic_addr)))
     {
         apr_pool_destroy(ps->pool); /* closes the old sockets */
         ps->pool = NULL;
+        ps->addr = NULL;
         ps->n = 0;
         ps->routed = 0;
     }
@@ -350,10 +439,13 @@ void h3_server_post_config(server_rec* s)
     if (ok)
     {
         ps->fds = apr_palloc(ps->pool, sizeof(int) * (size_t)n);
+        /* The sockets outlive this configuration, so bind them with a copy
+         * that lives in their pool. */
+        ok = apr_sockaddr_info_copy(&ps->addr, quic_addr, ps->pool) == APR_SUCCESS;
     }
     for (int i = 0; ok && i < n; i++)
     {
-        ok = h3_socket_open(conf->h3_port, conf->h3_socket_buffer_size, ps->pool, n > 1, &ps->fds[i]) == APR_SUCCESS;
+        ok = h3_socket_open(ps->addr, conf->h3_socket_buffer_size, ps->pool, n > 1, &ps->fds[i]) == APR_SUCCESS;
     }
     if (!ok)
     {
@@ -363,6 +455,7 @@ void h3_server_post_config(server_rec* s)
             apr_pool_destroy(ps->pool);
         }
         ps->pool = NULL;
+        ps->addr = NULL;
         return;
     }
     ps->n = n;

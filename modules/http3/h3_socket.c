@@ -56,18 +56,29 @@ static void tune_buffers(apr_socket_t* sock, apr_size_t want, apr_port_t port, a
     }
 }
 
-apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd)
+apr_status_t h3_socket_open(apr_sockaddr_t* addr, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd)
 {
+    CHECK(addr);
     CHECK(pool);
     CHECK(out_fd);
+    apr_port_t port = addr->port;
+    char ip[64];
+    if (apr_sockaddr_ip_getbuf(ip, sizeof(ip), addr) != APR_SUCCESS)
+    {
+        ip[0] = '\0';
+    }
     apr_socket_t* sock = NULL;
-    apr_status_t rv = apr_socket_create(&sock, APR_INET6, SOCK_DGRAM, APR_PROTO_UDP, pool);
+    apr_status_t rv = apr_socket_create(&sock, addr->family, SOCK_DGRAM, APR_PROTO_UDP, pool);
     if (rv != APR_SUCCESS)
     {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "h3_socket_open: apr_socket_create failed");
+        ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pool, "h3_socket_open: apr_socket_create failed");
         return rv;
     }
-    apr_socket_opt_set(sock, APR_IPV6_V6ONLY, 0);
+    if (addr->family == APR_INET6)
+    {
+        /* The wildcard takes IPv4 as well; an address from Listen is served alone. */
+        apr_socket_opt_set(sock, APR_IPV6_V6ONLY, apr_sockaddr_is_wildcard(addr) ? 0 : 1);
+    }
     tune_buffers(sock, buffer_size, port, pool);
 #ifdef SO_REUSEPORT
     apr_os_sock_t reuse_sock = -1;
@@ -79,24 +90,16 @@ apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t*
 #else
     (void)reuse_port;
 #endif
-    apr_sockaddr_t* addr = NULL;
-    rv = apr_sockaddr_info_get(&addr, NULL, APR_INET6, port, 0, pool);
-    if (rv != APR_SUCCESS)
-    {
-        apr_socket_close(sock);
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "h3_socket_open: apr_sockaddr_info_get failed");
-        return rv;
-    }
     rv = apr_socket_bind(sock, addr);
     if (rv != APR_SUCCESS)
     {
         apr_socket_close(sock);
         if (h3_socket_os_is_eaddrinuse(rv))
         {
-            ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, pool, "bind(%d) skipped (port already owned)", (int)port);
+            ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, pool, "bind(%s:%d) skipped (port already owned)", ip, (int)port);
             return APR_EAGAIN;
         }
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "bind(%d) failed", (int)port);
+        ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pool, "bind(%s:%d) failed", ip, (int)port);
         return rv;
     }
     rv = apr_socket_timeout_set(sock, 0);
