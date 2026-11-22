@@ -228,6 +228,9 @@ static apr_status_t child_pool_cleanup(void* data H3_UNUSED)
 
 void h3_child_init(apr_pool_t* pchild, server_rec* s)
 {
+    if (!h3_is_enabled(s))
+	return;
+
     server_rec* vhost = NULL;
     h3_server_conf* conf = find_h3_server(s, &vhost);
     apr_pool_t* pool = NULL;
@@ -346,6 +349,12 @@ void h3_server_post_config(server_rec* s)
     {
         return;
     }
+    
+    if (!h3_is_enabled(s))
+    {
+        return;
+    }
+    
     int ok = apr_pool_create(&ps->pool, s->process->pool) == APR_SUCCESS;
     if (ok)
     {
