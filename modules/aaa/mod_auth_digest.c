@@ -446,7 +446,7 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                          apr_shm_baseaddr_get(client_shm),
                          p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10635)
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10676)
                      "failed to attach to rmm in child");
         return;
     }
@@ -455,7 +455,7 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                                       apr_global_mutex_lockfile(client_lock),
                                       p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10636)
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10677)
                      "failed to initialize lock (client_lock) in child");
     }
 }
