@@ -412,6 +412,10 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     return initialize_tables(s, p);
 }
 
+/* A failure here is logged and the child carries on with the handles it
+ * inherited: nothing is torn down, since the shared memory and above all
+ * the mutex are shared with every other child, and this child has no
+ * fallback for serving Digest requests without them. */
 static void initialize_child(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
@@ -422,7 +426,8 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                          apr_shm_baseaddr_get(client_shm),
                          p);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to attach to rmm", sts, s);
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10635)
+                     "failed to attach to rmm in child");
         return;
     }
 
@@ -430,8 +435,8 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                                       apr_global_mutex_lockfile(client_lock),
                                       p);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
-        return;
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10636)
+                     "failed to initialize lock (client_lock) in child");
     }
 }
 
