@@ -1,0 +1,4 @@
+  *) mod_http3: Select an IP-based virtual host by the address the client
+     sent to, as for TCP, and log that address as the local address. An
+     HTTP/3 request to the address of one IP-based virtual host could be
+     served by another. [Arturo Bernal]

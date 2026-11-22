@@ -64,25 +64,19 @@ typedef struct
     apr_off_t bytes_last_request;
 } h3_logio_config_t;
 
-/* The engine reports a raw sockaddr, so the conversion to APR belongs here. */
-static int peer_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip)
+/* The engine reports raw sockaddrs, so the conversion to APR belongs here.
+ * A nonzero @p port replaces the port of the sockaddr. */
+static int sockaddr_resolve(const struct sockaddr_storage* sa, socklen_t sa_len, apr_port_t port, apr_pool_t* pool, apr_sockaddr_t** addr, char** ip_str)
 {
-    struct sockaddr_storage peer = {0};
-    socklen_t peer_len = 0;
-    if (!h3q_engine_peer_addr(engine, qconn, &peer, &peer_len))
-    {
-        return 0;
-    }
-
     char host[NI_MAXHOST] = {0};
     char serv[NI_MAXSERV] = {0};
-    if (getnameinfo((const struct sockaddr*)&peer, peer_len, host, sizeof(host), serv, sizeof(serv), NI_NUMERICHOST | NI_NUMERICSERV) != 0)
+    if (getnameinfo((const struct sockaddr*)sa, sa_len, host, sizeof(host), serv, sizeof(serv), NI_NUMERICHOST | NI_NUMERICSERV) != 0)
     {
         return 0;
     }
     char* end = NULL;
-    unsigned long port = strtoul(serv, &end, 10);
-    if (serv[0] == '\0' || !end || end[0] != '\0' || port > 65535)
+    unsigned long sa_port = strtoul(serv, &end, 10);
+    if (serv[0] == '\0' || !end || end[0] != '\0' || sa_port > 65535)
     {
         return 0;
     }
@@ -90,7 +84,7 @@ static int peer_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_pool_t* po
     /* Fill locals first: apr_sockaddr_info_get NULLs its out-param on failure. */
     apr_sockaddr_t* resolved = NULL;
     char* ip = NULL;
-    if (apr_sockaddr_info_get(&resolved, host, APR_UNSPEC, (apr_port_t)port, 0, pool) != APR_SUCCESS)
+    if (apr_sockaddr_info_get(&resolved, host, APR_UNSPEC, port ? port : (apr_port_t)sa_port, 0, pool) != APR_SUCCESS)
     {
         return 0;
     }
@@ -99,8 +93,25 @@ static int peer_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_pool_t* po
         return 0;
     }
     *addr = resolved;
-    *client_ip = ip;
+    *ip_str = ip;
     return 1;
+}
+
+static int peer_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_pool_t* pool, apr_sockaddr_t** addr, char** client_ip)
+{
+    struct sockaddr_storage peer = {0};
+    socklen_t peer_len = 0;
+    return h3q_engine_peer_addr(engine, qconn, &peer, &peer_len) && sockaddr_resolve(&peer, peer_len, 0, pool, addr, client_ip);
+}
+
+/* The address the client sent to, which selects an IP-based virtual host.
+ * It keeps the port of the host's TCP listener: an H3Port of its own does
+ * not make the request belong to another virtual host. */
+static int local_addr_resolve(h3q_engine* engine, h3q_conn* qconn, apr_port_t port, apr_pool_t* pool, apr_sockaddr_t** addr, char** local_ip)
+{
+    struct sockaddr_storage local = {0};
+    socklen_t local_len = 0;
+    return h3q_engine_local_addr(engine, qconn, &local, &local_len) && sockaddr_resolve(&local, local_len, port, pool, addr, local_ip);
 }
 
 conn_rec* h3_synth_conn(h3_session* session)
@@ -131,6 +142,13 @@ conn_rec* h3_synth_conn(h3_session* session)
     if (child_h3_io && peer_addr_resolve(child_h3_io->qengine, session->qconn, cpool, &c->client_addr, &c->client_ip))
     {
         c->remote_host = NULL;
+    }
+    if (child_h3_io)
+    {
+        /* Else 0.0.0.0, which no IP-based virtual host matches. Like the
+         * client address, it is the path the connection was accepted on and
+         * is not updated if the connection migrates. */
+        local_addr_resolve(child_h3_io->qengine, session->qconn, vhost_port, cpool, &c->local_addr, &c->local_ip);
     }
     c->bucket_alloc = apr_bucket_alloc_create(cpool);
     c->log = &s->log;

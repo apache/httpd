@@ -119,4 +119,15 @@ h3q_conn* h3q_engine_accept_conn(h3q_engine* engine);
  */
 int h3q_engine_peer_addr(h3q_engine* engine, h3q_conn* conn, struct sockaddr_storage* addr, socklen_t* addr_len);
 
+/**
+ * Copy the local address from the connection's network path: the address
+ * the peer sent to where the socket reports it, else the bound address.
+ * @param engine   Engine owning @p conn; NULL reports failure.
+ * @param conn     Connection to inspect.
+ * @param addr     Out: local socket address.
+ * @param addr_len Out: bytes of @p addr that are meaningful.
+ * @return 1 if the address was recovered, 0 otherwise.
+ */
+int h3q_engine_local_addr(h3q_engine* engine, h3q_conn* conn, struct sockaddr_storage* addr, socklen_t* addr_len);
+
 #endif /* H3Q_H */

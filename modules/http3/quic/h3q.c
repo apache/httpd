@@ -626,3 +626,15 @@ int h3q_engine_peer_addr(h3q_engine* engine, h3q_conn* conn, struct sockaddr_sto
     *addr_len = (socklen_t)conn->path.path.remote.addrlen;
     return 1;
 }
+
+int h3q_engine_local_addr(h3q_engine* engine, h3q_conn* conn, struct sockaddr_storage* addr, socklen_t* addr_len)
+{
+    (void)engine;
+    if (!conn || !addr || !addr_len || conn->path.path.local.addrlen == 0 || conn->path.path.local.addrlen > sizeof(*addr))
+    {
+        return 0;
+    }
+    memcpy(addr, conn->path.path.local.addr, conn->path.path.local.addrlen);
+    *addr_len = (socklen_t)conn->path.path.local.addrlen;
+    return 1;
+}
