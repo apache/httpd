@@ -12,7 +12,7 @@ from . import digest_client as dc
 from .env import AAATestEnv
 
 # on the tests that fail without it (the others pass there as well)
-NOT_BACKPORTED = not_backported("r1937888", "Authentication-Info on error responses")
+NOT_BACKPORTED = not_backported("r1937888", "Authentication-Info on error responses", backported_in="2.4.72")
 
 
 class TestAuthInfoOnError:

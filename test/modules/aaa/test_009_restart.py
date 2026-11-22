@@ -51,7 +51,7 @@ ONETIME_REUSED = "AH01779"
 _WIN32 = sys.platform == "win32"
 
 # on the tests that fail without it (the others pass there as well)
-NOT_BACKPORTED = not_backported("r1937711", "random client ids after a restart")
+NOT_BACKPORTED = not_backported("r1937711", "random client ids after a restart", backported_in="2.4.72")
 
 
 class TestDigestRestart:

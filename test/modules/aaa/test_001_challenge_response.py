@@ -180,7 +180,7 @@ class TestDigestChallengeResponse:
         assert r.response["status"] == 401
         env.httpd_error_log.ignore_recent(lognos=["AH01794"])
 
-    @not_backported("r1939034", "rejecting an Authorization uri which fails to unescape")
+    @not_backported("r1939034", "rejecting an Authorization uri which fails to unescape", backported_in="2.4.72")
     def test_digest_015_uri_bad_escaping_rejected(self, env):
         # The Authorization uri= is compared against the request-target after
         # %-decoding both. A uri= that fails to decode -- an encoded NUL or

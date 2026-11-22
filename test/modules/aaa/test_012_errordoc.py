@@ -16,7 +16,7 @@ down a worker with a single malformed request.
 from pyhttpd.backport import skip_not_backported
 from .env import AAATestEnv
 
-pytestmark = skip_not_backported("r1939032", "no Digest record for a request failing header validation")
+pytestmark = skip_not_backported("r1939032", "no Digest record for a request failing header validation", backported_in="2.4.72")
 
 
 class TestDigestErrorDocument:
