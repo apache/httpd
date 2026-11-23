@@ -34,6 +34,7 @@ on:
       - 'test/modules/arch/linux/**'
       - 'test/travis_*.sh'
       - 'test/gha-*.sh'
+      - .asf.yaml
 
 permissions:
   contents: read
