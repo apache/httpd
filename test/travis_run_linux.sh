@@ -174,7 +174,7 @@ if test -v TEST_UBSAN; then
 fi
 
 if test -v TEST_ASAN; then
-    export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0"
+    export ASAN_OPTIONS="log_path=$PWD/asan.log:detect_leaks=0:disable_coredump=0"
 fi
 
 # Try to keep all potential coredumps from all processes
