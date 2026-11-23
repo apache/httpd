@@ -102,6 +102,11 @@ void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_
     *write_finished = (wstate == SSL_STREAM_STATE_FINISHED || wstate == SSL_STREAM_STATE_RESET_LOCAL);
 }
 
+int h3q_stream_is_read_reset(h3q_stream* st)
+{
+    return st ? (SSL_get_stream_read_state((SSL*)st) == SSL_STREAM_STATE_RESET_REMOTE) : 0;
+}
+
 int h3q_stream_is_early(h3q_stream* st)
 {
     (void)st;
@@ -116,6 +121,12 @@ void h3q_stream_reset(h3q_stream* st, uint64_t err)
     }
     SSL_STREAM_RESET_ARGS args = {err};
     SSL_stream_reset((SSL*)st, &args, sizeof(args));
+}
+
+/* OpenSSL has no explicit STOP_SENDING: it sends one when a stream whose read side is not finished is freed. */
+void h3q_stream_abort(h3q_stream* st, uint64_t err)
+{
+    h3q_stream_reset(st, err);
 }
 
 void h3q_stream_free(h3q_stream* st)

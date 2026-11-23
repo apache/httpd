@@ -168,6 +168,17 @@ int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const ch
     return 0;
 }
 
+/* OpenSSL cannot send the CONNECTION_REFUSED transport error; close at once with an application error. */
+void h3q_conn_refuse(h3q_conn* conn)
+{
+    SSL* ssl_conn = (SSL*)conn;
+    if (ssl_conn)
+    {
+        SSL_SHUTDOWN_EX_ARGS args = {.quic_error_code = 0x107 /* H3_EXCESSIVE_LOAD */, .quic_reason = "refused"};
+        SSL_shutdown_ex(ssl_conn, SSL_SHUTDOWN_FLAG_RAPID, &args, sizeof(args));
+    }
+}
+
 void h3q_conn_free(h3q_conn* conn)
 {
     if (conn)
