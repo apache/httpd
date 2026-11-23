@@ -57,11 +57,6 @@ struct port_acquire_args
     h3_server_conf* conf;
 };
 
-/* The address the QUIC socket binds, chosen in post_config; NULL while
- * HTTP/3 is off. The children inherit it. */
-static apr_sockaddr_t* quic_addr = NULL;
-static int quic_refused = 0;
-
 /* The QUIC socket serves the addresses httpd listens on for the TCP port of
  * the HTTP/3 host: Alt-Svc names no host, so a client comes back over UDP to
  * the address it reached over TCP. A host with no port (the main server, or
@@ -191,7 +186,7 @@ static apr_status_t acquire_port(apr_pool_t* pool, server_rec* s, h3_server_conf
         return APR_EAGAIN;
     }
 #endif
-    return h3_socket_open(quic_addr, conf->h3_socket_buffer_size, pool, 0, fd);
+    return h3_socket_open(conf->quic_addr, conf->h3_socket_buffer_size, pool, 0, fd);
 }
 
 /* Give the port back when this child cannot serve it after all. */
@@ -296,7 +291,7 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "h3_child_init: no H3 cert/key configured, skipping");
         return;
     }
-    if (!quic_addr)
+    if (!conf->quic_addr)
     {
         return; /* refused in post_config, which logged why */
     }
@@ -376,11 +371,6 @@ int h3_server_route_bucket(server_rec* s)
 #endif
 }
 
-int h3_server_enabled(void)
-{
-    return !quic_refused;
-}
-
 void h3_server_post_config(apr_pool_t* p, server_rec* s)
 {
     if (!h3_server_secret(s))
@@ -393,8 +383,7 @@ void h3_server_post_config(apr_pool_t* p, server_rec* s)
     }
     server_rec* vhost = NULL;
     h3_server_conf* conf = find_h3_server(s, &vhost);
-    quic_addr = NULL;
-    quic_refused = 0;
+    apr_sockaddr_t* quic_addr = NULL;
     if (conf)
     {
         apr_status_t rv = choose_quic_addr(p, conf->host_port, conf->h3_port, &quic_addr);
@@ -410,8 +399,17 @@ void h3_server_post_config(apr_pool_t* p, server_rec* s)
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, vhost, "mod_http3: no address for the QUIC socket on port %d; HTTP/3 is not started", (int)conf->h3_port);
             }
             quic_addr = NULL;
-            quic_refused = 1;
             conf = NULL;
+        }
+        /* Every HTTP/3 host is served by the one QUIC socket; a NULL address
+         * keeps Alt-Svc off for all of them. */
+        for (server_rec* cur = s; cur; cur = cur->next)
+        {
+            h3_server_conf* hc = ap_get_module_config(cur->module_config, &http3_module);
+            if (hc && hc->ssl_ctx)
+            {
+                hc->quic_addr = quic_addr;
+            }
         }
     }
 #ifdef __linux__

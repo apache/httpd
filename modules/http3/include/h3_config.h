@@ -40,6 +40,8 @@ struct h3_server_conf
     struct ssl_ctx_st* ssl_ctx;
 
     apr_port_t h3_port;
+    /** Address the QUIC socket binds, chosen in post_config; NULL when HTTP/3 is not started. */
+    apr_sockaddr_t* quic_addr;
     apr_uint32_t h3_max_concurrent_streams;
     apr_uint32_t h3_max_connections;
     apr_size_t h3_stream_buffer_size;

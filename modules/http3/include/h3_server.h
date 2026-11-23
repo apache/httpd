@@ -43,12 +43,6 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s);
 void h3_server_post_config(apr_pool_t* p, server_rec* s);
 
 /**
- * @return Nonzero unless the Listen directives name addresses that the one
- *         QUIC socket cannot serve alone, which leaves HTTP/3 off.
- */
-int h3_server_enabled(void);
-
-/**
  * The QUIC token key. The parent makes it once and keeps it across restarts,
  * so a token from one child is good in every other child.
  * @return 32 bytes, or NULL if no key could be made.
