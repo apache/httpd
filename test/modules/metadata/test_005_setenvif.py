@@ -48,3 +48,45 @@ class TestSetEnvIf:
         # X-A does not contain "bar", only X-B does
         assert "SEI_LITERAL=[(none)]" in body
         assert "SEI_REGEX=[(none)]" in body
+
+
+class TestSetEnvIfExprNoCapture:
+
+    @pytest.fixture(autouse=True, scope='class')
+    @classmethod
+    def _class_scope(cls, env):
+        doc_dir = os.path.join(env.server_dir, "htdocs", "test1")
+        os.makedirs(doc_dir, exist_ok=True)
+        with open(os.path.join(doc_dir, "setenvif-nocap.shtml"), "w") as f:
+            for name in ["SEI_NOCAP", "SEI_ESC"]:
+                f.write(f'{name}=[<!--#echo var="{name}" -->]\n')
+        # A SetEnvIfExpr whose expression captures nothing after a rule
+        # that did capture: $N must not come from the earlier rule
+        # (BZ 70369).
+        conf = HttpdConf(env, extras={
+            'base': f"""
+            SetEnvIf X-C "^(.+)$" SEI_PRIME=$1
+            SetEnvIfExpr "'a' == 'a'" SEI_NOCAP=<$0|$1>
+            SetEnvIfExpr "'a' == 'a'" SEI_ESC=a\\&b\\$1c
+            <Directory "{doc_dir}">
+                Options +Includes
+                AddType text/html .shtml
+                AddOutputFilter INCLUDES .shtml
+            </Directory>
+            """,
+        })
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+
+    # $N is empty and backslash escapes still apply
+    @pytest.mark.parametrize("header", [True, False])
+    def test_metadata_005_02_expr_no_capture(self, env, header):
+        url = env.mkurl("http", "test1", "/setenvif-nocap.shtml")
+        options = ["-H", "X-C: secret-value"] if header else []
+        r = env.curl_get(url, options=options)
+        assert r.response, "no response: server may have crashed"
+        assert r.response["status"] == 200
+        body = r.response["body"].decode("utf-8", errors="replace")
+        assert "SEI_NOCAP=[&lt;|&gt;]" in body, body
+        assert "SEI_ESC=[a&amp;b$1c]" in body, body

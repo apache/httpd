@@ -608,6 +608,14 @@ static int match_headers(request_rec *r)
              * value again rather than reuse val and val_len.
              */
             last_name = NULL;
+            /* $N in the value must come only from a capturing regex of
+             * this expression, never from a previous rule's match.
+             */
+            val = "";
+            val_len = 0;
+            for (j = 0; j < AP_MAX_REG_MATCH; ++j) {
+                regm[j].rm_so = regm[j].rm_eo = -1;
+            }
         }
 
         /*

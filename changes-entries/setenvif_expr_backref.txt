@@ -1,0 +1,4 @@
+  *) mod_setenvif: SetEnvIfExpr no longer fills $N backreferences from a
+     previous rule's match, or from uninitialized memory, when its
+     expression captured nothing. $N is then empty.
+     PR 70369 [Arturo Bernal]
