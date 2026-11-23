@@ -1,0 +1,3 @@
+  *) mod_socache_dbm: Fix use of an already destroyed memory pool when the
+     cache files are removed on restart or shutdown.
+     [arshiya tabasum <arshi@bugqore.com>]
