@@ -1,0 +1,3 @@
+  *) core: ap_die(): Use the actual status of a recursive ErrorDocument
+     lookup, instead of the original request's status, when reporting a
+     genuine recursive error. [Jean-Frederic Clere]
