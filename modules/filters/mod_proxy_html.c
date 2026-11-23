@@ -702,6 +702,13 @@ static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
         p = buf+offs+pmatch[1].rm_eo;
         while (++p < end && !apr_isalpha(*p));
         for (q = p; q < end && (apr_isalnum(*q) || (*q == '-')); ++q);
+        if (q == p) {
+            /* No header name (the tag ran up against the end of the
+             * buffer); nothing to lift, so skip past this match.
+             */
+            offs += pmatch[0].rm_eo;
+            continue;
+        }
         header = apr_pstrmemdup(r->pool, p, q-p);
         if (!ap_cstr_casecmpn(header, "Content-Type", 12)) {
             ret = apr_palloc(r->pool, sizeof(meta));
