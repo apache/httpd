@@ -42,4 +42,4 @@ notifications:
 publish:
   whoami: trunk  # the git branch
   subdir: trunk  # the website subdir
-  hostname: docs.httpd.apache.org
+  hostname: documentation.httpd.apache.org
