@@ -78,3 +78,44 @@ class TestNoTickets:
         client = env.h3_client()
         assert cgi_env(client)["SSL_SESSION_RESUMED"] == "Initial"
         assert client.received_tickets == []
+
+
+class TestSslVarLookup:
+    """ap_ssl_var_lookup() callers see the TLS state of an HTTP/3 request."""
+
+    @pytest.fixture(autouse=True, scope="class")
+    @classmethod
+    def _class_scope(cls, env):
+        H3Conf(env).add_h3_vhost(directives=[
+            'Header always set X-SSL-Protocol "%{SSL_PROTOCOL}s"',
+            'Header always set X-SSL-Cipher "%{SSL_CIPHER}s"',
+            'Header always set X-HTTPS "%{HTTPS}s"',
+            'Header always set X-Lower-HTTPS "%{https}s"',
+            'Header always set X-SSL-Interface "%{SSL_VERSION_INTERFACE}s"',
+            "RewriteEngine on",
+            r"RewriteCond %{SSL:ssl_protocol} ^TLSv1\.3$",
+            "RewriteCond %{SSL:HTTPS} =on",
+            "RewriteRule ^/sslvar$ /sslvar-tls13 [R=302,L]",
+        ]).install()
+        assert env.apache_restart() == 0
+
+    def test_h3_102_20_headers(self, env):
+        url = f"https://{env.h3_domain}:{env.https_port}/"
+        h1 = env.curl_get(url, options=["--http1.1", "--tlsv1.3"])
+        assert h1.response["header"]["x-ssl-protocol"] == "TLSv1.3"
+        client = env.h3_client()
+        r = client.get("/")
+        assert r.header("x-https") == "on", f"{r}"
+        assert r.header("x-lower-https") == "on", f"{r}"
+        assert r.header("x-ssl-protocol") == "TLSv1.3", f"{r}"
+        assert r.header("x-ssl-cipher") == cgi_env(client)["SSL_CIPHER"], \
+            f"{r}"
+        # names mod_http3 does not know still reach mod_ssl
+        assert r.header("x-ssl-interface") == \
+            h1.response["header"]["x-ssl-interface"], f"{r}"
+        assert r.header("x-ssl-interface").startswith("mod_ssl/"), f"{r}"
+
+    def test_h3_102_21_rewrite(self, env):
+        r = env.h3_client().get("/sslvar")
+        assert r.status == 302, f"{r}"
+        assert r.header("location").endswith("/sslvar-tls13"), f"{r}"

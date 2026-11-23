@@ -1,0 +1,5 @@
+  *) mod_http3: HTTPS and the SSL_PROTOCOL, SSL_CIPHER, SSL_CIPHER_* and
+     SSL_SESSION_RESUMED variables are now set over HTTP/3 for mod_rewrite
+     %{SSL:...}, mod_headers %{...}s and the other modules that read SSL
+     variables the same way. HTTPS used to be "off" and the SSL_ variables
+     empty. [Arturo Bernal]

@@ -53,6 +53,7 @@ static void register_hooks(apr_pool_t* p H3_UNUSED)
     ap_hook_http_scheme(h3_hook_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(h3_hook_default_port, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_ssl_conn_is_ssl(h3_hook_ssl_conn_is_ssl, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_ssl_var_lookup(h3_hook_ssl_var_lookup, NULL, NULL, APR_HOOK_MIDDLE);
 
     h3_net_out_filter_handle = ap_register_output_filter("H3_NET_OUT", h3_filter_out, NULL, AP_FTYPE_NETWORK);
     h3_net_in_filter_handle = ap_register_input_filter("H3_NET_IN", h3_filter_in, NULL, AP_FTYPE_NETWORK);
