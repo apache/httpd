@@ -141,3 +141,37 @@ class TestRewriteEscapeSequences:
                      r'.*:warn\].*', r'.*:trace\d\].*'])
         assert found, \
             "Log should show 'escaping ... for redirect' for tab in target"
+
+
+class TestRewriteExprBackref:
+
+    @pytest.fixture(autouse=True, scope='class')
+    @classmethod
+    def _class_scope(cls, env):
+        conf = HttpdConf(env, extras={
+            f"test1.{env.http_tld}": """
+        RewriteEngine On
+        RewriteCond %{HTTP:X-Data} ^(.+)$
+        RewriteRule ^/exprref-prime/ - [E=PRIME:%1]
+        RewriteCond %{HTTP_HOST} ^(.+)$
+        RewriteCond expr "'a' == 'a'"
+        RewriteRule ^/exprref/(.*)$ /target/[%1] [R=302,L]
+        """,
+        })
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+
+    # %1 after a "RewriteCond expr" that captured nothing expands to an
+    # empty string (BZ 70369)
+    def test_rewrite_003_01_expr_cond_no_capture(self, env):
+        prime = env.mkurl("http", "test1", "/exprref-prime/")
+        url = env.mkurl("http", "test1", "/exprref/abc")
+        for _ in range(10):
+            # leave stack data from an earlier request behind
+            env.curl_raw(prime, options=["-H", f"X-Data: {'Z' * 80}"])
+            r = env.curl_raw(url, options=["--max-redirs", "0"])
+            assert r.exit_code == 0, f"{r}"
+            assert r.response["status"] == 302
+            loc = r.response["header"]["location"]
+            assert loc.endswith("/target/%5b%5d"), f"Location: {loc}"
