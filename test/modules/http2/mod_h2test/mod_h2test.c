@@ -22,6 +22,8 @@
 #include <apr_want.h>
 
 #include <httpd.h>
+#include <http_config.h>
+#include <http_connection.h>
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
@@ -30,13 +32,33 @@
 
 static void h2test_hooks(apr_pool_t *pool);
 
+typedef struct {
+    apr_interval_time_t c1_read_delay;
+} h2test_conf;
+
+static const char *h2test_set_c1_read_delay(cmd_parms *cmd, void *dummy,
+                                            const char *value);
+
+static void *h2test_create_server_conf(apr_pool_t *pool, server_rec *s)
+{
+    h2test_conf *conf = apr_pcalloc(pool, sizeof(*conf));
+    (void)s;
+    return conf;
+}
+
+static const command_rec h2test_cmds[] = {
+    AP_INIT_TAKE1("H2TestC1ReadDelay", h2test_set_c1_read_delay, NULL, RSRC_CONF,
+                  "wait this long before each read of a primary connection"),
+    { NULL }
+};
+
 AP_DECLARE_MODULE(h2test) = {
     STANDARD20_MODULE_STUFF,
     NULL, /* func to create per dir config */
     NULL,  /* func to merge per dir config */
-    NULL, /* func to create per server config */
+    h2test_create_server_conf, /* func to create per server config */
     NULL,  /* func to merge per server config */
-    NULL,              /* command handlers */
+    h2test_cmds,              /* command handlers */
     h2test_hooks,
 #if defined(AP_MODULE_FLAG_NONE)
     AP_MODULE_FLAG_ALWAYS_MERGE
@@ -101,6 +123,51 @@ static apr_status_t duration_parse(apr_interval_time_t *ptimeout, const char *va
         return APR_EGENERAL;
     }
     return APR_SUCCESS;
+}
+
+static const char *h2test_set_c1_read_delay(cmd_parms *cmd, void *dummy,
+                                            const char *value)
+{
+    h2test_conf *conf = ap_get_module_config(cmd->server->module_config,
+                                             &h2test_module);
+    (void)dummy;
+    if (APR_SUCCESS != duration_parse(&conf->c1_read_delay, value, "s")) {
+        return "invalid duration";
+    }
+    return NULL;
+}
+
+/* A test aid: wait before every read of the client connection. The HTTP/2
+ * session then reads its input later than it has handled the events of the
+ * streams, so that frames of the client arriving in between are seen
+ * only after the streams have produced their responses. */
+static ap_filter_rec_t *h2test_c1_read_delay_filter_handle;
+
+static apr_status_t h2test_c1_read_delay_filter(ap_filter_t *f,
+                                                apr_bucket_brigade *bb,
+                                                ap_input_mode_t mode,
+                                                apr_read_type_e block,
+                                                apr_off_t readbytes)
+{
+    h2test_conf *conf = ap_get_module_config(f->c->base_server->module_config,
+                                             &h2test_module);
+    if (conf->c1_read_delay && mode == AP_MODE_READBYTES
+        && block == APR_NONBLOCK_READ) {
+        apr_sleep(conf->c1_read_delay);
+    }
+    return ap_get_brigade(f->next, bb, mode, block, readbytes);
+}
+
+static int h2test_pre_connection(conn_rec *c, void *csd)
+{
+    h2test_conf *conf = ap_get_module_config(c->base_server->module_config,
+                                             &h2test_module);
+    (void)csd;
+    if (conf->c1_read_delay && !c->master) {
+        ap_add_input_filter_handle(h2test_c1_read_delay_filter_handle,
+                                   NULL, NULL, c);
+    }
+    return OK;
 }
 
 static int h2test_post_config(apr_pool_t *p, apr_pool_t *plog,
@@ -578,6 +645,12 @@ static void h2test_hooks(apr_pool_t *pool)
     /* Run once after a child process has been created.
      */
     ap_hook_child_init(h2test_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+
+    h2test_c1_read_delay_filter_handle =
+        ap_register_input_filter("H2TEST_C1_READ_DELAY",
+                                 h2test_c1_read_delay_filter,
+                                 NULL, AP_FTYPE_CONNECTION);
+    ap_hook_pre_connection(h2test_pre_connection, NULL, NULL, APR_HOOK_LAST);
 
     /* test h2 handlers */
     ap_hook_handler(h2test_echo_handler, NULL, NULL, APR_HOOK_MIDDLE);
