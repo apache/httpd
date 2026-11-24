@@ -1,0 +1,3 @@
+  *) mod_session_cookie, mod_session_dbd: Write the session cookie with
+     the "; " attribute separator of RFC 6265, and without an empty
+     attribute at the end when the cookie is removed. [Arturo Bernal]

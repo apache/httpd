@@ -27,6 +27,37 @@
 #undef APLOG_MODULE_INDEX
 #define APLOG_MODULE_INDEX AP_CORE_MODULE_INDEX
 
+/* Build "name=val" followed by the given attributes, each one preceded by
+ * the "; " separator of RFC 6265, section 4.1.1. The configured attributes
+ * may use a bare ";" and carry empty elements, so they are split on ";",
+ * trimmed, and empty ones are dropped.
+ */
+static const char *make_cookie(apr_pool_t *p, const char *name,
+                               const char *val, const char *maxage,
+                               const char *attrs)
+{
+    char *line, *attr, *last, *end;
+    const char *cookie = apr_pstrcat(p, name, "=", val,
+                                     maxage ? "; " : NULL, maxage, NULL);
+
+    line = apr_pstrdup(p, attrs);
+    for (attr = apr_strtok(line, ";", &last); attr;
+         attr = apr_strtok(NULL, ";", &last)) {
+        while (apr_isspace(*attr)) {
+            attr++;
+        }
+        end = attr + strlen(attr);
+        while (end > attr && apr_isspace(end[-1])) {
+            *--end = '\0';
+        }
+        if (*attr) {
+            cookie = apr_pstrcat(p, cookie, "; ", attr, NULL);
+        }
+    }
+
+    return cookie;
+}
+
 /**
  * Write an RFC2109 compliant cookie.
  *
@@ -47,14 +78,14 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
     va_list vp;
 
     /* handle expiry */
-    buffer = "";
+    buffer = NULL;
     if (maxage) {
-        buffer = apr_pstrcat(r->pool, "Max-Age=", apr_ltoa(r->pool, maxage), ";", NULL);
+        buffer = apr_pstrcat(r->pool, "Max-Age=", apr_ltoa(r->pool, maxage), NULL);
     }
 
     /* create RFC2109 compliant cookie */
-    rfc2109 = apr_pstrcat(r->pool, name, "=", val, ";", buffer,
-                          attrs && *attrs ? attrs : DEFAULT_ATTRS, NULL);
+    rfc2109 = make_cookie(r->pool, name, val, buffer,
+                          attrs && *attrs ? attrs : DEFAULT_ATTRS);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00007) LOG_PREFIX
                   "user '%s' set cookie: '%s'", r->user, rfc2109);
 
@@ -89,14 +120,14 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
     va_list vp;
 
     /* handle expiry */
-    buffer = "";
+    buffer = NULL;
     if (maxage) {
-        buffer = apr_pstrcat(r->pool, "Max-Age=", apr_ltoa(r->pool, maxage), ";", NULL);
+        buffer = apr_pstrcat(r->pool, "Max-Age=", apr_ltoa(r->pool, maxage), NULL);
     }
 
     /* create RFC2965 compliant cookie */
-    rfc2965 = apr_pstrcat(r->pool, name2, "=", val, ";", buffer,
-                          attrs2 && *attrs2 ? attrs2 : DEFAULT_ATTRS, NULL);
+    rfc2965 = make_cookie(r->pool, name2, val, buffer,
+                          attrs2 && *attrs2 ? attrs2 : DEFAULT_ATTRS);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00008) LOG_PREFIX
                   "user '%s' set cookie2: '%s'", r->user, rfc2965);
 
@@ -123,8 +154,8 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, con
     va_list vp;
 
     /* create RFC2109 compliant cookie */
-    const char *rfc2109 = apr_pstrcat(r->pool, name, "=;Max-Age=0;",
-                                attrs ? attrs : CLEAR_ATTRS, NULL);
+    const char *rfc2109 = make_cookie(r->pool, name, "", "Max-Age=0",
+                                      attrs ? attrs : CLEAR_ATTRS);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00009) LOG_PREFIX
                   "user '%s' removed cookie: '%s'", r->user, rfc2109);
 
@@ -151,8 +182,8 @@ AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, c
     va_list vp;
 
     /* create RFC2965 compliant cookie */
-    const char *rfc2965 = apr_pstrcat(r->pool, name2, "=;Max-Age=0;",
-                                attrs2 ? attrs2 : CLEAR_ATTRS, NULL);
+    const char *rfc2965 = make_cookie(r->pool, name2, "", "Max-Age=0",
+                                      attrs2 ? attrs2 : CLEAR_ATTRS);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(00010) LOG_PREFIX
                   "user '%s' removed cookie2: '%s'", r->user, rfc2965);
 
