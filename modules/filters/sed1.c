@@ -23,6 +23,7 @@
 #include "libsed.h"
 #include "sed.h"
 #include "apr_strings.h"
+#include "ap_config.h"
 #include "regexp.h"
 
 static const char *const trans[040]  = {
@@ -332,7 +333,7 @@ apr_status_t sed_reset_eval(sed_eval_t *eval, sed_commands_t *commands, sed_err_
     eval->hspend = eval->holdbuf;
     eval->lcomend = &eval->genbuf[71];
 
-    for (i = 0; i < sizeof(eval->abuf) / sizeof(eval->abuf[0]); i++)
+    for (i = 0; i < AP_ARRAY_LEN(eval->abuf); i++)
         eval->abuf[i] = NULL;
     eval->aptr = eval->abuf;
     eval->pending = NULL;
