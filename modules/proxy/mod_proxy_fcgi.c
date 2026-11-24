@@ -29,6 +29,7 @@ typedef struct {
 
 typedef struct {
     char *dirwalk_uri_path;
+    int path_info_escaped;  /* r->path_info is still %-encoded */
 } fcgi_req_config_t;
 
 /* We will assume FPM, but still differentiate */
@@ -142,6 +143,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         ap_set_module_config(r->request_config, &proxy_fcgi_module, rconf);
     }
     rconf->dirwalk_uri_path = NULL;
+    rconf->path_info_escaped = 0;
 
     pathinfo_type = apr_table_get(r->subprocess_env, "proxy-fcgi-pathinfo");
     if (pathinfo_type) {
@@ -178,6 +180,9 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
             r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
             if (!strcasecmp(pathinfo_type, "unescape")) {
                 ap_unescape_url_keep2f(r->path_info, 0);
+            }
+            else {
+                rconf->path_info_escaped = 1;
             }
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01061)
                     "set r->path_info to %s", r->path_info);
@@ -433,6 +438,26 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
+
+    /* ap_add_cgi_vars() finds where PATH_INFO starts in r->uri to set
+     * SCRIPT_NAME, which fails with a %-encoded PATH_INFO as r->uri is
+     * decoded: do it again with the decoded PATH_INFO. SCRIPT_NAME is the
+     * whole r->uri for an SSI include, which it leaves alone.
+     */
+    if (rconf && rconf->path_info_escaped && r->path_info && *r->path_info
+        && strcmp(r->protocol, "INCLUDED")) {
+        core_dir_config *d = ap_get_core_module_config(r->per_dir_config);
+        char *path_info = apr_pstrdup(r->pool, r->path_info);
+
+        if (ap_unescape_url_ex(path_info, d->decode_encoded_slashes
+                                          ? 0 : AP_UNESCAPE_URL_KEEP_SLASHES)
+                == OK) {
+            apr_table_setn(r->subprocess_env, "SCRIPT_NAME",
+                           apr_pstrndup(r->pool, r->uri,
+                                        ap_find_path_info(r->uri,
+                                                          path_info)));
+        }
+    }
 
     /* SCRIPT_NAME/FILENAME set, restore original */
     r->filename = proxy_filename;
