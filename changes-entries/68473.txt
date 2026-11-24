@@ -1,0 +1,4 @@
+  *) mod_session_dbd: Fix a duplicate Set-Cookie header being sent on
+     every response when using an anonymous, DBD-backed session
+     (SessionDBDCookieName/SessionDBDCookieName2).
+     PR 68473 [Arturo Bernal]
