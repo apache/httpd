@@ -8,3 +8,4 @@
 00812 # mod_socache_dbm.c
 00814 # mod_socache_dbm.c
 00815 # mod_socache_dbm.c
+10620 # "idle timeout reached" in the prefork, worker and event MPMs
