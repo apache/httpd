@@ -6,6 +6,7 @@ import pytest
 from .env import H3Conf
 
 QUIC_CONNECTION_REFUSED = 0x2
+H3_EXCESSIVE_LOAD = 0x107
 
 
 class TestConnectionLimit:
@@ -37,5 +38,7 @@ class TestConnectionLimit:
         env.httpd_error_log.ignore_recent(
             matches=[r'.*dropping QUIC connection: at H3MaxConnections limit.*'])
         assert second.terminated is not None, f"{second!r}"
-        assert second.terminated.error_code == QUIC_CONNECTION_REFUSED, f"{second!r}"
+        # OpenSSL cannot send the transport error, it closes with an application one
+        expected = H3_EXCESSIVE_LOAD if env.h3_ossl_backend else QUIC_CONNECTION_REFUSED
+        assert second.terminated.error_code == expected, f"{second!r}"
         assert elapsed < 5, f"refused connection took {elapsed:.1f}s to fail"
