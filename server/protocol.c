@@ -42,6 +42,7 @@
 #include "http_main.h"
 #include "http_request.h"
 #include "http_vhost.h"
+#include "http_ssl.h"
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
 #include "mod_core.h"
@@ -2396,6 +2397,12 @@ AP_DECLARE(apr_status_t) ap_get_protocol_upgrades(conn_rec *c, request_rec *r,
                                       sizeof(char *));
             for (i = 0; i < conf->protocols->nelts; i++) {
                 const char *p = APR_ARRAY_IDX(conf->protocols, i, char *);
+                /* RFC 9113, Section 3.3: HTTP/2 over TLS is negotiated
+                 * exclusively via ALPN; 'h2' must never be offered through
+                 * the HTTP/1.1 Upgrade mechanism on a TLS connection. */
+                if (!strcmp("h2", p) && ap_ssl_conn_is_ssl(c)) {
+                    continue;
+                }
                 if (strcmp(existing, p)) {
                     /* not the one we have and possible, add in this order */
                     APR_ARRAY_PUSH(upgrades, const char*) = p;
