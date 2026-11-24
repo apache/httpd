@@ -297,7 +297,8 @@ static int fixup_dir(request_rec *r)
         return HTTP_MOVED_PERMANENTLY;
     }
 
-    if (r->method_number != M_GET && r->method_number != M_POST) {
+    if (r->method_number != M_GET && r->method_number != M_POST
+        && r->method_number != M_QUERY) {
         return DECLINED;
     }
 

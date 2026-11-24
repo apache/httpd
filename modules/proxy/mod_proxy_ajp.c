@@ -119,28 +119,22 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 static int is_idempotent(request_rec *r)
 {
     /*
-     * RFC2616 (9.1.2): GET, HEAD, PUT, DELETE, OPTIONS, TRACE are considered
-     * idempotent. Hint: HEAD requests use M_GET as method number as well.
+     * RFC 9110, Section 9.2.2: the safe methods (GET, HEAD, OPTIONS, TRACE,
+     * PROPFIND, REPORT and the QUERY of RFC 10008), PUT and DELETE are
+     * idempotent. Everything else is not considered idempotent.
      */
-    switch (r->method_number) {
-        case M_GET:
-        case M_DELETE:
-        case M_PUT:
-        case M_OPTIONS:
-        case M_TRACE:
-            /*
-             * If the request has arguments it might have side-effects and thus
-             * it might be undesirable to resend it to a backend again
-             * automatically.
-             */
-            if (r->args) {
-                return METHOD_IDEMPOTENT_WITH_ARGS;
-            }
-            return METHOD_IDEMPOTENT;
-        /* Everything else is not considered idempotent. */
-        default:
-            return METHOD_NON_IDEMPOTENT;
+    if (!ap_method_is_idempotent(r->method_number)) {
+        return METHOD_NON_IDEMPOTENT;
     }
+    /*
+     * If the request has arguments it might have side-effects and thus
+     * it might be undesirable to resend it to a backend again
+     * automatically.
+     */
+    if (r->args) {
+        return METHOD_IDEMPOTENT_WITH_ARGS;
+    }
+    return METHOD_IDEMPOTENT;
 }
 
 static apr_off_t get_content_length(request_rec * r)

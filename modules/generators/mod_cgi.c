@@ -244,7 +244,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
             continue;
         apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
-    if ((r->method_number == M_POST || r->method_number == M_PUT) &&
+    if ((r->method_number == M_POST || r->method_number == M_PUT
+         || r->method_number == M_QUERY) &&
         *dbuf) {
         apr_file_printf(f, "\n%s\n", dbuf);
     }

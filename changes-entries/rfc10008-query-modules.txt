@@ -1,0 +1,3 @@
+  *) mod_dir, mod_cgi, mod_cgid, mod_lua, mod_charset_lite, mod_reflector:
+     Handle QUERY (RFC 10008) requests and their content like POST.
+     [Michiel W. Beijen]

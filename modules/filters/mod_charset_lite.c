@@ -258,6 +258,7 @@ static int find_code_page(request_rec *r)
     switch (r->method_number) {
     case M_PUT:
     case M_POST:
+    case M_QUERY:
         /* Set up input translation.  Note: A request body can be included
          * with the OPTIONS method, but for now we don't set up translation
          * of it.
