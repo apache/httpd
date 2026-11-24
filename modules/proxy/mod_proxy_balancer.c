@@ -1103,8 +1103,9 @@ static void push2table(const char *input, apr_table_t *params,
  * balancer's thread lock follows, for the part that changes this process's
  * worker array: request threads walk it holding that lock, so they never see a
  * worker that is not complete, and they do not wait for the global lock. Both
- * come before proxy_mutex, which sync and initialization take inside. A worker
- * whose sharing fails is taken out of the array again and its slot given back.
+ * come before proxy_mutex, which sync, definition and initialization take
+ * inside. A worker whose sharing fails is taken out of the array again and its
+ * slot given back.
  */
 static int balancer_add_worker(request_rec *r, proxy_balancer *bsel,
                                proxy_server_conf *conf, const char *url,

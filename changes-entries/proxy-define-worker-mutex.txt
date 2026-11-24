@@ -1,0 +1,3 @@
+  *) mod_proxy, mod_proxy_balancer: Fix possible crash of child processes
+     when balancer workers are added at run time (balancer-manager,
+     mod_proxy_beacon).  [Yann Ylavic]

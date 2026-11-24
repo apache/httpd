@@ -1968,12 +1968,9 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * shared. This allows for dynamic addition during
  * config and runtime.
  */
-PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
-                                             proxy_worker **worker,
-                                             proxy_balancer *balancer,
-                                             proxy_server_conf *conf,
-                                             const char *url,
-                                             unsigned int mask)
+static char *define_worker(apr_pool_t *p, proxy_worker **worker,
+                           proxy_balancer *balancer, proxy_server_conf *conf,
+                           const char *url, unsigned int mask)
 {
     apr_status_t rv;
     proxy_worker_shared *wshared;
@@ -2215,6 +2212,32 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     }
 
     return NULL;
+}
+
+PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             unsigned int mask)
+{
+    char *err;
+
+    /* A worker added to a balancer at run time is allocated from the main
+     * server's configuration pool, which all the balancers share (the vhosts'
+     * ones too), and the balancer's workers array grows from pconf, while the
+     * caller holds only that balancer's locks: allocate under proxy_mutex, as
+     * ap_proxy_sync_balancer() and ap_proxy_initialize_worker() do. Workers
+     * defined without a balancer or before the MPM runs don't race with
+     * those.
+     */
+    if (!balancer || ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_RUN_MPM) {
+        return define_worker(p, worker, balancer, conf, url, mask);
+    }
+    apr_global_mutex_lock(proxy_mutex);
+    err = define_worker(p, worker, balancer, conf, url, mask);
+    apr_global_mutex_unlock(proxy_mutex);
+    return err;
 }
 
 PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
