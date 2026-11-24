@@ -119,7 +119,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT
 <highlight language="config">
 RewriteEngine On
 RewriteCond "%{HTTPS}" !=on
-RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}/$1" [R=301,L]
 </highlight>
 
       <p>The <code>%{HTTPS}</code> variable is set to <code>on</code>
@@ -149,7 +149,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
 <highlight language="config">
 RewriteEngine On
 RewriteCond "%{HTTP:X-Forwarded-Proto}" =http [NC]
-RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}/$1" [R=301,L]
 </highlight>
 
       <note type="warning">
@@ -190,7 +190,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
 RewriteEngine On
 RewriteRule "^/\.well-known/acme-challenge/" - [L]
 RewriteCond "%{HTTPS}" !=on
-RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}/$1" [R=301,L]
 </highlight>
     </dd>
 
