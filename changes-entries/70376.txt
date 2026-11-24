@@ -1,0 +1,2 @@
+  *) mod_session_cookie: Fix mod_auth_form login not setting the session
+     cookie with SessionCookieRemove On. PR 70376 [Arturo Bernal]
