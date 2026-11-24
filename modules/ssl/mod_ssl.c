@@ -42,12 +42,13 @@ int ssl_running_on_valgrind = 0;
 
 #if HAVE_OPENSSL_INIT_SSL || (OPENSSL_VERSION_NUMBER >= 0x10100000L && \
                               !defined(LIBRESSL_VERSION_NUMBER))
-/* Openssl v1.1+ handles all termination automatically from
- * OPENSSL_init_ssl().  No manual initialization is required. */
+/* Openssl v1.1+ handles all initializations automatically from
+ * OPENSSL_init_ssl(). */
+#define USE_OPENSSL_INIT_SSL 1
 #else
 /* For older OpenSSL releases, "manual" initialization and cleanup are
  * required. */
-#define NEED_MANUAL_OPENSSL_INIT
+#define USE_OPENSSL_INIT_SSL 0
 /* Will be set to true if mod_ssl is built statically into httpd. */
 static int modssl_running_statically = 0;
 #endif
@@ -350,7 +351,7 @@ static const command_rec ssl_config_cmds[] = {
     AP_END_CMD
 };
 
-#ifdef NEED_MANUAL_OPENSSL_INIT
+#if !USE_OPENSSL_INIT_SSL
 static int modssl_is_prelinked(void)
 {
     apr_size_t i = 0;
@@ -362,11 +363,26 @@ static int modssl_is_prelinked(void)
     }
     return 0;
 }
+#endif /* !USE_OPENSSL_INIT_SSL */
 
-/* Termination below is for legacy Openssl versions v1.0.x and
- * older. */
+/* Cleanup what's done in ssl_hook_pre_config() */
 static apr_status_t ssl_cleanup_pre_config(void *data)
 {
+#if USE_OPENSSL_INIT_SSL
+    /* Nothing to do when an OpenSSL builtin atexit() handler is registered,
+     * but with OPENSSL_INIT_NO_ATEXIT we want to call OPENSSL_cleanup() when
+     * exiting only, not on restart/reload or the next OPENSSL_init_ssl() in
+     * pre_config would not (re)initialize anything.
+     */
+#ifdef OPENSSL_INIT_NO_ATEXIT
+    if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_EXITING)
+        OPENSSL_cleanup();
+#endif
+
+#else /* USE_OPENSSL_INIT_SSL */
+    /* Termination below is for legacy Openssl versions v1.0.x and
+     * older. */
+
     /* Corresponds to OBJ_create()s */
     OBJ_cleanup();
     /* Corresponds to OPENSSL_load_builtin_modules() */
@@ -389,7 +405,7 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
 #else
     ERR_remove_state(0);
 #endif
-#endif
+#endif /* USE_OPENSSL_INIT_SSL */
 
     /* Don't call ERR_free_strings in earlier versions, ERR_load_*_strings only
      * actually loaded the error strings once per process due to static
@@ -413,9 +429,10 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
      * CRYPTO_mem_leaks_fp(stderr);
      */
 
+#endif /* USE_OPENSSL_INIT_SSL */
+
     return APR_SUCCESS;
 }
-#endif /* NEED_MANUAL_OPENSSL_INIT */
 
 static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
@@ -425,17 +442,26 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     ssl_running_on_valgrind = RUNNING_ON_VALGRIND;
 #endif
 
-#ifndef NEED_MANUAL_OPENSSL_INIT
-    /* Openssl v1.1+ handles all initialisation automatically, apart
-     * from hints as to how we want to use the library.
+#if USE_OPENSSL_INIT_SSL
+    /* Openssl v1.1+ handles all initialisation and termination automatically,
+     * apart from hints as to how we want to use the library. We tell openssl
+     * we want to include engine support.
      *
-     * We tell openssl we want to include engine support.
+     * Openssl v3.0+ allows to disable builtin atexit() handler for termination
+     * by using OPENSSL_INIT_NO_ATEXIT, which we use because atexit() handlers
+     * are inherited by children processes and can cause issues/crashes when
+     * run multiple times. This allows to call OPENSSL_cleanup() manually from
+     * ssl_cleanup_pre_config() when (and only when) httpd is exiting.
      */
-    OPENSSL_init_ssl(OPENSSL_INIT_ENGINE_ALL_BUILTIN, NULL);
+    OPENSSL_init_ssl(OPENSSL_INIT_ENGINE_ALL_BUILTIN
+#ifdef OPENSSL_INIT_NO_ATEXIT
+                     | OPENSSL_INIT_NO_ATEXIT
+#endif
+                     , NULL);
 
-#else
+#else /* USE_OPENSSL_INIT_SSL */
     /* Configuration below is for legacy versions Openssl v1.0 and
-     * older.
+     * older, "manual" initialization and cleanup are required.
      */
     modssl_running_statically = modssl_is_prelinked();
 
@@ -455,7 +481,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #endif
     OpenSSL_add_all_algorithms();
     OPENSSL_load_builtin_modules();
-#endif /* NEED_MANUAL_OPENSSL_INIT */
+#endif /* USE_OPENSSL_INIT_SSL */
 
     if (OBJ_txt2nid("id-on-dnsSRV") == NID_undef) {
         (void)OBJ_create("1.3.6.1.5.5.7.8.7", "id-on-dnsSRV",
@@ -466,13 +492,11 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     ERR_clear_error();
 
 
-#ifdef NEED_MANUAL_OPENSSL_INIT
     /*
      * Let us cleanup the ssl library when the module is unloaded
      */
     apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
-                                           apr_pool_cleanup_null);
-#endif
+                              apr_pool_cleanup_null);
 
     /* Register to handle mod_status status page generation */
     ssl_scache_status_register(pconf);
