@@ -19,12 +19,12 @@
 
 include $(top_srcdir)/build/special.mk
 
-# mod_http3 sources are C99; override SH_COMPILE to add the flags.
+# mod_http3 sources are C99; override the shared and static compile
+# commands to add the flags.
 H3_CC99 = -std=c99 -Wno-declaration-after-statement
 SH_COMPILE = $(LIBTOOL) --mode=compile $(BASE_CC) $(SHLTCFLAGS) $(H3_CC99) -c $< && touch $@
+LT_COMPILE = $(LIBTOOL) --mode=compile $(COMPILE) $(LTCFLAGS) $(H3_CC99) -c $< -o $@
 
-%.slo: $(top_srcdir)/modules/http3/quic/%.c
-	$(SH_COMPILE)
-
-%.slo: $(top_srcdir)/modules/http3/quic/detail/%.c
-	$(SH_COMPILE)
+# The QUIC transport sources live in subdirectories; let the stock
+# .c.lo (static) and .c.slo (shared) rules find them.
+vpath %.c $(top_srcdir)/modules/http3/quic $(top_srcdir)/modules/http3/quic/detail
