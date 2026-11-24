@@ -265,3 +265,15 @@ content-type: text/html
         url = env.mkurl("https", "cgi", "/h2test/error?body_error=timeout&error_bucket=0")
         r = env.curl_get(url)
         assert r.exit_code != 0, f"{r}"
+
+    # fail without an error bucket after the body sent so far has been
+    # flushed and the stream went idle, like a backend dying in the
+    # middle of a streamed response: the stream must be reset and not
+    # be left hanging (PR 66463). The hang depends on the session seeing
+    # the final FLUSH and the closed output in one go, so try a few times.
+    def test_h2_003_73(self, env, repeat):
+        url = env.mkurl("https", "cgi", "/h2test/error?body_error=reset&error_bucket=0&error_delay=200ms")
+        for i in range(20):
+            r = env.curl_get(url, options=["--max-time", "5"])
+            assert r.exit_code != 28, f"stream left hanging (run {i}): {r}"
+            assert r.exit_code != 0, f"{r}"
