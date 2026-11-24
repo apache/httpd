@@ -1728,6 +1728,30 @@ AP_DECLARE(void) ap_custom_response(request_rec *r, int status,
     conf->response_code_strings[idx] =
        ((ap_is_url(string) || (*string == '/')) && (*string != '"')) ?
        apr_pstrdup(r->pool, string) : apr_pstrcat(r->pool, "\"", string, NULL);
+
+    /* a new response replaces the Content-Type of the one it replaces */
+    if (conf->response_code_cts) {
+        conf->response_code_cts[idx] = NULL;
+    }
+}
+
+AP_DECLARE(void) ap_custom_response_ct(request_rec *r, int status,
+                                       const char *string,
+                                       const char *content_type)
+{
+    core_request_config *conf = ap_get_core_module_config(r->request_config);
+    int idx = ap_index_of_response(status);
+
+    ap_custom_response(r, status, string);
+
+    if (content_type && conf->response_code_strings[idx][0] == '"') {
+        if (conf->response_code_cts == NULL) {
+            conf->response_code_cts =
+                apr_pcalloc(r->pool,
+                            sizeof(*conf->response_code_cts) * RESPONSE_CODES);
+        }
+        conf->response_code_cts[idx] = apr_pstrdup(r->pool, content_type);
+    }
 }
 
 static const char *set_error_document(cmd_parms *cmd, void *conf_,
