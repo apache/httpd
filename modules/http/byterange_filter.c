@@ -388,12 +388,19 @@ static apr_status_t copy_brigade_range(apr_bucket_brigade *bb,
     return APR_SUCCESS;
 }
 
-static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb)
+static apr_status_t send_416(ap_filter_t *f, apr_bucket_brigade *tmpbb,
+                             apr_off_t clength)
 {
     apr_bucket *e;
     conn_rec *c = f->r->connection;
     ap_remove_output_filter(f);
     f->r->status = HTTP_OK;
+    /* RFC 9110 15.5.17: a 416 for a byte range request SHOULD tell the
+     * complete length. The error response drops r->headers_out, so use
+     * r->err_headers_out. */
+    apr_table_setn(f->r->err_headers_out, "Content-Range",
+                   apr_psprintf(f->r->pool, "bytes */%" APR_OFF_T_FMT,
+                                clength));
     e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL,
                                f->r->pool, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(tmpbb, e);
@@ -473,7 +480,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     bsend = apr_brigade_create(r->pool, c->bucket_alloc);
 
     if (num_ranges < 0)
-        return send_416(f, bsend);
+        return send_416(f, bsend, clength);
 
     if (num_ranges > 1) {
         /* Is ap_make_content_type required here? */
@@ -559,7 +566,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
     if (found == 0) {
         /* bsend is assumed to be empty if we get here. */
-        return send_416(f, bsend);
+        return send_416(f, bsend, clength);
     }
 
     if (num_ranges > 1) {
