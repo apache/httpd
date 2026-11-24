@@ -2087,6 +2087,18 @@ static int balancer_handler(request_rec *r)
 
 static void balancer_child_init(apr_pool_t *p, server_rec *s)
 {
+#if APR_HAS_THREADS
+    /* The copies of a balancer that the vhosts inherit (merge_balancers())
+     * share its workers array.  An array that can grow at run time
+     * (balancer-manager, ap_proxy_sync_balancer()) is walked under the
+     * balancer's thread mutex: give all the copies of such an array the same
+     * mutex, keyed by the array.  An ungrowable array never changes, its
+     * copies keep the mutex that ap_proxy_initialize_balancer() creates for
+     * each.
+     */
+    apr_hash_t *tmutexes = apr_hash_make(p);
+#endif
+
     for (; s; s = s->next) {
         proxy_balancer *balancer;
         int i;
@@ -2118,6 +2130,16 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
 
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+#if APR_HAS_THREADS
+            apr_thread_mutex_t *tmutex = NULL;
+            if (!balancer->ungrowable) {
+                tmutex = apr_hash_get(tmutexes, &balancer->workers,
+                                      sizeof(balancer->workers));
+            }
+            if (tmutex) {
+                balancer->tmutex = tmutex;
+            }
+#endif
             rv = ap_proxy_initialize_balancer(balancer, s, conf->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(01206)
@@ -2125,6 +2147,12 @@ static void balancer_child_init(apr_pool_t *p, server_rec *s)
                              balancer->s->name);
                 exit(1); /* Ugly, but what else? */
             }
+#if APR_HAS_THREADS
+            if (!tmutex && !balancer->ungrowable) {
+                apr_hash_set(tmutexes, &balancer->workers, sizeof(balancer->workers),
+                             balancer->tmutex);
+            }
+#endif
 
             init_balancer_members(balancer, s, conf->pool);
         }
