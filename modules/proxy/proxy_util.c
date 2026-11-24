@@ -927,7 +927,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         if (ap_proxy_valid_balancer_name((char *)real, 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real, 1))) {
             int n, l3 = 0;
-            proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
+            proxy_worker **worker;
             const char *urlpart = ap_strchr_c(real + sizeof(BALANCER_PREFIX) - 1, '/');
             if (urlpart) {
                 if (!urlpart[1])
@@ -939,7 +939,14 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
              *   BalancerMember balancer://alias http://example.com/foo
              *   ProxyPassReverse /bash balancer://alias/bar
              * translate url http://example.com/foo/bar/that to /bash/that
+             *
+             * The workers array grows at run time (balancer-manager, sync of
+             * the workers other children added) under the balancer's thread
+             * lock: walk it under that lock, unless no worker can be added.
              */
+            u = NULL;
+            PROXY_WORKERS_LOCK(balancer);
+            worker = (proxy_worker **)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
                 l2 = strlen((*worker)->s->name);
                 if (urlpart) {
@@ -951,7 +958,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                             && strncmp(urlpart, url + l2, l3) == 0) {
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2 + l3],
                                         NULL);
-                        return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
+                        break;
                     }
                 }
                 else if (l1 >= l2 && strncasecmp((*worker)->s->name, url, l2) == 0) {
@@ -961,9 +968,13 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                     } else {
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
                     }
-                    return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
+                    break;
                 }
                 worker++;
+            }
+            PROXY_WORKERS_UNLOCK(balancer);
+            if (u) {
+                return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
             }
         }
         else {
@@ -1959,6 +1970,20 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   const char *url)
 {
     return ap_proxy_get_worker_ex(p, balancer, conf, url, 0);
+}
+
+PROXY_DECLARE(const apr_array_header_t *) ap_proxy_balancer_snap_workers(proxy_balancer *balancer,
+                                                                         apr_pool_t *p)
+{
+    apr_array_header_t *workers;
+
+    if (balancer->ungrowable) {
+        return balancer->workers;
+    }
+    PROXY_THREAD_LOCK(balancer);
+    workers = apr_array_copy(p, balancer->workers);
+    PROXY_THREAD_UNLOCK(balancer);
+    return workers;
 }
 
 /*

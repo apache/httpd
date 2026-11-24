@@ -31,6 +31,30 @@ PROXY_DECLARE(int) ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t
 PROXY_DECLARE(int) ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 PROXY_DECLARE(int) ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 
+/*
+ * The workers array of a balancer that can grow changes at run time, under the
+ * balancer's thread lock (balancer_add_worker(), ap_proxy_sync_balancer()):
+ * walk it holding that lock. The array of an ungrowable balancer never
+ * changes, and is walked without it.
+ */
+#define PROXY_WORKERS_LOCK(b)   ((b)->ungrowable ? APR_SUCCESS : \
+                                 PROXY_THREAD_LOCK(b))
+#define PROXY_WORKERS_UNLOCK(b) ((b)->ungrowable ? APR_SUCCESS : \
+                                 PROXY_THREAD_UNLOCK(b))
+
+/**
+ * The workers of a balancer to walk, for a walk that does not hold the
+ * balancer's lock throughout (e.g. one that writes the response).
+ * @param balancer the balancer
+ * @param p        pool to allocate the copy from
+ * @return         the balancer's workers array itself when no worker can be
+ *                 added to it, else a copy taken under the balancer's thread
+ *                 lock, not held across I/O; to be read only. The workers
+ *                 live as long as the configuration.
+ */
+PROXY_DECLARE(const apr_array_header_t *) ap_proxy_balancer_snap_workers(proxy_balancer *balancer,
+                                                                         apr_pool_t *p);
+
 extern PROXY_DECLARE_DATA int proxy_lb_workers;
 extern PROXY_DECLARE_DATA const apr_strmatch_pattern *ap_proxy_strmatch_path;
 extern PROXY_DECLARE_DATA const apr_strmatch_pattern *ap_proxy_strmatch_domain;

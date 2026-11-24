@@ -693,11 +693,29 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     return OK;
 }
 
+/* ap_proxy_get_worker() under the balancer's lock when workers can be added
+ * (bsel NULL: the server's workers, a configuration-time array). */
+static proxy_worker *get_balancer_worker(request_rec *r, proxy_balancer *bsel,
+                                         proxy_server_conf *conf,
+                                         const char *name)
+{
+    proxy_worker *worker;
+
+    if (!bsel) {
+        return ap_proxy_get_worker(r->pool, NULL, conf, name);
+    }
+    PROXY_WORKERS_LOCK(bsel);
+    worker = ap_proxy_get_worker(r->pool, bsel, conf, name);
+    PROXY_WORKERS_UNLOCK(bsel);
+    return worker;
+}
+
 static void recalc_factors(proxy_balancer *balancer)
 {
     int i;
     proxy_worker **workers;
 
+    PROXY_WORKERS_LOCK(balancer);
 
     /* Recalculate lbfactors */
     workers = (proxy_worker **)balancer->workers->elts;
@@ -706,12 +724,15 @@ static void recalc_factors(proxy_balancer *balancer)
      */
     if (balancer->workers->nelts == 1) {
         (*workers)->s->lbstatus = (*workers)->s->lbfactor = 100;
-        return;
     }
-    for (i = 0; i < balancer->workers->nelts; i++) {
-        /* Update the status entries */
-        workers[i]->s->lbstatus = workers[i]->s->lbfactor;
+    else {
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            /* Update the status entries */
+            workers[i]->s->lbstatus = workers[i]->s->lbfactor;
+        }
     }
+
+    PROXY_WORKERS_UNLOCK(balancer);
 }
 
 static apr_status_t lock_remove(void *data)
@@ -841,6 +862,40 @@ static apr_array_header_t *make_servers_ids(server_rec *main_s, apr_pool_t *p)
     return ids;
 }
 
+/*
+ * Workers can be added at run time only to a balancer with a growth (with
+ * none, all of its worker slots hold configured workers), but the copies of a
+ * balancer that the vhosts inherit (merge_balancers()) share its workers
+ * array: mark ungrowable the copies of an array that none of them can grow.
+ */
+static void mark_ungrowable_balancers(server_rec *main_s, apr_pool_t *p)
+{
+    apr_hash_t *growing = apr_hash_make(p);
+    proxy_server_conf *conf;
+    proxy_balancer *balancer;
+    server_rec *s;
+    int i;
+
+    for (s = main_s; s; s = s->next) {
+        conf = ap_get_module_config(s->module_config, &proxy_module);
+        balancer = (proxy_balancer *)conf->balancers->elts;
+        for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+            if (balancer->growth > 0) {
+                apr_hash_set(growing, &balancer->workers,
+                             sizeof(balancer->workers), balancer);
+            }
+        }
+    }
+    for (s = main_s; s; s = s->next) {
+        conf = ap_get_module_config(s->module_config, &proxy_module);
+        balancer = (proxy_balancer *)conf->balancers->elts;
+        for (i = 0; i < conf->balancers->nelts; i++, balancer++) {
+            balancer->ungrowable = !apr_hash_get(growing, &balancer->workers,
+                                                 sizeof(balancer->workers));
+        }
+    }
+}
+
 /* post_config hook: */
 static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp, server_rec *s)
@@ -880,6 +935,7 @@ static int balancer_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
 
     ids = make_servers_ids(s, ptemp);
+    mark_ungrowable_balancers(s, ptemp);
 
     tstamp = apr_time_now();
     /*
@@ -1420,7 +1476,7 @@ static apr_status_t balancer_manage(request_rec *r, apr_table_t *params)
     if ((name = apr_table_get(params, "w"))) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
                   "worker: %s", name);
-        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
+        wsel = get_balancer_worker(r, bsel, conf, name);
     }
     if (bsel) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "balancer_manage "
@@ -1444,6 +1500,7 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
     proxy_balancer *balancer;
     proxy_worker *worker;
     proxy_worker **workers;
+    const apr_array_header_t *members;
     int i, n;
     action = ap_construct_url(r->pool, r->uri, r);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01204) "genning page");
@@ -1484,8 +1541,9 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             }
             /* End proxy_balancer */
             ap_rputs("      <httpd:workers>\n", r);
-            workers = (proxy_worker **)balancer->workers->elts;
-            for (n = 0; n < balancer->workers->nelts; n++) {
+            members = ap_proxy_balancer_snap_workers(balancer, r->pool);
+            workers = (proxy_worker **)members->elts;
+            for (n = 0; n < members->nelts; n++) {
                 worker = *workers;
                 /* Start proxy_worker */
                 ap_rputs("        <httpd:worker>\n", r);
@@ -1720,8 +1778,9 @@ static void balancer_display_page(request_rec *r, proxy_server_conf *conf,
             }
             ap_rputs("</tr>\n", r);
 
-            workers = (proxy_worker **)balancer->workers->elts;
-            for (n = 0; n < balancer->workers->nelts; n++) {
+            members = ap_proxy_balancer_snap_workers(balancer, r->pool);
+            workers = (proxy_worker **)members->elts;
+            for (n = 0; n < members->nelts; n++) {
                 char fbuf[50];
                 worker = *workers;
                 ap_rvputs(r, "<tr>\n<td><a href=\"",
@@ -2001,7 +2060,7 @@ static int balancer_handler(request_rec *r)
             apr_pstrcat(r->pool, BALANCER_PREFIX, name, NULL), 0);
 
     if ((name = apr_table_get(params, "w"))) {
-        wsel = ap_proxy_get_worker(r->pool, bsel, conf, name);
+        wsel = get_balancer_worker(r, bsel, conf, name);
     }
 
 

@@ -582,6 +582,9 @@ struct proxy_balancer {
     unsigned int failontimeout_set:1;
     unsigned int growth_set:1;
     unsigned int lbmethod_set:1;
+    unsigned int ungrowable:1;    /* no worker can be added at run time (no
+                                   * growth in any copy of the balancer),
+                                   * so the workers array never changes */
     ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
 };
 
@@ -814,6 +817,9 @@ PROXY_DECLARE(int) ap_proxy_worker_can_upgrade(apr_pool_t *p,
  * @param url      url to find the worker from
  * @param mask     bitmask of AP_PROXY_WORKER_IS_*
  * @return         proxy_worker or NULL if not found
+ * @note At run time, a caller looking in a balancer holds its thread lock
+ *       (PROXY_THREAD_LOCK()) unless the balancer's ungrowable is set: its
+ *       workers array grows under that lock.
  */
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
                                                      proxy_balancer *balancer,
@@ -828,6 +834,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker_ex(apr_pool_t *p,
  * @param conf     current proxy server configuration
  * @param url      url to find the worker from
  * @return         proxy_worker or NULL if not found
+ * @note Same locking as ap_proxy_get_worker_ex().
  */
 PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_balancer *balancer,
