@@ -33,6 +33,7 @@ struct md_acme_order_t {
     apr_pool_t *p;
     const char *url;
     md_acme_order_st status;
+    apr_time_t retry_at;                /* not persisted: Retry-After of the last response */
     struct apr_array_header_t *authz_urls;
     struct apr_array_header_t *challenge_setups;
     struct md_json_t *json;

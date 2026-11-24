@@ -7,7 +7,7 @@
     <IfModule mod_disk_cache.c>
 
             CacheEnable    disk /cache/
-            CacheRoot      @SERVERROOT@/conf/cacheroot/ 
+            CacheRoot      @STATEDIR@/cacheroot/
             CacheDirLevels 1
             CacheDirLength 1
 
@@ -15,7 +15,7 @@
    <IfModule mod_cache_disk.c>
 
             CacheEnable    disk /cache/
-            CacheRoot      @SERVERROOT@/conf/cacheroot/ 
+            CacheRoot      @STATEDIR@/cacheroot/
             CacheDirLevels 1
             CacheDirLength 1
 

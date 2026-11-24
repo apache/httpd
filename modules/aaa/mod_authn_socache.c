@@ -231,7 +231,11 @@ static const char *authn_cache_setprovider(cmd_parms *cmd, void *CFG,
         cfg->providers = apr_array_make(cmd->pool, 4, sizeof(const char*));
     }
     APR_ARRAY_PUSH(cfg->providers, const char*) = arg;
-    configured = 1;
+    /* The cache is only set up at startup, so cannot be brought into
+     * use by an htaccess file. */
+    if (ap_check_cmd_context(cmd, NOT_IN_HTACCESS) == NULL) {
+        configured = 1;
+    }
     return NULL;
 }
 
@@ -263,28 +267,69 @@ static const command_rec authn_cache_cmds[] =
 };
 
 static const char *construct_key(request_rec *r, const char *context,
-                                 const char *user, const char *realm)
+                                 const char *provider, const char *user,
+                                 const char *realm)
 {
-    const char *slash = ap_strrchr_c(r->uri, '/');
+    const char *type = ap_auth_type(r);
+    char *ltype = apr_pstrdup(r->pool, type ? type : "");
+
+    /* AuthType is not case-sensitive. */
+    ap_str_tolower(ltype);
+
     /* handle "special" context values */
-    if (!strcmp(context, directory) && slash) {
-        char *new_context;
-        new_context = apr_palloc(r->pool, slash - r->uri +
-                                 strlen(r->server->server_hostname) + 1);
-        strcpy(new_context, r->server->server_hostname);
-        strncat(new_context, r->uri, slash - r->uri);
-        context = new_context;
+    if (!strcmp(context, directory)) {
+        const char *slash = ap_strrchr_c(r->uri, '/');
+        /* The port is that configured for the server, not
+         * ap_get_server_port(), which the client can choose in the
+         * Host header.
+         *
+         * The directory context identifies an entry by the server and
+         * the directory of the request URI.  Within one directory,
+         * entries are separated by the provider and realm mixed into
+         * the key below; a configuration that varies the credential
+         * source within a single directory and realm (for example
+         * <Files> sections with different AuthUserFile settings) must
+         * use distinct AuthName values or a custom AuthnCacheContext
+         * to keep the sources apart, as the documentation states.
+         */
+        if (slash) {
+            context = apr_psprintf(r->pool, "%s:%u%.*s",
+                                   r->server->server_hostname,
+                                   (unsigned)r->server->port,
+                                   (int)(slash - r->uri), r->uri);
+        }
+        else {
+            context = apr_psprintf(r->pool, "%s:%u%s",
+                                   r->server->server_hostname,
+                                   (unsigned)r->server->port, r->uri);
+        }
     }
     else if (!strcmp(context, "server")) {
-        context = r->server->server_hostname;
+        context = apr_psprintf(r->pool, "%s:%u",
+                               r->server->server_hostname,
+                               (unsigned)r->server->port);
     }
     /* any other context value is literal */
 
-    if (realm == NULL) {                              /* basic auth */
-        return apr_pstrcat(r->pool, context, ":", user, NULL);
+    if (realm == NULL) {
+        /* Basic auth: the protection space (AuthName) is the realm. */
+        realm = ap_auth_name(r);
     }
-    else {                                            /* digest auth */
-        return apr_pstrcat(r->pool, context, ":", user, ":", realm, NULL);
+
+    /* The key is bound to the provider that produced the entry, so a
+     * hash stored by one credential source is never validated against
+     * a request for another, and to the realm, so entries are not
+     * shared between protection spaces.  It is bound to the auth type
+     * since what is cached differs between them: a password hash for
+     * Basic, the hash of user, realm and password for Digest.
+     */
+    if (realm == NULL) {
+        return apr_pstrcat(r->pool, context, ":", provider, ":", ltype,
+                           ":", user, NULL);
+    }
+    else {
+        return apr_pstrcat(r->pool, context, ":", provider, ":", ltype,
+                           ":", user, ":", realm, NULL);
     }
 }
 
@@ -323,7 +368,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
 
     /* We have the mutex, so go ahead */
     /* first build our key and determine expiry time */
-    key = construct_key(r, dcfg->context, user, realm);
+    key = construct_key(r, dcfg->context, module, user, realm);
     expiry = apr_time_now() + dcfg->timeout;
 
     /* store it */
@@ -367,14 +412,27 @@ static authn_status check_password(request_rec *r, const char *user,
     authn_cache_dircfg *dcfg;
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
+    int i;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     if (!configured || !dcfg->providers) {
         return AUTH_USER_NOT_FOUND;
     }
-    key = construct_key(r, dcfg->context, user, NULL);
-    rv = socache_provider->retrieve(socache_instance, r->server,
-                                    (unsigned char*)key, strlen(key),
-                                    val, &vallen, r->pool);
+    /* Entries are stored under the key of the provider that produced
+     * them; try each provider this configuration caches for.
+     */
+    rv = APR_NOTFOUND;
+    for (i = 0; i < dcfg->providers->nelts; i++) {
+        const char *provider = APR_ARRAY_IDX(dcfg->providers, i,
+                                             const char *);
+        vallen = MAX_VAL_LEN - 1;
+        key = construct_key(r, dcfg->context, provider, user, NULL);
+        rv = socache_provider->retrieve(socache_instance, r->server,
+                                        (unsigned char*)key, strlen(key),
+                                        val, &vallen, r->pool);
+        if (rv == APR_SUCCESS || !APR_STATUS_IS_NOTFOUND(rv)) {
+            break;
+        }
+    }
 
     if (APR_STATUS_IS_NOTFOUND(rv)) {
         /* not found - just return */
@@ -412,14 +470,24 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     authn_cache_dircfg *dcfg;
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
+    int i;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     if (!configured || !dcfg->providers) {
         return AUTH_USER_NOT_FOUND;
     }
-    key = construct_key(r, dcfg->context, user, realm);
-    rv = socache_provider->retrieve(socache_instance, r->server,
-                                    (unsigned char*)key, strlen(key),
-                                    val, &vallen, r->pool);
+    rv = APR_NOTFOUND;
+    for (i = 0; i < dcfg->providers->nelts; i++) {
+        const char *provider = APR_ARRAY_IDX(dcfg->providers, i,
+                                             const char *);
+        vallen = MAX_VAL_LEN - 1;
+        key = construct_key(r, dcfg->context, provider, user, realm);
+        rv = socache_provider->retrieve(socache_instance, r->server,
+                                        (unsigned char*)key, strlen(key),
+                                        val, &vallen, r->pool);
+        if (rv == APR_SUCCESS || !APR_STATUS_IS_NOTFOUND(rv)) {
+            break;
+        }
+    }
 
     if (APR_STATUS_IS_NOTFOUND(rv)) {
         /* not found - just return */

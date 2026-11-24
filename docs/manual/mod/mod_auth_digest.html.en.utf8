@@ -38,15 +38,19 @@
 <h3>Summary</h3>
 
     <p>This module implements HTTP Digest Authentication
-    (<a href="https://www.rfc-editor.org/rfc/rfc2617">RFC 2617</a>), and
-    provides an alternative to <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> where the
-    password is not transmitted as cleartext. However, this does
-    <strong>not</strong> lead to a significant security advantage over
-    basic authentication. On the other hand, the password storage on the
-    server is much less secure with digest authentication than with
-    basic authentication. Therefore, using basic auth and encrypting the
-    whole connection using <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is a much better
-    alternative.</p>
+    (<a href="https://www.rfc-editor.org/rfc/rfc2617">RFC 2617</a>), an alternative to the Basic authentication provided
+    by <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> in which the password is not sent
+    over the network in cleartext.</p>
+
+    <p>Basic and Digest are both authentication schemes only: they
+    establish who the client is, and do nothing for the confidentiality or
+    integrity of the request and response themselves. Over an unencrypted
+    connection the contents of every request and response are exposed with
+    either scheme; Digest's one advantage is that the password is not among
+    them. Digest is therefore not a substitute for a connection secured
+    with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, which protects the credentials and the
+    data alike, and that one advantage has limits of its own (see the note
+    below).</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -95,26 +99,26 @@
 
 
     <div class="note"><h3>Note</h3>
-    <p>Digest authentication was intended to be more secure than basic
-    authentication, but no longer fulfills that design goal. A
-    man-in-the-middle attacker can trivially force the browser to downgrade
-    to basic authentication. And even a passive eavesdropper can brute-force
-    the password using today's graphics hardware, because the hashing
-    algorithm used by digest authentication is too fast. Another problem is
-    that the storage of the passwords on the server is insecure. The contents
-    of a stolen htdigest file can be used directly for digest authentication.
-    Therefore using <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> to encrypt the whole connection is
-    strongly recommended.</p>
-    <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> only works properly on platforms
-      where APR supports shared memory.</p>
+    <p>Digest authentication's one advantage over Basic, keeping the
+    password off the wire, is conditional. If the client will silently fall
+    back to Basic when challenged, an active attacker can
+    strip the Digest challenge and offer Basic instead, and the browser
+    then sends the password in cleartext; a passive eavesdropper can mount
+    an offline brute-force attack on a captured response, which the fast
+    MD5 hash does little to slow; and if the <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>
+    file is stolen its stored hashes can be replayed to authenticate to
+    that realm directly, without the password itself being recovered.
+    Encrypt the whole connection with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> instead.</p>
+    <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> requires an APR built with shared
+    memory support, and is not built without it.</p>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="authdigestalgorithm"><span id="AuthDigestAlgorithm">AuthDigestAlgorithm</span> Directive <a title="Permanent link" href="#authdigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Selects the algorithm used to calculate the challenge and
-response hashes in digest authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestAlgorithm MD5|MD5-sess</code></td></tr>
+response hashes in Digest authentication</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestAlgorithm MD5</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestAlgorithm MD5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -123,18 +127,13 @@ response hashes in digest authentication</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestAlgorithm</code> directive
     selects the algorithm used to calculate the challenge and response
-    hashes.</p>
-
-    <div class="note">
-      <code>MD5-sess</code> is not correctly implemented yet.
-    </div>
-    
+    hashes. Only <code>MD5</code> is supported.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="authdigestdomain"><span id="AuthDigestDomain">AuthDigestDomain</span> Directive <a title="Permanent link" href="#authdigestdomain" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URIs that are in the same protection space for digest
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URIs that are in the same protection space for Digest
 authentication</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
@@ -204,14 +203,31 @@ client</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestNonceLifetime</code> directive
-    controls how long the server nonce is valid. When the client
-    contacts the server using an expired nonce the server will send
-    back a 401 with <code>stale=true</code>. If <var>seconds</var> is
-    greater than 0 then it specifies the amount of time for which the
-    nonce is valid; this should probably never be set to less than 10
-    seconds. If <var>seconds</var> is less than 0 then the nonce never
-    expires. 
-    </p>
+    controls how long the server nonce is valid. When the client contacts
+    the server using an expired nonce the server sends back a 401 with
+    <code>stale=true</code>, and an RFC-compliant client retries with a
+    fresh nonce without prompting the user.</p>
+
+    <ul>
+      <li>If <var>seconds</var> is greater than 0 then it specifies the
+      amount of time for which the nonce is valid; this should probably
+      never be set to less than 10 seconds.</li>
+
+      <li>If <var>seconds</var> is 0 then the nonce may be used exactly
+      once. The server supplies the next nonce in the
+      <code>Authentication-Info</code> header of each response so the
+      client can continue; a client which reuses a nonce is answered with
+      <code>stale=true</code> and retries. One-time nonces give stronger
+      protection against replaying a captured request, but the client
+      cannot pipeline requests, and one that does receives a 401 for all
+      but the first and has to resend them. The protection is worth this
+      cost mainly for requests that change server state or return content
+      which varies over time; replaying a request for unchanging content
+      that the eavesdropper already captured in full gains nothing.</li>
+
+      <li>If <var>seconds</var> is less than 0 then the nonce never
+      expires.</li>
+    </ul>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -240,29 +256,25 @@ client</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="authdigestqop"><span id="AuthDigestQop">AuthDigestQop</span> Directive <a title="Permanent link" href="#authdigestqop" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the quality-of-protection to use in digest
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the quality-of-protection to use in Digest
 authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestQop none|auth|auth-int [auth|auth-int]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestQop auth</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestQop auth</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
-    <p>The <code class="directive">AuthDigestQop</code> directive determines
-    the <dfn>quality-of-protection</dfn> to use. <code>auth</code> will
-    only do authentication (username/password); <code>auth-int</code> is
-    authentication plus integrity checking (an MD5 hash of the entity
-    is also computed and checked); <code>none</code> will cause the module
-    to use the old RFC-2069 digest algorithm (which does not include
-    integrity checking). Both <code>auth</code> and <code>auth-int</code> may
-    be specified, in which the case the browser will choose which of
-    these to use. <code>none</code> should only be used if the browser for
-    some reason does not like the challenge it receives otherwise.</p>
+    <p>The <code class="directive">AuthDigestQop</code> directive determines the
+    <dfn>quality-of-protection</dfn> to use. Only <code>auth</code>
+    (authentication) is supported, and it is the default, so this
+    directive no longer has any effect and is retained only for
+    compatibility.</p>
 
-    <div class="note">
-      <code>auth-int</code> is not implemented yet.
-    </div>
+    <div class="note">Earlier releases also accepted <code>none</code> (the RFC 2069
+    Digest scheme, without a quality-of-protection). It has been removed:
+    a request whose <code>qop</code> is missing or not <code>auth</code>
+    is now rejected.</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -271,7 +283,7 @@ authentication</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The amount of shared memory to allocate for keeping track
 of clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestShmemSize <var>size</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestShmemSize 1000</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestShmemSize 8192</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
@@ -285,6 +297,13 @@ of clients</td></tr>
     set <code class="directive">AuthDigestShmemSize</code> to the value of
     <code>0</code> and read the error message after trying to start the
     server.</p>
+
+    <p>The default holds roughly 140 clients. A client which is discarded
+    to make room for another is not denied access: it is issued a new
+    nonce with <code>stale=true</code>, which costs it one extra request.
+    Note that a request which does not authenticate also takes an entry,
+    since the challenge sent back to it carries the identifier the client
+    is tracked by.</p>
 
     <p>The <var>size</var> is normally expressed in Bytes, but you
     may follow the number with a <code>K</code> or an <code>M</code> to

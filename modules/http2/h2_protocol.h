@@ -21,13 +21,13 @@
  * List of protocol identifiers that we support in cleartext
  * negotiations. NULL terminated.
  */
-extern const char *h2_protocol_ids_clear[];
+extern const char *const h2_protocol_ids_clear[];
 
 /**
  * List of protocol identifiers that we support in TLS encrypted
  * negotiations (ALPN). NULL terminated.
  */
-extern const char *h2_protocol_ids_tls[];
+extern const char *const h2_protocol_ids_tls[];
 
 /**
  * Provide a user readable description of the HTTP/2 error code-

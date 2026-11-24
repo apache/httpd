@@ -53,6 +53,7 @@ struct md_acme_authz_t {
     const char *error_detail;
     const struct md_json_t *error_subproblems;
     struct md_json_t *resource;
+    apr_time_t retry_at;                /* not persisted: Retry-After of the last response */
 };
 
 #define MD_FN_HTTP01            "acme-http-01.txt"

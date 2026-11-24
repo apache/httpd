@@ -165,6 +165,9 @@ md_t *md_get_by_name(struct apr_array_header_t *mds, const char *name)
 md_t *md_get_by_domain(struct apr_array_header_t *mds, const char *domain)
 {
     int i;
+    if (!domain) {
+        return NULL;
+    }
     for (i = 0; i < mds->nelts; ++i) {
         md_t *md = APR_ARRAY_IDX(mds, i, md_t *);
         if (md_contains(md, domain, 0)) {
@@ -425,12 +428,14 @@ typedef struct {
 #define LE_ACMEv2_STAGING   "https://acme-staging-v02.api.letsencrypt.org/directory"
 #define BUYPASS_ACME        "https://api.buypass.com/acme/directory"
 #define BUYPASS_ACME_TEST   "https://api.test4.buypass.no/acme/directory"
+#define ACTALIS             "https://acme-api.actalis.com/acme/directory"
 
 static md_ca_t KNOWN_CAs[] = {
     { "LetsEncrypt", LE_ACMEv2_PROD },
     { "LetsEncrypt-Test", LE_ACMEv2_STAGING },
     { "Buypass", BUYPASS_ACME },
     { "Buypass-Test", BUYPASS_ACME_TEST },
+    { "Actalis", ACTALIS },
 };
 
 const char *md_get_ca_name_from_url(apr_pool_t *p, const char *url)

@@ -55,10 +55,7 @@
 #include "apr_dbm.h"
 #include "apr_dbd.h"
 
-#include "apr_version.h"
-#if !APR_VERSION_AT_LEAST(2,0,0)
 #include "apu_version.h"
-#endif
 
 #include "mod_dbd.h"
 
@@ -2007,6 +2004,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
+                    if (ctx->vary_this) {
+                        ctx->vary_this = apr_pstrdup(r->pool, ctx->vary_this);
+                    }
                     ap_destroy_sub_req(rr);
 
                     rewritelog(r, 5, ctx->perdir, "lookahead: path=%s var=%s "
@@ -2042,6 +2042,9 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                     ctx->r = rr;
                     result = apr_pstrdup(r->pool, lookup_variable(var+5, ctx));
                     ctx->r = r;
+                    if (ctx->vary_this) {
+                        ctx->vary_this = apr_pstrdup(r->pool, ctx->vary_this);
+                    }
                     ap_destroy_sub_req(rr);
 
                     rewritelog(r, 5, ctx->perdir, "lookahead: path=%s var=%s "

@@ -1,0 +1,3 @@
+  *) mod_http2: Correctly handle the asterisk-form of OPTIONS requests
+     instead of rejecting them as malformed.  PR 70195.
+     [Arturo Bernal <abernal apache.org>]

@@ -2,6 +2,7 @@ import inspect
 import logging
 import os
 import socket
+import sys
 from threading import Thread
 
 from pyhttpd.certs import CertificateSpec
@@ -45,16 +46,28 @@ Content-Type: text/html
 Content-Length: 5
 
 Hello""".encode()
-
+    
     def _process(self):
+        _read_buffer = 8192 if sys.platform == "win32" else 4096
         while not self._done:
             try:
                 c, client_address = self._socket.accept()
                 try:
-                    data = c.recv(4096)
+                    data = c.recv(_read_buffer)
                     # capture request to backend
                     self._request = data
                     c.sendall(self._make_response(data))
+                    # Half-close for an orderly FIN instead of letting the
+                    # OS tear the socket down under us. An abrupt close()
+                    # right after sendall() can, depending on the platform's
+                    # TCP stack and buffering, surface to the peer as a
+                    # reset rather than a clean end of the response, which
+                    # httpd's proxy and cache code treat as an aborted
+                    # connection and a reason to discard the cache entry.
+                    try:
+                        c.shutdown(socket.SHUT_WR)
+                    except OSError:
+                        pass
                 finally:
                     c.close()
             except socket.timeout:
@@ -69,7 +82,9 @@ class ProxyTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(ProxyTestSetup)))
         self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
-                          "proxy_uwsgi", "lbmethod_byrequests", "remoteip"])
+                          "proxy_connect", "proxy_uwsgi", "lbmethod_byrequests",
+                          "remoteip"])
+        self.add_optional_modules(["proxy_hcheck"])
 
 
 class ProxyTestEnv(HttpdTestEnv):
@@ -82,9 +97,11 @@ class ProxyTestEnv(HttpdTestEnv):
         self._d_forward = f"forward.{self.http_tld}"
         self._d_mixed = f"mixed.{self.http_tld}"
 
-        self.add_httpd_log_modules(
-            ["proxy", "proxy_http", "proxy_balancer", "lbmethod_byrequests",
-             "ssl"])
+        log_modules = ["proxy", "proxy_http", "proxy_balancer",
+                       "lbmethod_byrequests", "ssl"]
+        if self.has_shared_module("proxy_hcheck"):
+            log_modules.append("proxy_hcheck")
+        self.add_httpd_log_modules(log_modules)
         self.add_cert_specs([
             CertificateSpec(domains=[
                 self._d_forward, self._d_reverse, self._d_mixed

@@ -31,7 +31,7 @@
 <a href="../ko/mod/mod_imagemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Server-side imagemap processing</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>imagemap_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_imagemap.c</td></tr></table>
 <h3>Summary</h3>
@@ -302,7 +302,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapBase http://servername/</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>The <code class="directive">ImapBase</code> directive sets the default
@@ -325,7 +325,7 @@ that are not explicitly mapped</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapDefault nocontent</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>The <code class="directive">ImapDefault</code> directive sets the default
@@ -346,7 +346,7 @@ an imagemap</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapMenu formatted</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>The <code class="directive">ImapMenu</code> directive determines the

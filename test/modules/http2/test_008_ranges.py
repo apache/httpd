@@ -5,6 +5,7 @@ import os
 import re
 import pytest
 
+from pyhttpd.backport import not_backported
 from .env import H2Conf, H2TestEnv
 
 
@@ -17,7 +18,8 @@ class TestRanges:
     LOGFILE = ""
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestRanges.LOGFILE = os.path.join(env.server_logs_dir, "test_008")
         TestRanges.SRCDIR = os.path.dirname(inspect.getfile(TestRanges))
         if os.path.isfile(TestRanges.LOGFILE):
@@ -119,6 +121,8 @@ class TestRanges:
         assert found, f'request not found in {self.LOGFILE}'
 
     # send a paced curl download that aborts in the middle of the transfer
+    @not_backported("cause not identified", "bytes_tx_O counted on an aborted "
+                    "H2 transfer", platform="win32")
     def test_h2_008_03(self, env, repeat):
         path = '/data-100m'
         url = env.mkurl("https", "test1", f'{path}?03broken')

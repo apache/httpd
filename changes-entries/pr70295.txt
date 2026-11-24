@@ -1,0 +1,2 @@
+  *) mod_remote_ip: Fix REMOTE_PORT in expressions and environment variables.
+     PR 70295. [Steve Bennett <S.Bennett lancaster.ac.uk>]

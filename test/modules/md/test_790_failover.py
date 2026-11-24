@@ -1,15 +1,19 @@
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .md_env import MDTestEnv
 from .md_conf import MDConf
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestFailover:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='default')
         env.check_acme()
         env.clear_store()

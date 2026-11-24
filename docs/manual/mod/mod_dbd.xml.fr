@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933179 -->
+<!-- English Revision: 1939372 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,7 +49,7 @@ passe</a></seealso>
     <p>Ce module gère de manière optimisée en fonction de la plate-forme
     les connexions aux bases de données. Sur les plates-formes non
     threadées, il maintient une connexion persistente à la manière d'un
-    LAMP classique (Linux, Apache, Mysql, Perl/PHP/Python). Sur les
+    LAMP classique (Linux, Apache, MySQL, Perl/PHP/Python). Sur les
     plates-formes threadées, il maintient un <em>groupe de
     connexions</em> à la fois plus évolutif et plus efficace, comme
     décrit dans <a href="http://www.apachetutor.org/dev/reslist">cet
@@ -230,7 +230,7 @@ données</description>
     <p>Les paramètres de la chaîne de connexion en fonction des
     différents pilotes comprennent :</p>
     <dl>
-    <dt>FreeTDS (pour MSSQL et SyBase)</dt>
+    <dt>FreeTDS (pour MSSQL et Sybase)</dt>
     <dd>username, password, appname, dbname, host, charset, lang, server</dd>
     <dt>MySQL</dt>
     <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd>

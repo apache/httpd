@@ -5,10 +5,12 @@ from .env import H2Conf, H2TestEnv
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_h2load()
 class TestLoadPostStatic:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).add_vhost_test1().install()
         assert env.apache_restart() == 0
 

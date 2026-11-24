@@ -73,6 +73,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                             step_vars_storage *step_vars);
 static apr_status_t wline(sed_eval_t *eval, char *buf, apr_size_t sz);
 static apr_status_t arout(sed_eval_t *eval);
+static void eval_errf(sed_eval_t *eval, const char *fmt, ...)
+                      __attribute__((format(printf,2,3)));
 
 static void eval_errf(sed_eval_t *eval, const char *fmt, ...)
 {
@@ -414,7 +416,7 @@ apr_status_t sed_eval_buffer(sed_eval_t *eval, const char *buf, apr_size_t bufsz
         /* Commands were not finalized properly. */
         const char* error = sed_get_finalize_error(eval->commands, eval->pool);
         if (error) {
-            eval_errf(eval, error);
+            eval_errf(eval, "%s", error);
             return APR_EGENERAL;
         }
     }
@@ -777,7 +779,12 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
     switch(ipc->command) {
 
         case ACOM:
-            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
+            /* One slot has to be left for the NULL which terminates abuf,
+             * or writing it runs off the end of the array and over aptr
+             * itself -- after which the next append writes through a NULL
+             * pointer.
+             */
+            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE - 1]) {
                 eval_errf(eval, SEDERR_TMAMES, eval->lnum);
             } else {
                 *eval->aptr++ = ipc;
@@ -874,6 +881,13 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                         continue;
                     }
                     if (!isprint(*p1 & 0377)) {
+                        /* The three octal digits have to come off the byte
+                         * value, not off a sign-extended char: 0xff is
+                         * \377, and shifting it as a negative number gave
+                         * "\/77".
+                         */
+                        unsigned char uc = (unsigned char)*p1;
+
                         *p2++ = '\\';
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
@@ -883,7 +897,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                                 return rv;
                             p2 = eval->genbuf;
                         }
-                        *p2++ = (*p1 >> 6) + '0';
+                        *p2++ = (uc >> 6) + '0';
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
@@ -892,7 +906,7 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                                 return rv;
                             p2 = eval->genbuf;
                         }
-                        *p2++ = ((*p1 >> 3) & 07) + '0';
+                        *p2++ = ((uc >> 3) & 07) + '0';
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
@@ -901,7 +915,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
                                 return rv;
                             p2 = eval->genbuf;
                         }
-                        *p2++ = (*p1++ & 07) + '0';
+                        *p2++ = (uc & 07) + '0';
+                        p1++;
                         if (p2 >= eval->lcomend) {
                             *p2 = '\\';
                             rv = wline(eval, eval->genbuf,
@@ -993,7 +1008,8 @@ static apr_status_t command(sed_eval_t *eval, sed_reptr_t *ipc,
             break;
 
         case RCOM:
-            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE]) {
+            /* See ACOM: the terminating NULL needs a slot of its own. */
+            if (eval->aptr >= &eval->abuf[SED_ABUFSIZE - 1]) {
                 eval_errf(eval, SEDERR_TMRMES, eval->lnum);
             } else {
                 *eval->aptr++ = ipc;

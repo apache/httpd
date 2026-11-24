@@ -1243,3 +1243,150 @@ h2:hover > .permalink {
         display: none;
     }
 }
+
+
+/* ==========================================================================
+ * Modern restyle of the manual.
+ *
+ * These rules are layered on top of the rules above, so they use
+ * !important to win. Dark mode follows the reader's OS setting through
+ * prefers-color-scheme and needs no JavaScript.
+ * ========================================================================== */
+
+
+/* ---- modern (light) ---- */
+html { font-size: 16px !important; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  color: #2b3a45 !important; background: #ffffff !important; line-height: 1.65 !important;
+}
+/* header */
+#page-header {
+  background: #1f2d3d !important; margin: 0 !important; padding: 16px 28px !important;
+  display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 6px 18px !important;
+}
+#page-header img { order: -1 !important; display: block !important; width: 168px !important; height: auto !important; margin: 0 !important; padding: 0 !important; }
+#page-header p.apache {
+  background: transparent !important; color: #dfe8f1 !important; padding: 0 !important; margin: 0 !important;
+  text-align: left !important; font-size: .95rem !important; font-weight: 600 !important; line-height: 1.3 !important;
+}
+#page-header p.menu { order: 9 !important; flex-basis: 100% !important; text-align: left !important; margin: 4px 0 0 !important; padding: 0 !important; font-size: .82rem !important; }
+#page-header p.menu a { color: #9db4cc !important; text-decoration: none !important; }
+#page-header p.menu a:hover { color: #ffffff !important; text-decoration: underline !important; }
+/* breadcrumb */
+#path { margin: 16px 28px 26px !important; font-size: .85rem !important; color: #6a737d !important; }
+#path a { color: #57606a !important; }
+/* content */
+#page-content { padding: 0 28px 64px 28px !important; max-width: none; }
+@media (min-width: 901px) { #page-content { margin-right: 15.5em !important; } }
+@media (max-width: 900px) {
+  #page-header { padding: 12px 16px !important; }
+  #page-header img { width: 140px !important; }
+  #page-content { padding: 0 16px 48px 16px !important; }
+  #path { margin: 14px 16px 20px !important; }
+  #footer { margin-left: 16px !important; }
+  h1 { font-size: 1.6rem !important; }
+}
+#preamble p { color: #57606a !important; font-size: 1.06rem !important; }
+h1 { border: none !important; color: #0b1f33 !important; font-size: 2rem !important; line-height: 1.25 !important; margin: 8px 0 18px !important; font-weight: 700 !important; }
+h2 { background: none !important; color: #0b1f33 !important; font-size: 1.32rem !important; font-weight: 650 !important;
+     border-bottom: 1px solid #e6e9ec !important; padding: 0 0 8px !important; margin: 42px 0 14px !important; }
+.section h2, .directive-section h2, .category h2 { background: none !important; color: #0b1f33 !important; }
+h3 { color: #12304a !important; font-size: 1.12rem !important; margin: 28px 0 8px !important; background: none !important; }
+h4 { color: #12304a !important; background: none !important; }
+p, li, dd, td { color: #2b3a45 !important; }
+a:link, a:visited { color: #0a66c2 !important; text-decoration: none !important; }
+a:hover { text-decoration: underline !important; }
+/* Restore the underline cue for links in page content (WCAG 1.4.1: not colour alone) */
+#page-content a:link, #page-content a:visited {
+  text-decoration-line: underline !important;
+  text-underline-offset: 2px !important;
+  text-decoration-thickness: 1px !important;
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent) !important;
+}
+#page-content a:hover { text-decoration-color: currentColor !important; }
+/* ...but not where position already signals a link */
+#page-content .toplang p a,
+#page-content a.permalink,
+#page-content a.permalink:visited { text-decoration: none !important; }
+/* code */
+code, pre, tt, kbd, samp { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace !important; }
+code { background: #f2f4f6 !important; padding: 1px 5px !important; border-radius: 5px !important; font-size: .9em !important; }
+pre.prettyprint, pre { background: #f6f8fa !important; border: 1px solid #e3e8ee !important;
+     border-left: 4px solid #1f2d3d !important; border-radius: 0 8px 8px 0 !important;
+     padding: 14px 18px !important; margin: 1.25em 0 !important; font-size: .9rem !important;
+     line-height: 1.5 !important; overflow: auto !important; tab-size: 4 !important; }
+pre code { background: transparent !important; padding: 0 !important; }
+code.module, code.module a:link, code.module a:visited { color: #b45309 !important; }
+code.directive, code.directive a:link, code.directive a:visited { color: #0f7b3f !important; }
+/* notes / examples */
+div.note { background: #eef6ff !important; border: none !important; border-left: 4px solid #0a66c2 !important;
+     border-radius: 0 8px 8px 0 !important; padding: 12px 16px !important; color: #243b53 !important; margin: 18px 0 !important; }
+div.warning { background: #fff4f4 !important; border: none !important; border-left: 4px solid #d13438 !important;
+     border-radius: 0 8px 8px 0 !important; padding: 12px 16px !important; color: #4a1f1f !important; }
+div.example { background: #f6f8fa !important; border: 1px solid #e3e8ee !important; border-radius: 8px !important;
+     padding: 2px 14px !important; color: #24292f !important; }
+/* an example that exists only to hold a code block: let the <pre> be the panel */
+div.example:has(> pre) { background: transparent !important; border: 0 !important; border-radius: 0 !important;
+     padding: 0 !important; margin: 0 !important; }
+div.outofdate, div.retired { background: #fff8e1 !important; color: #5c4813 !important; border-radius: 6px !important; padding: 8px 12px !important; }
+/* tables */
+table { border: 1px solid #e3e8ee !important; border-collapse: collapse !important; }
+th, td { border-color: #e3e8ee !important; padding: 8px 12px !important; }
+tr.header th, tr.header { background: #f2f5f8 !important; color: #12304a !important; }
+tr.odd { background: #fafbfc !important; }
+table.qref td { border-color: #e3e8ee !important; }
+/* sidebar */
+#quickview { background: #f8fafc !important; border: 1px solid #e3e8ee !important; border-radius: 10px !important;
+     box-shadow: 0 1px 3px rgba(16,24,40,.06) !important; padding: 12px !important; }
+#quickview h3 { color: #12304a !important; font-size: .95rem !important; }
+#quickview li { font-size: .85rem !important; }
+#quickview a { color: #486581 !important; text-decoration: none !important; }
+#quickview a:hover { color: #0a66c2 !important; }
+/* footer + misc */
+#footer { border-top: 1px solid #e6e9ec !important; color: #6a737d !important; font-size: .82rem !important; margin-left: 28px !important; }
+#footer a { color: #57606a !important; }
+.toplang { background: #f2f5f8 !important; border-radius: 6px !important; padding: 6px 10px !important; font-size: .85rem !important; }
+.toplang p span { color: #57606a !important; }
+div.up, div.top { display: none !important; }
+.lang-toggle, .qv-toggle { background: #2f4a63 !important; color: #fff !important; border: none !important; border-radius: 999px !important; }
+
+@media screen and (prefers-color-scheme: dark) {
+
+/* ---- modern (dark) ---- */
+html { color-scheme: dark; }
+body { background: #0f1419 !important; color: #d7dde5 !important; }
+#page-header { background: #0b1117 !important; }
+h1, h2, h3, h4, .section h2,
+.directive-section h2, .category h2 { color: #e6edf3 !important; }
+h2 { border-bottom-color: #2a323c !important; }
+p, li, dd, td { color: #c3ccd6 !important; }
+#preamble p { color: #9aa7b4 !important; }
+a:link, a:visited { color: #6cb6ff !important; }
+#page-content a:link, #page-content a:visited {
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent) !important;
+}
+#page-content a:hover { text-decoration-color: currentColor !important; }
+code { background: #1c232b !important; color: #e6edf3 !important; }
+pre, pre.prettyprint { background: #161b22 !important; border-color: #2a323c !important;
+     border-left-color: #4c7db8 !important; }
+.prettyprint .pln { color: #c9d1d9 !important; }
+.prettyprint .str, .prettyprint .atv { color: #a5d6a7 !important; }
+.prettyprint .kwd, .prettyprint .fun, .prettyprint .atn { color: #82aaff !important; }
+.prettyprint .com { color: #6b7681 !important; }
+.prettyprint .typ, .prettyprint .dec, .prettyprint .var { color: #f78c6c !important; }
+.prettyprint .lit, .prettyprint .tag { color: #7fdbca !important; }
+table, th, td, table.qref td { border-color: #2a323c !important; }
+tr.header th, tr.header { background: #182029 !important; color: #e6edf3 !important; }
+tr.odd { background: #141a20 !important; }
+div.note { background: #10202f !important; color: #c9d6e4 !important; border-left-color: #3d8bfd !important; }
+div.warning { background: #2a1416 !important; color: #f0c9c9 !important; border-left-color: #e05555 !important; }
+div.example { background: #161b22 !important; border-color: #2a323c !important; color: #d7dde5 !important; }
+div.outofdate, div.retired { background: #2e2712 !important; color: #e8d9a0 !important; }
+#quickview { background: #12181f !important; border-color: #2a323c !important; }
+#quickview h3 { color: #cbd6e2 !important; }
+#quickview a { color: #9db4cc !important; }
+#path, #footer { color: #8b98a5 !important; }
+#path a, #footer a { color: #9db4cc !important; }
+.toplang { background: #161d25 !important; }
+}

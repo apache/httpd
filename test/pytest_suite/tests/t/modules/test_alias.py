@@ -13,6 +13,7 @@ WINFU (Windows) branches are not reproduced (POSIX shell CGI assumed).
 import os
 import re
 import stat
+import sys
 
 import pytest
 
@@ -133,19 +134,22 @@ def test_scriptalias(http):
     _write_cgi(http)
 
     # Served as plain text at /modules/alias/script.
-    assert t_cmp(http.GET_BODY("/modules/alias/script"), CGI), \
-        "/modules/alias/script"
+    body = http.GET_BODY("/modules/alias/script").replace("\r\n", "\n")
+    assert t_cmp(body, CGI), "/modules/alias/script"
 
     if http.have_module("mod_cgi") or http.have_module("mod_cgid"):
+        if sys.platform == "win32":
+            pytest.skip("shell CGI scripts not available on Windows")
         # Executed as CGI at /cgi/script.
-        assert t_cmp(http.GET_BODY("/cgi/script"), f"{CGI_STRING}\n"), "/cgi/script"
+        body = http.GET_BODY("/cgi/script").replace("\r\n", "\n")
+        assert t_cmp(body, f"{CGI_STRING}\n"), "/cgi/script"
         # ScriptAliasMatch.
-        assert t_cmp(http.GET_BODY("/aliascgi-script"), f"{CGI_STRING}\n"), \
-            "/aliascgi-script"
+        body = http.GET_BODY("/aliascgi-script").replace("\r\n", "\n")
+        assert t_cmp(body, f"{CGI_STRING}\n"), "/aliascgi-script"
         if http.have_min_apache_version("2.4.19"):
             # ScriptAlias inside LocationMatch.
-            assert t_cmp(http.GET_BODY("/expr/aliascgi-script"),
-                         f"{CGI_STRING}\n"), "/aliascgi-script"
+            body = http.GET_BODY("/expr/aliascgi-script").replace("\r\n", "\n")
+            assert t_cmp(body, f"{CGI_STRING}\n"), "/aliascgi-script"
 
     # Bad ScriptAliasMatch.
     assert t_cmp(http.GET_RC("/aliascgi-nada"), 404), "/aliascgi-nada"

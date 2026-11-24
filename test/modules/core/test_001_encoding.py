@@ -7,7 +7,8 @@ from pyhttpd.conf import HttpdConf
 class TestEncoding:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env, extras={
             'base': f"""
         <Directory "{env.gen_dir}">
@@ -66,10 +67,10 @@ class TestEncoding:
         ["/cgi-bin/%%32%65%%32%65/echo.py", 400, ["AH10244"]],
         ["/nothing/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400, ["AH10244"]],
         ["/cgi-bin/%%32%65%%32%65/%%32%65%%32%65/h2_env.py", 400, ["AH10244"]],
-        ["/nothing/%25%32%65%25%32%65/echo.py", 404, ["AH01264"]],
-        ["/cgi-bin/%25%32%65%25%32%65/echo.py", 404, ["AH01264"]],
-        ["/nothing/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404, ["AH01264"]],
-        ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404, ["AH01264"]],
+        ["/nothing/%25%32%65%25%32%65/echo.py", 404, ["AH01264", "AH02811"]],
+        ["/cgi-bin/%25%32%65%25%32%65/echo.py", 404, ["AH01264", "AH02811"]],
+        ["/nothing/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404, ["AH01264", "AH02811"]],
+        ["/cgi-bin/%25%32%65%25%32%65/%25%32%65%25%32%65/h2_env.py", 404, ["AH01264", "AH02811"]],
     ])
     def test_core_001_04(self, env, path, status, lognos: Optional[List[str]]):
         url = env.mkurl("https", "test1", path)

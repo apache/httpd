@@ -31,7 +31,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Websockets support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>proxy_wstunnel_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_proxy_wstunnel.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.5 and later</td></tr></table>
@@ -99,7 +99,7 @@ WebSocket always happens.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Instructs this module to try to create an asynchronous tunnel</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketAsync ON|OFF</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>This directive instructs the server to try to create an asynchronous tunnel.
@@ -116,7 +116,7 @@ WebSocket always happens.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketAsyncDelay <var>num</var>[ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyWebsocketAsyncDelay 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>If <code class="directive">ProxyWebsocketAsync</code> is enabled, this directive
@@ -136,7 +136,7 @@ WebSocket always happens.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.4.48 and later</td></tr>
 </table>
@@ -155,7 +155,7 @@ WebSocket always happens.
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyWebsocketIdleTimeout <var>num</var>[ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyWebsocketIdleTimeout 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
 </table>
     <p>This directive imposes a maximum amount of time for the tunnel to be

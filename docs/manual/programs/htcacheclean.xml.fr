@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933949 -->
+<!-- English Revision: 1937530 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -204,10 +204,10 @@
         <dt>status</dt><dd>Etat de la réponse en cache.</dd>
         <dt>entity version</dt><dd>Le nombre de fois que cette entrée a
 	été revalidée sans être effacée.</dd>
-        <dt>date</dt><dd>Date de la réponse.</dd>
-        <dt>expiry</dt><dd>Date d'expiration de la réponse.</dd>
-        <dt>request time</dt><dd>Date du début de la requête.</dd>
-        <dt>response time</dt><dd>Date de la fin de la requête.</dd>
+        <dt>date</dt><dd>Horodatage de la réponse en microsecondes.</dd>
+        <dt>expiry</dt><dd>Horodatage de l'expiration de la réponse en microsecondes.</dd>
+        <dt>request time</dt><dd>Horodatage du début de la requête en microsecondes.</dd>
+        <dt>response time</dt><dd>Horodatage de la fin de la requête en microsecondes.</dd>
         <dt>body present</dt><dd>Ce champ contient la valeur 0 si aucun
 	corps n'est stocké avec cette requête, 1 dans le cas contraire.</dd>
         <dt>head request</dt><dd>Ce champ contient la valeur 1 si

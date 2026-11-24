@@ -17,6 +17,7 @@
 #include "../httpdunit.h"
 
 #include "httpd.h"
+#include "apr_strings.h"
 
 /*
  * Test Fixture -- runs once per test
@@ -81,6 +82,40 @@ END_TEST
 
 
 /*
+ * ap_cstr_stripws()
+ */
+
+struct ap_cstr_stripws_case {
+    const char *input;
+    const char *expected;
+};
+
+const struct ap_cstr_stripws_case ap_cstr_stripws_cases[] = {
+    { "", "" },
+    { " ", "" },
+    { "\t\r\n", "" },
+    { "value", "value" },
+    { "value ", "value" },
+    { "value\t ", "value" },
+    { " value ", " value" },
+};
+
+const size_t ap_cstr_stripws_cases_len = sizeof(ap_cstr_stripws_cases) /
+                                         sizeof(ap_cstr_stripws_cases[0]);
+
+HTTPD_START_LOOP_TEST(cstr_stripws_strips_trailing_whitespace, ap_cstr_stripws_cases_len)
+{
+    const struct ap_cstr_stripws_case *c = &ap_cstr_stripws_cases[_i];
+    char *str = apr_pstrdup(g_pool, c->input);
+    char *end = ap_cstr_stripws(str);
+
+    ck_assert_str_eq(str, c->expected);
+    ck_assert_ptr_eq(end, str + strlen(c->expected));
+}
+END_TEST
+
+
+/*
  * ap_escape_quotes()
  */
 
@@ -110,6 +145,75 @@ HTTPD_START_LOOP_TEST(check_escape_quotes, ap_test_escape_quotes_cases_len)
 
     result = ap_escape_quotes(g_pool, c->input);
     ck_assert_str_eq(result, c->expected);
+}
+END_TEST
+
+
+/*
+ * ap_size_parameter_parse()
+ */
+
+struct ap_size_parameter_parse_case {
+    const char *input;
+    apr_status_t expected_rv;
+    apr_int64_t expected;       /* for a 64-bit apr_off_t */
+};
+
+const struct ap_size_parameter_parse_case ap_size_parameter_parse_cases[] = {
+    { "0",                    APR_SUCCESS, 0 },
+    { "1",                    APR_SUCCESS, 1 },
+    { "-1",                   APR_SUCCESS, -1 },
+    { "1024",                 APR_SUCCESS, 1024 },
+    { "0b",                   APR_SUCCESS, 0 },
+    { "1b",                   APR_SUCCESS, 1 },
+    { "512B",                 APR_SUCCESS, 512 },
+    { "1k",                   APR_SUCCESS, 1024 },
+    { "1K",                   APR_SUCCESS, 1024 },
+    { "10k",                  APR_SUCCESS, 10240 },
+    { "1m",                   APR_SUCCESS, 1024 * 1024 },
+    { "2M",                   APR_SUCCESS, 2 * 1024 * 1024 },
+    { "1g",                   APR_SUCCESS, 1024 * 1024 * 1024 },
+    { "4G",                   APR_SUCCESS, APR_INT64_C(4) * 1024 * 1024 * 1024 },
+    { "-2k",                  APR_SUCCESS, -2048 },
+    { "",                     APR_EINVAL,  0 },
+    { "k",                    APR_EINVAL,  0 },
+    { "-",                    APR_EINVAL,  0 },
+    { "1t",                   APR_EINVAL,  0 },
+    { "1kb",                  APR_EINVAL,  0 },
+    { "1 k",                  APR_EINVAL,  0 },
+    { "1k ",                  APR_EINVAL,  0 },
+    { "2 ",                   APR_EINVAL,  0 },
+    { "0x10",                 APR_EINVAL,  0 },
+    { "1.5k",                 APR_EINVAL,  0 },
+    /* overflows whether apr_off_t is 32 or 64 bits wide */
+    { "99999999999999999999", APR_ERANGE,  0 },
+    { "9223372036854775807k", APR_ERANGE,  0 },
+    { "9007199254740992m",    APR_ERANGE,  0 },
+    { "-9007199254740992m",   APR_ERANGE,  0 },
+    { "8589934592g",          APR_ERANGE,  0 },
+};
+
+const size_t ap_size_parameter_parse_cases_len =
+    sizeof(ap_size_parameter_parse_cases) /
+    sizeof(ap_size_parameter_parse_cases[0]);
+
+HTTPD_START_LOOP_TEST(size_parameter_parse_handles_suffixes, ap_size_parameter_parse_cases_len)
+{
+    const struct ap_size_parameter_parse_case *c = &ap_size_parameter_parse_cases[_i];
+    apr_status_t expected_rv = c->expected_rv;
+    apr_off_t value = 0;
+    apr_status_t rv;
+
+    /* A value which does not fit a narrower apr_off_t is a range error. */
+    if (expected_rv == APR_SUCCESS && (apr_off_t)c->expected != c->expected) {
+        expected_rv = APR_ERANGE;
+    }
+
+    rv = ap_size_parameter_parse(c->input, &value);
+    ck_assert_int_eq(rv, expected_rv);
+    if (expected_rv == APR_SUCCESS) {
+        ck_assert_int_eq(value, (apr_off_t)c->expected);
+    }
 }
 END_TEST
 

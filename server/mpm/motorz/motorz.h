@@ -39,6 +39,7 @@
 #include "http_log.h"
 #include "http_config.h"
 #include "http_core.h"          /* for get_remote_host */
+#include "http_protocol.h"      /* for pre_read_request hook */
 #include "http_connection.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
@@ -65,26 +66,22 @@
 #include <signal.h>
 #include <sys/times.h>
 
-/* Limit on the total --- clients will be locked out if more servers than
- * this are needed.  It is intended solely to keep the server from crashing
- * when things get out of hand.
- *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
- */
-#ifndef DEFAULT_SERVER_LIMIT
-#define DEFAULT_SERVER_LIMIT 256
-#endif
-
 /* Admin can't tune ServerLimit beyond MAX_SERVER_LIMIT.  We want
- * some sort of compile-time limit to help catch typos.
+ * some sort of compile-time limit to help catch typos, and to keep the
+ * scoreboard small enough that we can read the whole thing without worrying
+ * too much about the overhead.
  */
 #ifndef MAX_SERVER_LIMIT
 #define MAX_SERVER_LIMIT 200000
+#endif
+
+/* ServerLimit defaults to the larger of this and twice StartServers. A graceful
+ * restart leaves the old children in their slots until their connections are
+ * done, and no replacement can start while every slot is taken, so the default
+ * must leave room for several restarts in a row.
+ */
+#ifndef DEFAULT_SERVER_LIMIT
+#define DEFAULT_SERVER_LIMIT 16
 #endif
 
 /* Limit on the threads per process.  Clients will be locked out if more than
@@ -120,7 +117,11 @@ typedef struct motorz_core_t motorz_core_t;
 struct motorz_core_t {
     ap_unixd_mpm_retained_data *mpm;
 
+    /* ServerLimit/ThreadLimit as first configured: the scoreboard is sized
+     * from them once and survives graceful restarts, so they cannot change.
+     */
     int first_server_limit;
+    int first_thread_limit;
     int maxclients_reported;
     /*
      * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -171,13 +172,13 @@ struct motorz_poller_t {
     apr_pollfd_t **listener_pfds;
     int num_listener_pfds;
     int listeners_disabled;
+    apr_time_t last_enable_failure;  /* rate limits the error for it */
 };
 
 typedef struct motorz_child_bucket motorz_child_bucket;
 struct motorz_child_bucket {
     ap_pod_t *pod;
     ap_listen_rec *listeners;
-    apr_proc_mutex_t *mutex;
 };
 
 typedef enum
@@ -234,10 +235,15 @@ struct motorz_conn_t
     conn_rec *c;
     /** request record (if any) this struct refers to */
     request_rec *r;
-    /** is the current conn_rec suspended? */
-    int suspended;
+    /** is the current conn_rec suspended by a module? (atomic: set by the
+     *  worker that parks it, cleared by whoever hands it back) */
+    apr_uint32_t suspended;
+    /** suspend_connection hooks ran and the resume_connection ones have not */
+    int suspend_notified;
     /** has ap_start_lingering_close() been called for this conn? */
     int linger_started;
+    /** absolute end of the lingering close; set once, only ever shortened */
+    apr_time_t linger_deadline;
     /** poll file descriptor information */
     apr_pollfd_t pfd;
     /** public parts of the connection state */

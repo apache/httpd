@@ -1,0 +1,3 @@
+  *) mod_autoindex: Emit the charset given by "IndexOptions Charset=" in a
+     <meta> tag of the generated page for HTML 4.01 as well as XHTML, ahead
+     of the page title.  PR 69930.

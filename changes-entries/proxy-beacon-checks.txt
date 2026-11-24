@@ -1,0 +1,8 @@
+  *) mod_proxy_beacon: Report a missing ProxyBeaconSecret, a malformed
+     ProxyBeaconAddress or ProxyBeaconListen, and an undefined
+     ProxyBeaconBalancer in "httpd -t".  Accept ProxyBeaconListen ":port"
+     as documented.  Refuse announced backends whose scheme or name would not
+     fit a worker.  Keep a member whose enabling failed disabled and enable it
+     on its next announcement, retry a failed takeover of the balancer's
+     members, disable members beyond the 256 it can keep a lease for, and do
+     not claim a worker it did not create.  [Jim Jagielski]

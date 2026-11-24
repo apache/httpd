@@ -52,6 +52,7 @@ pages SSI</td></tr>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif"> <a href="#passenv">PassEnv</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#setenv">SetEnv</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#setenvfromfile">SetEnvFromFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#unsetenv">UnsetEnv</a></li>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_env">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_env">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
@@ -118,6 +119,70 @@ shell</td></tr>
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../env.html">Variables d'environnement</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="setenvfromfile">Directive <span id="SetEnvFromFile">SetEnvFromFile</span> <a title="Lien permanent" href="#setenvfromfile" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finitions de variables d&rsquo;environnement &agrave; partir d&rsquo;un fichier</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SetEnvFromFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_env</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.5.1 du serveur HTTP Apache.</td></tr>
+</table>
+    <p>Cette directive permet de d&eacute;finir des variables d&rsquo;environnement internes
+    &agrave; partir d&rsquo;un fichier&nbsp;; ces derni&egrave;res sont alors disponibles pour les
+    modules du serveur HTTP Apache et pass&eacute;es aux scripts CGI et aux pages SSI.
+    Mis &agrave; part le fait que les valeurs des variables sont enregistr&eacute;es dans un
+    fichier s&eacute;par&eacute;, cette directive a le m&ecirc;me effet qu&rsquo;une liste de directives
+    <code class="directive"><a href="#setenv">SetEnv</a></code> directives, chacune d&rsquo;entre
+    elles d&eacute;finissant une variable.</p>
+
+    <p><var>file-path</var> est soit un chemin absolu, soit un chemin relatif &agrave;
+    la valeur de la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+    Le fichier est lu une seule fois lors de l&rsquo;analyse de la configuration&nbsp;; ses
+    &eacute;ventuelles modifications ne seront prises en compte qu&rsquo;apr&egrave;s un red&eacute;marrage
+    du serveur.</p>
+
+    <p>Chaque ligne du fichier se pr&eacute;sente sous la forme
+    <code>nom=valeur</code>. Les lignes vides ou commen&ccedil;ant par <code>#</code>
+    sont ignor&eacute;es, et les blancs en d&eacute;but et en fin de ligne sont supprim&eacute;s. Si
+    une ligne ne contient pas de signe <code>=</code>, la variable
+    correspondante se voit affecter une cha&icirc;ne vide. Une ligne se terminant par
+    une controblique (<code>\</code>) continue &agrave; la ligne suivante, comme dans
+    les fichiers de configuration principaux.</p>
+
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SetEnvFromFile conf/app.env</pre>
+</div>
+
+    <div class="example"><h3>Exemple de fichier (<code>conf/app.env</code>)</h3><pre class="prettyprint lang-config">      # Application settings
+      APP_MODE=production
+      SPECIAL_PATH=/foo/bin</pre>
+</div>
+
+    <div class="note"><p>Comme pour la directive <code class="directive"><a href="#setenv">SetEnv</a></code>, les variables sont d&eacute;finies
+    <em>apr&egrave;s</em> que la plupart des directives pr&eacute;coces de traitement des
+    requ&ecirc;tes ont &eacute;t&eacute; ex&eacute;cut&eacute;es, comme le contr&ocirc;le d&rsquo;acc&egrave;s et le mappage URI-Nom
+    de fichier.</p>
+    </div>
+
+    <div class="warning"><h3>S&eacute;curit&eacute;</h3>
+    <p>&Agrave; la diff&eacute;rence de <code class="directive"><a href="#setenv">SetEnv</a></code>, cette
+    directive lit le <em>contenu</em> d&rsquo;un fichier vers l&rsquo;environnement interne,
+    o&ugrave; il peut &ecirc;tre expos&eacute; par CGI, SSI, journalisation et autres consommateurs.
+    Afin d&rsquo;emp&ecirc;cher un utilisateur non fiable de divulguer le contenu de tout
+    fichier lisible par le serveur (par exemple les fichiers de configuration ou
+    de donn&eacute;es d&rsquo;authentification ailleurs sur l&rsquo;h&ocirc;te), la directive
+    <code class="directive">SetEnvFromFile</code> n&rsquo;est <strong>pas</strong> autoris&eacute;e
+    dans les fichiers <code>.htaccess</code>&nbsp;; elle ne peut &ecirc;tre utilis&eacute;e que
+    dans la configuration globale du serveur.</p>
+    </div>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><a href="../env.html">Variables d&rsquo;environnement</a></li>
+<li><code class="directive"><a href="#setenv">SetEnv</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

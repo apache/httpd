@@ -1,0 +1,3 @@
+  *) mod_mime_magic: Fix the content type and encoding derived from a
+     magic file entry being terminated with trailing whitespace.  Ignore
+     a content encoding which is not a valid token. [Joe Orton]

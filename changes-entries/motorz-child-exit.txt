@@ -1,0 +1,4 @@
+  *) mpm_motorz: A child now exits at once on an ungraceful stop or restart
+     even when its workers are waiting on clients, instead of being killed by
+     the parent after several seconds, and no longer runs the parent process'
+     exit handlers (e.g. OpenSSL's).  [Jim Jagielski]

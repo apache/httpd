@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934979 -->
+<!-- English Revision: 1939425 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -782,12 +782,16 @@ CGIVar REQUEST_URI current-uri
   </highlight>
 
   <note><title>Note</title>
-  <p>Dans tous les cas, la variable d’environnement CGI <code>REQUEST_URI</code>
-  contient l’URI complet, y compris la chaîne de paramètres. Cela est différent
-  pour la variable de serveur <code>%{REQUEST_URI}</code> utilisée dans
+  <p>Dans le mode <code>original-uri</code> (par défaut), la variable
+  d’environnement CGI <code>REQUEST_URI</code> contient l’URI original de la
+  ligne de requête, y compris la chaîne de paramètres si elle est présente.
+  Avec <code>current-uri</code>, <code>REQUEST_URI</code> est définie à partir
+  de l’URI actuellement traitée, et la chaîne de paramètres reste disponible
+  séparément dans <code>QUERY_STRING</code>. Cela est différent pour la
+  variable de serveur <code>%{REQUEST_URI}</code> utilisée dans
   <module>mod_rewrite</module> et les expressions de <a
-  href="../expr.html">ap_expr</a>, qui ne contient que la partie chemin (pas la
-  chaîne de paramètres).</p></note>
+  href="../expr.html">ap_expr</a>, qui ne contient que la partie chemin (sans
+  la chaîne de paramètres).</p></note>
 </usage>
 </directivesynopsis>
 
@@ -1922,8 +1926,19 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 	connexion (voir le module
 	<module>mod_remoteip</module>)</td></tr>
 
+    <tr><td><code>%{b}a</code></td>
+	<td>Identique à <code>%a</code>, mais une adresse IPv6 est écrite entre
+	crochets comme dans <code>[adresse]:port</code>, en accord avec la <a
+	href="https://www.rfc-editor.org/rfc/rfc5952#section-6">RFC 5952,
+	section 6</a>. Les drapeaux <code>b</code> et <code>c</code> peuvent
+	être combinés, comme dans <code>%{bc}a</code></td></tr>
+
     <tr><td><code>%A</code></td>
         <td>Adresse IP et port locaux</td></tr>
+
+    <tr><td><code>%{b}A</code></td>
+        <td>Identique à <code>%A</code>, mais une adresse IPv6 est écrite entre
+	crochets comme dans <code>%{b}a</code></td></tr>
 
     <tr><td><code>%{<em>name</em>}e</code></td>
         <td>Variable d'environnement de requête <em>name</em></td></tr>
@@ -4111,7 +4126,7 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
 	Consultez la documentation du module pour plus d'informations.</p></li>
 
         <li><code>posixsem</code>
-        <p>Une variante de mutex basée sur un sémaphore Posix.</p>
+        <p>Une variante de mutex basée sur un sémaphore POSIX.</p>
 
         <note type="warning"><title>Avertissement</title>
         <p>La propriété du sémaphore n'est pas restituée si un thread du
@@ -4139,11 +4154,11 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
 
         <li><code>sem</code>
         <p>Sélection de la "meilleure" implémentation des sémaphores
-	disponible ; le choix s'effectue entre les sémaphores posix et
+	disponible ; le choix s'effectue entre les sémaphores POSIX et
 	IPC SystemV, dans cet ordre.</p></li>
 
         <li><code>pthread</code>
-        <p>Une variante de mutex à base de mutex de thread Posix
+        <p>Une variante de mutex à base de mutex de thread POSIX
 	inter-processus.</p>
 
         <note type="warning"><title>Avertissement</title>
@@ -5364,6 +5379,17 @@ gestionnaire particulier</description>
     <directive module="mod_dir">FallbackResource</directive>, car un
     gestionnaire est déjà explicitement assigné à la requête.
     </p></note>
+
+    <note><title>Ordre de fusion avec Files/FilesMatch</title> <p>Une directive
+    <directive>SetHandler</directive> définie dans une section <directive
+    type="section" module="core">Files</directive> ou <directive type="section"
+    module="core">FilesMatch</directive> est fusionnée après une directive de
+    même type définie dans une section <directive type="section"
+    module="core">Directory</directive> ou un fichier <code>.htaccess</code>
+    pour la même requête, et donc l’outrepasse, même si le fichier
+    <code>.htaccess</code> est plus spécifique. Voir <a
+    href="../sections.html#merging">Comment les sections sont fusionnées</a>
+    pour une description complète de l’ordre de fusion.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>

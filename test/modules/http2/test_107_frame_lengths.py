@@ -16,17 +16,19 @@ def mk_text_file(fpath: str, lines: int):
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_nghttp()
 class TestFrameLengths:
 
     URI_PATHS = []
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         docs_a = os.path.join(env.server_docs_dir, "cgi/files")
         for fsize in [10, 100]:
             fname = f'0-{fsize}k.txt'
             mk_text_file(os.path.join(docs_a, fname), 8 * fsize)
-            self.URI_PATHS.append(f"/files/{fname}")
+            cls.URI_PATHS.append(f"/files/{fname}")
 
     @pytest.mark.parametrize("data_frame_len", [
         99, 1024, 8192

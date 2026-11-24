@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1936053 -->
+<!-- English Revision: 1938263 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,7 +67,7 @@ règles permettant de réécrire les URLs des requêtes
       <p>Vous trouverez plus de détails, discussions et exemples dans le <a
       href="../rewrite/">Guide détaillé sur mod_rewrite</a>.</p>
 </summary>
-<seealso><a href="rewrite/index.html">Guide de mod_rewrite</a></seealso>
+<seealso><a href="../rewrite/">Guide de mod_rewrite</a></seealso>
 
 <section id="logging"><title>Journalisation</title>
 

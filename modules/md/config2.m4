@@ -100,7 +100,7 @@ AC_DEFUN([APACHE_CHECK_CURL],[
     AC_CHECK_HEADERS([curl/curl.h])
 
     AC_MSG_CHECKING([for curl version >= 7.29])
-    AC_TRY_COMPILE([#include <curl/curlver.h>],[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <curl/curlver.h>]],[[
 #if !defined(LIBCURL_VERSION_MAJOR)
 #error "Missing libcurl version"
 #endif
@@ -109,7 +109,7 @@ AC_DEFUN([APACHE_CHECK_CURL],[
 #endif
 #if LIBCURL_VERSION_MAJOR == 7 && LIBCURL_VERSION_MINOR < 29
 #error "Unsupported libcurl version " LIBCURL_VERSION
-#endif],
+#endif]])],
       [AC_MSG_RESULT(OK)
        ac_cv_curl=yes],
       [AC_MSG_RESULT(FAILED)])
@@ -124,9 +124,15 @@ AC_DEFUN([APACHE_CHECK_CURL],[
     CPPFLAGS="$saved_CPPFLAGS"
     LIBS="$saved_LIBS"
     LDFLAGS="$saved_LDFLAGS"
+
+    dnl cache MOD_LDFLAGS, MOD_CFLAGS
+    ap_curl_mod_cflags=$MOD_CFLAGS
+    ap_curl_mod_ldflags=$MOD_LDFLAGS
   ])
   if test "x$ac_cv_curl" = "xyes"; then
     AC_DEFINE(HAVE_CURL, 1, [Define if curl is available])
+    APR_ADDTO(MOD_LDFLAGS, [$ap_curl_mod_ldflags])
+    APR_ADDTO(MOD_CFLAGS, [$ap_curl_mod_cflags])
   fi
 ])
 

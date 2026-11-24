@@ -29,6 +29,7 @@
                                   time I was too famous.''
                                             -- Unknown                */
 #include "ssl_private.h"
+#include "httpd.h"
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include "scoreboard.h"
@@ -453,6 +454,9 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
              * Modifying the SSL on a slave connection is no good.
              */
             apr_table_setn(r->notes, "ssl-renegotiate-forbidden", "cipher-suite");
+            if (cipher_list_old) {
+                sk_SSL_CIPHER_free(cipher_list_old);
+            }
             return HTTP_FORBIDDEN;
         }
 
@@ -944,7 +948,6 @@ static int ssl_hook_Access_modern(request_rec *r, SSLSrvConfigRec *sc, SSLDirCon
             return DECLINED;
         }
 
-        vmode_needed |= SSL_VERIFY_CLIENT_ONCE;
         if (vmode_inplace != vmode_needed) {
             /* Need to change, if new setting is more restrictive than existing one */
 
@@ -1515,11 +1518,16 @@ static authz_status ssl_authz_verify_client_check(request_rec *r,
                                                   const char *require_line,
                                                   const void *parsed)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
-    SSL *ssl = sslconn ? sslconn->ssl : NULL;
+    SSLConnRec *sslconn;
+    SSL *ssl;
 
-    if (!ssl)
+    /* On an HTTP/2 secondary connection, r->connection is a stream
+     * pseudo-connection with no SSLConnRec of its own; the handshake
+     * state lives on the master connection (see ssl_hook_Access()). */
+    if (!modssl_request_is_tls(r, &sslconn))
         return AUTHZ_DENIED;
+
+    ssl = sslconn->ssl;
 
     if (sslconn->verify_error == NULL &&
         sslconn->verify_info == NULL &&

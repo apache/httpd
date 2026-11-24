@@ -52,7 +52,7 @@ making it accessible from outside.</p>
 <section id="intro"><title>Introduction</title>
 <p>mod_proxy_html was originally a third-party module for Apache HTTPD
 2.0.x and later versions.  It was donated to the ASF in 2011 along with
-<module>mod_xml2enc</module> (see <a href="#i18n">Internationalisation</a>)
+<module>mod_xml2enc</module> (see <a href="#i18n">Internationalization</a>)
 and is a standard module in HTTPD 2.4 and development versions.</p>
 </section>
 <section id="custom"><title>Customized HTML Parsing</title>
@@ -73,7 +73,7 @@ need rewriting, and to rewrite links in embedded non-HTML contents
 (stylesheets and scripts).  Note that it is not suitable for external
 stylesheets or scripts: for those you should use another parser such as
 <module>mod_substitute</module> or <module>mod_sed</module>.
-The main customisation directives are <directive>ProxyHTMLLinks</directive>
+The main customization directives are <directive>ProxyHTMLLinks</directive>
 and <directive>ProxyHTMLEvents</directive>.  By default these are set in 
 configuration file <var>proxy-html.conf</var>, which also contains
 comments to help you customize your parser if required.</p>
@@ -83,7 +83,7 @@ This can be changed by uncommenting the relevant line in
 <var>proxy-html.conf</var> as documented there.</note>
 
 </section>
-<section id="i18n"><title>Internationalisation</title>
+<section id="i18n"><title>Internationalization</title>
 <p>Internally, mod_proxy_html uses a smart HTML parser from the
 third-party <a href="http://xmlsoft.org/">libxml2</a> library.
 The parser uses Unicode (utf-8) internally.  This makes it a
@@ -92,7 +92,7 @@ many non-English-language websites.  If this is not handled correctly,
 websites that display non-ASCII characters in encodings other than
 utf-8 (Unicode) will display incorrectly.</p>
 <p>From the first release in 2003 to the donation to Apache in 2011,
-internationalisation (i18n) support developed from near nothing to a
+internationalization (i18n) support developed from near nothing to a
 sophisticated framework capable of applying rules from HTTP, HTML and XML
 to detect a document's encoding and handle it correctly.  However,
 this processing was common to mod_proxy_html and other modules using
@@ -168,7 +168,7 @@ module for earlier 2.x versions.</compatibility>
 <usage>
     <p>A simple switch to enable or disable the proxy_html filter.
     If <module>mod_xml2enc</module> is loaded it will also automatically
-    set up internationalisation support.</p>
+    set up internationalization support.</p>
     <p>Note that the proxy_html filter will only act on HTML data
     (Content-Type text/html or application/xhtml+xml) and when the
     data are proxied.  You can override this (at your own risk) by

@@ -650,7 +650,7 @@ static char *rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
     /* loop through and collect the string */
     res_pos = 0;
     for (frag = req_dat->head, cur_frag = 0;
-         frag->next;
+         frag->next && res_pos < len;
          frag = frag->next, cur_frag++) {
         /* loop to the first fragment */
         if (cur_frag < start_frag)
@@ -658,16 +658,9 @@ static char *rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
 
         /* loop through and collect chars */
         for (cur_pos = (cur_frag == start_frag) ? start_pos : 0;
-             frag->str[cur_pos];
+             frag->str[cur_pos] && res_pos < len;
              cur_pos++) {
-            if (cur_frag >= start_frag
-                && cur_pos >= start_pos
-                && res_pos <= len) {
-                result[res_pos++] = frag->str[cur_pos];
-                if (res_pos > len) {
-                    break;
-                }
-            }
+            result[res_pos++] = frag->str[cur_pos];
         }
     }
 
@@ -698,6 +691,7 @@ static int magic_rsl_to_request(request_rec *r)
         encoding_len;     /* content encoding length */
 
     char *tmp;
+    const char *p, *q;
     magic_rsl *frag;      /* list-traversal pointer */
     rsl_states state;
 
@@ -810,6 +804,14 @@ static int magic_rsl_to_request(request_rec *r)
 
     /* save the info in the request record */
     tmp = rsl_strdup(r, type_frag, type_pos, type_len);
+    /* the type must be of the form token "/" token */
+    p = ap_scan_http_token(tmp);
+    if (p == tmp || *p != '/'
+        || (q = ap_scan_http_token(p + 1)) == p + 1 || *q != '\0') {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10622)
+                      "ignoring invalid content type '%s'", tmp);
+        return DECLINED;
+    }
     /* XXX: this could be done at config time I'm sure... but I'm
      * confused by all this magic_rsl stuff. -djg */
     ap_content_type_tolower(tmp);
@@ -818,10 +820,20 @@ static int magic_rsl_to_request(request_rec *r)
     if (state == rsl_encoding) {
         tmp = rsl_strdup(r, encoding_frag,
                                          encoding_pos, encoding_len);
-        /* XXX: this could be done at config time I'm sure... but I'm
-         * confused by all this magic_rsl stuff. -djg */
-        ap_str_tolower(tmp);
-        r->content_encoding = tmp;
+        /* the encoding must be a token; anything else following the
+         * type is a descriptive note and is ignored */
+        if (*ap_scan_http_token(tmp) != '\0') {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(10623)
+                          "ignoring invalid content encoding '%s'",
+                          tmp);
+            state = rsl_separator;
+        }
+        else {
+            /* XXX: this could be done at config time I'm sure... but I'm
+             * confused by all this magic_rsl stuff. -djg */
+            ap_str_tolower(tmp);
+            r->content_encoding = tmp;
+        }
     }
 
     /* detect memory allocation or other errors */
@@ -1073,7 +1085,7 @@ static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
         case LONG:
         case BELONG:
         case LELONG:
-            v = (long) v;
+            v = (apr_int32_t) v;
             break;
         case STRING:
             break;
@@ -1790,16 +1802,16 @@ static int mconvert(request_rec *r, union VALUETYPE *p, struct magic *m)
         return 1;
     case BELONG:
     case BEDATE:
-        p->l = (long)
-            ((p->hl[0] << 24) | (p->hl[1] << 16) | (p->hl[2] << 8) | (p->hl[3]));
+        p->l = ((apr_uint32_t) p->hl[0] << 24) | ((apr_uint32_t) p->hl[1] << 16)
+            | (p->hl[2] << 8) | (p->hl[3]);
         return 1;
     case LESHORT:
         p->h = (short) ((p->hs[1] << 8) | (p->hs[0]));
         return 1;
     case LELONG:
     case LEDATE:
-        p->l = (long)
-            ((p->hl[3] << 24) | (p->hl[2] << 16) | (p->hl[1] << 8) | (p->hl[0]));
+        p->l = ((apr_uint32_t) p->hl[3] << 24) | ((apr_uint32_t) p->hl[2] << 16)
+            | (p->hl[1] << 8) | (p->hl[0]);
         return 1;
     default:
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01538)
@@ -1814,7 +1826,7 @@ static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
 {
     long offset = m->offset;
 
-    if (offset + sizeof(union VALUETYPE) > nbytes)
+    if (offset < 0 || (apr_size_t)offset + sizeof(union VALUETYPE) > nbytes)
                   return 0;
 
     memcpy(p, s + offset, sizeof(union VALUETYPE));
@@ -1836,7 +1848,7 @@ static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
             break;
         }
 
-        if (offset + sizeof(union VALUETYPE) > nbytes)
+        if (offset < 0 || (apr_size_t)offset + sizeof(union VALUETYPE) > nbytes)
                       return 0;
 
         memcpy(p, s + offset, sizeof(union VALUETYPE));
@@ -1998,7 +2010,6 @@ static int mcheck(request_rec *r, union VALUETYPE *p, struct magic *m)
 
 static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
-    int has_escapes = 0;
     unsigned char *s;
     char nbuf[SMALL_HOWMANY + 1];  /* one extra for terminating '\0' */
     char *token;
@@ -2036,14 +2047,11 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     /* make a copy of the buffer here because apr_strtok() will destroy it */
     s = (unsigned char *) memcpy(nbuf, buf, small_nbytes);
     s[small_nbytes] = '\0';
-    has_escapes = (memchr(s, '\033', small_nbytes) != NULL);
     while ((token = apr_strtok((char *) s, " \t\n\r\f", &strtok_state)) != NULL) {
         s = NULL;  /* make apr_strtok() keep on tokin' */
         for (p = names; p < names + NNAMES; p++) {
             if (STREQ(p->name, token)) {
                 magic_rsl_puts(r, types[p->type]);
-                if (has_escapes)
-                    magic_rsl_puts(r, " (with escape sequences)");
                 return 1;
             }
         }

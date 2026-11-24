@@ -35,7 +35,7 @@
     <title>Core Enhancements</title>
     <dl>
       <dt>ContentDigest directive and Content-MD5 header</dt>
-      <dd>The <code>ContentDigest</code> directive and support for the the
+      <dd>The <code>ContentDigest</code> directive and support for the
           <code>Content-MD5</code> header has been removed from the server,
           corresponding with the removal of this header from
           <rfc anchor="appendix-B">7231</rfc> Hypertext Transfer Protocol

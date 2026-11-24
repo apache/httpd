@@ -241,14 +241,12 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
             ++l;
 
         if (!ap_cstr_casecmp(w, "Content-type")) {
-            char *tmp;
+            char *tmp, *end;
             /* Nuke trailing whitespace */
 
-            char *endp = l + strlen(l) - 1;
-            while (endp > l && apr_isspace(*endp))
-                *endp-- = '\0';
+            end = ap_cstr_stripws(l);
 
-            tmp = apr_pstrdup(r->pool, l);
+            tmp = apr_pstrmemdup(r->pool, l, end - l);
             ap_content_type_tolower(tmp);
             ap_set_content_type(r, tmp);
         }

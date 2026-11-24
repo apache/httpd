@@ -1,0 +1,107 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef H3_SOCKET_H
+#define H3_SOCKET_H
+
+#include <httpd.h>
+
+#include <apr_network_io.h>
+#include <apr_portable.h>
+
+/**
+ * Open a non-blocking IPv6 dual-stack UDP socket and bind it to the given port.
+ * With @p reuse_port, sets SO_REUSEPORT (where the OS has it), so several
+ * sockets can share the port and the kernel spreads the peers over them.
+ * Also asks for @p buffer_size on the send and receive buffers, which the OS
+ * may cap; a refused or capped buffer is logged, never fatal.
+ * @param port  Port to bind; 0 lets the OS pick.
+ * @param buffer_size Bytes requested for SO_RCVBUF and SO_SNDBUF; 0 keeps the
+ *               OS default.
+ * @param pool  Pool used for the underlying apr_socket_t lifetime.
+ * @param reuse_port Nonzero to set SO_REUSEPORT.
+ * @param out_fd Out parameter: the resulting OS-level fd (suitable for
+ *               SSL_set_fd on OpenSSL QUIC).
+ * @return APR_SUCCESS, APR_EAGAIN if the port is already bound, or another
+ *         APR error code.
+ */
+apr_status_t h3_socket_open(apr_port_t port, apr_size_t buffer_size, apr_pool_t* pool, int reuse_port, int* out_fd);
+
+/**
+ * Route QUIC packets by connection ID: attach an SK_REUSEPORT eBPF program
+ * to the SO_REUSEPORT group of @p fds. A packet goes to fds[i] when byte 0
+ * of its destination connection ID is i; else the kernel hash applies.
+ * Needs Linux 4.19+ and CAP_SYS_ADMIN or CAP_BPF; call it as root.
+ * @param fds    The bound sockets of one group, in bucket order.
+ * @param n      Number of sockets, 2 to 256.
+ * @param err    Buffer for the reason on failure.
+ * @param errlen Capacity of @p err.
+ * @return 1 if attached, 0 if not (nothing changed).
+ */
+int h3_socket_route_by_cid(const int* fds, int n, char* err, size_t errlen);
+
+/**
+ * Close a UDP socket previously returned by h3_socket_open.
+ * Safe to call with a negative fd (no-op).
+ * @param fd The OS-level fd to close.
+ */
+void h3_socket_close(int fd);
+
+/**
+ * A way to interrupt the event thread's poll from another thread.
+ *
+ * Loopback UDP rather than a pipe: Windows can only poll sockets.
+ */
+typedef struct h3_wakeup
+{
+    apr_socket_t* reader;
+    apr_socket_t* writer;
+    apr_os_sock_t reader_fd; /**< The reader's native socket, for the poll set. */
+    volatile apr_uint32_t pending; /**< A wakeup is sent and not drained yet. */
+} h3_wakeup;
+
+/**
+ * Create a wakeup pair on loopback. Both sockets are non-blocking.
+ * @param pool Pool owning both sockets.
+ * @param w    Out: the initialized pair; reset to reader_fd -1 on failure.
+ * @return APR_SUCCESS or an APR error code.
+ */
+apr_status_t h3_wakeup_create(apr_pool_t* pool, h3_wakeup* w);
+
+/**
+ * Wake the event thread. Safe from any thread. No datagram is sent while one
+ * is pending: the event thread sees state stored before the call by an atomic
+ * read-modify-write (not apr_atomic_set32, a plain store with APR 1.6) when it
+ * drains that one. If the send fails twice, this and the wakeups coalesced
+ * onto it wait for the poll timeout.
+ * @param w The pair to signal; NULL or uncreated is ignored.
+ */
+void h3_wakeup_signal(h3_wakeup* w);
+
+/**
+ * Wake the event thread with a datagram of its own, for state it reads without
+ * apr_atomic_*() (thread_running, draining): the send and receive order it.
+ * @param w The pair to signal; NULL or uncreated is ignored.
+ */
+void h3_wakeup_signal_always(h3_wakeup* w);
+
+/**
+ * Discard everything queued on the reader, after poll reports it readable.
+ * @param w The pair to drain; NULL or uncreated is ignored.
+ */
+void h3_wakeup_drain(h3_wakeup* w);
+
+#endif /* H3_SOCKET_H */

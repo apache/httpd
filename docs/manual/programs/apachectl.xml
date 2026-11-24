@@ -137,7 +137,9 @@ This is equivalent to <code>apachectl -k graceful-stop</code>.</dd>
 <dd>Run a configuration file syntax test. It parses the configuration
 files and either reports <code>Syntax Ok</code>
 or detailed information about the particular syntax error.  This is
-equivalent to <code>apachectl -t</code>.</dd>
+equivalent to <code>apachectl -t</code>. Further arguments are passed on to
+<program>httpd</program>, so <code>apachectl configtest -f
+<var>file</var></code> tests the given configuration file.</dd>
 
 </dl>
 

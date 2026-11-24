@@ -4,10 +4,12 @@ from .env import H2Conf, H2TestEnv
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_nghttp()
 class TestUpgrade:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).add_vhost_test1().add_vhost_test2().add_vhost_noh2(
         ).start_vhost(domains=[f"test3.{env.http_tld}"], port=env.https_port, doc_root="htdocs/test1"
         ).add(

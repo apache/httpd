@@ -4,25 +4,29 @@ import os
 import time
 from datetime import timedelta
 import pytest
+
+from pyhttpd.depends import needs_dependency
 from pyhttpd.certs import CertificateSpec
 
 from .md_conf import MDConf
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestStapling:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         acme.start(config='default')
         env.check_acme()
         env.clear_store()
-        domain = env.get_class_domain(self.__class__)
+        domain = env.get_class_domain(cls)
         mdA = "a-" + domain
         mdB = "b-" + domain
-        self.configure_httpd(env, [mdA, mdB]).install()
+        cls.configure_httpd(env, [mdA, mdB]).install()
         env.apache_stop()
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion([mdA, mdB])
@@ -37,7 +41,8 @@ class TestStapling:
         yield
         env.apache_stop()
 
-    def configure_httpd(self, env, domains=None, add_lines="", ssl_stapling=False):
+    @staticmethod
+    def configure_httpd(env, domains=None, add_lines="", ssl_stapling=False):
         if not isinstance(domains, list):
             domains = [domains] if domains else []
         conf = MDConf(env)
@@ -113,7 +118,9 @@ class TestStapling:
         
     # MD with stapling on/off and mod_ssl stapling on
     # expect to see stapling response in all cases
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_002(self, env):
         md = self.mdA
         self.configure_httpd(env, md, ssl_stapling=True).install()
@@ -183,7 +190,9 @@ class TestStapling:
         assert not stat["stapling"]
 
     # 2 MDs, md stapling on+off, ssl stapling on
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_004(self, env):
         md_a = self.mdA
         md_b = self.mdB
@@ -217,7 +226,9 @@ class TestStapling:
 
     # MD, check that restart leaves response unchanged, reconfigure keep interval, 
     # should remove the file on restart and get a new one
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_005(self, env):
         # TODO: mod_watchdog seems to have problems sometimes with fast restarts
         # turn stapling on, wait for it to appear in connections
@@ -263,7 +274,9 @@ class TestStapling:
 
     # MD, check that stapling renew window works. Set a large window
     # that causes response to be retrieved all the time.
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_006(self, env):
         # turn stapling on, wait for it to appear in connections
         md = self.mdA
@@ -302,7 +315,9 @@ class TestStapling:
         assert mtime1 != mtime3
 
     # MD, make a MDomain with static files, check that stapling works
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_007(self, env):
         # turn stapling on, wait for it to appear in connections
         md = self.mdA
@@ -331,7 +346,9 @@ class TestStapling:
         assert ocsp_file
 
     # Use certificate files in direct config, check that stapling works
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_008(self, env):
         # turn stapling on, wait for it to appear in connections
         md = self.mdA
@@ -357,7 +374,9 @@ class TestStapling:
 
     # Turn on stapling for a certificate without OCSP responder and issuer
     # (certificates without issuer prevent mod_ssl asking around for stapling)
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_009(self, env):
         md = self.mdA
         domains = [md]
@@ -387,7 +406,9 @@ class TestStapling:
 
     # Turn on stapling for an MDomain not used in any virtualhost
     # There was a crash in server-status in this case
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_010(self, env):
         env.clear_ocsp_store()
         md = self.mdA
@@ -407,7 +428,9 @@ class TestStapling:
     # scheduling.
     # This checks the mistaken assert() reported in
     # <https://bz.apache.org/bugzilla/show_bug.cgi?id=65567>
-    @pytest.mark.skipif(MDTestEnv.lacks_ocsp(), reason="no OCSP responder")
+    @needs_dependency("OCSP responder", not MDTestEnv.lacks_ocsp(),
+                      reason="no OCSP responder",
+                      detected=f"ACME={MDTestEnv.get_acme_server()} serves no OCSP")
     def test_md_801_011(self, env):
         domains = [ f'test-801-011-{i}-{env.DOMAIN_SUFFIX}' for i in range(7)]
         self.configure_httpd(env, domains, """

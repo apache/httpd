@@ -33,6 +33,8 @@
 #include <openssl/opensslv.h>
 #if OPENSSL_VERSION_NUMBER >= 0x30000000
 #include <openssl/macros.h> /* for OPENSSL_API_LEVEL */
+#include <openssl/store.h> /* for OSSL_STORE_open_ex */
+#include <openssl/ui.h> /* for UI_null */
 #endif
 #if OPENSSL_VERSION_NUMBER >= 0x10001000
 /* must be defined before including ssl.h */

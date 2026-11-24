@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Run the full motorz MPM test suite (HTTP/1.1 + HTTP/2). Exits non-zero if
 # any sub-suite reports a failure. The HTTP/2 suite self-skips (exit 0) when
@@ -9,11 +9,11 @@
 here="$(dirname "$0")"
 rc=0
 
-sh "$here/smoke.sh" || rc=1
+bash "$here/smoke.sh" || rc=1
 echo
-sh "$here/run-http1.sh" || rc=1
+bash "$here/run-http1.sh" || rc=1
 echo
-sh "$here/run-http2.sh" || rc=1
+bash "$here/run-http2.sh" || rc=1
 
 echo
 if [ "$rc" -eq 0 ]; then

@@ -8,6 +8,7 @@ Perl original needed: need_apache(2), mod_include, need_lwp.
 """
 
 import re
+import sys
 
 import pytest
 
@@ -60,6 +61,8 @@ def _cases(http):
 @need_lwp()
 def test_acceptpathinfo(http):
     for mode, req, exp_rc, exp_body in _cases(http):
+        if "/test.sh" in req and sys.platform == "win32":
+            continue
         # Apache::TestRequest's GET follows redirects by default; the bare
         # directory request 301-redirects to add a trailing slash before the
         # index.shtml (which echoes PATH_INFO) is served.

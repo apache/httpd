@@ -214,7 +214,11 @@ static int extract_cookie_line(void *varg, const char *key, const char *val)
                     eat = 0;
                 }
                 if (!eat) {
-                    new_cookie = apr_pstrcat(v->r->pool, new_cookie, sep, next2, NULL);
+                    if (strlen(new_cookie)) {
+                        new_cookie = apr_pstrcat(v->r->pool, new_cookie, sep, next2, NULL);
+                    } else {
+                        new_cookie = apr_pstrcat(v->r->pool, new_cookie, next2, NULL);
+                    }
                 }
             }
             next2 = apr_strtok(NULL, semi, &last2);

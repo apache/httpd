@@ -9,12 +9,19 @@ keep-alive UA.
 """
 
 import re
+import sys
 
 import pytest
 
 from apache_pytest import need_cgi, need_module, t_cmp
 
+_skip_win32 = pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="ext_filter cmd cannot execute .pl scripts directly on Windows",
+)
 
+
+@_skip_win32
 @need_module("ext_filter")
 @need_cgi()
 def test_ext_filter_output(http):
@@ -22,6 +29,7 @@ def test_ext_filter_output(http):
     assert t_cmp(content, "barbar"), "sed output filter"
 
 
+@_skip_win32
 @need_module("ext_filter")
 @need_cgi()
 def test_ext_filter_slow(http):
@@ -29,6 +37,7 @@ def test_ext_filter_slow(http):
     assert t_cmp(content, "foobar"), "slow filter process"
 
 
+@_skip_win32
 @need_module("ext_filter")
 @need_cgi()
 def test_ext_filter_input(http):

@@ -156,7 +156,7 @@
       attempts should be redirected to a login form created by the website for this purpose,
       using the <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code>
       directive. Typically this login page will contain an HTML form, asking the user to
-      provide their usename and password.</p>
+      provide their username and password.</p>
 
       <div class="example"><h3>Example login form</h3><pre class="prettyprint lang-html">&lt;form method="POST" action="/dologin.html"&gt;
   Username: &lt;input type="text" name="httpd_username" value="" /&gt;

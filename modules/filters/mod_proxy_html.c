@@ -339,6 +339,12 @@ static void pcomment(void *ctxt, const xmlChar *uchars)
         ap_fputs(ctx->f->next, ctx->bb, "-->");
     }
 }
+
+/* Deprecated in newer libxml2 releases. */
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 static void pendElement(void *ctxt, const xmlChar *uname)
 {
     saxctxt *ctx = (saxctxt*) ctxt;
@@ -682,6 +688,9 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     }
     ap_varbuf_free(&temp);
 }
+#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic pop
+#endif
 
 static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
 {

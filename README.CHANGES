@@ -10,6 +10,11 @@ This covers any developer-visible changes such as a new module API,
 but e.g. code cleanups which don't have any externally-visible effect
 do not need to be documented in CHANGES.
 
+CHANGES records what changed between releases, so a bug which was both
+introduced and fixed since the last release needs no entry.  trunk is
+never released, so fixing a regression which only ever existed on trunk
+needs none at all.
+
 Changes should be documented by creating a file in changes-entries/
 with the .txt suffix, using the following template:
 
@@ -21,11 +26,14 @@ with the .txt suffix, using the following template:
 
 Changes to server/*.[ch] use a "core:" prefix rather than "mod_foo:".
 
-The description should be as concise as possible, a maximum of three
-lines but ideally one or two; describe the user-visible effect of the
-change rather than simply describing how the code was fixed. New
-modules or config directives do NOT need to be explained in detail,
-that is covered in the documentation.
+Changes to an MPM are named for the MPM rather than the module which
+implements it, e.g. "prefork MPM:" rather than "mpm_prefork:".
+
+The description MUST be concise, a maximum of three lines but ideally
+one or two short sentences; describe the user-visible effect of the
+change rather than describing how the code was fixed. New modules or
+config directives do NOT need to be explained in detail, that is
+covered in the documentation.
 
 The credit for the change goes to the original patch author(s) and
 will usually match the "Submitted by: " tag in the commit message. For

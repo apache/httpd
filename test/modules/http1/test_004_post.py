@@ -7,13 +7,17 @@ import sys
 
 import pytest
 
+from pyhttpd.env import HttpdTestEnv
+
 from .env import H1Conf
 
 
+@HttpdTestEnv.needs_multipart()
 class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
         H1Conf(env).add_vhost_cgi().install()
         assert env.apache_restart() == 0

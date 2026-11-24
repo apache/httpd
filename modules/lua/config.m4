@@ -44,7 +44,7 @@ AC_DEFUN([CHECK_LUA],
 
 AC_ARG_WITH(
     lua,
-    [AC_HELP_STRING([--with-lua=PATH],[Path to the Lua installation prefix])],
+    [AS_HELP_STRING([--with-lua=PATH],[Path to the Lua installation prefix])],
     lua_path="$withval",
     :)
 

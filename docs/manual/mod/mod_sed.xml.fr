@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1901510 -->
+<!-- English Revision: 1938490 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -122,8 +122,7 @@ taille supérieure à 8 Mo provoquent une erreur.
 <description>Commande sed pour le filtrage des contenus de type
 réponse</description>
 <syntax>OutputSed <var>commande-sed</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<contextlist><context>directory</context></contextlist>
 
 <usage>
     <p>La directive <directive>OutputSed</directive> permet de spécifier
@@ -138,8 +137,7 @@ réponse</description>
 <description>Commande sed à exécuter pour le filtrage des données d'une
 requête (en général des données <code>POST</code>)</description>
 <syntax>InputSed <var>commande-sed</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<contextlist><context>directory</context></contextlist>
 
 <usage>
     <p>La directive <directive>InputSed</directive> permet de spécifier

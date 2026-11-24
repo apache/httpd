@@ -1,0 +1,4 @@
+  *) mod_heartmonitor: End the heartbeat listen loop as soon as the child
+     starts to stop, not at the end of its 5 second round, so the parent no
+     longer waits on the child and has to send it SIGTERM.
+     [Jim Jagielski]

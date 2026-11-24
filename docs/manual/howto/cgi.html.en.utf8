@@ -486,7 +486,7 @@ import os
 
 print("Content-type: text/html\n")
 for key, value in os.environ.items():
-print(f"{key} --&gt; {value}&lt;br&gt;")</pre>
+    print(f"{key} --&gt; {value}&lt;br&gt;")</pre>
 </div>
     
 

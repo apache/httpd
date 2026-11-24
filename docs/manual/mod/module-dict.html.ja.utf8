@@ -29,6 +29,10 @@
 <a href="../ko/mod/module-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/module-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
 
     <p>この文書は Apache の各 <a href="./">モジュール</a> を説明するために
     使われている用語を説明します。</p>

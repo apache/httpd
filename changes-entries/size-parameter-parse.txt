@@ -1,0 +1,4 @@
+  *) core: Add ap_size_parameter_parse() and use it to reject malformed
+     ScriptLogLength, ScriptLogBuffer, DavQuota, BufferSize, AuthFormSize,
+     and mod_cache_disk and mod_cache_socache size and time values.
+     [Arturo Bernal]

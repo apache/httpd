@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+# A file with no extension recognized by mod_mime.  It must never be
+# run as a CGI script, only served as plain content.
+
+import sys
+
+mark = "EXECUTED"
+sys.stdout.write("Content-Type: text/plain\r\n\r\n")
+sys.stdout.write(mark + "-AS-CGI\n")

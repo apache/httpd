@@ -1,0 +1,5 @@
+  *) core: Add a "b" flag to the ErrorLogFormat "%a" and "%A" directives
+     (as "%{b}a" and "%{b}A") that writes an IPv6 address in brackets,
+     "[address]:port", per RFC 5952 section 6, instead of the existing
+     "address:port" that is ambiguous for IPv6. The default "%a"/"%A"
+     output is unchanged. PR 65696 [Arturo Bernal]

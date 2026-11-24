@@ -108,8 +108,7 @@ page</a>.
 <name>OutputSed</name>
 <description>Sed command for filtering response content</description>
 <syntax>OutputSed <var>sed-command</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<contextlist><context>directory</context></contextlist>
 
 <usage>
     <p>The <directive>OutputSed</directive> directive specifies the <code>sed</code>
@@ -122,8 +121,7 @@ page</a>.
 <name>InputSed</name>
 <description>Sed command to filter request data (typically <code>POST</code> data)</description>
 <syntax>InputSed <var>sed-command</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
+<contextlist><context>directory</context></contextlist>
 
 <usage>
     <p>The <directive>InputSed</directive> directive specifies the <code>sed</code> command

@@ -1,0 +1,137 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef H3Q_CONN_H
+#define H3Q_CONN_H
+
+#include <stddef.h>
+#include <stdint.h>
+
+#include "quic/h3q.h"
+
+/* Negotiated TLS parameters of one connection */
+typedef struct h3q_tls_info
+{
+    const char* protocol;
+    const char* cipher;
+    int cipher_bits;
+    int cipher_alg_bits;
+    unsigned resumed : 1;
+} h3q_tls_info;
+
+/**
+ * Read the negotiated TLS parameters of a connection.
+ * @param conn Connection to query; NULL reports failure.
+ * @param out  Filled in on success; untouched otherwise.
+ * @return 1 when @p out was filled, 0 when the cipher is not yet known.
+ */
+int h3q_conn_tls_info(h3q_conn* conn, h3q_tls_info* out);
+
+/**
+ * Set the pointer the engine hands to the stream_acked callback.
+ * @param conn Connection to label; NULL is ignored.
+ * @param user Caller context; acknowledgements are dropped while it is NULL.
+ */
+void h3q_conn_set_user(h3q_conn* conn, void* user);
+
+/**
+ * Open a server-initiated unidirectional stream.
+ * @param conn   Connection to open on.
+ * @param out_id Out: the new stream's id.
+ * @return New stream, or NULL on failure.
+ */
+h3q_stream* h3q_conn_open_uni_stream(h3q_conn* conn, int64_t* out_id);
+
+/**
+ * Take the next peer-initiated stream.
+ * @param conn Connection to accept from; NULL yields NULL.
+ * @return Accepted stream, or NULL if none is ready.
+ */
+h3q_stream* h3q_conn_accept_stream(h3q_conn* conn);
+
+/**
+ * Whether the TLS handshake has completed.
+ * @param conn Connection to query; NULL counts as unfinished.
+ * @return Non-zero once the handshake is done.
+ */
+int h3q_conn_is_handshake_done(h3q_conn* conn);
+
+/**
+ * Whether 0-RTT request data waits while the handshake is still running.
+ * @param conn Connection to query; NULL reports 0.
+ * @return Non-zero when an early stream is ready before the handshake.
+ */
+int h3q_conn_has_early_data(h3q_conn* conn);
+
+/**
+ * Whether the connection has finished closing.
+ * @param conn Connection to query; NULL counts as closed.
+ * @return Non-zero once closed.
+ */
+int h3q_conn_is_closed(h3q_conn* conn);
+
+/**
+ * Cumulative number of bidirectional streams the peer may open, as last
+ * sent in MAX_STREAMS.
+ * @param conn Connection to query; NULL gives 0.
+ * @return 0 until the limit is first raised above the initial value.
+ */
+uint64_t h3q_conn_max_remote_streams_bidi(h3q_conn* conn);
+
+/**
+ * Read and clear the activity mark. The engine sets it when it receives a
+ * packet for the connection, runs its timers or raises its stream limit.
+ * @param conn Connection to query; NULL gives 0.
+ * @return Non-zero if the engine touched the connection since the last call.
+ */
+int h3q_conn_take_activity(h3q_conn* conn);
+
+/**
+ * Begin or continue connection shutdown.
+ * @param conn      Connection to close; NULL counts as already closed.
+ * @param is_rapid  Non-zero to skip the drain, as on server exit.
+ * @param app_error Application error code to report to the peer.
+ * @param reason    Text accompanying @p app_error, or NULL to close cleanly.
+ * @return 1 when shutdown has completed, 0 while still in progress.
+ */
+int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const char* reason);
+
+/**
+ * Close a connection the server will not serve with CONNECTION_REFUSED, so
+ * the client fails at once instead of waiting out its idle timeout.
+ * @param engine Engine the connection was accepted from.
+ * @param conn   Connection to refuse; the engine takes it over and frees it
+ *               once the close is done, so the caller must not free it.
+ */
+void h3q_conn_refuse(h3q_engine* engine, h3q_conn* conn);
+
+/**
+ * Release a connection handle.
+ * @param conn Connection to free; NULL is ignored.
+ */
+void h3q_conn_free(h3q_conn* conn);
+
+/**
+ * Describe why a connection closed, for logging. Reports the peer's error
+ * code, frame type and reason string where ngtcp2 has them, and whatever the
+ * OpenSSL error queue holds otherwise.
+ * @param conn   Connection to inspect; NULL reports the error queue alone.
+ * @param buf    Buffer receiving the description, always NUL-terminated.
+ * @param buflen Capacity of @p buf; zero is ignored.
+ */
+void h3q_conn_close_reason(h3q_conn* conn, char* buf, size_t buflen);
+
+#endif /* H3Q_CONN_H */

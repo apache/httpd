@@ -1,0 +1,147 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifdef _WIN32
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
+
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#ifndef H3Q_BACKEND_OSSL
+#include <ngtcp2/ngtcp2_crypto_ossl.h>
+#endif
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+
+#include "h3_check.h"
+#include "quic/detail/h3q_tls.h"
+
+void h3q_tls_error(char* err, size_t errlen, const char* fmt, ...)
+{
+    if (!err || errlen == 0)
+    {
+        ERR_clear_error();
+        return;
+    }
+
+    va_list ap;
+    va_start(ap, fmt);
+    int n = vsnprintf(err, errlen, fmt, ap);
+    va_end(ap);
+
+    unsigned long code = ERR_get_error();
+    if (code != 0 && n > 0 && (size_t)n + 2 < errlen)
+    {
+        char detail[H3Q_ERRLEN] = {0};
+        ERR_error_string_n(code, detail, sizeof(detail));
+        snprintf(err + n, errlen - (size_t)n, ": %s", detail);
+    }
+    ERR_clear_error();
+}
+
+static int h3q_tls_alpn_select_cb(SSL* ssl, const unsigned char** out, unsigned char* outlen, const unsigned char* in, unsigned int inlen, void* arg)
+{
+    static const unsigned char h3[] = "\x02h3";
+    (void)ssl;
+    (void)arg;
+
+    if (SSL_select_next_proto((unsigned char**)out, outlen, h3, sizeof(h3) - 1, in, inlen) == OPENSSL_NPN_NEGOTIATED)
+    {
+        return SSL_TLSEXT_ERR_OK;
+    }
+    return SSL_TLSEXT_ERR_NOACK;
+}
+
+static void h3q_tls_keylog_cb(const SSL* ssl, const char* line)
+{
+    (void)ssl;
+    const char* path = getenv("SSLKEYLOGFILE");
+    FILE* f = path ? fopen(path, "a") : NULL;
+    if (f)
+    {
+        fprintf(f, "%s\n", line);
+        fclose(f);
+    }
+}
+
+SSL_CTX* h3q_tls_ctx_create(const char* const* cert_files, size_t ncerts, const char* const* key_files, size_t nkeys, int session_tickets, char* err, size_t errlen)
+{
+    CHECK(cert_files && ncerts > 0);
+    CHECK(key_files || nkeys == 0);
+
+#ifdef H3Q_BACKEND_OSSL
+    /* OpenSSL runs the whole QUIC transport. */
+    SSL_CTX* ssl_ctx = SSL_CTX_new(OSSL_QUIC_server_method());
+#else
+    /* ngtcp2 runs the transport; OpenSSL only does the TLS 1.3 handshake. */
+    if (ngtcp2_crypto_ossl_init() != 0)
+    {
+        h3q_tls_error(err, errlen, "ngtcp2_crypto_ossl_init failed; OpenSSL lacks the QUIC TLS API");
+        return NULL;
+    }
+    SSL_CTX* ssl_ctx = SSL_CTX_new(TLS_server_method());
+#endif
+    if (!ssl_ctx)
+    {
+        h3q_tls_error(err, errlen, "SSL_CTX_new failed");
+        return NULL;
+    }
+#ifdef H3Q_BACKEND_OSSL
+    SSL_CTX_set_domain_flags(ssl_ctx, SSL_DOMAIN_FLAG_MULTI_THREAD);
+#endif
+
+    SSL_CTX_set_min_proto_version(ssl_ctx, TLS1_3_VERSION);
+    SSL_CTX_set_max_proto_version(ssl_ctx, TLS1_3_VERSION);
+
+    for (size_t i = 0; i < ncerts; i++)
+    {
+        const char* key_file = i < nkeys ? key_files[i] : cert_files[i];
+        if (SSL_CTX_use_certificate_chain_file(ssl_ctx, cert_files[i]) <= 0 || SSL_CTX_use_PrivateKey_file(ssl_ctx, key_file, SSL_FILETYPE_PEM) <= 0)
+        {
+            h3q_tls_error(err, errlen, "loading certificate %s with key %s failed", cert_files[i], key_file);
+            SSL_CTX_free(ssl_ctx);
+            return NULL;
+        }
+    }
+
+    static const unsigned char sid_ctx[] = "mod_http3";
+    SSL_CTX_set_session_id_context(ssl_ctx, sid_ctx, sizeof(sid_ctx) - 1);
+
+    /* H3EarlyData is per connection: SSL_set_quic_tls_early_data_enabled makes a
+     * ticket advertise 0-RTT (0xffffffff, RFC 9001 4.6.1), so a ticket issued
+     * with it off invites none. OpenSSL's anti-replay is built for TLS over TCP
+     * and refuses QUIC resumption with early data; QUIC 0-RTT replay safety comes
+     * from accepting only safe methods before the handshake (RFC 8470), in h3_io. */
+#ifndef H3Q_BACKEND_OSSL
+    SSL_CTX_set_options(ssl_ctx, SSL_OP_NO_ANTI_REPLAY);
+#endif
+
+    if (!session_tickets)
+    {
+        /* TLS 1.3 resumption travels in tickets, so issuing none turns it off. */
+        SSL_CTX_set_num_tickets(ssl_ctx, 0);
+    }
+
+    SSL_CTX_set_alpn_select_cb(ssl_ctx, h3q_tls_alpn_select_cb, NULL);
+    if (getenv("SSLKEYLOGFILE"))
+    {
+        SSL_CTX_set_keylog_callback(ssl_ctx, h3q_tls_keylog_cb);
+    }
+    return ssl_ctx;
+}

@@ -6,6 +6,23 @@ APACHE_MODPATH_INIT(metadata)
 
 APACHE_MODULE(env, clearing/setting of ENV vars, , , yes)
 APACHE_MODULE(mime_magic, automagically determining MIME type)
+
+APACHE_MODULE(mime_libmagic, determining MIME type using libmagic, , , most, [
+  ap_libmagic_found=no
+  if test -n "$PKGCONFIG"; then
+    AC_MSG_CHECKING([for libmagic via pkg-config])
+    if $PKGCONFIG --exists libmagic; then
+      ap_libmagic_found=yes
+      APR_ADDTO(MOD_CFLAGS, [`$PKGCONFIG --cflags libmagic`])
+      APR_ADDTO(MOD_MIME_LIBMAGIC_LDADD, [`$PKGCONFIG --libs libmagic`])
+    fi
+    AC_MSG_RESULT($ap_libmagic_found)
+  fi
+  if test "$ap_libmagic_found" = "no"; then
+    AC_MSG_WARN([libmagic not found])
+    enable_mime_libmagic=no
+  fi
+])
 APACHE_MODULE(cern_meta, CERN-type meta files, , , no)
 APACHE_MODULE(expires, Expires header control, , , most)
 APACHE_MODULE(headers, HTTP header control, , , yes)

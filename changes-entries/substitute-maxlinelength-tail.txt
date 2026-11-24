@@ -1,0 +1,2 @@
+  *) mod_substitute: Enforce SubstituteMaxLineLength on the unmatched tail
+     after substitutions.  [Robert McConnell]

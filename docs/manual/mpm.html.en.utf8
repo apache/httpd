@@ -95,7 +95,7 @@ how they are used by the Apache HTTP Server.</p>
 systems.  This will be the MPM selected if you do not make another
 choice at compile-time.</p>
 
-<table class="bordered"><tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
+<table class="bordered"><tr><td>NetWare</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 <tr class="odd"><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 <tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code>, or
     <code class="module"><a href="./mod/event.html">event</a></code>, depending on platform capabilities</td></tr>

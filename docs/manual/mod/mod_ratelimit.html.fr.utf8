@@ -53,6 +53,20 @@ connexion &agrave; simuler.</p>
 kOctets &agrave; transmettre &agrave; pleine vitesse avant de limiter la bande passante &agrave; la
 valeur voulue.</p>
 
+<div class="warning"><h3>Consommation de ressources</h3>
+<p>La limitation de bande passante est impl&eacute;ment&eacute;e en ins&eacute;rant des pauses entre
+les &eacute;critures vers le client ; ainsi, chaque r&eacute;ponse faisant l&rsquo;objet d&rsquo;une
+limitation de bande passante mobilise un thread du serveur (ou un processus)
+pour la dur&eacute;e enti&egrave;re du transfert d&eacute;lib&eacute;r&eacute;ment prolong&eacute;. Cela concerne tous les
+MPMs, y compris <code class="module"><a href="../mod/event.html">event</a></code>. Un certain nombre, m&ecirc;me modeste, de
+t&eacute;l&eacute;chargements lents limit&eacute;s en bande passante peut entra&icirc;ner le d&eacute;passement du
+nombre de threads ou processus de travail du serveur disponibles et emp&ecirc;cher le
+traitement des autres requ&ecirc;tes. Il est donc recommand&eacute; d&rsquo;utiliser ce module avec
+prudence, de limiter son utilisation aux ressources qui en ont vraiment besoin
+et de d&eacute;finir <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> en
+cons&eacute;quence.</p>
+</div>
+
 <div class="example"><h3>Exemple de configuration</h3><pre class="prettyprint lang-config">&lt;Location "/downloads"&gt;
     SetOutputFilter RATE_LIMIT
     SetEnv rate-limit 400

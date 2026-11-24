@@ -65,7 +65,7 @@
 
         <table class="bordered">
         <tr><th>Protocol</th><th>Module</th></tr>
-        <tr><td>AJP13 (Apache JServe Protocol version
+        <tr><td>AJP13 (Apache JServ Protocol version
           1.3)</td><td><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></td></tr>
         <tr><td>CONNECT (for
           SSL)</td><td><code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code></td></tr>
@@ -742,8 +742,9 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Directives placed in <code class="directive">&lt;Proxy&gt;</code>
-    sections apply only to matching proxied content.  Shell-style wildcards are
-    allowed.</p>
+       sections apply only to matching proxied content using a simple string
+       prefix match against the URL.  Shell-style wildcards are also allowed.
+    </p>
 
     <p>For example, the following will allow only hosts in
     <code>yournetwork.example.com</code> to access content via your proxy
@@ -774,8 +775,16 @@ NoProxy         .example.com 192.168.112.0/21</pre>
 &lt;/Proxy&gt;</pre>
 
 
+   <div class="warning"><h3>Warning</h3>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+    </div>
+
     <div class="note"><h3>Differences from the Location configuration section</h3>
-      <p>A backend URL matches the configuration section if it begins with the
+      <p>A backend URL matches the configuration section if it begins with
       the <var>wildcard-url</var> string, even if the last path segment in the
       directive only matches a prefix of the backend URL.  For example,
       &lt;Proxy http://example.com/foo&gt; matches all of
@@ -1097,6 +1106,14 @@ proxied resources</td></tr>
     <p>The <code class="directive">&lt;ProxyMatch&gt;</code> directive is
     identical to the <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> directive, except that it matches URLs
     using <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expressions</a>.</p>
+
+   <div class="warning"><h3>Warning</h3>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+   </div>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
@@ -1741,7 +1758,7 @@ ProxyPass "/"             "balancer://mycluster/" stickysession=JSESSIONID|jsess
 
     <p><strong>Additional ProxyPass Keywords</strong></p>
 
-    <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
+    <p>Normally, mod_proxy will canonicalize ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
     that make use of <var><a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a></var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the
@@ -2173,6 +2190,13 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
     sent without first waiting for the remote proxy to send a Basic
     authentication challenge.  The <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> environment
     variable has no effect if this argument is used.</p>
+    
+    <div class="note"><h3>DNS resolution and forward proxies</h3>
+    <p>When a forward (remote) proxy is configured, DNS resolution of
+    the origin/backend hostname is only performed on the forward proxy.
+    Any <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> rules
+    which restrict access to specific IP addresses must be configured
+    at the forward proxy.</p></div>
 
 
 </div>

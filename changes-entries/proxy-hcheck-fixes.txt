@@ -1,0 +1,12 @@
+  *) mod_proxy_hcheck: Fix several health check problems.  A response whose
+     headers end at EOF is now a failure.  A changed hcuri (balancer-manager)
+     is used by the next check, and hcuri and the worker path are joined with
+     a single slash.  https checks send the SNI and verify the certificate name
+     like proxied requests.  A check is bound by the worker timeout overall,
+     accepts at most 100 response header fields, and keeps a response body (up
+     to 1MB) only for a worker that has an hcexpr.  hcpasses, hcfails and
+     ProxyHCTPsize reject values that are not whole numbers.  The cache of
+     check workers no longer uses the address of a local variable as a key, the
+     worker list is read under the balancer lock, and a check that cannot be
+     queued no longer stops further checks of its worker.
+     [Jim Jagielski]

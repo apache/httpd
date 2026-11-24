@@ -21,6 +21,7 @@
 
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_time.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -531,6 +532,10 @@ DAV_DECLARE(void) dav_xmlns_generate(dav_xmlns_info *xi,
 **
 */
 
+/* largest value this platform's (signed) time_t can hold */
+#define DAV_TIME_T_MAX \
+    ((time_t) (((apr_uint64_t) 1 << (sizeof(time_t) * 8 - 1)) - 1))
+
 /* dav_get_timeout:  If the Timeout: header exists, return a time_t
  *    when this lock is expected to expire.  Otherwise, return
  *    a time_t of DAV_TIMEOUT_INFINITE.
@@ -560,7 +565,7 @@ DAV_DECLARE(time_t) dav_get_timeout(request_rec *r)
 DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
                                            const char *timeout_const)
 {
-    time_t now, expires = DAV_TIMEOUT_INFINITE;
+    apr_time_t now, expires = DAV_TIMEOUT_INFINITE;
 
     const char *timeout = apr_pstrdup(r->pool, timeout_const), *val;
 
@@ -577,13 +582,51 @@ DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
         }
 
         if (!strncmp(val, "Second-", 7)) {
+            char *endp;
+            apr_int64_t sec;
+
             val += 7;
-            /* ### We need to handle overflow better:
-             * ### timeout will be <= 2^32 - 1
+
+            /* atol() has no overflow detection: a long enough digit
+             * string overflows it, and "now + expires" below can then
+             * overflow time_t too, yielding a nonsensical (e.g.
+             * negative, already-expired) stored timeout instead of
+             * the large-but-finite one the client asked for. Use an
+             * overflow-checked parse, and clamp to the RFC 4918
+             * TimeOut maximum of 2^32 - 1 instead of propagating the
+             * overflow.
              */
-            expires = atol(val);
-            now     = time(NULL);
-            return now + expires;
+            errno = 0;
+            sec = apr_strtoi64(val, &endp, 10);
+            if (endp == val) {
+                /* not a number at all -- same as atol(), treat as 0
+                 * (an immediately-expired lock), not as Infinite
+                 */
+                sec = 0;
+            }
+            else if (errno == ERANGE || sec > APR_UINT32_MAX) {
+                sec = APR_UINT32_MAX;
+            }
+            else if (sec < 0) {
+                sec = 0;
+            }
+
+            now = apr_time_sec(apr_time_now());
+
+            /* The RFC 4918 maximum of 2^32 - 1 does not necessarily
+             * fit a time_t on platforms where time_t is 32 bits.
+             * Cap "sec" so "now + sec" cannot itself overflow time_t
+             * -- undefined behavior for a signed type, and in
+             * practice a silent wraparound to an already-expired
+             * value, i.e. exactly the bug this change fixes,
+             * reintroduced through the cast below.
+             */
+            if (sec > (apr_int64_t) (DAV_TIME_T_MAX - now)) {
+                sec = (apr_int64_t) (DAV_TIME_T_MAX - now);
+            }
+
+            expires = sec;
+            return (time_t) (now + expires);
         }
     }
 
@@ -899,7 +942,18 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
     return NULL;
 }
 
-static int dav_find_submitted_locktoken(const dav_if_header *if_header,
+/*
+** If an authenticated user created a lock, only that user may submit its
+** locktoken to manipulate a resource.
+*/
+static int dav_lock_owned_by_other_user(const request_rec *r,
+                                        const dav_lock *lock)
+{
+    return lock->auth_user && (!r->user || strcmp(lock->auth_user, r->user));
+}
+
+static int dav_find_submitted_locktoken(const request_rec *r,
+                                        const dav_if_header *if_header,
                                         const dav_lock *lock_list,
                                         const dav_hooks_locks *locks_hooks)
 {
@@ -929,6 +983,10 @@ static int dav_find_submitted_locktoken(const dav_if_header *if_header,
                 **               shouldn't see them in the If: header anyway)
                 */
                 for (lock = lock_list; lock != NULL; lock = lock->next) {
+
+                    if (dav_lock_owned_by_other_user(r, lock)) {
+                        continue;
+                    }
 
                     if (!(*locks_hooks->compare_locktoken)(state_list->locktoken, lock->locktoken)) {
                         return 1;
@@ -1042,6 +1100,8 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
         seen_locktoken = 1;
     }
     else if (flags & DAV_LOCKSCOPE_SHARED) {
+        unsigned count = 0;
+
         /*
         ** Strictly speaking, we don't need this loop. Either the first
         ** (and only) lock will be EXCLUSIVE, or none of them will be.
@@ -1051,6 +1111,13 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                 return dav_new_error(p, HTTP_LOCKED, 0, 0,
                                      "The requested resource is already "
                                      "locked exclusively.");
+            }
+            /* Impose a maximum count of shared locks since the lock
+             * list is used in a linear-cost scan in many places. */
+            else if (count++ > DAV_MAX_SHARED_LOCKS) {
+                return dav_new_error(p, HTTP_FORBIDDEN, 0, 0,
+                                     "The maximum shared lock count has "
+                                     "been reached.");
             }
         }
 
@@ -1310,9 +1377,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                     ** the lock, only the same user may submit that locktoken
                     ** to manipulate a resource.
                     */
-                    if (lock->auth_user &&
-                        (!r->user ||
-                         strcmp(lock->auth_user, r->user))) {
+                    if (dav_lock_owned_by_other_user(r, lock)) {
                         const char *errmsg;
 
                         errmsg = apr_pstrcat(p, "User \"",
@@ -1430,7 +1495,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
             ** Note that seen_locktoken == 0 implies lock_list != NULL
             ** which implies locks_hooks != NULL.
             */
-            if (dav_find_submitted_locktoken(if_header, lock_list,
+            if (dav_find_submitted_locktoken(r, if_header, lock_list,
                                              locks_hooks)) {
                 /*
                 ** We found a match! We're set... none of the If: header
@@ -1490,7 +1555,7 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
     ** Note that seen_locktoken == 0 implies lock_list != NULL which implies
     ** locks_hooks != NULL.
     */
-    if (dav_find_submitted_locktoken(if_header, lock_list, locks_hooks)) {
+    if (dav_find_submitted_locktoken(r, if_header, lock_list, locks_hooks)) {
         /*
         ** We found a match! We're set... we have a matching state list,
         ** and the If: header specified the locktoken somewhere. We're done.

@@ -1,0 +1,2 @@
+  *) mod_ssl_ct: Avoid a child shutdown deadlock with APR pool debugging
+     enabled.

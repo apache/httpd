@@ -1183,16 +1183,14 @@ static int cfg_trim_line(char *buf)
     while (apr_isspace(*start))
         ++start;
     /* blast trailing whitespace */
-    end = &start[strlen(start)];
-    while (--end >= start && apr_isspace(*end))
-        *end = '\0';
+    end = ap_cstr_stripws(start);
     /* Zap leading whitespace by shifting */
     if (start != buf)
-        memmove(buf, start, end - start + 2);
+        memmove(buf, start, end - start + 1);
 #ifdef DEBUG_CFG_LINES
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL, APLOGNO(00555) "Read config: '%s'", buf);
 #endif
-    return end - start + 1;
+    return end - start;
 }
 
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
@@ -2775,6 +2773,54 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
     *timeout = (apr_interval_time_t)check;
     return APR_SUCCESS;
 }
+
+AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
+                                                 apr_off_t *value)
+{
+    /* The maximum apr_off_t value. */
+    const apr_off_t off_max = sizeof(apr_off_t) == 8 ? APR_INT64_MAX
+                                                     : APR_INT32_MAX;
+    apr_off_t parsed, multiplier = 1;
+    apr_status_t rv;
+    char *end;
+
+    /* Check for no conversion before the status: some libc implementations
+     * set EINVAL when no digits are present. */
+    rv = apr_strtoff(&parsed, parameter, &end, 10);
+    if (end == parameter) {
+        return APR_EINVAL;
+    }
+    if (rv != APR_SUCCESS) {
+        return APR_ERANGE;
+    }
+
+    if (*end == 'k' || *end == 'K') {
+        multiplier = 1024;
+        end++;
+    }
+    else if (*end == 'm' || *end == 'M') {
+        multiplier = 1024 * 1024;
+        end++;
+    }
+    else if (*end == 'g' || *end == 'G') {
+        multiplier = 1024 * 1024 * 1024;
+        end++;
+    }
+    else if (*end == 'b' || *end == 'B') {
+        end++;
+    }
+    if (*end != '\0') {
+        return APR_EINVAL;
+    }
+
+    if (parsed > off_max / multiplier
+        || parsed < (-off_max - 1) / multiplier) {
+        return APR_ERANGE;
+    }
+
+    *value = parsed * multiplier;
+    return APR_SUCCESS;
+}
 #undef CHECK_OVERFLOW
 
 AP_DECLARE(int) ap_parse_strict_length(apr_off_t *len, const char *str)
@@ -3703,6 +3749,18 @@ static const unsigned char ucharmap[256] = {
     0x38, 0x39, 0xB3, 0xDB, 0xDC, 0xD9, 0xDA, 0x9F
 };
 #endif
+
+AP_DECLARE(char *) ap_cstr_stripws(char *str)
+{
+    char *end = str + strlen(str);
+
+    while (end > str && apr_isspace(end[-1])) {
+        --end;
+    }
+    *end = '\0';
+
+    return end;
+}
 
 AP_DECLARE(int) ap_cstr_casecmp(const char *s1, const char *s2)
 {

@@ -7,7 +7,8 @@ from .env import H2Conf, H2TestEnv
 class TestProxyPort:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env, extras={
             'base': [
                 f'Listen {env.proxy_port}',

@@ -90,8 +90,9 @@ class MDTestEnv(HttpdTestEnv):
     @classmethod
     def has_a2md(cls):
         d = os.path.dirname(inspect.getfile(HttpdTestEnv))
+        config_ini = os.getenv("PYHTTPD_CONFIG", os.path.join(d, 'config.ini'))
         config = ConfigParser(interpolation=ExtendedInterpolation())
-        config.read(os.path.join(d, 'config.ini'))
+        config.read(config_ini)
         bin_dir = config.get('global', 'bindir')
         a2md_bin = os.path.join(bin_dir, 'a2md')
         return os.path.isfile(a2md_bin)
@@ -212,16 +213,21 @@ class MDTestEnv(HttpdTestEnv):
     def check_acme(self):
         if self._acme_server_ok:
             return True
-        if self._acme_server_down:
-            pytest.skip(msg="ACME server not running")
-            return False
-        if self.is_live(self.acme_url, timeout=timedelta(seconds=0.5)):
-            self._acme_server_ok = True
-            return True
-        else:
+        if not self._acme_server_down:
+            if self.is_live(self.acme_url, timeout=timedelta(seconds=0.5)):
+                self._acme_server_ok = True
+                return True
             self._acme_server_down = True
-            pytest.fail(msg="ACME server not running", pytrace=False)
-            return False
+        # Both the first test to notice and every one after it report the
+        # same way: a configured-but-unreachable ACME server is a missing
+        # dependency, so skip, or fail under --strict-optional. Previously
+        # the first failed and the rest skipped, and both calls passed the
+        # 'msg' keyword that pytest removed in 8.0, raising TypeError.
+        self.require(False, "ACME server not running",
+                     dep="ACME test server",
+                     detected=f"ACME={self.get_acme_server()}, "
+                              f"no response from {self.acme_url}")
+        return False
 
     def get_ca_pem_file(self, hostname: str) -> Optional[str]:
         pem_file = super().get_ca_pem_file(hostname)
@@ -474,14 +480,22 @@ class MDTestEnv(HttpdTestEnv):
                          via_domain=None, use_https=True):
         try_until = time.time() + timeout
         renewals = {}
+        statuses = {}
         names = names.copy()
         while len(names) > 0:
             if time.time() >= try_until:
+                self.save_renewal_failure(names, statuses)
                 return False
             for name in names:
-                mds = self.get_md_status(name, via_domain=via_domain, use_https=use_https)
+                try:
+                    mds = self.get_md_status(name, via_domain=via_domain, use_https=use_https)
+                except AssertionError:
+                    self.save_renewal_failure(names, statuses)
+                    raise
+                statuses[name] = mds
                 if mds is None:
                     log.debug("not managed by md: %s" % name)
+                    self.save_renewal_failure(names, statuses)
                     return False
 
                 if 'renewal' in mds:
@@ -496,8 +510,40 @@ class MDTestEnv(HttpdTestEnv):
                 time.sleep(0.1)
         if restart:
             time.sleep(0.1)
-            return self.apache_restart() == 0
+            if self.apache_restart() != 0:
+                self.save_renewal_failure(names, statuses)
+                return False
         return True
+
+    def save_renewal_failure(self, names, statuses):
+        """Keep diagnostics before the next test clears the log and MD store.
+
+        Only logs, configuration and public job/status JSON are copied, not
+        private keys or ACME account credentials.
+        """
+        test_name = self.current_test_name or "renewal"
+        safe_name = re.sub(r'[^A-Za-z0-9_.-]', '_', test_name)
+        dest = os.path.join(self.gen_dir, "failed-tests", safe_name)
+        try:
+            os.makedirs(dest, exist_ok=True)
+            with open(os.path.join(dest, "md-status.json"), "w") as fd:
+                json.dump(statuses, fd, indent=2)
+            for src, name in [
+                (self.httpd_error_log.path, "error_log"),
+                (os.path.join(self.server_dir, "conf", "httpd.conf"), "httpd.conf"),
+                (os.path.join(self.gen_dir, "pebble.log"), "pebble.log"),
+            ]:
+                if os.path.isfile(src):
+                    shutil.copyfile(src, os.path.join(dest, name))
+            for name in statuses:
+                src = self.path_job(name)
+                if os.path.isfile(src):
+                    safe_domain = re.sub(r'[^A-Za-z0-9_.-]', '_', name)
+                    shutil.copyfile(src, os.path.join(dest, f"{safe_domain}-job.json"))
+            log.error("renewal did not complete for %s; diagnostics in %s; status: %s",
+                      names, dest, statuses)
+        except OSError:
+            log.exception("unable to save renewal diagnostics in %s", dest)
 
     def is_renewing(self, name):
         stat = self.get_certificate_status(name)

@@ -1,0 +1,6 @@
+  *) mpm_motorz: Run the suspend_connection and resume_connection hooks as
+     mpm_event does: when a connection is parked, and on the worker that
+     continues it, not on the thread of the module that resumes it.  Close a
+     connection that cannot be queued to a worker instead of leaving it
+     unreachable, keep not accepting when the listeners cannot be added back,
+     and report MaxConnectionsPerChild to ap_mpm_query().  [Jim Jagielski]

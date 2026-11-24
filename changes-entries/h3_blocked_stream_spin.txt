@@ -1,0 +1,4 @@
+  *) mod_http3: Fixed an event-thread spin while a client holds its
+     flow-control window shut: a blocked stream is now blocked again each time
+     nghttp3 offers it.
+     [Alexander Gerasimov <codeguard gmail.com>]

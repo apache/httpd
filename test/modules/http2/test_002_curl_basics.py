@@ -7,7 +7,8 @@ from .env import H2Conf, H2TestEnv
 class TestCurlBasics:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env)
         conf.add_vhost_test1()
         conf.add_vhost_test2()

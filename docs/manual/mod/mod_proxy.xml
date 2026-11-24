@@ -60,7 +60,7 @@
 
         <table border="1">
         <tr><th>Protocol</th><th>Module</th></tr>
-        <tr><td>AJP13 (Apache JServe Protocol version
+        <tr><td>AJP13 (Apache JServ Protocol version
           1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
         <tr><td>CONNECT (for
           SSL)</td><td><module>mod_proxy_connect</module></td></tr>
@@ -514,8 +514,9 @@ ProxyPass "/apps"     "http://127"
 
 <usage>
     <p>Directives placed in <directive type="section">Proxy</directive>
-    sections apply only to matching proxied content using a simple string prefix match against the URL.  Shell-style wildcards are also
-    allowed.</p>
+       sections apply only to matching proxied content using a simple string
+       prefix match against the URL.  Shell-style wildcards are also allowed.
+    </p>
 
     <p>For example, the following will allow only hosts in
     <code>yournetwork.example.com</code> to access content via your proxy
@@ -549,8 +550,16 @@ ProxyPass "/apps"     "http://127"
 &lt;/Proxy&gt;
    </highlight>
 
+   <note type="warning"><title>Warning</title>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+    </note>
+
     <note><title>Differences from the Location configuration section</title>
-      <p>A backend URL matches the configuration section if it begins with the
+      <p>A backend URL matches the configuration section if it begins with
       the <var>wildcard-url</var> string, even if the last path segment in the
       directive only matches a prefix of the backend URL.  For example,
       &lt;Proxy http://example.com/foo&gt; matches all of
@@ -611,6 +620,14 @@ proxied resources</description>
     identical to the <directive module="mod_proxy"
     type="section">Proxy</directive> directive, except that it matches URLs
     using <glossary ref="regex">regular expressions</glossary>.</p>
+
+   <note type="warning"><title>Warning</title>
+   This configuration section does not canonicalize any part of the string
+   being matched such as schemes, hostnames, IP addresses, etc.  Care should be
+   taken if using it for access control, including but not limited to
+   denying access by default and allowing expected hostnames rather than the
+   inverse where a denial could be bypassed by using alternate forms.
+   </note>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
     written to the environment with the corresponding name prefixed with
@@ -1268,6 +1285,12 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
     and bring it back online later. A value of 0 means always retry workers
     in an error state with no timeout.
     Uses the <a href="directive-dict.html#Syntax">time-interval</a> directive syntax.
+    <br />
+    A worker that is not a member of a load balancer only enters the error
+    state on a connection failure if its <a href="#status_table">status</a>
+    is explicitly set to <code>-I</code> (i.e. ignore-errors turned off);
+    such a worker ignores connection errors by default, in which case
+    <code>retry</code> has no effect.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
@@ -1520,7 +1543,7 @@ ProxyPass "/" "balancer://hotcluster/"
 
     <p><strong>Additional ProxyPass Keywords</strong></p>
 
-    <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
+    <p>Normally, mod_proxy will canonicalize ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
     that make use of <var><glossary ref="pathinfo">PATH_INFO</glossary></var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the

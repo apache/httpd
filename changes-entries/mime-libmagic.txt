@@ -1,0 +1,2 @@
+  *) mod_mime_libmagic: New module determining the MIME type of a file
+     from its contents using libmagic(3).  [Joe Orton]

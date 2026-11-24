@@ -1,0 +1,6 @@
+  *) mpm_event, mpm_worker: Fix possible crashes of child processes on an
+     ungraceful stop or restart, or at exit in one-process mode (-X), and a
+     child never exiting on a graceful stop when its listener thread is stuck
+     (mpm_event). A child now exits at once on an ungraceful stop even when
+     its workers are blocked on clients, and no longer runs the parent
+     process' exit handlers (e.g. OpenSSL's).  [Yann Ylavic]

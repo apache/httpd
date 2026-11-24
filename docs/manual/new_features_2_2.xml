@@ -53,7 +53,7 @@
 
       <dt>Configuration</dt>
       <dd>The default configuration layout has been simplified and
-          modularised. Configuration snippets which can be used to
+          modularized. Configuration snippets which can be used to
           enable commonly-used features are now bundled with Apache, and
           can be easily added to the main server config.</dd>
 

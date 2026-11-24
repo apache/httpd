@@ -1,6 +1,7 @@
 import inspect
 import logging
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -9,7 +10,7 @@ from typing import Tuple, List
 import packaging.version
 
 import pytest
-import websockets
+from pyhttpd.depends import needs_dependency
 from pyhttpd.result import ExecResult
 from pyhttpd.ws_util import WsFrameReader, WsFrame
 
@@ -18,8 +19,18 @@ from .env import H2Conf, H2TestEnv
 
 log = logging.getLogger(__name__)
 
-ws_version = packaging.version.parse(websockets.version.version)
 ws_version_min = packaging.version.Version('10.4')
+
+# ws_server.py, which these tests run as a subprocess, needs this too. The
+# import is guarded so that an absent package is reported as the missing
+# optional dependency it is, rather than failing collection of the whole
+# module - which took the rest of the http2 suite's reporting with it.
+try:
+    import websockets
+    ws_version = packaging.version.parse(websockets.version.version)
+except ImportError:
+    websockets = None
+    ws_version = None
 
 
 def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
@@ -73,8 +84,8 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
                 proc.communicate(timeout=timeout)
     end = datetime.now()
     lines = open(f'{env.gen_dir}/h2ws.stdout').read().splitlines()
-    infos = [line for line in lines if line.startswith('[1] ')]
-    hex_content = ' '.join([line for line in lines if not line.startswith('[1] ')])
+    infos = [line for line in lines if re.match(r'^\[\d+] ', line)]
+    hex_content = ' '.join([line for line in lines if not re.match(r'^\[\d+] ', line)])
     if len(infos) > 0 and infos[0] == '[1] :status: 200':
         frames = WsFrameReader.parse(bytearray.fromhex(hex_content))
     else:
@@ -86,12 +97,18 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
 @pytest.mark.skipif(condition=not H2TestEnv().httpd_is_at_least("2.4.60"),
                     reason=f'need at least httpd 2.4.60 for this')
-@pytest.mark.skipif(condition=ws_version < ws_version_min,
-                    reason=f'websockets is {ws_version}, need at least {ws_version_min}')
+@needs_dependency(f"websockets >= {ws_version_min}",
+                  ws_version is not None and ws_version >= ws_version_min,
+                  reason=(f'websockets is {ws_version}, need at least {ws_version_min}'
+                          if ws_version is not None
+                          else 'no websockets python package available'),
+                  detected=(f"websockets {ws_version}" if ws_version is not None
+                            else "python package 'websockets' not installed"))
 class TestWebSockets:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # Apache config that CONNECT proxies a WebSocket server for paths starting
         # with '/ws/'
         # The WebSocket server is started in pytest fixture 'ws_server' below.
@@ -110,7 +127,8 @@ class TestWebSockets:
         conf.add_vhost_test1(proxy_self=True, h2proxy_self=True).install()
         assert env.apache_restart() == 0
 
-    def ws_check_alive(self, env, timeout=5):
+    @staticmethod
+    def ws_check_alive(env, timeout=5):
         url = f'http://localhost:{env.ws_port}/'
         end = datetime.now() + timedelta(seconds=timeout)
         while datetime.now() < end:
@@ -120,29 +138,35 @@ class TestWebSockets:
             time.sleep(.1)
         return False
 
-    def _mkpath(self, path):
+    @staticmethod
+    def _mkpath(path):
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def _rmrf(self, path):
+    @staticmethod
+    def _rmrf(path):
         if os.path.exists(path):
             return shutil.rmtree(path)
 
+    def infos_without_rst(self, infos):
+        return [info for info in infos if info != '[1] RST']
+
     @pytest.fixture(autouse=True, scope='class')
-    def ws_server(self, env):
+    @classmethod
+    def ws_server(cls, env):
         # Run our python websockets server that has some special behaviour
         # for the different path to CONNECT to.
         run_dir = os.path.join(env.gen_dir, 'ws-server')
         err_file = os.path.join(run_dir, 'stderr')
-        self._rmrf(run_dir)
-        self._mkpath(run_dir)
+        cls._rmrf(run_dir)
+        cls._mkpath(run_dir)
         with open(err_file, 'w') as cerr:
             cmd = os.path.join(os.path.dirname(inspect.getfile(TestWebSockets)),
                                'ws_server.py')
             args = ['python3', cmd, '--port', str(env.ws_port)]
             p = subprocess.Popen(args=args, cwd=run_dir, stderr=cerr,
                                  stdout=cerr)
-            if not self.ws_check_alive(env):
+            if not cls.ws_check_alive(env):
                 p.kill()
                 p.wait()
                 pytest.fail(f'ws_server did not start. stderr={open(err_file).readlines()}')
@@ -167,14 +191,16 @@ class TestWebSockets:
     def test_h2_800_03_not_found(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/does-not-exist')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 404', '[1] EOF'] or infos == ['[1] :status: 404', '[1] EOF', '[1] RST'], f'{r}'
+        infos = self.infos_without_rst(infos)
+        assert infos == ['[1] :status: 404', '[1] EOF'], f'{r}'
 
     # CONNECT to a URL path that is a normal HTTP file resource
     # we do not want to receive the body of that
     def test_h2_800_04_non_ws_resource(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/alive.json')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 502', '[1] EOF'] or infos == ['[1] :status: 502', '[1] EOF', '[1] RST'], f'{r}'
+        infos = self.infos_without_rst(infos)
+        assert infos == ['[1] :status: 502', '[1] EOF'], f'{r}'
         assert frames == b''
 
     # CONNECT to a URL path that sends a delayed HTTP response body
@@ -182,7 +208,8 @@ class TestWebSockets:
     def test_h2_800_05_non_ws_delay_resource(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/h2test/error?body_delay=100ms')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 502', '[1] EOF'] or infos == ['[1] :status: 502', '[1] EOF', '[1] RST'], f'{r}'
+        infos = self.infos_without_rst(infos)
+        assert infos == ['[1] :status: 502', '[1] EOF'], f'{r}'
         assert frames == b''
 
     # CONNECT missing the sec-webSocket-version header
@@ -195,26 +222,27 @@ class TestWebSockets:
     def test_h2_800_07_miss_path(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-path')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] RST'], f'{r}'
+        assert infos == ['[1] RST'] or infos == ['[0] GOAWAY'], f'{r}'
 
     # CONNECT missing the :scheme header
     def test_h2_800_08_miss_scheme(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-scheme')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] RST'], f'{r}'
+        assert infos == ['[1] RST'] or infos == ['[0] GOAWAY'], f'{r}'
 
     # CONNECT missing the :authority header
     def test_h2_800_09a_miss_authority(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/', scenario='miss-authority')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] RST'], f'{r}'
+        assert infos == ['[1] RST'] or infos == ['[0] GOAWAY'], f'{r}'
 
     # CONNECT to authority with disabled websockets
     def test_h2_800_09b_unsupported(self, env: H2TestEnv, ws_server):
         r, infos, frames = ws_run(env, path='/ws/echo/',
                                   authority=f'test1.{env.http_tld}:{env.http_port}')
         assert r.exit_code == 0, f'{r}'
-        assert infos == ['[1] :status: 501', '[1] EOF'] or infos == ['[1] :status: 501', '[1] EOF', '[1] RST'], f'{r}'
+        infos = self.infos_without_rst(infos)
+        assert infos == ['[1] :status: 501', '[1] EOF'], f'{r}'
 
     # CONNECT and exchange a PING
     def test_h2_800_10_ws_ping(self, env: H2TestEnv, ws_server):

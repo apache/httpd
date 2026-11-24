@@ -55,13 +55,13 @@ APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
 ssl_ct_objs="mod_ssl_ct.lo ssl_ct_log_config.lo ssl_ct_sct.lo ssl_ct_util.lo"
 APACHE_MODULE(ssl_ct, [Support for Certificate Transparency (RFC 6962)], $ssl_ct_objs, , no, [
     AC_MSG_CHECKING([for OpenSSL version >= 1.0.2])
-    AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <openssl/opensslv.h>]],[[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing OpenSSL version"
 #endif
 #if OPENSSL_VERSION_NUMBER < 0x10002003L
 #error "Unsupported OpenSSL version " OPENSSL_VERSION_TEXT
-#endif],
+#endif]])],
       [AC_MSG_RESULT(yes)],
       [AC_MSG_ERROR([mod_ssl_ct requires OpenSSL 1.0.2-beta3 or later.])])
 

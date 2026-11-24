@@ -123,7 +123,7 @@
       attempts should be redirected to a login form created by the website for this purpose,
       using the <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
       directive. Typically this login page will contain an HTML form, asking the user to
-      provide their usename and password.</p>
+      provide their username and password.</p>
 
       <example><title>Example login form</title>
         <highlight language="html">

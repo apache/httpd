@@ -175,7 +175,6 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 {
     apr_table_t *e;
     server_rec *s = r->server;
-    conn_rec *c = r->connection;
     core_dir_config *conf =
         (core_dir_config *)ap_get_core_module_config(r->per_dir_config);
     const char *env_temp;
@@ -291,7 +290,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
         apr_table_addn(e, "SCRIPT_FILENAME", r->filename);  /* Apache */
     }
 
-    rport = c->client_addr->port;
+    rport = r->useragent_addr->port;
     apr_table_addn(e, "REMOTE_PORT", apr_itoa(r->pool, rport));
 
     if (r->user) {
@@ -645,16 +644,13 @@ AP_DECLARE(int) ap_scan_script_header_err_core_ex(request_rec *r, char *buffer,
         }
 
         if (!ap_cstr_casecmp(w, "Content-type")) {
-            char *tmp;
+            char *tmp, *end;
 
             /* Nuke trailing whitespace */
 
-            char *endp = l + strlen(l) - 1;
-            while (endp > l && apr_isspace(*endp)) {
-                *endp-- = '\0';
-            }
+            end = ap_cstr_stripws(l);
 
-            tmp = apr_pstrdup(r->pool, l);
+            tmp = apr_pstrmemdup(r->pool, l, end - l);
             ap_content_type_tolower(tmp);
             ap_set_content_type(r, tmp);
         }

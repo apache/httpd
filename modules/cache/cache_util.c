@@ -977,6 +977,9 @@ apr_status_t cache_strqtok(char *str, char **token, char **arg, char **last)
                 if (arg) *arg = wpos;
                 continue;
             }
+            if (TEST_CHAR(*str, T_HTTP_TOKEN_STOP)) {
+                goto end;
+            }
             break;
 
         case IN_BETWEEN:

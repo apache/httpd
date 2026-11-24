@@ -6,10 +6,12 @@ from .env import H2Conf, H2TestEnv
 
 # The push tests depend on "nghttp"
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_nghttp()
 class TestPush:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).start_vhost(domains=[f"push.{env.http_tld}"],
                                 port=env.https_port, doc_root="htdocs/test1"
         ).add(r"""
@@ -198,3 +200,20 @@ class TestPush:
         assert r.response["status"] == 200
         promises = r.results["streams"][r.response["id"]]["promises"]
         assert 1 == len(promises)
+
+
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+class TestPushNoDiary:
+
+    # push diary disabled, with debug logging
+    def test_h2_400_60(self, env):
+        conf = H2Conf(env)
+        conf.add("""
+            H2PushDiarySize 0
+            LogLevel http2:debug
+            """)
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+        r = env.curl_get(env.mkurl("https", "test1", "/index.html"))
+        assert r.response["status"] == 200

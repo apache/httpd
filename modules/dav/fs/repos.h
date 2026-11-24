@@ -27,6 +27,9 @@
 
 #include "util_mutex.h"
 
+/* the name this repository provider is registered under */
+#define DAV_FS_PROVIDER_NAME            "filesystem"
+
 /* the subdirectory to hold all DAV-related information for a directory */
 #define DAV_FS_STATE_DIR                ".DAV"
 #define DAV_FS_STATE_FILE_FOR_DIR       ".state_for_dir"
@@ -38,6 +41,9 @@
 #define DAV_FS_QUOTA_NONE       -2
 
 #define DAV_FS_BYTES_ERROR      -1
+
+/* is the pathname the state subdirectory, or a file within it? */
+int dav_fs_is_state_path(apr_pool_t *p, const char *pathname);
 
 /* ensure that our state subdirectory is present */
 void dav_fs_ensure_state_dir(apr_pool_t *p, const char *dirname);

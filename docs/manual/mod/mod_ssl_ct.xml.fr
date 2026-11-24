@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933739 -->
+<!-- English Revision: 1936367 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- $LastChangedRevision: 2015071101 $ -->
 
@@ -28,7 +28,7 @@
 <description>Implémentation de la transparence des certificats
 (Certificat Transparency - RFC 6962)
 </description>
-<status>Extension</status>
+<status>Obsolète</status>
 <sourcefile>mod_ssl_ct.c</sourcefile>
 <identifier>ssl_ct_module</identifier>
 

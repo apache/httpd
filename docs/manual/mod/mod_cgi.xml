@@ -42,7 +42,7 @@
     our tutorial on <a href="../howto/cgi.html">Dynamic Content
     With CGI</a>.</p>
 
-    <p>When using a multi-threaded MPM under unix, the module
+    <p>When using a multi-threaded MPM under UNIX, the module
     <module>mod_cgid</module> should be used in place of
     this module. At the user level, the two modules are essentially
     identical.</p>

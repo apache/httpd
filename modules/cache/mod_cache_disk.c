@@ -1488,7 +1488,7 @@ static const char
 {
     disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
 
-    if (apr_strtoff(&dconf->minfs, arg, NULL, 10) != APR_SUCCESS ||
+    if (ap_size_parameter_parse(arg, &dconf->minfs) != APR_SUCCESS ||
             dconf->minfs < 0)
     {
         return "CacheMinFileSize argument must be a non-negative integer representing the min size of a file to cache in bytes.";
@@ -1502,7 +1502,7 @@ static const char
 {
     disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
 
-    if (apr_strtoff(&dconf->maxfs, arg, NULL, 10) != APR_SUCCESS ||
+    if (ap_size_parameter_parse(arg, &dconf->maxfs) != APR_SUCCESS ||
             dconf->maxfs < 0)
     {
         return "CacheMaxFileSize argument must be a non-negative integer representing the max size of a file to cache in bytes.";
@@ -1516,7 +1516,7 @@ static const char
 {
     disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
 
-    if (apr_strtoff(&dconf->readsize, arg, NULL, 10) != APR_SUCCESS ||
+    if (ap_size_parameter_parse(arg, &dconf->readsize) != APR_SUCCESS ||
             dconf->readsize < 0)
     {
         return "CacheReadSize argument must be a non-negative integer representing the max amount of data to cache in go.";
@@ -1531,7 +1531,7 @@ static const char
     disk_cache_dir_conf *dconf = (disk_cache_dir_conf *)in_struct_ptr;
     apr_off_t milliseconds;
 
-    if (apr_strtoff(&milliseconds, arg, NULL, 10) != APR_SUCCESS ||
+    if (ap_size_parameter_parse(arg, &milliseconds) != APR_SUCCESS ||
             milliseconds < 0)
     {
         return "CacheReadTime argument must be a non-negative integer representing the max amount of time taken to cache in go.";

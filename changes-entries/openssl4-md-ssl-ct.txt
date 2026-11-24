@@ -1,0 +1,2 @@
+  *) mod_md, mod_ssl_ct: Fix the build with OpenSSL 4.0.
+     [Michiel W. Beijen <mb x14.nl>]

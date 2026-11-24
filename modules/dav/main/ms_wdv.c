@@ -157,7 +157,8 @@ static dav_error *check_locked_by_other(request_rec *r)
     /* Let lock method fail the request */
 
 out:
-    (*lockdb->hooks->close_lockdb)(lockdb);
+    if (lockdb)
+        (*lockdb->hooks->close_lockdb)(lockdb);
 
     return err;
 }

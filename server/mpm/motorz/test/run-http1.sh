@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # motorz MPM -- HTTP/1.1 functional + lifecycle regression suite.
 #
@@ -108,9 +108,13 @@ else
 fi
 
 echo "-- slow client (partial request line, then complete: read-wait path)"
-resp=$( ( printf 'GET / HTTP/1.1\r\nHost: x\r\n'; sleep 2; printf '\r\n'; sleep 1 ) \
-        | nc 127.0.0.1 "$PORT" 2>/dev/null | head -1 | tr -d '\r' )
-assert_eq "HTTP/1.1 200 OK" "$resp" "partial-then-complete request served"
+if command -v nc >/dev/null 2>&1; then
+    resp=$( ( printf 'GET / HTTP/1.1\r\nHost: x\r\n'; sleep 2; printf '\r\n'; sleep 1 ) \
+            | nc 127.0.0.1 "$PORT" 2>/dev/null | head -1 | tr -d '\r' )
+    assert_eq "HTTP/1.1 200 OK" "$resp" "partial-then-complete request served"
+else
+    echo "  (nc not found; skipping slow-client check)"
+fi
 
 echo "-- graceful restart under load"
 ( command -v ab >/dev/null 2>&1 && ab -n 3000 -c 20 -k -q "$base/" >/dev/null 2>&1 ) &

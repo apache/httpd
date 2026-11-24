@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932337 -->
+<!-- English Revision: 1937537 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -111,7 +111,17 @@ d'Apache 2.3.5. Tranches de ports disponibles depuis Apache 2.3.7.</compatibilit
     vers les ports spécifiés.</p>
 
     <p>Définir la valeur à <code>None</code> pour interdire les requêtes
-    <code>CONNECT</code> vers tous les ports, y compris ceux par défaut.</p>
+    <code>CONNECT</code> vers tous les ports, y compris ceux par défaut.
+    <code>None</code> ne peut pas être combiné avec des numéros de port dans le
+    même contexte</p>
+
+    <p>Quand la directive <directive>AllowCONNECT</directive> est définie dans
+    la configuration globale du serveur et dans un serveur virtuel, les listes de
+    ports sont fusionnées, de sorte qu’un serveur virtuel puisse autoriser des
+    ports additionnels. La valeur <code>None</code> est prioritaire et interdit
+    tous les ports dans le contexte où elle est définie ; mais une valeur
+    <code>None</code> héritée est quant à elle outrepassée par une liste
+    explicite de ports définie au sein d’un serveur virtuel.</p>
 </usage>
 </directivesynopsis>
 

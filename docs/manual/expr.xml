@@ -719,7 +719,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
     <code>SERVER_PROTOCOL_VERSION_MAJOR</code> and
     <code>SERVER_PROTOCOL_VERSION_MINOR</code>
     <a href="#vars">variables</a>
-    are available for versions 2.5.0 and later.</p>
+    are available for versions 2.4.72 and later.</p>
 </section>
 
 <section id="examples">

@@ -222,7 +222,7 @@
          <li> Delays in the operating system putting the response data out 
               onto the network.</li>
          <li> Time taken for the response to arrive at the client host.</li>
-         <li> Time taken for the the useragent to read and process the 
+         <li> Time taken for the useragent to read and process the 
               response.</li>
        </ul>
     </td></tr>

@@ -282,8 +282,12 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                             /* XXX: we should check for AP_MAX_BUCKETS here and
                              * XXX: call ap_pass_brigade accordingly
                              */
-                            char *copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
-                                                        buff, bytes, &len);
+                            char *copy;
+                            if (vb.strlen > cfg->max_line_length
+                                    || bytes > cfg->max_line_length - vb.strlen)
+                                return APR_ENOMEM;
+                            copy = ap_varbuf_pdup(pool, &vb, NULL, 0,
+                                                  buff, bytes, &len);
                             ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
                                           "New line (%" APR_SIZE_T_FMT " bytes): %.*s",
                                           len, CAP2LINEMAX(len), copy);
@@ -389,6 +393,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         /* Copy result plus the part after the last match into
                          * a bucket.
                          */
+                        if (vb.strlen > cfg->max_line_length
+                                || left > cfg->max_line_length - vb.strlen)
+                            return APR_ENOMEM;
                         copy = ap_varbuf_pdup(pool, &vb, NULL, 0, pos, left,
                                               &len);
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
@@ -399,6 +406,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         apr_bucket_delete(b);
                         b = tmp_b;
+                    }
+                    else if (have_match && left > space_left) {
+                        return APR_ENOMEM;
                     }
                 }
                 else {
@@ -763,40 +773,17 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     return NULL;
 }
 
-#define KBYTE         1024
-#define MBYTE         1048576
-#define GBYTE         1073741824
 
 static const char *set_max_line_length(cmd_parms *cmd, void *cfg, const char *arg)
 {
     subst_dir_conf *dcfg = (subst_dir_conf *)cfg;
     apr_off_t max;
-    char *end;
     apr_status_t rv;
 
-    rv = apr_strtoff(&max, arg, &end, 10);
-    if (rv == APR_SUCCESS) {
-        if ((*end == 'K' || *end == 'k') && !end[1]) {
-            if (max > APR_INT64_MAX / KBYTE)
-                return "SubstituteMaxLineLength value too large";
-            max *= KBYTE;
-        }
-        else if ((*end == 'M' || *end == 'm') && !end[1]) {
-            if (max > APR_INT64_MAX / MBYTE)
-                return "SubstituteMaxLineLength value too large";
-            max *= MBYTE;
-        }
-        else if ((*end == 'G' || *end == 'g') && !end[1]) {
-            if (max > APR_INT64_MAX / GBYTE)
-                return "SubstituteMaxLineLength value too large";
-            max *= GBYTE;
-        }
-        else if (*end && /* neither empty nor [Bb] */
-                 ((*end != 'B' && *end != 'b') || end[1])) {
-            rv = APR_EGENERAL;
-        }
+    rv = ap_size_parameter_parse(arg, &max);
+    if (rv == APR_ERANGE) {
+        return "SubstituteMaxLineLength value too large";
     }
-
     if (rv != APR_SUCCESS || max < 0)
     {
         return "SubstituteMaxLineLength must be a non-negative integer optionally "

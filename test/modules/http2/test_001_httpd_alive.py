@@ -7,7 +7,8 @@ from .env import H2Conf, H2TestEnv
 class TestBasicAlive:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).add_vhost_test1().install()
         assert env.apache_restart() == 0
 

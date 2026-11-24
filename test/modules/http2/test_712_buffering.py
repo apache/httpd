@@ -1,4 +1,5 @@
 from datetime import timedelta
+import sys
 
 import pytest
 
@@ -10,7 +11,8 @@ from pyhttpd.curl import CurlPiper
 class TestBuffering:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H2Conf(env)
         conf.add_vhost_cgi(h2proxy_self=True).install()
         assert env.apache_restart() == 0
@@ -38,6 +40,8 @@ class TestBuffering:
         piper.stutter_check(chunks, stutter)
 
     def test_h2_712_02(self, env):
+        if sys.platform == "win32":
+            pytest.skip("h2proxy echo buffering unreliable on mpm_winnt")
         # same as 712_01 but via mod_proxy_http2
         #
         url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")
@@ -48,6 +52,8 @@ class TestBuffering:
         piper.stutter_check(chunks, stutter)
 
     def test_h2_712_03(self, env):
+        if sys.platform == "win32":
+            pytest.skip("h2proxy echo buffering unreliable on mpm_winnt")
         # same as 712_02 but with smaller chunks
         #
         url = env.mkurl("https", "cgi", "/h2proxy/h2test/echo")

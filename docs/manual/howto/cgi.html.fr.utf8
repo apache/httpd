@@ -328,7 +328,7 @@ print("Hello, World.")</pre>
       <code>nobody</code>, il suffit de lui attribuer des droits
       d'ex&eacute;cution pour tout le monde :</p>
 
-<div class="example"><pre class="prettyprint lang-bash">chmod a+x first.py</pre>
+<div class="example"><pre class="prettyprint lang-bash">chmod a+x premier.py</pre>
 </div>
 
       <p>En outre, si votre programme doit pouvoir acc&eacute;der en lecture
@@ -517,7 +517,7 @@ import os
 
 print("Content-type: text/html\n")
 for key, value in os.environ.items():
-print(f"{key} --&gt; {value}&lt;br&gt;")</pre>
+    print(f"{key} --&gt; {value}&lt;br&gt;")</pre>
 </div>
     
 

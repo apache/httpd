@@ -8,6 +8,12 @@ TARGETS  = $(bin_PROGRAMS)
 PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
 PROGRAM_DEPENDENCIES =
 
+# Borrow the nghttp2/openssl flags configure found for mod_http2
+H2_MODULES_MK := $(top_builddir)/modules/http2/modules.mk
+MOD_CFLAGS    := $(shell sed -n 's/^MOD_CFLAGS *= *//p' $(H2_MODULES_MK) 2>/dev/null)
+MOD_CPPFLAGS  := $(shell sed -n 's/^MOD_CPPFLAGS *= *//p' $(H2_MODULES_MK) 2>/dev/null)
+MOD_LDFLAGS   := $(shell sed -n 's/^MOD_LDFLAGS *= *//p' $(H2_MODULES_MK) 2>/dev/null)
+
 include $(top_builddir)/build/rules.mk
 
 h2ws.lo: h2ws.c

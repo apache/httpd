@@ -304,6 +304,8 @@ static apr_status_t csr_req(md_acme_t *acme, const md_http_response_t *res, void
     apr_status_t rv = APR_SUCCESS;
     
     (void)acme;
+    /* the order may still be processing, the CA says when to look again */
+    ad->order->retry_at = md_acme_retry_after(res->headers);
     location = apr_table_get(res->headers, "location");
     if (!location)
       return rv;

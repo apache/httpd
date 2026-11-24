@@ -456,11 +456,15 @@ static apr_status_t c1_in_feed_brigade(h2_session *session,
     *inout_len = 0;
     while (!APR_BRIGADE_EMPTY(bb)) {
         b = APR_BRIGADE_FIRST(bb);
+        APR_BUCKET_REMOVE(b);
         if (!APR_BUCKET_IS_METADATA(b)) {
             rv = c1_in_feed_bucket(session, b, inout_len);
-            if (APR_SUCCESS != rv) goto cleanup;
+            if (APR_SUCCESS != rv) {
+               apr_bucket_destroy(b);
+               goto cleanup;
+            }
         }
-        apr_bucket_delete(b);
+        apr_bucket_destroy(b);
     }
 cleanup:
     apr_brigade_cleanup(bb);

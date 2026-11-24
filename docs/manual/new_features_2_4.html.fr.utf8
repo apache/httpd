@@ -31,6 +31,8 @@ serveur HTTP Apache</h1>
 <a href="./pt-br/new_features_2_4.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
   <p>Ce document d&eacute;crit les modifications majeures apport&eacute;es par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s

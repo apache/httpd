@@ -1,0 +1,3 @@
+  *) mod_setenvif: Fix a SetEnvIf rule being matched against the wrong
+     value when it follows a SetEnvIfExpr and an earlier rule for the same
+     header.  [arshiya tabasum <arshi bugqore.com>]

@@ -31,7 +31,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support for Solaris privileges and for running virtual hosts
 under different user IDs.</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>privileges_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_privileges.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and up, on Solaris 10 and
@@ -144,7 +144,7 @@ request-processing cycle.</em></p>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DTracePrivileges On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DTracePrivileges Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
@@ -165,7 +165,7 @@ malicious privileges-aware code.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PrivilegesMode FAST|SECURE|SELECTIVE</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PrivilegesMode FAST</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
@@ -207,7 +207,7 @@ subprocesses, and the privileges available to subprocesses.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostCGIMode On|Off|Secure</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>VHostCGIMode On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
@@ -236,7 +236,7 @@ by a virtual host.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM)
@@ -268,7 +268,7 @@ and when <code class="module"><a href="../mod/mod_privileges.html">mod_privilege
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Inherits the group id specified in
 <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
@@ -306,7 +306,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM)
@@ -337,7 +337,7 @@ for the virtualhost.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>VHostSecure On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>VHostSecure On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
@@ -363,7 +363,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Inherits the userid specified in
 <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
 non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>

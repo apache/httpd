@@ -1,0 +1,14 @@
+  *) mod_http3: Added H3EarlyData (default off). A resumed client may send its
+     first request as 0-RTT data and gets the response one round trip sooner.
+     Only safe methods run before the handshake completes; other methods wait
+     for it, because 0-RTT data can be replayed (RFC 8470).
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: Moved the QUIC transport from the OpenSSL QUIC server to
+     ngtcp2, with OpenSSL as the TLS backend through its QUIC TLS API. OpenSSL
+     still drops server-side 0-RTT packets. ngtcp2 >= 1.22.1 is a new build
+     dependency (--with-ngtcp2). Stream data is no longer copied: nghttp3
+     releases a buffer when the peer acknowledges it. H3IdleTimeout now always
+     closes with NO_ERROR; the QUIC idle timer runs 2 seconds longer and
+     closes silently.
+     [Alexander Gerasimov <codeguard gmail.com>]

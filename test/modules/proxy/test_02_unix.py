@@ -56,7 +56,8 @@ Content-Length: 19
 class TestProxyUds:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # setup 3 vhosts on https: for reverse, forward and
         # mixed proxying to a unix: domain socket
         # We setup a UDSFaker running that returns a fixed response
@@ -110,8 +111,10 @@ class TestProxyUds:
         # check that we see the document we expect there (host matching worked)
         # we need to explicitly provide a Host: header since mod_proxy cannot
         # resolve the name via DNS.
-        if not env.curl_is_at_least('8.0.0'):
-            pytest.skip(f'need at least curl v8.0.0 for this')
+        env.require(env.curl_is_at_least('8.0.0'),
+                    'need at least curl v8.0.0 for this',
+                    dep='curl >= 8.0.0',
+                    detected=f"curl {env.curl_version_str()}")
         domain = f"{via}.{env.http_tld}"
         r = env.curl_get(f"http://127.0.0.1:{env.http_port}/alive.json", 5, options=[
             '-H', f"Host: {domain}",

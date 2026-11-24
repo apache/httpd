@@ -941,8 +941,8 @@ struct request_rec {
      *  handler can't be installed by mod_actions.
      */
     ap_method_mask_t allowed;
-    /** Array of extension methods */
-    apr_array_header_t *allowed_xmethods;
+    /* "allowed_xmethods" lived here previously, but was never used: */
+    void *unused;
     /** List of allowed methods */
     ap_method_list_t *allowed_methods;
 
@@ -2364,6 +2364,21 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                const char *default_time_unit);
 
 /**
+ * Parse a configuration parameter as a base 10 apr_off_t. The number may be
+ * followed by a single optional suffix, 'b'/'B' (bytes), 'k'/'K' (multiply
+ * by 1024), 'm'/'M' (multiply by 1024*1024) or 'g'/'G' (multiply by
+ * 1024*1024*1024); there must not be any other character after it. What
+ * values are acceptable is up to the caller.
+ * @param parameter The string containing the number.
+ * @param value The parsed value, only set on success.
+ * @return APR_SUCCESS, APR_EINVAL if the parameter is not a number with
+ *         optional suffix, or APR_ERANGE if the value does not fit in an
+ *         apr_off_t.
+ */
+AP_DECLARE(apr_status_t) ap_size_parameter_parse(const char *parameter,
+                                                 apr_off_t *value);
+
+/**
  * Determine if a request has a request body or not.
  *
  * @param r the request_rec of the request
@@ -2779,6 +2794,13 @@ AP_DECLARE(int) ap_array_str_index(const apr_array_header_t *array,
  */
 AP_DECLARE(int) ap_array_str_contains(const apr_array_header_t *array, 
                                       const char *s);
+
+/**
+ * Strip trailing whitespace from a NUL-terminated string in place.
+ * @param str String to modify
+ * @return Pointer to the terminating NUL of the modified string
+ */
+AP_DECLARE(char *) ap_cstr_stripws(char *str);
 
 /**
  * Perform a case-insensitive comparison of two strings @a str1 and @a str2,

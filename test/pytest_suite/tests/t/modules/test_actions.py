@@ -4,6 +4,8 @@ Two groups: ``tests_action`` (GET each url, check code; if 200 check body) and
 ``tests_script`` (GET, POST and PUT against script locations).
 """
 
+import sys
+
 import pytest
 
 from apache_pytest import need_module, t_cmp
@@ -35,6 +37,8 @@ TESTS_SCRIPT = [
 def test_actions_action(http, case):
     if case in TESTS_ACTION_2460 and not http.have_min_apache_version("2.4.60"):
         pytest.skip("requires httpd >= 2.4.60")
+    if sys.platform == "win32" and (".sh?" in case[0] or case[0].endswith(".sh")):
+        pytest.skip("shell scripts not available on Windows")
     url, code = case[0], case[1]
     r = http.GET(url)
     assert t_cmp(r.status_code, code), f"Check {url} for {code}"
@@ -53,7 +57,7 @@ def test_actions_script(http, case):
 
     r = http.POST(url, content="foo2=bar2")
     assert t_cmp(r.status_code, 200)
-    assert t_cmp(r.text, "POST\nfoo2: bar2\n")
+    assert t_cmp(r.text.replace("\r\n", "\n"), "POST\nfoo2: bar2\n")
 
     # Method not allowed
     r = http.PUT(url, content="foo2=bar2")

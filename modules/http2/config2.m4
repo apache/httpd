@@ -125,13 +125,13 @@ AC_DEFUN([APACHE_CHECK_NGHTTP2],[
     fi
 
     AC_MSG_CHECKING([for nghttp2 version >= 1.2.1])
-    AC_TRY_COMPILE([#include <nghttp2/nghttp2ver.h>],[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <nghttp2/nghttp2ver.h>]],[[
 #if !defined(NGHTTP2_VERSION_NUM)
 #error "Missing nghttp2 version"
 #endif
 #if NGHTTP2_VERSION_NUM < 0x010201
 #error "Unsupported nghttp2 version " NGHTTP2_VERSION_TEXT
-#endif],
+#endif]])],
       [AC_MSG_RESULT(OK)
        ac_cv_nghttp2=yes],
       [AC_MSG_RESULT(FAILED)])

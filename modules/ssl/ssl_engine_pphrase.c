@@ -780,7 +780,7 @@ static apr_status_t pp_ui_method_cleanup(void *uip)
     return APR_SUCCESS;
 }
 
-static UI_METHOD *get_passphrase_ui(apr_pool_t *p)
+UI_METHOD *modssl_get_passphrase_ui(apr_pool_t *p)
 {
     UI_METHOD *ui_method = UI_create_method("Passphrase UI");
 
@@ -793,6 +793,21 @@ static UI_METHOD *get_passphrase_ui(apr_pool_t *p)
                               pp_ui_method_cleanup);
     
     return ui_method;
+}
+
+void *modssl_get_passphrase_cb(server_rec *s, apr_pool_t *p,
+                               const char *vhostid,
+                               const char *uri)
+{
+    pphrase_cb_arg_t *ppcb = apr_pcalloc(p, sizeof(pphrase_cb_arg_t));
+
+    ppcb->s = s;
+    ppcb->p = p;
+    ppcb->bPassPhraseDialogOnce = TRUE;
+    ppcb->key_id = vhostid;
+    ppcb->pkey_file = uri;
+
+    return ppcb;
 }
 #endif
 
@@ -819,7 +834,7 @@ static apr_status_t modssl_load_keypair_engine(server_rec *s, apr_pool_t *pconf,
 {
     const char *c, *scheme;
     ENGINE *e;
-    UI_METHOD *ui_method = get_passphrase_ui(ptemp);
+    UI_METHOD *ui_method = modssl_get_passphrase_ui(ptemp);
     pphrase_cb_arg_t ppcb;
 
     memset(&ppcb, 0, sizeof ppcb);
@@ -904,7 +919,7 @@ static OSSL_STORE_INFO *modssl_load_store_uri(server_rec *s, apr_pool_t *p,
                                               const char *uri, int info_type)
 {
     OSSL_STORE_CTX *sctx;
-    UI_METHOD *ui_method = get_passphrase_ui(p);
+    UI_METHOD *ui_method = modssl_get_passphrase_ui(p);
     pphrase_cb_arg_t ppcb;
     OSSL_STORE_INFO *info = NULL;
 

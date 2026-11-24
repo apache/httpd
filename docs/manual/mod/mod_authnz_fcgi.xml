@@ -35,7 +35,7 @@ httpd authentication and authorization</description>
     authenticate users and authorize access to resources.  It supports
     generic FastCGI authorizers which participate in a single phase
     for authentication and authorization as well as Apache httpd-specific
-    authenticators and authorizors which participate in one or both
+    authenticators and authorizers which participate in one or both
     phases.</p>
 
     <p>FastCGI authorizers can authenticate using user id and password,

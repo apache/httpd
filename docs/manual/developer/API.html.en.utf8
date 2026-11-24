@@ -766,7 +766,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       some modules... such as modules that need to open a database connection
       once per child, and wish to clean it up when the child dies.</p>
 
-      <p>You can also see how some bugs have manifested themself, such as
+      <p>You can also see how some bugs have manifested themselves, such as
       setting <code>connection-&gt;user</code> to a value from
       <code>r-&gt;pool</code> -- in this case connection exists for the
       lifetime of <code>ptrans</code>, which is longer than

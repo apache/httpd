@@ -1,0 +1,21 @@
+  *) mod_http3: Linux: on a [::] socket, a reply now goes out from the address
+     the client sent to (IP_PKTINFO, IPV6_PKTINFO). Before, the kernel picked
+     the source, and on a host with more than one address a client could get
+     the reply from another address and drop it.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: Linux: ECN. The module reads the ECN mark of each packet and
+     gives it to ngtcp2, which reports it back to the client in ACK_ECN
+     frames, and it puts the mark that ngtcp2 asks for on each packet it
+     sends.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: With ListenCoresBucketsRatio and more than one QUIC socket,
+     the server sends disable_active_migration, so clients do not move a
+     connection to a new address that another child can get.
+     [Alexander Gerasimov <codeguard gmail.com>]
+
+  *) mod_http3: The parent makes the key for Retry and stateless reset tokens
+     and keeps it across graceful restarts. A Retry token from a child is now
+     good in every other child and in the next generation.
+     [Alexander Gerasimov <codeguard gmail.com>]

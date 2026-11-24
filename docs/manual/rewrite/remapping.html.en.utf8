@@ -717,7 +717,7 @@ of the URL.</dd>
 <dd>
 <p> Many of the solutions in this section will all use the same condition,
 which leaves the matched value in the %2 backreference.  %1 is the beginning
-of the query string (up to the key of intererest), and %3 is the remainder. This
+of the query string (up to the key of interest), and %3 is the remainder. This
 condition is a bit complex for flexibility and to avoid double '&amp;&amp;' in the
 substitutions.</p>
 <ul>

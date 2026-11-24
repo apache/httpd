@@ -32,6 +32,10 @@
 #include <openssl/pem.h>
 #include <openssl/x509v3.h>
 
+#if OPENSSL_VERSION_NUMBER < 0x40100000L
+#define ASN1_STRING_get_length(x)  ((size_t)ASN1_STRING_length(x))
+#endif
+
 #include "md.h"
 #include "md_crypt.h"
 #include "md_event.h"
@@ -537,7 +541,7 @@ static const char *certid_summary(const OCSP_CERTID *certid, apr_pool_t *p)
         data.len = (apr_size_t)aname_hash->length;
         data.data = (const char*)aname_hash->data;
 #else
-        data.len = (apr_size_t)ASN1_STRING_length(aname_hash);
+        data.len = (apr_size_t)ASN1_STRING_get_length(aname_hash);
         data.data = (const char*)ASN1_STRING_get0_data(aname_hash);
 #endif
         md_data_to_hex(&issuer, 0, p, &data);
@@ -547,7 +551,7 @@ static const char *certid_summary(const OCSP_CERTID *certid, apr_pool_t *p)
         data.len = (apr_size_t)akey_hash->length;
         data.data = (const char*)akey_hash->data;
 #else
-        data.len = (apr_size_t)ASN1_STRING_length(akey_hash);
+        data.len = (apr_size_t)ASN1_STRING_get_length(akey_hash);
         data.data = (const char*)ASN1_STRING_get0_data(akey_hash);
 #endif
         md_data_to_hex(&key, 0, p, &data);

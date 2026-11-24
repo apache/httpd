@@ -131,7 +131,7 @@ taille sup&eacute;rieure &agrave; 8 Mo provoquent une erreur.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed &agrave; ex&eacute;cuter pour le filtrage des donn&eacute;es d'une
 requ&ecirc;te (en g&eacute;n&eacute;ral des donn&eacute;es <code>POST</code>)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>InputSed <var>commande-sed</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
@@ -147,7 +147,7 @@ requ&ecirc;te (en g&eacute;n&eacute;ral des donn&eacute;es <code>POST</code>)</t
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed pour le filtrage des contenus de type
 r&eacute;ponse</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>OutputSed <var>commande-sed</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>

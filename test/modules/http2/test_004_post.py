@@ -13,10 +13,13 @@ from .env import H2Conf, H2TestEnv
 
 
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_nghttp()
+@H2TestEnv.needs_multipart()
 class TestPost:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         TestPost._local_dir = os.path.dirname(inspect.getfile(TestPost))
         conf = H2Conf(env, extras={
             f'cgi.{env.http_tld}': [

@@ -732,9 +732,13 @@ CGIVar REQUEST_URI current-uri
   </highlight>
 
   <note><title>Note</title>
-  <p>The CGI environment variable <code>REQUEST_URI</code> (in either
-  mode) contains the full URI including the query string. This differs
-  from the server variable <code>%{REQUEST_URI}</code> used in
+  <p>In the default <code>original-uri</code> mode, the CGI environment
+  variable <code>REQUEST_URI</code> contains the original URI from the
+  request line, including the query string if one was sent. With
+  <code>current-uri</code>, <code>REQUEST_URI</code> is set from the
+  current URI being processed, and the query string remains available
+  separately in <code>QUERY_STRING</code>. This differs from the server
+  variable <code>%{REQUEST_URI}</code> used in
   <module>mod_rewrite</module> and <a href="../expr.html">ap_expr</a>,
   which contains only the path component (no query string).</p></note>
 </usage>
@@ -1786,8 +1790,19 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
         <td>Underlying peer IP address and port of the connection (see the
             <module>mod_remoteip</module> module)</td></tr>
 
+    <tr><td><code>%{b}a</code></td>
+        <td>Like <code>%a</code>, but an IPv6 address is written in
+            brackets, as <code>[address]:port</code>, per
+            <a href="https://www.rfc-editor.org/rfc/rfc5952#section-6">RFC
+            5952, section 6</a>. The <code>b</code> and <code>c</code>
+            flags can be combined, as in <code>%{bc}a</code></td></tr>
+
     <tr><td><code>%A</code></td>
         <td>Local IP-address and port</td></tr>
+
+    <tr><td><code>%{b}A</code></td>
+        <td>Like <code>%A</code>, but an IPv6 address is written in
+            brackets, as with <code>%{b}a</code></td></tr>
 
     <tr><td><code>%{<em>name</em>}e</code></td>
         <td>Request environment variable <em>name</em></td></tr>
@@ -3853,7 +3868,7 @@ or specified mutexes</description>
         module documentation for more information.</p></li>
 
         <li><code>posixsem</code>
-        <p>This is a mutex variant based on a Posix semaphore.</p>
+        <p>This is a mutex variant based on a POSIX semaphore.</p>
 
         <note type="warning"><title>Warning</title>
         <p>The semaphore ownership is not recovered if a thread in the process
@@ -3879,10 +3894,10 @@ or specified mutexes</description>
 
         <li><code>sem</code>
         <p>This selects the "best" available semaphore implementation, choosing
-        between Posix and SystemV IPC semaphores, in that order.</p></li>
+        between POSIX and SystemV IPC semaphores, in that order.</p></li>
 
         <li><code>pthread</code>
-        <p>This is a mutex variant based on cross-process Posix thread
+        <p>This is a mutex variant based on cross-process POSIX thread
         mutexes.</p>
 
         <note type="warning"><title>Warning</title>
@@ -5014,6 +5029,17 @@ SetHandler imap-file
     directories or index files is suppressed. It also overrides
     <directive module="mod_dir">FallbackResource</directive>, since the
     request already has an explicit handler assigned.</p></note>
+
+    <note><title>Merge order with Files/FilesMatch</title>
+    <p>A <directive>SetHandler</directive> set inside a <directive
+    type="section" module="core">Files</directive> or <directive
+    type="section" module="core">FilesMatch</directive> section is merged
+    <em>after</em> one set in a <directive type="section"
+    module="core">Directory</directive> section or <code>.htaccess</code>
+    file for the same request, and so overrides it, even when the
+    <code>.htaccess</code> looks more specific. See <a
+    href="../sections.html#merging">How the sections are merged</a> for the
+    full merge order.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>

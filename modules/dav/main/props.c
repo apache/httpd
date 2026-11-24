@@ -1159,9 +1159,9 @@ DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx)
         ** Prep the element => propdb namespace index mapping, inserting
         ** namespace URIs into the propdb that don't exist.
         */
-        (void) (*propdb->db_hooks->map_namespaces)(propdb->db,
-                                                   propdb->ns_xlate,
-                                                   &propdb->mapping);
+        ctx->err = (*propdb->db_hooks->map_namespaces)(propdb->db,
+                                                       propdb->ns_xlate,
+                                                       &propdb->mapping);
     }
     else if (ctx->operation == DAV_PROP_OP_DELETE) {
         /*

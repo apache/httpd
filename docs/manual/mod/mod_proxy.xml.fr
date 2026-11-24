@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1935589 -->
+<!-- English Revision: 1939369 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -66,7 +66,7 @@
 
         <table border="1">
         <tr><th>Protocole</th><th>Module</th></tr>
-        <tr><td>AJP13 (Protocole Apache JServe version
+        <tr><td>AJP13 (Protocole Apache JServ version
           1.3)</td><td><module>mod_proxy_ajp</module></td></tr>
         <tr><td>CONNECT (pour
           SSL)</td><td><module>mod_proxy_connect</module></td></tr>
@@ -617,6 +617,15 @@ mandatées</description>
 &lt;/Proxy&gt;
    </highlight>
 
+   <note type="warning"><title>Avertissement</title>
+   Cette section de configuration ne rend canonique aucune partie de la chaîne
+   comparée, comme les protocoles, les noms d’hôte, les adresses IP, etc. Il
+   faut être très prudent si on l’utilise pour le contrôle d’accès en ne se
+   limitant pas à interdire l’accès par défaut et en autorisant certains noms
+   d’hôte donnés plutôt que l’inverse, où une interdiction pourrait être
+   court-circuitée en utilisant des formes alternatives.
+    </note>
+
     <note><title>Différences avec la section de configuration Location</title>
       <p>Une URL d'arrière-plan sera concernée par le conteneur Proxy si
       elle commence par la <var>url-avec-jokers</var>, même si le
@@ -686,6 +695,15 @@ mandatées correspondant à une expression rationnelle</description>
     type="section">Proxy</directive>, à l'exception qu'elle définit
     les URLs auxquelles elle s'applique en utilisant une <glossary
     ref="regex">expression rationnelle</glossary>.</p>
+
+   <note type="warning"><title>Avertissement</title>
+   Cette section de configuration ne rend canonique aucune partie de la chaîne
+   comparée, comme les protocoles, les noms d’hôte, les adresses IP, etc. Il
+   faut être très prudent si on l’utilise pour le contrôle d’accès en ne se
+   limitant pas à interdire l’accès par défaut et en autorisant certains noms
+   d’hôte donnés plutôt que l’inverse, où une interdiction pourrait être
+   court-circuitée en utilisant des formes alternatives.
+    </note>
 
     <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
@@ -1434,6 +1452,13 @@ ProxyPass "/mirror/foo/i" "!"
 	0 implique de toujours essayer les serveurs cibles dans un état d'erreur
 	sans délai. Utilise la syntaxe <a
 	href="directive-dict.html#Syntax">time-interval</a>.
+	<br />
+    Un nœud de travail (« worker ») qui ne fait pas partie d'un répartiteur de
+    charge ne passe en état d'erreur en cas d'échec de connexion que si son <a
+    href="#status_table">état</a> est explicitement défini à <code>-I</code>
+    (c'est-à-dire si l'option « ignore-errors » est désactivée) ; par défaut, un
+    tel nœud ignore les erreurs de connexion, auquel cas le paramètre
+    <code>retry</code> est sans effet.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>

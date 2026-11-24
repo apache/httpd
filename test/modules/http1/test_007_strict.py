@@ -10,7 +10,8 @@ from .env import H1Conf
 class TestRequestStrict:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = H1Conf(env)
         conf.add([
             "HttpProtocolOptions Strict",

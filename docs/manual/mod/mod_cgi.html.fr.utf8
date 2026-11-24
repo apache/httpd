@@ -50,7 +50,7 @@
 
     <p>Le module <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> doit &ecirc;tre utilis&eacute; &agrave; la place
     du module <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> lorsqu'on utilise un module MPM
-    multi-thread&eacute; sous Unix. Vus de l'utilisateur, les deux modules
+    multi-thread&eacute; sous UNIX. Vus de l'utilisateur, les deux modules
     sont pratiquement identiques.</p>
 
     <p>&Agrave; des fins de compatibilit&eacute; ascendante, le gestionnaire

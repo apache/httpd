@@ -699,6 +699,11 @@ répertoire</description>
       module="mod_autoindex">AddDescription</directive> pour les dangers
       inhérants à la troncature des descriptions.</strong></dd>
 
+      <dd>Cette largeur est mesurée en octets, pas en caractères ; voir la note
+      sous <code><a href="#indexoptions.namewidth">NameWidth</a></code> pour la
+      manière dont cela peut affecter l’affichage de descriptions avec
+      caractères larges ou avec caractères multi-octets.</dd>
+
       <dt><a name="indexoptions.fancyindexing"
                id="indexoptions.fancyindexing">FancyIndexing</a></dt>
 
@@ -812,6 +817,19 @@ répertoire</description>
 
       <dd><code>NameWidth=*</code> définit la largeur de colonne à la
       valeur nécessaire.</dd>
+
+      <dd>Étant donné que cette largeur est mesurée en octets, un nom contenant
+      des caractères UTF-8 multi-octets ou des caractères en provenance de
+      scripts Unicode « larges » tels que CJK occupe davantage d’octets, ou
+      moins de colonnes de terminal, que ne le ferait le même nombre de
+      caractères ASCII. Le décalage qui en résulte peut donc affecter
+      l’alignement des colonnes qui suivent le nom. Cela s’applique également à
+      <code><a
+      href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>. Pour
+      les répertoires avec un tel contenu, il est préférable d’utiliser <code><a
+      href="#indexoptions.htmltable">HTMLTable</a></code> qui affiche le listing
+      en tant que table HTML au lieu de séparer les colonnes avec des
+      espaces.</dd>
 
       <dt><a name="indexoptions.scanhtmltitles"
                id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>

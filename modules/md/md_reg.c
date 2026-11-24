@@ -1109,7 +1109,18 @@ static apr_status_t run_init(void *baton, apr_pool_t *p, ...)
     *pdriver = driver = apr_pcalloc(p, sizeof(*driver));
 
     driver->p = p;
-    driver->env = env? apr_table_copy(p, env) : apr_table_make(p, 10);
+    if (env) {
+        const apr_array_header_t *arr = apr_table_elts(env);
+        const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
+        int i;
+        driver->env = apr_table_make(p, arr->nelts);
+        for (i = 0; i < arr->nelts; i++) {
+            apr_table_set(driver->env, elts[i].key, elts[i].val);
+        }
+    } else {
+        driver->env = apr_table_make(p, 10);
+    }
+
     driver->reg = reg;
     driver->store = md_reg_store_get(reg);
     driver->proxy_url = reg->proxy_url;

@@ -1,0 +1,3 @@
+  *) mod_sed: Fix the octal escapes the "l" command writes for bytes with
+     the high bit set, which came out as nonsense such as "\/77" for 0xff.
+     [Joe Orton]

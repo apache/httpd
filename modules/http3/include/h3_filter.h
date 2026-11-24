@@ -1,0 +1,102 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef H3_FILTER_H
+#define H3_FILTER_H
+
+#include <httpd.h>
+
+#include <http_protocol.h>
+
+#include <apr_buckets.h>
+#include <apr_pools.h>
+#include <apr_tables.h>
+
+#include "h3.h"
+
+struct h3_stream;
+
+typedef struct h3_conn_ctx_t
+{
+    int resp_status;
+    apr_table_t* resp_headers;
+    char* dataheap;
+    apr_size_t dataheaplen;
+    apr_size_t dataheapcap;
+    apr_pool_t* c3reqpool;
+    server_rec* s;
+    int response_too_large;
+    struct h3_stream* stream;
+    int streaming;
+} h3_conn_ctx_t;
+
+extern ap_filter_rec_t* h3_net_out_filter_handle;
+extern ap_filter_rec_t* h3_net_in_filter_handle;
+extern ap_filter_rec_t* h3_proto_out_filter_handle;
+extern ap_filter_rec_t* h3_proto_in_filter_handle;
+
+/**
+ * Network-layer output filter callback. Discards the brigade (the
+ * response is captured by the protocol-layer filter and submitted to
+ * nghttp3).
+ * @param f  The filter handle (unused).
+ * @param bb The outbound brigade to dispose of.
+ * @return APR_SUCCESS.
+ */
+apr_status_t h3_filter_out(ap_filter_t* f, apr_bucket_brigade* bb);
+
+/**
+ * Protocol-layer output filter callback. Captures the response into the
+ * per-request h3_conn_ctx_t. In the default mode it submits headers early and
+ * feeds body bytes through a bounded per-stream queue with backpressure. When
+ * H3MaxResponseBodySize is finite, it retains bounded whole-response capture
+ * so an over-limit response can be replaced before transmission.
+ * @param f  The filter handle.
+ * @param bb The outbound brigade.
+ * @return APR_SUCCESS, or an APR error if pool/brigade access fails.
+ */
+apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb);
+
+/**
+ * Protocol-layer input filter callback. Serves the request body.
+ * @return APR_SUCCESS, with data and/or an EOS bucket inserted into @p bb.
+ */
+apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
+
+/**
+ * Network-layer input filter callback. Unconditional EOS stub.
+ * @return APR_SUCCESS (with EOS bucket inserted) or APR_EOF.
+ */
+apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
+
+#if H3_STABLE
+
+/**
+ * Finalize the response of @p r the way the core HTTP_HEADER filter would
+ * (merge err_headers_out, materialize Content-Type/-Encoding/-Language, dedup
+ * Vary, add Date/Server, honor no-cache and header-only statuses) and snapshot
+ * the resulting status and headers into @p h3ctx. On servers with response
+ * buckets this arrives as an ap_bucket_response instead; on 2.4.x the
+ * HTTP_HEADER filter is removed from H3 requests and this supplies the same
+ * data. Idempotent: does nothing once h3ctx->resp_headers is set.
+ * @param r     The request whose response is being started.
+ * @param h3ctx The per-request H3 context receiving the snapshot.
+ */
+void h3_response_finalize(request_rec* r, h3_conn_ctx_t* h3ctx);
+
+#endif /* H3_STABLE */
+
+#endif /* H3_FILTER_H */

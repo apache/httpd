@@ -1,0 +1,3 @@
+  *) apachectl: Pass the arguments following "configtest" on to httpd, so that
+     for example -f is honoured. PR 69950
+     [Arturo Bernal]

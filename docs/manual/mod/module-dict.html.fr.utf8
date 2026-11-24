@@ -88,6 +88,13 @@
       <dd>Ce statut indique que le module ("module tiers") ne fait pas
       partie de la distribution de base d'Apache. Nous ne sommes pas
       responsables de ces modules et n'en assurons pas le support.</dd>
+
+      <dt>Obsol&egrave;te</dt>
+
+      <dd>Un module dont le statut est &laquo;&nbsp;Obsol&egrave;te&nbsp;&raquo; est toujours disponible et
+      fonctionnel, mais son utilisation est d&eacute;conseill&eacute;e. Il est susceptible
+      d&rsquo;&ecirc;tre supprim&eacute; dans la prochaine mise &agrave; jour mineure. Consultez sa
+      documentation pour des solutions de remplacement ou de migration.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">

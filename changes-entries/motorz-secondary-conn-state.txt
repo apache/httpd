@@ -1,0 +1,6 @@
+  *) mpm_motorz: Give secondary connections (e.g. mod_http2 streams) their own
+     conn_state_t instead of the one shared with the master connection.  A
+     stream finishing after its master connection had been handed back to the
+     MPM could overwrite the master's state, so that the next request on the
+     connection was lost.  Fixes responses dropped under HTTP/2 connection
+     churn.  [Jim Jagielski]

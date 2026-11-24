@@ -1,0 +1,2 @@
+  *) core: Add ap_cstr_stripws() to strip trailing whitespace from a string.
+     [Robert McConnell <robert mcc0nnell.org>]

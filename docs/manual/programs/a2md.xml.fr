@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1933136 $ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="a2md.xml.meta">
+<parentdocument href="./">Programs</parentdocument>
+
+<title>a2md - Afficher et manipuler les domaines gérés par Apache httpd</title>
+
+<summary>
+    <p>L’utilitaire <program>a2md</program> permet de configurer et mettre à
+    jour les domaines gérés avec le module mod_md pour le serveur HTTP Apache.
+    Les domaines gérés sont des serveurs virtuels qui obtiennent et renouvellent
+    automatiquement les certificats TLS depuis un serveur ACME.</p>
+</summary>
+
+<section id="synopsis"><title>Synopsis</title>
+    <p><code><strong>a2md</strong> [<strong>options</strong>]
+    {<strong>acme | add | update | drive | list | store</strong>}
+    [<strong>cmd_options</strong>] [<strong>args</strong>]</code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+        <dt><code>{-a|--acme} <var>arg</var></code></dt>
+        <dd>L’URL du répertoire du serveur ACME</dd>
+
+        <dt><code>{-d|--dir} <var>arg</var></code></dt>
+        <dd>Répertoire des données de fichier</dd>
+
+        <dt><code>{-h|--help}</code></dt>
+        <dd>Afficher un message d’aide</dd>
+
+        <dt><code>{-j|--json}</code></dt>
+        <dd>Produire une sortie JSON</dd>
+
+        <dt><code>{-p|--proxy} <var>arg</var></code></dt>
+        <dd>Utiliser l’URL du mandataire HTTP</dd>
+
+        <dt><code>{-q|--quiet}</code></dt>
+        <dd>Produire une sortie moins prolixe</dd>
+
+        <dt><code>{-t|--terms} <var>arg</var></code></dt>
+        <dd>Vous acceptez les conditions d’utilisation (URL)</dd>
+
+        <dt><code>{-v|--verbose}</code></dt>
+        <dd>Produire une sortie plus prolixe</dd>
+
+        <dt><code>{-V|--version}</code></dt>
+        <dd>Afficher le numéro de version</dd>
+
+    </dl>
+</section>
+
+<section id="acme_command"><title>Commandes du serveur ACME</title>
+    <p><code><strong>a2md acme</strong>
+    {newreg | delreg | agree | authz | validate}
+    [opts] [args]</code></p>
+
+    <p>Expérimentez avec le serveur ACME. Pour la plupart des commandes, vous
+    devrez spécifier l’URL du répertoire du serveur ACME.</p>
+
+    <dl>
+        <dt><code><strong>newreg</strong> <var>contact-uri</var> [<var>contact-uri</var> ...]</code></dt>
+        <dd>Enregistrer un nouveau compte sur le serveur ACME avec le
+	<var>contact-uri</var> spécifié (email)</dd>
+
+        <dt><code><strong>delreg</strong> <var>account</var></code></dt>
+        <dd>Supprimer le compte ACME <var>account</var> existant</dd>
+
+        <dt><code><strong>agree</strong> <var>account</var></code></dt>
+        <dd>Accepter les conditions d’utilisation de ACME</dd>
+
+        <dt><code><strong>authz</strong> <var>account</var> <var>domain</var></code></dt>
+        <dd>Demander une nouvelle autorisation pour le compte
+	<var>account</var>et le domaine <var>domain</var></dd>
+
+        <dt><code><strong>validate</strong> <var>account</var></code></dt>
+        <dd>Valider l’existence du compte <var>account</var></dd>
+
+    </dl>
+</section>
+
+<section id="add_command"><title>Ajout d’un domaine géré</title>
+    <p><code><strong>a2md add</strong>
+    [opts] domain [domain ...]</code></p>
+
+    <p>Ajouter un nouveau domaine géré. Ne doit pas interférer avec les domaines
+    existants.</p>
+</section>
+
+<section id="update_command"><title>Mise à jour des domaines gérés</title>
+    <p><code><strong>a2md update</strong>
+    <var>name</var> [opts] {domains | ca | account | contacts | agreement}</code></p>
+
+    <p>Mettre à jour les propriétés d’un domaine géré, où <var>name</var> fait
+    partie des domaines gérés qui vont être mis à jour.</p>
+
+    <p>L’URL du serveur ACME peut aussi être mis à jour si l’option
+    <code>-a|--acme</code> est présente.</p>
+
+    <dl>
+        <dt><code><strong>domains</strong> <var>dname</var> [<var>dname</var> ...]</code></dt>
+        <dd>Mise à jour d’un domaine où <var>dname</var> est le nom d’un domaine
+	qui va être mis à jour.</dd>
+
+        <dt><code><strong>ca</strong> <var>url</var> [<var>proto</var>]</code></dt>
+        <dd>L’<var>URL</var> auquel le CA offre ses services. Seul le
+	<var>proto</var> ACME (LetsEncrypt) est actuellement implémenté.</dd>
+
+        <dt><code><strong>account</strong></code></dt>
+        <dd>Le nom du compte sur le serveur ACME correspondant.</dd>
+
+        <dt><code><strong>contacts</strong> <var>email</var> [<var>email</var> ...]</code></dt>
+        <dd>L’adresse de contact qui sera utilisée par le serveur ACME pour vous
+	informer des renouvellements ou des modifications des conditions
+	d’utilisation.</dd>
+
+        <dt><code><strong>agreement</strong> <var>URI</var></code></dt>
+        <dd>L’URI pointant vers les conditions d’utilisation du serveur ACME.</dd>
+
+    </dl>
+</section>
+
+<section id="drive_command"><title>Pilotage des domaines gérés</title>
+    <p><code><strong>a2md drive</strong>
+    [<var>md ...</var>] [<var>options ...</var>]</code></p>
+
+    <p>Piloter tous les domaines gérés ou seulement ceux spécifiés pour qu’ils
+    soient complètement valables.</p>
+
+    <dl>
+        <dt><code>{-c|--challenge} <var>arg</var></code></dt>
+        <dd>Quel type de négociation (challenge) utiliser</dd>
+
+        <dt><code>{-f|--force} <var>arg</var></code></dt>
+        <dd>Forcer le pilotage du domaine géré, même s’il semble valable</dd>
+
+        <dt><code>{-r|--reset} <var>arg</var></code></dt>
+        <dd>Réinitialiser toute donnée de test (staging data) pour le domaine
+	géré</dd>
+    </dl>
+</section>
+
+<section id="list_command"><title>Lister les domaines gérés</title>
+    <p><code><strong>a2md list</strong></code></p>
+
+    <p>Lister tous les domaines gérés.</p>
+</section>
+
+<section id="store_command"><title>Manipuler le magasin MD</title>
+    <p><code><strong>a2md store</strong>
+    {add | remove | list | update}
+    [<var>opts</var>] [<var>args</var>]</code></p>
+
+    <p>Manipuler le magasin MD</p>
+
+    <dl>
+        <dt><code><strong>add</strong> <var>dns</var> [<var>dns</var> ...]</code></dt>
+        <dd>Ajouter un nouveau dns de domaine géré incluant tous les noms de domaine
+	supplémentaires</dd>
+
+        <dt><code><strong>remove</strong> [{-f | --force}] <var>name</var> [<var>name</var> ...]</code></dt>
+        <dd>Supprimer les domaines gérés spécifiés par <var>name</var> du
+	magasin. Si l’option <code>-f</code> ou <code>--force</code> est
+	spécifiée, forcer la suppression du domaine géré — ignorer
+	silencieusement les domaines manquants</dd>
+
+        <dt><code><strong>list</strong></code></dt>
+        <dd>Lister tous les domaines gérés du magasin</dd>
+
+        <dt><code><strong>update</strong> <var>name</var>
+        [<var>domains</var> <var>dname</var> [<var>dname</var> ...]]</code></dt>
+        <dd>Si <var>domains</var> est spécifié suivi d’un ou plusieurs domaines,
+	le magasin MD sera mis à jour avec ces domaines. L’URL du serveur ACME
+	peut aussi être mis à jour si l’option <code>-a</code> ou
+	<code>--acme</code> est présente.</dd>
+
+    </dl>
+</section>
+
+</manualpage>

@@ -78,7 +78,7 @@ switch before dumping core</description>
 
     <note><title>Specific signals</title>
       <p><directive>CoreDumpDirectory</directive> processing only occurs for
-      a select set of fatal signals: SIGFPE, SIGILL, SIGABORT,
+      a select set of fatal signals: SIGFPE, SIGILL, SIGABRT,
       SIGSEGV, and SIGBUS.</p>
       <p>On some operating systems, SIGQUIT also results in a core dump but
       does not go through <directive>CoreDumpDirectory</directive> or
@@ -122,7 +122,7 @@ will exit.</description>
 <default>GracefulShutdownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
-<module>prefork</module></modulelist>
+<module>prefork</module><module>motorz</module></modulelist>
 
 <usage>
     <p>The <directive>GracefulShutdownTimeout</directive> specifies
@@ -358,7 +358,7 @@ in *BSDs.</compatibility>
     the same IP address and port</title>
     <p>Setting the <code>SO_REUSEPORT</code> option on the listening socket(s)
     consequently allows multiple processes (sharing the same <code>EUID</code>,
-    e.g. <code>root</code>) to bind to the the same IP address and port,
+    e.g. <code>root</code>) to bind to the same IP address and port,
     without the binding error raised by the system in the usual case.</p>
     <p>This also means that multiple instances of Apache httpd configured on a
     same <code>IP:port</code> and with a positive <directive>ListenCoresBucketsRatio</directive>
@@ -729,10 +729,17 @@ Apache HTTP Server</a></seealso>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>event</module><module>worker</module>
-<module>prefork</module>
+<module>prefork</module><module>motorz</module>
 </modulelist>
 
 <usage>
+    <p>For the <module>motorz</module> MPM, this directive sets the number of
+    process slots, which must cover <directive
+    module="mpm_common">StartServers</directive> plus the old processes still
+    finishing connections after a graceful restart; it defaults to the larger
+    of 16 and twice
+    <directive module="mpm_common">StartServers</directive>.</p>
+
     <p>For the <module>prefork</module> MPM, this directive sets the
     maximum configured value for <directive
     module="mpm_common">MaxRequestWorkers</directive> for the lifetime of the
@@ -1027,7 +1034,7 @@ to the httpd process.</description>
     the process will <em>not</em> begin to exit if the accept() error is
     ECONNREFUSED, ECONNABORTED, or ECONNRESET.</p>
  
-    <note>Some third-party firwewall software components may inject errors
+    <note>Some third-party firewall software components may inject errors
     into accept() processing, using return codes not specified by the 
     operating system.</note>
 </usage>

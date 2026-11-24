@@ -1,0 +1,3 @@
+  *) mod_cgid: Increase limits for number and length of 
+     environment variables, URI and arguments.  PR 70270.
+     [Emmanuel Dreyfus <manu netbsd.org>, Joe Orton]

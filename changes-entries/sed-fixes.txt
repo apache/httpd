@@ -1,0 +1,4 @@
+  *) mod_sed: Reject malformed scripts which were accepted before, handle
+     bytes with the high bit set as delimiters and in y commands, filter a
+     request body read a line at a time, and drop the request Content-Length
+     once InputSed alters the body.  [Joe Orton]

@@ -178,17 +178,16 @@ static void emit_preamble(request_rec *r, int xhtml, const char *title)
         ap_rvputs(r, DOCTYPE_XHTML_1_0T,
                   "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
                   " <head>\n", NULL);
-	if(d->charset != NULL) {
-          ap_rvputs(r, "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=", d->charset, "\" />\n", NULL);
-	}
-      	ap_rvputs(r, "  <title>Index of ", title,
-                  "</title>\n", NULL);
-    } else {
-        ap_rvputs(r, DOCTYPE_HTML_4_01,
-                  "<html>\n <head>\n"
-                  "  <title>Index of ", title,
-                  "</title>\n", NULL);
     }
+    else {
+        ap_rvputs(r, DOCTYPE_HTML_4_01, "<html>\n <head>\n", NULL);
+    }
+
+    if (d->charset != NULL && *d->charset) {
+        ap_rvputs(r, "  <meta http-equiv=\"Content-Type\" content=\"text/html; "
+                  "charset=", d->charset, xhtml ? "\" />\n" : "\">\n", NULL);
+    }
+    ap_rvputs(r, "  <title>Index of ", title, "</title>\n", NULL);
 
     if (d->style_sheet != NULL) {
         ap_rvputs(r, "  <link rel=\"stylesheet\" href=\"", d->style_sheet,
@@ -1452,22 +1451,21 @@ static char *terminate_description(autoindex_config_rec *d, char *desc,
     }
     for (x = 0; desc[x] && ((maxsize > 0) || (desc[x] == '<')); x++) {
         if (desc[x] == '<') {
-            while (desc[x] != '>') {
-                if (!desc[x]) {
-                    maxsize = 0;
-                    break;
-                }
+            while (desc[x] && desc[x] != '>') {
                 ++x;
+            }
+            if (!desc[x]) {
+                break;
             }
         }
         else if (desc[x] == '&') {
             /* entities like &auml; count as one character */
             --maxsize;
-            for ( ; desc[x] != ';'; ++x) {
-                if (desc[x] == '\0') {
-                     maxsize = 0;
-                     break;
-                }
+            for ( ; desc[x] && desc[x] != ';'; ++x) {
+                ;
+            }
+            if (!desc[x]) {
+                break;
             }
         }
         else {

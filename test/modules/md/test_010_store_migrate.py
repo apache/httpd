@@ -3,15 +3,18 @@
 import os
 import pytest
 
+from pyhttpd.depends import needs_dependency
+
 from .md_conf import MDConf
 from .md_env import MDTestEnv
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_a2md(), reason="no a2md available")
+@needs_dependency("a2md", MDTestEnv.has_a2md(), reason="no a2md available")
 class TestStoreMigrate:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         MDConf(env).install()
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
 

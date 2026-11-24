@@ -1,0 +1,4 @@
+  *) mpm_event: Fix a SIGTERM delivered to a child very early in
+     startup potentially hanging or corrupting that child, by making
+     its signal handler exit immediately instead of running
+     non-async-signal-safe cleanup. PR 70267 [Arturo Bernal]

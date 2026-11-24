@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2026-05-08" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2026-09-15" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -122,16 +122,16 @@ entity version
 The number of times this entry has been revalidated without being deleted\&. 
 .TP
 date
-Date of the response\&. 
+Timestamp of the response in microseconds\&. 
 .TP
 expiry
-Expiry date of the response\&. 
+Expiry timestamp of the response in microseconds\&. 
 .TP
 request time
-Time of the start of the request\&. 
+Timestamp of the start of the request in microseconds\&. 
 .TP
 response time
-Time of the end of the request\&. 
+Timestamp of the end of the request in microseconds\&. 
 .TP
 body present
 If 0, no body is stored with this request, 1 otherwise\&. 

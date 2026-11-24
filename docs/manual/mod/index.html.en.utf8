@@ -180,6 +180,8 @@ request processing</dd>
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
     encoding)</dd>
+<dt><a href="mod_mime_libmagic.html">mod_mime_libmagic</a></dt><dd>Determines the MIME type of a file from its contents
+    using libmagic</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd>
@@ -268,7 +270,7 @@ identifier for each request</dd>
 hosting</dd>
 <dt><a href="mod_watchdog.html" id="W" name="W">mod_watchdog</a></dt><dd>provides infrastructure for other modules to periodically run
     tasks</dd>
-<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalisation support for libxml2-based
+<dt><a href="mod_xml2enc.html" id="X" name="X">mod_xml2enc</a></dt><dd>Enhanced charset/internationalization support for libxml2-based
 filter modules</dd>
 </dl></div></div>
 <div class="bottomlang">

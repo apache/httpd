@@ -19,23 +19,12 @@
 # buildconf: Build the support scripts needed to compile from a
 #            checked-out version of the source code.
 
-# version check for AC_PROG_CC_C99
-ac_version=`${AUTOCONF:-autoconf} --version 2>/dev/null|sed -e 's/^[^0-9]*//;s/[a-z]* *$//;q'`
-case "$ac_version" in
-# versions older than 2.50 are denied by AC_PREREQ
-2.5*)
-    echo WARNING: You are using an outdated version of autoconf.
-    echo WARNING: This may lead to less than optimal performance of httpd.
-    echo WARNING: You should use autoconf 2.60 or newer.
-    sleep 1
-    ;;
-esac
-
 # set a couple of defaults for where we should be looking for our support libs.
 # can be overridden with --with-apr=[dir] and --with-apr-util=[dir]
 
 apr_src_dir="srclib/apr ../apr"
 apu_src_dir=""
+autoconf_args="-Wall"
 
 # By default, touch the checked-in sources to suppress regeneration of
 # the ap_expr parser.
@@ -61,6 +50,10 @@ do
     --with-regen-expr)
         regen_expr=yes
         ;;
+
+    --with-errors)
+        autoconf_args="$autoconf_args -Werror"
+        ;;
     
     -h|--help)
         cat <<EOF
@@ -84,6 +77,8 @@ Configuration:
 
   --with-regen-expr        suppress the timestamp adjustment which prevents the 
                            rebuild of the ap_expr expression parser
+
+  --with-errors            fail on autoconf generation warnings
 
 APR-Config Mode:
 
@@ -254,7 +249,7 @@ if [ $apr_major_version -lt 2 ] ; then
     apu_src_dir=`cd $apu_src_dir && pwd`
 fi
 
-echo copying build files
+echo buildconf: copying build files
 if [ -n "${apr_config}" ]; then
     # If we're using apr-config, we switch things up a little bit:
     # - use automake's config.* scripts instead of APR's
@@ -294,13 +289,29 @@ if [ -z "${apr_config}" ]; then
     fi
 fi
 
-echo rebuilding $config_h_in
+echo buildconf: rebuilding $config_h_in
 rm -f $config_h_in
-${AUTOHEADER:-autoheader} 2>&1 | grep -v "$cross_compile_warning"
+if ${AUTOHEADER:-autoheader} ${autoconf_args}; then
+    :
+else
+    echo buildconf: ERROR: autoheader failed, bailing out.
+    exit 1
+fi
 
-echo rebuilding configure
+# The PACKAGE_* definitions are unused here since AC_INIT is not given
+# the package arguments, and only pollute the namespace of anything
+# which includes the installed header.
+echo buildconf: removing PACKAGE_ definitions from $config_h_in
+sed -i -e '/^#undef PACKAGE_/d' $config_h_in
+
+echo buildconf: rebuilding configure
 rm -f config.cache
-${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
+if ${AUTOCONF:-autoconf} ${autoconf_args}; then
+    :
+else
+    echo buildconf: ERROR: autoconf failed, bailing out.
+    exit 2
+fi
 
 # Remove autoconf 2.5x cache directories
 rm -rf autom4te*.cache
@@ -309,7 +320,7 @@ rm -rf autom4te*.cache
 rm -rf bsd_converted
 
 if [ -f `which cut` ]; then
-  echo rebuilding rpm spec file
+  echo buildconf: rebuilding rpm spec file
   ( VMMN=`build/get-version.sh mmn include/ap_mmn.h MODULE_MAGIC_NUMBER`
     EPOCH=`build/get-version.sh epoch include/ap_release.h AP_SERVER`
     REVISION=`build/get-version.sh all include/ap_release.h AP_SERVER`

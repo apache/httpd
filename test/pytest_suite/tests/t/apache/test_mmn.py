@@ -20,11 +20,14 @@ _MINOR = re.compile(r"^#define\s+MODULE_MAGIC_NUMBER_MINOR\s+(\d+)(?:\s|$)")
 @need_min_apache_version("2")
 def test_mmn(http):
     incdir = http.apxs("INCLUDEDIR")
-    if not incdir:
-        pytest.skip("apxs INCLUDEDIR unavailable")
-    filename = os.path.join(incdir, "ap_mmn.h")
-    if not os.path.isfile(filename):
-        pytest.skip(f"can't read {filename}")
+    filename = os.path.join(incdir, "ap_mmn.h") if incdir else None
+    if not filename or not os.path.isfile(filename):
+        # Fall back to the source tree include/ directory.
+        src_inc = os.path.join(http.vars("top_dir"), "..", "..", "include", "ap_mmn.h")
+        if os.path.isfile(src_inc):
+            filename = src_inc
+        else:
+            pytest.skip("ap_mmn.h not found (no apxs and not in source tree)")
 
     cmajor = cminor = major = minor = None
     with open(filename) as fh:

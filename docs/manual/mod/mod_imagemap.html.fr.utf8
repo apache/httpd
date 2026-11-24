@@ -32,7 +32,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Traitement des cartes des zones interactives d'une image
 (imagemaps) au niveau du serveur</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>imagemap_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_imagemap.c</td></tr></table>
 <h3>Sommaire</h3>
@@ -320,7 +320,7 @@ fichiers imagemap</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ImapBase http://nom_serveur/</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>La directive <code class="directive">ImapBase</code> permet de d&eacute;finir la
@@ -346,7 +346,7 @@ cible</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ImapDefault nocontent</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>La directive <code class="directive">ImapDefault</code> permet de d&eacute;finir
@@ -368,7 +368,7 @@ lorsqu'on invoque un fichier imagemap</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ImapMenu formatted</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>La directive <code class="directive">ImapMenu</code> permet de sp&eacute;cifier

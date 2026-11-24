@@ -33,7 +33,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Group authorizations based on host (name or IP
 address)</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>access_compat_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_access_compat.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3 as a compatibility module with
@@ -110,7 +110,7 @@ server</td></tr>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
     <p>The <code class="directive">Allow</code> directive affects which hosts can
@@ -236,7 +236,7 @@ server</td></tr>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
     <p>This directive allows access to the server to be restricted
@@ -255,7 +255,7 @@ evaluated.</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Order Deny,Allow</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
 
@@ -406,7 +406,7 @@ user authentication</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Satisfy All</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Deprecated</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
 </table>
     <p>Access policy if both <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> used. The parameter can be

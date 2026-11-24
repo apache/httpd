@@ -1,0 +1,4 @@
+  *) mod_ssl: Fix "Require ssl-verify-client" always denying a request on
+     an HTTP/2 secondary connection, even when the client presented a
+     valid certificate and the handshake itself already verified it.
+     PR 70284 [Arturo Bernal]

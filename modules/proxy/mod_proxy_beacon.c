@@ -103,6 +103,9 @@
 #include "apr_siphash.h"
 #include "apr_md5.h"
 
+#if APR_HAVE_PROCESS_H
+#include <process.h>            /* for getpid() on Windows */
+#endif
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>             /* for getpid() */
 #endif
@@ -118,13 +121,18 @@ typedef enum {
     BEACON_ROLE_LISTEN    /* reverse proxy: listens and receives announcements */
 } beacon_role_e;
 
+/* Longest announced url we handle (including the NUL). */
+#define BEACON_URL_MAX  512
+
 /* listener-side per-backend state, keyed by url in ctx->seen. */
-typedef struct {
+typedef struct beacon_member_t {
     apr_time_t last_seen;    /* updated on every beacon for this url */
     apr_time_t last_attempt; /* last add attempt (throttles retry when full) */
     apr_int64_t last_ts;     /* highest signed ts= accepted (replay guard) */
     int        added;        /* worker exists in the balancer (add dedup) */
     int        evicted;      /* WE set DISABLED on timeout (guards flip churn) */
+    char       url[BEACON_URL_MAX]; /* the key in ctx->seen (the hash keeps no copy) */
+    struct beacon_member_t *next_free; /* free list link while unused */
 } beacon_member_t;
 
 typedef struct {
@@ -144,22 +152,38 @@ typedef struct {
     apr_time_t           last_sweep;   /* listener eviction-scan throttle */
     apr_uint64_t         seq;          /* announcement counter */
     apr_hash_t          *seen;         /* listener: url -> beacon_member_t* */
+    beacon_member_t     *free_members; /* listener: reclaimed records, for reuse */
     APR_OPTIONAL_FN_TYPE(balancer_manage) *manage_fn; /* listener: cached, lazy */
     /* Phase 4: channel authentication. */
     int                  has_secret;   /* ProxyBeaconSecret was set */
     unsigned char        mac_key[APR_MD5_DIGESTSIZE]; /* siphash key (16 bytes) */
-    apr_int64_t          max_skew;     /* ProxyBeaconMaxSkew, seconds (replay window) */
+    apr_interval_time_t  max_skew;     /* ProxyBeaconMaxSkew (replay window); 0 = default */
     apr_uint64_t         reject_count; /* listener: dropped-since-last-log counter */
     apr_time_t           last_reject_log; /* listener: reject-log rate limiter */
-    int                  open_failed;     /* STARTING: socket open/listen/dial failed permanently */
+    int                  open_failed;     /* socket open failed; retried with back-off */
+    int                  reconciled;      /* listener: adopted pre-existing members as owner */
+    apr_pool_t          *open_pool;       /* socket + address of the current open attempt */
+    apr_time_t           next_open_try;   /* when to retry a failed open (0 = not scheduled) */
+    apr_interval_time_t  open_delay;      /* current retry back-off (0 = no failure yet) */
+    int                  io_errors;       /* failed sends/receives in a row */
+    apr_time_t           last_io_error_log;
+    apr_time_t           next_refresh;    /* sender: when to resolve the destination again */
+    apr_pool_t          *addr_pool;       /* sender: a refreshed destination, if any */
+    apr_time_t           recv_log_window; /* start of the second counted below */
+    unsigned int         recv_log_count;  /* "received:" lines logged in it */
+    apr_uint64_t         recv_log_suppressed; /* ...and those it left out */
 } beacon_ctx_t;
 
 /* SipHash-2-4 output is 8 bytes -> 16 hex chars (+ NUL). */
 #define BEACON_MAC_HEXLEN  (APR_SIPHASH_DSIZE * 2)
-#define BEACON_MAXSKEW_DEFAULT  30   /* seconds */
+/* Shortest ProxyBeaconSecret accepted. */
+#define BEACON_MIN_SECRET_LEN   16
+/* A secret of this form is used directly as the MAC key (no passphrase). */
+#define BEACON_HEXKEY_PREFIX    "hex:"
+#define BEACON_MAXSKEW_DEFAULT  apr_time_from_sec(30)
 
 /* Max announcement datagram we accept.  Our messages are a few hundred bytes;
- * anything larger is not one of ours and is truncated on receive. */
+ * anything larger is not one of ours and is dropped. */
 #define BEACON_MAX_MSG_LEN  2048
 
 /* When an add fails (e.g. the balancer is full), don't retry on every
@@ -170,6 +194,31 @@ typedef struct {
  * (authenticated) backend announcing unboundedly many distinct urls.  Once
  * reached, unknown urls are dropped (rate-limited log) rather than tracked/added. */
 #define BEACON_MAX_MEMBERS      256
+
+/* A failed socket open (unresolvable address, port in use, ...) is retried: the
+ * cause may be transient (a name server that is not up yet).  The delay starts
+ * at BEACON_OPEN_RETRY and doubles up to BEACON_OPEN_RETRY_MAX.  Retrying every
+ * watchdog tick would flood the error log, and an address lookup blocks the
+ * (single, shared) watchdog thread for as long as the resolver takes to give
+ * up, so a failing name must not be retried often. */
+#define BEACON_OPEN_RETRY       apr_time_from_sec(30)
+#define BEACON_OPEN_RETRY_MAX   apr_time_from_sec(600)
+
+/* Cap on datagrams handled per watchdog tick, so a flood can't hold the
+ * watchdog thread in the receive loop; the rest wait for the next tick. */
+#define BEACON_MAX_DRAIN        1024
+/* ...and no more than this much time per tick, so that a flood of datagrams
+ * cannot keep the watchdog thread from the eviction sweep and the other
+ * contexts that share it. */
+#define BEACON_DRAIN_BUDGET     apr_time_from_msec(50)
+/* After this many failed sends or receives in a row the socket is closed and
+ * reopened (re-resolving the address) under the open back-off. */
+#define BEACON_IO_ERRORS_MAX    5
+/* A sender looks its destination up again this often, so that a proxy which
+ * moved to another address is found. */
+#define BEACON_REFRESH          apr_time_from_sec(300)
+/* The "received:" lines, at most this many per second and context. */
+#define BEACON_RECV_LOG_PER_SEC 20
 
 /* Process-wide watchdog handle, like mod_proxy_hcheck's static watchdog. */
 static ap_watchdog_t *beacon_watchdog;
@@ -234,25 +283,101 @@ static const char *beacon_set_pub_url(cmd_parms *cmd, void *dummy, const char *a
     return NULL;
 }
 
+/*
+ * Canonical member identity.  An announced url names a backend *origin*:
+ * scheme://host[:port], nothing more.  Returns that origin in the exact form the
+ * proxy's worker-definition code stores it as the worker name -- lower-case
+ * scheme and host, the scheme's default port dropped, no trailing slash -- or
+ * NULL if url is not an origin (no scheme or host, a non-empty path, a query,
+ * a fragment, userinfo, or a port that is not a valid number).
+ *
+ * The announced string is used both as the key beacon tracks a member under and
+ * as the name handed to balancer_manage(), whose worker lookup is a
+ * longest-prefix match.  Using one canonical origin for all of them keeps those
+ * identities equal; accepting paths would let /one and /one/two name the same
+ * worker while holding separate leases.
+ */
+static const char *beacon_canonical_url(apr_pool_t *pool, const char *url)
+{
+    apr_uri_t uri;
+    const char *host, *port = "", *c, *canon;
+
+    /* Printable ASCII only: the url is logged and becomes a worker name. */
+    for (c = url; *c; c++) {
+        if (!apr_isgraph(*c) || !apr_isascii(*c)) {
+            return NULL;
+        }
+    }
+    if (apr_uri_parse(pool, url, &uri) != APR_SUCCESS
+        || !uri.scheme || !*uri.scheme
+        || !uri.hostname || !*uri.hostname) {
+        return NULL;
+    }
+    if (uri.user || uri.password || uri.query || uri.fragment
+        || (uri.path && *uri.path && strcmp(uri.path, "/"))) {
+        return NULL;
+    }
+    /* apr_uri_parse() runs strtol() and truncates to 16 bits, so "-80" would
+     * otherwise come out as port 65456 and "99999" as 34463. */
+    if (uri.port_str && *uri.port_str) {
+        const char *d;
+        unsigned long port_val = 0;
+        for (d = uri.port_str; *d; d++) {
+            if (!apr_isdigit(*d)) {
+                return NULL;
+            }
+            port_val = port_val * 10 + (*d - '0');
+            if (port_val > 65535) {
+                return NULL;
+            }
+        }
+        if (!port_val) {
+            return NULL;
+        }
+    }
+
+    /* The proxy truncates a scheme or worker name that does not fit its shared
+     * storage, which would give the member another identity than the one
+     * announced. */
+    if (strlen(uri.scheme) >= PROXY_WORKER_MAX_SCHEME_SIZE
+        || strlen(uri.hostname) >= PROXY_RFC1035_HOSTNAME_SIZE) {
+        return NULL;
+    }
+
+    ap_str_tolower(uri.scheme);
+    ap_str_tolower(uri.hostname);
+    host = ap_strchr_c(uri.hostname, ':')
+           ? apr_pstrcat(pool, "[", uri.hostname, "]", NULL)
+           : uri.hostname;
+    if (uri.port && uri.port != ap_proxy_port_of_scheme(uri.scheme)) {
+        port = apr_psprintf(pool, ":%u", (unsigned)uri.port);
+    }
+    canon = apr_pstrcat(pool, uri.scheme, "://", host, port, NULL);
+    return strlen(canon) < PROXY_WORKER_MAX_NAME_SIZE ? canon : NULL;
+}
+
 static const char *beacon_set_advertise(cmd_parms *cmd, void *dummy,
                                      const char *arg)
 {
     beacon_ctx_t *ctx = ap_get_module_config(cmd->server->module_config,
                                           &proxy_beacon_module);
-    apr_uri_t uri;
+    const char *canon;
     const char *err = ap_check_cmd_context(cmd, NOT_IN_HTACCESS);
     if (err) {
         return err;
     }
-    /* Must be a routable backend URL (scheme://host[:port]); it becomes a
-     * BalancerMember on the proxy. */
-    if (apr_uri_parse(cmd->pool, arg, &uri) != APR_SUCCESS
-        || !uri.scheme || !uri.hostname) {
+    /* Must be a routable backend origin (scheme://host[:port], no path); it
+     * becomes a BalancerMember on the proxy.  Announce its canonical form, so
+     * sender and receiver agree on the member's identity. */
+    canon = beacon_canonical_url(cmd->pool, arg);
+    if (!canon) {
         return apr_psprintf(cmd->pool,
                             "ProxyBeaconAdvertise: '%s' is not a valid "
-                            "scheme://host[:port] URL", arg);
+                            "scheme://host[:port] URL (no path, query, "
+                            "fragment or userinfo; short enough to be a "
+                            "worker name)", arg);
     }
-    ctx->advertise_url = apr_pstrdup(cmd->pool, arg);
+    ctx->advertise_url = (char *)canon;
     return NULL;
 }
 
@@ -323,6 +448,11 @@ static const char *beacon_set_timeout(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static int beacon_hexval(char c)
+{
+    return apr_isdigit(c) ? c - '0' : apr_tolower(c) - 'a' + 10;
+}
+
 static const char *beacon_set_secret(cmd_parms *cmd, void *dummy, const char *arg)
 {
     beacon_ctx_t *ctx = ap_get_module_config(cmd->server->module_config,
@@ -333,6 +463,38 @@ static const char *beacon_set_secret(cmd_parms *cmd, void *dummy, const char *ar
     }
     if (!*arg) {
         return "ProxyBeaconSecret: empty secret";
+    }
+    /* hex:<32 hex digits> is the key itself: a random 128-bit key has no
+     * passphrase to guess, so it needs no key derivation. */
+    if (!strncmp(arg, BEACON_HEXKEY_PREFIX, sizeof(BEACON_HEXKEY_PREFIX) - 1)) {
+        const char *h = arg + sizeof(BEACON_HEXKEY_PREFIX) - 1;
+        int i;
+
+        if (strlen(h) != 2 * sizeof(ctx->mac_key)) {
+            return apr_psprintf(cmd->pool,
+                                "ProxyBeaconSecret: hex: needs exactly %d hex "
+                                "digits (e.g. from 'openssl rand -hex %d')",
+                                (int)(2 * sizeof(ctx->mac_key)),
+                                (int)sizeof(ctx->mac_key));
+        }
+        for (i = 0; i < (int)sizeof(ctx->mac_key); i++) {
+            if (!apr_isxdigit(h[2 * i]) || !apr_isxdigit(h[2 * i + 1])) {
+                return "ProxyBeaconSecret: hex: value has a non-hex digit";
+            }
+            ctx->mac_key[i] = (unsigned char)
+                ((beacon_hexval(h[2 * i]) << 4) | beacon_hexval(h[2 * i + 1]));
+        }
+        ctx->has_secret = 1;
+        return NULL;
+    }
+    /* The MAC key is derived from the passphrase with a fast hash, so anyone who
+     * captures one announcement can test guesses offline at full speed; only a
+     * long random secret resists that. */
+    if (strlen(arg) < BEACON_MIN_SECRET_LEN) {
+        return apr_psprintf(cmd->pool,
+                            "ProxyBeaconSecret: the secret must be at least %d "
+                            "characters (use a long random value)",
+                            BEACON_MIN_SECRET_LEN);
     }
     /* Derive a 16-byte SipHash key from the passphrase.  This is key
      * derivation (spreading the shared secret to the key size both ends use),
@@ -357,7 +519,7 @@ static const char *beacon_set_maxskew(cmd_parms *cmd, void *dummy, const char *a
     if (rv != APR_SUCCESS || iv <= 0) {
         return "ProxyBeaconMaxSkew must be a positive time (replay window)";
     }
-    ctx->max_skew = apr_time_sec(iv);
+    ctx->max_skew = iv;
     return NULL;
 }
 
@@ -405,12 +567,37 @@ static const command_rec beacon_cmds[] = {
  * own address:port; UDP and TCP are independent port spaces, so binding UDP:N
  * does not collide with the server's TCP listener.  *addr_out is from p.
  */
+/*
+ * Split "[host][:port]". apr_parse_addr_port() refuses a string that starts
+ * with ':', which the directive syntax allows to mean "this server's host".
+ */
+static apr_status_t beacon_parse_hostport(apr_pool_t *p, const char *hostport,
+                                          char **host, apr_port_t *port)
+{
+    char *scope;
+
+    if (*hostport == ':') {
+        apr_off_t val;
+        char *end;
+
+        if (apr_isdigit(hostport[1]) == 0
+            || apr_strtoff(&val, hostport + 1, &end, 10) != APR_SUCCESS
+            || *end || val < 1 || val > 65535) {
+            return APR_EINVAL;
+        }
+        *host = NULL;
+        *port = (apr_port_t)val;
+        return APR_SUCCESS;
+    }
+    return apr_parse_addr_port(host, &scope, port, hostport, p);
+}
+
 static apr_status_t beacon_resolve(apr_pool_t *p, const char *url,
                                    const char *default_host,
                                    apr_port_t default_port,
                                    apr_sockaddr_t **addr_out)
 {
-    char *host = NULL, *scope;
+    char *host = NULL;
     apr_port_t port = 0;
     apr_status_t rv;
 
@@ -419,7 +606,7 @@ static apr_status_t beacon_resolve(apr_pool_t *p, const char *url,
         if ((sep = ap_strstr_c(url, "://")) != NULL) {
             hostport = sep + 3;
         }
-        rv = apr_parse_addr_port(&host, &scope, &port, hostport, p);
+        rv = beacon_parse_hostport(p, hostport, &host, &port);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -487,11 +674,24 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
     server_rec *s = ctx->s;
     apr_status_t rv;
 
-    /* A prior open/bind failure is treated as permanent: the admin must fix the
-     * configuration (bad address, port conflict) and restart.  Without this
-     * guard the watchdog would retry every ~100ms and fill the error log. */
+    /* After an open/bind failure, wait for the retry in beacon_cb_running()
+     * (BEACON_OPEN_RETRY): retrying on every ~100ms watchdog tick would fill
+     * the error log. */
     if (ctx->opened || ctx->open_failed) {
         return;
+    }
+
+    /* The address and socket of an attempt live in their own pool, cleared
+     * before each retry so a persistent failure does not grow ctx->p. */
+    if (ctx->addr_pool) {
+        apr_pool_destroy(ctx->addr_pool);
+        ctx->addr_pool = NULL;
+    }
+    if (ctx->open_pool) {
+        apr_pool_clear(ctx->open_pool);
+    }
+    else {
+        apr_pool_create(&ctx->open_pool, ctx->p);
     }
 
     if (ctx->role == BEACON_ROLE_LISTEN) {
@@ -505,7 +705,7 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
         const char *defhost;
         apr_port_t defport;
         beacon_server_default_addr(s, &defhost, &defport);
-        if ((rv = beacon_resolve(ctx->p, ctx->sub_url, defhost, defport,
+        if ((rv = beacon_resolve(ctx->open_pool, ctx->sub_url, defhost, defport,
                                  &ctx->addr)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          APLOGNO(10567) "mod_proxy_beacon: cannot resolve "
@@ -516,14 +716,23 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
             return;
         }
         if ((rv = apr_socket_create(&ctx->sock, ctx->addr->family, SOCK_DGRAM,
-                                    APR_PROTO_UDP, ctx->p)) != APR_SUCCESS) {
+                                    APR_PROTO_UDP, ctx->open_pool)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          APLOGNO(10568) "mod_proxy_beacon: apr_socket_create failed");
             ctx->open_failed = 1;
             return;
         }
         apr_socket_opt_set(ctx->sock, APR_SO_REUSEADDR, 1);
-        apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1);
+        /* Receiving must never block: it happens on the watchdog thread. */
+        if ((rv = apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1))
+                != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         APLOGNO(10637) "mod_proxy_beacon: cannot make the "
+                         "listening socket non-blocking");
+            apr_socket_close(ctx->sock);
+            ctx->open_failed = 1;
+            return;
+        }
         if ((rv = apr_socket_bind(ctx->sock, ctx->addr)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          APLOGNO(10569) "mod_proxy_beacon: bind to %pI failed",
@@ -533,6 +742,21 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
             return;
         }
         ctx->opened = 1;
+        ctx->io_errors = 0;
+        {
+            /* Nothing could have been received while the socket was closed:
+             * do not evict members for that silence. */
+            apr_hash_index_t *hi;
+            apr_time_t t = apr_time_now();
+
+            for (hi = apr_hash_first(ctx->open_pool, ctx->seen); hi;
+                 hi = apr_hash_next(hi)) {
+                void *val;
+
+                apr_hash_this(hi, NULL, NULL, &val);
+                ((beacon_member_t *)val)->last_seen = t;
+            }
+        }
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      APLOGNO(10570) "mod_proxy_beacon: listening for beacons on %pI",
                      ctx->addr);
@@ -550,7 +774,7 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
         /* Sender: the destination host:port targets the proxy and cannot be
          * inferred from this backend's own address, so both must be given
          * explicitly (no defaults). */
-        if ((rv = beacon_resolve(ctx->p, ctx->pub_url, NULL, 0, &ctx->addr))
+        if ((rv = beacon_resolve(ctx->open_pool, ctx->pub_url, NULL, 0, &ctx->addr))
                 != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          APLOGNO(10573) "mod_proxy_beacon: cannot resolve "
@@ -560,7 +784,7 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
             return;
         }
         if ((rv = apr_socket_create(&ctx->sock, ctx->addr->family, SOCK_DGRAM,
-                                    APR_PROTO_UDP, ctx->p)) != APR_SUCCESS) {
+                                    APR_PROTO_UDP, ctx->open_pool)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          APLOGNO(10574) "mod_proxy_beacon: apr_socket_create failed");
             ctx->open_failed = 1;
@@ -569,8 +793,18 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
         /* UDP is connectionless: no dial, no reconnect.  Datagrams are sent to
          * ctx->addr each interval; if the proxy isn't up yet they are simply
          * dropped and the next interval tries again. */
-        apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1);
+        if ((rv = apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1))
+                != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         APLOGNO(10638) "mod_proxy_beacon: cannot make the "
+                         "sending socket non-blocking");
+            apr_socket_close(ctx->sock);
+            ctx->open_failed = 1;
+            return;
+        }
         ctx->opened = 1;
+        ctx->io_errors = 0;
+        ctx->next_refresh = apr_time_now() + BEACON_REFRESH;
         ctx->last_publish = 0; /* beacon on the first running tick */
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      APLOGNO(10575) "mod_proxy_beacon: beaconing to %pI", ctx->addr);
@@ -643,6 +877,44 @@ static int beacon_have_manage_fn(beacon_ctx_t *ctx)
     return 1;
 }
 
+/* Status flags a beacon worker is created with (see b_nwrkr_flags). */
+static const char beacon_new_flags[] = { PROXY_WORKER_BEACON_FLAG, '\0' };
+
+/*
+ * Look up url among the members of the configured balancer.  Beacon only ever
+ * deals in canonical origins (see beacon_canonical_url()), for which the
+ * balancer's longest-prefix lookup can only match the worker of that exact name.
+ * balancer_manage()/balancer_process_balancer_worker() silently succeed on an
+ * operation on a worker they cannot find, so callers use this to learn what
+ * really happened.  Returns NULL if there is no such member.
+ */
+static proxy_worker *beacon_find_worker(beacon_ctx_t *ctx, apr_pool_t *pool,
+                                        const char *url)
+{
+    proxy_server_conf *conf =
+        ap_get_module_config(ctx->s->module_config, &proxy_module);
+    proxy_balancer *bsel = ap_proxy_get_balancer(pool, conf,
+            apr_pstrcat(pool, BALANCER_PREFIX, ctx->balancer_name, NULL), 0);
+    proxy_worker *w;
+
+    if (!bsel) {
+        return NULL;
+    }
+    /* A worker added through another child's balancer-manager is not in this
+     * process's view until synced; without it the ownership check is blind. */
+    PROXY_THREAD_LOCK(bsel);
+    ap_proxy_sync_balancer(bsel, ctx->s, conf);
+    w = ap_proxy_get_worker(pool, bsel, conf, url);
+    PROXY_THREAD_UNLOCK(bsel);
+    return w;
+}
+
+static int beacon_worker_exists(beacon_ctx_t *ctx, apr_pool_t *pool,
+                                const char *url)
+{
+    return beacon_find_worker(ctx, pool, url) != NULL;
+}
+
 /*
  * Set (or clear) a worker's DISABLED flag via balancer_manage -- the exact path
  * the balancer-manager UI uses (params { b, w, w_status_D }).  This is how both
@@ -656,6 +928,19 @@ static apr_status_t beacon_set_worker_disabled(beacon_ctx_t *ctx, apr_pool_t *po
     request_rec *r;
     apr_table_t *params;
     apr_status_t rv;
+
+    /* ctx->manage_fn is resolved lazily; a status change can be the first
+     * balancer operation this process performs (e.g. re-enabling a member
+     * adopted from the previous watchdog owner). */
+    if (!beacon_have_manage_fn(ctx)) {
+        return APR_EGENERAL;
+    }
+
+    /* balancer_manage() reports success when it finds no such worker, which
+     * would let us record a status change that never happened. */
+    if (!beacon_worker_exists(ctx, pool, url)) {
+        return APR_ENOENT;
+    }
 
     apr_pool_create(&subp, pool);
     r = beacon_make_fake_request(subp, ctx->s);
@@ -695,6 +980,12 @@ static void beacon_log_throttled(beacon_ctx_t *ctx, apr_time_t now, const char *
  * caller-owned member entry m: m->added is set on success.  Returns APR_SUCCESS
  * on success.  A failure here (e.g. the balancer is full) is expected and
  * handled by the caller via backoff, not retried every announcement.
+ *
+ * Beacon only manages workers it created: a worker it adds is marked with
+ * PROXY_WORKER_BEACON, which lives in the worker's shared state and so outlives
+ * both this process and the watchdog owner that set it.  A same-named worker
+ * that is not so marked (a BalancerMember from the configuration, or one an
+ * administrator added) is left alone.
  */
 static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
                                 const char *url, beacon_member_t *m,
@@ -705,6 +996,7 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
     request_rec *r;
     apr_table_t *params;
     apr_status_t rv;
+    proxy_worker *w;
 
     m->last_attempt = now;
 
@@ -712,33 +1004,68 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
         return APR_EGENERAL;
     }
 
-    apr_pool_create(&subp, pool);
-    r = beacon_make_fake_request(subp, s);
-
-    /* Step 1: add the worker (created DISABLED). */
-    params = apr_table_make(subp, 4);
-    apr_table_setn(params, "b", ctx->balancer_name);
-    apr_table_setn(params, "b_nwrkr", url);
-    apr_table_setn(params, "b_wyes", "1");
-    rv = ctx->manage_fn(r, params);
-    apr_pool_destroy(subp);
-    if (rv != APR_SUCCESS) {
-        /* Most likely the balancer has no free slots (grow it via ProxySet
-         * growth / BalancerGrowth).  Throttled log; retried only after the
+    w = beacon_find_worker(ctx, pool, url);
+    if (w) {
+        /* The normal case after a graceful restart, when the balancer's
+         * members (persisted in shared memory) outlive this process's empty
+         * ctx->seen: balancer_manage() refuses to re-add an existing worker,
+         * so recover it -- otherwise a previously-evicted member would stay
+         * DISABLED forever -- but only if it is ours. */
+        if (!(w->s->status & PROXY_WORKER_BEACON)) {
+            beacon_log_throttled(ctx, now, "member not managed by beacon");
+            return APR_EEXIST;
+        }
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     APLOGNO(10589) "mod_proxy_beacon: backend %s already in "
+                     "balancer://%s (re-adopted)",
+                     url, ctx->balancer_name);
+    }
+    else {
+        /* Step 1: add the worker (created DISABLED).  A genuinely full
+         * balancer fails here; that is throttled and retried only after the
          * backoff window, not on every announcement. */
-        beacon_log_throttled(ctx, now, "balancer add failed (full?)");
-        return rv;
+        apr_pool_create(&subp, pool);
+        r = beacon_make_fake_request(subp, s);
+        params = apr_table_make(subp, 4);
+        apr_table_setn(params, "b", ctx->balancer_name);
+        apr_table_setn(params, "b_nwrkr", url);
+        apr_table_setn(params, "b_wyes", "1");
+        apr_table_setn(params, "b_nwrkr_flags", beacon_new_flags);
+        rv = ctx->manage_fn(r, params);
+        apr_pool_destroy(subp);
+        if (rv != APR_SUCCESS) {
+            beacon_log_throttled(ctx, now, "balancer add failed (full?)");
+            return rv;
+        }
+        w = beacon_find_worker(ctx, pool, url);
+        if (!w) {
+            /* balancer_manage() said yes but there is no such member: don't
+             * claim a registration that did not happen. */
+            beacon_log_throttled(ctx, now, "balancer add not confirmed");
+            return APR_ENOENT;
+        }
+        if (!(w->s->status & PROXY_WORKER_BEACON)) {
+            /* Whatever this is, balancer_manage() did not create it with our
+             * mark, so it is not ours to manage (and to evict). */
+            beacon_log_throttled(ctx, now, "member not created by beacon");
+            return APR_EEXIST;
+        }
     }
 
     /* Step 2: enable it (clear the DISABLED flag) so it serves traffic.
      * beacon_set_worker_disabled is self-contained -- it creates its own subpool
-     * from `pool` -- so it does not rely on `subp`, which we destroyed above. */
+     * from `pool`. */
     rv = beacon_set_worker_disabled(ctx, pool, url, 0);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      APLOGNO(10578) "mod_proxy_beacon: added but failed to enable worker %s "
-                     "in balancer://%s", url, ctx->balancer_name);
-        /* fall through: still a member, just disabled */
+                     "in balancer://%s; will retry on its next announcement",
+                     url, ctx->balancer_name);
+        /* Still a member, but disabled: recorded as evicted, so that the next
+         * announcement enables it (beacon_handle_announce). */
+        m->added = 1;
+        m->evicted = 1;
+        return rv;
     }
 
     m->added = 1;
@@ -747,6 +1074,40 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
                  APLOGNO(10579) "mod_proxy_beacon: added backend %s to balancer://%s",
                  url, ctx->balancer_name);
     return APR_SUCCESS;
+}
+
+/*
+ * Member records come from a free list, so the memory used for tracking is
+ * bounded by BEACON_MAX_MEMBERS records however many are reclaimed and
+ * recreated.  Returns NULL if url does not fit.
+ */
+static beacon_member_t *beacon_member_new(beacon_ctx_t *ctx, const char *url,
+                                          apr_time_t now)
+{
+    beacon_member_t *m;
+
+    if (strlen(url) >= BEACON_URL_MAX) {
+        return NULL;
+    }
+    if (ctx->free_members) {
+        m = ctx->free_members;
+        ctx->free_members = m->next_free;
+    }
+    else {
+        m = apr_palloc(ctx->p, sizeof(*m));
+    }
+    memset(m, 0, sizeof(*m));
+    strcpy(m->url, url);
+    m->last_seen = now;
+    apr_hash_set(ctx->seen, m->url, APR_HASH_KEY_STRING, m);
+    return m;
+}
+
+static void beacon_member_free(beacon_ctx_t *ctx, beacon_member_t *m)
+{
+    apr_hash_set(ctx->seen, m->url, APR_HASH_KEY_STRING, NULL);
+    m->next_free = ctx->free_members;
+    ctx->free_members = m;
 }
 
 /*
@@ -771,12 +1132,12 @@ static void beacon_handle_announce(beacon_ctx_t *ctx, apr_pool_t *pool,
             beacon_log_throttled(ctx, now, "member table full");
             return;
         }
-        m = apr_pcalloc(ctx->p, sizeof(*m));
-        m->last_seen = now;
+        m = beacon_member_new(ctx, url, now);
+        if (!m) {
+            return;
+        }
         m->last_ts = msg_ts;
-        apr_hash_set(ctx->seen, apr_pstrdup(ctx->p, url), APR_HASH_KEY_STRING,
-                     m);
-        beacon_try_add(ctx, pool, url, m, now);
+        beacon_try_add(ctx, pool, m->url, m, now);
         return;
     }
 
@@ -812,39 +1173,141 @@ static void beacon_handle_announce(beacon_ctx_t *ctx, apr_pool_t *pool,
 }
 
 /*
- * Eviction sweep: disable any member that has not announced within
- * evict_timeout.  No-op when eviction is disabled (timeout 0).  Runs in the
- * watchdog singleton, throttled by the caller.
+ * Take over the beacon members already in the balancer.
+ *
+ * The leases (ctx->seen) are private to the watchdog-owning process, but the
+ * members they describe are not: they live in the balancer's shared memory and
+ * outlive that process.  When the watchdog singleton moves to another child --
+ * after a crash, a recycle, or a restart -- the new owner starts with an empty
+ * table and would never evict a member that has since fallen silent, leaving it
+ * enabled for good.
+ *
+ * So, once, at the start of ownership, adopt every member carrying
+ * PROXY_WORKER_BEACON and start its lease now: it is evicted after the usual
+ * ProxyBeaconTimeout unless it announces again.  A member that is already
+ * disabled is recorded as evicted, so that its next announcement re-enables it.
+ * Members without the mark (configured or added by an administrator) are not
+ * ours and are left alone.
+ *
+ * The per-member replay high-water mark is not recovered (last_ts starts at 0);
+ * see the replay notes in the documentation.
+ */
+static int beacon_reconcile(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now)
+{
+    proxy_server_conf *conf =
+        ap_get_module_config(ctx->s->module_config, &proxy_module);
+    proxy_balancer *bsel = ap_proxy_get_balancer(pool, conf,
+            apr_pstrcat(pool, BALANCER_PREFIX, ctx->balancer_name, NULL), 0);
+    proxy_worker **workers;
+    int i, adopted = 0, untracked = 0;
+
+    if (!bsel) {
+        return 0;
+    }
+
+    PROXY_THREAD_LOCK(bsel);
+    /* Pick up the members the previous owner added: this process's own view of
+     * the balancer only knows the ones that existed at configuration time.
+     * Without that the picture is incomplete: try again on the next tick. */
+    if (ap_proxy_sync_balancer(bsel, ctx->s, conf) != APR_SUCCESS) {
+        PROXY_THREAD_UNLOCK(bsel);
+        beacon_log_throttled(ctx, now, "takeover: balancer sync failed");
+        return 0;
+    }
+
+    workers = (proxy_worker **)bsel->workers->elts;
+    for (i = 0; i < bsel->workers->nelts; i++) {
+        proxy_worker *w = workers[i];
+        beacon_member_t *m;
+
+        if (!w->s || !(w->s->status & PROXY_WORKER_BEACON)
+            || apr_hash_get(ctx->seen, w->s->name, APR_HASH_KEY_STRING)) {
+            continue;
+        }
+        if (apr_hash_count(ctx->seen) >= BEACON_MAX_MEMBERS) {
+            /* No lease can be kept for it, so it would never be evicted: take
+             * it out of rotation until it announces again and is adopted. */
+            if (!(w->s->status & PROXY_WORKER_DISABLED)) {
+                ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, 1, w);
+                untracked++;
+            }
+            continue;
+        }
+        m = beacon_member_new(ctx, w->s->name, now);
+        if (!m) {
+            continue;
+        }
+        m->added = 1;
+        m->evicted = (w->s->status & PROXY_WORKER_DISABLED) != 0;
+        adopted++;
+    }
+    PROXY_THREAD_UNLOCK(bsel);
+
+    if (adopted) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ctx->s,
+                     APLOGNO(10636) "mod_proxy_beacon: took over %d existing "
+                     "member(s) of balancer://%s; their leases restart now",
+                     adopted, ctx->balancer_name);
+    }
+    if (untracked) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s,
+                     APLOGNO(10660) "mod_proxy_beacon: balancer://%s has more "
+                     "members than the %d beacon can track; disabled %d of "
+                     "them until they announce again",
+                     ctx->balancer_name, BEACON_MAX_MEMBERS, untracked);
+    }
+    return 1;
+}
+
+/*
+ * Periodic sweep (watchdog singleton, throttled by the caller):
+ *
+ *  - eviction: disable any member that has not announced within evict_timeout
+ *    (no-op when eviction is disabled, timeout 0);
+ *  - reclamation: forget members that are evicted, or whose add failed, once
+ *    they have been silent long enough.  Without this, failed registrations and
+ *    departed backends would fill the BEACON_MAX_MEMBERS table for good and lock
+ *    out new members.
+ *
+ * A record also carries the replay high-water mark, so it must outlive any
+ * replay of the member's last accepted message.  That message was accepted at
+ * last_seen with a timestamp within max_skew of it, so it is stale (rejected by
+ * the freshness check) after last_seen + 2 * max_skew; reclaiming only after that
+ * loses no replay protection.  A reclaimed member that announces again is simply
+ * recreated: its worker is still in the balancer and is re-adopted.
  */
 static void beacon_sweep(beacon_ctx_t *ctx, apr_pool_t *pool, apr_time_t now)
 {
     apr_hash_index_t *hi;
-
-    if (ctx->evict_timeout <= 0 || !beacon_have_manage_fn(ctx)) {
-        return;
-    }
+    apr_time_t skew = ctx->max_skew > 0 ? ctx->max_skew : BEACON_MAXSKEW_DEFAULT;
+    /* Saturate: MaxSkew is any positive time the administrator wrote. */
+    apr_time_t reclaim_after =
+        skew > (APR_INT64_MAX - apr_time_from_sec(1)) / 2
+        ? APR_INT64_MAX : 2 * skew + apr_time_from_sec(1);
 
     for (hi = apr_hash_first(pool, ctx->seen); hi; hi = apr_hash_next(hi)) {
-        const void *key;
         void *val;
         beacon_member_t *m;
 
-        apr_hash_this(hi, &key, NULL, &val);
+        apr_hash_this(hi, NULL, NULL, &val);
         m = val;
-        if (!m->added || m->evicted) {
-            continue;
-        }
-        if (now - m->last_seen > ctx->evict_timeout) {
-            const char *url = key;
-            if (beacon_set_worker_disabled(ctx, pool, url, 1) == APR_SUCCESS) {
+        if (ctx->evict_timeout > 0 && m->added && !m->evicted
+            && now - m->last_seen > ctx->evict_timeout
+            && beacon_have_manage_fn(ctx)) {
+            if (beacon_set_worker_disabled(ctx, pool, m->url, 1) == APR_SUCCESS) {
                 m->evicted = 1;
                 ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ctx->s,
                              APLOGNO(10581) "mod_proxy_beacon: evicted backend %s from "
                              "balancer://%s (no announcement for %"
                              APR_TIME_T_FMT "s)",
-                             url, ctx->balancer_name,
+                             m->url, ctx->balancer_name,
                              apr_time_sec(now - m->last_seen));
             }
+        }
+        else if ((!m->added || m->evicted)
+                 && now - m->last_seen > reclaim_after) {
+            /* Safe while iterating: only the current entry is removed. */
+            beacon_member_free(ctx, m);
         }
     }
 }
@@ -866,6 +1329,11 @@ static int beacon_parse_url(const char *msg, char *buf, apr_size_t buflen)
                 buf[i++] = *p++;
             }
             buf[i] = '\0';
+            /* A token that does not fit is rejected, not silently cut short:
+             * the truncated prefix could be a different, valid-looking url. */
+            if (*p && *p != ' ') {
+                return 0;
+            }
             return (i > 0);
         }
         /* advance to the next space-separated token */
@@ -916,8 +1384,99 @@ static const char *beacon_sign(beacon_ctx_t *ctx, apr_pool_t *pool, const char *
 }
 
 /*
+ * Parse a timestamp token value strictly: 1 to 18 decimal digits, ending at a
+ * space or the end of the string.  apr_atoi64() would also accept a sign,
+ * leading space, trailing garbage and out-of-range values, and arithmetic on an
+ * extreme timestamp could overflow.
+ */
+static int beacon_parse_ts(const char *p, apr_int64_t *out)
+{
+    apr_int64_t v = 0;
+    int n = 0;
+
+    for (; apr_isdigit(*p); p++, n++) {
+        if (n >= 18) {
+            return 0;
+        }
+        v = v * 10 + (*p - '0');
+    }
+    if (!n || (*p && *p != ' ')) {
+        return 0;
+    }
+    *out = v;
+    return 1;
+}
+
+/*
+ * Check the wire grammar of a message whose MAC has already been verified:
+ *
+ *     BEACON <key>=<value> <key>=<value> ... mac=<hex>
+ *
+ * one leading BEACON marker, single-space-separated key=value tokens with a
+ * lower-case key and a non-empty value, and no repeated field among the ones we
+ * know.  Without this the receiver reads fields by searching the string (the
+ * last "ts=" wins, a leading marker is never checked, a repeated field is
+ * silently resolved one way), so two parties can read the same signed bytes
+ * differently.  Returns the ts= value via *tsp (NULL if absent).
+ */
+static const char *beacon_frame_check(const char *msg, const char **tsp,
+                                      const char **reason)
+{
+    static const char * const known[] = {
+        "url", "host", "pid", "seq", "ts", "mac"
+    };
+    unsigned seen = 0;
+    const char *p = msg;
+
+    *tsp = NULL;
+    if (strncmp(p, "BEACON ", 7)) {
+        return *reason = "bad frame", NULL;
+    }
+    p += 7;
+
+    while (*p) {
+        const char *key = p, *eq;
+        apr_size_t klen;
+        unsigned i;
+
+        while (*p && *p != ' ') {
+            p++;
+        }
+        eq = memchr(key, '=', p - key);
+        if (p == key || !eq || eq == key || eq + 1 == p) {
+            return *reason = "bad frame", NULL;
+        }
+        for (klen = 0; key + klen < eq; klen++) {
+            if (!apr_islower(key[klen])) {
+                return *reason = "bad frame", NULL;
+            }
+        }
+        for (i = 0; i < sizeof(known) / sizeof(known[0]); i++) {
+            if (strlen(known[i]) == klen && !strncmp(key, known[i], klen)) {
+                if (seen & (1u << i)) {
+                    return *reason = "duplicate field", NULL;
+                }
+                seen |= 1u << i;
+                if (!strcmp(known[i], "ts")) {
+                    *tsp = eq + 1;
+                }
+                break;
+            }
+        }
+        if (*p == ' ') {
+            p++;
+            if (!*p) {
+                return *reason = "bad frame", NULL;  /* trailing space */
+            }
+        }
+    }
+    return msg;
+}
+
+/*
  * listener: verify a received, NUL-terminated message.  Returns 1 if the MAC matches
- * the pre-shared key AND the ts= timestamp is within ctx->max_skew of now.
+ * the pre-shared key, the message is well-formed, AND the ts= timestamp is within
+ * ctx->max_skew of now.
  * Only called when ctx->has_secret.  Constant-time MAC compare.  On success the
  * parsed ts= (microseconds since the epoch) is written to *ts_out for the
  * caller's per-url monotonic replay check.  reason (out) is set on failure.
@@ -940,7 +1499,7 @@ static int beacon_verify(beacon_ctx_t *ctx, const char *msg, apr_time_t now,
     }
     /* mac= must be the final field: exactly BEACON_MAC_HEXLEN chars followed by
      * end-of-string.  strlen is NUL-safe here -- the caller hands us a
-     * NUL-terminated apr_pstrmemdup() copy -- so a short or garbled payload
+     * NUL-terminated copy with no embedded NUL -- so a short or garbled payload
      * cannot make the constant-time compare below over-read past the buffer.
      * The compare itself validates the hex content; we deliberately do not
      * pre-scan for hex digits, which would leak MAC bytes through an early
@@ -957,28 +1516,30 @@ static int beacon_verify(beacon_ctx_t *ctx, const char *msg, apr_time_t now,
         return 0;
     }
 
+    /* Authentic.  Now insist it is also well-formed, so that every reader of
+     * these bytes sees the same fields. */
+    if (!beacon_frame_check(msg, &tsp, reason)) {
+        return 0;
+    }
+
     /* Anti-replay (1): ts= must be present and within the freshness window.
      * ts is in microseconds (raw apr_time_now()) so that announcements made
      * less than a second apart still have strictly-increasing timestamps for
      * the caller's per-url check. */
-    tsp = NULL;
-    for (p = msg; (p = ap_strstr_c(p, "ts=")) != NULL && p < macp; p += 3) {
-        /* token-start: beginning of message or preceded by a space */
-        if (p == msg || *(p - 1) == ' ') {
-            tsp = p;
-        }
-    }
     if (!tsp) {
         *reason = "no ts";
         return 0;
     }
-    ts = apr_atoi64(tsp + 3);
+    if (!beacon_parse_ts(tsp, &ts)) {
+        *reason = "bad ts";
+        return 0;
+    }
     skew = ctx->max_skew > 0 ? ctx->max_skew : BEACON_MAXSKEW_DEFAULT;
-    delta = (apr_int64_t)now - ts;
+    delta = (apr_int64_t)now - ts;      /* both well below 2^62: no overflow */
     if (delta < 0) {
         delta = -delta;
     }
-    if (delta > apr_time_from_sec(skew)) {
+    if (delta > skew) {
         *reason = "stale timestamp";
         return 0;
     }
@@ -988,17 +1549,115 @@ static int beacon_verify(beacon_ctx_t *ctx, const char *msg, apr_time_t now,
 }
 
 /* RUNNING: sender sends a throttled beacon; listener drains its receive socket. */
+/*
+ * Count a failed send or receive. Returns true if it should be logged, which is
+ * at most once in 10 seconds. After BEACON_IO_ERRORS_MAX in a row the socket
+ * is closed: the open back-off in beacon_cb_running() opens it again, looking
+ * the address up again.
+ */
+static int beacon_io_failed(beacon_ctx_t *ctx, apr_time_t now)
+{
+    int log_it = now - ctx->last_io_error_log >= apr_time_from_sec(10);
+
+    if (log_it) {
+        ctx->last_io_error_log = now;
+    }
+    if (++ctx->io_errors >= BEACON_IO_ERRORS_MAX) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ctx->s, APLOGNO(10672)
+                     "mod_proxy_beacon: closing the socket after repeated "
+                     "errors; it will be opened again");
+        apr_socket_close(ctx->sock);
+        ctx->opened = 0;
+        ctx->open_failed = 1;
+        ctx->io_errors = 0;
+    }
+    return log_it;
+}
+
+/*
+ * Sender: look the destination up again. The address in use is kept if that
+ * fails. This runs on the watchdog thread, so a slow resolver delays the other
+ * contexts for as long as the lookup takes: ProxyBeaconAddress should be an IP
+ * address, or a name that resolves quickly.
+ */
+static void beacon_refresh_destination(beacon_ctx_t *ctx, apr_time_t now)
+{
+    apr_pool_t *np;
+    apr_pool_t *old;
+    apr_sockaddr_t *na = NULL;
+    apr_status_t rv;
+
+    ctx->next_refresh = now + BEACON_REFRESH;
+    apr_pool_create(&np, ctx->p);
+    rv = beacon_resolve(np, ctx->pub_url, NULL, 0, &na);
+    if (rv != APR_SUCCESS) {
+        apr_pool_destroy(np);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ctx->s, APLOGNO(10673)
+                     "mod_proxy_beacon: cannot resolve ProxyBeaconAddress '%s' "
+                     "again; keeping the address in use", ctx->pub_url);
+        return;
+    }
+    if (na->family != ctx->addr->family) {
+        /* The socket belongs to the old family: open a new one. */
+        apr_pool_destroy(np);
+        apr_socket_close(ctx->sock);
+        ctx->opened = 0;
+        beacon_cb_starting(ctx);
+        return;
+    }
+    if (!apr_sockaddr_equal(na, ctx->addr)) {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ctx->s, APLOGNO(10674)
+                     "mod_proxy_beacon: beaconing to %pI now", na);
+    }
+    old = ctx->addr_pool;
+    ctx->addr_pool = np;
+    ctx->addr = na;
+    if (old) {
+        apr_pool_destroy(old);
+    }
+}
+
 static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
 {
     server_rec *s = ctx->s;
     apr_status_t rv;
 
+    if (ctx->open_failed) {
+        /* Retry a failed open, at a pace that cannot flood the log. */
+        apr_time_t t = apr_time_now();
+        if (!ctx->next_open_try) {
+            ctx->open_delay = ctx->open_delay
+                              ? ctx->open_delay * 2 : BEACON_OPEN_RETRY;
+            if (ctx->open_delay > BEACON_OPEN_RETRY_MAX) {
+                ctx->open_delay = BEACON_OPEN_RETRY_MAX;
+            }
+            ctx->next_open_try = t + ctx->open_delay;
+        }
+        else if (t >= ctx->next_open_try) {
+            ctx->open_failed = 0;
+            ctx->next_open_try = 0;
+            beacon_cb_starting(ctx);
+        }
+    }
     if (!ctx->opened) {
         return;
+    }
+    ctx->open_delay = 0;
+
+    if (ctx->role == BEACON_ROLE_LISTEN && ctx->balancer_name
+        && !ctx->reconciled) {
+        ctx->reconciled = beacon_reconcile(ctx, pool, apr_time_now());
     }
 
     if (ctx->role == BEACON_ROLE_SEND) {
         apr_time_t now = apr_time_now();
+
+        if (now >= ctx->next_refresh) {
+            beacon_refresh_destination(ctx, now);
+            if (!ctx->opened) {
+                return;
+            }
+        }
         if (now >= ctx->last_publish + ctx->interval) {
             const char *host = ctx->s->server_hostname
                                    ? ctx->s->server_hostname : "(unknown)";
@@ -1034,36 +1693,61 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             len = strlen(msg);
             if ((rv = apr_socket_sendto(ctx->sock, ctx->addr, 0, msg, &len))
                     != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                             APLOGNO(10582) "mod_proxy_beacon: sendto %s failed",
-                             ctx->pub_url);
+                if (beacon_io_failed(ctx, now)) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                                 APLOGNO(10582) "mod_proxy_beacon: sendto %s "
+                                 "failed", ctx->pub_url);
+                }
+            }
+            else {
+                ctx->io_errors = 0;
             }
             ctx->last_publish = now;
         }
     }
     else if (ctx->role == BEACON_ROLE_LISTEN) {
         apr_time_t now;
+        apr_pool_t *ptemp;
+        apr_time_t started = apr_time_now();
+        int n;
 
-        /* Drain the socket every tick (re-enable latency matters). */
-        for (;;) {
-            char buf[BEACON_MAX_MSG_LEN + 1];
+        apr_pool_create(&ptemp, pool);
+        apr_pool_tag(ptemp, "beacon_recv");
+
+        /* Drain the socket every tick (re-enable latency matters), up to
+         * BEACON_MAX_DRAIN datagrams and BEACON_DRAIN_BUDGET of time. */
+        for (n = 0; n < BEACON_MAX_DRAIN; n++) {
+            char buf[BEACON_MAX_MSG_LEN + 2];
             apr_sockaddr_t from;
-            apr_size_t sz = BEACON_MAX_MSG_LEN;
+            /* Ask for one byte more than we accept: recvfrom() silently
+             * truncates a longer datagram to the buffer size, so receiving
+             * the extra byte is how an oversize datagram is told from one
+             * that exactly fits. */
+            apr_size_t sz = BEACON_MAX_MSG_LEN + 1;
             apr_time_t msg_now;
-            const char *msg_str, *safe;
-            char url[512];
+            const char *msg_str;
+            char url[BEACON_URL_MAX];
             apr_int64_t msg_ts = 0;
 
-            from.pool = pool;
+            if (n && apr_time_now() - started > BEACON_DRAIN_BUDGET) {
+                break;
+            }
+            apr_pool_clear(ptemp);
+            from.pool = ptemp;
             rv = apr_socket_recvfrom(&from, ctx->sock, 0, buf, &sz);
             if (APR_STATUS_IS_EAGAIN(rv)) {
+                ctx->io_errors = 0;
                 break; /* socket drained */
             }
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                             APLOGNO(10583) "mod_proxy_beacon: recvfrom failed");
+                if (beacon_io_failed(ctx, apr_time_now())) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
+                                 APLOGNO(10583) "mod_proxy_beacon: recvfrom "
+                                 "failed");
+                }
                 break;
             }
+            ctx->io_errors = 0;
             if (sz == 0) {
                 continue; /* empty datagram */
             }
@@ -1073,27 +1757,27 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
              * share the same time base (no TOCTOU drift across calls). */
             msg_now = apr_time_now();
 
-            /* recvfrom wrote into our own stack buffer; NUL-terminate it (a UDP
-             * datagram is delivered whole, so sz is the full message length). */
+            if (sz > BEACON_MAX_MSG_LEN) {
+                beacon_log_throttled(ctx, msg_now, "oversize datagram");
+                continue;
+            }
+            /* Our messages are text.  A NUL would end the string every parser
+             * below works on while the datagram goes on, so what is verified
+             * and what was sent would differ. */
+            if (memchr(buf, '\0', sz)) {
+                beacon_log_throttled(ctx, msg_now, "embedded NUL");
+                continue;
+            }
             buf[sz] = '\0';
             msg_str = buf;
-
-            /* Escape the untrusted payload before it can reach the log: on the
-             * log-only path (no ProxyBeaconBalancer) messages are logged without
-             * MAC verification, so anyone who can reach the listen port could
-             * embed newline/control/ANSI sequences to forge or corrupt error-log
-             * lines.  (On the balancer path, forged messages are dropped at
-             * verification below and `safe` is only logged after it passes.) */
-            safe = ap_escape_logitem(pool, msg_str);
 
             /* Phase 4: verify the MAC and freshness BEFORE logging or acting on
              * the payload, so forged/tampered content is dropped (throttled) and
              * never reaches the INFO log.  A secret is required (enforced at
-             * config time), so this always runs in the active (balancer) path.
-             * msg_ts (microseconds) is the signed timestamp, used below for the
-             * per-url monotonic replay check.  With no balancer we take no action
-             * and the escaped payload is safe to log for diagnostics. */
-            if (ctx->balancer_name) {
+             * config time) on every participating server, with or without a
+             * ProxyBeaconBalancer.  msg_ts (microseconds) is the signed
+             * timestamp, used below for the per-url monotonic replay check. */
+            {
                 const char *reason = "?";
                 if (!beacon_verify(ctx, msg_str, msg_now, &msg_ts, &reason)) {
                     beacon_log_throttled(ctx, msg_now, reason);
@@ -1101,8 +1785,35 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
                 }
             }
 
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                         APLOGNO(10584) "mod_proxy_beacon: received: %s", safe);
+            /* Escape the payload before it reaches the log, so even an
+             * authenticated sender cannot embed newline/control/ANSI sequences
+             * to forge or corrupt error-log lines.  Done only after
+             * verification so a rejected datagram allocates nothing. */
+            if (APLOGinfo(s)) {
+                /* An authentic message can be replayed within the freshness
+                 * window as often as the sender likes: bound the log. */
+                if (msg_now - ctx->recv_log_window >= apr_time_from_sec(1)) {
+                    if (ctx->recv_log_suppressed) {
+                        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                                     APLOGNO(10675) "mod_proxy_beacon: %"
+                                     APR_UINT64_T_FMT " received: lines left "
+                                     "out in the last second",
+                                     ctx->recv_log_suppressed);
+                    }
+                    ctx->recv_log_window = msg_now;
+                    ctx->recv_log_count = 0;
+                    ctx->recv_log_suppressed = 0;
+                }
+                if (ctx->recv_log_count < BEACON_RECV_LOG_PER_SEC) {
+                    ctx->recv_log_count++;
+                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                                 APLOGNO(10584) "mod_proxy_beacon: received: %s",
+                                 ap_escape_logitem(ptemp, msg_str));
+                }
+                else {
+                    ctx->recv_log_suppressed++;
+                }
+            }
 
             if (!ctx->balancer_name) {
                 continue;
@@ -1111,14 +1822,23 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             /* Phase 2/3: carries a routable url= -> add the backend (or
              * refresh last-seen / re-enable if previously evicted). */
             if (beacon_parse_url(msg_str, url, sizeof(url))) {
-                beacon_handle_announce(ctx, pool, url, msg_now, msg_ts);
+                /* A valid MAC only shows the sender holds the secret, not
+                 * that it used the bundled sender: apply the sender's rule
+                 * here too, and track the member by its canonical origin. */
+                const char *canon = beacon_canonical_url(ptemp, url);
+                if (!canon) {
+                    beacon_log_throttled(ctx, msg_now, "unacceptable url");
+                    continue;
+                }
+                beacon_handle_announce(ctx, ptemp, canon, msg_now, msg_ts);
             }
         }
+        apr_pool_destroy(ptemp);
 
         /* Phase 3: evict backends that stopped announcing.  Throttle the scan
          * to ~1s (the recv drain above already runs every tick). */
         now = apr_time_now();
-        if (ctx->balancer_name && ctx->evict_timeout > 0
+        if (ctx->balancer_name
             && now - ctx->last_sweep >= apr_time_from_sec(1)) {
             beacon_sweep(ctx, pool, now);
             ctx->last_sweep = now;
@@ -1229,10 +1949,125 @@ static int beacon_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
+/*
+ * "[scheme://][host][:port]" syntax only, with no lookup: a name that does not
+ * resolve yet may be fine once the network is up, but a malformed address never
+ * is.  A sender needs both host and port; a listener inherits what is omitted.
+ */
+static int beacon_addr_syntax_ok(apr_pool_t *p, const char *url,
+                                 int need_host_port)
+{
+    char *host = NULL;
+    apr_port_t port = 0;
+    const char *hostport = url, *sep;
+
+    if (url && (sep = ap_strstr_c(url, "://")) != NULL) {
+        hostport = sep + 3;
+    }
+    if (!hostport || !*hostport) {
+        return !need_host_port;
+    }
+    if (beacon_parse_hostport(p, hostport, &host, &port) != APR_SUCCESS) {
+        return 0;
+    }
+    return !need_host_port || (host && *host && port);
+}
+
+/*
+ * Everything that is wrong with the configuration for good, however the
+ * network is when the server starts, so that "httpd -t" says so and a start
+ * does not go ahead only to fail in a child.  What can change (the address
+ * resolving, the port binding) is left to the retries in the watchdog callback.
+ */
+static int beacon_check_config(apr_pool_t *pconf, apr_pool_t *plog,
+                               apr_pool_t *ptemp, server_rec *main_s)
+{
+    server_rec *s, *t;
+    int errs = 0, participating = 0;
+
+    for (s = main_s; s; s = s->next) {
+        beacon_ctx_t *ctx = ap_get_module_config(s->module_config,
+                                                 &proxy_beacon_module);
+        if (s != ctx->s || ctx->role == BEACON_ROLE_NONE) {
+            continue;
+        }
+        participating++;
+
+        if (!ctx->has_secret) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                         APLOGNO(10661) "mod_proxy_beacon: ProxyBeaconSecret "
+                         "is required but not set; the beacon channel must be "
+                         "authenticated");
+            errs++;
+        }
+
+        if (ctx->role == BEACON_ROLE_SEND) {
+            if (!beacon_addr_syntax_ok(ptemp, ctx->pub_url, 1)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                             APLOGNO(10662) "mod_proxy_beacon: "
+                             "ProxyBeaconAddress '%s' must be host:port",
+                             ctx->pub_url);
+                errs++;
+            }
+            continue;
+        }
+
+        if (!beacon_addr_syntax_ok(ptemp, ctx->sub_url, 0)) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                         APLOGNO(10663) "mod_proxy_beacon: ProxyBeaconListen "
+                         "'%s' must be [host][:port]", ctx->sub_url);
+            errs++;
+        }
+        if (ctx->balancer_name) {
+            proxy_server_conf *conf = ap_get_module_config(s->module_config,
+                                                           &proxy_module);
+            if (!conf || !ap_proxy_get_balancer(ptemp, conf,
+                    apr_pstrcat(ptemp, BALANCER_PREFIX, ctx->balancer_name,
+                                NULL), 0)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                             APLOGNO(10664) "mod_proxy_beacon: "
+                             "ProxyBeaconBalancer: balancer://%s is not "
+                             "defined for this server", ctx->balancer_name);
+                errs++;
+            }
+            if (!APR_RETRIEVE_OPTIONAL_FN(balancer_manage)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, s,
+                             APLOGNO(10665) "mod_proxy_beacon: "
+                             "ProxyBeaconBalancer needs mod_proxy_balancer");
+                errs++;
+            }
+        }
+        /* Two listeners on one address: only one of them would receive. */
+        for (t = main_s; t != s; t = t->next) {
+            beacon_ctx_t *other = ap_get_module_config(t->module_config,
+                                                       &proxy_beacon_module);
+            if (t == other->s && other->role == BEACON_ROLE_LISTEN
+                && !strcmp(other->sub_url, ctx->sub_url)) {
+                ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_WARNING, 0, s,
+                             APLOGNO(10667) "mod_proxy_beacon: ProxyBeaconListen "
+                             "'%s' is also written for another server; if "
+                             "both resolve to the same address, only one of "
+                             "them will receive the beacons", ctx->sub_url);
+            }
+        }
+    }
+
+    if (participating
+        && !APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance)) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, 0, main_s,
+                     APLOGNO(10666) "mod_proxy_beacon: mod_watchdog is "
+                     "required");
+        errs++;
+    }
+
+    return errs ? !OK : OK;
+}
+
 static void beacon_register_hooks(apr_pool_t *p)
 {
     static const char *const aszSucc[] = { "mod_watchdog.c",
                                            "mod_proxy_balancer.c", NULL };
+    ap_hook_check_config(beacon_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(beacon_post_config, NULL, aszSucc, APR_HOOK_LAST);
 }
 

@@ -7,6 +7,7 @@
 *.lo
 *.la
 *.slo
+*.gcda
 *.so
 *.vcproj
 *.vcproj.*
@@ -57,6 +58,7 @@ Release
 /.kdev_include_paths
 /.cproject
 /.project
+/dist/
 
 # /built/
 /built/
@@ -337,18 +339,25 @@ Release
 /support/logresolve
 /support/ab
 /support/apxs
+/support/apxs-ng
 /support/apachectl
 /support/checkgid
 /support/dbmmanage
+/support/dbmmanage-ng
 /support/envvars-std
 /support/log_server_status
+/support/log_server_status-ng
 /support/logresolve.pl
 /support/split-logfile
+/support/split-logfile-ng
 /support/phf_abuse_log.cgi
+/support/phf_abuse_log-ng.cgi
 /support/httxt2dbm
 /support/fcgistarter
 /support/firehose
 /support/*.exe
+/support/a2md/a2md
+/support/logresolve.py
 
 # /support/win32/
 !/support/win32/ApacheMonitor.rc
@@ -381,6 +390,8 @@ Release
 test/__pycache__
 test/*/__pycache__
 test/*/*/__pycache__
+__pycache__/
+*.pyc
 
 # make check
 check

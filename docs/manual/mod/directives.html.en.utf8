@@ -497,6 +497,7 @@
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdhttpproxycacertificatefile">MDHttpProxyCACertificateFile</a></li>
 <li><a href="mod_md.html#mdinitialdelay">MDInitialDelay</a></li>
 <li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
@@ -530,6 +531,10 @@
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagic">MimeLibmagic</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagicbytes">MimeLibmagicBytes</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagiccharset">MimeLibmagicCharset</a></li>
+<li><a href="mod_mime_libmagic.html#mimelibmagicfile">MimeLibmagicFile</a></li>
 <li><a href="mod_mime_magic.html#mimemagicdecompression">MimeMagicDecompression</a></li>
 <li><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></li>
 <li><a href="mod_mime.html#mimeoptions">MimeOptions</a></li>
@@ -730,6 +735,7 @@
 <li><a href="mod_session.html#sessioninclude">SessionInclude</a></li>
 <li><a href="mod_session.html#sessionmaxage">SessionMaxAge</a></li>
 <li><a href="mod_env.html#setenv">SetEnv</a></li>
+<li><a href="mod_env.html#setenvfromfile">SetEnvFromFile</a></li>
 <li><a href="mod_setenvif.html#setenvif">SetEnvIf</a></li>
 <li><a href="mod_setenvif.html#setenvifexpr">SetEnvIfExpr</a></li>
 <li><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></li>
@@ -791,6 +797,8 @@
 <li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
 <li><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></li>
+<li><a href="mod_ssl.html#sslproxystoreuri">SSLProxyStoreURI</a></li>
+<li><a href="mod_ssl.html#sslproxytrusturi">SSLProxyTrustURI</a></li>
 <li><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify</a></li>
 <li><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
 <li><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed</a></li>
@@ -812,7 +820,10 @@
 <li><a href="mod_ssl.html#sslstaplingresponsetimeskew">SSLStaplingResponseTimeSkew</a></li>
 <li><a href="mod_ssl.html#sslstaplingreturnrespondererrors">SSLStaplingReturnResponderErrors</a></li>
 <li><a href="mod_ssl.html#sslstaplingstandardcachetimeout">SSLStaplingStandardCacheTimeout</a></li>
+<li><a href="mod_ssl.html#sslstoreuri">SSLStoreURI</a></li>
 <li><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
+<li><a href="mod_ssl.html#ssltrustrequesturi">SSLTrustRequestURI</a></li>
+<li><a href="mod_ssl.html#ssltrusturi">SSLTrustURI</a></li>
 <li><a href="mod_ssl.html#sslusername">SSLUserName</a></li>
 <li><a href="mod_ssl.html#sslusestapling">SSLUseStapling</a></li>
 <li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>

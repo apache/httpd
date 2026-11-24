@@ -148,7 +148,13 @@ static void c1c2_stream_joined(h2_mplx *m, h2_stream *stream)
 
 static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
 {
-    h2_conn_ctx_t *c2_ctx = h2_conn_ctx_get(stream->c2);
+    h2_conn_ctx_t *c2_ctx;
+
+    if (stream->mplx_cleanup_done) return;
+    stream->mplx_cleanup_done = 1;
+    m->in_stream_cleanup = 1;
+
+    c2_ctx = h2_conn_ctx_get(stream->c2);
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                   H2_STRM_MSG(stream, "cleanup, unsubscribing from beam events"));
@@ -195,6 +201,7 @@ static void m_stream_cleanup(h2_mplx *m, h2_stream *stream)
             ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, m->c1,
                           H2_STRM_MSG(stream, "cleanup, never started, move to spurge"));
     }
+    m->in_stream_cleanup = 0;
 }
 
 static h2_c2_transit *c2_transit_create(h2_mplx *m)
@@ -278,6 +285,7 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
     apr_allocator_t *allocator;
     apr_thread_mutex_t *mutex = NULL;
     h2_mplx *m = NULL;
+    apr_pool_t *poll_pool;
     
     m = apr_pcalloc(parent, sizeof(h2_mplx));
     m->stream0 = stream0;
@@ -337,8 +345,14 @@ h2_mplx *h2_mplx_c1_create(int child_num, apr_uint32_t id, h2_stream *stream0,
     m->streams_ev_in = apr_array_make(m->pool, 10, sizeof(h2_stream*));
     m->streams_ev_out = apr_array_make(m->pool, 10, sizeof(h2_stream*));
 
-    m->streams_input_read = h2_iq_create(m->pool, 10);
-    m->streams_output_written = h2_iq_create(m->pool, 10);
+    /* iqueues MUST use a separate pool: iq_grow allocates via apr_pcalloc
+     * under poll_lock, while other m->pool allocations (spurge growth etc.)
+     * happen under m->lock. apr_palloc is NOT thread-safe on the same pool
+     * under different locks -- the bump pointer can hand out overlapping
+     * memory to concurrent callers. */
+    apr_pool_create(&poll_pool, m->pool);
+    m->streams_input_read = h2_iq_create(poll_pool, m->max_streams);
+    m->streams_output_written = h2_iq_create(poll_pool, m->max_streams);
     status = apr_thread_mutex_create(&m->poll_lock, APR_THREAD_MUTEX_DEFAULT,
                                      m->pool);
     if (APR_SUCCESS != status) goto failure;
@@ -500,6 +514,7 @@ static int m_stream_cancel_iter(void *ctx, void *val) {
     /* Reset, should transit to CLOSED state */
     h2_stream_rst(stream, H2_ERR_NO_ERROR);
     /* All connection data has been sent, simulate cleanup */
+    m->in_stream_cleanup = 1;
     h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
     m_stream_cleanup(m, stream);  
     return 0;
@@ -761,7 +776,7 @@ void h2_mplx_c1_process(h2_mplx *m,
 
     while ((sid = h2_iq_shift(ready_to_process)) > 0) {
         h2_stream *stream = get_stream(session, sid);
-        if (stream) {
+        if (stream && stream->state < H2_SS_CLEANUP) {
             ap_assert(!stream->scheduled);
             rv = c1_process_stream(session->mplx, stream, stream_pri_cmp, session);
             if (APR_SUCCESS != rv) {
@@ -1185,6 +1200,7 @@ apr_status_t h2_mplx_c1_client_rst(h2_mplx *m, int stream_id, h2_stream *stream)
                     H2_STRM_MSG(stream, "very early RST, drop"));
       h2_stream_set_monitor(stream, NULL);
       h2_stream_rst(stream, H2_ERR_STREAM_CLOSED);
+      m->in_stream_cleanup = 1;
       h2_stream_dispatch(stream, H2_SEV_EOS_SENT);
       m_stream_cleanup(m, stream);
       m_be_annoyed(m);

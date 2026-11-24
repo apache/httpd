@@ -1,0 +1,4 @@
+  *) core: Fix the generic error page describing a non-error status (e.g.
+     a 2xx forced by mod_alias's "Redirect" directive) as "an error" when
+     it occurs while processing an ErrorDocument.
+     PR 69101 [Arturo Bernal]

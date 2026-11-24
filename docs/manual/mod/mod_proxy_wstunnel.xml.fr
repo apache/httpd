@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907040 -->
+<!-- English Revision: 1936367 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -26,7 +26,7 @@
 <name>mod_proxy_wstunnel</name>
 <description>Module pour <module>mod_proxy</module> supportant les
 websockets</description>
-<status>Extension</status>
+<status>Obsolète</status>
 <sourcefile>mod_proxy_wstunnel.c</sourcefile>
 <identifier>proxy_wstunnel_module</identifier>
 <compatibility>Disponible à partir de la version 2.4.5 du serveur HTTP

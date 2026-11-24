@@ -3,6 +3,8 @@ import time
 from datetime import timedelta
 
 import pytest
+
+from pyhttpd.depends import needs_dependency
 from pyhttpd.certs import CertificateSpec
 
 from pyhttpd.env import HttpdTestEnv
@@ -11,12 +13,14 @@ from .md_env import MDTestEnv
 from .md_conf import MDConf
 
 
-@pytest.mark.skipif(condition=not MDTestEnv.has_acme_server(),
-                    reason="no ACME test server configured")
+@needs_dependency("ACME test server", MDTestEnv.has_acme_server(),
+                  reason="no ACME test server configured",
+                  detected=f"ACME={MDTestEnv.get_acme_server()}")
 class TestAutov2:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env, acme):
+    @classmethod
+    def _class_scope(cls, env, acme):
         env.APACHE_CONF_SRC = "data/test_auto"
         acme.start(config='default')
         env.check_acme()
@@ -26,6 +30,10 @@ class TestAutov2:
 
     @pytest.fixture(autouse=True, scope='function')
     def _method_scope(self, env, request):
+        # A renewal can still be running after the previous test activated
+        # its certificate. Do not remove its store while the watchdog writes
+        # to it, or carry that renewal into the next test's restart.
+        assert env.apache_stop() == 0
         env.clear_store()
         self.test_domain = env.get_request_domain(request)
 
@@ -299,6 +307,8 @@ class TestAutov2:
 
     # Specify a valid http proxy for a single MDomain
     def test_md_702_008b(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.xfail("MDHttpProxy inside MDomainSet not backported")
         domain = self.test_domain
         domains = [domain]
         #
@@ -317,6 +327,8 @@ class TestAutov2:
 
     # Specify a non-working http proxy for MDomain A and a valid http proxy for MDomain B
     def test_md_702_008c(self, env):
+        if not env.httpd_is_at_least("2.5.0"):
+            pytest.xfail("MDHttpProxy inside MDomainSet not backported")
         domain_a = f"a{self.test_domain}"
         domain_b = f"b{self.test_domain}"
         conf = MDConf(env, admin=f"admin@{domain_a}", proxy=True)
@@ -392,9 +404,15 @@ class TestAutov2:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
-        md = env.await_error(domain)
-        assert md["renewal"]["errors"] > 0
+        try:
+            assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+            md = env.await_error(domain)
+            assert md and md["renewal"]["errors"] > 0
+        finally:
+            env.httpd_error_log.ignore_recent(
+                lognos=["AH10173", "AH10056"],
+                matches=[r'.*None of the ACME challenge methods configured for this domain are suitable.*']
+            )
         #
         # now the same with a 80 mapped to a supported port 
         conf = MDConf(env, admin="admin@" + domain)
@@ -407,16 +425,6 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         assert env.await_completion([domain])
-        #
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
-                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
-            ],
-            matches = [
-                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
-            ]
-        )
 
     def test_md_702_011(self, env):
         domain = self.test_domain
@@ -430,9 +438,15 @@ class TestAutov2:
         conf.add_md(domains)
         conf.add_vhost(domains)
         conf.install()
-        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
-        md = env.await_error(domain)
-        assert md["renewal"]["errors"] > 0
+        try:
+            assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+            md = env.await_error(domain)
+            assert md and md["renewal"]["errors"] > 0
+        finally:
+            env.httpd_error_log.ignore_recent(
+                lognos=["AH10173", "AH10056"],
+                matches=[r'.*None of the ACME challenge methods configured for this domain are suitable.*']
+            )
         #
         # now the same with a 443 mapped to a supported port 
         conf = MDConf(env, admin="admin@" + domain)
@@ -446,16 +460,6 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md(domains)
         assert env.await_completion([domain])
-        #
-        env.httpd_error_log.ignore_recent(
-            lognos = [
-                "AH10173",  # None of the ACME challenge methods configured for this domain are suitable
-                "AH10056"   # None of the ACME challenge methods configured for this domain are suitable
-            ],
-            matches = [
-                r'.*None of the ACME challenge methods configured for this domain are suitable.*'
-            ]
-        )
 
     # test case: one MD with several dns names. sign up. remove the *first* name
     # in the MD. restart. should find and keep the existing MD.
@@ -675,6 +679,16 @@ class TestAutov2:
         stat = env.get_md_status(domain)
         assert stat["proto"]["acme-tls/1"] == []
         MDConf(env).install()
+        if not env.httpd_is_at_least("2.5.0"):
+            # On 2.4.x, mod_watchdog does not stop its threads before a
+            # child exits, so the renewal can still be signing when
+            # OpenSSL's atexit handler has run, failing with APR_ENOTIMPL.
+            # Logged by the exiting child after the restart, so possibly
+            # after this test: ignore it from here on.
+            env.httpd_error_log.add_ignored_matches([
+                r'.*\(70023\)[^:]*: (signing|jwk signed message)$',
+                r'.*\(70023\)[^:]*: md\[test-md-702-041-[^]]*\]$',
+            ])
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.httpd_error_log.ignore_recent(matches=[
             r'.*None of offered challenge types for domain.*',
@@ -896,4 +910,3 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         assert env.await_completion(domains)
         env.check_md_complete(domains[0])
-

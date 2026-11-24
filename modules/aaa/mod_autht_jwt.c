@@ -1051,7 +1051,7 @@ static autht_status check_token(request_rec *r, const char *type,
         }
 
         key = apr_psprintf(r->pool, AUTHT_PREFIX "%.*s", (int)kv->k->value.string.len, kv->k->value.string.p);
-        j = sizeof(AUTHT_PREFIX);
+        j = sizeof(AUTHT_PREFIX) - 1; /* string length of "TOKEN_", excluding the trailing NUL */
         while (key[j]) {
             if (apr_isalnum(key[j])) {
                 key[j] = apr_toupper(key[j]);

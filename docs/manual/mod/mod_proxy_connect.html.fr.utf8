@@ -123,7 +123,17 @@ d'Apache 2.3.5. Tranches de ports disponibles depuis Apache 2.3.7.</td></tr>
     vers les ports sp&eacute;cifi&eacute;s.</p>
 
     <p>D&eacute;finir la valeur &agrave; <code>None</code> pour interdire les requ&ecirc;tes
-    <code>CONNECT</code> vers tous les ports, y compris ceux par d&eacute;faut.</p>
+    <code>CONNECT</code> vers tous les ports, y compris ceux par d&eacute;faut.
+    <code>None</code> ne peut pas &ecirc;tre combin&eacute; avec des num&eacute;ros de port dans le
+    m&ecirc;me contexte</p>
+
+    <p>Quand la directive <code class="directive">AllowCONNECT</code> est d&eacute;finie dans
+    la configuration globale du serveur et dans un serveur virtuel, les listes de
+    ports sont fusionn&eacute;es, de sorte qu&rsquo;un serveur virtuel puisse autoriser des
+    ports additionnels. La valeur <code>None</code> est prioritaire et interdit
+    tous les ports dans le contexte o&ugrave; elle est d&eacute;finie&nbsp;; mais une valeur
+    <code>None</code> h&eacute;rit&eacute;e est quant &agrave; elle outrepass&eacute;e par une liste
+    explicite de ports d&eacute;finie au sein d&rsquo;un serveur virtuel.</p>
 
 </div>
 </div>

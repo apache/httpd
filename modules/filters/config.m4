@@ -78,7 +78,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     fi
     APR_ADDTO(LIBS, [-lz])
     AC_MSG_CHECKING([for zlib library])
-    AC_TRY_LINK([#include <zlib.h>], [int i = Z_OK;], 
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <zlib.h>]], [[int i = Z_OK;]])],
       [AC_MSG_RESULT(found) 
        APR_ADDTO(MOD_DEFLATE_LDADD, [$ap_zlib_ldflags -lz])],
       [AC_MSG_RESULT(not found)
@@ -152,10 +152,9 @@ APACHE_MODULE(brotli, Brotli compression support, , , most, [
     ap_save_cppflags=$CPPFLAGS
     APR_ADDTO(CPPFLAGS, [-I${ap_brotli_base}/include])
     AC_MSG_CHECKING([for Brotli library >= 0.6.0 via prefix])
-    AC_TRY_COMPILE(
-      [#include <brotli/encode.h>],[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <brotli/encode.h>]],[[
 const uint8_t *o = BrotliEncoderTakeOutput((BrotliEncoderState*)0, (size_t*)0);
-if (o) return *o;],
+if (o) return *o;]])],
       [AC_MSG_RESULT(yes)
        ap_brotli_found=yes
        ap_brotli_cflags="-I${ap_brotli_base}/include"

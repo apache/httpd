@@ -16,6 +16,7 @@ from .testapi import (
     need_module,
     need_php,
     need_ssl,
+    not_backported,
     t_cmp,
 )
 
@@ -32,6 +33,7 @@ __all__ = [
     "need_module",
     "need_php",
     "need_ssl",
+    "not_backported",
     "probe",
     "t_cmp",
 ]

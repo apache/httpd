@@ -7,7 +7,8 @@ from pyhttpd.conf import HttpdConf
 class TestMergeLanguage:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         # Create a file with two language extensions so mod_mime
         # populates r->content_languages with nelts == nalloc == 2.
         doc_dir = os.path.join(env.server_dir, "htdocs", "test1")

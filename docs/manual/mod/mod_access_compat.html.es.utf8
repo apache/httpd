@@ -31,6 +31,10 @@
 <a href="../fr/mod/mod_access_compat.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducci&oacute;n podr&iacute;a estar
+            obsoleta. Consulte la versi&oacute;n en ingl&eacute;s de la
+            documentaci&oacute;n para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripci&oacute;n:</a></th><td>Autorizaciones de grupo basadas en el host (nombre o direcci&oacute;n IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>Extensi&oacute;n</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificador de M&oacute;dulos:</a></th><td>access_compat_module</td></tr>

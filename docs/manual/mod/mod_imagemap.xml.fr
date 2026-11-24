@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1673932 -->
+<!-- English Revision : 1936367 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -27,7 +27,7 @@
 <name>mod_imagemap</name>
 <description>Traitement des cartes des zones interactives d'une image
 (imagemaps) au niveau du serveur</description>
-<status>Base</status>
+<status>Obsolète</status>
 <sourcefile>mod_imagemap.c</sourcefile>
 <identifier>imagemap_module</identifier>
 

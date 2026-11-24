@@ -7,14 +7,15 @@ from pyhttpd.conf import HttpdConf
 class TestUserdirHeaders:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
 
         userdir_base = os.path.join(env.server_dir, "htdocs", "userdir")
 
         conf = HttpdConf(env, extras={
             'base': f"""
         UserDir "{userdir_base}/*/public_html"
- 
+
         <Directory "{userdir_base}/*/public_html">
             AllowOverride FileInfo
             Options +ExecCGI

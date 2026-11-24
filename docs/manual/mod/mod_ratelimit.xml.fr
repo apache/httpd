@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1833875 -->
+<!-- English Revision: 1938788 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -15,7 +15,7 @@
      http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
+distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
@@ -50,6 +50,20 @@ connexion à simuler.</p>
 <code>rate-initial-burst</code>, de définir une quantité de données en
 kOctets à transmettre à pleine vitesse avant de limiter la bande passante à la
 valeur voulue.</p>
+
+<note type="warning"><title>Consommation de ressources</title>
+<p>La limitation de bande passante est implémentée en insérant des pauses entre
+les écritures vers le client ; ainsi, chaque réponse faisant l’objet d’une
+limitation de bande passante mobilise un thread du serveur (ou un processus)
+pour la durée entière du transfert délibérément prolongé. Cela concerne tous les
+MPMs, y compris <module>event</module>. Un certain nombre, même modeste, de
+téléchargements lents limités en bande passante peut entraîner le dépassement du
+nombre de threads ou processus de travail du serveur disponibles et empêcher le
+traitement des autres requêtes. Il est donc recommandé d’utiliser ce module avec
+prudence, de limiter son utilisation aux ressources qui en ont vraiment besoin
+et de définir <directive module="mpm_common">MaxRequestWorkers</directive> en
+conséquence.</p>
+</note>
 
 <example><title>Exemple de configuration</title>
 <highlight language="config">

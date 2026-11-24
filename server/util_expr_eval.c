@@ -1891,7 +1891,7 @@ static const char *request_var_fn(ap_expr_eval_ctx_t *ctx, const void *data)
         }
         return apr_psprintf(ctx->p, "%d", HTTP_VERSION_MINOR(r->proto_num));
     case 32:
-        return apr_psprintf(ctx->p, "%u", ctx->c->client_addr->port);
+        return apr_psprintf(ctx->p, "%u", r->useragent_addr->port);
     case 33:
     case 34:
         if (ap_remote_is_ssl(r))

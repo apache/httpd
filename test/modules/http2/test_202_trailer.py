@@ -14,10 +14,12 @@ def setup_data(env):
 # The trailer tests depend on "nghttp" as no other client seems to be able to send those
 # rare things.
 @pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
+@H2TestEnv.needs_nghttp()
 class TestTrailers:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         setup_data(env)
         conf = H2Conf(env, extras={
             f"cgi.{env.http_tld}": [

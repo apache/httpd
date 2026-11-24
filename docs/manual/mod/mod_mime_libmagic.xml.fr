@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_mime_libmagic.xml.meta">
+
+<name>mod_mime_libmagic</name>
+<description>Détermine le type Mime d’un fichier à partir de son contenu en
+utilisant libmagic</description>
+<status>Extension</status>
+<sourcefile>mod_mime_libmagic.c</sourcefile>
+<identifier>mime_libmagic_module</identifier>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
+
+<summary>
+    <p>Ce module détermine le <glossary ref="mime-type">type MIME</glossary>
+    d’un fichier en examinant son contenu, comme le fait la commande
+    <code>file(1)</code>. Il est conçu comme une « seconde ligne de défense »
+    pour les fichiers dont <module>mod_mime</module> ne peut pas déterminer le
+    type à partir de leur extension : il s’exécute après
+    <module>mod_mime</module> et ne fait rien si ce dernier a déjà déterminé le
+    type du fichier.</p>
+
+    <p>À la différence de <module>mod_mime_magic</module>, qui possède sa propre
+    copie du moteur <code>file(1)</code> et sa propre base de données magique,
+    ce module utilise la bibliothèque <code>libmagic(3)</code> du système et la
+    base de données magique du paquet <code>file</code> ; les types qu’il
+    indique sont donc ceux qu’indiquerait la commande <code>file
+    --mime-type</code>. Il n’est construit que si libmagic est trouvée à
+    l’exécution du script configure, et n’est actif pour la globalité d’un
+    serveur ou pour un serveur virtuel que si la directive <directive
+    module="mod_mime_libmagic">MimeLibmagic</directive> est à <code>On</code>.</p>
+
+    <p>Si libmagic indique <code>application/octet-stream</code>, ce module ne
+    définit aucun type, laissant la réponse sans en-tête
+    <code>Content-Type</code>, comme le fait <module>mod_mime_magic</module>
+    pour les types de contenu non reconnus. Le type des répertoires est
+    <code>httpd/unix-directory</code> et celui des fichiers vides
+    <code>text/plain</code>.</p>
+
+    <p>Ce module n’examine pas le contenu des fichiers compressés et ne définit
+    jamais d’en-tête <code>Content-Encoding</code> : un fichier gzip se voit
+    affecté le type <code>application/gzip</code>, à la différence de
+    <module>mod_mime_magic</module> qui indique l’encodage du fichier
+    compressé.</p>
+</summary>
+
+<seealso><module>mod_mime</module></seealso>
+<seealso><module>mod_mime_magic</module></seealso>
+
+<section id="threads"><title>Performances et surcharge mémoire</title>
+
+    <p>Un gestionnaire libmagic est créé, chargé avec la base de données
+    magique, puis détruit à chaque examen de requête. Le chargement d'une base
+    de données compilée (<code>magic.mgc</code>) projette le fichier en mémoire
+    au lieu de l'analyser ; comme les pages projetées sont partagées entre tous
+    les processus du serveur, cette opération est peu coûteuse. Si la base de
+    données est un fichier texte au lieu d’une base de données compilée, elle
+    est analysée à chaque requête.</p>
+
+    <p>Seuls les <directive module="mod_mime_libmagic"
+    >MimeLibmagicBytes</directive> premiers octets d’un fichier sont lus et
+    examinés, quelle que soit sa taille.</p>
+
+    <p>L'examen d’un contenu textuel, en particulier, peut entraîner
+    l'allocation temporaire de quelques mégaoctets de mémoire. Avec un MPM
+    multithreadé et une bibliothèque C gérant un tas (heap) distinct par thread,
+    chaque thread serveur conserve son allocation maximale ; par conséquent, la
+    taille résidente en mémoire d'un processus enfant très sollicité peut
+    augmenter d'autant pour chaque thread avant de se stabiliser. Il ne s'agit
+    pas d'une fuite de mémoire.</p>
+</section>
+
+<directivesynopsis>
+<name>MimeLibmagic</name>
+<description>Activer la détermination du type MIME à partir du contenu des
+fichiers</description>
+<syntax>MimeLibmagic On|Off</syntax>
+<default>MimeLibmagic Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>MimeLibmagic</directive> permet d’activer le
+    module pour un serveur global ou un serveur virtuel. Les fichiers dont
+    <module>mod_mime</module> ne peut pas déterminer le type, en général ceux
+    dont l’extension n’est pas reconnue, voient leur contenu examiné par
+    libmagic.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+MimeLibmagic On
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MimeLibmagicFile</name>
+<description>La base de données magique à utiliser</description>
+<syntax>MimeLibmagicFile <var>file-path</var></syntax>
+<default>La base de données par défaut de la bibliothèque libmagic installée</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>MimeLibmagicFile</directive> permet de spécifier
+    une base de données magique alternative à la place de la base de données par
+    défaut compilée avec libmagic (en général
+    <code>/usr/share/misc/magic</code>, pour lequel le fichier compilé
+    <code>magic.mgc</code> qui l’accompagne est chargé). La base de données doit
+    être au format décrit dans <code>magic(5)</code> ; le fichier distribué avec
+    <module>mod_mime_magic</module> ne convient pas. Un chemin relatif sera
+    considéré par rapport à la valeur de la directive <directive module="core"
+    >ServerRoot</directive>. Si la base de données ne peut pas être chargée, une
+    erreur est enregistrée dans le journal pour chaque requête examinée et le
+    fichier demeure non typé.</p>
+
+    <p>Notez que la variable d’environnement <code>MAGIC</code>, si elle est
+    définie au démarrage du serveur, outrepasse la définition par défaut de la
+    bibliothèque, mais pas une base de données définie par cette directive.</p>
+
+    <example><title>Exemple</title>
+    <highlight language="config">
+MimeLibmagicFile /usr/share/misc/magic.mgc
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MimeLibmagicBytes</name>
+<description>Le nombre d’octets à examiner dans un fichier</description>
+<syntax>MimeLibmagicBytes <var>bytes</var></syntax>
+<default>MimeLibmagicBytes 16384</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>MimeLibmagicBytes</directive> permet de définir
+    le nombre d’octets à partir du début d’un fichier qui doivent être lus et
+    examinés. Des valeurs supérieures permettent d’utiliser des règles magiques
+    qui examinent le fichier plus en profondeur, au prix de devoir lire une
+    partie plus importante de chaque fichier à examiner. La valeur maximale
+    est 1048576.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MimeLibmagicCharset</name>
+<description>Ajouter un paramètre « charset » aux types texte</description>
+<syntax>MimeLibmagicCharset On|Off</syntax>
+<default>MimeLibmagicCharset Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Si la directive <directive>MimeLibmagicCharset</directive> est à
+    <code>On</code>, l’encodage des caractères que détecte libmagic (tel que
+    <code>us-ascii</code>, <code>utf-8</code> ou <code>iso-8859-1</code>) est
+    ajouté en tant que paramètre <code>charset</code> aux types
+    <code>text/*</code>, comme dans <code>text/plain; charset=utf-8</code>. Les
+    autres types ne sont pas concernés. Comme avec la directive <directive
+    module="core"
+    >AddDefaultCharset</directive>, l’encodage détecté ne doit être considéré
+    comme fiable que lorsque le contenu est connu pour être encodé de manière
+    cohérente.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

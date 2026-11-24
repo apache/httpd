@@ -7,7 +7,8 @@ from .env import H2Conf, H2TestEnv
 class TestConditionalHeaders:
 
     @pytest.fixture(autouse=True, scope='class')
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         H2Conf(env).add(
             """
             KeepAlive on

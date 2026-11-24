@@ -1161,6 +1161,18 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
     return APR_SUCCESS;
 }
 
+/* Return non-zero if the certificate is not temporally valid at the
+ * current time, i.e. it is expired or not yet valid. */
+static int cert_time_invalid(const X509 *cert)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x40000000L
+    return X509_check_certificate_times(NULL, cert, NULL) != 1;
+#else
+    return X509_cmp_current_time(X509_get_notBefore(cert)) >= 0
+        || X509_cmp_current_time(X509_get_notAfter(cert)) <= 0;
+#endif
+}
+
 /*
  * The hook is NOT registered with ap_hook_process_connection. Instead, it is
  * called manually from the churn () before it tries to read any data.
@@ -1294,11 +1306,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         cert = SSL_get_peer_certificate(filter_ctx->pssl);
 
         if (dc->proxy->ssl_check_peer_expire != FALSE) {
-            if (!cert
-                || (X509_cmp_current_time(
-                     X509_get_notBefore(cert)) >= 0)
-                || (X509_cmp_current_time(
-                     X509_get_notAfter(cert)) <= 0)) {
+            if (!cert || cert_time_invalid(cert)) {
                 proxy_ssl_check_peer_ok = FALSE;
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c, APLOGNO(02004)
                               "SSL Proxy: Peer certificate is expired");

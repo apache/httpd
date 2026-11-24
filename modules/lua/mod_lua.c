@@ -39,6 +39,7 @@
 #include "lua_config.h"
 #include "mod_auth.h"
 #include "util_mutex.h"
+#include "util_varbuf.h"
 
 #ifdef APR_HAS_THREADS
 #include "apr_thread_proc.h"
@@ -951,10 +952,14 @@ static const char *direct_chunkreader(lua_State *lvm, void *udata,
     return ctx->buf;
 }
 
-static int ldump_writer(lua_State *L, const void *b, size_t size, void *B)
+/* lua_dump() writer: collect the bytecode outside the Lua stack, which
+ * lua_dump() itself may be using (Lua 5.5 pushes a table while dumping),
+ * so a luaL_Buffer must not be used here.
+ */
+static int ldump_writer(lua_State *L, const void *b, size_t size, void *vb)
 {
     (void) L;
-    luaL_addlstring((luaL_Buffer *) B, (const char *) b, size);
+    ap_varbuf_strmemcat((struct ap_varbuf *) vb, (const char *) b, (int) size);
     return 0;
 }
 
@@ -1078,14 +1083,17 @@ static const char *register_named_block_function_hook(const char *name,
             return errstr;
         }
         else {
-            luaL_Buffer b;
-            luaL_buffinit(lvm, &b);
-            lua_dump(lvm, ldump_writer, &b);
-            luaL_pushresult(&b);
-            spec->bytecode_len = lua_rawlen(lvm, -1);
-            spec->bytecode = apr_pstrmemdup(cmd->pool, lua_tostring(lvm, -1),
-                                            spec->bytecode_len);
+            struct ap_varbuf vb;
+            ap_varbuf_init(cmd->temp_pool, &vb, 0);
+            vb.strlen = 0;
+            rv = lua_dump(lvm, ldump_writer, &vb);
             lua_close(lvm);
+            if (rv != 0) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   "> could not dump compiled Lua code", NULL);
+            }
+            spec->bytecode_len = vb.strlen;
+            spec->bytecode = apr_pmemdup(cmd->pool, vb.buf, vb.strlen);
         }
 
         current = mconfig;

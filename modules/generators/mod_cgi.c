@@ -146,7 +146,14 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy,
     cgi_server_conf *conf = ap_get_module_config(s->module_config,
                                                  &cgi_module);
 
-    conf->logbytes = atol(arg);
+    apr_off_t bytes;
+
+    if (ap_size_parameter_parse(arg, &bytes) != APR_SUCCESS
+            || bytes < 0 || bytes > LONG_MAX) {
+        return "ScriptLogLength must be a non-negative integer.";
+    }
+
+    conf->logbytes = (long)bytes;
     return NULL;
 }
 
@@ -157,7 +164,14 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy,
     cgi_server_conf *conf = ap_get_module_config(s->module_config,
                                                  &cgi_module);
 
-    conf->bufbytes = atoi(arg);
+    apr_off_t bytes;
+
+    if (ap_size_parameter_parse(arg, &bytes) != APR_SUCCESS
+            || bytes < 0 || (apr_uint64_t)bytes > APR_SIZE_MAX) {
+        return "ScriptLogBuffer must be a non-negative integer.";
+    }
+
+    conf->bufbytes = (apr_size_t)bytes;
     return NULL;
 }
 
@@ -625,7 +639,8 @@ static int cgi_handler(request_rec *r)
 #if APR_FILES_AS_SOCKETS
     b = cgi_bucket_create(r, dc->timeout, script_in, script_err, c->bucket_alloc);
     if (b == NULL)
-        return HTTP_INTERNAL_SERVER_ERROR;
+        return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, 0, NULL,
+                               "could not create CGI bucket");
 #else
     b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
 #endif

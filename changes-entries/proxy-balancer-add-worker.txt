@@ -1,0 +1,5 @@
+  *) mod_proxy_balancer: Hold the balancer's thread lock while a worker is
+     added at run time, add it to the balancer's worker array only once it is
+     complete, and create it disabled, so that request threads cannot find a
+     half-built or briefly enabled worker.  A worker whose creation fails is
+     taken out again.  [Jim Jagielski]

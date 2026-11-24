@@ -29,6 +29,8 @@
 <a href="./pt-br/new_features_2_4.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta tradu&ccedil;&atilde;o pode estar desatualizada.
+        Verifique a vers&atilde;o em ingl&ecirc;s para altera&ccedil;&otilde;es recentes.</div>
 
   <p>Este documento descreve algumas das principais mudan&ccedil;as entre as
      vers&otilde;es 2.2 e 2.4 do servidor HTTP Apache. Para obter informa&ccedil;&otilde;es sobre os novos recursos

@@ -1,0 +1,4 @@
+  *) mod_md: Honour the Retry-After header of ACME responses, as RFC 8555
+     recommends, when polling orders and authorizations, after finalizing an
+     order and when a request is rate limited. PR 70282
+     [Arturo Bernal]

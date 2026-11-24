@@ -414,7 +414,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 }
                 apr_bucket_delete(e);
             }
-            if (APR_BUCKET_IS_EOS(e)) {
+            else if (APR_BUCKET_IS_EOS(e)) {
                 ctx->at_eos = 1;
                 if (!apr_is_empty_table(r->trailers_in)) {
                     core_server_config *conf = ap_get_module_config(
@@ -978,7 +978,7 @@ static apr_status_t validate_status_line(request_rec *r)
         if (len < 3
             || apr_strtoi64(r->status_line, &end, 10) != r->status
             || (end - 3) != r->status_line
-            || (len >= 4 && ! apr_isspace(r->status_line[3]))) {
+            || (len >= 4 && r->status_line[3] != ' ')) {
             r->status_line = NULL;
             return APR_EGENERAL;
         }

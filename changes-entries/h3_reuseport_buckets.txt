@@ -1,0 +1,6 @@
+  *) mod_http3: On Linux, with ListenCoresBucketsRatio, the parent binds one
+     SO_REUSEPORT QUIC socket per listener bucket and one child serves each,
+     so more than one child serves HTTP/3. The sockets stay bound when
+     children start and stop, so the kernel keeps each peer on the same
+     socket.
+     [Alexander Gerasimov <codeguard gmail.com>]

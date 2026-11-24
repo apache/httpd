@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_event, mpm_worker, mpm_winnt, mpm_prefork, mpm_motorz: Added optional
+     functions to account for connections managed outside the MPM accept loop
+     (e.g., UDP).
+     [Tarek Ibrahim <tareki@pulsarxtech.com> <t1br4h1m@gmail.com>]
+
+  * mod_ssl: Add support for OpenSSL provider based certificate
+    stores. [Graham Leggett]
+
   *) mod_proxy_beacon: Back-end reverse proxy servers can announce
      themselves and be auto-added to their front-end proxy balancer.
      [Jim Jagielski]

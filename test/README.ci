@@ -22,71 +22,174 @@ The CI scripts use the following environment variables:
 
 * BUILDCONFIG - arguments to pass when running httpd's ./buildconf script
 
-* MFLAGS - arguments to pass when running "make" for httpd.
+* MFLAGS - arguments to pass when running "make", both for httpd and
+  for any dependency built from source.  The Linux workflow defaults
+  this to "-j<number of CPUs>"; a matrix entry can override it, e.g.
+  setting it empty to force a serial build.
 
 * SKIP_TESTING - if set, no testing is done at all
 
 * NO_TEST_FRAMEWORK - if set, the Perl-based test framework and
                       libcheck-based unit tests are skipped
 
+* TEST_LOGNO - if set, checks for APLOGNO() macro errors (duplicates
+               or empty arguments) and exits; no build or testing is done.
+
 * TEST_UBSAN - set for job using UBSan ("Undefined Behaviour Sanitizer")
 
-* TEST_MALLOC - set for job using enhanced malloc debugging.
+* TEST_ASAN - set for job using ASan ("Address Sanitizer")
+
+* TEST_MALLOC - set for job using enhanced malloc debugging
+  (sets MALLOC_PERTURB_, MALLOC_CHECK_ and LIBC_FATAL_STDERR_).
 
 * TEST_INSTALL - set for job testing "make install"
 
-* TEST_VPATH - set for job testing srcdir!=builddir 
+* TEST_VPATH - set for job testing srcdir!=builddir (VPATH build)
 
 * TEST_LDAP - set for job with slapd, running LDAP tests
 
-* TEST_SSL - set for job with SSL/TLS testing variants
+* TEST_SSL - set for job with SSL/TLS testing variants (encrypted
+  private keys, session cache backends via redis/memcache/shmcb, etc.)
+
+* TEST_OPENSSL - if set to a version string (e.g. "3.4.7"), that
+  version of OpenSSL is built from source and used for mod_ssl.
+  Requires non-system APR/APR-util (APR_VERSION must also be set).
+
+* TEST_OPENSSL_BRANCH - if set together with TEST_OPENSSL, the
+  OpenSSL source is cloned from the named git branch instead of
+  downloading a release tarball.
+
+* OPENSSL_CONFIG - extra arguments passed to OpenSSL's ./Configure
+  when building from source (e.g. "no-engine").
+
+* TEST_PYTEST - if set, runs all available pytest-based test suites
+  via "make check-all-pytest" (pytest_suite/ and test/modules/*/
+  suites, in one pytest session).  Replaces the old per-suite TEST_CORE
+  / TEST_PROXY / TEST_H2 / TEST_MD flags.  A suite whose dependencies
+  are missing skips itself: modules/md without `pebble` on PATH,
+  modules/http2 when mod_http2 was not built.
+
+* PYTEST_ARGS - with TEST_PYTEST, test paths (relative to test/) and
+  options passed through to pytest, to narrow the run: "modules/http2",
+  "modules" (skip pytest_suite/), "pytest_suite/tests" (skip modules/),
+  "-k expr", "-m expr".
+
+* TEST_NGHTTP2 - if set to a version string (e.g. "1.68.0"), that
+  release of nghttp2 is built from its GitHub tag (library only) and
+  used for mod_http2/mod_proxy_http2 via --with-nghttp2.  Used by the
+  HTTP/2 workflow to test against nghttp2 versions other than the one
+  packaged for the runner image.
+
+* TEST_CURL_H3 - if set to a version string (e.g. "8.18.0"), that
+  release of curl is built with HTTP/3 (OpenSSL QUIC and libnghttp3)
+  and used by the pytest suites through $CURL.  Used by the mod_http3
+  job, since the runner's curl has no HTTP/3.
+
+* TEST_MD - set together with TEST_PYTEST; installs pebble first so
+  that modules/md runs instead of skipping.  See the
+  "Python pytest test suites" job in .github/workflows/linux.yml.
+
+* TEST_APR_TARBALL - if set, APR/APR-util source is fetched as a
+  release tarball from archive.apache.org rather than cloned from git.
+  (This is necessary for old releases where running ./buildconf from
+  a tag may now be difficult.)
 
 * TESTS - a list of Perl framework tests to run
 
 * TEST_ARGS - arguments to pass to ./t/TEST in the Perl test framework
 
-* CLEAR_CACHE - if set, the cached $HOME/root is removed before each build
+* LITMUS - if set, runs the litmus WebDAV test suite against mod_dav.
+
+* PHP_FPM - path to the php-fpm binary.  If set, PHP tests are
+  included in the pytest test suites.  If not set by the matrix
+  entry, the workflow sets it to the newest /usr/sbin/php-fpm* found
+  in the runner image (e.g. "/usr/sbin/php-fpm8.3"), failing the job
+  if there is none.
 
 Caching
 -------
 
-Caching was designed in Travis then migrated to GitHub Actions, and
-should probably be redone from scratch.
+Two directories are cached.
 
-Caches in GHA are immutable. Currently the ~/perl5 and ~/root
-directories are cached (separately) for each unique job configuration,
-which is identified by the $JOBID variable. $JOBID is a hash of the
-variables defined in the matrix.
+~/root (key "cache-libs-<serial>-<image>-<arch>-$ROOTID") holds the
+APR, APR-util and OpenSSL installs.  gha-resolve-deps.sh computes
+$ROOTID before the cache is restored, hashing only what determines
+those installs: the versions, their configure arguments and $CC.  The
+job's own configuration is deliberately not included, so jobs building
+the same dependencies share one entry however differently they
+configure or test httpd - the five pool-debug jobs, for instance.  A job
+which builds no dependencies gets no $ROOTID and does not use the cache
+at all.
 
-Hence, if e.g. the APR_VERSION or APR_CONFIG changes, a different
-cache key will be used for future builds, but while it remains the
-same the cached install can be used across builds.
+For anything built from a branch rather than a tag - APR_VERSION=trunk
+or 1.7.x, and TEST_OPENSSL_BRANCH - the version alone does not identify
+what gets built, so the branch is resolved to a commit and that goes
+into $ROOTID too.  The commit is exported as
+$APR_COMMIT/$APU_COMMIT/$OPENSSL_COMMIT so that the build uses exactly
+what the key names rather than resolving the branch a second time,
+minutes later, by which point it may have moved.
 
-This does not work optimally for e.g. APR_VERSION=trunk - in this
-case, a trunk build of APR is built and cached (assuming the job
-succeeds). Once the trunk revision changes, install_apx() will see the
-cached trunk install is stale and throw it away for every single
-subsequent job; the cache is never updated.
+It is restored before the dependencies are built and saved afterwards,
+only if they built successfully - a failed job would otherwise write a
+half-built tree to a key which can never be updated.
 
-(Similarly for CPAN - the cached version of ~/perl5 for each job will
-increasingly become stale over time as the version in CPAN changes
-from whatever was cached for the first build.)
+~/perl5 (key "cache-cpan-<serial>-$PERLID-<arch>-<hash>") holds the
+CPAN modules.  Nothing in it varies per job: the module list is fixed
+and the modules are always built with CC=gcc, so the content depends
+only on the perl ABI and on the module list itself, hashed from
+travis_before_linux.sh.  One cache is therefore shared by every job.
 
-The solution (TBD) is likely to incorporate the versions of whatever
-is cached into the keys as in the example documentation:
-https://github.com/actions/cache/blob/main/examples.md
+$PERLID is a hash of the "perl -V" output, computed by
+gha-resolve-deps.sh, which also logs that output so a change to it can
+be seen.  The image name is deliberately not used: the runner image is
+rebuilt regularly and its name does not change when perl does, so the
+key outlived a perl upgrade which the modules did not.  The key has no
+restore-keys fallback, so the modules restored always match the perl
+running the job.
 
-If APR_VERSION and APU_VERSION are both set to 1.x versions, then
-CLEAR_CACHE should also be set to disable APR* caching.  APR-util can
-only be rebuilt if an APR checkout is present, so a APR-util cannot be
-built from source alone.  (i.e. the scripts do not handle the case of
-cached, fresh APR plus a cached but stale APR-util)
+The cached CPAN modules still become gradually stale as versions in
+CPAN move on from whatever was installed for the first build.  Bump
+the serial in the key ("cache-cpan-1-" -> "cache-cpan-2-") to discard
+them and rebuild against current CPAN.
+
+APR and APR-util must stay in a single cache entry.  APR-util's
+buildconf needs APR's *source* tree, which lives in $HOME/build and is
+not cached, so APR-util can only be built in a job which also builds
+APR.  $ROOTID covers both, and the entry is saved only once both have
+built, so a restored entry never holds one without the other.
+
+Artifacts
+---------
+
+A job which fails uploads its config.log, and the error_log from any
+test run, as artifacts named "config.log-$JOBID" and "error_log-$JOBID".
+
+$JOBID is the matrix index of the job followed by its name, with every
+character upload-artifact rejects - "/" among them - replaced, so job
+zero uploads "error_log-0-Shared-MPMs-event-pool-debug-SSL-TLS-variants".
+
+The index is what makes the name unique.  It cannot collide however the
+matrix changes, including for an entry which sets no name at all,
+whereas hashing a hand-picked subset of the job configuration - as this
+used to do - collides silently as soon as two entries differ only in a
+field which the hash omits.  Two entries already differ only in "os",
+which was never hashed: they stayed apart only because $ImageOS, which
+was, happens to differ on an ARM runner.  The job name is appended
+purely so that an artifact can be matched to the job it came from
+without counting matrix entries; it is not needed for uniqueness, and
+an entry which sets none is still named unambiguously.
+
+The name reaches the shell as $MATRIX_NAME through the step's env
+rather than being interpolated into the script, so that no job name can
+be written which breaks the shell.
+
+The value computed for a job can be read from its log without waiting
+for a failure: it is listed in the environment which the runner prints
+under the "Run" group of every step after the one which sets it.
 
 Travis to Github Actions Migration TODO
 ---------------------------------------
 
-* enable ACME/mod_md testing
-* support branch conditionals again (some tests are 2.4.x only, some trunk only)
 * test across different Ubuntu versions again
  - and test against OpenSSL 1.x since we're now ONLY building against 3.x
 * container testing for non-Ubuntu hosts
@@ -98,31 +201,21 @@ Travis to Github Actions Migration TODO
 TODO list
 ---------
 
-* non-x86 builds
 * MacOS build
-* Windows build
 * clang-on-Linux build
 * Use containers for non-Ubuntu-based Linux testing
 
 Known Failures
 --------------
 
-Some known failures:
+- A few mod_http2 Python tests sometimes fail spuriously, e.g.
+  FAILED modules/http2/test_106_shutdown.py::TestShutdown::test_h2_106_02 - AssertionError: failed on 2. request:  * Added test1.tests.httpd.apache.org:5001:127.0.0.1 to DNS cache
 
-* prefork, and more rarely non-prefork testing sometimes catches child
-  segfaults under pool-debug from assert()s in (e.g.)
-  __pthread_tpp_change_priority where one child is destroying threads
-  which another is waiting for, or iterating through via
-  apr_pool_walk_tree().
+- mod_md tests can deadlock pebble v2.10.1 which hangs the test suite,
+  hopefully fixed for a future release. See e.g.
+  https://github.com/letsencrypt/pebble/pull/555
 
-  See dev@httpd threads:
-  msg <5f4abde1b5789_13fde2ecacb40795a1@travis-tasks-5b566d48fc-drkb9.mail>
-  msg <73060f7b-df7f-ad3c-a9fa-dd666a59b31e@kippdata.de> and
-  https://bz.apache.org/bugzilla/show_bug.cgi?id=63098
-  https://bz.apache.org/bugzilla/show_bug.cgi?id=46185
-
-  Not clear if there is a real bug here which can be reproduced
-  outside of pool-debug.
+- ERROR at teardown of TestConf.test_md_300_022 - some race condition?
 
 Testing from a Feature Branch
 -----------------------------
@@ -175,6 +268,35 @@ when the commit is mirrored to Github, e.g. a commit message like:
 
    PR: 12345
    Submitted by: Jane Doe <jane example.com>
-   Github: closes #1
+   GitHub: closes #1
 
 will close PR #1 when it's merged.
+
+2.4.x
+-----
+
+The 2.4.x workflow runs the pytest jobs of trunk's, and TEST_PYTEST and
+"make check-all-pytest" work the same on both branches, so a test
+backported from trunk needs no change in how it is run.  A job that
+configures an MPM which the branch does not have yet (MotorZ, for now)
+succeeds without doing anything.  travis_before_linux.sh and
+travis_run_linux.sh are the same on both branches and do what the
+workflow leaves to them:
+
+* CLEAR_CACHE - if set, the cached $HOME/root and $HOME/perl5 are
+  removed before the build.
+
+* MFLAGS - the 2.4.x workflow does not set it; the build script then
+  uses "-j2".
+
+* TEST_MOD_TLS - with RUSTLS_VERSION, builds that tag of rustls-ffi
+  into $HOME/root/rustls and configures httpd with --with-tls and
+  --with-rustls.
+
+When the workflow does not set $ROOTID, its cache key does not say what
+was built, so the scripts check for themselves.  APR and APR-util are
+rebuilt unless $HOME/root/.key-apr (.key-apr-util) names the same
+version, commit, configuration and $CC; OpenSSL is rebuilt unless
+$HOME/root/openssl-is-$TEST_OPENSSL exists and, for a branch, names its
+current commit; the CPAN modules are rebuilt when the output of
+"perl -V" differs from the one saved in $HOME/perl5/.perlver.

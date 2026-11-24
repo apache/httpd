@@ -1,0 +1,2 @@
+  *) mod_http3: A CONNECT request with no :path no longer crashes the child
+     process. [Alexander Gerasimov <repo codeit.guru>]

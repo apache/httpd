@@ -76,7 +76,7 @@ URLs on the fly</td></tr>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
-<li><a href="rewrite/index.html">Guide to mod_rewrite</a></li>
+<li><a href="../rewrite/">Guide to mod_rewrite</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -169,7 +169,7 @@ URLs on the fly</td></tr>
       the current state of the URI matches its pattern, <strong>and</strong> if these conditions are met.</p>
 
       <p>If the <em>CondPattern</em> is prefixed with a <code>!</code> the
-      condition is determined to be true only if the the
+      condition is determined to be true only if the
       <em>CondPattern</em> does not match.</p>
 
       
@@ -1140,7 +1140,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       on where the <code class="directive">RewriteRule</code> directive is defined. </p>
 
       <p>If the pattern is prefixed with a <code>!</code> the
-      substitution will be performed only if the the
+      substitution will be performed only if the
       <em>pattern</em> does not match.</p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>

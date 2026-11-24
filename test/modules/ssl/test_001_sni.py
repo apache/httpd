@@ -8,10 +8,11 @@ class TestSNI:
     LOG_FILE = "test_sni.log"
 
     @pytest.fixture(autouse=True, scope="class")
-    def _class_scope(self, env):
+    @classmethod
+    def _class_scope(cls, env):
         conf = HttpdConf(env, extras={
             "base":
-                f'CustomLog logs/{self.LOG_FILE} "%{{SSL_TLS_SNI}}x"'
+                f'CustomLog logs/{cls.LOG_FILE} "%{{SSL_TLS_SNI}}x"'
         })
         conf.add_vhost_test1()
         conf.install()

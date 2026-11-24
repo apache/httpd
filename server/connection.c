@@ -180,6 +180,9 @@ AP_DECLARE(int) ap_start_lingering_close(conn_rec *c)
 #endif
 }
 
+/* mpm_worker's worker_lingering_close() repeats this function (with the
+ * socket published until the close): keep them in sync.
+ */
 AP_DECLARE(void) ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];

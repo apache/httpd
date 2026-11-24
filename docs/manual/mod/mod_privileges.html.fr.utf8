@@ -32,7 +32,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des privil&egrave;ges de Solaris et de l'ex&eacute;cution des
 serveurs virtuels sous diff&eacute;rents identifiants
 utilisateurs.</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>privileges_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_privileges.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible depuis la version 2.3 d'Apache sur les
@@ -163,7 +163,7 @@ activ&eacute;s.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DTracePrivileges On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DTracePrivileges Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>&gt;Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
@@ -185,7 +185,7 @@ malicieux supportant les privil&egrave;ges.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PrivilegesMode FAST|SECURE|SELECTIVE</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>PrivilegesMode FAST</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec des
 modules MPMs non thread&eacute;s (comme <code class="module"><a href="../mod/prefork.html">prefork</a></code> ou un module
@@ -231,7 +231,7 @@ dernier.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostCGIMode On|Off|Secure</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>VHostCGIMode On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
@@ -266,7 +266,7 @@ par un serveur virtuel.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>Aucun</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
@@ -304,7 +304,7 @@ serveur virtuel.</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>H&eacute;rite de l'identifiant du groupe sp&eacute;cifi&eacute; par la directive
 <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
@@ -346,7 +346,7 @@ personnalis&eacute;).</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostPrivs [+-]?<var>nom-privil&egrave;ge</var> [[+-]?nom-privil&egrave;ge] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>Aucun</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
@@ -381,7 +381,7 @@ pour les serveurs virtuels.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostSecure On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>VHostSecure On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
@@ -411,7 +411,7 @@ serveur virtuel.</td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>H&eacute;rite de l'identifiant utilisateur sp&eacute;cifi&eacute; par la directive
 <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td></td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-thread&eacute;s (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM

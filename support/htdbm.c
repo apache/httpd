@@ -323,6 +323,7 @@ int main(int argc, const char * const argv[])
     int  need_cmnt = 0;
     int  changed = 0;
     int  cmd = HTDBM_MAKE;
+    int  opt_l = 0, opt_n = 0, opt_v = 0, opt_x = 0;
     int  i, ret, args_left = 2;
     apr_getopt_t *state;
     char opt;
@@ -347,11 +348,13 @@ int main(int argc, const char * const argv[])
             h->create = 1;
             break;
         case 'n':
+            opt_n = 1;
             need_file = 0;
             cmd = HTDBM_NOFILE;
             args_left--;
             break;
         case 'l':
+            opt_l = 1;
             need_pwd = 0;
             need_user = 0;
             cmd = HTDBM_LIST;
@@ -366,10 +369,12 @@ int main(int argc, const char * const argv[])
             h->type = apr_pstrdup(h->ctx.pool, opt_arg);
             break;
         case 'v':
+            opt_v = 1;
             h->rdonly = 1;
             cmd = HTDBM_VERIFY;
             break;
         case 'x':
+            opt_x = 1;
             need_pwd = 0;
             cmd = HTDBM_DELETE;
             break;
@@ -381,6 +386,18 @@ int main(int argc, const char * const argv[])
             }
         }
     }
+
+    /*
+     * "-n" never opens a database, and "-l" neither needs nor consumes
+     * a username; reject any combination that also asks for a command
+     * needing what the other option doesn't provide, no matter which
+     * order the conflicting options were given in.
+     */
+    if (opt_n && (opt_v || opt_x || opt_l))
+        htdbm_usage();
+    if (opt_l && (opt_v || opt_x))
+        htdbm_usage();
+
     if (h->ctx.passwd_src == PW_ARG) {
             need_pwd = 0;
             args_left++;
@@ -445,7 +462,9 @@ int main(int argc, const char * const argv[])
             changed = 1;
             break;
         case HTDBM_LIST:
-            htdbm_list(h);
+            rv = htdbm_list(h);
+            if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOENT(rv))
+                exit(ERR_GENERAL);
             break;
         default:
             ret = htdbm_make(h);

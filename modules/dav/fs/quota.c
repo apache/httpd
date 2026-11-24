@@ -279,9 +279,9 @@ int dav_fs_quota_precondition(request_rec *r,
          */
         if (dst == NULL)
              goto out;
-        path = dav_fs_fname(dst);
+        path = dav_fs_pathname(dst);
     } else {
-        path = dav_fs_fname(src);
+        path = dav_fs_pathname(src);
     }
 
     path = ap_make_dirstr_parent(r->pool, path);
