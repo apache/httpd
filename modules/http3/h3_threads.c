@@ -115,8 +115,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
                 /* The engine has already answered these clients: refuse them, or they wait out their idle timeout. */
                 if (io->draining)
                 {
-                    h3q_conn_refuse(conn); /* no new connections during a graceful stop */
-                    h3q_conn_free(conn);
+                    h3q_conn_refuse(io->qengine, conn); /* no new connections during a graceful stop */
                     continue;
                 }
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "accepted new QUIC connection");
@@ -124,8 +123,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
                 {
                     h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
                     ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "dropping QUIC connection: at H3MaxConnections limit (%u)", conf->h3_max_connections);
-                    h3q_conn_refuse(conn);
-                    h3q_conn_free(conn);
+                    h3q_conn_refuse(io->qengine, conn);
                     continue;
                 }
                 if (!prepare_accepted_connection(io, conn))

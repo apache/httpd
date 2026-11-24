@@ -112,9 +112,11 @@ int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const ch
 /**
  * Close a connection the server will not serve with CONNECTION_REFUSED, so
  * the client fails at once instead of waiting out its idle timeout.
- * @param conn Connection to refuse; it still has to be freed.
+ * @param engine Engine the connection was accepted from.
+ * @param conn   Connection to refuse; the engine takes it over and frees it
+ *               once the close is done, so the caller must not free it.
  */
-void h3q_conn_refuse(h3q_conn* conn);
+void h3q_conn_refuse(h3q_engine* engine, h3q_conn* conn);
 
 /**
  * Release a connection handle.

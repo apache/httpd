@@ -21,6 +21,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <apr_pools.h>
+#include <apr_time.h>
 
 #include <openssl/err.h>
 #include <openssl/ssl.h>
@@ -168,14 +170,66 @@ int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const ch
     return 0;
 }
 
-/* OpenSSL cannot send the CONNECTION_REFUSED transport error; close at once with an application error. */
-void h3q_conn_refuse(h3q_conn* conn)
+/* How long a refused connection waits for its handshake to finish before it is closed anyway. */
+#define H3Q_REFUSE_HANDSHAKE_WAIT_SECS 5
+
+/* OpenSSL cannot send the CONNECTION_REFUSED transport error, and its CONNECTION_CLOSE is sent in the packet type of
+ * the lowest encryption level it still holds: a client which got the server's handshake flight has discarded the keys
+ * for that already. So the close is held back until the handshake is done and goes out as an application error in a
+ * 1-RTT packet, which every client can read. The engine keeps the connection until then and through the closing
+ * period. */
+void h3q_conn_refuse(h3q_engine* engine, h3q_conn* conn)
 {
     SSL* ssl_conn = (SSL*)conn;
-    if (ssl_conn)
+    h3q_refused* refused;
+    if (!ssl_conn)
     {
+        return;
+    }
+    refused = engine->refused_free;
+    if (refused)
+    {
+        engine->refused_free = refused->next;
+        memset(refused, 0, sizeof(*refused));
+    }
+    else
+    {
+        refused = apr_pcalloc(engine->pool, sizeof(*refused));
+    }
+    refused->ssl_conn = ssl_conn;
+    refused->refused_at = apr_time_now();
+    refused->next = engine->refused_head;
+    engine->refused_head = refused;
+}
+
+void h3q_engine_reap_refused(h3q_engine* engine, int all)
+{
+    h3q_refused** slot = &engine->refused_head;
+    apr_time_t now = apr_time_now();
+    while (*slot)
+    {
+        h3q_refused* refused = *slot;
         SSL_SHUTDOWN_EX_ARGS args = {.quic_error_code = 0x107 /* H3_EXCESSIVE_LOAD */, .quic_reason = "refused"};
-        SSL_shutdown_ex(ssl_conn, SSL_SHUTDOWN_FLAG_RAPID, &args, sizeof(args));
+        int done = all;
+        if (!done && !refused->closing && (SSL_is_init_finished(refused->ssl_conn) || now - refused->refused_at >= apr_time_from_sec(H3Q_REFUSE_HANDSHAKE_WAIT_SECS)))
+        {
+            refused->closing = 1;
+        }
+        if (!done && refused->closing)
+        {
+            done = (SSL_shutdown_ex(refused->ssl_conn, SSL_SHUTDOWN_FLAG_RAPID, &args, sizeof(args)) == 1);
+        }
+        if (done)
+        {
+            *slot = refused->next;
+            SSL_free(refused->ssl_conn);
+            refused->next = engine->refused_free;
+            engine->refused_free = refused;
+        }
+        else
+        {
+            slot = &refused->next;
+        }
     }
 }
 

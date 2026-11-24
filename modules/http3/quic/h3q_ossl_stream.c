@@ -99,7 +99,8 @@ void h3q_stream_is_read_finished(h3q_stream* st, int* read_finished, int* write_
     {
         wstate = SSL_get_stream_write_state(ssl);
     }
-    *write_finished = (wstate == SSL_STREAM_STATE_FINISHED || wstate == SSL_STREAM_STATE_RESET_LOCAL);
+    /* A peer-initiated unidirectional stream has no send side. */
+    *write_finished = (wstate == SSL_STREAM_STATE_FINISHED || wstate == SSL_STREAM_STATE_RESET_LOCAL || wstate == SSL_STREAM_STATE_WRONG_DIR);
 }
 
 int h3q_stream_is_read_reset(h3q_stream* st)

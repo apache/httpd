@@ -45,6 +45,13 @@ h3q_engine* h3q_engine_create(const h3q_config* cfg, int udp_fd, char* err, size
     }
     engine->peer_addr_ex_index = -1;
 
+    if (!cfg->pool || apr_pool_create(&engine->pool, cfg->pool) != APR_SUCCESS)
+    {
+        h3q_tls_error(err, errlen, "allocating the engine pool failed");
+        h3q_engine_destroy(engine);
+        return NULL;
+    }
+
     if (!cfg->ssl_ctx || !SSL_CTX_up_ref(cfg->ssl_ctx))
     {
         h3q_tls_error(err, errlen, "no TLS context to serve from");
@@ -128,6 +135,7 @@ void h3q_engine_destroy(h3q_engine* engine)
         return;
     }
     h3q_peer_addr_queue_clear(engine);
+    h3q_engine_reap_refused(engine, 1);
     if (engine->ssl_listener)
     {
         SSL_free(engine->ssl_listener);
@@ -143,6 +151,10 @@ void h3q_engine_destroy(h3q_engine* engine)
     if (engine->ssl_ctx)
     {
         SSL_CTX_free(engine->ssl_ctx);
+    }
+    if (engine->pool)
+    {
+        apr_pool_destroy(engine->pool);
     }
     free(engine);
 }
@@ -168,6 +180,7 @@ int h3q_engine_pump(h3q_engine* engine)
             return -1;
         }
     }
+    h3q_engine_reap_refused(engine, 0);
     if (engine->peer_rx_head)
     {
         return 1;

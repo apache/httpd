@@ -575,12 +575,14 @@ int h3q_conn_shutdown(h3q_conn* conn, int is_rapid, uint64_t app_error, const ch
     return is_rapid || conn->close_len == 0 || h3q_now() >= conn->close_until;
 }
 
-void h3q_conn_refuse(h3q_conn* conn)
+void h3q_conn_refuse(h3q_engine* engine, h3q_conn* conn)
 {
     ngtcp2_ccerr ccerr;
+    (void)engine;
     ngtcp2_ccerr_default(&ccerr);
     ngtcp2_ccerr_set_transport_error(&ccerr, NGTCP2_CONNECTION_REFUSED, NULL, 0);
     h3q_conn_close(conn, &ccerr);
+    h3q_conn_free(conn); /* the engine keeps the stored close to answer the client's retransmissions */
 }
 
 void h3q_conn_free(h3q_conn* conn)

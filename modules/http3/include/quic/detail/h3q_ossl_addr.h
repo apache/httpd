@@ -20,18 +20,31 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <apr_time.h>
+
 #include <openssl/bio.h>
 #include <openssl/ssl.h>
 
 #include "quic/h3q.h"
 
 typedef struct h3q_datagram h3q_datagram;
+typedef struct h3q_refused h3q_refused;
+
+/** A refused connection, kept until its closing period is over. */
+struct h3q_refused
+{
+    SSL* ssl_conn;
+    apr_time_t refused_at;
+    int closing;
+    h3q_refused* next;
+};
 
 /** The listener's state. All but the two SSL handles exist to recover a
  *  connection's peer address, which OpenSSL 3.5 does not otherwise expose;
  *  that is why the definition lives beside the machinery that fills it. */
 struct h3q_engine
 {
+    apr_pool_t* pool;
     SSL_CTX* ssl_ctx;
     SSL* ssl_listener;
     uint32_t idle_timeout_secs;
@@ -41,6 +54,10 @@ struct h3q_engine
     int peer_addr_ex_index;
     h3q_datagram* peer_rx_head;
     h3q_datagram* peer_rx_tail;
+
+    /* Only touched from the event thread. A pool cannot free single nodes, so a reaped one waits in refused_free. */
+    h3q_refused* refused_head;
+    h3q_refused* refused_free;
 };
 
 /**
@@ -51,6 +68,13 @@ struct h3q_engine
  * @return 1 on success, 0 on failure.
  */
 int h3q_conn_prepare(h3q_conn* conn, uint32_t idle_timeout_secs);
+
+/**
+ * Free the refused connections whose closing period is over.
+ * @param engine Engine the connections were refused on.
+ * @param all    Non-zero to free every refused connection, as at engine shutdown.
+ */
+void h3q_engine_reap_refused(h3q_engine* engine, int all);
 
 /**
  * Drop every datagram still queued on the engine.
