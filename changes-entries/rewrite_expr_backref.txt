@@ -1,0 +1,4 @@
+  *) mod_rewrite: Fix a crash, or stray bytes in the substitution, when a
+     %N backreference follows a "RewriteCond expr" that matched without
+     capturing anything. %N now expands to an empty string there.
+     PR 70369 [Arturo Bernal]

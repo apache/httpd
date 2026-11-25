@@ -4280,7 +4280,7 @@ test_str_l:
 
     case CONDPAT_AP_EXPR:
         {
-            const char *err, *source;
+            const char *err, *source = NULL;
             rc = ap_expr_exec_re(r, p->expr, AP_MAX_REG_MATCH, regmatch,
                                  &source, &err);
             if (rc < 0 || err) {
