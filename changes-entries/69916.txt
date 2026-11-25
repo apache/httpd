@@ -1,0 +1,3 @@
+  *) core: Log the malformed header line sent by a CGI-style backend
+     (SCGI, FastCGI), instead of the last line of its output.
+     PR 69916 [Arturo Bernal]
