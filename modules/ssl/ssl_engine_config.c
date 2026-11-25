@@ -1522,6 +1522,11 @@ static const char *ssl_cmd_protocol_parse(cmd_parms *parms,
         }
     }
 
+    if (*options == SSL_PROTOCOL_NONE) {
+        return "SSLProtocol: No SSL protocols available";
+    }
+
+
     return NULL;
 }
 
