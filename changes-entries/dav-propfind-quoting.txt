@@ -1,0 +1,2 @@
+  *) mod_dav: Escape the getcontenttype and getcontentlanguage
+     properties in PROPFIND responses.  [Joe Orton]
