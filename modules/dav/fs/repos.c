@@ -364,6 +364,8 @@ static dav_error * dav_fs_copymove_file(
 
     if ((status = apr_file_open(&inf, src, APR_READ | APR_BINARY,
                                 APR_OS_DEFAULT, p)) != APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_ERR, status, p, APLOGNO(10629)
+                      "Could not open file %s for reading.", src);
         /* ### use something besides 500? */
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, status,
                              "Could not open file for reading");
@@ -375,6 +377,8 @@ static dav_error * dav_fs_copymove_file(
     if (status != APR_SUCCESS) {
         apr_file_close(inf);
 
+        ap_log_perror(APLOG_MARK, APLOG_ERR, status, p, APLOGNO(10630)
+                      "Could not open file %s for writing.", dst);
         return dav_new_error(p, MAP_IO2HTTP(status), 0, status,
                              "Could not open file for writing");
     }
@@ -569,8 +573,13 @@ static dav_error *dav_fs_copymoveset(int is_move, apr_pool_t *p,
 
     /* Get directory and filename for resources */
     /* ### should test these result values... */
-    (void) dav_fs_dir_file_name(src, &src_dir, &src_file);
-    (void) dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    err = dav_fs_dir_file_name(src, &src_dir, &src_file);
+    if (err != NULL)
+        return err;
+
+    err = dav_fs_dir_file_name(dst, &dst_dir, &dst_file);
+    if (err != NULL)
+        return err;
 
     /* Get the corresponding state files for each resource */
     dav_dbm_get_statefiles(p, src_file, &src_state1, &src_state2);
@@ -618,11 +627,14 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
     const char *state1;
     const char *state2;
     const char *pathname;
+    dav_error *err;
     apr_status_t status;
 
     /* Get directory, filename, and state-file names for the resource */
     /* ### should test this result value... */
-    (void) dav_fs_dir_file_name(resource, &dirpath, &fname);
+    err = dav_fs_dir_file_name(resource, &dirpath, &fname);
+    if (err != NULL)
+        return err;
     dav_dbm_get_statefiles(p, fname, &state1, &state2);
 
     /* build the propset pathname for the file */
@@ -797,10 +809,10 @@ static dav_error * dav_fs_get_resource(
             {
                 /*
                 ** The base of the path refers to a file -- nothing should
-                ** be in path_info. The resource is simply an error: it
+                ** be in path_info. The resource cannot exist: it
                 ** can't be a null or a locknull resource.
                 */
-                return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
+                return dav_new_error(r->pool, HTTP_NOT_FOUND, 0, 0,
                                      "The URL contains extraneous path "
                                      "components. The resource could not "
                                      "be identified.");

@@ -399,7 +399,8 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
             dav_do_prop_subreq(propdb);
         }
         if (propdb->subreq->content_type != NULL) {
-            value = propdb->subreq->content_type;
+            value = apr_xml_quote_string(propdb->p,
+                                         propdb->subreq->content_type, 0);
         }
         break;
 
@@ -412,7 +413,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
         }
         if ((lang = apr_table_get(propdb->subreq->headers_out,
                                  "Content-Language")) != NULL) {
-            value = lang;
+            value = apr_xml_quote_string(propdb->p, lang, 0);
         }
         break;
     }
