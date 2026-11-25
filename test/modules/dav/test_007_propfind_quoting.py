@@ -25,7 +25,12 @@ class TestDavPropfindQuoting:
         with open(os.path.join(dav_dir, 'hello.txt'), 'w') as fd:
             fd.write('hello')
         dav_dir_conf = dav_dir.replace('\\', '/')
+        lock_db_conf = os.path.join(env.gen_dir,
+                                    'davlock-quote').replace('\\', '/')
         conf = HttpdConf(env, extras={
+            'base': f"""
+        DavLockDB "{lock_db_conf}"
+        """,
             f"test1.{env.http_tld}": f"""
         Alias /dav-quote "{dav_dir_conf}"
         <Directory "{dav_dir_conf}">
