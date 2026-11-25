@@ -21,34 +21,30 @@
  * Updated to RFC-2617 by Ronald Tschalär <ronald@innovation.ch>
  * based on mod_auth, by Rob McCool and Robert S. Thau
  *
- * This module an updated version of modules/standard/mod_digest.c
- * It is still fairly new and problems may turn up - submit problem
- * reports to the Apache bug-database, or send them directly to me
- * at ronald@innovation.ch.
- *
  * Open Issues:
- *   - qop=auth-int (when streams and trailer support available)
- *   - nonce-format configurability
+ *   - MD5-sess and auth-int are not implemented; auth-int needs stream and
+ *     trailer support. An incomplete implementation has been removed and
+ *     can be retrieved from svn history.
  *   - Proxy-Authentication-Info header is set by this module, but is
  *     currently ignored by mod_proxy (needs patch to mod_proxy)
  *   - The source of the secret should be run-time directive (with server
- *     scope: RSRC_CONF)
- *   - shared-mem not completely tested yet. Seems to work ok for me,
- *     but... (definitely won't work on Windoze)
- *   - Sharing a realm among multiple servers has following problems:
- *     o Server name and port can't be included in nonce-hash
- *       (we need two nonce formats, which must be configured explicitly)
- *     o Nonce-count check can't be for equal, or then nonce-count checking
- *       must be disabled. What we could do is the following:
- *       (expected < received) ? set expected = received : issue error
- *       The only problem is that it allows replay attacks when somebody
- *       captures a packet sent to one server and sends it to another
- *       one. Should we add "AuthDigestNcCheck Strict"?
- *   - expired nonces give amaya fits.
- *   - MD5-sess and auth-int are not yet implemented. An incomplete
- *     implementation has been removed and can be retrieved from svn history.
+ *     scope: RSRC_CONF). Each server generates its own, so a nonce issued
+ *     by one does not verify at another, and a client moving between them
+ *     is re-challenged every time.
+ *   - Sharing a realm among multiple servers needs more than that secret,
+ *     though. It would be enough for a configuration which tracks no
+ *     per-client state, but the client table, the ids which key it and the
+ *     one-time nonce counter are all per-server, so under AuthDigestNcCheck
+ *     or AuthDigestNonceLifetime 0 a client would still be unknown to
+ *     whichever server it reached next.
+ *   - Sharing the secret would also make a request captured against one
+ *     server replayable against the others, and the nonce-count check
+ *     would not stop that, since each server counts separately. Hashing
+ *     the server name and port into the nonce would, but that is the
+ *     opposite of sharing: the two would have to be configured explicitly.
  */
 
+#include "apu_version.h"
 #include "apr_sha1.h"
 #include "apr_base64.h"
 #include "apr_lib.h"
@@ -87,6 +83,21 @@
 #error mod_auth_digest requires APR with random and shared memory support
 #endif
 
+/* The nonce is authenticated with a keyed hash, so that a client cannot
+ * forge one. apr_siphash() is a MAC, and is what that calls for; it is
+ * available in APU 1.6 / APR 2.0 and later. Older APR falls back to the
+ * original SHA-1 of the secret followed by the message, which is not a
+ * sound construction - a Merkle-Damgard hash keyed by a prefix can be
+ * extended without the key - but which is not attackable here, since the
+ * padding such an extension needs cannot survive the opaque being parsed
+ * as a hex number before the nonce is checked. */
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 6)
+#define DIGEST_SIPHASH_NONCE 1
+#include "apr_siphash.h"
+#else
+#define DIGEST_SIPHASH_NONCE 0
+#endif
+
 /* struct to hold the configuration info */
 
 typedef struct digest_config_struct {
@@ -97,6 +108,14 @@ typedef struct digest_config_struct {
     char        *uri_list;
 } digest_config_rec;
 
+/* Whether state is tracked per client under conf: a one-time nonce is
+ * retired by its use, and AuthDigestNcCheck needs the last nonce-count. A
+ * client is issued an opaque iff so, since the opaque is the key to that
+ * state. */
+static int tracks_clients(const digest_config_rec *conf)
+{
+    return conf->check_nc || conf->nonce_lifetime == 0;
+}
 
 #define DFLT_ALGORITHM  "MD5"
 
@@ -104,9 +123,16 @@ typedef struct digest_config_struct {
 #define NEXTNONCE_DELTA apr_time_from_sec(30)
 
 /* The server nonce has fixed length and is the concatenation of:
- *    base64(apr_time_t timestamp) + hex(SHA1(realm+time[+opaque])) */
+ *    base64(apr_time_t timestamp) + hex(keyed hash of realm+time[+opaque])
+ * The hash is half as long with siphash, which produces 64 bits: enough for
+ * a value which can only be attacked by presenting it to the server, there
+ * being no way to test a candidate offline. */
 #define NONCE_TIME_LEN  (((sizeof(apr_time_t)+2)/3)*4)
+#if DIGEST_SIPHASH_NONCE
+#define NONCE_HASH_LEN  (2*APR_SIPHASH_DSIZE)
+#else
 #define NONCE_HASH_LEN  (2*APR_SHA1_DIGESTSIZE)
+#endif
 #define NONCE_LEN       (int )(NONCE_TIME_LEN + NONCE_HASH_LEN)
 /* Evaluates to true if nonce string is valid. Since the time part of
  * the nonce is a base64 encoding of an apr_time_t (8 bytes), it
@@ -118,15 +144,17 @@ typedef struct digest_config_struct {
 #define SECRET_LEN          20
 #define RETAINED_DATA_ID    "mod_auth_digest"
 
-
-/* client list definitions */
+#if DIGEST_SIPHASH_NONCE && SECRET_LEN < APR_SIPHASH_KSIZE
+#error the secret is too short to key siphash
+#endif
 
 /* Identifies a client entry. This is the value sent to the client in the
  * opaque field of the challenge, and echoed back in its Authorization
  * header; zero is never a valid id, and means "no client". Ids are counted
- * out by client_id_counter, so this must remain the type which the atomics
- * used on it take, and the "%u"/"%x" formats below must match it. */
-typedef apr_uint32_t client_id_t;
+ * out by client_generate() from client_list->next_id, and are kept within
+ * 1..CLIENT_ID_MAX so that the opaque can be parsed by apr_strtoi64(). */
+typedef apr_uint64_t client_id_t;
+#define CLIENT_ID_MAX   APR_INT64_MAX
 
 typedef struct hash_entry {
     client_id_t        key;                     /* the key for this entry    */
@@ -135,8 +163,14 @@ typedef struct hash_entry {
                                                  * for last_nonce_time       */
     apr_time_t         last_nonce_time;         /* nonce of the last request
                                                  * accepted for this client  */
+    apr_uint64_t       owner;                   /* owner_hash() of the user
+                                                 * who first used this entry,
+                                                 * zero until then           */
 } client_entry;
 
+/* The client table, in the shared memory segment. Once initialize_tables()
+ * has set it up, the table, the entries reachable from it and every field
+ * below may only be read or modified with client_lock held. */
 static struct hash_table {
     client_entry  **table;
     unsigned long   tbl_len;
@@ -144,21 +178,25 @@ static struct hash_table {
     unsigned long   num_created;
     unsigned long   num_removed;
     unsigned long   num_renewed;
+    client_id_t     next_id;            /* the last id issued (the random
+                                         * initial seed is never issued)  */
+    apr_uint64_t    otn_counter;        /* the last one-time nonce ordinal */
 } *client_list;
 
-
-/* struct to hold a parsed Authorization header */
-
+/* Outcome from parsing an Authorization header. */
 enum hdr_sts { NO_HEADER, NOT_DIGEST, INVALID, VALID };
 
 /* Outcome of checking a request's nonce and nonce-count against the state
  * tracked for its client. */
 enum nonce_state {
     NONCE_ACCEPTED,     /* recorded as the latest used by this client */
-    NONCE_STALE,        /* already used, or the client is unknown */
-    NONCE_BAD_COUNT     /* nonce-count did not increase: possible replay */
+    NONCE_UNKNOWN,      /* the client has no entry (garbage collected?) */
+    NONCE_STALE,        /* one-time nonce already used */
+    NONCE_BAD_COUNT,    /* nonce-count did not increase: possible replay */
+    NONCE_NOT_OWNER     /* the entry quoted belongs to another user */
 };
 
+/* struct to hold a parsed Authorization header */
 typedef struct digest_header_struct {
     const char           *scheme;
     const char           *realm;
@@ -173,6 +211,7 @@ typedef struct digest_header_struct {
     client_id_t           opaque_num;
     const char           *message_qop;
     const char           *nonce_count;
+    unsigned long         nc;           /* nonce_count parsed, when valid */
     /* the following fields are not (directly) from the header */
     const char           *raw_request_uri;
     apr_uri_t            *psd_request_uri;
@@ -182,9 +221,6 @@ typedef struct digest_header_struct {
     const char           *ha1;
 } digest_header_rec;
 
-
-/* (mostly) nonce stuff */
-
 typedef union time_union {
     apr_time_t    time;
     unsigned char arr[sizeof(apr_time_t)];
@@ -192,30 +228,27 @@ typedef union time_union {
 
 static unsigned char *secret;
 
-/* client-list, opaque, and one-time-nonce stuff */
-
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
-static volatile client_id_t  *client_id_counter;
-static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
 static const char     *client_shm_filename;
 
-#define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
-#define DEF_NUM_BUCKETS 15L
+#define DEF_SHMEM_SIZE  8192L           /* ~ 120 entries */
 #define HASH_DEPTH      5
+/* Buckets for a given segment size, so that the default and
+ * AuthDigestShmemSize cannot disagree. */
+#define NUM_BUCKETS(size_) (((size_) - sizeof(*client_list)) /             \
+                            (sizeof(client_entry *)                       \
+                             + HASH_DEPTH * sizeof(client_entry)))
+#define DEF_NUM_BUCKETS NUM_BUCKETS(DEF_SHMEM_SIZE)
 
 static apr_size_t shmem_size  = DEF_SHMEM_SIZE;
 static unsigned long num_buckets = DEF_NUM_BUCKETS;
 
-
 module AP_MODULE_DECLARE_DATA auth_digest_module;
 
-/*
- * initialization code
- */
-
+/* Initialization. */
 static apr_status_t cleanup_tables(void *not_used)
 {
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, APLOGNO(01756)
@@ -275,10 +308,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     unsigned long idx;
     apr_status_t   sts;
 
-    /* set up client list */
-
-    /* Create the shared memory segment */
-
     client_shm = NULL;
     client_rmm = NULL;
     client_lock = NULL;
@@ -332,6 +361,18 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     }
     client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
+    /* Start the ids at a random point rather than at 1. This segment does
+     * not survive a restart, but the nonces naming its entries do, since the
+     * secret they are hashed with is retained; ids restarting from 1 too
+     * would hand a returning client's id straight back out, so that client
+     * would be checked against whichever new client now held it. The ids are
+     * not secret - they are sent in the clear as the opaque - but over a
+     * range of 2^63 neither wrapping the counter nor walking it from a
+     * random start to an id issued before the restart is feasible. */
+    ap_random_insecure_bytes(&client_list->next_id,
+                             sizeof client_list->next_id);
+    client_list->next_id %= CLIENT_ID_MAX;
+    client_list->otn_counter = 0;
 
     sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
                                  s, ctx, 0);
@@ -340,28 +381,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
         return !OK;
     }
 
-
-    /* setup opaque */
-
-    client_id_counter = rmm_malloc(client_rmm, sizeof *client_id_counter);
-    if (client_id_counter == NULL) {
-        log_error_and_cleanup("failed to allocate shared memory", -1, s);
-        return !OK;
-    }
-    *client_id_counter = 1;
-
-    /* setup one-time-nonce counter */
-
-    otn_counter = rmm_malloc(client_rmm, sizeof(*otn_counter));
-    if (otn_counter == NULL) {
-        log_error_and_cleanup("failed to allocate shared memory", -1, s);
-        return !OK;
-    }
-    *otn_counter = 0;
-    /* no lock here */
-
-
-    /* success */
     return OK;
 }
 
@@ -399,15 +418,16 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
-    /* Note: this stuff is currently fixed for the lifetime of the server,
-     * i.e. even across restarts. This means that A) any shmem-size
-     * configuration changes are ignored, and B) certain optimizations,
-     * such as only allocating the smallest necessary entry for each
-     * client, can't be done. However, the alternative is a nightmare:
-     * we can't call apr_shm_destroy on a graceful restart because there
-     * will be children using the tables, and we also don't know when the
-     * last child dies. Therefore we can never clean up the old stuff,
-     * creating a creeping memory leak.
+    /* The client table belongs to one configuration generation: it is
+     * allocated from pconf, which the restart loop clears - destroying the
+     * segment - before running this hook again to create a new one. A
+     * child of the previous generation keeps the mapping it inherited
+     * until it exits, so the tables are not pulled out from under it.
+     *
+     * Per-client state therefore does not survive a restart, and neither
+     * does the client id space; see the seeding in initialize_tables().
+     * A client which returns afterwards is simply unknown, and is
+     * re-challenged with stale=true at the cost of one extra request.
      */
     return initialize_tables(s, p);
 }
@@ -426,7 +446,7 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                          apr_shm_baseaddr_get(client_shm),
                          p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10635)
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10676)
                      "failed to attach to rmm in child");
         return;
     }
@@ -435,15 +455,12 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                                       apr_global_mutex_lockfile(client_lock),
                                       p);
     if (sts != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10636)
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, APLOGNO(10677)
                      "failed to initialize lock (client_lock) in child");
     }
 }
 
-/*
- * configuration code
- */
-
+/* Configuration handling. */
 static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 {
     digest_config_rec *conf = apr_pcalloc(p, sizeof *conf);
@@ -558,33 +575,51 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
                                   const char *size_str)
 {
     char *endptr;
-    long  size, min;
+    apr_off_t size;
+    apr_size_t min;
 
-    size = strtol(size_str, &endptr, 10);
-    while (apr_isspace(*endptr)) endptr++;
-    if (*endptr == '\0' || *endptr == 'b' || *endptr == 'B') {
-        ;
+    if (apr_strtoff(&size, size_str, &endptr, 10) != APR_SUCCESS || size < 0) {
+        return apr_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
+                          size_str, NULL);
     }
-    else if (*endptr == 'k' || *endptr == 'K') {
+    if (*endptr == 'k' || *endptr == 'K') {
+        if (size > APR_INT64_MAX / 1024) {
+            return "AuthDigestShmemSize value is too large";
+        }
         size *= 1024;
+        endptr++;
     }
     else if (*endptr == 'm' || *endptr == 'M') {
-        size *= 1048576;
+        if (size > APR_INT64_MAX / (1024 * 1024)) {
+            return "AuthDigestShmemSize value is too large";
+        }
+        size *= 1024 * 1024;
+        endptr++;
     }
-    else {
+    else if (*endptr == 'b' || *endptr == 'B') {
+        endptr++;
+    }
+    while (apr_isspace(*endptr)) {
+        endptr++;
+    }
+    if (*endptr != '\0') {
         return apr_pstrcat(cmd->pool, "Invalid size in AuthDigestShmemSize: ",
                           size_str, NULL);
     }
 
-    min = sizeof(*client_list) + sizeof(client_entry*) + sizeof(client_entry);
-    if (size < min) {
+    /* The segment must hold two separate rmm allocations -- the client
+     * list with at least one bucket, and at least one client entry -- each
+     * with its rmm overhead. */
+    min = apr_rmm_overhead_get(2)
+          + sizeof(*client_list) + sizeof(client_entry *)
+          + sizeof(client_entry);
+    if (size < (apr_off_t)min) {
         return apr_psprintf(cmd->pool, "size in AuthDigestShmemSize too small: "
-                           "%ld < %ld", size, min);
+                           "%" APR_OFF_T_FMT " < %" APR_SIZE_T_FMT, size, min);
     }
 
-    shmem_size  = size;
-    num_buckets = (size - sizeof(*client_list)) /
-                  (sizeof(client_entry*) + HASH_DEPTH * sizeof(client_entry));
+    shmem_size  = (apr_size_t)size;
+    num_buckets = NUM_BUCKETS(shmem_size);
     if (num_buckets == 0) {
         num_buckets = 1;
     }
@@ -614,9 +649,7 @@ static const command_rec digest_cmds[] =
     {NULL}
 };
 
-
-/*
- * client list code
+/* The client list.
  *
  * Each client is assigned a number, which is transferred in the opaque
  * field of the WWW-Authenticate and Authorization headers. The number
@@ -700,7 +733,6 @@ static client_entry *find_client(client_id_t key)
     return entry;
 }
 
-
 /* Determine whether the client identified by key is still known. */
 static int client_exists(client_id_t key, const request_rec *r)
 {
@@ -712,26 +744,47 @@ static int client_exists(client_id_t key, const request_rec *r)
 
     if (found) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01764)
-                      "client %u found", key);
+                      "client %" APR_UINT64_T_FMT " found", key);
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01765)
-                      "client %u not found", key);
+                      "client %" APR_UINT64_T_FMT " not found", key);
     }
 
     return found;
 }
 
-
-/* Note that a client entry was created to replace one which had been
- * garbage collected. */
-static void client_note_renewed(void)
+/* Identifies the authenticated user of r, within the origin server and
+ * realm, for binding a client entry to. A keyed hash, so that it is
+ * fixed-size in shared memory and a username colliding with another's
+ * cannot be found. Never zero.
+ *
+ * AuthDigestDomain is deliberately not part of this: a client keeps one
+ * nonce and opaque per server and realm whatever domains it was given, so
+ * sections of one realm which differ in their domain would make every
+ * crossing between them a stale challenge and a fresh entry. */
+static apr_uint64_t owner_hash(request_rec *r)
 {
-    apr_global_mutex_lock(client_lock);
-    client_list->num_renewed++;
-    apr_global_mutex_unlock(client_lock);
-}
+    const char *realm = ap_auth_name(r);
+    const char *msg = apr_psprintf(r->pool, "%s:%" APR_SIZE_T_FMT ":%s:%s",
+                                   r->server->server_hostname,
+                                   (apr_size_t)strlen(realm), realm, r->user);
+    apr_uint64_t owner;
+#if DIGEST_SIPHASH_NONCE
+    owner = apr_siphash24(msg, strlen(msg), secret);
+#else
+    unsigned char sha1[APR_SHA1_DIGESTSIZE];
+    apr_sha1_ctx_t ctx;
 
+    apr_sha1_init(&ctx);
+    apr_sha1_update_binary(&ctx, secret, SECRET_LEN);
+    apr_sha1_update_binary(&ctx, (const unsigned char *) msg, strlen(msg));
+    apr_sha1_final(sha1, &ctx);
+    memcpy(&owner, sha1, sizeof(owner));
+#endif
+    /* zero is reserved for an entry nobody has used yet */
+    return owner ? owner : 1;
+}
 
 /* Check the nonce generated at nonce_time, and the nonce-count nc sent
  * with it, against the state tracked for the client identified by key, and
@@ -752,34 +805,46 @@ static void client_note_renewed(void)
  * Must only be called for a request which is fully verified - both the
  * response digest and the nonce - so that a request which fails to
  * authenticate cannot alter the state tracked for the client whose opaque
- * it quotes. */
-static enum nonce_state client_update_nonce(const request_rec *r,
+ * it quotes.
+ *
+ * The opaque is public, so a verified request from anybody with an account
+ * on the realm could otherwise do so too. An entry is bound to the user
+ * who first used it, and a request from another user quoting it is
+ * NONCE_NOT_OWNER, leaving the entry alone.
+ *
+ * The nonce-count last used by the client is returned in *tracked_nc (zero
+ * if the client is unknown or not this user's), for the caller to log. */
+static enum nonce_state client_update_nonce(request_rec *r,
                                             client_id_t key,
                                             const digest_config_rec *conf,
                                             apr_time_t nonce_time,
                                             unsigned long nc,
-                                            const char *nonce)
+                                            unsigned long *tracked_nc)
 {
     client_entry *client;
-    unsigned long tracked = 0;
     enum nonce_state state;
-    int known;
+    apr_uint64_t owner = owner_hash(r);
+
+    *tracked_nc = 0;
 
     apr_global_mutex_lock(client_lock);
     client = find_client(key);
-    known = (client != NULL);
-    if (!known) {
-        state = NONCE_STALE;
+    if (client == NULL) {
+        state = NONCE_UNKNOWN;
+    }
+    else if (client->owner && client->owner != owner) {
+        state = NONCE_NOT_OWNER;
     }
     else {
-        tracked = client->nonce_count;
+        *tracked_nc = client->nonce_count;
         if (conf->nonce_lifetime == 0) {
             /* one-time nonce: usable until it has been used */
             state = (nonce_time > client->last_nonce_time)
                     ? NONCE_ACCEPTED : NONCE_STALE;
         }
         else if (nonce_time > client->last_nonce_time
-                 || (nonce_time == client->last_nonce_time && nc > tracked)) {
+                 || (nonce_time == client->last_nonce_time
+                     && nc > *tracked_nc)) {
             state = NONCE_ACCEPTED;
         }
         else {
@@ -789,99 +854,86 @@ static enum nonce_state client_update_nonce(const request_rec *r,
         if (state == NONCE_ACCEPTED) {
             client->last_nonce_time = nonce_time;
             client->nonce_count     = nc;
+            client->owner           = owner;
         }
     }
     apr_global_mutex_unlock(client_lock);
 
-    if (!known) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
-                      "client %u is no longer known - sending new nonce",
-                      key);
-    }
-    else if (state == NONCE_STALE) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
-                      "user %s: one-time-nonce %s already used - sending "
-                      "new nonce", r->user, nonce);
-    }
-    else if (state == NONCE_BAD_COUNT) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01774)
-                      "Warning, possible replay attack: nonce-count check "
-                      "failed: %lu is not above %lu for nonce %s", nc,
-                      tracked, nonce);
-    }
-
     return state;
 }
 
-
 /* A simple garbage-collecter to remove unused clients. It removes the
- * last entry in each bucket and updates the counters. Returns the
- * number of removed entries.
+ * last entry in each bucket and updates the counters, returning the
+ * number of removed entries in *num_removed. The result is the first
+ * failure to free an entry, if any, for the caller to log once the lock
+ * is released.
  */
-static unsigned long gc(server_rec *s)
+static apr_status_t gc(unsigned long *num_removed)
 {
-    client_entry *entry, *prev;
-    unsigned long num_removed = 0, idx;
+    apr_status_t rv = APR_SUCCESS;
+    unsigned long idx;
 
-    /* garbage collect all last entries */
+    *num_removed = 0;
+
+    /* garbage collect one entry from each bucket */
 
     for (idx = 0; idx < client_list->tbl_len; idx++) {
-        entry = client_list->table[idx];
-        prev  = NULL;
+        client_entry **link, **victim = NULL;
+        int unused = 0;
 
-        if (!entry) {
-            /* This bucket is empty. */
-            continue;
+        /* The last entry is the least recently used, since find_client()
+         * moves an entry to the front on each access; but prefer a client
+         * which has never completed an authentication, whose entry records
+         * nothing and so costs it nothing to lose. Every request which
+         * fails to authenticate allocates one of those, and without this
+         * they would evict the clients which are using the server. */
+        for (link = &client_list->table[idx]; *link; link = &(*link)->next) {
+            if ((*link)->last_nonce_time == 0) {
+                victim = link;
+                unused = 1;
+            }
+            else if (!unused) {
+                victim = link;
+            }
         }
 
-        while (entry->next) {   /* find last entry */
-            prev  = entry;
-            entry = entry->next;
-        }
-        if (prev) {
-            prev->next = NULL;   /* cut list */
-        }
-        else {
-            client_list->table[idx] = NULL;
-        }
-        if (entry) {                    /* remove entry */
+        if (victim) {
+            client_entry *entry = *victim;
             apr_status_t err;
 
+            *victim = entry->next;
             err = rmm_free(client_rmm, entry);
-            num_removed++;
+            (*num_removed)++;
 
-            if (err) {
-                /* Nothing we can really do but log... */
-                ap_log_error(APLOG_MARK, APLOG_ERR, err, s, APLOGNO(10007)
-                             "Failed to free auth_digest client allocation");
+            if (err && rv == APR_SUCCESS) {
+                rv = err;
             }
         }
     }
 
-    /* update counters and log */
+    /* update counters */
 
-    client_list->num_entries -= num_removed;
-    client_list->num_removed += num_removed;
+    client_list->num_entries -= *num_removed;
+    client_list->num_removed += *num_removed;
 
-    return num_removed;
+    return rv;
 }
 
-
 /*
- * Add a new client to the list. Returns non-zero if successful, zero
- * otherwise. This triggers the garbage collection if memory is low. (The
- * new entry is not returned: see find_client().)
+ * Add a new client to the list, under a newly issued id; renewed is set
+ * when it replaces an entry which had been garbage collected. Returns the
+ * id if successful, zero otherwise. This triggers the garbage collection
+ * if memory is low. (The new entry is not returned: see find_client().)
  */
-static int add_client(client_id_t key, client_entry *info, server_rec *s)
+static client_id_t client_generate(request_rec *r, int renewed)
 {
+    server_rec *s = r->server;
     int bucket;
     client_entry *entry;
-
-    if (!key) {
-        return 0;
-    }
-
-    bucket = key % client_list->tbl_len;
+    client_id_t key = 0;
+    int ran_gc = 0;
+    unsigned long gc_removed = 0, created, removed, renewals;
+    apr_status_t gc_rv = APR_SUCCESS;
 
     apr_global_mutex_lock(client_lock);
 
@@ -889,41 +941,58 @@ static int add_client(client_id_t key, client_entry *info, server_rec *s)
 
     entry = rmm_malloc(client_rmm, sizeof(client_entry));
     if (!entry) {
-        unsigned long num_removed = gc(s);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01766)
-                     "gc'd %lu client entries. Total new clients: "
-                     "%lu; Total removed clients: %lu; Total renewed clients: "
-                     "%lu", num_removed,
-                     client_list->num_created - client_list->num_renewed,
-                     client_list->num_removed, client_list->num_renewed);
+        gc_rv = gc(&gc_removed);
+        ran_gc = 1;
         entry = rmm_malloc(client_rmm, sizeof(client_entry));
-        if (!entry) {
-            apr_global_mutex_unlock(client_lock);
-            return 0;          /* give up; the caller logs this */
-        }
     }
 
-    /* now add the entry */
+    if (entry) {
+        /* now issue the id, in 1..CLIENT_ID_MAX, and add the entry */
 
-    memcpy(entry, info, sizeof(client_entry));
-    entry->key  = key;
-    entry->next = client_list->table[bucket];
-    client_list->table[bucket] = entry;
-    client_list->num_created++;
-    client_list->num_entries++;
+        key = client_list->next_id = client_list->next_id % CLIENT_ID_MAX + 1;
+        bucket = key % client_list->tbl_len;
+
+        memset(entry, 0, sizeof(client_entry));
+        entry->key  = key;
+        entry->next = client_list->table[bucket];
+        client_list->table[bucket] = entry;
+        client_list->num_created++;
+        client_list->num_entries++;
+        client_list->num_renewed += !!renewed;
+    }
+
+    /* for logging after the lock is released */
+    created  = client_list->num_created;
+    removed  = client_list->num_removed;
+    renewals = client_list->num_renewed;
 
     apr_global_mutex_unlock(client_lock);
 
+    if (gc_rv) {
+        /* Nothing we can really do but log... */
+        ap_log_error(APLOG_MARK, APLOG_ERR, gc_rv, s, APLOGNO(10007)
+                     "Failed to free auth_digest client allocation");
+    }
+    if (ran_gc) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(01766)
+                     "gc'd %lu client entries. Total new clients: "
+                     "%lu; Total removed clients: %lu; Total renewed clients: "
+                     "%lu", gc_removed, created - renewals, removed,
+                     renewals);
+    }
+
+    if (!key) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
+                      "unable to allocate a client entry - failing the "
+                      "request, since this configuration needs one");
+        return 0;
+    }
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(01768)
-                 "allocated new client %u", key);
+                 "allocated new client %" APR_UINT64_T_FMT, key);
 
-    return 1;
+    return key;
 }
-
-
-/*
- * Authorization header parser code
- */
 
 /* Parse the Authorization header, if it exists, into resp; returns the
  * status of the header. */
@@ -1038,18 +1107,47 @@ static enum hdr_sts parse_digest_header(request_rec *r,
 
     if (resp->opaque) {
         char *endptr;
-        long num;
+        apr_int64_t num;
 
-        errno = 0;
-        num = strtol(resp->opaque, &endptr, 16);
-        if (errno == 0 && *endptr == '\0' && num > 0
-            && num <= APR_UINT32_MAX)
-            resp->opaque_num = (client_id_t)num;
+        num = apr_strtoi64(resp->opaque, &endptr, 16);
+        if (errno || *endptr != '\0' || num <= 0 || num > CLIENT_ID_MAX) {
+            return INVALID;
+        }
+        resp->opaque_num = (client_id_t)num;
+    }
+
+    /* The nonce-count, when present, is 8 hex digits (RFC 7616 3.4); check
+     * it here so it is a well-formed count everywhere it is later used or
+     * echoed, rather than parsed leniently into a wrapped or negative value
+     * or reflected verbatim into the Authentication-Info header. */
+    if (resp->nonce_count != NULL) {
+        int i;
+        for (i = 0; i < 8 && apr_isxdigit(resp->nonce_count[i]); i++) {
+            continue;
+        }
+        if (i != 8 || resp->nonce_count[8] != '\0') {
+            return INVALID;
+        }
+        resp->nc = strtoul(resp->nonce_count, NULL, 16);
     }
 
     return VALID;
 }
 
+/* Create the per-request Digest record describing request r, store it on
+ * store's request_config, and parse r's Authorization header into it. */
+static digest_header_rec *make_digest_rec(request_rec *store, request_rec *r)
+{
+    digest_header_rec *resp = apr_pcalloc(store->pool, sizeof(*resp));
+
+    resp->raw_request_uri = r->unparsed_uri;
+    resp->psd_request_uri = &r->parsed_uri;
+    resp->method = r->method;
+    ap_set_module_config(store->request_config, &auth_digest_module, resp);
+
+    resp->auth_hdr_sts = parse_digest_header(r, resp);
+    return resp;
+}
 
 /* Set up the per-request record: this is the place to get the request-uri
  * (before any subrequests etc are initiated), to initialize the
@@ -1059,39 +1157,79 @@ static enum hdr_sts parse_digest_header(request_rec *r,
  * updated here: the state of an authenticated client must not be altered
  * by a request which has not (yet) been authenticated, or a replayed or
  * bogus request quoting the client's opaque would be able to rewind that
- * state. See check_and_update_nc().
+ * state. See check_nonce().
  *
  * Note that this must be called after mod_proxy had its go so that
  * r->proxyreq is set correctly.
  */
 static int init_digest_request(request_rec *r)
 {
-    digest_header_rec *resp;
-
     if (!ap_is_initial_req(r)) {
         return DECLINED;
     }
 
-    resp = apr_pcalloc(r->pool, sizeof(digest_header_rec));
-    resp->raw_request_uri = r->unparsed_uri;
-    resp->psd_request_uri = &r->parsed_uri;
-    resp->needed_auth = 0;
-    resp->method = r->method;
-    ap_set_module_config(r->request_config, &auth_digest_module, resp);
-
-    resp->auth_hdr_sts = parse_digest_header(r, resp);
-
+    make_digest_rec(r, r);
     return DECLINED;
 }
 
+/* Return the Digest record shared across this request tree, which lives on
+ * the initial request. init_digest_request creates it in post_read_request;
+ * a request which never ran that hook (one rejected before it and brought
+ * here by an ErrorDocument or other internal redirect) has none, so create
+ * it now rather than dereferencing NULL. */
+static digest_header_rec *get_digest_rec(request_rec *r)
+{
+    request_rec *mainreq = r;
+    digest_header_rec *resp;
+
+    while (mainreq->main != NULL) {
+        mainreq = mainreq->main;
+    }
+    while (mainreq->prev != NULL) {
+        mainreq = mainreq->prev;
+    }
+
+    resp = ap_get_module_config(mainreq->request_config, &auth_digest_module);
+    if (resp == NULL) {
+        resp = make_digest_rec(mainreq, r);
+    }
+    return resp;
+}
 
 /* Writes the hash part of the server nonce to hash, which must be of
  * minimum size (NONCE_HASH_LEN+1). */
-static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, const char *opaque,
-                           const server_rec *server,
-                           const digest_config_rec *conf, 
+static void gen_nonce_hash(apr_pool_t *p, char hash[NONCE_HASH_LEN+1],
+                           const char *timestr, const char *opaque,
+                           const digest_config_rec *conf,
                            const char *realm)
 {
+    /* The time field of a nonce is a timestamp, or with one-time nonces
+     * an ordinal from otn_counter; hashing in which it is keeps a nonce
+     * minted as one from verifying as the other, which a realm with both
+     * lifetimes configured would otherwise allow: a timestamp read as an
+     * ordinal is far beyond any the counter will reach, and once recorded
+     * as a client's last nonce used, every genuine one-time nonce after
+     * it is stale. */
+    char kind = (conf->nonce_lifetime == 0) ? 'o' : 't';
+#if DIGEST_SIPHASH_NONCE
+    unsigned char mac[APR_SIPHASH_DSIZE];
+    const char *msg;
+
+    /* siphash takes the whole message at once, having no streaming
+     * interface, so the fields are joined here rather than fed in one at a
+     * time. The realm is length-prefixed, which keeps the boundaries
+     * between the fields unambiguous whatever they contain: without it a
+     * realm ending in what another realm's timestamp begins with would
+     * hash the same. An absent opaque is the empty string, which is what
+     * the challenge side passes for it too. */
+    msg = apr_psprintf(p, "%" APR_SIZE_T_FMT ":%s:%s:%c:%s",
+                       (apr_size_t)strlen(realm), realm, timestr, kind,
+                       opaque ? opaque : "");
+
+    apr_siphash24_auth(mac, msg, strlen(msg), secret);
+
+    ap_bin2hex(mac, APR_SIPHASH_DSIZE, hash);
+#else
     unsigned char sha1[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t ctx;
 
@@ -1100,6 +1238,7 @@ static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, con
     apr_sha1_update_binary(&ctx, (const unsigned char *) realm, strlen(realm));
 
     apr_sha1_update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
+    apr_sha1_update_binary(&ctx, (const unsigned char *) &kind, 1);
     if (opaque) {
         apr_sha1_update_binary(&ctx, (const unsigned char *) opaque,
                              strlen(opaque));
@@ -1107,13 +1246,12 @@ static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, con
     apr_sha1_final(sha1, &ctx);
 
     ap_bin2hex(sha1, APR_SHA1_DIGESTSIZE, hash);
+#endif
 }
-
 
 /* The nonce has the format b64(time)+hash .
  */
 static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
-                             const server_rec *server,
                              const digest_config_rec *conf,
                              const char *realm)
 {
@@ -1124,58 +1262,29 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
         t.time = now;
     }
     else {
-        /* Nonces are ordered by this counter rather than by time; the +1
-         * is because apr_atomic_inc32() returns the previous value, and a
-         * nonce time of zero means "no nonce used yet" in a client entry. */
-        t.time = apr_atomic_inc32(otn_counter) + 1;
+        /* One-time nonces are ordered by this counter rather than by time.
+         * It is 64-bit and issued under the lock rather than with 32-bit
+         * atomics: a counter which wrapped would re-issue ordinals below
+         * those already recorded, locking every established client out. A
+         * nonce time of zero means "no nonce used yet" in a client entry,
+         * so the first value handed out is 1. */
+        apr_global_mutex_lock(client_lock);
+        t.time = ++client_list->otn_counter;
+        apr_global_mutex_unlock(client_lock);
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
-    gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
+    gen_nonce_hash(p, nonce+NONCE_TIME_LEN, nonce, opaque, conf, realm);
 
     return nonce;
 }
 
-
-/*
- * Opaque and hash-table management
- */
-
-/*
- * Generate a new client entry and add it to the list. Returns the key of
- * the new entry, or 0 if it failed. (The entry itself is deliberately not
- * returned: see find_client().)
- */
-static client_id_t client_generate(const request_rec *r)
-{
-    client_id_t op = apr_atomic_inc32(client_id_counter);
-    client_entry new_entry = { 0, NULL, 0, 0 };
-
-    /* The counter wraps after 2^32 clients: skip an id of zero, which means
-     * "no client" and which add_client() would refuse. */
-    if (op == 0) {
-        op = apr_atomic_inc32(client_id_counter);
-    }
-
-    if (!add_client(op, &new_entry, r->server)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
-                      "unable to allocate a client entry - failing the "
-                      "request, since this configuration needs one");
-        return 0;
-    }
-
-    return op;
-}
-
-
-/*
- * Authorization challenge generation code (for WWW-Authenticate)
- */
+/* Authorization challenge generation (for WWW-Authenticate). */
 
 /* Format a client id as the opaque sent to the client. Never called with
  * zero: the callers check client_generate() for failure first. */
-static const char *ltox(apr_pool_t *p, client_id_t num)
+static const char *client_id_to_opaque(apr_pool_t *p, client_id_t num)
 {
-    return apr_psprintf(p, "%x", num);
+    return apr_psprintf(p, "%" APR_UINT64_T_HEX_FMT, num);
 }
 
 /* Generate a challenge for the client, and return the status which the
@@ -1188,39 +1297,39 @@ static int note_digest_auth_failure(request_rec *r,
                                     const digest_config_rec *conf,
                                     digest_header_rec *resp, int stale)
 {
-    const char   *qop, *opaque = NULL, *opaque_param = "", *domain, *nonce;
-    client_id_t   client_key = 0;
-
-    /* Setup qop */
-    qop = ", qop=\"auth\"";
+    const char   *opaque = NULL, *opaque_param = "", *domain, *nonce;
+    client_id_t   client_key;
 
     /* Setup opaque */
 
     if (resp->opaque == NULL) {
         /* new client */
-        if (conf->check_nc || conf->nonce_lifetime == 0) {
-            if ((client_key = client_generate(r)) == 0) {
+        if (tracks_clients(conf)) {
+            if ((client_key = client_generate(r, 0)) == 0) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
-            opaque = ltox(r->pool, client_key);
+            opaque = client_id_to_opaque(r->pool, client_key);
         }
-        /* else no opaque is needed, and none is sent */
+        /* else this configuration tracks no per-client state, so no entry
+         * is allocated and no opaque is sent */
     }
     else if (!client_exists(resp->opaque_num, r)) {
-        /* client info was gc'd */
-        if ((client_key = client_generate(r)) == 0) {
+        /* We have no record of this client: its entry may have been
+         * garbage collected, the segment may have been recreated by a
+         * restart, or the opaque may never have been issued by us. It gets
+         * a new entry; whether the challenge is stale is the caller's
+         * call, since credentials which failed are no less wrong for the
+         * opaque being unknown. */
+        if ((client_key = client_generate(r, 1)) == 0) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
-        opaque = ltox(r->pool, client_key);
-        stale = 1;
-        client_note_renewed();
+        opaque = client_id_to_opaque(r->pool, client_key);
     }
     else {
         /* Note that the nonce-count tracked for this client is left alone
          * here: the client may not even see this challenge (it may have
          * been triggered by somebody else quoting its opaque), and it is
          * tied to the nonce it was counted for in any case. */
-        client_key = resp->opaque_num;
         opaque = resp->opaque;
     }
 
@@ -1230,62 +1339,50 @@ static int note_digest_auth_failure(request_rec *r,
 
     /* Setup nonce */
 
-    nonce = gen_nonce(r->pool, r->request_time, opaque, r->server, conf, ap_auth_name(r));
+    nonce = gen_nonce(r->pool, r->request_time, opaque, conf, ap_auth_name(r));
 
-    /* setup domain attribute. We want to send this attribute wherever
-     * possible so that the client won't send the Authorization header
-     * unnecessarily (it's usually > 200 bytes!).
-     */
-
-
-    /* don't send domain
-     * - for proxy requests
-     * - if it's not specified
-     */
-    if (r->proxyreq || !conf->uri_list) {
+    /* Setup domain, which tells the client which URIs share this
+     * protection space, so that it does not send the Authorization header
+     * (usually more than 200 bytes) where it is not needed. */
+    if (r->proxyreq == PROXYREQ_PROXY || !conf->uri_list) {
         domain = NULL;
     }
     else {
         domain = conf->uri_list;
     }
 
+    /* A challenge supersedes any Authentication-Info added at fixups
+     * for this request, e.g. when a handler notes an auth failure
+     * after the user was authenticated: the client must not be given
+     * both a nextnonce and a new nonce. */
+    apr_table_unset(r->err_headers_out,
+                    (PROXYREQ_PROXY == r->proxyreq)
+                        ? "Proxy-Authentication-Info" : "Authentication-Info");
+
     apr_table_mergen(r->err_headers_out,
                      (PROXYREQ_PROXY == r->proxyreq)
                          ? "Proxy-Authenticate" : "WWW-Authenticate",
                      apr_psprintf(r->pool, "Digest realm=\"%s\", "
-                                  "nonce=\"%s\", algorithm=%s%s%s%s%s",
+                                  "nonce=\"%s\", algorithm=%s%s%s%s"
+                                  ", qop=\"auth\"",
                                   ap_auth_name(r), nonce, conf->algorithm,
                                   opaque_param,
                                   domain ? domain : "",
-                                  stale ? ", stale=true" : "", qop));
+                                  stale ? ", stale=true" : ""));
 
     return HTTP_UNAUTHORIZED;
 }
 
 static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
 {
-    request_rec *mainreq;
     digest_header_rec *resp;
     digest_config_rec *conf;
 
     if (ap_cstr_casecmp(auth_type, "Digest"))
         return DECLINED;
 
-    /* get the client response and mark */
-
-    mainreq = r;
-    while (mainreq->main != NULL) {
-        mainreq = mainreq->main;
-    }
-    while (mainreq->prev != NULL) {
-        mainreq = mainreq->prev;
-    }
-    resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-                                                      &auth_digest_module);
+    resp = get_digest_rec(r);
     resp->needed_auth = 1;
-
-
-    /* get our conf */
 
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
                                                       &auth_digest_module);
@@ -1295,11 +1392,9 @@ static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
     return OK;
 }
 
-
-/*
- * Authorization header verification code
- */
-
+/* Look up the stored HA1 hash, md5(user:realm:password), for user through
+ * the configured authn providers. Returns the provider's authn_status and,
+ * on success, the hash in *rethash. */
 static authn_status get_hash(request_rec *r, const char *user,
                              digest_config_rec *conf, const char **rethash)
 {
@@ -1332,7 +1427,6 @@ static authn_status get_hash(request_rec *r, const char *user,
             apr_table_setn(r->notes, AUTHN_PROVIDER_NAME_NOTE, current_provider->provider_name);
         }
 
-
         /* We expect the password to be md5 hash of user:realm:password */
         auth_result = provider->get_realm_hash(r, user, ap_auth_name(r),
                                                &password);
@@ -1359,9 +1453,17 @@ static authn_status get_hash(request_rec *r, const char *user,
     return auth_result;
 }
 
-/* Check the nonce and nonce-count of a fully verified request against the
- * state tracked for its client, record them, and generate a new challenge
- * if they are not acceptable.
+/* Check the nonce of a fully verified request, record its use, and
+ * generate a new challenge if it is not acceptable.
+ *
+ * This runs only once the response digest has been verified, so the
+ * stale=true it answers with never reveals whether the credentials were
+ * right. The nonce itself is checked first - that this server issued it,
+ * for this opaque and realm, and that it is within its lifetime - and only
+ * then its use by the client, so that the state tracked for a client is
+ * altered only by a request using a nonce this server issued, and a request
+ * using an expired nonce gets a stale challenge (and hence a silent retry
+ * with a fresh nonce-count) rather than being refused as a replay.
  *
  * The nonce-count is counted by the client per-nonce (RFC 7616 3.4.3), so
  * the count tracked here is tied to the nonce it was counted for: a request
@@ -1371,51 +1473,31 @@ static authn_status get_hash(request_rec *r, const char *user,
  * which turn out not to need authentication, and this server never sees
  * those.
  */
-static int check_and_record_nonce(request_rec *r, digest_header_rec *resp,
-                                  const digest_config_rec *conf)
-{
-    unsigned long nc;
-    const char *snc = resp->nonce_count;
-    char *endptr;
-
-    if (!conf->check_nc && conf->nonce_lifetime != 0) {
-        return OK;              /* nothing is tracked per-client */
-    }
-
-    nc = strtol(snc, &endptr, 16);
-    if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01773)
-                      "invalid nc %s received - not a number", snc);
-        return note_digest_auth_failure(r, conf, resp, 0);
-    }
-
-    switch (client_update_nonce(r, resp->opaque_num, conf, resp->nonce_time,
-                                nc, resp->nonce)) {
-    case NONCE_ACCEPTED:
-        return OK;
-
-    case NONCE_STALE:
-        /* the credentials were good, so the client can silently retry with
-         * the nonce from this challenge */
-        return note_digest_auth_failure(r, conf, resp, 1);
-
-    default:
-        return note_digest_auth_failure(r, conf, resp, 0);
-    }
-}
-
 static int check_nonce(request_rec *r, digest_header_rec *resp,
                        const digest_config_rec *conf)
 {
-    apr_time_t dt;
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
+    int len;
+    unsigned long tracked_nc;
 
+    /* The decoder stops at the first byte which is not base64, so a
+     * nonce of the right shape can still decode to fewer bytes than the
+     * time field holds, leaving the rest of it unset. VALID_NONCE()
+     * bounds what it can decode to at most sizeof(nonce_time.arr). */
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
-    apr_base64_decode_binary(nonce_time.arr, resp->nonce);
-    gen_nonce_hash(hash, resp->nonce, resp->opaque, r->server, conf, ap_auth_name(r));
+    len = apr_base64_decode_binary(nonce_time.arr, resp->nonce);
+    gen_nonce_hash(r->pool, hash, resp->nonce, resp->opaque, conf,
+                   ap_auth_name(r));
     resp->nonce[NONCE_TIME_LEN] = tmp;
+
+    if (len != sizeof(nonce_time.arr)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10678)
+                      "invalid nonce %s received - time is not base64",
+                      resp->nonce);
+        return note_digest_auth_failure(r, conf, resp, 1);
+    }
     resp->nonce_time = nonce_time.time;
 
     if (!ap_memeq_timingsafe(hash, resp->nonce+NONCE_TIME_LEN, NONCE_HASH_LEN)) {
@@ -1425,15 +1507,16 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
         return note_digest_auth_failure(r, conf, resp, 1);
     }
 
-    dt = r->request_time - nonce_time.time;
-    if (conf->nonce_lifetime > 0 && dt < 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01777)
-                      "invalid nonce %s received - user attempted "
-                      "time travel", resp->nonce);
-        return note_digest_auth_failure(r, conf, resp, 1);
-    }
-
     if (conf->nonce_lifetime > 0) {
+        apr_time_t dt = r->request_time - nonce_time.time;
+
+        if (dt < 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01777)
+                          "invalid nonce %s received - user attempted "
+                          "time travel", resp->nonce);
+            return note_digest_auth_failure(r, conf, resp, 1);
+        }
+
         if (dt > conf->nonce_lifetime) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0,r, APLOGNO(01778)
                           "user %s: nonce expired (%.2f seconds old "
@@ -1443,15 +1526,60 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
             return note_digest_auth_failure(r, conf, resp, 1);
         }
     }
-    /* else (lifetime <= 0) => never expires by time; a one-time nonce is
-     * retired by use, in check_and_record_nonce() */
 
-    return OK;
+    if (!tracks_clients(conf)) {
+        return OK;              /* a timed nonce, not counted: that's all */
+    }
+
+    /* A one-time nonce is retired by its use, and with AuthDigestNcCheck
+     * the count must rise: both are checked against, and recorded in, the
+     * state tracked for the client. */
+    switch (client_update_nonce(r, resp->opaque_num, conf, nonce_time.time,
+                                resp->nc, &tracked_nc)) {
+    case NONCE_ACCEPTED:
+        return OK;
+
+    case NONCE_UNKNOWN:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10618)
+                      "client %" APR_UINT64_T_FMT " is no longer known - "
+                      "sending new nonce", resp->opaque_num);
+        break;
+
+    case NONCE_STALE:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01779)
+                      "user %s: one-time-nonce %s already used - sending "
+                      "new nonce", r->user, resp->nonce);
+        break;
+
+    case NONCE_BAD_COUNT:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(01774)
+                      "user %s: nonce-count %lu is not above %lu for nonce "
+                      "%s - sending new nonce", r->user, resp->nc, tracked_nc,
+                      resp->nonce);
+        break;
+
+    case NONCE_NOT_OWNER:
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO(10679)
+                      "user %s: client %" APR_UINT64_T_FMT " belongs to "
+                      "another user - sending new nonce and opaque",
+                      r->user, resp->opaque_num);
+        /* dropping the opaque has the challenge issue this user an entry of
+         * its own rather than the one it quoted. Both forms go, since the
+         * record is shared with any later request in this tree. */
+        resp->opaque = NULL;
+        resp->opaque_num = 0;
+        break;
+    }
+
+    /* the credentials were good, so the client can silently retry with the
+     * nonce from this challenge. A nonce-count which has not increased is
+     * what concurrent requests from one client look like when they arrive
+     * out of order, and a replay gains nothing from the stale flag, having
+     * no way to answer the new nonce. */
+    return note_digest_auth_failure(r, conf, resp, 1);
 }
 
-/* The actual MD5 code... whee */
-
-/* RFC-2617 */
+/* Compute the response digest expected for request r (RFC 2617). */
 static const char *new_digest(const request_rec *r,
                               digest_header_rec *resp)
 {
@@ -1470,8 +1598,10 @@ static const char *new_digest(const request_rec *r,
                                                NULL));
 }
 
-static void copy_uri_components(apr_uri_t *dst,
-                                apr_uri_t *src, request_rec *r) {
+static int copy_uri_components(apr_uri_t *dst,
+                               apr_uri_t *src, request_rec *r) {
+    int rv;
+
     if (src->scheme && src->scheme[0] != '\0') {
         dst->scheme = src->scheme;
     }
@@ -1481,7 +1611,9 @@ static void copy_uri_components(apr_uri_t *dst,
 
     if (src->hostname && src->hostname[0] != '\0') {
         dst->hostname = apr_pstrdup(r->pool, src->hostname);
-        ap_unescape_url(dst->hostname);
+        if ((rv = ap_unescape_url(dst->hostname)) != OK) {
+            return rv;
+        }
     }
     else {
         dst->hostname = (char *) ap_get_server_name(r);
@@ -1496,7 +1628,9 @@ static void copy_uri_components(apr_uri_t *dst,
 
     if (src->path && src->path[0] != '\0') {
         dst->path = apr_pstrdup(r->pool, src->path);
-        ap_unescape_url(dst->path);
+        if ((rv = ap_unescape_url(dst->path)) != OK) {
+            return rv;
+        }
     }
     else {
         dst->path = src->path;
@@ -1504,13 +1638,16 @@ static void copy_uri_components(apr_uri_t *dst,
 
     if (src->query && src->query[0] != '\0') {
         dst->query = apr_pstrdup(r->pool, src->query);
-        ap_unescape_url(dst->query);
+        if ((rv = ap_unescape_url(dst->query)) != OK) {
+            return rv;
+        }
     }
     else {
         dst->query = src->query;
     }
 
     dst->hostinfo = src->hostinfo;
+    return OK;
 }
 
 /* These functions return 0 if client is OK, and proper error status
@@ -1531,9 +1668,7 @@ static int authenticate_digest_user(request_rec *r)
 {
     digest_config_rec *conf;
     digest_header_rec *resp;
-    request_rec       *mainreq;
     const char        *t;
-    int                res;
     authn_status       return_code;
     const char *realm;
 
@@ -1549,30 +1684,15 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-
-    /* get the client response and mark */
-
-    mainreq = r;
-    while (mainreq->main != NULL) {
-        mainreq = mainreq->main;
-    }
-    while (mainreq->prev != NULL) {
-        mainreq = mainreq->prev;
-    }
-    resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
-                                                      &auth_digest_module);
+    resp = get_digest_rec(r);
     resp->needed_auth = 1;
 
     realm = ap_auth_name(r);
 
-    /* get our conf */
-
     conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
                                                       &auth_digest_module);
 
-
-    /* check for existence and syntax of Auth header */
-
+    /* Check for existence and syntax of the Auth header. */
     if (resp->auth_hdr_sts != VALID) {
         if (resp->auth_hdr_sts == NOT_DIGEST) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01781)
@@ -1582,8 +1702,8 @@ static int authenticate_digest_user(request_rec *r)
         else if (resp->auth_hdr_sts == INVALID) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01782)
                           "missing user, realm, nonce, uri, digest, "
-                          "cnonce, or nonce_count in authorization header: %s",
-                          r->uri);
+                          "cnonce, or nonce_count, or invalid opaque, in "
+                          "authorization header: %s", r->uri);
         }
         /* else (resp->auth_hdr_sts == NO_HEADER) */
         return note_digest_auth_failure(r, conf, resp, 0);
@@ -1600,25 +1720,22 @@ static int authenticate_digest_user(request_rec *r)
          */
         apr_uri_t r_uri, d_uri;
 
-        copy_uri_components(&r_uri, resp->psd_request_uri, r);
-        if (apr_uri_parse(r->pool, resp->uri, &d_uri) != APR_SUCCESS) {
+        if (copy_uri_components(&r_uri, resp->psd_request_uri, r) != OK) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10635)
+                          "invalid request-uri <%s>", r->unparsed_uri);
+            return HTTP_BAD_REQUEST;
+        }
+        if (apr_uri_parse(r->pool, resp->uri, &d_uri) != APR_SUCCESS
+            || (d_uri.hostname && ap_unescape_url(d_uri.hostname) != OK)
+            || (d_uri.path && ap_unescape_url(d_uri.path) != OK)
+            || (d_uri.query && ap_unescape_url(d_uri.query) != OK)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01783)
                           "invalid uri <%s> in Authorization header",
                           resp->uri);
             return HTTP_BAD_REQUEST;
         }
 
-        if (d_uri.hostname) {
-            ap_unescape_url(d_uri.hostname);
-        }
-        if (d_uri.path) {
-            ap_unescape_url(d_uri.path);
-        }
-
-        if (d_uri.query) {
-            ap_unescape_url(d_uri.query);
-        }
-        else if (r_uri.query) {
+        if (!d_uri.query && r_uri.query) {
             /* MSIE compatibility hack.  MSIE has some RFC issues - doesn't
              * include the query string in the uri Authorization component
              * or when computing the response component.  the second part
@@ -1656,7 +1773,7 @@ static int authenticate_digest_user(request_rec *r)
         else if (
             /* check hostname matches, if present */
             (d_uri.hostname && d_uri.hostname[0] != '\0'
-              && strcasecmp(d_uri.hostname, r_uri.hostname))
+              && ap_cstr_casecmp(d_uri.hostname, r_uri.hostname))
             /* check port matches, if present */
             || (d_uri.port_str && d_uri.port != r_uri.port)
             /* check that server-port is default port if no port present */
@@ -1682,23 +1799,7 @@ static int authenticate_digest_user(request_rec *r)
         }
     }
 
-    if (resp->opaque && resp->opaque_num == 0) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01787)
-                      "received invalid opaque - got `%s'",
-                      resp->opaque);
-        return note_digest_auth_failure(r, conf, resp, 0);
-    }
- 
-    
-
-    if (!realm) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02533)
-                      "realm mismatch - got `%s' but no realm specified",
-                      resp->realm);
-        return note_digest_auth_failure(r, conf, resp, 0);
-    }
-
-    if (!resp->realm || strcmp(resp->realm, realm)) {
+    if (strcmp(resp->realm, realm)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01788)
                       "realm mismatch - got `%s' but expected `%s'",
                       resp->realm, realm);
@@ -1750,10 +1851,7 @@ static int authenticate_digest_user(request_rec *r)
     else {
         /* RFC 2617 (or 7616)-style Digest hash calculation. */
         const char *exp_digest = new_digest(r, resp);
-        if (!exp_digest) {
-            /* we failed to allocate a client struct */
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
+
         if (!ap_memeq_timingsafe(exp_digest, resp->digest, MD5_DIGEST_LEN)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01794)
                           "user %s: password mismatch: %s", r->user,
@@ -1762,16 +1860,9 @@ static int authenticate_digest_user(request_rec *r)
         }
     }
 
-    /* Note: the nonce is checked before the nonce-count so that the
-     * nonce-count state is only ever updated for a request which is using
-     * a nonce this server issued, and so that a request using an expired
-     * nonce gets a "stale=true" challenge (and hence a silent retry with a
-     * fresh nonce-count) rather than being reported as a replay. */
-    if ((res = check_nonce(r, resp, conf))) {
-        return res;
-    }
-
-    return check_and_record_nonce(r, resp, conf);
+    /* Only now that the digest is verified is the nonce checked; see
+     * check_nonce() for why. */
+    return check_nonce(r, resp, conf);
 }
 
 /* Authentication-Info header code. */
@@ -1802,23 +1893,21 @@ static int add_auth_info(request_rec *r)
         if ((r->request_time - resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
             nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"",
                                    gen_nonce(r->pool, r->request_time,
-                                             resp->opaque, r->server, conf, ap_auth_name(r)),
+                                             resp->opaque, conf, ap_auth_name(r)),
                                    "\"", NULL);
         }
     }
     else if (conf->nonce_lifetime == 0 && resp->opaque_num) {
-        const char *nonce = gen_nonce(r->pool, 0, resp->opaque, r->server,
-                                      conf, ap_auth_name(r));
+        const char *nonce = gen_nonce(r->pool, 0, resp->opaque, conf,
+                                      ap_auth_name(r));
         nextnonce = apr_pstrcat(r->pool, ", nextnonce=\"", nonce, "\"", NULL);
     }
     /* else nonce never expires, hence no nextnonce */
 
-
     {
         const char *resp_dig, *ha1, *a2, *ha2;
 
-        /* calculate rspauth attribute
-         */
+        /* Calculate the rspauth attribute. */
         ha1 = resp->ha1;
 
         a2 = apr_pstrcat(r->pool, ":", resp->uri, NULL);
@@ -1833,8 +1922,7 @@ static int add_auth_info(request_rec *r)
                                                          resp->message_qop : "",
                                                        ":", ha2, NULL));
 
-        /* assemble Authentication-Info header
-         */
+        /* Assemble the Authentication-Info header. */
         ai = apr_pstrcat(r->pool,
                          "rspauth=\"", resp_dig, "\"",
                          nextnonce,
@@ -1851,7 +1939,10 @@ static int add_auth_info(request_rec *r)
     }
 
     if (ai && ai[0]) {
-        apr_table_mergen(r->headers_out,
+        /* This must use ->err_headers_out so it survives an error
+         * response, else a one-time-nonce client loses the nextnonce
+         * and is stale-challenged on its next request. */
+        apr_table_mergen(r->err_headers_out,
                          (PROXYREQ_PROXY == r->proxyreq)
                              ? "Proxy-Authentication-Info"
                              : "Authentication-Info",
@@ -1876,7 +1967,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_note_auth_failure(hook_note_digest_auth_failure, NULL, NULL,
                               APR_HOOK_MIDDLE);
-
 }
 
 AP_DECLARE_MODULE(auth_digest) =

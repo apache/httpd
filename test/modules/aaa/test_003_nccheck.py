@@ -69,12 +69,14 @@ class TestDigestNcCheck:
         r2 = self.authenticate(env, "nccheck", challenge, nc="00000002")
         assert r2.response["status"] == 200
 
-        # replay an already-used nc -> rejected, and NOT reported as stale
-        # (this is a distinct failure mode from an invalid/expired nonce).
+        # replay an already-used nc -> rejected, and reported as stale: the
+        # digest verified, so the credentials are good, and a client which
+        # sent requests out of nonce-count order retries silently on the
+        # fresh nonce rather than being told its password was wrong.
         r3 = self.authenticate(env, "nccheck", challenge, nc="00000001")
         assert r3.response["status"] == 401
         new_challenge = dc.DigestChallenge.parse(r3.response["header"]["www-authenticate"])
-        assert new_challenge.stale is False
+        assert new_challenge.stale is True
         env.httpd_error_log.ignore_recent(lognos=["AH01774"])
 
         # recovery: the rejected attempt handed out a fresh challenge for
@@ -147,7 +149,7 @@ class TestDigestNcCheck:
             assert new_challenge.opaque != crafted, \
                 f"an opaque 2^{bits} above a live client id was truncated onto it"
 
-    @not_backported("r1939033", "nonce-count validation")
+    @not_backported("r1939033", "nonce-count validation", backported_in="2.4.72")
     def test_digest_036_malformed_nc_rejected(self, env):
         # The nonce-count is 8 hex digits. A value which is not -- a negative
         # number, non-hex, or the wrong length -- must be rejected rather
@@ -159,7 +161,7 @@ class TestDigestNcCheck:
             assert r.response["status"] == 401, f"nc={bad!r} was accepted"
         env.httpd_error_log.ignore_recent(lognos=["AH01782"])
 
-    @not_backported("r1939033", "nonce-count validation")
+    @not_backported("r1939033", "nonce-count validation", backported_in="2.4.72")
     def test_digest_037_malformed_nc_does_not_poison_client(self, env):
         # A correctly-signed request carrying nc="-0000001" must not be
         # accepted: before the count was validated it was read as a huge

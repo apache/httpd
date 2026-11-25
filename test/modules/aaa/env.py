@@ -26,11 +26,15 @@ class AAATestEnv(HttpdTestEnv):
     DIGEST_PASSWORD = "digestpass2617"
     DIGEST_USER2 = "otheruser"
     DIGEST_PASSWORD2 = "otherpass2617"
+    # DIGEST_USER's password in the second file, for a vhost with its own
+    # accounts under the same realm.
+    DIGEST_PASSWORD_VHOST2 = "vhost2pass2617"
 
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
         self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core"])
         self._digest_pwfile = os.path.join(self.server_dir, "digest.passwd")
+        self._digest_pwfile2 = os.path.join(self.server_dir, "digest2.passwd")
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=AAATestSetup(env=self))
@@ -46,10 +50,17 @@ class AAATestEnv(HttpdTestEnv):
                      f"{ha1(self.DIGEST_USER, self.DIGEST_PASSWORD)}\n")
             fd.write(f"{self.DIGEST_USER2}:{self.REALM}:"
                      f"{ha1(self.DIGEST_USER2, self.DIGEST_PASSWORD2)}\n")
+        with open(self._digest_pwfile2, 'w') as fd:
+            fd.write(f"{self.DIGEST_USER}:{self.REALM}:"
+                     f"{ha1(self.DIGEST_USER, self.DIGEST_PASSWORD_VHOST2)}\n")
 
     @property
     def digest_pwfile(self) -> str:
         return self._digest_pwfile
+
+    @property
+    def digest_pwfile2(self) -> str:
+        return self._digest_pwfile2
 
     def configtest(self, directory_lines: List[str], extra_top_lines: Optional[List[str]] = None
                     ) -> ExecResult:

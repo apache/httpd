@@ -14,7 +14,7 @@ and sent the Authorization header outside the intended protection space.
 from pyhttpd.backport import not_backported
 from . import digest_client as dc
 
-pytestmark = not_backported("r1939035", "domain= for reverse-proxied requests")
+pytestmark = not_backported("r1939035", "domain= for reverse-proxied requests", backported_in="2.4.72")
 
 
 class TestDigestProxyDomain:

@@ -86,7 +86,7 @@ class TestDigestConfigErrors:
         r = env.configtest([], extra_top_lines=["AuthDigestShmemSize 64K"])
         assert r.exit_code == 0
 
-    @not_backported("r1939036", "AuthDigestShmemSize validation")
+    @not_backported("r1939036", "AuthDigestShmemSize validation", backported_in="2.4.72")
     def test_digest_068_shmemsize_trailing_junk_rejected(self, env):
         # Junk after the unit character must be rejected, not silently
         # ignored (which read "64Kfoo" as 64K).
@@ -94,7 +94,7 @@ class TestDigestConfigErrors:
         assert r.exit_code != 0
         assert "AuthDigestShmemSize" in r.stderr
 
-    @not_backported("r1939036", "AuthDigestShmemSize validation")
+    @not_backported("r1939036", "AuthDigestShmemSize validation", backported_in="2.4.72")
     def test_digest_069_shmemsize_no_room_for_entry_rejected(self, env):
         # A size which would hold the table and an entry by their bare
         # struct sizes, but not once the per-allocation rmm overhead is
