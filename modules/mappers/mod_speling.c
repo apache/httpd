@@ -255,6 +255,17 @@ static int check_speling(request_rec *r)
     urlen = strlen(r->uri);
     pglen = strlen(postgood);
 
+    /*
+     * postgood is meant to be a trailing substring of r->uri. When a mapper
+     * (e.g. Alias or a RewriteRule) points a short URI at a file whose base
+     * name is longer, postgood is longer than r->uri and urlen - pglen goes
+     * negative; r->uri + (urlen - pglen) would then read before the start of
+     * the buffer. Bail out first so the suffix compare stays in bounds.
+     */
+    if (pglen > urlen) {
+        return DECLINED;
+    }
+
     /* Check to see if the URL pieces add up */
     if (strcmp(postgood, r->uri + (urlen - pglen))) {
         return DECLINED;
