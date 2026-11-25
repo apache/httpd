@@ -13,7 +13,8 @@
 # Anything built from a branch is resolved to a commit here and the
 # commit exported, so that the build uses exactly what the key names;
 # resolving the branch again at build time would race with it moving.
-# Tags and release tarballs are immutable, so the version is enough.
+# For checked release tarballs, include the expected digest as well
+# as the version so entries built without verification are not reused.
 
 root=
 
@@ -66,11 +67,11 @@ if test -n "${TEST_NGHTTP2-}"; then
 fi
 
 if [[ ${CONFIG-} == *--enable-http3* ]]; then
-    root="${root} ngtcp2-${NGTCP2_VERSION}"
+    root="${root} ngtcp2-${NGTCP2_VERSION}-${NGTCP2_SHA256:?Set the expected ngtcp2 SHA-256}"
 fi
 
 if test -n "${TEST_CURL_H3-}"; then
-    root="${root} curl-h3-${TEST_CURL_H3}"
+    root="${root} curl-h3-${TEST_CURL_H3}-${TEST_CURL_H3_SHA256:?Set the expected curl SHA-256}"
 fi
 
 if test -n "$root"; then

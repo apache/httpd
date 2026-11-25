@@ -84,6 +84,10 @@ The CI scripts use the following environment variables:
   release of curl is built with HTTP/3 (OpenSSL QUIC and libnghttp3)
   and used by the pytest suites through $CURL.  Used by the mod_http3
   job, since the runner's curl has no HTTP/3.
+  Set TEST_CURL_H3_SHA256 to the SHA-256 of the selected release archive.
+
+* NGTCP2_VERSION and NGTCP2_SHA256 - select the ngtcp2 release archive
+  and its SHA-256 for jobs configured with --enable-http3.
 
 * TEST_MD - set together with TEST_PYTEST; installs pebble first so
   that modules/md runs instead of skipping.  See the
