@@ -915,7 +915,9 @@ static int dav_find_submitted_locktoken(const request_rec *r,
              state_list != NULL;
              state_list = state_list->next) {
 
-            if (state_list->type == dav_if_opaquelock) {
+            /* A locktoken given under "Not" has not been submitted. */
+            if (state_list->type == dav_if_opaquelock
+                && state_list->condition == DAV_IF_COND_NORMAL) {
                 const dav_lock *lock;
 
                 /* given state_list->locktoken, match it */
