@@ -2,3 +2,9 @@ publish:
   whoami: 2.4.x # the git branch
   subdir: 2.4 # the website subdir
   hostname: documentation.httpd.apache.org
+github:
+  enabled_merge_buttons:
+    squash: true
+    merge: false
+    rebase: true
+    squash_commit_message: PR_TITLE_AND_COMMIT_DETAILS
