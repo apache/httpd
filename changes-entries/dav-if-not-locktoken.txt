@@ -1,0 +1,2 @@
+  *) mod_dav: Do not accept a lock token given under "Not" in the If
+     header as submitting that token for a locked resource.  [Joe Orton]
