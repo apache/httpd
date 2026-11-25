@@ -895,7 +895,8 @@ static const char *use_macro(cmd_parms * cmd, void *dummy, const char *arg)
                             replacements->nelts, macro->arguments->nelts);
     }
 
-    where = apr_psprintf(cmd->temp_pool,
+    /* Directives built from the macro keep this as their filename */
+    where = apr_psprintf(cmd->pool,
                          "macro '%s' (%s) used on line %d of \"%s\"",
                          macro->name, macro->location,
                          cmd->config_file->line_number,
