@@ -584,7 +584,9 @@ struct proxy_balancer {
     unsigned int lbmethod_set:1;
     unsigned int ungrowable:1;    /* no worker can be added at run time (no
                                    * growth in any copy of the balancer),
-                                   * so the workers array never changes */
+                                   * so the workers array never changes
+                                   * (enforced by ap_proxy_sync_balancer()
+                                   * and balancer_add_worker()) */
     ap_conf_vector_t *section_config; /* <Proxy>-section wherein defined */
 };
 

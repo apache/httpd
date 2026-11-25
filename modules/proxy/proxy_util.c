@@ -4537,6 +4537,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         }
         if (!found) {
             proxy_worker **runtime;
+            /* An ungrowable balancer's workers array is walked without its
+             * lock (PROXY_WORKERS_LOCK()), so it must never grow: refuse a
+             * worker it doesn't know rather than push it.
+             */
+            if (b->ungrowable) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10703)
+                             "%s: not adding shm[%d] worker %s to a balancer "
+                             "that can't grow", b->s->name, index, shm->name);
+                continue;
+            }
             /* XXX: a thread mutex is maybe enough here */
             apr_global_mutex_lock(proxy_mutex);
             runtime = apr_array_push(b->workers);

@@ -1193,6 +1193,7 @@ static int balancer_add_worker(request_rec *r, proxy_balancer *bsel,
     /* Another child may have added it since this one last synced. */
     ap_proxy_sync_balancer(bsel, r->server, conf);
     if (ap_proxy_get_worker(r->pool, bsel, conf, url)
+            || bsel->ungrowable
             || !storage->num_free_slots(bsel->wslot)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10164)
                       "%s: failed to add worker %s", bsel->s->name, url);
