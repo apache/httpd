@@ -62,7 +62,7 @@ class TestSocacheRedis:
     @pytest.mark.parametrize(["timeout", "seconds"], [
         ["0", 0],
     ] + [pytest.param(timeout, seconds, marks=not_backported(
-        "r1938833", "RedisTimeout unit conversion"))
+        "r1938833", "RedisTimeout unit conversion", backported_in="2.4.72"))
         for timeout, seconds in [["1ms", 1], ["1s", 1], ["1500ms", 2]]])
     def test_ssl_004_01(self, env, timeout, seconds):
         redis = SilentRedis()

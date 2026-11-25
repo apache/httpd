@@ -58,7 +58,7 @@ class TestSubstituteMaxLineLength:
     # the last match gets it wrong)
     @pytest.mark.parametrize("mode, doc", [
         pytest.param(mode, doc, id=f"{mode}-{doc}", marks=not_backported(
-            "r1938306", "SubstituteMaxLineLength counting the unmatched tail")
+            "r1938306", "SubstituteMaxLineLength counting the unmatched tail", backported_in="2.4.72")
             if mode.startswith("regex") and doc != "over_end.html" else ())
         for mode in MODES for doc in ["over.html", "over_mid.html", "over_end.html"]
     ])
