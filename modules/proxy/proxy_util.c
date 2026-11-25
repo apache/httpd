@@ -927,7 +927,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         if (ap_proxy_valid_balancer_name((char *)real, 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real, 1))) {
             int n, l3 = 0;
-            proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
+            proxy_worker **worker;
             const char *urlpart = ap_strchr_c(real + sizeof(BALANCER_PREFIX) - 1, '/');
             if (urlpart) {
                 if (!urlpart[1])
@@ -939,7 +939,14 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
              *   BalancerMember balancer://alias http://example.com/foo
              *   ProxyPassReverse /bash balancer://alias/bar
              * translate url http://example.com/foo/bar/that to /bash/that
+             *
+             * The workers array grows at run time (balancer-manager, sync of
+             * the workers other children added) under the balancer's thread
+             * lock: walk it under that lock, unless no worker can be added.
              */
+            u = NULL;
+            PROXY_WORKERS_LOCK(balancer);
+            worker = (proxy_worker **)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
                 l2 = strlen((*worker)->s->name);
                 if (urlpart) {
@@ -951,7 +958,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                             && strncmp(urlpart, url + l2, l3) == 0) {
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2 + l3],
                                         NULL);
-                        return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
+                        break;
                     }
                 }
                 else if (l1 >= l2 && strncasecmp((*worker)->s->name, url, l2) == 0) {
@@ -961,9 +968,13 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                     } else {
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
                     }
-                    return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
+                    break;
                 }
                 worker++;
+            }
+            PROXY_WORKERS_UNLOCK(balancer);
+            if (u) {
+                return ap_is_url(u) ? u : ap_construct_url(r->pool, u, r);
             }
         }
         else {
@@ -1961,6 +1972,20 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return ap_proxy_get_worker_ex(p, balancer, conf, url, 0);
 }
 
+PROXY_DECLARE(const apr_array_header_t *) ap_proxy_balancer_snap_workers(proxy_balancer *balancer,
+                                                                         apr_pool_t *p)
+{
+    apr_array_header_t *workers;
+
+    if (balancer->ungrowable) {
+        return balancer->workers;
+    }
+    PROXY_THREAD_LOCK(balancer);
+    workers = apr_array_copy(p, balancer->workers);
+    PROXY_THREAD_UNLOCK(balancer);
+    return workers;
+}
+
 /*
  * To create a worker from scratch first we define the
  * specifics of the worker; this is all local data.
@@ -1968,12 +1993,9 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * shared. This allows for dynamic addition during
  * config and runtime.
  */
-PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
-                                             proxy_worker **worker,
-                                             proxy_balancer *balancer,
-                                             proxy_server_conf *conf,
-                                             const char *url,
-                                             unsigned int mask)
+static char *define_worker(apr_pool_t *p, proxy_worker **worker,
+                           proxy_balancer *balancer, proxy_server_conf *conf,
+                           const char *url, unsigned int mask)
 {
     apr_status_t rv;
     proxy_worker_shared *wshared;
@@ -2215,6 +2237,32 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     }
 
     return NULL;
+}
+
+PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
+                                             proxy_worker **worker,
+                                             proxy_balancer *balancer,
+                                             proxy_server_conf *conf,
+                                             const char *url,
+                                             unsigned int mask)
+{
+    char *err;
+
+    /* A worker added to a balancer at run time is allocated from the main
+     * server's configuration pool, which all the balancers share (the vhosts'
+     * ones too), and the balancer's workers array grows from pconf, while the
+     * caller holds only that balancer's locks: allocate under proxy_mutex, as
+     * ap_proxy_sync_balancer() and ap_proxy_initialize_worker() do. Workers
+     * defined without a balancer or before the MPM runs don't race with
+     * those.
+     */
+    if (!balancer || ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_RUN_MPM) {
+        return define_worker(p, worker, balancer, conf, url, mask);
+    }
+    apr_global_mutex_lock(proxy_mutex);
+    err = define_worker(p, worker, balancer, conf, url, mask);
+    apr_global_mutex_unlock(proxy_mutex);
+    return err;
 }
 
 PROXY_DECLARE(char *) ap_proxy_define_worker(apr_pool_t *p,
@@ -4489,6 +4537,16 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
         }
         if (!found) {
             proxy_worker **runtime;
+            /* An ungrowable balancer's workers array is walked without its
+             * lock (PROXY_WORKERS_LOCK()), so it must never grow: refuse a
+             * worker it doesn't know rather than push it.
+             */
+            if (b->ungrowable) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(10703)
+                             "%s: not adding shm[%d] worker %s to a balancer "
+                             "that can't grow", b->s->name, index, shm->name);
+                continue;
+            }
             /* XXX: a thread mutex is maybe enough here */
             apr_global_mutex_lock(proxy_mutex);
             runtime = apr_array_push(b->workers);

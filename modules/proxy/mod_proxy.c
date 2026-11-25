@@ -3203,6 +3203,7 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_get_module_config(sconf, &proxy_module);
     proxy_balancer *balancer = NULL;
     proxy_worker **worker = NULL;
+    const apr_array_header_t *members;
 
     if (conf->balancers->nelts == 0 ||
         conf->proxy_status == status_off)
@@ -3243,8 +3244,14 @@ static int proxy_status_hook(request_rec *r, int flags)
             ap_rprintf(r, "ProxyBalancer[%d]Name: %s\n", i, balancer->s->name);
         }
 
-        worker = (proxy_worker **)balancer->workers->elts;
-        for (n = 0; n < balancer->workers->nelts; n++) {
+        /* The workers array grows at run time (balancer-manager, sync of the
+         * workers other children added): walk the snapshot of
+         * ap_proxy_balancer_snap_workers(), not to hold the balancer's lock
+         * while writing the response.
+         */
+        members = ap_proxy_balancer_snap_workers(balancer, r->pool);
+        worker = (proxy_worker **)members->elts;
+        for (n = 0; n < members->nelts; n++) {
             char fbuf[50];
             if (!(flags & AP_STATUS_SHORT)) {
                 ap_rvputs(r, "<tr>\n<td>", (*worker)->s->scheme, "</td>", NULL);

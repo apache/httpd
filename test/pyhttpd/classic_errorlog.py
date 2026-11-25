@@ -86,7 +86,7 @@ PER_FILE = {
     "test_proxy.py": (["AH02229"], []),
     "test_proxy_balancer.py": ([
         "AH00957", "AH00959", "AH01114", "AH01170", "AH01171", "AH10187"], []),
-    "test_proxy_beacon.py": (["AH01170"], []),
+    "test_proxy_beacon.py": (["AH01170", "AH01171"], []),
     "test_proxy_beacon_input.py": (["AH10187"], []),
     "test_proxy_hcheck.py": (["AH10187"], []),
     "test_remoteip.py": (["AH03499"], []),
