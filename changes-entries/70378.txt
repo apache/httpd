@@ -1,0 +1,3 @@
+  *) mod_macro: Fix empty or garbled "In file:" labels shown by mod_info
+     for directives expanded from a macro.  PR 70378.
+     [Leo Bicknell <bicknell@ufp.org>]
