@@ -13,6 +13,8 @@ class SessionTestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(SessionTestSetup)))
         self.add_modules(["cgid", "session", "session_cookie"])
+        self.add_optional_modules(["auth_form", "authn_file", "authn_core",
+                                   "authz_user", "request"])
 
 
 class SessionTestEnv(HttpdTestEnv):
