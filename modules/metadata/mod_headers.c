@@ -653,8 +653,20 @@ static int push_match(apr_array_header_t *iovecs,
         return (rc == AP_REG_NOMATCH) ? 0 : -1;
     }
 
-    /* Sanity checks (note that the rm_so/rm_eo offsets include *pos) */
-    ap_assert(pmatch[0].rm_so >= 0 && pmatch[0].rm_so <= pmatch[0].rm_eo);
+    /* Sanity checks (note that the rm_so/rm_eo offsets include *pos).
+     * Some PCRE versions accept \K in a lookaround, which can report a
+     * match starting after its end or before *pos; treat it as no match.
+     */
+    AP_DEBUG_ASSERT(pmatch[0].rm_so >= 0
+                    && (apr_size_t)pmatch[0].rm_so >= *pos
+                    && pmatch[0].rm_so <= pmatch[0].rm_eo
+                    && (apr_size_t)pmatch[0].rm_eo <= len);
+    if (pmatch[0].rm_so < 0
+        || (apr_size_t)pmatch[0].rm_so < *pos
+        || pmatch[0].rm_so > pmatch[0].rm_eo
+        || (apr_size_t)pmatch[0].rm_eo > len) {
+        return 0;
+    }
 
     /* Process tags in the input string rather than the resulting
      * substitution to avoid surprises

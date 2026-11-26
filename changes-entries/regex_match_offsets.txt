@@ -1,0 +1,5 @@
+  *) mod_headers, mod_substitute, mod_proxy_html: Treat a regex match
+     whose reported start is after its end, or before the offset matching
+     started from, as no match instead of aborting the child process or
+     using the offsets.  PCRE versions which accept \K in a lookaround
+     (PCRE2 before 10.38) can report such matches.  [Eric Covener]
