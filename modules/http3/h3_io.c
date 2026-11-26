@@ -69,7 +69,7 @@ static void teardown(h3_io_t* io)
     CHECK(io);
     if (io->event_thread)
     {
-        io->thread_running = 0;
+        apr_atomic_set32(&io->thread_running,0);
         h3_wakeup_signal_always(&io->wakeup);
         apr_status_t status;
         apr_thread_join(&status, io->event_thread);
@@ -109,7 +109,7 @@ static void teardown(h3_io_t* io)
 static apr_status_t listen_stop_cleanup(void* data)
 {
     h3_io_t* io = data;
-    if (io && io->draining)
+    if (io && apr_atomic_read32(&io->draining))
     {
         h3_io_listen_stop(io);
     }
@@ -172,7 +172,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "active MPM '%s' does not report externally accepted connections; graceful child shutdown may end active HTTP/3 connections early (an MPM with ap_mpm_note_extra_connection_added/_removed avoids this)", ap_show_mpm());
     }
 
-    io->thread_running = 1;
+    apr_atomic_set32(&io->thread_running,1);
     child_h3_io = io;
     /* The event thread allocates from pchild too, so allocate everything
      * from it here before the thread starts. */
@@ -180,7 +180,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     apr_pool_pre_cleanup_register(pchild, io, listen_stop_cleanup);
     if (apr_threadattr_create(&attr, pchild) != APR_SUCCESS || apr_thread_create(&io->event_thread, attr, h3_event_thread, io, pchild) != APR_SUCCESS)
     {
-        io->thread_running = 0;
+        apr_atomic_set32(&io->thread_running,0);
         teardown(io);
         child_h3_io = NULL;
         return APR_EGENERAL;
@@ -192,9 +192,9 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
 
 void h3_io_listen_drain(h3_io_t* io)
 {
-    if (io && !io->draining)
+    if (io && !apr_atomic_read32(&io->draining))
     {
-        io->draining = 1;
+        apr_atomic_set32(&io->draining,1);
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "graceful stop: draining %d connection(s), the MPM waits for them to finish", io->active_sessions ? io->active_sessions->nelts : 0);
         h3_wakeup_signal_always(&io->wakeup);
     }
@@ -413,14 +413,15 @@ static int h3_method_is_safe(const char* method)
     return m == M_GET || m == M_OPTIONS || m == M_TRACE;
 }
 
-static void abandon_stalled_responses(h3_session* session, apr_interval_time_t stall_timeout)
+static void abandon_stalled_responses(h3_session* session, apr_pool_t* loop_pool, apr_interval_time_t stall_timeout)
 {
-    if (stall_timeout <= 0)
+    if (!session || !loop_pool || stall_timeout <= 0)
     {
         return;
     }
     apr_time_t now = apr_time_now();
-    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+    apr_array_header_t* stalled = apr_array_make(loop_pool, 4, sizeof(h3_stream*));
+    for (apr_hash_index_t* hi = apr_hash_first(loop_pool, session->streams); hi; hi = apr_hash_next(hi))
     {
         h3_stream* h3s = apr_hash_this_val(hi);
         if (!h3s || h3s->response_cancelled || h3s->response_complete)
@@ -435,6 +436,17 @@ static void abandon_stalled_responses(h3_session* session, apr_interval_time_t s
         {
             continue;
         }
+	*(h3_stream**)apr_array_push(stalled) = h3s;
+    }
+
+    for (int i = 0; i < stalled->nelts; i++)
+    {
+        h3_stream* h3s = ((h3_stream**)stalled->elts)[i];
+        if (!h3s || h3s->response_cancelled || h3s->response_complete)
+        {
+            continue;
+        }
+
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, session->s, "HTTP/3 stream %" APR_INT64_T_FMT " made no progress for %" APR_TIME_T_FMT " seconds; abandoning the response", (apr_int64_t)h3s->stream_id, apr_time_sec(stall_timeout));
         h3_stream_response_cancel_locked(h3s);
     }
@@ -447,12 +459,12 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     server_rec* s = session->s;
     h3q_conn* conn = session->qconn;
 
-    if (session->aborted)
+    if (apr_atomic_read32(&session->aborted))
     {
         return 0;
     }
 
-    if (io->draining || !io->thread_running)
+    if (apr_atomic_read32(&io->draining) || !apr_atomic_read32(&io->thread_running))
     {
         int drained;
         apr_thread_mutex_lock(session->lock);
@@ -460,7 +472,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         {
             nghttp3_conn_submit_shutdown_notice(session->ngh3);
         }
-        if (!io->thread_running && !session->final_goaway_sent)
+        if (!apr_atomic_read32(&io->thread_running) && !session->final_goaway_sent)
         {
             nghttp3_conn_shutdown(session->ngh3);
             session->final_goaway_sent = 1;
@@ -473,7 +485,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
             session->goaway_sent = 1;
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; letting in-flight streams finish");
         }
-        if ((!io->thread_running || io->draining) && !session->goaway_deadline)
+        if ((!apr_atomic_read32(&io->thread_running) || apr_atomic_read32(&io->draining)) && !session->goaway_deadline)
         {
             session->goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "stopping: allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
@@ -488,7 +500,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
             }
             flush_nghttp3(session);
             apr_thread_mutex_unlock(session->lock);
-            session->aborted = 1;
+            apr_atomic_set32(&session->aborted,1);
             return 0;
         }
     }
@@ -498,13 +510,13 @@ int service_session_pass(h3_io_t* io, h3_session* session)
         char detail[H3Q_ERRLEN] = {0};
         h3q_conn_close_reason(conn, detail, sizeof(detail));
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error) close=[%s]", detail);
-        session->aborted = 1;
+	apr_atomic_set32(&session->aborted,1);
         return 0;
     }
 
     /* ngtcp2 gave the peer more streams: nghttp3 checks PRIORITY_UPDATE against its own copy of the limit. */
     uint64_t max_bidi = h3q_conn_max_remote_streams_bidi(conn);
-    if (max_bidi > session->max_client_streams_bidi && session->ngh3 && !session->ngh3_dead)
+    if (max_bidi > session->max_client_streams_bidi && session->ngh3 && !apr_atomic_read32(&session->ngh3_dead))
     {
         apr_thread_mutex_lock(session->lock);
         nghttp3_conn_set_max_client_streams_bidi(session->ngh3, max_bidi);
@@ -545,9 +557,9 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     flush_nghttp3(session);
     apr_thread_mutex_unlock(session->lock);
 
-    if (session->ngh3_dead)
+    if (apr_atomic_read32(&session->ngh3_dead))
     {
-        session->aborted = 1;
+	apr_atomic_set32(&session->aborted,1);
         apr_pool_destroy(scratch);
         return 0;
     }
@@ -567,7 +579,7 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     h3_server_conf* sconf = ap_get_module_config(s->module_config, &http3_module);
     apr_thread_mutex_lock(session->lock);
     flush_nghttp3(session);
-    abandon_stalled_responses(session, (sconf && sconf->h3_stream_timeout) ? apr_time_from_sec(sconf->h3_stream_timeout) : s->timeout);
+    abandon_stalled_responses(session, scratch, (sconf && sconf->h3_stream_timeout) ? apr_time_from_sec(sconf->h3_stream_timeout) : s->timeout);
     apr_thread_mutex_unlock(session->lock);
     apr_pool_destroy(scratch);
 
@@ -579,13 +591,13 @@ int service_session_pass(h3_io_t* io, h3_session* session)
     {
         session->last_activity = apr_time_now();
     }
-    else if (io->thread_running && apr_atomic_read32(&session->active_tasks) == 0)
+    else if (apr_atomic_read32(&io->thread_running) && apr_atomic_read32(&session->active_tasks) == 0)
     {
         h3_server_conf* conf = ap_get_module_config(s->module_config, &http3_module);
         if (conf && apr_time_now() - session->last_activity >= apr_time_from_sec(conf->h3_idle_timeout))
         {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "closing HTTP/3 connection idle for %u second(s)", (unsigned)conf->h3_idle_timeout);
-            session->aborted = 1;
+	    apr_atomic_set32(&session->aborted,1);
         }
     }
     return data_read;

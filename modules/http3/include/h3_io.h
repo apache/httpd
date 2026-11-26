@@ -44,11 +44,11 @@ typedef struct h3_io_t
     volatile apr_uint32_t total_streams;
     volatile apr_uint64_t total_bytes_read;
     volatile apr_uint64_t total_bytes_written;
-    volatile int thread_running;
+    volatile apr_uint32_t thread_running;
     /* Set by a graceful stop: keep servicing the sessions we already have,
      * but accept no new ones.  The event thread keeps running so in-flight
      * streams can finish; the MPM bounds how long the child waits for them. */
-    volatile int draining;
+    volatile apr_uint32_t draining;
     h3_wakeup wakeup;
 
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;

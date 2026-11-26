@@ -202,13 +202,15 @@ static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t 
         apr_thread_mutex_unlock(session->lock);
         return APR_SUCCESS;
     }
-    if (h3s->response_cancelled || session->aborted || session->ngh3_dead || !session->ngh3)
+    if (h3s->response_cancelled || apr_atomic_read32(&session->aborted) || apr_atomic_read32(&session->ngh3_dead) || !session->ngh3)
     {
         apr_thread_mutex_unlock(session->lock);
         return APR_ECONNABORTED;
     }
     nghttp3_data_reader dr = {.read_data = h3_session_read_data};
-    int rv = nghttp3_conn_submit_response(session->ngh3, h3s->stream_id, nva, nvlen, &dr);
+    int64_t sid = h3s->stream_id;
+    
+    int rv = nghttp3_conn_submit_response(session->ngh3, sid, nva, nvlen, &dr);
     if (rv == 0)
     {
         h3s->response_submitted = 1;
@@ -220,7 +222,7 @@ static apr_status_t submit_response_nva(h3_stream* h3s, nghttp3_nv* nva, size_t 
     apr_thread_mutex_unlock(session->lock);
     if (rv != 0)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", (apr_int64_t)h3s->stream_id, rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_submit_response failed for stream %" APR_INT64_T_FMT ": %d", (apr_int64_t)sid, rv);
         return APR_EGENERAL;
     }
     h3_session_wake(session);
@@ -238,7 +240,7 @@ apr_status_t h3_response_start(request_rec* r, h3_conn_ctx_t* h3ctx)
     h3_response_finalize(r, h3ctx);
 #endif
     nghttp3_nv nva[64] = {0};
-    size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
+    size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, r->pool);
     return submit_response_nva(h3s, nva, nvlen);
 }
 
@@ -379,7 +381,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
         /* The partial body and its Content-Length no longer agree; send a clean error. */
         static const char oversized_msg[] = "Response exceeded H3MaxResponseBodySize\n";
         status = HTTP_INTERNAL_SERVER_ERROR;
-        char* status_str = apr_psprintf(h3s->pool, "%d", status);
+        char* status_str = apr_psprintf(r->pool, "%d", status);
         nghttp3_nv nva[2] = {0};
         NV_SET(nva, 0, ":status", status_str);
         NV_SET(nva, 1, "content-type", "text/plain");
@@ -406,9 +408,8 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     {
         response_rv = h3_stream_response_append(h3s, buffered_body, buffered_body_len);
     }
-    h3_stream_response_complete(h3s);
 
-    size_t body_len = h3s->response_len;
+    const size_t body_len = h3_stream_response_complete(h3s);
     int64_t sid = h3s->stream_id;
     if (response_rv != APR_SUCCESS && response_rv != APR_ECONNABORTED)
     {

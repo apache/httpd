@@ -80,6 +80,8 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_max_stream_errors = new->h3_max_stream_errors ? new->h3_max_stream_errors : base->h3_max_stream_errors;
     merged->h3_qpack_capacity_set = new->h3_qpack_capacity_set ? new->h3_qpack_capacity_set : base->h3_qpack_capacity_set;
     merged->h3_qpack_table_capacity = new->h3_qpack_capacity_set ? new->h3_qpack_table_capacity : base->h3_qpack_table_capacity;
+    merged->h3_qpack_encoder_capacity_set = new->h3_qpack_encoder_capacity_set ? new->h3_qpack_encoder_capacity_set : base->h3_qpack_encoder_capacity_set;
+    merged->h3_qpack_encoder_table_capacity = new->h3_qpack_encoder_capacity_set ? new->h3_qpack_encoder_table_capacity : base->h3_qpack_encoder_table_capacity;
     merged->h3_qpack_blocked_set = new->h3_qpack_blocked_set ? new->h3_qpack_blocked_set : base->h3_qpack_blocked_set;
     merged->h3_qpack_blocked_streams = new->h3_qpack_blocked_set ? new->h3_qpack_blocked_streams : base->h3_qpack_blocked_streams;
     merged->h3_min_workers = new->h3_min_workers ? new->h3_min_workers : base->h3_min_workers;
@@ -315,6 +317,26 @@ static const char* set_h3_qpack_table_capacity(cmd_parms* cmd, void* dummy H3_UN
     CHECK(conf);
     conf->h3_qpack_table_capacity = (apr_uint32_t)val;
     conf->h3_qpack_capacity_set = 1;
+    return NULL;
+}
+
+static const char* set_h3_qpack_encoder_table_capacity(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3QpackTableCapacity: empty value";
+    }
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv != APR_SUCCESS || val < 0)
+    {
+        return apr_psprintf(cmd->pool, "H3QpackEncoderTableCapacity: '%s' is not a number", arg);
+    }
+
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_qpack_encoder_table_capacity = (apr_uint32_t)val;
+    conf->h3_qpack_encoder_capacity_set = 1;
     return NULL;
 }
 
@@ -719,6 +741,10 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
             {
                 vc->h3_qpack_table_capacity = H3_QPACK_TABLE_CAPACITY_DEFAULT;
             }
+	    if (!vc->h3_qpack_encoder_capacity_set)
+            {
+                vc->h3_qpack_encoder_table_capacity = 0;
+            }
             if (!vc->h3_qpack_blocked_set)
             {
                 vc->h3_qpack_blocked_streams = H3_QPACK_BLOCKED_STREAMS_DEFAULT;
@@ -829,6 +855,7 @@ const command_rec h3_cmds[] = {
     AP_INIT_TAKE1("H3StreamTimeout", set_h3_stream_timeout, NULL, RSRC_CONF, "Seconds a response may make no progress before the stream is aborted (default: the server Timeout)"),
     AP_INIT_TAKE1("H3MaxStreamErrors", set_h3_max_stream_errors, NULL, RSRC_CONF, "Stream errors one connection may cause before it is closed with H3_EXCESSIVE_LOAD (default: 8)"),
     AP_INIT_TAKE1("H3QpackTableCapacity", set_h3_qpack_table_capacity, NULL, RSRC_CONF, "Bytes of QPACK dynamic table a client may use for request headers; 0 disables it (default: 4096)"),
+    AP_INIT_TAKE1("H3QpackEncoderTableCapacity", set_h3_qpack_encoder_table_capacity, NULL, RSRC_CONF, "Maximum QPACK dynamic table capacity used by the server encoder (default: 0)"),
     AP_INIT_TAKE1("H3QpackBlockedStreams", set_h3_qpack_blocked_streams, NULL, RSRC_CONF, "Requests that may wait on a QPACK table insert that has not arrived; each one is unbounded memory (default: 0)"),
     AP_INIT_TAKE1("H3MinWorkers", set_h3_min_workers, NULL, RSRC_CONF, "Request worker threads started per child process (default: 16)"),
     AP_INIT_TAKE1("H3MaxWorkers", set_h3_max_workers, NULL, RSRC_CONF, "Maximum request worker threads per child process (default: 64)"),
