@@ -204,6 +204,9 @@ static apr_status_t fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
     for (i = 0; i < dconf->env_fixups->nelts; i++) {
         sei_entry *entry = &entries[i];
 
+        /* set only by a capturing regex of this condition */
+        src = NULL;
+
         rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err);
         if (rc < 0) { 
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10241) 

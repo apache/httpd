@@ -1,0 +1,4 @@
+  *) mod_proxy_fcgi: Fix a crash, or a value taken from a previous
+     ProxyFCGISetEnvIf, when $N is used after a condition that captured
+     nothing. $N is then empty.
+     PR 70369 [Arturo Bernal]
