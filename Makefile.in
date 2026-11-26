@@ -440,7 +440,7 @@ check-dirs:
 check-binaries: check/bin/apxs check/bin/httpd check/bin/ab \
 	check/bin/htcacheclean check/bin/httxt2dbm check/bin/htpasswd \
 	check/bin/htdigest check/bin/htdbm check/bin/logresolve \
-	$(EXTRA_CHECK_BINARIES)
+	check/bin/dbmmanage $(EXTRA_CHECK_BINARIES)
 
 check/bin/httpd:
 	ln -s $(top_builddir)/$(PROGRAM_NAME) check/bin/httpd
@@ -459,6 +459,9 @@ check/bin/htdbm:
 
 check/bin/logresolve:
 	ln -s $(top_builddir)/support/logresolve check/bin/logresolve
+
+check/bin/dbmmanage:
+	ln -s $(top_builddir)/support/dbmmanage check/bin/dbmmanage
 
 check/bin/htcacheclean:
 	ln -s $(top_builddir)/support/htcacheclean check/bin/htcacheclean

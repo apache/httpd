@@ -49,14 +49,14 @@ SYNTAX
 }
 
 sub need_sha1_hash {
-    if (!eval ('require "Digest/SHA1.pm";')) {
+    if (!eval ('require "Digest/SHA.pm";')) {
         print STDERR <<SHAERR;
-dbmmanage SHA1 passwords require the interface or the module Digest::SHA1
-available from CPAN:
+dbmmanage SHA1 passwords require the module Digest::SHA, which is part of
+Perl since 5.10 and otherwise available from CPAN:
 
-    http://www.cpan.org/modules/by-module/Digest/Digest-MD5-2.12.tar.gz
+    http://www.cpan.org/modules/by-module/Digest/
 
-Please install Digest::SHA1 and try again, or use a different hashing option:
+Please install Digest::SHA and try again, or use a different hashing option:
 
 SHAERR
         usage();
@@ -207,7 +207,7 @@ sub hashpw_md5 {
 
 sub hashpw_sha1 {
     my($pw, $salt) = @_;
-    '{SHA}' . Digest::SHA1::sha1_base64($pw) . "=";
+    '{SHA}' . Digest::SHA::sha1_base64($pw) . "=";
 }
 
 sub hashpw {
