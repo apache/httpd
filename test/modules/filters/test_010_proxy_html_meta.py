@@ -11,12 +11,20 @@ from .env import FiltersTestEnv
 # the data read from the backend, which is not NUL terminated, so a tag
 # right at the end of the body must not be read past.
 #
-# The documents are 4096 bytes, ending in the tag.  "EnableMMAP Off" makes
-# httpd read the file into an allocated buffer rather than mmap it, so an
-# over-read runs off the end of that buffer: on an unfixed server under
-# ASan (the CI "ASan, pytest" job) it aborts the child and the request
-# fails, which is the RED half of these cases.  Without ASan or a guard
-# page the over-read may still go unnoticed.
+# The documents are 4096 bytes, ending in the tag.  "EnableMMAP Off" keeps
+# the body on the read-into-a-buffer path, so the cases do not depend on
+# where an mmap of the file happens to end.
+#
+# What makes a case fail on an unfixed server is the header it lifts, not
+# the over-read itself: the buffer comes from apr_bucket_alloc(), which
+# carves the 4096 bytes out of a larger block, so ASan does not see the
+# over-read either.  "empty_name" is therefore the case that fails without
+# the fix - the name scan runs past the end and takes the header name from
+# whatever follows the body, which httpd then either rejects (AH02428, a
+# 500) or returns as a response header the control document does not have.
+# The other two end-of-body cases lift nothing either way and only cover
+# that the bounded scans stop cleanly; a crash there shows up as a failed
+# request.
 DOC_SIZE = 4096
 HEAD = "<html><head><title>t</title>"
 
@@ -33,6 +41,11 @@ END_TAGS = {
     # request into a 500.
     "empty_name": "<meta content=x http-equiv>",
 }
+# Same size and same filters, no meta tag: the header names it comes back
+# with are the ones that owe nothing to the meta scan.
+CONTROL = "</head><body>control</body></html>"
+# Framing may legitimately differ from one document to the next.
+FRAMING_HEADERS = {"content-length", "transfer-encoding"}
 
 
 def pad_to(text, size):
@@ -49,6 +62,8 @@ class TestProxyHtmlMeta:
         os.makedirs(doc_dir, exist_ok=True)
         with open(os.path.join(doc_dir, "well_formed.html"), "w") as f:
             f.write(WELL_FORMED)
+        with open(os.path.join(doc_dir, "control.html"), "w") as f:
+            f.write(pad_to(CONTROL, DOC_SIZE))
         for name, tag in END_TAGS.items():
             text = pad_to(tag, DOC_SIZE)
             assert len(text) == DOC_SIZE
@@ -85,8 +100,14 @@ class TestProxyHtmlMeta:
     # and, having no usable header name, lifts no header.
     @pytest.mark.parametrize("name", list(END_TAGS))
     def test_filters_010_02(self, env, name):
+        ctl = self.get(env, "control")
+        assert ctl.response, "control: no response"
+        assert ctl.response["status"] == 200, \
+            f"control: status {ctl.response['status']}"
         r = self.get(env, name)
         assert r.response, f"{name}: no response"
         assert r.response["status"] == 200, \
             f"{name}: status {r.response['status']}"
-        assert "refresh" not in r.response["header"]
+        lifted = (set(r.response["header"]) - set(ctl.response["header"])
+                  - FRAMING_HEADERS)
+        assert not lifted, f"{name}: lifted header(s) {sorted(lifted)}"
