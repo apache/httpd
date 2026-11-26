@@ -1,0 +1,6 @@
+  *) core, mod_rewrite, mod_proxy_fcgi, mod_substitute, mod_proxy_html:
+     Fix backreferences ($N, %N) to groups that did not participate in
+     a match, or left over from a previous condition when an expression
+     is true without a capturing match, and fix regex patterns that can
+     match the empty string not making progress in mod_substitute and
+     mod_proxy_html.  [Eric Covener]
