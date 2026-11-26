@@ -142,13 +142,13 @@ static apr_status_t session_cookie_load(request_rec * r, session_rec ** z)
     note = apr_pstrcat(m->pool, MOD_SESSION_COOKIE, name, NULL);
     zz = (session_rec *)apr_table_get(m->notes, note);
     if (zz) {
-        if (!conf->remove) {
-            *z = zz;
-            return OK;
-        } else {
-            /* remove the note */
-            apr_table_unset(m->notes, note);
+        /* keep the session already loaded, it may have been changed,
+         * but still remove the cookie from this request's headers */
+        if (conf->remove) {
+            ap_cookie_read(r, name, &val, 1);
         }
+        *z = zz;
+        return OK;
     }
 
     /* otherwise, try parse the cookie */
