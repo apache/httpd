@@ -58,11 +58,11 @@ struct h3_session
     apr_thread_mutex_t* lock;
 
     apr_hash_t* streams;
-    volatile int aborted;
+    volatile apr_uint32_t aborted;
     /* Number of streams write-blocked in nghttp3 (see flush_nghttp3). */
     int blocked_streams;
 
-    volatile int ngh3_dead;
+    volatile apr_uint32_t ngh3_dead;
     uint64_t abort_quic_error_code;
     const char* abort_reason;
 
