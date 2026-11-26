@@ -958,8 +958,8 @@ static autht_status check_token(request_rec *r, const char *type,
     }
 
     /* first pass - identity sub and aud */
-    kv = apr_json_object_first(jose->jose.jwt->claims);
-    do {
+    for (kv = apr_json_object_first(jose->jose.jwt->claims); kv != NULL;
+            kv = apr_json_object_next(jose->jose.jwt->claims, kv)) {
 
         /* ignore any key that isn't a string */
         if (kv->k->type != APR_JSON_STRING) {
@@ -995,7 +995,7 @@ static autht_status check_token(request_rec *r, const char *type,
         }
 
 
-    } while ((kv = apr_json_object_next(jose->jose.jwt->claims, kv)));
+    }
 
     if (!aud) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, status, r,
@@ -1040,8 +1040,8 @@ static autht_status check_token(request_rec *r, const char *type,
     }
 
     /* second pass - add all string claims to the environment, prefixed by TOKEN_ */
-    kv = apr_json_object_first(jose->jose.jwt->claims);
-    do {
+    for (kv = apr_json_object_first(jose->jose.jwt->claims); kv != NULL;
+            kv = apr_json_object_next(jose->jose.jwt->claims, kv)) {
         char *key, *val;
         int j;
 
@@ -1067,7 +1067,7 @@ static autht_status check_token(request_rec *r, const char *type,
 
         apr_table_setn(e, key, val);
 
-    } while ((kv = apr_json_object_next(jose->jose.jwt->claims, kv)));
+    }
 
     return AUTHT_GRANTED;
 }
