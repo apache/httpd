@@ -1,0 +1,7 @@
+  *) core: Refresh the cached file information from the open file
+     descriptor in the default handler, instead of keeping the result of
+     the directory walk's stat() on the pathname. A rename(2) racing
+     with the open() could otherwise leave Last-Modified, ETag,
+     Content-Length and the byte range actually sent describing a
+     different file than the one that was opened. PR 54962.
+     [Ståle Kristoffersen]
