@@ -149,7 +149,7 @@ class TestDigestNcCheck:
             assert new_challenge.opaque != crafted, \
                 f"an opaque 2^{bits} above a live client id was truncated onto it"
 
-    @not_backported("r1939033", "nonce-count validation")
+    @not_backported("r1939033", "nonce-count validation", backported_in="2.4.72")
     def test_digest_036_malformed_nc_rejected(self, env):
         # The nonce-count is 8 hex digits. A value which is not -- a negative
         # number, non-hex, or the wrong length -- must be rejected rather
@@ -161,7 +161,7 @@ class TestDigestNcCheck:
             assert r.response["status"] == 401, f"nc={bad!r} was accepted"
         env.httpd_error_log.ignore_recent(lognos=["AH01782"])
 
-    @not_backported("r1939033", "nonce-count validation")
+    @not_backported("r1939033", "nonce-count validation", backported_in="2.4.72")
     def test_digest_037_malformed_nc_does_not_poison_client(self, env):
         # A correctly-signed request carrying nc="-0000001" must not be
         # accepted: before the count was validated it was read as a huge

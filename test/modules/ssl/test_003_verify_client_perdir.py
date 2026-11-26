@@ -127,7 +127,7 @@ class TestVerifyClientPerDir:
     # requested in the handshake - SSL_R_INVALID_CONFIG, reported as AH10158
     # and turned into 403, even for a client which offered the
     # post_handshake_auth extension and presented a valid certificate.
-    @not_backported("r1938504", "no SSL_VERIFY_CLIENT_ONCE with post-handshake auth")
+    @not_backported("r1938504", "no SSL_VERIFY_CLIENT_ONCE with post-handshake auth", backported_in="2.4.72")
     def test_ssl_003_05(self, env):
         r = self.get(env, "TLSv1.3", "1.3", VHOSTS["optional"])
         assert r.exit_code == 0, f"handshake failed: {r.stderr}"

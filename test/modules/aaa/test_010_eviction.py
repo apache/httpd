@@ -43,7 +43,7 @@ _WIN32 = sys.platform == "win32"
 BOTH = ["nccheck", "onetime"]
 
 # on the tests that fail without it (the others pass there as well)
-NOT_BACKPORTED = not_backported("r1937713", "evicting never-authenticated clients first")
+NOT_BACKPORTED = not_backported("r1937713", "evicting never-authenticated clients first", backported_in="2.4.72")
 
 
 class TestDigestEviction:
