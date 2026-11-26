@@ -60,6 +60,11 @@ typedef struct dir_config_struct {
 
 #define DIR_CMD_PERMS OR_INDEXES
 
+/* Set in the notes of a request while it looks up its DirectoryIndex files,
+ * so that FallbackResource does not make a missing index look like a found one.
+ */
+#define DIR_INDEX_LOOKUP_NOTE "dir-index-lookup"
+
 static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
 {
     dir_config_rec *d = dummy;
@@ -196,6 +201,12 @@ static int fixup_dflt(request_rec *r)
 
     name_ptr = d->dflt;
     if ((name_ptr == NULL) || !(strcasecmp(name_ptr,"disabled"))){
+        return DECLINED;
+    }
+    /* This is the lookup of a DirectoryIndex file in fixup_dir(). It must
+     * report that the file does not exist, not the fallback resource.
+     */
+    if (r->main && apr_table_get(r->main->notes, DIR_INDEX_LOOKUP_NOTE)) {
         return DECLINED;
     }
     /* XXX: if FallbackResource points to something that doesn't exist,
@@ -343,7 +354,9 @@ static int fixup_dir(request_rec *r)
             name_ptr = apr_pstrcat(r->pool, name_ptr, "?", r->args, NULL);
         }
 
+        apr_table_setn(r->notes, DIR_INDEX_LOOKUP_NOTE, "1");
         rr = ap_sub_req_lookup_uri(name_ptr, r, r->output_filters);
+        apr_table_unset(r->notes, DIR_INDEX_LOOKUP_NOTE);
 
         /* The sub request lookup is very liberal, and the core map_to_storage
          * handler will almost always result in HTTP_OK as /foo/index.html
@@ -411,8 +424,10 @@ static int fixup_dir(request_rec *r)
                        apr_array_pstrcat(r->pool, d->index_names, ',') :
                        AP_DEFAULT_INDEX);
 
-    /* nothing for us to do, pass on through */
-    return DECLINED;
+    /* No index file exists, so this directory is a request for something
+     * that does not map to a file: use the fallback, if there is one.
+     */
+    return fixup_dflt(r);
 }
 
 static int dir_fixups(request_rec *r)
