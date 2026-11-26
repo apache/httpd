@@ -1329,6 +1329,11 @@ div.example { background: #f6f8fa !important; border: 1px solid #e3e8ee !importa
 /* an example that exists only to hold a code block: let the <pre> be the panel */
 div.example:has(> pre) { background: transparent !important; border: 0 !important; border-radius: 0 !important;
      padding: 0 !important; margin: 0 !important; }
+/* a <pre> inside a note or warning sits in the callout box: don't draw a second one */
+div.note pre, div.warning pre { background: transparent !important; border: 0 !important; border-radius: 0 !important;
+     padding: 0 !important; margin: .5em 0 !important; }
+/* callout titles start at the top of the box, not 28px down */
+div.note h3, div.warning h3, div.example h3 { margin: 0 0 8px !important; font-size: 1rem !important; }
 div.outofdate, div.retired { background: #fff8e1 !important; color: #5c4813 !important; border-radius: 6px !important; padding: 8px 12px !important; }
 /* tables */
 table { border: 1px solid #e3e8ee !important; border-collapse: collapse !important; }
@@ -1382,6 +1387,7 @@ tr.odd { background: #141a20 !important; }
 div.note { background: #10202f !important; color: #c9d6e4 !important; border-left-color: #3d8bfd !important; }
 div.warning { background: #2a1416 !important; color: #f0c9c9 !important; border-left-color: #e05555 !important; }
 div.example { background: #161b22 !important; border-color: #2a323c !important; color: #d7dde5 !important; }
+div.note pre, div.warning pre { background: transparent !important; }
 div.outofdate, div.retired { background: #2e2712 !important; color: #e8d9a0 !important; }
 #quickview { background: #12181f !important; border-color: #2a323c !important; }
 #quickview h3 { color: #cbd6e2 !important; }
