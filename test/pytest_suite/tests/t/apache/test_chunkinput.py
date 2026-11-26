@@ -29,7 +29,7 @@ from apache_pytest import need_module, t_cmp
 OK = "HTTP/1.1 200 OK"
 NOTFOUND = "HTTP/1.1 404 Not Found"
 BAD = "HTTP/1.1 400 Bad Request"
-TOOBIG = "HTTP/1.1 413 Request Entity Too Large"
+TOOBIG = "HTTP/1.1 413 Content Too Large"
 ECHO = "/echo_post_chunk"
 NOPE = "/i_do_not_exist_in_your_wildest_imagination"
 

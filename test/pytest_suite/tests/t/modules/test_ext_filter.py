@@ -57,5 +57,5 @@ def test_ext_filter_limit(http):
         r = http.POST("/apache/extfilter/out-limit/modules/cgi/perl_echo.pl",
                       content="foo and bar\n")
         assert t_cmp(r.status_code, 413), "got 413 error"
-        assert t_cmp(r.text, re.compile("413 Request Entity Too Large")), \
+        assert t_cmp(r.text, re.compile("413 Content Too Large")), \
             "got 413 error body"

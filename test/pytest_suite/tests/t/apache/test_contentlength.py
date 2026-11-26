@@ -57,7 +57,7 @@ def test_contentlength(http, data, uri, expect):
         ):
             expect = "HTTP/1.1 400 Bad Request"
         else:
-            expect = "HTTP/1.1 413 Request Entity Too Large"
+            expect = "HTTP/1.1 413 Content Too Large"
 
     # 'default' in Apache::TestRequest means the main server port.
     sock = http.vhost_socket()
