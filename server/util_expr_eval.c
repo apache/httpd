@@ -266,9 +266,13 @@ static const char *ap_expr_eval_re_backref(ap_expr_eval_ctx_t *ctx, unsigned int
         || **ctx->re_source == '\0' || ctx->re_nmatch < n + 1)
         return "";
 
-    len = ctx->re_pmatch[n].rm_eo - ctx->re_pmatch[n].rm_so;
-    if (len == 0)
+    /* A group which did not participate in the match has rm_so == rm_eo
+     * == -1; expand only a group with a non-empty span in the source.
+     */
+    if (ctx->re_pmatch[n].rm_so < 0
+        || ctx->re_pmatch[n].rm_eo <= ctx->re_pmatch[n].rm_so)
         return "";
+    len = ctx->re_pmatch[n].rm_eo - ctx->re_pmatch[n].rm_so;
 
     return apr_pstrndup(ctx->p, *ctx->re_source + ctx->re_pmatch[n].rm_so, len);
 }
@@ -505,6 +509,15 @@ static int ap_expr_eval_comp(ap_expr_eval_ctx_t *ctx, const ap_expr_t *node)
                 result = (0 == ap_regexec(regex, word, ctx->re_nmatch,
                                           ctx->re_pmatch, 0));
                 *ctx->re_source = result ? word : NULL;
+                if (!result) {
+                    /* ap_regexec() leaves the vector untouched on no
+                     * match, don't let stale offsets linger
+                     */
+                    apr_size_t i;
+                    for (i = 0; i < ctx->re_nmatch; ++i) {
+                        ctx->re_pmatch[i].rm_so = ctx->re_pmatch[i].rm_eo = -1;
+                    }
+                }
             }
             else {
                 result = (0 == ap_regexec(regex, word, 0, NULL, 0));

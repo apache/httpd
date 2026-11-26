@@ -203,6 +203,17 @@ static apr_status_t fix_cgivars(request_rec *r, fcgi_dirconf_t *dconf)
     entries = (sei_entry *) dconf->env_fixups->elts;
     for (i = 0; i < dconf->env_fixups->nelts; i++) {
         sei_entry *entry = &entries[i];
+        int n;
+
+        /* The expression only sets src/regm when a capturing regex is
+         * actually evaluated and matches; reset them first so that $N in
+         * the condition or the replacement does not pick up the
+         * backreferences of a previous entry.
+         */
+        src = NULL;
+        for (n = 0; n < AP_MAX_REG_MATCH; ++n) {
+            regm[n].rm_so = regm[n].rm_eo = -1;
+        }
 
         rc = ap_expr_exec_re(r, entry->cond, AP_MAX_REG_MATCH, regm, &src, &err);
         if (rc < 0) { 
