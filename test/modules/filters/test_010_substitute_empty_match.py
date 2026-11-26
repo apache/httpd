@@ -41,7 +41,8 @@ class TestSubstituteEmptyMatch:
     def _class_scope(cls, env):
         doc_dir = os.path.join(env.server_dir, "htdocs", "test1")
         for name, (_, _, _, text, _) in CASES.items():
-            with open(os.path.join(doc_dir, f"{name}.html"), "w") as f:
+            with open(os.path.join(doc_dir, f"{name}.html"), "w",
+                      newline="") as f:
                 f.write(text)
 
     def configure(self, env, pattern, repl, flags):
