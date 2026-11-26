@@ -63,6 +63,8 @@ static int h1test_echo_handler(request_rec *r)
     r->status = HTTP_OK;
     r->clength = -1;
     r->chunked = 1;
+    apr_table_setn(r->headers_out, "X-H1Test-OffT-Bits",
+                   apr_itoa(r->pool, sizeof(apr_off_t) * 8));
     ct = apr_table_get(r->headers_in, "content-type");
     ap_set_content_type(r, ct? ct : "application/octet-stream");
 
