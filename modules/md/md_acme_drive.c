@@ -1218,7 +1218,7 @@ static apr_status_t acme_get_ari(md_proto_driver_t *d,
                           renew_end);
             continue;
         }
-        if (start > end) {
+        if (start >= end) {
             md_log_perror(MD_LOG_MARK, MD_LOG_WARNING, rv, d->p,
                           "CA advises weird renewal between '%s' and '%s'",
                           renew_start, renew_end);
@@ -1229,9 +1229,13 @@ static apr_status_t acme_get_ari(md_proto_driver_t *d,
                       " (explantion: %s)",
                       renew_start, renew_end,
                       ari_expl_url? ari_expl_url : "none given");
-        /* select a random value between start and end */
+        /* select a random value between start and end. 'c' is an unsigned
+         * byte, 0-255; treat it as a fraction of the window (c/256, which
+         * is always < 1) rather than subtracting 128 and turning half the
+         * range negative, which put the result before 'start' half the
+         * time and never let it reach the second half of the window. */
         md_rand_bytes(&c, sizeof(c), d->p);
-        start += apr_time_from_sec((apr_time_sec(end - start) * (c - 128)) / 256);
+        start += apr_time_from_sec((apr_time_sec(end - start) * c) / 256);
         if (!*prenew_at || (start < *prenew_at)) {
           *prenew_at = start;
           *purl = apr_pstrdup(d->p, ari_expl_url);

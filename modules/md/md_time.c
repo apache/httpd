@@ -378,7 +378,7 @@ apr_time_t md_time_parse_rfc3339(const char *s)
         /* tm_gmtoff is in seconds */
         t.tm_gmtoff = (s[i+1] - '0') * 10 * (60 * 60);
         t.tm_gmtoff += (s[i+2] - '0') * (60 * 60);
-        t.tm_gmtoff = (s[i+4] - '0') * 10 * 60;
+        t.tm_gmtoff += (s[i+4] - '0') * 10 * 60;
         t.tm_gmtoff += (s[i+5] - '0') * 60;
         if (s[i] == '-')
             t.tm_gmtoff *= -1;
