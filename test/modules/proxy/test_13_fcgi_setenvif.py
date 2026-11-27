@@ -1,5 +1,6 @@
 import pytest
 
+from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 from .fcgi_faker import FCGIFaker
 
@@ -46,6 +47,8 @@ class TestProxyFCGISetEnvIf:
         assert r.response["status"] == 200, r.response
         return r.response["json"]
 
+    @not_backported("gh-1096", "ProxyFCGISetEnvIf backreferences without a capturing match",
+                    backported_in="2.4.72")
     def test_proxy_13_01_short_circuit(self, env):
         params = self.get_params(env, {"X-Match": "skip", "X-Prev": "previous"})
         assert params["PREV_CAPTURE"] == "<previous>"

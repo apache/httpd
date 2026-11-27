@@ -81,10 +81,12 @@ class ProxyTestSetup(HttpdTestSetup):
     def __init__(self, env: 'HttpdTestEnv'):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(ProxyTestSetup)))
-        self.add_modules(["proxy", "proxy_http", "proxy_ajp", "proxy_balancer",
-                          "proxy_connect", "proxy_uwsgi", "proxy_fcgi",
-                          "lbmethod_byrequests", "remoteip"])
-        self.add_optional_modules(["proxy_hcheck", "proxy_scgi"])
+        self.add_modules(["proxy", "proxy_http", "proxy_balancer",
+                          "proxy_connect", "lbmethod_byrequests", "remoteip"])
+        # Modules only some tests use: a build without one skips those
+        # tests (env.require()) instead of failing setup for the package.
+        self.add_optional_modules(["proxy_hcheck", "proxy_scgi", "proxy_ajp",
+                                   "proxy_uwsgi", "proxy_fcgi"])
 
 
 class ProxyTestEnv(HttpdTestEnv):

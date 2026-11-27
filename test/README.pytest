@@ -234,6 +234,23 @@ and cache the answer:
     @H2TestEnv.needs_h2load("1.41.0")
     @HttpdTestEnv.needs_multipart()
 
+If your test needs a module, list it in the test package's
+'*TestSetup' (its env.py). 'add_modules()' is for modules that
+every test in the package needs: a build without one of them
+stops setup with "Unable to find modules", so the whole package
+fails. A module that only some of the tests use goes in
+'add_optional_modules()', which loads it when it is there, and
+the tests that use it check for it:
+
+    env.require(env.has_shared_module("proxy_fcgi"),
+                "mod_proxy_fcgi not available",
+                dep="mod_proxy_fcgi",
+                detected=f"no mod_proxy_fcgi.so in {env.libexec_dir}")
+
+'has_shared_module()' is true for a module built as a DSO and for
+one compiled into httpd. test/modules/proxy/test_13_fcgi_setenvif.py
+is an example.
+
 For a check that can only be made once the test is running,
 'env.require()' does the same job from inside the body:
 
@@ -268,12 +285,15 @@ This directory is the same on trunk and on 2.4.x: a test is written on trunk,
 then `test/` is copied to 2.4.x as it is, and `check-test-sync.sh` fails if
 the two branches differ. A test covering a trunk change that 2.4.x does not
 have yet carries a mark from `pyhttpd/backport.py` (or, in `pytest_suite/`,
-`apache_pytest.not_backported`) naming the trunk revision:
+`apache_pytest.not_backported`) naming the pull request that made the
+change:
 
     from pyhttpd.backport import not_backported, skip_not_backported
 
-    @not_backported("r1939033", "nonce-count validation")
-    def test_digest_001(self, env): ...
+    @not_backported("gh-1096", "mod_substitute empty matches")
+    def test_filters_010_01(self, env): ...
+
+Older marks name svn revisions ("r1939033"), from before the move to git.
 
 `not_backported` makes the test an expected failure on a server older than
 2.5.0, `skip_not_backported` skips it where failing would hang or crash the
@@ -292,7 +312,7 @@ skipped, or failed under `--strict-optional`.
 
 When the change is backported, add the 2.4.x release it first appears in:
 
-    @not_backported("r1939033", "nonce-count validation", backported_in="2.4.71")
+    @not_backported("gh-1096", "mod_substitute empty matches", backported_in="2.4.72")
 
 on trunk, then copy `test/` to 2.4.x again. Older 2.4.x servers keep the
 expectation. `platform="win32"` limits it to one `sys.platform`.

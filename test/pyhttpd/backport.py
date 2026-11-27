@@ -9,11 +9,14 @@ When the change is backported, add backported_in, the 2.4.x version it first
 appears in, on trunk and copy the file over; older 2.4.x releases keep the
 expectation.
 
-    pytestmark = not_backported("r1939033", "nonce-count validation")
+    pytestmark = not_backported("gh-1096", "mod_substitute empty matches")
 
-    @skip_not_backported("r1938487", "recursion limit in mod_sed",
-                         backported_in="2.4.71")
+    @skip_not_backported("gh-1096", "mod_substitute empty matches",
+                         backported_in="2.4.72")
     def test_...
+
+The first argument names the pull request that made the change ("gh-1096").
+Older marks name svn revisions ("r1939033"), from before the move to git.
 
 platform limits the expectation to one sys.platform, for a failure on 2.4.x
 which trunk does not have there.
