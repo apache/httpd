@@ -112,6 +112,13 @@ server or MPM changes. On Unix, verify these pass locally by running
 `make check-pytest PYTEST_DIRS=test/modules/xxx` — this can be done
 without running `make install` first.
 
+A module that only some tests in a package use goes in that package's
+`add_optional_modules()`, not `add_modules()`, and those tests check
+for it with `env.require(env.has_shared_module(...), ...)`. A module
+listed in `add_modules()` that the build lacks stops setup with "Unable
+to find modules", which fails every test in the package. See
+`test/README.pytest` ("If your test needs a module").
+
 ## Validating changes
 
 After editing any `.github/workflows/*.yml` file or any script the
