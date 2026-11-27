@@ -119,6 +119,20 @@ listed in `add_modules()` that the build lacks stops setup with "Unable
 to find modules", which fails every test in the package. See
 `test/README.pytest` ("If your test needs a module").
 
+`test/` is kept identical on trunk and 2.4.x (`test/check-test-sync.sh`),
+so a new test reaches 2.4.x before the fix it tests. Any test that fails
+without the trunk change must carry a `not_backported` mark from
+`pyhttpd.backport`, or `skip_not_backported` if failing there would hang,
+crash the server or leave errors in the error log. Name the pull request
+that made the change (`"gh-896"`); the `"r1939033"` names in older marks
+are svn revisions from before the move to git. Mark only the
+tests or `pytest.param`s that fail without the change, never a whole file
+by reflex: a mark on a test that passes on 2.4.x hides a regression there.
+When the change is backported, add `backported_in="2.4.NN"`, the 2.4.x
+release it first ships in, to the mark on trunk rather than removing the
+mark, so older 2.4.x releases keep the expectation.
+Read "Tests of changes missing from 2.4.x" in `test/README.pytest` first.
+
 ## Validating changes
 
 After editing any `.github/workflows/*.yml` file or any script the
