@@ -252,6 +252,20 @@ if test -v TEST_NGHTTP2; then
     grep -H '^Version' $HOME/root/nghttp2/lib/pkgconfig/libnghttp2.pc
 fi
 
+# Check the complete archive before extracting any files.
+function extract_verified_xz() (
+    local url=$1 expected_sha256=$2 archive
+    if [[ ! $expected_sha256 =~ ^[0-9a-f]{64}$ ]]; then
+        printf 'Expected a SHA-256 digest for %s\n' "$url" >&2
+        return 1
+    fi
+    archive=$(mktemp) || return
+    trap 'rm -f -- "$archive"' EXIT
+    curl -fsSL --proto '=https' --proto-redir '=https' -o "$archive" "$url" &&
+        printf '%s  %s\n' "$expected_sha256" "$archive" | sha256sum -c - &&
+        tar -xJf "$archive"
+)
+
 # For --enable-http3, build ngtcp2 with its OpenSSL crypto helper,
 # if it's not already installed in the cached ~/root. The packaged one
 # is too old for mod_http3.
@@ -259,8 +273,9 @@ if [[ ${CONFIG-} == *--enable-http3* ]]; then
     if ! test -d $HOME/root/ngtcp2; then
         mkdir -p build/ngtcp2
         pushd build/ngtcp2
-           curl -L "https://github.com/ngtcp2/ngtcp2/releases/download/v${NGTCP2_VERSION}/ngtcp2-${NGTCP2_VERSION}.tar.xz" |
-               tar -xJf -
+           extract_verified_xz \
+               "https://github.com/ngtcp2/ngtcp2/releases/download/v${NGTCP2_VERSION}/ngtcp2-${NGTCP2_VERSION}.tar.xz" \
+               "${NGTCP2_SHA256:?Set the expected ngtcp2 SHA-256}"
            cd ngtcp2-${NGTCP2_VERSION}
            ./configure --prefix=$HOME/root/ngtcp2 --enable-lib-only --with-openssl
            make $MFLAGS
@@ -279,8 +294,8 @@ if test -v TEST_CURL_H3; then
     if ! test -x $HOME/root/curl/bin/curl; then
         mkdir -p build/curl
         pushd build/curl
-           curl -L "https://curl.se/download/curl-${TEST_CURL_H3}.tar.xz" |
-               tar -xJf -
+           extract_verified_xz "https://curl.se/download/curl-${TEST_CURL_H3}.tar.xz" \
+               "${TEST_CURL_H3_SHA256:?Set the expected curl SHA-256}"
            cd curl-${TEST_CURL_H3}
            ./configure --prefix=$HOME/root/curl --disable-shared \
                        --with-openssl --with-openssl-quic --with-nghttp3 \
