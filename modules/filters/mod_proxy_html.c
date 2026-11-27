@@ -136,6 +136,33 @@ typedef struct {
 } saxctxt;
 
 #define DEFAULT_BUFSZ (8192)
+
+/* Cleaning up documents to HTML 4.01 or XHTML 1.0 relies on the element
+ * and attribute tables which libxml2 2.14 no longer has.
+ */
+#if LIBXML_VERSION < 21400
+#define PROXY_HTML_ENFORCE 1
+#endif
+
+#ifndef PROXY_HTML_ENFORCE
+/* Elements which have no content and no end tag. */
+static const char *const empty_elts[] = {
+    "area", "base", "basefont", "bgsound", "br", "col", "embed", "frame",
+    "hr", "img", "input", "isindex", "keygen", "link", "meta", "param",
+    "source", "track", "wbr", NULL
+};
+
+static int is_empty_elt(const char *name)
+{
+    const char *const *e;
+
+    for (e = empty_elts; *e; e++) {
+        if (!ap_cstr_casecmp(name, *e))
+            return 1;
+    }
+    return 0;
+}
+#endif
 #define DEFAULT_MAXBUFSZ (1024 * 1024)
 
 #define NORM_LC 0x1
@@ -145,6 +172,7 @@ static htmlSAXHandler sax;
 
 typedef enum { ATTR_IGNORE, ATTR_URI, ATTR_EVENT } rewrite_t;
 
+#ifdef PROXY_HTML_ENFORCE
 static const char *const fpi_html =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n";
 static const char *const fpi_html_legacy =
@@ -153,6 +181,7 @@ static const char *const fpi_xhtml =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
 static const char *const fpi_xhtml_legacy =
         "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+#endif
 static const char *const fpi_html5 = "<!DOCTYPE html>\n";
 static const char *const html_etag = ">";
 static const char *const xhtml_etag = " />";
@@ -421,16 +450,13 @@ static void pcomment(void *ctxt, const xmlChar *uchars)
     }
 }
 
-/* Deprecated in newer libxml2 releases. */
-#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
 static void pendElement(void *ctxt, const xmlChar *uname)
 {
     saxctxt *ctx = (saxctxt*) ctxt;
     const char *name = (const char*) uname;
+#ifdef PROXY_HTML_ENFORCE
     const htmlElemDesc* desc = htmlTagLookup(uname);
+    int empty = desc && desc->empty;
 
     if ((ctx->cfg->doctype == fpi_html) || (ctx->cfg->doctype == fpi_xhtml)) {
         /* enforce html */
@@ -444,6 +470,9 @@ static void pendElement(void *ctxt, const xmlChar *uname)
         if (!desc)
             return;
     }
+#else
+    int empty = is_empty_elt(name);
+#endif
     /* TODO - implement HTML "allowed here" using the stack */
     /* nah.  Keeping the stack is too much overhead */
 
@@ -452,7 +481,7 @@ static void pendElement(void *ctxt, const xmlChar *uname)
         ctx->vb.strlen = 0;     /* having dumped it, we can re-use the memory */
     }
     ctx->overflow = 0;
-    if (!desc || !desc->empty) {
+    if (!empty) {
         ap_fprintf(ctx->f->next, ctx->bb, "</%s>", name);
     }
 }
@@ -460,7 +489,10 @@ static void pendElement(void *ctxt, const xmlChar *uname)
 static void pstartElement(void *ctxt, const xmlChar *uname,
                           const xmlChar** uattrs)
 {
+#ifdef PROXY_HTML_ENFORCE
     int required_attrs;
+    int enforce = 0;
+#endif
     int num_match;
     size_t offs, len;
     rewrite_t is_uri;
@@ -479,7 +511,12 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     int i;
     const char *name = (const char*) uname;
     const char** attrs = (const char**) uattrs;
+#ifdef PROXY_HTML_ENFORCE
     const htmlElemDesc* desc = htmlTagLookup(uname);
+    int empty = desc && desc->empty;
+#else
+    int empty = is_empty_elt(name);
+#endif
     urlmap *themap = ctx->map;
     const char *accept_charset = NULL;
     struct ap_varbuf temp;
@@ -488,7 +525,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
 #ifdef HAVE_STACK
     const void** descp;
 #endif
-    int enforce = 0;
+#ifdef PROXY_HTML_ENFORCE
     if ((ctx->cfg->doctype == fpi_html) || (ctx->cfg->doctype == fpi_xhtml)) {
         /* enforce html */
         if (!desc || desc->depr) {
@@ -508,6 +545,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
         }
         enforce = 1;
     }
+#endif
 #ifdef HAVE_STACK
     descp = apr_array_push(ctx->stack);
     *descp = desc;
@@ -534,14 +572,17 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     ap_fputc(ctx->f->next, ctx->bb, '<');
     ap_fputs(ctx->f->next, ctx->bb, name);
 
+#ifdef PROXY_HTML_ENFORCE
     required_attrs = 0;
     if ((enforce > 0) && (desc != NULL) && (desc->attrs_req != NULL))
         for (a = desc->attrs_req; *a; a++)
             ++required_attrs;
+#endif
 
     if (attrs) {
         linkattrs = apr_hash_get(ctx->cfg->links, name, APR_HASH_KEY_STRING);
         for (a = attrs; *a; a += 2) {
+#ifdef PROXY_HTML_ENFORCE
             if (desc && enforce > 0) {
                 switch (htmlAttrAllowed(desc, (xmlChar*)*a, 2-enforce)) {
                 case HTML_INVALID:
@@ -561,6 +602,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                     break;
                 }
             }
+#endif
             ctx->vb.strlen = 0;
             ctx->vb.buf[0] = '\0';
             if (a[1]) {
@@ -785,22 +827,21 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     }
     ctx->vb.strlen = 0;
     ctx->overflow = 0;
-    if (desc && desc->empty)
+    if (empty)
         ap_fputs(ctx->f->next, ctx->bb, ctx->etag);
     else
         ap_fputc(ctx->f->next, ctx->bb, '>');
 
+#ifdef PROXY_HTML_ENFORCE
     if ((enforce > 0) && (required_attrs > 0)) {
         /* if there are more required attributes than we found then complain */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, ctx->f->r, APLOGNO(01420)
                       "HTML element %s is missing %d required attributes",
                       name, required_attrs);
     }
+#endif
     ap_varbuf_free(&temp);
 }
-#if defined(__clang__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#pragma GCC diagnostic pop
-#endif
 
 static meta *metafix(request_rec *r, const char *buf, apr_size_t len)
 {
@@ -1368,6 +1409,7 @@ static const char *set_doctype(cmd_parms *cmd, void *CFG,
     if (!strcasecmp(t, "auto")) {
         cfg->doctype = DEFAULT_DOCTYPE; /* activates pinternalSubset */
     }
+#ifdef PROXY_HTML_ENFORCE
     else if (!strcasecmp(t, "xhtml")) {
         cfg->etag = xhtml_etag;
         if (l && !strcasecmp(l, "legacy"))
@@ -1382,6 +1424,12 @@ static const char *set_doctype(cmd_parms *cmd, void *CFG,
         else
             cfg->doctype = fpi_html;
     }
+#else
+    else if (!strcasecmp(t, "xhtml") || !strcasecmp(t, "html")) {
+        return "ProxyHTMLDocType HTML and XHTML are not available "
+               "with libxml2 2.14 or later";
+    }
+#endif
     else if (!strcasecmp(t, "html5")) {
         cfg->etag = html_etag;
         cfg->doctype = fpi_html5;

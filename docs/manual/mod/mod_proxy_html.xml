@@ -322,6 +322,11 @@ will also clean up the HTML to the specified standard.  It cannot
 fix every error, but it will strip out bogus elements and attributes.
 It will also optionally log other errors at <directive
 module="core">LogLevel</directive> Debug.</p>
+<note>The first form relies on the description of HTML 4 which
+libxml2 provided up to version 2.13. If <module>mod_proxy_html</module>
+is built with libxml2 2.14 or later, the first form is not available and
+is rejected as a configuration error. To declare such a document type
+without the clean-up, give it in the second form.</note>
 </usage>
 </directivesynopsis>
 
