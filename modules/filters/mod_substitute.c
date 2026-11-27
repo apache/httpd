@@ -131,6 +131,22 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 
 #define CAP2LINEMAX(n) ((n) < (apr_size_t)200 ? (int)(n) : 200)
 
+/* Whether a successful match's offsets are within [start, len] and in
+ * order.  Some PCRE versions accept \K in a lookaround, which can report
+ * a match starting after its end or before the start offset; such a match
+ * is treated as no match.
+ */
+static int match_in_range(const ap_regmatch_t *m, apr_size_t start,
+                          apr_size_t len)
+{
+    int ok = (m->rm_so >= 0
+              && (apr_size_t)m->rm_so >= start
+              && m->rm_so <= m->rm_eo
+              && (apr_size_t)m->rm_eo <= len);
+    AP_DEBUG_ASSERT(ok);
+    return ok;
+}
+
 static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                                  apr_bucket_brigade *mybb,
                                  apr_pool_t *pool)
@@ -329,7 +345,8 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                          */
                         if (ap_regexec_ex(script->regexp, buff, bytes,
                                           pos - buff, AP_MAX_REG_MATCH, regm,
-                                          eflags)) {
+                                          eflags)
+                            || !match_in_range(&regm[0], pos - buff, bytes)) {
                             if (!eflags || !left) {
                                 break;
                             }

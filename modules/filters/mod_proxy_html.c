@@ -195,6 +195,22 @@ static void pcharacters(void *ctxt, const xmlChar *uchars, int length)
     FLUSH;
 }
 
+/* Whether a successful match's offsets are within [start, len] and in
+ * order.  Some PCRE versions accept \K in a lookaround, which can report
+ * a match starting after its end or before the start offset; such a match
+ * is treated as no match.
+ */
+static int match_in_range(const ap_regmatch_t *m, apr_size_t start,
+                          apr_size_t len)
+{
+    int ok = (m->rm_so >= 0
+              && (apr_size_t)m->rm_so >= start
+              && m->rm_so <= m->rm_eo
+              && (apr_size_t)m->rm_eo <= len);
+    AP_DEBUG_ASSERT(ok);
+    return ok;
+}
+
 static void dump_content(saxctxt *ctx)
 {
     urlmap *m;
@@ -233,7 +249,8 @@ static void dump_content(saxctxt *ctx)
                  * then made relative to offs below.
                  */
                 if (ap_regexec_ex(m->from.r, ctx->vb.buf, len, offs,
-                                  nmatch, pmatch, eflags)) {
+                                  nmatch, pmatch, eflags)
+                    || !match_in_range(&pmatch[0], offs, len)) {
                     if (!eflags) {
                         break;
                     }
@@ -544,7 +561,9 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                         if (m->flags & M_REGEX) {
                             nmatch = 10;
                             if (!ap_regexec(m->from.r, ctx->vb.buf, nmatch,
-                                            pmatch, 0)) {
+                                            pmatch, 0)
+                                && match_in_range(&pmatch[0], 0,
+                                                  strlen(ctx->vb.buf))) {
                                 ++num_match;
                                 match = pmatch[0].rm_so;
                                 s_from = pmatch[0].rm_eo - match;
@@ -613,7 +632,9 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                                 /* See dump_content() */
                                 if (ap_regexec_ex(m->from.r, ctx->vb.buf, len,
                                                   offs, nmatch, pmatch,
-                                                  eflags)) {
+                                                  eflags)
+                                    || !match_in_range(&pmatch[0], offs,
+                                                       len)) {
                                     if (!eflags) {
                                         break;
                                     }
