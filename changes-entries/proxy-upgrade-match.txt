@@ -1,0 +1,2 @@
+  *) mod_proxy: Match configured Upgrade protocols as complete values,
+     including protocol versions.  [Saku0512]
