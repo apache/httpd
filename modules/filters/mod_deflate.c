@@ -178,8 +178,9 @@ static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
      * before sync it with the new value in the hdrs table as
      * r->content_encoding takes precedence later on in the http_header_filter
      * and hence would destroy what we have just set in the hdrs table.
+     * The request headers are not the response's: leave it alone for them.
      */
-    if (hdrs && r->content_encoding) {
+    if (hdrs && hdrs != r->headers_in && r->content_encoding) {
         r->content_encoding = apr_table_get(hdrs, "Content-Encoding");
     }
     return found;

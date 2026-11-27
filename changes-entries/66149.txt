@@ -1,0 +1,3 @@
+  *) mod_deflate: Fix a missing Content-Encoding in the response, e.g. set
+     with AddEncoding, when the DEFLATE input filter is configured.
+     PR 66149.  [Arturo Bernal]
