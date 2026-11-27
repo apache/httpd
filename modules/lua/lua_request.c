@@ -2387,6 +2387,9 @@ static int lua_websocket_greet(lua_State *L)
             r->bytes_sent = 0;
             r->read_chunked = 0;
             ap_rflush(r);
+            /* The connection cannot go back to HTTP after the upgrade,
+             * however the script ends. */
+            r->connection->keepalive = AP_CONN_CLOSE;
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(03012) 
                           "Websocket: Upgraded from HTTP to Websocket");
             lua_pushboolean(L, 1);
