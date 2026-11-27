@@ -4008,6 +4008,12 @@ or specified mutexes</description>
             process)</td>
 	</tr>
         <tr>
+            <td><code>proxy-balancer-shm</code></td>
+            <td><module>mod_proxy_balancer</module></td>
+            <td>workers added to a balancer at run time, in shared memory
+            (balancer-manager)</td>
+	</tr>
+        <tr>
             <td><code>rewrite-map</code></td>
             <td><module>mod_rewrite</module></td>
             <td>communication with external mapping programs, to avoid
