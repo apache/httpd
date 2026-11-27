@@ -1,0 +1,4 @@
+  *) core: Fix ListenCoresBucketsRatio losing the IPv6 family of a
+     wildcard "Listen" directive on the duplicated listener buckets,
+     leaving IPv6 clients served by a single socket while IPv4 got the
+     full bucket count. PR 69804 [Arturo Bernal]
