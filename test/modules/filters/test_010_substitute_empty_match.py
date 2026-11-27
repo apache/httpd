@@ -2,6 +2,7 @@ import os
 
 import pytest
 
+from pyhttpd.backport import not_backported, skip_not_backported
 from pyhttpd.conf import HttpdConf
 
 # Patterns that can match the empty string must not loop forever (or until
@@ -33,6 +34,17 @@ CASES = {
     'mixed_empty_nonempty': ('b*', '-', 'f', 'abbc', '-a--c-'),
 }
 
+# Without the change, most of these loop until "Line too long" is logged,
+# and star_empty_* loop forever.
+WHAT = "mod_substitute empty matches"
+SKIP = skip_not_backported("gh-1096", WHAT, backported_in="2.4.72")
+MARKS = {
+    'anchor_nonempty': not_backported("gh-1096", WHAT, backported_in="2.4.72"),
+    'lookbehind': (),
+}
+PARAMS = [pytest.param(name, id=name, marks=MARKS.get(name, SKIP))
+          for name in CASES]
+
 
 class TestSubstituteEmptyMatch:
 
@@ -58,7 +70,7 @@ class TestSubstituteEmptyMatch:
         conf.install()
         assert env.apache_restart() == 0
 
-    @pytest.mark.parametrize("name", list(CASES), ids=list(CASES))
+    @pytest.mark.parametrize("name", PARAMS)
     def test_filters_010_01(self, env, name):
         pattern, repl, flags, _, expected = CASES[name]
         self.configure(env, pattern, repl, flags)
