@@ -1,0 +1,3 @@
+  *) mod_md: Select ACME ARI renewal times within the CA's suggested
+     window; reject invalid windows and preserve RFC 3339 timezone offsets
+     and fractional seconds. PR 70309. [Zhe Chen <zhechen.cs connect.hku.hk>]
