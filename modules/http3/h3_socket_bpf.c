@@ -39,6 +39,93 @@
         #define SO_ATTACH_REUSEPORT_EBPF 52
     #endif
 
+/*
+ * Définition portable de __NR_bpf pour toutes les architectures Linux.
+ * Utile lors de la compilation avec des en-têtes glibc/kernel anciens.
+ */
+#ifndef __NR_bpf
+
+/* --- x86 (32-bit, x86_64 et x32 ABI) --- */
+# if defined(__x86_64__)
+#  if defined(__ILP32__)
+    /* ABI x32 : __X32_SYSCALL_BIT (0x40000000) + 321 */
+#   define __NR_bpf 1073742145
+#  else
+#   define __NR_bpf 321
+#  endif
+# elif defined(__i386__)
+#  define __NR_bpf 357
+
+/* --- Architectures utilisant asm-generic/unistd.h (280) --- */
+# elif defined(__aarch64__) || defined(__riscv) || defined(__loongarch__) || \
+       defined(__arc__) || defined(__csky__) || defined(__hexagon__) || \
+       defined(__nios2__) || defined(__openrisc__) || defined(__or1k__)
+#  define __NR_bpf 280
+
+/* --- ARM 32-bit (EABI) --- */
+# elif defined(__arm__)
+#  define __NR_bpf 386
+
+/* --- PowerPC (32-bit et 64-bit, Big et Little Endian) --- */
+# elif defined(__powerpc__) || defined(__powerpc64__) || defined(__ppc__)
+#  define __NR_bpf 361
+
+/* --- IBM Z / s390 (31-bit et 64-bit) --- */
+# elif defined(__s390__) || defined(__s390x__)
+#  define __NR_bpf 351
+
+/* --- MIPS (ABIs o32, n64 et n32) --- */
+# elif defined(__mips__)
+#  if defined(_MIPS_SIM)
+#   if _MIPS_SIM == _ABIO32
+#    define __NR_bpf 4355   /* 4000 + 355 */
+#   elif _MIPS_SIM == _ABI64
+#    define __NR_bpf 5315   /* 5000 + 315 */
+#   elif _MIPS_SIM == _ABIN32
+#    define __NR_bpf 6319   /* 6000 + 319 */
+#   else
+#    error "ABI MIPS non reconnue pour __NR_bpf"
+#   endif
+#  else
+#   error "_MIPS_SIM non défini pour déterminer __NR_bpf"
+#  endif
+
+/* --- SPARC (32-bit et 64-bit) --- */
+# elif defined(__sparc__)
+#  define __NR_bpf 349
+
+/* --- Autres architectures actives --- */
+# elif defined(__alpha__)
+#  define __NR_bpf 515
+# elif defined(__hppa__)
+#  define __NR_bpf 341
+# elif defined(__m68k__)
+#  define __NR_bpf 354
+# elif defined(__microblaze__)
+#  define __NR_bpf 387
+# elif defined(__sh__)
+#  define __NR_bpf 375
+# elif defined(__xtensa__)
+#  define __NR_bpf 340
+
+/* --- Architectures historiques (retirées des noyaux récents) --- */
+# elif defined(__ia64__)
+#  define __NR_bpf 1341     /* Retiré dans Linux 6.7 */
+# elif defined(__nds32__)
+#  define __NR_bpf 280      /* Retiré dans Linux 5.18 */
+# elif defined(__bfin__) || defined(__BFIN__)
+#  define __NR_bpf 391      /* Blackfin, retiré dans Linux 4.17 */
+# elif defined(__cris__)
+#  define __NR_bpf 358      /* Retiré dans Linux 4.17 */
+# elif defined(__metag__) || defined(__tile__)
+#  define __NR_bpf 280      /* MetaG / TILE-Gx / TILEPro, retirés dans 4.17 */
+
+# else
+#  error "__NR_bpf n'est pas défini pour cette architecture cible"
+# endif
+
+#endif /* !__NR_bpf */
+
 struct insn
 {
     uint8_t code;

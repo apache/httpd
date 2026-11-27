@@ -57,6 +57,11 @@ int h3_hook_ssl_conn_is_ssl(conn_rec* c)
 
 int h3_hook_fixups(request_rec* r)
 {
+    if (!h3_is_enabled(r->server))
+    {
+        return DECLINED;
+    }
+    	
     if (!ap_is_initial_req(r))
     {
         return DECLINED;
@@ -86,7 +91,7 @@ int h3_hook_fixups(request_rec* r)
     {
         return DECLINED;
     }
-
+    
     if (conf->h3_alt_svc == H3_FLAG_OFF)
     {
         return DECLINED;
@@ -105,6 +110,9 @@ int h3_hook_fixups(request_rec* r)
 
 int h3_hook_post_read_request(request_rec* r)
 {
+    if (!h3_is_enabled(r->server))
+        return DECLINED;
+	
     CHECK(r);
     if (!IS_H3_REQUEST(r))
     {
@@ -161,6 +169,9 @@ int h3_hook_http_create_request(request_rec* r)
 
 int h3_status_handler(request_rec* r)
 {
+    if (!h3_is_enabled(r->server))
+        return DECLINED;
+	 
     if (strcmp(r->handler, "http3-status"))
     {
         return DECLINED;
