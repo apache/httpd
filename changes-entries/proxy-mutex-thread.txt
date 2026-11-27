@@ -1,0 +1,4 @@
+  *) mod_proxy: Use a mutex local to each child process to protect the
+     run-time workers, instead of a cross-process one.  The "proxy" type
+     of the Mutex directive is still accepted but has no effect anymore.
+     [Yann Ylavic]

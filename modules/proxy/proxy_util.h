@@ -64,6 +64,15 @@ extern PROXY_DECLARE_DATA const apr_strmatch_pattern *ap_proxy_strmatch_domain;
  */
 void proxy_util_register_hooks(apr_pool_t *p);
 
+/**
+ * Post-config initialization of what proxy_util.c owns (e.g. the mutex
+ * serializing the definition, initialization and sync of the run-time
+ * workers in each process), called from mod_proxy's post_config hook with
+ * the same arguments.
+ */
+int proxy_util_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                           apr_pool_t *ptemp, server_rec *main_s);
+
 /*
  * Get the busy counter from the shared worker memory
  *
