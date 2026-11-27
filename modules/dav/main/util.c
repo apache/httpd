@@ -611,7 +611,8 @@ DAV_DECLARE(time_t) dav_get_timeout_string(request_rec *r,
                 sec = 0;
             }
 
-            now = apr_time_sec(apr_time_now());
+            /* same clock as the expiry checks and the Timeout output */
+            now = time(NULL);
 
             /* The RFC 4918 maximum of 2^32 - 1 does not necessarily
              * fit a time_t on platforms where time_t is 32 bits.

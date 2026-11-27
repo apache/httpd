@@ -1,6 +1,8 @@
 import glob
+import http.client
 import os
 import re
+import time
 
 import pytest
 
@@ -30,7 +32,7 @@ class TestLockTimeoutOverflow:
     def _class_scope(cls, env):
         dav_dir = os.path.join(env.gen_dir, 'dav-timeout-overflow')
         os.makedirs(dav_dir, exist_ok=True)
-        for name in ('file1.txt', 'file2.txt', 'file3.txt'):
+        for name in ('file1.txt', 'file2.txt', 'file3.txt', 'file4.txt'):
             with open(os.path.join(dav_dir, name), 'w') as fd:
                 fd.write('hello\n')
 
@@ -70,7 +72,8 @@ class TestLockTimeoutOverflow:
         assert r.response["status"] == 200, r.response
         m = re.search(r'<D:timeout>([^<]*)</D:timeout>', r.stdout)
         assert m, f"no <D:timeout> in response: {r.stdout}"
-        assert m.group(1) == "Second-4294967295", \
+        # a second may tick between the LOCK and its response
+        assert m.group(1) in ("Second-4294967295", "Second-4294967294"), \
             f"timeout: {m.group(1)}"
 
     # an ordinary, in-range timeout request is unaffected
@@ -79,7 +82,8 @@ class TestLockTimeoutOverflow:
         assert r.response["status"] == 200, r.response
         m = re.search(r'<D:timeout>([^<]*)</D:timeout>', r.stdout)
         assert m, f"no <D:timeout> in response: {r.stdout}"
-        assert m.group(1) == "Second-600", f"timeout: {m.group(1)}"
+        assert m.group(1) in ("Second-600", "Second-599"), \
+            f"timeout: {m.group(1)}"
 
     # a Second- value with no digits at all parses the same way atol()
     # already did (0, not an error), same as before this fix: an
@@ -91,3 +95,39 @@ class TestLockTimeoutOverflow:
         m = re.search(r'<D:timeout>([^<]*)</D:timeout>', r.stdout)
         assert m, f"no <D:timeout> in response: {r.stdout}"
         assert m.group(1) == "Second-0", f"timeout: {m.group(1)}"
+
+    # the expiry, the expiry check and the reported remaining time
+    # come from the same clock: a lock expiring "now" is never still
+    # held and never reports a second left, even when the LOCK lands
+    # right after a second boundary
+    def test_dav_004_04(self, env):
+        conn = http.client.HTTPConnection(env.http_addr, env.http_port,
+                                          timeout=10)
+        headers = {
+            'Host': f"test1.{env.http_tld}",
+            'Timeout': 'Second-0',
+            'Content-Type': 'text/xml',
+        }
+        bad = []
+        count = 0
+        # span several second boundaries
+        end = time.time() + 3.5
+        try:
+            while time.time() < end:
+                conn.request('LOCK', '/dav-timeout-overflow/file4.txt',
+                             body=LOCK_BODY, headers=headers)
+                resp = conn.getresponse()
+                body = resp.read().decode()
+                count += 1
+                if resp.status != 200:
+                    # a lock expiring "now" is still held: 423
+                    bad.append(resp.status)
+                    continue
+                m = re.search(r'<D:timeout>([^<]*)</D:timeout>', body)
+                assert m, f"no <D:timeout> in response: {body}"
+                if m.group(1) != "Second-0":
+                    bad.append(m.group(1))
+        finally:
+            conn.close()
+        assert not bad, \
+            f"{len(bad)} of {count} locks: {sorted(set(map(str, bad)))}"
