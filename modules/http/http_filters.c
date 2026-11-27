@@ -61,6 +61,20 @@ static apr_bucket *create_trailers_bucket(request_rec *r, apr_bucket_alloc_t *bu
 static apr_bucket *create_response_bucket(request_rec *r, apr_bucket_alloc_t *bucket_alloc);
 static void merge_response_headers(request_rec *r);
 
+/* A 205 has no content either, but unlike 204 and 304 it does not end
+ * with the header, so it needs a length to say that it is empty.
+ */
+static int status_no_content(int status)
+{
+    return AP_STATUS_IS_HEADER_ONLY(status) || status == HTTP_RESET_CONTENT;
+}
+
+static void set_empty_content_headers(apr_table_t *headers)
+{
+    apr_table_unset(headers, "Transfer-Encoding");
+    apr_table_setn(headers, "Content-Length", "0");
+}
+
 typedef struct http_filter_ctx
 {
     apr_off_t remaining;
@@ -1218,7 +1232,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                     if (!ctx->final_status
                         && (resp->status >= HTTP_OK || resp->status == HTTP_SWITCHING_PROTOCOLS)) {
                         ctx->final_status = resp->status;
-                        ctx->final_header_only = AP_STATUS_IS_HEADER_ONLY(resp->status);
+                        ctx->final_header_only = status_no_content(resp->status);
+                        if (resp->status == HTTP_RESET_CONTENT) {
+                            set_empty_content_headers(resp->headers);
+                        }
                         bcontent = APR_BUCKET_NEXT(e);
                         break;
                     }
@@ -1284,7 +1301,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             respb = create_response_bucket(r, b->bucket_alloc);
             APR_BUCKET_INSERT_BEFORE(bcontent, respb);
             ctx->final_status = r->status;
-            ctx->final_header_only = (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status));
+            ctx->final_header_only = (r->header_only
+                                      || status_no_content(r->status));
             r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
         }
     }
@@ -1969,7 +1987,7 @@ apr_status_t ap_h1_response_out_filter(ap_filter_t *f,
                     ctx->final_response_sent = (resp->status >= HTTP_OK)
                         || (!strict && resp->status < HTTP_CONTINUE);
                     ctx->discard_body = ctx->final_response_sent &&
-                        (r->header_only || AP_STATUS_IS_HEADER_ONLY(resp->status));
+                        (r->header_only || status_no_content(resp->status));
 
                     if (!ctx->tmpbb) {
                         ctx->tmpbb = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -2120,6 +2138,11 @@ static void merge_response_headers(request_rec *r)
         r->content_type = r->content_encoding = NULL;
         r->content_languages = NULL;
         r->clength = r->chunked = 0;
+    }
+    else if (r->status == HTTP_RESET_CONTENT) {
+        set_empty_content_headers(r->headers_out);
+        r->clength = 0;
+        r->chunked = 0;
     }
 
     ctype = ap_make_content_type(r, r->content_type);
