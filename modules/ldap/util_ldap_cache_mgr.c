@@ -313,6 +313,8 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 
     /* check that all the caches initialised successfully */
     if (search_cache && compare_cache && dn_compare_cache) {
+        util_url_node_t *node;
+
         /* The contents of this structure will be duplicated in shared
            memory during the insert.  So use stack memory rather than
            pool memory to avoid a memory leak. */
@@ -322,7 +324,16 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
         curl.compare_cache = compare_cache;
         curl.dn_compare_cache = dn_compare_cache;
 
-        return util_ald_cache_insert(st->util_ldap_cache, &curl);
+        node = util_ald_cache_insert(st->util_ldap_cache, &curl);
+        if (node == NULL) {
+            /* The URL cache was full and the purge freed nothing; the
+             * insert never happened, so these three caches are not
+             * referenced from anywhere and must be destroyed here. */
+            util_ald_destroy_cache(search_cache);
+            util_ald_destroy_cache(compare_cache);
+            util_ald_destroy_cache(dn_compare_cache);
+        }
+        return node;
     }
     else {
         /* util_ald_destroy_cache is a noop for a NULL argument. */
