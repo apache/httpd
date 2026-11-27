@@ -1,0 +1,210 @@
+The MotorZ MPM aims to create a single MPM, that runs on all modern
+Unix and Win32 platforms, by leveraging APR as much as possible.
+
+The MotorZ MPM uses an APR Poll CB event system, with timers being
+built in.  When an event, either an I/O or Timer is ready to run, it
+is pushed to any available thread in the current process. A simple
+APR Thread pool is used.
+
+MotorZ uses Prefork as the framework and Simple for the actual event
+structure.
+
+
+Threading model
+===============
+
+Each child process runs:
+
+  - N poll threads ("pollers", PollersPerChild; default: one per online CPU,
+    capped). Each poller owns its OWN pollset, timer ring (+ guarding mutex)
+    and lock-free transaction-pool recycle list, so pollers never contend with
+    each other. A poller polls, dispatches ready I/O events and expired timers
+    to the worker pool, and (for the listener-owning poller) accepts.
+  - A shared APR thread pool of worker threads (ThreadsPerChild) that run the
+    actual connection/request processing pushed to them; workers never poll.
+  - A supervisor (the child's main thread) that watches MaxRequestsPerChild and
+    the pipe-of-death / generation, signalling the pollers to wind down, then
+    joins them on exit.
+
+A connection is sharded to one poller at accept time (round-robin) and bound to
+it for its whole lifetime: it re-arms in and times out on that poller's
+pollset/ring. (Its transaction pool is recycled back to the ACCEPTING poller's
+free-list, which is the single consumer of that list -- recycling is not
+sharded, only I/O is.) Multiple pollers lift the old single-poll-thread
+throughput ceiling: accept + event dispatch + timer expiry now scale with
+PollersPerChild instead of being serialized on one thread.
+
+Graceful stop
+-------------
+
+A child told to stop gracefully (AP_SIG_GRACEFUL, the pipe-of-death, a
+generation change, or MaxConnectionsPerChild) does not exit at once. The
+supervisor calls motorz_start_drain(): the child reports AP_MPMQ_STOPPING and
+runs child_stopping, the listener-owning poller closes the listening sockets,
+idle keep-alive connections are expired immediately, and connections still
+writing or waiting on I/O run to completion. The child exits when conns_open
+(connections accepted and not yet torn down) reaches zero. SIGTERM/SIGHUP
+still exit immediately. The parent counts a draining child (quiescing) as gone
+and starts its replacement in a free slot, so ServerLimit (default the
+larger of 16 and 2 * StartServers) must leave room for several generations.
+With every slot taken nothing can start, and with no child of the current
+generation nothing accepts connections until a draining child exits; the
+parent logs "scoreboard is full" (AH10657) once when that happens.
+
+There is no child-side deadline on a drain: a connection still writing, or
+waiting on I/O for an asynchronous module (CONN_STATE_ASYNC_WAITIO), is given
+until it completes or its Timeout expires, so a graceful restart can take as
+long as the longest such connection. (mpm_event behaves the same way.)
+GracefulShutdownTimeout only bounds a graceful *stop* of the whole server, in
+the parent.
+
+Admission control (listener backpressure) keeps the child safe under overload:
+when the worker pool saturates, the listener-owning poller removes the
+listening sockets from its pollset (motorz_update_listeners /
+motorz_disable_listeners) and re-adds them once the backlog drains, so the work
+queue stays bounded. A child also stops accepting once it holds ThreadsPerChild
++ AsyncRequestWorkerFactor * (idle workers) connections not in lingering close
+(motorz_connections_above_limit), as in mpm_event: connections parked in the
+poller use no worker, so the worker counts alone do not limit them.
+
+Scoreboard
+----------
+
+A connection is not bound to a thread, so the scoreboard's per-thread slots
+stand for the worker-pool threads. Each worker thread takes a slot the first
+time it runs a task, reports the connection it is processing through that slot
+(SERVER_BUSY_READ/WRITE/KEEPALIVE/CLOSING, so mod_status shows busy workers),
+and sets it back to SERVER_READY when the task ends. A connection parked in the
+poller (keep-alive, write completion, lingering close, async wait) therefore
+does not occupy a slot. The poller and supervisor threads have no slot.
+
+Unsupported
+-----------
+
+ThreadStackSize is ignored (a warning is logged when it is set): the worker
+threads are created by an APR thread pool, which offers no stack size control.
+There is no accept mutex either; the listening sockets are non-blocking and
+polled, so every child's listener-owning poller wakes for each new connection.
+
+Relationship to mpm_event
+-------------------------
+
+MotorZ uses Prefork for process management and an APR thread pool for workers,
+with pollers dispatching to that pool -- distinct from mpm_event's
+listener/worker/fdqueue design where workers themselves re-arm a shared
+thread-safe pollset. In practice, whether more pollers help depends on the
+workload: if the worker threads are the CPU bottleneck (typical for real
+request processing), the poll threads are not the limit and PollersPerChild
+beyond 1-2 yields little. The multiple-poller design removes motorz's
+*structural* single-thread ceiling, but per-box throughput is still governed by
+worker CPU. For the broadest, most battle-tested high-concurrency async
+behavior, mpm_event remains the reference; MotorZ stays a lean, self-contained
+alternative.
+
+
+HTTP/2 async handoff (ENABLED)
+==============================
+
+Status: motorz reports AP_MPMQ_IS_ASYNC = 1 and AP_MPMQ_CAN_WAITIO = 1
+(MOTORZ_ENABLE_ASYNC = 1 in motorz.c). With async on, mod_http2 hands the
+master connection (c1) back to the MPM between requests (CONN_STATE_ASYNC_WAITIO
+in motorz_io_process()) instead of pinning a worker thread to it.
+
+History: async used to be disabled because of intermittent dropped responses
+under HTTP/2 connection churn. That was first attributed to a close-ordering
+race in mod_http2 and "fixed" there; the real cause was in motorz and is
+described below. MOTORZ_ENABLE_ASYNC remains a single flip point should a
+regression ever appear.
+
+Symptom
+-------
+Under HTTP/2 with many short-lived connections (the worst case is one request
+per connection at high concurrency, e.g. `h2load -n 10000 -c 50 -m 1`), motorz
+intermittently lost a few requests per run. h2load reports them as "Process
+Request Failure". All h2 error codes are 0 (graceful), there is no TCP RST and
+no 4xx/5xx. It is timing-sensitive: trace8 logging, lldb and Guard Malloc slow
+the hot path enough to hide it; it reproduces at info level. mpm_event does not
+show it.
+
+Root cause: secondary connections shared the master's conn_state_t
+-------------------------------------------------------------------
+mod_http2 runs each stream on a secondary connection (c2) in its own worker
+thread. The core creates a c2 as a copy of c1 (core_create_secondary_conn(),
+h2_c2_create(): a memcpy of the conn_rec), so c2->cs pointed at c1's
+conn_state_t. In motorz that is scon->cs, the very struct motorz_io_process()
+reads to decide what to do next with the connection.
+
+When a request on a c2 ends, the core writes the connection state through
+c->cs (ap_process_request_after_handler(): WRITE_COMPLETION, or LINGER if the
+c2 is marked aborted); h2_c2.c does the same. Because c2->cs was c1's, those
+writes landed in the master's state:
+
+  1. c1 sends a stream's last frame, the stream goes to CLEANUP, and
+     mod_http2 aborts the c2 that is still "running" (h2_mplx.c, "c2 is
+     running, abort"). That is harmless in itself: the response has been sent.
+  2. c1 goes IDLE and returns CONN_STATE_ASYNC_WAITIO; motorz arms the socket.
+  3. The c2 worker, still finishing, runs its end-of-request code. Aborted, it
+     stores CONN_STATE_LINGER in the shared struct, over ASYNC_WAITIO.
+  4. The client's next request makes the socket readable. motorz_io_process()
+     finds LINGER, never re-enters the process_connection hooks, and
+     lingering-closes the live connection: h2_session_pre_close() sends GOAWAY
+     (reason='timeout', which only means "state was IDLE at close") and the
+     request that was in flight is lost.
+
+mpm_event does not have the problem because event_pre_connection() gives every
+secondary connection its own conn_state_t (setup_slave_conn()). motorz had no
+pre_connection hook.
+
+The fix
+-------
+motorz_pre_connection() (motorz.c), registered APR_HOOK_REALLY_FIRST, gives a
+secondary connection a private conn_state_t when it has none or shares the
+master's, and clears the motorz module config that mod_http2 copies from c1, so
+motorz_pre_read_request() cannot record a c2 request as the master's current
+request (scon->r). The check mirrors event_pre_connection().
+
+Measured with PollersPerChild 1, ThreadsPerChild 128,
+`h2load -n 10000 -c 50 -m 1`, 20 runs each: before, 11 runs lost responses (63
+lost, and only 194414 of 200000 connections started); after, 0 runs lost any
+and all 200000 connections started. The earlier mod_http2 change (a graceful
+client GOAWAY with streams in flight no longer goes straight to DONE, in
+h2_session.c) was made under the close-ordering theory. It is not the cause of
+this loss and was not shown to be needed; it was left alone.
+
+Measuring it correctly (two pitfalls)
+-------------------------------------
+The committed tests learned two lessons the hard way; preserve them if you edit:
+
+  1. Assert on RESPONSE LOSS, not on h2load's "failed" total. h2load's "failed"
+     counts BOTH connection-establishment errors AND dropped responses:
+       failed = (total - started)  +  (started - succeeded)
+                \__ connection setup _/   \__ lost responses __/
+     The first term can also be environmental (ephemeral-port exhaustion and
+     accept-queue pressure when hammering loopback at high -c). Only the
+     second term, started - succeeded, is response loss. The tests compute
+     `lost = started - succeeded` and assert that is 0.
+
+  2. Measure at LogLevel info, NOT trace8. This is a Heisenbug: trace8 slows
+     the hot path enough to hide it, so a churn assertion run under trace8
+     passes even with the fix removed -- i.e. it is vacuous. smoke.sh runs at
+     trace8 for its state-machine traces, so its churn check is only a gross
+     sanity pass; the load-bearing churn regression is the one in
+     run-http2.sh, which runs at info.
+
+How to reproduce it (if it ever comes back)
+-------------------------------------------
+  1. Remove the motorz_pre_connection() hook registration and rebuild.
+  2. Config that maximizes the race (TLS vhost, `Protocols h2 http/1.1`):
+       StartServers 1
+       PollersPerChild 1        ; fewer pollers => more serialized, worse
+       ThreadsPerChild 128      ; large, so it is NOT worker starvation
+       ThreadLimit 128
+       LogLevel info
+  3. Drive maximum connection churn, one stream per connection:
+       h2load -n 10000 -c 50 -m 1  https://localhost:PORT/
+     Run it several times; about half the runs lose a few requests.
+  4. To see the close path, use LogLevel trace2 (global; a per-module spec does
+     not emit on this build) with small runs (n=2000) until one fails, then look
+     for sessions that go "IDLE -- local goaway --> DONE" with GOAWAY
+     reason='timeout'. On such a connection the closing thread's first action is
+     h2_session_pre_close(), with no process_conn before it.
