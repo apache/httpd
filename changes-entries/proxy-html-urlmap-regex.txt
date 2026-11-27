@@ -1,0 +1,3 @@
+  *) mod_proxy_html: Fix a crash if a ProxyHTMLURLMap regex using
+     interpolated variables was invalid, and fail at startup for any
+     other invalid regex.  [Joe Orton]

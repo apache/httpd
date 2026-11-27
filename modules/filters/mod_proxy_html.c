@@ -877,15 +877,30 @@ static const char *interpolate_vars(request_rec *r, const char *str)
     }
     return str;
 }
+/* Whether any rule has a regex which is compiled per request. */
+static int has_request_regex(const urlmap *map)
+{
+    for (; map; map = map->next) {
+        if ((map->flags & M_REGEX) && (map->flags & M_INTERPOLATE_FROM))
+            return 1;
+    }
+    return 0;
+}
+
+/* Build the map for this request.  Conditions and interpolation only
+ * apply with ProxyHTMLInterp on; without it the pattern of a regex rule
+ * flagged for interpolation is compiled as written.
+ */
 static void fixup_rules(saxctxt *ctx)
 {
     urlmap *newp;
     urlmap *p;
     urlmap *prev = NULL;
     request_rec *r = ctx->f->r;
+    int interp = ctx->cfg->interp;
 
     for (p = ctx->cfg->map; p; p = p->next) {
-        if (p->cond != NULL) {
+        if (interp && p->cond != NULL) {
             const char *err;
             int ok = ap_expr_exec(r, p->cond, &err);
             if (err) {
@@ -900,15 +915,23 @@ static void fixup_rules(saxctxt *ctx)
         newp = apr_pmemdup(r->pool, p, sizeof(urlmap));
 
         if (newp->flags & M_INTERPOLATE_FROM) {
-            newp->from.c = interpolate_vars(r, newp->from.c);
+            if (interp)
+                newp->from.c = interpolate_vars(r, newp->from.c);
             if (!newp->from.c || !*newp->from.c)
                 continue;        /* don't use empty from-pattern */
             if (newp->flags & M_REGEX) {
-                newp->from.r = ap_pregcomp(r->pool, newp->from.c,
-                                           newp->regflags);
+                const char *pattern = newp->from.c;
+
+                newp->from.r = ap_pregcomp(r->pool, pattern, newp->regflags);
+                if (!newp->from.r) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10705)
+                                  "ProxyHTMLURLMap: could not compile "
+                                  "regex '%s', rule ignored", pattern);
+                    continue;
+                }
             }
         }
-        if (newp->flags & M_INTERPOLATE_TO) {
+        if (interp && (newp->flags & M_INTERPOLATE_TO)) {
             newp->to = interpolate_vars(r, newp->to);
         }
         /* evaluate p->cond; continue if unsatisfied */
@@ -973,7 +996,7 @@ static saxctxt *check_filter_init (ap_filter_t *f)
         ap_varbuf_init(f->r->pool, &fctx->vb, bufsz);
         apr_table_unset(f->r->headers_out, "Content-Length");
 
-        if (cfg->interp)
+        if (cfg->interp || has_request_regex(cfg->map))
             fixup_rules(fctx);
         else
             fctx->map = cfg->map;
@@ -1220,18 +1243,22 @@ static const char *comp_urlmap(cmd_parms *cmd, urlmap *newmap,
         | REGFLAG(M_INTERPOLATE_TO,flags,'V')
         | REGFLAG(M_INTERPOLATE_FROM,flags,'v');
 
+    newmap->regflags
+        = REGFLAG(AP_REG_EXTENDED,flags,'x')
+        | REGFLAG(AP_REG_ICASE,flags,'i')
+        | REGFLAG(AP_REG_NOSUB,flags,'n')
+        | REGFLAG(AP_REG_NEWLINE,flags,'s');
+    newmap->to = to;
+
     if ((newmap->flags & M_INTERPOLATE_FROM) || !(newmap->flags & M_REGEX)) {
         newmap->from.c = from;
-        newmap->to = to;
     }
     else {
-        newmap->regflags
-            = REGFLAG(AP_REG_EXTENDED,flags,'x')
-            | REGFLAG(AP_REG_ICASE,flags,'i')
-            | REGFLAG(AP_REG_NOSUB,flags,'n')
-            | REGFLAG(AP_REG_NEWLINE,flags,'s');
         newmap->from.r = ap_pregcomp(cmd->pool, from, newmap->regflags);
-        newmap->to = to;
+        if (!newmap->from.r) {
+            return apr_pstrcat(cmd->pool, "ProxyHTMLURLMap: could not "
+                               "compile regex '", from, "'", NULL);
+        }
     }
     if (cond != NULL) {
         /* back-compatibility: support old-style ENV expressions
