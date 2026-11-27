@@ -112,6 +112,19 @@ server or MPM changes. On Unix, verify these pass locally by running
 `make check-pytest PYTEST_DIRS=test/modules/xxx` — this can be done
 without running `make install` first.
 
+`test/` is kept identical on trunk and 2.4.x (`test/check-test-sync.sh`),
+so a new test reaches 2.4.x before the fix it tests. Any test that fails
+without the trunk change must carry a `not_backported` mark from
+`pyhttpd.backport`, or `skip_not_backported` if failing there would hang,
+crash the server or leave errors in the error log. Name the svn revision
+(`"r1939033"`), or the PR (`"gh-896"`) until there is one. Mark only the
+tests or `pytest.param`s that fail without the change, never a whole file
+by reflex: a mark on a test that passes on 2.4.x hides a regression there.
+When the change is backported, add `backported_in="2.4.NN"`, the 2.4.x
+release it first ships in, to the mark on trunk rather than removing the
+mark, so older 2.4.x releases keep the expectation.
+Read "Tests of changes missing from 2.4.x" in `test/README.pytest` first.
+
 ## Validating changes
 
 After editing any `.github/workflows/*.yml` file or any script the
