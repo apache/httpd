@@ -945,7 +945,13 @@ static int lua_ap_sendfile(lua_State *L)
         apr_file_t      *file;
 
         rc = apr_file_open(&file, filename, APR_READ, APR_OS_DEFAULT, p);
-        if (rc == APR_SUCCESS) {
+        if (rc == APR_SUCCESS && file_info.size == 0) {
+            /* Nothing to send; an empty file bucket could be held by
+             * the core output filter until the end of the request. */
+            apr_file_close(file);
+            lua_pushinteger(L, 0);
+        }
+        else if (rc == APR_SUCCESS) {
             apr_bucket_brigade *bb;
 
             /* As ap_send_fd(), but with the brigade in the call pool.
