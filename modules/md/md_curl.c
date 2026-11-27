@@ -53,6 +53,36 @@ static apr_status_t curl_status(unsigned int curl_code)
     }
 }
 
+/* Whether curl_code denotes a problem with the TLS trust configuration
+ * itself (bad/missing CA bundle, cert, cipher, engine, ...) rather than a
+ * transient network condition. These are not going to be fixed by a later
+ * retry, so they are worth a log line an administrator will actually see
+ * without turning on md:trace4.
+ *
+ * CURLE_SSL_CONNECT_ERROR is deliberately excluded: libcurl uses it as a
+ * generic "something went wrong in the TLS handshake" catch-all (protocol
+ * mismatches, resets, timeouts, ...), not a reliable signal that the
+ * problem is our certificate configuration specifically. Elevating it
+ * here would mislabel transient failures as permanent and risk log
+ * flooding on retry. */
+static int curl_is_cert_error(CURLcode curl_code)
+{
+    switch (curl_code) {
+        case CURLE_SSL_ENGINE_NOTFOUND:
+        case CURLE_SSL_ENGINE_SETFAILED:
+        case CURLE_SSL_CERTPROBLEM:
+        case CURLE_SSL_CIPHER:
+        case CURLE_PEER_FAILED_VERIFICATION:
+        case CURLE_SSL_ENGINE_INITFAILED:
+        case CURLE_SSL_CACERT_BADFILE:
+        case CURLE_SSL_CRL_BADFILE:
+        case CURLE_SSL_ISSUER_ERROR:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
 typedef struct {
     CURL *curl;
     CURLM *curlm;
@@ -427,8 +457,8 @@ static apr_status_t md_curl_perform(md_http_request_t *req)
     
     rv = curl_status(curle);
     if (APR_SUCCESS != rv) {
-        md_log_perror(MD_LOG_MARK, MD_LOG_DEBUG, rv, req->pool, 
-                      "request failed(%d): %s", curle, curl_easy_strerror(curle));
+        md_log_perror(MD_LOG_MARK, curl_is_cert_error(curle) ? MD_LOG_ERR : MD_LOG_DEBUG,
+                      rv, req->pool, "request failed(%d): %s", curle, curl_easy_strerror(curle));
         goto leave;
     }
     
