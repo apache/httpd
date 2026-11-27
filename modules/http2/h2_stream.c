@@ -1508,6 +1508,16 @@ static ssize_t stream_data_cb(nghttp2_session *ng2s,
                       "need more (read len=%ld, %ld in buffer)"),
                       (long)length, (long)buf_len);
         rv = buffer_output_receive(stream);
+        /* The receive may only have transferred a FLUSH bucket from an
+         * already closed beam. APR_EOF is then only reported on the next
+         * receive, but no further event will come to resume the stream
+         * once it is suspended. Receive again before deciding to suspend,
+         * so a truncated response gets RST. */
+        if (APR_SUCCESS == rv
+            && !output_data_buffered(stream, &eos, &header_blocked)
+            && !eos && !header_blocked && !stream->rst_error) {
+            rv = buffer_output_receive(stream);
+        }
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, rv, c1,
                       H2_SSSN_STRM_MSG(session, stream_id,
                       "buffer_output_received"));

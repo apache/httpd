@@ -1,0 +1,5 @@
+  *) mod_http2: Reset a stream instead of leaving it hanging when the
+     handler fails without sending an ERROR or EOS bucket after the
+     response body sent so far has been flushed, e.g. when a php-fpm
+     backend behind mod_proxy_fcgi is restarted mid-response.
+     PR 66463.  [Laurent Gouhier, EfficientIP]

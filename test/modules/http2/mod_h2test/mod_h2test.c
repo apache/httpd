@@ -435,7 +435,7 @@ static int h2test_error_handler(request_rec *r)
     char buffer[8192];
     int i, chunks = 3, error_bucket = 1;
     long l;
-    apr_time_t delay = 0, body_delay = 0;
+    apr_time_t delay = 0, body_delay = 0, error_delay = 0;
     apr_array_header_t *args = NULL;
     int http_status = HTTP_OK;
     apr_status_t error = APR_SUCCESS, body_error = APR_SUCCESS;
@@ -489,6 +489,12 @@ static int h2test_error_handler(request_rec *r)
                         continue;
                     }
                 }
+                else if (!strcmp("error_delay", arg)) {
+                    rv = duration_parse(&error_delay, val, "s");
+                    if (APR_SUCCESS == rv) {
+                        continue;
+                    }
+                }
             }
             ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "error_handler: "
                   "did not understand '%s'", arg);
@@ -536,6 +542,15 @@ static int h2test_error_handler(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r,
                       "error_handler: passed %ld bytes as response body", l);
         if (body_error != APR_SUCCESS) {
+            if (error_delay) {
+                /* let the client receive the body sent so far, then fail
+                 * while the stream is idle, as a dying backend would */
+                b = apr_bucket_flush_create(c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, b);
+                rv = ap_pass_brigade(r->output_filters, bb);
+                if (APR_SUCCESS != rv) goto cleanup;
+                apr_sleep(error_delay);
+            }
             rv = body_error;
             goto cleanup;
         }
