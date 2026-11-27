@@ -19,6 +19,7 @@ NUMERIC = [
     ("H3StreamTimeout", 1, 86400),
     ("H3MaxStreamErrors", 1, 10000),
     ("H3QpackTableCapacity", 0, 1048576),
+    ("H3QpackEncoderTableCapacity", -1, 1048576),
     ("H3QpackBlockedStreams", 0, 1000),
     ("H3MinWorkers", 1, 4096),
     ("H3MaxWorkers", 1, 4096),
