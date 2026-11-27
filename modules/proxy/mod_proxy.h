@@ -604,8 +604,16 @@ struct proxy_balancer_method {
 #define PROXY_THREAD_LOCK(x)      ( (x) && (x)->tmutex ? apr_thread_mutex_lock((x)->tmutex) : APR_SUCCESS)
 #define PROXY_THREAD_UNLOCK(x)    ( (x) && (x)->tmutex ? apr_thread_mutex_unlock((x)->tmutex) : APR_SUCCESS)
 #else
-#define PROXY_THREAD_LOCK(x)      (APR_SUCCESS)
-#define PROXY_THREAD_UNLOCK(x)    (APR_SUCCESS)
+/* Without threads, a function call rather than a constant so that the macros
+ * can be used as statements without "statement with no effect" warnings
+ * (internal to these macros, not API).
+ */
+static APR_INLINE apr_status_t ap_proxy__nolock(void)
+{
+    return APR_SUCCESS;
+}
+#define PROXY_THREAD_LOCK(x)      ((void)(x), ap_proxy__nolock())
+#define PROXY_THREAD_UNLOCK(x)    ((void)(x), ap_proxy__nolock())
 #endif
 
 #define PROXY_GLOBAL_LOCK(x)      ( (x) && (x)->gmutex ? apr_global_mutex_lock((x)->gmutex) : APR_SUCCESS)

@@ -1382,9 +1382,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_share_balancer(proxy_balancer *balancer,
 
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_balancer(proxy_balancer *balancer, server_rec *s, apr_pool_t *p)
 {
-#if APR_HAS_THREADS
     apr_status_t rv = APR_SUCCESS;
-#endif
     ap_slotmem_provider_t *storage = balancer->storage;
     apr_size_t size;
     unsigned int num;
