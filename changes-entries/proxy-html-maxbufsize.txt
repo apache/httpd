@@ -1,0 +1,3 @@
+  *) mod_proxy_html: Add ProxyHTMLMaxBufSize, 1M by default; a larger
+     inline script, stylesheet or comment is passed through without
+     being rewritten by ProxyHTMLExtended.  [Joe Orton]

@@ -109,6 +109,8 @@ typedef struct {
     const char *etag;
     unsigned int flags;
     int bufsz;
+    apr_size_t maxbufsz;
+    int maxbufsz_set;
     apr_hash_t *links;
     apr_array_header_t *events;
     const char *charset_out;
@@ -130,9 +132,11 @@ typedef struct {
     char rbuf[4];
     apr_size_t rlen;
     apr_size_t rmin;
+    int overflow;       /* buffered text went over the limit */
 } saxctxt;
 
 #define DEFAULT_BUFSZ (8192)
+#define DEFAULT_MAXBUFSZ (1024 * 1024)
 
 #define NORM_LC 0x1
 #define NORM_MSSLASH 0x2
@@ -356,12 +360,40 @@ static void pinternalSubset(void* ctxt, const xmlChar *name,
     }
     ap_fputs(ctx->f->next, ctx->bb, ">\n");
 }
+
+/* Buffer text which is rewritten when the element ends.  If the buffer
+ * would grow beyond ProxyHTMLMaxBufSize, write out what it holds and
+ * pass through the rest of the text up to the end of the element,
+ * none of it rewritten.
+ */
+static void buffer_text(saxctxt *ctx, const char *chars, apr_size_t length)
+{
+    apr_size_t max = ctx->cfg->maxbufsz;
+
+    if (!ctx->overflow && max
+        && (ctx->vb.strlen > max || length > max - ctx->vb.strlen)) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, ctx->f->r, APLOGNO(10706)
+                      "Inline script, stylesheet or comment larger than "
+                      "ProxyHTMLMaxBufSize (%" APR_SIZE_T_FMT
+                      " bytes), not rewritten", max);
+        AP_fwrite(ctx, ctx->vb.buf, ctx->vb.strlen, 0);
+        ctx->vb.strlen = 0;
+        ctx->overflow = 1;
+    }
+    if (ctx->overflow) {
+        AP_fwrite(ctx, chars, length, 0);
+    }
+    else {
+        ap_varbuf_strmemcat(&ctx->vb, chars, length);
+    }
+}
+
 static void pcdata(void *ctxt, const xmlChar *uchars, int length)
 {
     const char *chars = (const char*) uchars;
     saxctxt *ctx = (saxctxt*) ctxt;
     if (ctx->cfg->extfix) {
-        ap_varbuf_strmemcat(&ctx->vb, chars, length);
+        buffer_text(ctx, chars, length);
     }
     else {
         /* not sure if this should force-flush
@@ -378,9 +410,9 @@ static void pcomment(void *ctxt, const xmlChar *uchars)
         return;
 
     if (ctx->cfg->extfix) {
-        ap_varbuf_strcat(&ctx->vb, "<!--");
-        ap_varbuf_strcat(&ctx->vb, chars);
-        ap_varbuf_strcat(&ctx->vb, "-->");
+        buffer_text(ctx, "<!--", 4);
+        buffer_text(ctx, chars, strlen(chars));
+        buffer_text(ctx, "-->", 3);
     }
     else {
         ap_fputs(ctx->f->next, ctx->bb, "<!--");
@@ -419,6 +451,7 @@ static void pendElement(void *ctxt, const xmlChar *uname)
         dump_content(ctx);
         ctx->vb.strlen = 0;     /* having dumped it, we can re-use the memory */
     }
+    ctx->overflow = 0;
     if (!desc || !desc->empty) {
         ap_fprintf(ctx->f->next, ctx->bb, "</%s>", name);
     }
@@ -751,6 +784,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                    accept_charset);
     }
     ctx->vb.strlen = 0;
+    ctx->overflow = 0;
     if (desc && desc->empty)
         ap_fputs(ctx->f->next, ctx->bb, ctx->etag);
     else
@@ -1167,6 +1201,7 @@ static void *proxy_html_config(apr_pool_t *pool, char *x)
     ret->doctype = DEFAULT_DOCTYPE;
     ret->etag = DEFAULT_ETAG;
     ret->bufsz = DEFAULT_BUFSZ;
+    ret->maxbufsz = DEFAULT_MAXBUFSZ;
     /* ret->interp = 1; */
     /* don't initialise links and events until they get set/used */
     return ret;
@@ -1206,6 +1241,8 @@ static void *proxy_html_merge(apr_pool_t *pool, void *BASE, void *ADD)
                     ? base->doctype : add->doctype;
     conf->etag = (add->etag == DEFAULT_ETAG) ? base->etag : add->etag;
     conf->bufsz = add->bufsz;
+    conf->maxbufsz = add->maxbufsz_set ? add->maxbufsz : base->maxbufsz;
+    conf->maxbufsz_set = add->maxbufsz_set | base->maxbufsz_set;
     if (add->flags & NORM_RESET) {
         conf->flags = add->flags ^ NORM_RESET;
         conf->metafix = add->metafix;
@@ -1373,6 +1410,25 @@ static const char *set_flags(cmd_parms *cmd, void *CFG, const char *arg)
     return NULL;
 }
 
+static const char *set_maxbufsz(cmd_parms *cmd, void *CFG, const char *arg)
+{
+    proxy_html_conf *cfg = CFG;
+    apr_off_t max;
+    apr_status_t rv;
+
+    rv = ap_size_parameter_parse(arg, &max);
+    if (rv == APR_ERANGE) {
+        return "ProxyHTMLMaxBufSize value too large";
+    }
+    if (rv != APR_SUCCESS || max < 0) {
+        return "ProxyHTMLMaxBufSize must be a non-negative integer "
+               "optionally suffixed with 'b', 'k', 'm' or 'g'";
+    }
+    cfg->maxbufsz = (apr_size_t)max;
+    cfg->maxbufsz_set = 1;
+    return NULL;
+}
+
 static const char *set_events(cmd_parms *cmd, void *CFG, const char *arg)
 {
     tattr *attr;
@@ -1431,6 +1487,10 @@ static const command_rec proxy_html_cmds[] = {
     AP_INIT_TAKE1("ProxyHTMLBufSize", ap_set_int_slot,
                   (void*)APR_OFFSETOF(proxy_html_conf, bufsz),
                   RSRC_CONF|ACCESS_CONF, "Buffer size"),
+    AP_INIT_TAKE1("ProxyHTMLMaxBufSize", set_maxbufsz, NULL,
+                  RSRC_CONF|ACCESS_CONF,
+                  "Maximum size of a script, stylesheet or comment which "
+                  "is rewritten, 0 for no limit"),
     AP_INIT_TAKE1("ProxyHTMLCharsetOut", ap_set_string_slot,
                   (void*)APR_OFFSETOF(proxy_html_conf, charset_out),
                   RSRC_CONF|ACCESS_CONF, "Usage: ProxyHTMLCharsetOut charset"),

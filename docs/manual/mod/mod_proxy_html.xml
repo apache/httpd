@@ -425,6 +425,31 @@ size and avoid the need to resize the buffer dynamically during a request.
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ProxyHTMLMaxBufSize</name>
+<description>Sets the maximum size of an inline script, stylesheet or
+comment which is rewritten.</description>
+<syntax>ProxyHTMLMaxBufSize <var>bytes</var></syntax>
+<default>ProxyHTMLMaxBufSize 1M</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Available in version 2.5.1 and later.</compatibility>
+<usage>
+<p>With <directive module="mod_proxy_html">ProxyHTMLExtended</directive>
+enabled, <module>mod_proxy_html</module> reads each inline script,
+stylesheet or comment into memory in full before rewriting it. This
+directive limits the size of that buffer. A script, stylesheet or comment
+larger than <var>bytes</var> is passed through as received from the
+backend, without any <directive module="mod_proxy_html"
+>ProxyHTMLURLMap</directive> rule applied to it, and a warning is
+logged.</p>
+<p>The value may be followed by <code>K</code>, <code>M</code> or
+<code>G</code> for kilobytes, megabytes or gigabytes. A value of
+<code>0</code> removes the limit.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyHTMLEvents</name>
 <description>Specify attributes to treat as scripting events.</description>
 <syntax>ProxyHTMLEvents <var>attribute [attribute ...]</var></syntax>
