@@ -153,6 +153,15 @@ class H3TestEnv(HttpdTestEnv):
         s.bind(("::", port))
         return s
 
+    def rewrite_test_conf(self, old: str, new: str):
+        """Replace text in the installed configuration while the server
+        runs, for a graceful restart to pick up; install() stops it."""
+        with open(self._test_conf) as fd:
+            conf = fd.read()
+        assert old in conf, f"{old!r} not in {self._test_conf}"
+        with open(self._test_conf, 'w') as fd:
+            fd.write(conf.replace(old, new))
+
     def alt_svc(self, domain: str = None, port: int = None,
                 scheme: str = "https"):
         """The Alt-Svc header of a TCP request to the vhost, or None."""

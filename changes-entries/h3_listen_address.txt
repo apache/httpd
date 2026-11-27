@@ -1,0 +1,4 @@
+  *) mod_http3: Serve HTTP/3 only on the address given to Listen, as for
+     TCP, rather than on every address of the host. When Listen gives the
+     HTTP/3 host several addresses, HTTP/3 is not started.
+     [Arturo Bernal]

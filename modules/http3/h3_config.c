@@ -794,7 +794,7 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
     SSL_CTX_set_cert_cb(conf->ssl_ctx, h3_sni_select_cert, sni);
 
     h3_request_init();
-    h3_server_post_config(s);
+    h3_server_post_config(p, s);
     return OK;
 }
 
