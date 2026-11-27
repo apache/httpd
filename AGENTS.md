@@ -116,8 +116,9 @@ without running `make install` first.
 so a new test reaches 2.4.x before the fix it tests. Any test that fails
 without the trunk change must carry a `not_backported` mark from
 `pyhttpd.backport`, or `skip_not_backported` if failing there would hang,
-crash the server or leave errors in the error log. Name the svn revision
-(`"r1939033"`), or the PR (`"gh-896"`) until there is one. Mark only the
+crash the server or leave errors in the error log. Name the pull request
+that made the change (`"gh-896"`); the `"r1939033"` names in older marks
+are svn revisions from before the move to git. Mark only the
 tests or `pytest.param`s that fail without the change, never a whole file
 by reflex: a mark on a test that passes on 2.4.x hides a regression there.
 When the change is backported, add `backported_in="2.4.NN"`, the 2.4.x
