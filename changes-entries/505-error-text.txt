@@ -1,0 +1,3 @@
+  *) core: The error page of a 505 (HTTP Version Not Supported) response
+     now says that the HTTP version of the request is not supported,
+     instead of reporting an internal server error.  [Arturo Bernal]
