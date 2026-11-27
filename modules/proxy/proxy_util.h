@@ -37,10 +37,15 @@ PROXY_DECLARE(int) ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
  * walk it holding that lock. The array of an ungrowable balancer never
  * changes, and is walked without it.
  */
+#if APR_HAS_THREADS
 #define PROXY_WORKERS_LOCK(b)   ((b)->ungrowable ? APR_SUCCESS : \
                                  PROXY_THREAD_LOCK(b))
 #define PROXY_WORKERS_UNLOCK(b) ((b)->ungrowable ? APR_SUCCESS : \
                                  PROXY_THREAD_UNLOCK(b))
+#else
+#define PROXY_WORKERS_LOCK(b)   PROXY_THREAD_LOCK(b)
+#define PROXY_WORKERS_UNLOCK(b) PROXY_THREAD_UNLOCK(b)
+#endif
 
 /**
  * The workers of a balancer to walk, for a walk that does not hold the

@@ -339,7 +339,9 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
                                       request_rec *r)
 {
     proxy_worker *candidate = NULL;
+#if APR_HAS_THREADS
     apr_status_t rv;
+#endif
 
 #if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
@@ -466,7 +468,9 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     proxy_worker *runtime;
     char *route = NULL;
     const char *sticky = NULL;
+#if APR_HAS_THREADS
     apr_status_t rv;
+#endif
 
     *worker = NULL;
     /* Step 1: check if the url is for us
@@ -640,7 +644,9 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                                        proxy_server_conf *conf)
 {
 
+#if APR_HAS_THREADS
     apr_status_t rv;
+#endif
 
 #if APR_HAS_THREADS
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
