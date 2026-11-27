@@ -1,5 +1,6 @@
 import pytest
 
+from pyhttpd.backport import skip_not_backported
 from pyhttpd.conf import HttpdConf
 
 # An expression that evaluates to true without evaluating a capturing regex
@@ -15,6 +16,10 @@ NEG = "req('X-Match') !~ m#^(zzz)$#"
 LONG = "long-" + "x" * 200
 
 
+# Without r1915271 the Header edit* lines below crash every request, so
+# none of the tests can run.
+@skip_not_backported("r1915271", "mod_headers edit* recursion on empty matches",
+                     backported_in="2.4.72")
 class TestExprBackref:
 
     @pytest.fixture(autouse=True, scope='class')
