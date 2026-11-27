@@ -63,6 +63,4 @@ class TestRequestLine:
         url = f"https://{env.h3_domain}:{env.https_port}{path}"
         assert env.curl_get(url, options=["--http1.1"]).response["status"] == 414
         r = env.h3_client().get(path)
-        env.httpd_error_log.ignore_recent(lognos=["AH00036", "AH00127"])
-        known_bug(r.status == 403, "LimitRequestLine does not apply")
-        assert r.status == 414 or r.reset is not None, f"{r}"
+        assert r.status == 414, f"{r}"

@@ -293,6 +293,11 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     /* CONNECT has no :path; its target is the authority, as in HTTP/1.1. */
     ap_parse_uri(r, h3s->path ? h3s->path : h3s->authority ? h3s->authority : "");
     r->the_request = apr_pstrcat(r->pool, r->method, " ", r->unparsed_uri, " ", r->protocol, NULL);
+    if (s->limit_req_line > 0 && strlen(r->the_request) > (apr_size_t)s->limit_req_line)
+    {
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, APLOGNO() "request failed: client's request-line exceeds LimitRequestLine (longer than %d)", s->limit_req_line);
+        r->status = HTTP_REQUEST_URI_TOO_LARGE;
+    }
     if (h3s->authority)
     {
         apr_table_setn(r->headers_in, "Host", apr_pstrdup(r->pool, h3s->authority));
