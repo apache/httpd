@@ -73,7 +73,43 @@ static int lb_workers_limit = 0;
 const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_path;
 const apr_strmatch_pattern PROXY_DECLARE_DATA *ap_proxy_strmatch_domain;
 
-extern apr_global_mutex_t *proxy_mutex;
+#if APR_HAS_THREADS
+/* Serializes, within a process, the definition, initialization and sync of
+ * the run-time workers.  Those are per-process data (the workers and
+ * balancers, and the pools they are allocated from), so it is a thread
+ * mutex, created at post_config for each child to inherit unlocked.
+ */
+static apr_thread_mutex_t *proxy_mutex = NULL;
+
+static APR_INLINE void proxy_mutex_lock(void)
+{
+    apr_thread_mutex_lock(proxy_mutex);
+}
+
+static APR_INLINE void proxy_mutex_unlock(void)
+{
+    apr_thread_mutex_unlock(proxy_mutex);
+}
+#else
+#define proxy_mutex_lock()      ((void)0)
+#define proxy_mutex_unlock()    ((void)0)
+#endif
+
+int proxy_util_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                           apr_pool_t *ptemp, server_rec *main_s)
+{
+#if APR_HAS_THREADS
+    apr_status_t rv = apr_thread_mutex_create(&proxy_mutex,
+                                              APR_THREAD_MUTEX_DEFAULT,
+                                              pconf);
+    if (rv != APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02478)
+                      "failed to create proxy mutex");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+#endif
+    return OK;
+}
 
 static const apr_time_t *proxy_start_time; /* epoch for expiring addresses */
 
@@ -2259,9 +2295,9 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     if (!balancer || ap_state_query(AP_SQ_MAIN_STATE) != AP_SQ_MS_RUN_MPM) {
         return define_worker(p, worker, balancer, conf, url, mask);
     }
-    apr_global_mutex_lock(proxy_mutex);
+    proxy_mutex_lock();
     err = define_worker(p, worker, balancer, conf, url, mask);
-    apr_global_mutex_unlock(proxy_mutex);
+    proxy_mutex_unlock();
     return err;
 }
 
@@ -2408,7 +2444,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                      ap_proxy_worker_get_name(worker));
     }
     else {
-        apr_global_mutex_lock(proxy_mutex);
+        proxy_mutex_lock();
         /* Check again after we got the lock if we are still uninitialized */
         if (!(AP_VOLATILIZE_T(unsigned int, worker->local_status) & PROXY_WORKER_INITIALIZED)) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00927)
@@ -2421,7 +2457,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, APLOGNO(00928)
                                  "can not create worker thread mutex");
-                    apr_global_mutex_unlock(proxy_mutex);
+                    proxy_mutex_unlock();
                     return rv;
                 }
             }
@@ -2431,7 +2467,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             if (worker->cp == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00929)
                              "can not create connection pool");
-                apr_global_mutex_unlock(proxy_mutex);
+                proxy_mutex_unlock();
                 return APR_EGENERAL;
             }
 
@@ -2468,7 +2504,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                 worker->local_status |= (PROXY_WORKER_INITIALIZED);
             }
         }
-        apr_global_mutex_unlock(proxy_mutex);
+        proxy_mutex_unlock();
 
     }
     if (rv == APR_SUCCESS) {
@@ -4547,11 +4583,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_sync_balancer(proxy_balancer *b, server_rec
                              "that can't grow", b->s->name, index, shm->name);
                 continue;
             }
-            /* XXX: a thread mutex is maybe enough here */
-            apr_global_mutex_lock(proxy_mutex);
+            proxy_mutex_lock();
             runtime = apr_array_push(b->workers);
             *runtime = apr_pcalloc(conf->pool, sizeof(proxy_worker));
-            apr_global_mutex_unlock(proxy_mutex);
+            proxy_mutex_unlock();
             (*runtime)->hash = shm->hash;
             (*runtime)->balancer = b;
             (*runtime)->s = shm;

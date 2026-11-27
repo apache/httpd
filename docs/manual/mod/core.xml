@@ -4001,6 +4001,13 @@ or specified mutexes</description>
             <td>LDAP result cache</td>
 	</tr>
         <tr>
+            <td><code>proxy</code></td>
+            <td><module>mod_proxy</module></td>
+            <td>none: accepted for compatibility, it has no effect (the
+            run-time workers are protected by a mutex local to each child
+            process)</td>
+	</tr>
+        <tr>
             <td><code>rewrite-map</code></td>
             <td><module>mod_rewrite</module></td>
             <td>communication with external mapping programs, to avoid

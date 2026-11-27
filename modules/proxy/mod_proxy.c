@@ -76,7 +76,6 @@ proxy_wstat_t PROXY_DECLARE_DATA proxy_wstat_tbl[] = {
 };
 
 static const char * const proxy_id = "proxy";
-apr_global_mutex_t *proxy_mutex = NULL;
 
 /*
  * A Web proxy module. Stages:
@@ -3159,12 +3158,11 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *main_s)
 {
     server_rec *s = main_s;
-    apr_status_t rv = ap_global_mutex_create(&proxy_mutex, NULL,
-                                             proxy_id, NULL, s, pconf, 0);
-    if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, plog, APLOGNO(02478)
-        "failed to create %s mutex", proxy_id);
-        return rv;
+    int rc;
+
+    rc = proxy_util_post_config(pconf, plog, ptemp, main_s);
+    if (rc != OK) {
+        return rc;
     }
 
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
@@ -3174,7 +3172,7 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_proxy_strmatch_domain = apr_strmatch_precompile(pconf, "domain=", 0);
 
     for (; s; s = s->next) {
-        int rc, i;
+        int i;
         proxy_server_conf *sconf =
             ap_get_module_config(s->module_config, &proxy_module);
         ap_conf_vector_t **sections =
@@ -3326,15 +3324,6 @@ static void child_init(apr_pool_t *p, server_rec *s)
     proxy_worker *forward = NULL;
     proxy_worker *reverse = NULL;
 
-    apr_status_t rv = apr_global_mutex_child_init(&proxy_mutex,
-                                      apr_global_mutex_lockfile(proxy_mutex),
-                                      p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, APLOGNO(02479)
-                     "could not init proxy_mutex in child");
-        exit(1); /* Ugly, but what else? */
-    }
-
     main_conf = ap_get_module_config(s->module_config, &proxy_module);
     for (; s; s = s->next) {
         void *sconf = s->module_config;
@@ -3407,6 +3396,10 @@ static void child_init(apr_pool_t *p, server_rec *s)
 static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                             apr_pool_t *ptemp)
 {
+    /* The "proxy" mutex is a thread mutex now (see proxy_util.c), but the
+     * type stays registered so that existing Mutex directives naming it are
+     * still accepted; they have no effect.
+     */
     apr_status_t rv = ap_mutex_register(pconf, proxy_id, NULL,
             APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS) {
