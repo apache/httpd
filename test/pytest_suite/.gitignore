@@ -31,6 +31,7 @@ t/conf/ssl/ca
 t/conf/cacheroot/
 t/logs/
 t/state/
+t/autht_jwt.secret
 
 # Generated htpasswd / htdigest files
 t/basic1

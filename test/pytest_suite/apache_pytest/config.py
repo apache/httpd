@@ -670,6 +670,38 @@ class TestConfig:
 
         SSLCA(Path(self.vars["sslca"]), self.vars["servername"]).generate()
 
+    # Shared with test/pytest_suite/tests/t/modules/test_mod_autht_jwt.py,
+    # which signs its JWTs with this same value.
+    AUTHT_JWT_SECRET = b"bz69946-test-secret-do-not-use-in-prod"
+
+    def _maybe_generate_autht_jwt_secret(self) -> None:
+        """Write the HS256 secret AuthtJwtVerify reads while parsing its
+        config (modules/aaa/mod_autht_jwt.c:set_jwt_verify), so the file is
+        already in place before httpd starts -- a missing file is a fatal
+        config error, and writing it from a test function runs too late.
+
+        Also sets the @jwt_crypto_driver@ token: AuthtJwtVerify's HS256 path
+        needs an apr_crypto driver, which mod_autht_jwt only initializes when
+        AuthtJwtDriver names one explicitly (modules/aaa/mod_autht_jwt.c:
+        auth_bearer_init() skips apr_crypto_get_driver() entirely unless
+        library_set is true). Without it every token fails HMAC verification
+        before the 'aud' claim is even inspected. The driver name mirrors
+        apr_crypto.h's APU_CRYPTO_RECOMMENDED_DRIVER per platform.
+
+        The token is set unconditionally, before the has_module() check below:
+        process_conf_in() expands every @token@ in autht_jwt.conf.in textually,
+        regardless of the <IfModule mod_autht_jwt.c> guard around its use (that
+        guard is only meaningful to httpd at runtime, not to this expansion
+        pass) -- on a build without mod_autht_jwt, returning early here would
+        leave the token unset and crash config generation with a KeyError.
+        """
+        self.vars["jwt_crypto_driver"] = "commoncrypto" if sys.platform == "darwin" else "openssl"
+        if not self.info.has_module("mod_autht_jwt"):
+            return
+        secret = Path(self.vars["serverroot"]) / "autht_jwt.secret"
+        if not secret.exists():
+            secret.write_bytes(self.AUTHT_JWT_SECRET)
+
     def _emit_inherited_loadmodules(self) -> None:
         """Re-emit inherited (active) LoadModule lines (inherit_load_module).
 
@@ -828,6 +860,10 @@ class TestConfig:
         # Generate the SSL CA + certs when mod_ssl is available and a ssl/ conf
         # dir exists (mirrors sslca_can/sslca_generate, TestConfig.pm:1524-1554).
         self._maybe_generate_sslca()
+
+        # Same reasoning as the SSL CA: AuthtJwtVerify reads its secret file
+        # while parsing the config, so it must exist before server.start().
+        self._maybe_generate_autht_jwt_secret()
 
         # Re-emit inherited LoadModule directives so the test server actually
         # loads modules (the generated conf does not Include the install conf).
