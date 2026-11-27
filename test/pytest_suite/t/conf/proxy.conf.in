@@ -325,7 +325,7 @@ Alias /modules/proxy/fcgi-uds-sethandler @SERVERROOT@/htdocs/modules/proxy/fcgi
 	 <Location /modules/html_proxy/doctype>
 	     ProxyHTMLEnable on
 	     ProxyHTMLLinks a href
-	     ProxyHTMLDocType HTML
+	     ProxyHTMLDocType HTML5
 	     ProxyHTMLURLMap http://a.example.com/ http://b.example.com/
 	     ProxyPass http://@SERVERNAME@:@PORT@/modules/proxy_html
 	 </Location>
