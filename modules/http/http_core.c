@@ -288,7 +288,19 @@ static int h1_post_read_request(request_rec *r)
 {
     const char *tenc;
 
-    if (!r->main && !r->prev && r->proto_num <= HTTP_VERSION(1,1)) {
+    /* A request line with another major version on an HTTP/1 connection,
+     * e.g. "HTTP/2.0", is still an HTTP/1 message: process it as HTTP/1.1,
+     * as 2.4.x does. r->protocol keeps what the client sent.
+     */
+    if (!r->main && !r->prev && HTTP_VERSION_MAJOR(r->proto_num) > 1
+        && !strcmp(AP_PROTOCOL_HTTP1, ap_get_protocol(r->connection))) {
+        r->proto_num = HTTP_VERSION(1,1);
+    }
+
+    /* Any HTTP/1.x minor version is handled like HTTP/1.1, as RFC 9110
+     * section 2.5 says. Requests of HTTP/2 have their own body handling.
+     */
+    if (!r->main && !r->prev && HTTP_VERSION_MAJOR(r->proto_num) <= 1) {
         if (r->proto_num >= HTTP_VERSION(1,0)) {
             tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
             if (tenc) {

@@ -1,0 +1,5 @@
+  *) core: Process a request with a higher HTTP/1.x minor version, e.g.
+     HTTP/1.2, like HTTP/1.1, as RFC 9110 section 2.5 says, and an
+     HTTP/1 request line with another major version, e.g. HTTP/2.0,
+     like HTTP/1.1 too, as 2.4.x does. Such requests stalled until the
+     request body timeout.  PR 70361 [Arturo Bernal]
