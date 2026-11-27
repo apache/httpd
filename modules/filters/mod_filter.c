@@ -168,9 +168,22 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
             ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                           "Content-Type '%s' ...", r->content_type);
             while (*type) {
+                size_t sep = strcspn(*type, "/");
                 /* Handle 'content-type;charset=...' correctly */
                 if (strncmp(*type, r->content_type, len) == 0
                     && (*type)[len] == '\0') {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                                  "... matched '%s'", *type);
+                    match = 1;
+                    break;
+                }
+                /* Handle wildcard media-types ('type' followed by "/" and
+                 * an asterisk), matching any subtype of 'type'
+                 */
+                else if (sep
+                         && strcmp(*type + sep, "/*") == 0
+                         && strncmp(*type, r->content_type, sep) == 0
+                         && r->content_type[sep] == '/') {
                     ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
                                   "... matched '%s'", *type);
                     match = 1;
