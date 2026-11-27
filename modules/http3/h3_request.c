@@ -152,6 +152,9 @@ conn_rec* h3_synth_conn(h3_session* session)
         ap_set_module_config(c->conn_config, h3_logio_module, apr_pcalloc(cpool, sizeof(h3_logio_config_t)));
     }
 
+    /* Stream connections reach the session through c->master; they use their
+     * own slot for the EOR brigade. */
+    ap_set_module_config(c->conn_config, &http3_module, session);
     session->c = c;
     return c;
 }

@@ -53,6 +53,18 @@ apr_port_t h3_hook_default_port(const request_rec* r);
 int h3_hook_ssl_conn_is_ssl(conn_rec* c);
 
 /**
+ * ap_hook_ssl_var_lookup. Answers HTTPS and the SSL_ variables HTTP/3 knows
+ * for an H3 connection, which mod_ssl does not manage.
+ * @param p    Pool for the result (unused, values live in the session).
+ * @param s    The server (unused).
+ * @param c    The connection, may be NULL when r is given.
+ * @param r    The request, may be NULL.
+ * @param name The variable name.
+ * @return The value, or NULL to let other modules answer.
+ */
+const char* h3_hook_ssl_var_lookup(apr_pool_t* p, server_rec* s, conn_rec* c, request_rec* r, const char* name);
+
+/**
  * ap_hook_post_read_request. No-op for H3; reserved for future
  * per-request initialisation. Always returns OK.
  * @param r The request (unused).

@@ -55,6 +55,58 @@ int h3_hook_ssl_conn_is_ssl(conn_rec* c)
     return IS_H3_CONN(c) ? OK : DECLINED;
 }
 
+/* The SSL_ variables HTTP/3 knows, named as mod_ssl names them. */
+static const struct
+{
+    const char* name;
+    apr_size_t offset;
+} h3_tls_vars[] = {
+    {"SSL_PROTOCOL", APR_OFFSETOF(h3_tls_env, protocol)},
+    {"SSL_CIPHER", APR_OFFSETOF(h3_tls_env, cipher)},
+    {"SSL_CIPHER_USEKEYSIZE", APR_OFFSETOF(h3_tls_env, cipher_usekeysize)},
+    {"SSL_CIPHER_ALGKEYSIZE", APR_OFFSETOF(h3_tls_env, cipher_algkeysize)},
+    {"SSL_CIPHER_EXPORT", APR_OFFSETOF(h3_tls_env, cipher_export)},
+    {"SSL_SESSION_RESUMED", APR_OFFSETOF(h3_tls_env, session_resumed)},
+};
+
+#define H3_TLS_VAR(tls, i) (*(const char* const*)((const char*)(tls) + h3_tls_vars[i].offset))
+
+const char* h3_hook_ssl_var_lookup(apr_pool_t* p H3_UNUSED, server_rec* s H3_UNUSED, conn_rec* c, request_rec* r, const char* name)
+{
+    if (!c && r)
+    {
+        c = r->connection;
+    }
+    if (!c || !IS_H3_CONN(c))
+    {
+        return NULL;
+    }
+
+    /* mod_ssl does not manage this connection: without an answer here it
+     * reports HTTPS as "off" and no SSL_ variable. Names are matched without
+     * case, as mod_ssl does. */
+    if (!ap_cstr_casecmp(name, "HTTPS"))
+    {
+        return "on";
+    }
+
+    conn_rec* mc = c->master ? c->master : c;
+    const h3_session* session = ap_get_module_config(mc->conn_config, &http3_module);
+    const h3_tls_env* tls = session ? &session->tls_env : NULL;
+    if (!tls || !tls->protocol)
+    {
+        return NULL;
+    }
+    for (apr_size_t i = 0; i < OSSL_NELEM(h3_tls_vars); i++)
+    {
+        if (!ap_cstr_casecmp(name, h3_tls_vars[i].name))
+        {
+            return H3_TLS_VAR(tls, i);
+        }
+    }
+    return NULL;
+}
+
 int h3_hook_fixups(request_rec* r)
 {
     if (!ap_is_initial_req(r))
@@ -71,12 +123,10 @@ int h3_hook_fixups(request_rec* r)
         const h3_tls_env* tls = (ctx && ctx->stream && ctx->stream->session) ? &ctx->stream->session->tls_env : NULL;
         if (tls && tls->protocol)
         {
-            apr_table_setn(r->subprocess_env, "SSL_PROTOCOL", tls->protocol);
-            apr_table_setn(r->subprocess_env, "SSL_CIPHER", tls->cipher);
-            apr_table_setn(r->subprocess_env, "SSL_CIPHER_USEKEYSIZE", tls->cipher_usekeysize);
-            apr_table_setn(r->subprocess_env, "SSL_CIPHER_ALGKEYSIZE", tls->cipher_algkeysize);
-            apr_table_setn(r->subprocess_env, "SSL_CIPHER_EXPORT", tls->cipher_export);
-            apr_table_setn(r->subprocess_env, "SSL_SESSION_RESUMED", tls->session_resumed);
+            for (apr_size_t i = 0; i < OSSL_NELEM(h3_tls_vars); i++)
+            {
+                apr_table_setn(r->subprocess_env, h3_tls_vars[i].name, H3_TLS_VAR(tls, i));
+            }
         }
     }
 
