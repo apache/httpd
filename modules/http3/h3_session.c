@@ -90,7 +90,8 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     CHECK(conf, return APR_EGENERAL;);
     settings.qpack_max_dtable_capacity = conf->h3_qpack_table_capacity;
     settings.qpack_blocked_streams = conf->h3_qpack_blocked_streams;
-    settings.qpack_encoder_max_dtable_capacity = conf->h3_qpack_encoder_table_capacity;
+    if(conf->h3_qpack_encoder_table_capacity > -1)
+	settings.qpack_encoder_max_dtable_capacity = (size_t) conf->h3_qpack_encoder_table_capacity;
     
     if (s->limit_req_fields > 0 && s->limit_req_fieldsize > 0)
     {

@@ -39,6 +39,7 @@ struct h3_server_conf
     /** QUIC TLS context, built from mod_ssl's certificate when the host lists h3 in Protocols. */
     struct ssl_ctx_st* ssl_ctx;
 
+    h3_tri_flag h3_enabled;
     apr_port_t h3_port;
     apr_uint32_t h3_max_concurrent_streams;
     apr_uint32_t h3_max_connections;
@@ -60,7 +61,7 @@ struct h3_server_conf
     int h3_qpack_encoder_capacity_set;
     int h3_qpack_blocked_set;
     apr_uint32_t h3_qpack_table_capacity;
-    apr_uint32_t h3_qpack_encoder_table_capacity;
+    apr_int32_t h3_qpack_encoder_table_capacity;
     apr_uint32_t h3_qpack_blocked_streams;
     apr_uint32_t h3_min_workers;
     apr_uint32_t h3_max_workers;
@@ -138,5 +139,13 @@ int h3_ssl_add_cert_files(server_rec* s, apr_pool_t* p, apr_array_header_t* cert
  * @return OK, or HTTP_INTERNAL_SERVER_ERROR if no vhost serves HTTP/3.
  */
 int h3_post_config(apr_pool_t* p, apr_pool_t* plog, apr_pool_t* ptemp, server_rec* s);
+
+/**
+ * Test if http3 is enabled.
+ * @param s The server_rec.
+ * @return 1 if HTTP3 is enabled, else 0.
+ */
+
+int h3_is_enabled(const server_rec *s);
 
 #endif /* H3_CONFIG_H */
