@@ -2,5 +2,6 @@
      and AuthDBDUserRealmQuery columns, exported as AUTHENTICATE_<NAME>
      environment variables, on a login answered from the cache
      (AuthBasicProvider/AuthDigestProvider "socache dbd"). Previously only
-     the first, uncached login for a user had them. PR 65172.
+     the first, uncached login for a user had them. A column which is
+     NULL now sets its variable to an empty value. PR 65172.
      [Arturo Bernal]

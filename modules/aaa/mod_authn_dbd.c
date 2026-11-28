@@ -160,7 +160,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
         if (dbd_password == NULL) {
             /* add the rest of the columns to the environment */
             int i = 1;
-            const char *name;
+            const char *name, *value;
             for (name = apr_dbd_get_name(dbd->driver, res, i);
                  name != NULL;
                  name = apr_dbd_get_name(dbd->driver, res, i)) {
@@ -181,8 +181,9 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                 if (env == NULL) {
                     env = apr_table_make(r->pool, 2);
                 }
-                apr_table_set(env, str,
-                              apr_dbd_get_entry(dbd->driver, row, i));
+                /* a NULL column is set as an empty value */
+                value = apr_dbd_get_entry(dbd->driver, row, i);
+                apr_table_set(env, str, value ? value : "");
                 i++;
             }
 
@@ -262,7 +263,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         if (dbd_hash == NULL) {
             /* add the rest of the columns to the environment */
             int i = 1;
-            const char *name;
+            const char *name, *value;
             for (name = apr_dbd_get_name(dbd->driver, res, i);
                  name != NULL;
                  name = apr_dbd_get_name(dbd->driver, res, i)) {
@@ -283,8 +284,9 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                 if (env == NULL) {
                     env = apr_table_make(r->pool, 2);
                 }
-                apr_table_set(env, str,
-                              apr_dbd_get_entry(dbd->driver, row, i));
+                /* a NULL column is set as an empty value */
+                value = apr_dbd_get_entry(dbd->driver, row, i);
+                apr_table_set(env, str, value ? value : "");
                 i++;
             }
 
