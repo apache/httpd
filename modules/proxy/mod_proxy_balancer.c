@@ -1448,8 +1448,28 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
         if ((val = apr_table_get(params, "b_wyes")) &&
             (*val == '1' && *(val+1) == '\0') &&
             (val = apr_table_get(params, "b_nwrkr"))) {
-            int rc = balancer_add_worker(r, bsel, conf, val,
-                                         apr_table_get(params, "b_nwrkr_flags"));
+            const char *flags = apr_table_get(params, "b_nwrkr_flags");
+            int rc;
+
+            /* mod_proxy_beacon's mark is the only status flag that a worker
+             * can be created with (balancer_handler() drops b_nwrkr_flags
+             * from the balancer-manager's requests).
+             */
+            if (flags) {
+                const char *f;
+                for (f = flags; *f; ++f) {
+                    if (*f != PROXY_WORKER_BEACON_FLAG) {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10704)
+                                      "%s: refusing to add worker %s with "
+                                      "status flags \"%s\" (only '%c' is "
+                                      "allowed)", bsel->s->name, val, flags,
+                                      PROXY_WORKER_BEACON_FLAG);
+                        return HTTP_BAD_REQUEST;
+                    }
+                }
+            }
+
+            rc = balancer_add_worker(r, bsel, conf, val, flags);
             if (rc != APR_SUCCESS) {
                 return rc;
             }
@@ -2050,6 +2070,11 @@ static int balancer_handler(request_rec *r)
         apr_brigade_flatten(ib, buf, &len);
         buf[len] = '\0';
         push2table(buf, params, NULL, r->pool);
+
+        /* The status flags of a new worker are for balancer_manage()'s
+         * callers only: the balancer-manager creates it disabled.
+         */
+        apr_table_unset(params, "b_nwrkr_flags");
     }
 
     /* Ignore parameters if this looks like XSRF */

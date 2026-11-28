@@ -358,6 +358,18 @@ class Client:
         assert m, f"balancer://{self.balancer} not listed on {self.domain}"
         return re.findall(r"<httpd:worker>\s*<httpd:name>([^<]*)</httpd:name>", m.group(1))
 
+    def page_statuses(self):
+        """{name: status} of the balancer's workers on the XML page."""
+        status, _, page = self.request("GET", "/balancer-manager?xml=1")
+        assert status == 200
+        m = re.search(rf"<httpd:name>balancer://{self.balancer}</httpd:name>"
+                      r"(.*?)</httpd:balancer>", page, re.S)
+        assert m, f"balancer://{self.balancer} not listed on {self.domain}"
+        return dict(re.findall(r"<httpd:worker>\s*<httpd:name>([^<]*)"
+                               r"</httpd:name>.*?"
+                               r"<httpd:status>([^<]*)</httpd:status>",
+                               m.group(1), re.S))
+
     def status_workers(self):
         status, _, page = self.request("GET", "/server-status?auto")
         assert status == 200
@@ -382,13 +394,15 @@ class Client:
         loc = self.reverse_map("miss")
         assert loc == "http://127.0.0.2:1/x", f"/rmap/miss on {self.domain}: {loc}"
 
-    def add_worker(self, url):
+    def add_worker(self, url, flags=None):
         _, _, page = self.request("GET", "/balancer-manager")
         m = re.search(rf"b={self.balancer}&[^\"]*?nonce=([0-9a-fA-F-]+)",
                       page.replace("&amp;", "&"))
         assert m, f"no nonce for balancer://{self.balancer} on {self.domain}"
         body = (f"b={self.balancer}&b_wyes=1&nonce={m.group(1)}&b_nwrkr="
                 + urllib.parse.quote(url, safe=""))
+        if flags is not None:
+            body += "&b_nwrkr_flags=" + urllib.parse.quote(flags, safe="")
         status, _, _ = self.request("POST", "/balancer-manager", body.encode())
         return status
 
@@ -620,3 +634,44 @@ class TestBalancerPersist:
             assert sorted(c.status_workers()) == added
         finally:
             c.close()
+
+
+class TestBalancerAddFlags:
+    """b_nwrkr_flags in a balancer-manager request: the status flags that a
+    worker can be created with are for balancer_manage()'s callers
+    (mod_proxy_beacon), the balancer-manager ignores them and creates the
+    worker disabled, without them."""
+
+    @pytest.fixture(autouse=True, scope='class')
+    @classmethod
+    def _class_scope(cls, env):
+        conf = HttpdConf(env)
+        conf.start_vhost(domains=[_fixed_domain(env, 0)], port=env.http_port)
+        conf.add(["<Proxy balancer://flags>",
+                  f"    BalancerMember {_member_url(env, 'app0')}",
+                  "    ProxySet growth=4",
+                  "</Proxy>",
+                  "ProxyPass /flags balancer://flags",
+                  "<Location /balancer-manager>",
+                  "    SetHandler balancer-manager",
+                  "    Require all granted",
+                  "</Location>"])
+        conf.end_vhost()
+        conf.install()
+        assert env.apache_restart() == 0
+
+    # A URL that starts with a worker's URL matches that worker, so no name
+    # here is the prefix of another.
+    @pytest.mark.parametrize("name, flags", [("init", "O"), ("beacon", "B"),
+                                             ("mixed", "OBHS")])
+    def test_proxy_12_09_add_flags_ignored(self, env, name, flags):
+        url = _member_url(env, name)
+        c = Client(env, 0, "flags")
+        try:
+            assert c.add_worker(url, flags) == 200
+            status = c.page_statuses().get(url)
+        finally:
+            c.close()
+        assert status is not None, f"{url} not added"
+        assert status.split() == ["Init", "Dis"], \
+            f"{url} added with b_nwrkr_flags={flags}: status {status!r}"
