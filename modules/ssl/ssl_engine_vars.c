@@ -1085,6 +1085,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 
     xs = peer ? SSL_get_peer_certificate(ssl) : SSL_get_certificate(ssl);
     if (xs == NULL) {
+        ASN1_OBJECT_free(oid);
         return NULL;
     }
 
