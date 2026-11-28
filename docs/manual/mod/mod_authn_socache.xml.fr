@@ -4,6 +4,7 @@
 <!-- English Revision: 1933179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision$ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -100,10 +101,57 @@ AuthnCacheSOCache dbm
     <module>mod_authn_socache</module> doit être activée dans leurs modules. La
     fonction de l'API <var>ap_authn_cache_store</var> permet de mettre en cache
     les données d'authentification qu'un fournisseur vient de rechercher ou de
-    générer. Vous trouverez des exemples d'utilisation à <a
-    href="http://svn.eu.apache.org/viewvc?view=revision&amp;revision=957072"
-    >r957072</a>, où trois fournisseurs authn sont activés pour la mise
-    en cache.</p>
+    générer. La déclaration est dans <code>mod_auth.h</code> :</p>
+
+    <highlight language="c">
+void ap_authn_cache_store(request_rec *r, const char *module,
+                          const char *user, const char *realm,
+                          const char *data);
+    </highlight>
+
+    <p>Ici, <var>module</var> est le nom par lequel le fournisseur est listé
+    par la directive <directive
+    module="mod_authn_socache">AuthnCacheProvideFor</directive>,
+    <var>realm</var> est égal à <code>NULL</code> pour l’authentification de
+    base et <var>data</var> est le hachage du mot de passe ou le hachage du
+    condensé d’authentification trouvé pour <var>user</var>.</p>
+
+    <p>Un fournisseur trouve la fonction une fois la configuration chargée (car
+    <module>mod_authn_socache</module> peut ne pas être présent), et y fait
+    appel dès qu’il a trouvé les données d’authentification d’un utilisateur :</p>
+
+    <highlight language="c">
+static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store) *authn_cache_store = NULL;
+
+static void opt_retr(void)
+{
+    authn_cache_store = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store);
+}
+
+static authn_status check_password(request_rec *r, const char *user,
+                                   const char *password)
+{
+    const char *hash;
+
+    /* ... recherche du hachage du mot de passe de l’utilisateur ... */
+
+    if (authn_cache_store != NULL) {
+        authn_cache_store(r, "example", user, NULL, hash);
+    }
+
+    /* ... validation du mot de passe par rapport au hachage ... */
+}
+
+static void register_hooks(apr_pool_t *p)
+{
+    /* ... */
+    ap_hook_optional_fn_retrieve(opt_retr, NULL, NULL, APR_HOOK_MIDDLE);
+}
+    </highlight>
+
+    <p>Les fournisseurs de <module>mod_authn_file</module>,
+    <module>mod_authn_dbm</module> et <module>mod_authn_dbd</module>, sont
+    activés pour la mise en cache de cette manière.</p>
 </section>
 
 <directivesynopsis>
@@ -209,23 +257,52 @@ cache</description>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-    <p>Cette directive permet de spécifier une chaîne à utiliser avec le
-    nom d'utilisateur fourni (et le domaine d'authentification - realm -
-    dans le cas d'une authentification à base de condensés) lors de la
-    construction d'une clé de cache. Ceci permet de lever l'ambiguïté
-    entre plusieurs noms d'utilisateurs identiques servant différentes
-    zones d'authentification sur le serveur.</p>
-    <p>Il y a deux valeurs spéciales pour le paramètre : <code>directory</code>,
-    qui utilise le contexte de répertoire de la requête comme chaîne, et
-    <code>server</code>, qui utilise le nom du serveur virtuel.</p> <p>La valeur
-    par défaut est <code>directory</code>, qui est aussi la définition la plus
-    courante. Ceci est cependant loin d'être optimal, car par exemple,
-    <var>$app-base</var>, <var>$app-base/images</var>,
-    <var>$app-base/scripts</var> et <var>$app-base/media</var>
-    possèderont chacun leur propre clé de cache. Il est préférable
-    d'utiliser le fournisseur de mot de passe : par exemple un fichier
-    <var>htpasswd</var> ou une table de base de données.</p>
-    <p>Les contextes peuvent être partagés entre différentes zones du
+    <p>Cette directive permet de spécifier une chaîne à utiliser avec le nom du
+    fournisseur qui a produit l’entrée, le type d’authentification <directive
+    module="mod_authn_core">AuthType</directive>, le nom d’utilisateur spécifié
+    et le domaine d'authentification (realm) (pour l’authentification de base,
+    l’espace de protection spécifié par la directive <directive
+    module="mod_authn_core">AuthName</directive>) lors de la construction d'une
+    clé de cache. Ceci permet de lever l'ambiguïté entre plusieurs noms
+    d'utilisateurs identiques servant différentes zones d'authentification sur
+    le serveur.</p>
+    <p>Il y a deux valeurs spéciales pour le paramètre :
+    <code>directory</code>, qui utilise le serveur (nom d’hôte et port) et le
+    répertoire de l’URI de la requête, et <code>server</code>, qui utilise les
+    nom et port du serveur virtuel.</p>
+    <p>La valeur par défaut est <code>directory</code>. Le comportement par
+    défaut distingue les résultats des fournisseurs dorsaux uniquement lorsque
+    le chemin d'URL (de type répertoire), le fournisseur ou le <directive
+    module="mod_authn_core">AuthName</directive> diffèrent. Une configuration
+    qui fait varier la source des identifiants au sein d'un même répertoire et
+    d'un même <directive module="mod_authn_core">AuthName</directive> — par
+    exemple, des sections <directive module="core"
+    type="section">Files</directive> comportant des paramètres <directive
+    module="mod_authn_file">AuthUserFile</directive> différents — doit attribuer
+    à chaque source son propre <directive
+    module="mod_authn_core">AuthName</directive> ou son propre
+    <directive>AuthnCacheContext</directive> personnalisé ; sinon les sources
+    vont partager les entrées de cache et un mot de passe valable pour une
+    source sera accepté pour les autres.</p>
+    <p>Avec le contexte <code>directory</code>, <var>$app-base</var>,
+    <var>$app-base/images</var>, <var>$app-base/scripts</var> et
+    <var>$app-base/media</var> ont chacun leurs propres entrées de cache.
+    Lorsqu'une arborescence de répertoires entière constitue une zone
+    d'authentification unique reposant sur une source d'identifiants donnée,
+    définissez plutôt la directive <directive>AuthnCacheContext</directive> avec
+    le fournisseur de mots de passe — par exemple, un fichier
+    <var>htpasswd</var> ou une table de base de données — et utilisez ce même
+    contexte pour l'ensemble de la zone.</p>
+    <p>Un contexte personnalisé partagé n’est sûr que si chaque requête de son
+    domaine est vérifiée avec la même source de données d’authentification. Si
+    différentes sources de données d’authentification sont utilisées dans le
+    domaine d’un contexte personnalisé (différents fichiers de mots de passe ou
+    tables de bases de données, ou des requêtes pour différentes ressources), les
+    entrées sont partagées entre elles, et un mot de passe valable pour une
+    source sera accepté pour les autres. Attribuez à chaque source de données
+    d’authentification distincte son propre contexte.</p>
+
+       <p>Les contextes peuvent être partagés entre différentes zones du
     serveur, où les données d'authentification sont partagées. Ceci est
     cependant susceptible de créer des trous de sécurité de type
     cross-site ou cross-application, et cette directive n'est donc pas
