@@ -634,7 +634,8 @@ static apr_status_t beacon_resolve(apr_pool_t *p, const char *url,
  * else the first listener.  Either output may remain unset (host NULL / port 0)
  * if no listeners are configured.
  */
-static void beacon_server_default_addr(server_rec *s, const char **host_out,
+static void beacon_server_default_addr(server_rec *s, apr_pool_t *p,
+                                       const char **host_out,
                                        apr_port_t *port_out)
 {
     const char *host = NULL;
@@ -654,12 +655,15 @@ static void beacon_server_default_addr(server_rec *s, const char **host_out,
         }
     }
     if (match && match->bind_addr) {
-        char *ip = NULL;
+        char ip[APRMAXHOSTLEN];
         if (!port) {
             port = match->bind_addr->port;
         }
-        if (apr_sockaddr_ip_get(&ip, match->bind_addr) == APR_SUCCESS) {
-            host = ip;
+        /* Not apr_sockaddr_ip_get(): it would allocate from the listener's
+         * pool, the process pool, which this watchdog thread must not use. */
+        if (apr_sockaddr_ip_getbuf(ip, sizeof ip, match->bind_addr)
+                == APR_SUCCESS) {
+            host = apr_pstrdup(p, ip);
         }
     }
 
@@ -704,7 +708,7 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
          * is for non-privileged service ports.) */
         const char *defhost;
         apr_port_t defport;
-        beacon_server_default_addr(s, &defhost, &defport);
+        beacon_server_default_addr(s, ctx->open_pool, &defhost, &defport);
         if ((rv = beacon_resolve(ctx->open_pool, ctx->sub_url, defhost, defport,
                                  &ctx->addr)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
