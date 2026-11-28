@@ -194,13 +194,29 @@ static void pcharacters(void *ctxt, const xmlChar *uchars, int length)
     FLUSH;
 }
 
+/* Whether a successful match's offsets are within [start, len] and in
+ * order.  Some PCRE versions accept \K in a lookaround, which can report
+ * a match starting after its end or before the start offset; such a match
+ * is treated as no match.
+ */
+static int match_in_range(const ap_regmatch_t *m, apr_size_t start,
+                          apr_size_t len)
+{
+    int ok = (m->rm_so >= 0
+              && (apr_size_t)m->rm_so >= start
+              && m->rm_so <= m->rm_eo
+              && (apr_size_t)m->rm_eo <= len);
+    AP_DEBUG_ASSERT(ok);
+    return ok;
+}
+
 static void dump_content(saxctxt *ctx)
 {
     urlmap *m;
     char *found;
     size_t s_from, s_to;
     size_t match;
-    int nmatch;
+    int nmatch, eflags, i;
     ap_regmatch_t pmatch[10];
     size_t len, offs;
     urlmap *themap = ctx->map;
@@ -224,7 +240,33 @@ static void dump_content(saxctxt *ctx)
             temp.strlen = 0;
             nmatch = 10;
             offs = 0;
-            while (!ap_regexec(m->from.r, ctx->vb.buf+offs, nmatch, pmatch, 0)) {
+            eflags = 0;
+            len = strlen(ctx->vb.buf);
+            do {
+                /* Match from the current offset in the whole buffer (so that
+                 * ^, \b, lookbehinds... keep their meaning), the offsets are
+                 * then made relative to offs below.
+                 */
+                if (ap_regexec_ex(m->from.r, ctx->vb.buf, len, offs,
+                                  nmatch, pmatch, eflags)
+                    || !match_in_range(&pmatch[0], offs, len)) {
+                    if (!eflags) {
+                        break;
+                    }
+                    /* No non-empty match right after an empty one, consume
+                     * the next char and retry a "normal" match from there.
+                     */
+                    ap_varbuf_strmemcat(&temp, ctx->vb.buf+offs, 1);
+                    ++offs;
+                    eflags = 0;
+                    continue;
+                }
+                for (i = 0; i < nmatch; ++i) {
+                    if (pmatch[i].rm_so >= 0) {
+                        pmatch[i].rm_so -= offs;
+                        pmatch[i].rm_eo -= offs;
+                    }
+                }
                 match = pmatch[0].rm_so;
                 s_from = pmatch[0].rm_eo - match;
                 VERBOSEB(
@@ -240,7 +282,14 @@ static void dump_content(saxctxt *ctx)
                 ap_varbuf_regsub(&temp, m->to, ctx->vb.buf+offs, nmatch, pmatch, 0);
                 /* Continue past the match */
                 offs += pmatch[0].rm_eo;
-            }
+                /* After an empty match, the same (empty) match at the same
+                 * position would loop forever: like pcre2_substitute() or
+                 * Perl's /g, ask for a non-empty match at this position
+                 * first, otherwise skip a char (above).
+                 */
+                eflags = (s_from == 0) ? AP_REG_NOTEMPTY_ATSTART | AP_REG_ANCHORED
+                                       : 0;
+            } while (ctx->vb.buf[offs]);
             /* Copy any remaining text */
             ap_varbuf_strcat(&temp, ctx->vb.buf+offs);
             /* Replace the original buffer with the result */
@@ -354,6 +403,7 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
     char *found;
     saxctxt *ctx = (saxctxt*) ctxt;
     size_t nmatch;
+    int eflags;
     ap_regmatch_t pmatch[10];
 #ifndef GO_FASTER
     int verbose = APLOGrtrace1(ctx->f->r);
@@ -459,7 +509,9 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                         if (m->flags & M_REGEX) {
                             nmatch = 10;
                             if (!ap_regexec(m->from.r, ctx->vb.buf, nmatch,
-                                            pmatch, 0)) {
+                                            pmatch, 0)
+                                && match_in_range(&pmatch[0], 0,
+                                                  strlen(ctx->vb.buf))) {
                                 ++num_match;
                                 match = pmatch[0].rm_so;
                                 s_from = pmatch[0].rm_eo - match;
@@ -522,8 +574,29 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                             temp.strlen = 0;
                             nmatch = 10;
                             offs = 0;
-                            while (!ap_regexec(m->from.r, ctx->vb.buf+offs,
-                                               nmatch, pmatch, 0)) {
+                            eflags = 0;
+                            len = strlen(ctx->vb.buf);
+                            do {
+                                /* See dump_content() */
+                                if (ap_regexec_ex(m->from.r, ctx->vb.buf, len,
+                                                  offs, nmatch, pmatch,
+                                                  eflags)
+                                    || !match_in_range(&pmatch[0], offs,
+                                                       len)) {
+                                    if (!eflags) {
+                                        break;
+                                    }
+                                    ap_varbuf_strmemcat(&temp, ctx->vb.buf+offs, 1);
+                                    ++offs;
+                                    eflags = 0;
+                                    continue;
+                                }
+                                for (i = 0; i < (int)nmatch; ++i) {
+                                    if (pmatch[i].rm_so >= 0) {
+                                        pmatch[i].rm_so -= offs;
+                                        pmatch[i].rm_eo -= offs;
+                                    }
+                                }
                                 match = pmatch[0].rm_so;
                                 s_from = pmatch[0].rm_eo - match;
                                 VERBOSE({
@@ -542,7 +615,10 @@ static void pstartElement(void *ctxt, const xmlChar *uname,
                                 /* Continue past the match */
                                 offs += pmatch[0].rm_eo;
                                 ++num_match;
-                            }
+                                eflags = (s_from == 0)
+                                         ? AP_REG_NOTEMPTY_ATSTART | AP_REG_ANCHORED
+                                         : 0;
+                            } while (ctx->vb.buf[offs]);
                             /* Copy any remaining text */
                             ap_varbuf_strcat(&temp, ctx->vb.buf+offs);
                             /* Replace buffer */

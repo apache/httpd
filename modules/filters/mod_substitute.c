@@ -124,6 +124,22 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 
 #define CAP2LINEMAX(n) ((n) < (apr_size_t)200 ? (int)(n) : 200)
 
+/* Whether a successful match's offsets are within [start, len] and in
+ * order.  Some PCRE versions accept \K in a lookaround, which can report
+ * a match starting after its end or before the start offset; such a match
+ * is treated as no match.
+ */
+static int match_in_range(const ap_regmatch_t *m, apr_size_t start,
+                          apr_size_t len)
+{
+    int ok = (m->rm_so >= 0
+              && (apr_size_t)m->rm_so >= start
+              && m->rm_so <= m->rm_eo
+              && (apr_size_t)m->rm_eo <= len);
+    AP_DEBUG_ASSERT(ok);
+    return ok;
+}
+
 static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                                  apr_bucket_brigade *mybb,
                                  apr_pool_t *pool)
@@ -283,9 +299,48 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                     const char *pos = buff;
                     char *repl;
                     apr_size_t space_left = cfg->max_line_length;
-                    while (!ap_regexec_len(script->regexp, pos, left,
-                                       AP_MAX_REG_MATCH, regm, 0)) {
+                    int eflags = 0;
+                    for (;;) {
                         apr_status_t rv;
+                        int n;
+                        /* Match from the current position in the whole line
+                         * (so that ^, \b, lookbehinds... keep their meaning),
+                         * the offsets are then made relative to pos below.
+                         */
+                        if (ap_regexec_ex(script->regexp, buff, bytes,
+                                          pos - buff, AP_MAX_REG_MATCH, regm,
+                                          eflags)
+                            || !match_in_range(&regm[0], pos - buff, bytes)) {
+                            if (!eflags || !left) {
+                                break;
+                            }
+                            /* No non-empty match right after an empty one,
+                             * consume the next char and retry a "normal"
+                             * match from there (see below).
+                             */
+                            if (script->flatten && !force_quick) {
+                                if (vb.strlen >= cfg->max_line_length)
+                                    return APR_ENOMEM;
+                                ap_varbuf_strmemcat(&vb, pos, 1);
+                            }
+                            else {
+                                if (space_left <= 1)
+                                    return APR_ENOMEM;
+                                space_left--;
+                                apr_bucket_split(b, 1);
+                                b = APR_BUCKET_NEXT(b);
+                            }
+                            pos++;
+                            left--;
+                            eflags = 0;
+                            continue;
+                        }
+                        for (n = 0; n < AP_MAX_REG_MATCH; ++n) {
+                            if (regm[n].rm_so >= 0) {
+                                regm[n].rm_so -= pos - buff;
+                                regm[n].rm_eo -= pos - buff;
+                            }
+                        }
                         ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, f->r,
                                       "Matching found");
                         have_match = 1;
@@ -336,6 +391,18 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                          */
                         pos += regm[0].rm_eo;
                         left -= regm[0].rm_eo;
+                        if (!left) {
+                            break;
+                        }
+                        /* After an empty match, the same (empty) match at
+                         * the same position would loop forever: like
+                         * pcre2_substitute() or Perl's /g, ask for a
+                         * non-empty match at this position first, otherwise
+                         * skip a char (above).
+                         */
+                        eflags = (regm[0].rm_eo == regm[0].rm_so)
+                                 ? AP_REG_NOTEMPTY_ATSTART | AP_REG_ANCHORED
+                                 : 0;
                     }
                     if (have_match && script->flatten && !force_quick) {
                         char *copy;

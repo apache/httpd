@@ -2593,6 +2593,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry,
 
             /* see ap_pregsub() in server/util.c */
             if (bri->source && n < AP_MAX_REG_MATCH
+                && bri->regmatch[n].rm_so >= 0
                 && bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
                 span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
                 if (entry && (entry->flags & RULEFLAG_ESCAPEBACKREF)) {
@@ -4275,7 +4276,11 @@ test_str_l:
 
     case CONDPAT_AP_EXPR:
         {
-            const char *err, *source;
+            /* source (and regmatch) are only set by the expression if a
+             * capturing regex is actually evaluated, e.g. not when the
+             * expression short-circuits before reaching it.
+             */
+            const char *err, *source = NULL;
             rc = ap_expr_exec_re(r, p->expr, AP_MAX_REG_MATCH, regmatch,
                                  &source, &err);
             if (rc < 0 || err) {
@@ -4288,8 +4293,11 @@ test_str_l:
                 rc = (rc > 0) ? COND_RC_MATCH : COND_RC_NOMATCH;
             }
 
-            /* update briRC backref info */
-            if (rc && !(p->flags & CONDFLAG_NOTMATCH)) {
+            /* update briRC backref info, if the expression produced some
+             * (i.e. a capturing regex matched), otherwise keep the ones from
+             * the last matching RewriteCond
+             */
+            if (rc && !(p->flags & CONDFLAG_NOTMATCH) && source) {
                 ctx->briRC.source = source;
                 memcpy(ctx->briRC.regmatch, regmatch, sizeof(regmatch));
             }

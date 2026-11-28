@@ -162,8 +162,11 @@ AP_DECLARE(int) ap_rxplus_exec(apr_pool_t *pool, ap_rxplus_t *rx,
         newl = strlen(*newpattern);
         diffsz = newl - oldl;
         remainder = pattern + startl + oldl;
-        if (rx->flags & AP_REG_MULTI) {
-            /* recurse to do any further matches */
+        if ((rx->flags & AP_REG_MULTI) && startl + oldl > 0) {
+            /* recurse to do any further matches (unless the match was
+             * empty at the start of the pattern, which would recurse
+             * on the very same pattern indefinitely)
+             */
             ret += ap_rxplus_exec(pool, rx, remainder, &subs);
             if (ret > 1) {
                 /* a further substitution happened */
@@ -193,7 +196,8 @@ AP_DECLARE(int) ap_rxplus_nmatch(ap_rxplus_t *rx)
 AP_DECLARE(void) ap_rxplus_match(ap_rxplus_t *rx, int n, int *len,
                                  const char **match)
 {
-    if (n >= 0 && n < ap_rxplus_nmatch(rx)) {
+    if (n >= 0 && n < ap_rxplus_nmatch(rx) && rx->pmatch[n].rm_so >= 0
+        && rx->pmatch[n].rm_eo >= rx->pmatch[n].rm_so) {
         *match = rx->match + rx->pmatch[n].rm_so;
         *len = rx->pmatch[n].rm_eo - rx->pmatch[n].rm_so;
     }

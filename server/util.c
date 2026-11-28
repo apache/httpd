@@ -402,8 +402,10 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
                 src++;
             len++;
         }
-        else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
-            if (APR_SIZE_MAX - len <= pmatch[no].rm_eo - pmatch[no].rm_so)
+        else if (no < nmatch && pmatch[no].rm_so >= 0
+                 && pmatch[no].rm_so < pmatch[no].rm_eo) {
+            if (APR_SIZE_MAX - len <= (apr_size_t)(pmatch[no].rm_eo
+                                                   - pmatch[no].rm_so))
                 return APR_ENOMEM;
             len += pmatch[no].rm_eo - pmatch[no].rm_so;
         }
@@ -439,7 +441,8 @@ static apr_status_t regsub_core(apr_pool_t *p, char **result,
                 c = *src++;
             *dst++ = c;
         }
-        else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+        else if (no < nmatch && pmatch[no].rm_so >= 0
+                 && pmatch[no].rm_so < pmatch[no].rm_eo) {
             len = pmatch[no].rm_eo - pmatch[no].rm_so;
             memcpy(dst, source + pmatch[no].rm_so, len);
             dst += len;

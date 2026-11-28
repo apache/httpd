@@ -396,13 +396,22 @@ AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch,
                            int eflags)
 {
-    return ap_regexec_len(preg, string, strlen(string), nmatch, pmatch,
-                          eflags);
+    return ap_regexec_ex(preg, string, strlen(string), 0,
+                         nmatch, pmatch, eflags);
 }
 
-AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
-                               apr_size_t len, apr_size_t nmatch,
-                               ap_regmatch_t *pmatch, int eflags)
+AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg,
+                               const char *buff, apr_size_t len,
+                               apr_size_t nmatch, ap_regmatch_t *pmatch,
+                               int eflags)
+{
+    return ap_regexec_ex(preg, buff, len, 0, nmatch, pmatch, eflags);
+}
+
+AP_DECLARE(int) ap_regexec_ex(const ap_regex_t *preg,
+                              const char *buff, apr_size_t len, apr_size_t pos,
+                              apr_size_t nmatch, ap_regmatch_t *pmatch,
+                              int eflags)
 {
     int rc;
     int options = 0, to_free = 0;
@@ -412,7 +421,13 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
     match_data_pt data = get_match_data(ncaps, NULL, &to_free);
 #else
     int small_vector[POSIX_MALLOC_THRESHOLD * 3];
-    match_data_pt data = get_match_data(ncaps, small_vector, &to_free);
+    match_data_pt data;
+
+    /* PCRE1 uses ints, reject overflowing values */
+    if (len > APR_INT32_MAX || pos > APR_INT32_MAX) {
+        return AP_REG_INVARG;
+    }
+    data = get_match_data(ncaps, small_vector, &to_free);
 #endif
 
     if (!data) {
@@ -423,16 +438,22 @@ AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
         options |= PCREn(NOTBOL);
     if ((eflags & AP_REG_NOTEOL) != 0)
         options |= PCREn(NOTEOL);
+    if ((eflags & AP_REG_NOTEMPTY) != 0)
+        options |= PCREn(NOTEMPTY);
+    if ((eflags & AP_REG_NOTEMPTY_ATSTART) != 0)
+        options |= PCREn(NOTEMPTY_ATSTART);
+    if ((eflags & AP_REG_ANCHORED) != 0)
+        options |= PCREn(ANCHORED);
 
 #ifdef HAVE_PCRE2
     rc = pcre2_match((const pcre2_code *)preg->re_pcre,
                      (const unsigned char *)buff, len,
-                     0, options, data, NULL);
+                     pos, options, data, NULL);
     ovector = pcre2_get_ovector_pointer(data);
 #else
     ovector = data;
     rc = pcre_exec((const pcre *)preg->re_pcre, NULL, buff, (int)len,
-                   0, options, ovector, ncaps * 3);
+                   (int)pos, options, ovector, ncaps * 3);
 #endif
 
     if (rc >= 0) {

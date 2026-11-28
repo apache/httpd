@@ -18,6 +18,9 @@ UWSGI_PORT = 5200
 
 @pytest.fixture(autouse=True, scope="class")
 def _proxy_uwsgi_setup(env):
+    env.require(env.has_shared_module("proxy_uwsgi"), "mod_proxy_uwsgi not available",
+                dep="mod_proxy_uwsgi",
+                detected=f"no mod_proxy_uwsgi.so in {env.libexec_dir}")
     faker = UwsgiFaker(port=UWSGI_PORT)
     faker.start()
 

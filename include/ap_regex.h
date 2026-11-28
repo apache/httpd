@@ -82,9 +82,14 @@ extern "C" {
 #define AP_REG_NOMEM 0x20    /* nomem in our code */
 #define AP_REG_DOTALL 0x40   /* perl's /s flag */
 
+#define AP_REG_NOTEMPTY 0x080 /**< Empty match not valid */
+#define AP_REG_ANCHORED 0x100 /**< Match at the first position */
+
 #define AP_REG_DOLLAR_ENDONLY 0x200 /* '$' matches at end of subject string only */
 
 #define AP_REG_NO_DEFAULT 0x400 /**< Don't implicitely add AP_REG_DEFAULT options */
+
+#define AP_REG_NOTEMPTY_ATSTART 0x800 /**< Empty match not valid at first position */
 
 #define AP_REG_MATCH "MATCH_" /**< suggested prefix for ap_regname */
 
@@ -169,7 +174,8 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
  * @return 0 for successful match, \p AP_REG_NOMATCH otherwise
  */
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
-                           apr_size_t nmatch, ap_regmatch_t *pmatch, int eflags);
+                           apr_size_t nmatch, ap_regmatch_t *pmatch,
+                           int eflags);
 
 /**
  * Match a string with given length against a pre-compiled regex. The string
@@ -183,10 +189,28 @@ AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
  *                                             other flags are ignored)
  * @return 0 for successful match, AP_REG_NOMATCH otherwise
  */
-AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg, const char *buff,
-                               apr_size_t len, apr_size_t nmatch,
-                               ap_regmatch_t *pmatch, int eflags);
+AP_DECLARE(int) ap_regexec_len(const ap_regex_t *preg,
+                               const char *buff, apr_size_t len,
+                               apr_size_t nmatch, ap_regmatch_t *pmatch,
+                               int eflags);
 
+/**
+ * Match a string with given length and at a given offset against a
+ * pre-compiled regex. The string does not need to be NUL-terminated.
+ * @param preg The pre-compiled regex
+ * @param buff The string to match
+ * @param len Length of the string to match
+ * @param pos Offset in the string where the match should (re)start
+ * @param nmatch Provide information regarding the location of any matches
+ * @param pmatch Provide information regarding the location of any matches
+ * @param eflags Bitwise OR of AP_REG_* flags (NOTBOL and NOTEOL supported,
+ *                                             other flags are ignored)
+ * @return 0 for successful match, AP_REG_NOMATCH otherwise
+ */
+AP_DECLARE(int) ap_regexec_ex(const ap_regex_t *preg,
+                              const char *buff, apr_size_t len, apr_size_t pos,
+                              apr_size_t nmatch, ap_regmatch_t *pmatch,
+                              int eflags);
 /**
  * Return the error code returned by regcomp or regexec into error messages
  * @param errcode the error code returned by regexec or regcomp
