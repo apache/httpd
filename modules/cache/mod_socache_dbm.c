@@ -199,14 +199,23 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
 
 static void socache_dbm_destroy(ap_socache_instance_t *ctx, server_rec *s)
 {
+    apr_pool_t *p;
+
+    /* This runs from a cleanup of the pool the instance was created in,
+     * whose subpools, ctx->pool included, are destroyed before its
+     * cleanups are run.  Use a temporary pool for the file names. */
+    if (apr_pool_create(&p, NULL) != APR_SUCCESS) {
+        return;
+    }
     /* the correct way */
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, DBM_FILE_SUFFIX_DIR, NULL));
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, DBM_FILE_SUFFIX_PAG, NULL));
+    unlink(apr_pstrcat(p, ctx->data_file, DBM_FILE_SUFFIX_DIR, NULL));
+    unlink(apr_pstrcat(p, ctx->data_file, DBM_FILE_SUFFIX_PAG, NULL));
     /* the additional ways to be sure */
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".dir", NULL));
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".pag", NULL));
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".db", NULL));
+    unlink(apr_pstrcat(p, ctx->data_file, ".dir", NULL));
+    unlink(apr_pstrcat(p, ctx->data_file, ".pag", NULL));
+    unlink(apr_pstrcat(p, ctx->data_file, ".db", NULL));
     unlink(ctx->data_file);
+    apr_pool_destroy(p);
 }
 
 static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,

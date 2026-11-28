@@ -1,0 +1,2 @@
+  *) mod_cache_socache: Prevent invalid response lengths when reading
+     truncated cache entries.  [arshiya tabasum <arshi@bugqore.com>]
