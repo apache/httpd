@@ -1,7 +1,10 @@
+import base64
+import contextlib
 import hashlib
 import inspect
 import logging
 import os
+import sqlite3
 from typing import List, Optional
 
 from pyhttpd.env import HttpdTestEnv, HttpdTestSetup
@@ -16,7 +19,10 @@ class AAATestSetup(HttpdTestSetup):
         super().__init__(env=env)
         self.add_source_dir(os.path.dirname(inspect.getfile(AAATestSetup)))
         self.add_modules(["auth_digest", "authn_file", "authn_core",
-                          "authz_core", "authz_user", "proxy", "proxy_http"])
+                          "authz_core", "authz_user", "proxy", "proxy_http",
+                          "authn_socache", "socache_shmcb"])
+        self.add_optional_modules(["dbd", "authn_dbd"])
+        self.add_cgi_module()
 
 
 class AAATestEnv(HttpdTestEnv):
@@ -30,15 +36,51 @@ class AAATestEnv(HttpdTestEnv):
     # accounts under the same realm.
     DIGEST_PASSWORD_VHOST2 = "vhost2pass2617"
 
+    DBD_USER = "dbduser"
+    DBD_PASSWORD = "dbdpass2617"
+    DBD_ROLE = "editor"
+    # A role too long to be cached with the password hash.
+    DBD_LONG_USER = "dbdlonguser"
+    DBD_LONG_ROLE = "r" * 300
+    # A user whose role column is SQL NULL.
+    DBD_NULL_USER = "dbdnulluser"
+
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
-        self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core"])
+        self.add_httpd_log_modules(["auth_digest", "authn_file", "authz_core",
+                                    "authn_socache", "authn_dbd", "dbd"])
         self._digest_pwfile = os.path.join(self.server_dir, "digest.passwd")
         self._digest_pwfile2 = os.path.join(self.server_dir, "digest2.passwd")
+        self._dbd_file = os.path.join(self.server_dir, "authn_dbd.sqlite3")
 
     def setup_httpd(self, setup: HttpdTestSetup = None):
         super().setup_httpd(setup=AAATestSetup(env=self))
         self._write_digest_pwfile()
+        self._write_dbd_file()
+
+    def _write_dbd_file(self):
+        if os.path.exists(self._dbd_file):
+            os.remove(self._dbd_file)
+        con = sqlite3.connect(self._dbd_file)
+        try:
+            con.execute("CREATE TABLE users (user TEXT, password TEXT, role TEXT)")
+            # "{SHA}" + base64(sha1(password)): the format ap_password_validate()
+            # checks itself, without depending on which crypt(3) algorithms the
+            # host libc offers.
+            digest = hashlib.sha1(self.DBD_PASSWORD.encode()).digest()
+            pw_hash = "{SHA}" + base64.b64encode(digest).decode()
+            for user, role in [(self.DBD_USER, self.DBD_ROLE),
+                               (self.DBD_LONG_USER, self.DBD_LONG_ROLE),
+                               (self.DBD_NULL_USER, None)]:
+                con.execute("INSERT INTO users (user, password, role) "
+                            "VALUES (?, ?, ?)", (user, pw_hash, role))
+            con.commit()
+        finally:
+            con.close()
+
+    @property
+    def dbd_file(self) -> str:
+        return self._dbd_file
 
     def _write_digest_pwfile(self):
         def ha1(user, password):
@@ -61,6 +103,21 @@ class AAATestEnv(HttpdTestEnv):
     @property
     def digest_pwfile2(self) -> str:
         return self._digest_pwfile2
+
+    @contextlib.contextmanager
+    def preserved_test_conf(self):
+        """Put back the installed test configuration on exit and restart
+        the server with it, for a test which installs its own while
+        sharing the package's server."""
+        with open(self._test_conf) as fd:
+            saved = fd.read()
+        try:
+            yield
+        finally:
+            self.apache_stop()
+            with open(self._test_conf, 'w') as fd:
+                fd.write(saved)
+            assert self.apache_restart() == 0
 
     def configtest(self, directory_lines: List[str], extra_top_lines: Optional[List[str]] = None
                     ) -> ExecResult:
