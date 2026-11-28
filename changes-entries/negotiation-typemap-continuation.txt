@@ -1,0 +1,3 @@
+  *) mod_negotiation: Fix a stack buffer overflow when a type map has more
+     continuation lines for a header than fit in the 8 KiB line buffer.
+     [arshiya tabasum <arshi bugqore.com>]
