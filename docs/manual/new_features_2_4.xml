@@ -206,6 +206,10 @@
       <dd>systemd integration. It allows httpd to be used in a service with the systemd
       <code>Type=notify</code>.</dd>
 
+      <dt><module>mod_proxy_beacon</module> (available since 2.4.71)</dt>
+      <dd>Backends announce themselves over UDP and are added to a
+      <module>mod_proxy_balancer</module> balancer automatically.</dd>
+
     </dl>
   </section>
 

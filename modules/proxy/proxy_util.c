@@ -2074,31 +2074,18 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     }
     ptr = apr_uri_unparse(p, &uri, APR_URI_UNP_REVEALPASSWORD);
 
-    /*
-     * Workers can be associated w/ balancers or on their
-     * own; ie: the generic reverse-proxy or a worker
-     * in a simple ProxyPass statement. eg:
-     *
-     *      ProxyPass / http://www.example.com
-     *
-     * in which case the worker goes in the conf slot.
-     */
-    if (balancer) {
-        proxy_worker **runtime;
-        /* recall that we get a ptr to the ptr here */
-        runtime = apr_array_push(balancer->workers);
-        *worker = *runtime = apr_palloc(p, sizeof(proxy_worker));   /* right to left baby */
-        /* we've updated the list of workers associated with
-         * this balancer *locally* */
-        balancer->wupdated = apr_time_now();
-    } else if (conf) {
-        *worker = apr_array_push(conf->workers);
-    } else {
-        /* we need to allocate space here */
-        *worker = apr_palloc(p, sizeof(proxy_worker));
+    /* Reject names that cannot be stored before allocating anything for them:
+     * the allocation below is from p, which for runtime workers is the
+     * long-lived configuration pool, so a failed definition must not leave a
+     * proxy_worker_shared behind.  (These are the same limits PROXY_STRNCPY()
+     * enforces below.) */
+    if (strlen(uri.hostname) >= PROXY_RFC1035_HOSTNAME_SIZE) {
+        return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
     }
-    memset(*worker, 0, sizeof(proxy_worker));
-    
+    if (sockpath && strlen(sockpath) >= PROXY_WORKER_MAX_NAME_SIZE) {
+        return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
+    }
+
     /* right here we just want to tuck away the worker info.
      * if called during config, we don't have shm setup yet,
      * so just note the info for later. */
@@ -2121,7 +2108,16 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, APLOGNO(010117)
         "Alert! worker scheme (%s) too long; truncated to: %s", uri.scheme, wshared->scheme);
     }
+    /*
+     * Everything that can fail is checked before the worker is added to the
+     * balancer's (or conf's) worker array below: an entry appended here and then
+     * abandoned on error would stay in the array with no shared data (->s is
+     * NULL) for every later walk of the array to trip over.
+     */
     if (PROXY_STRNCPY(wshared->hostname_ex, uri.hostname) != APR_SUCCESS) {
+        if (mask & AP_PROXY_WORKER_IS_MALLOCED) {
+            free(wshared);
+        }
         return apr_psprintf(p, "worker hostname (%s) too long", uri.hostname);
     }
     if (PROXY_STRNCPY(wshared->hostname, uri.hostname) != APR_SUCCESS) {
@@ -2170,6 +2166,9 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     }
     if (sockpath) {
         if (PROXY_STRNCPY(wshared->uds_path, sockpath) != APR_SUCCESS) {
+            if (mask & AP_PROXY_WORKER_IS_MALLOCED) {
+                free(wshared);
+            }
             return apr_psprintf(p, "worker uds path (%s) too long", sockpath);
         }
 
@@ -2177,6 +2176,26 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     else {
         *wshared->uds_path = '\0';
     }
+
+    /*
+     * Workers can be associated w/ balancers or on their
+     * own; ie: the generic reverse-proxy or a worker
+     * in a simple ProxyPass statement. eg:
+     *
+     *      ProxyPass / http://www.example.com
+     *
+     * in which case the worker goes in the conf slot.
+     */
+    if (balancer) {
+        /* Added to the balancer's array only once it is complete (below). */
+        *worker = apr_palloc(p, sizeof(proxy_worker));
+    } else if (conf) {
+        *worker = apr_array_push(conf->workers);
+    } else {
+        /* we need to allocate space here */
+        *worker = apr_palloc(p, sizeof(proxy_worker));
+    }
+    memset(*worker, 0, sizeof(proxy_worker));
     if (!balancer) {
         wshared->status |= PROXY_WORKER_IGNORE_ERRORS;
     }
@@ -2186,6 +2205,14 @@ PROXY_DECLARE(char *) ap_proxy_define_worker_ex(apr_pool_t *p,
     (*worker)->cp = NULL;
     (*worker)->balancer = balancer;
     (*worker)->s = wshared;
+
+    if (balancer) {
+        proxy_worker **runtime = apr_array_push(balancer->workers);
+        *runtime = *worker;
+        /* we've updated the list of workers associated with
+         * this balancer *locally* */
+        balancer->wupdated = apr_time_now();
+    }
 
     return NULL;
 }
@@ -2397,7 +2424,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
 
     }
     if (rv == APR_SUCCESS) {
-        worker->s->status |= (PROXY_WORKER_INITIALIZED);
+        ap_proxy_set_wstatus(PROXY_WORKER_INITIALIZED_FLAG, 1, worker);
     }
     return rv;
 }
@@ -2416,7 +2443,7 @@ static int ap_proxy_retry_worker(const char *proxy_function, proxy_worker *worke
         if ((worker->s->status & PROXY_WORKER_IGNORE_ERRORS)
             || apr_time_now() > worker->s->error_time + worker->s->retry) {
             ++worker->s->retries;
-            worker->s->status &= ~PROXY_WORKER_IN_ERROR;
+            ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 0, worker);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, APLOGNO(00932)
                          "%s: worker for (%s:%d) has been marked for retry",
                          proxy_function, worker->s->hostname_ex,
@@ -4034,7 +4061,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         if (rv != APR_SUCCESS) {
             if (!(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
                 worker->s->error_time = apr_time_now();
-                worker->s->status |= PROXY_WORKER_IN_ERROR;
+                ap_proxy_set_wstatus(PROXY_WORKER_IN_ERROR_FLAG, 1, worker);
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, APLOGNO(00959)
                     "ap_proxy_connect_backend disabling worker for (%s:%d) "
                     "for %" APR_TIME_T_FMT "s",
@@ -4321,15 +4348,23 @@ ap_proxy_hashfunc(const char *str, proxy_hash_t method)
 
 PROXY_DECLARE(apr_status_t) ap_proxy_set_wstatus(char c, int set, proxy_worker *w)
 {
-    unsigned int *status = &w->s->status;
+    volatile apr_uint32_t *status = (volatile apr_uint32_t *)&w->s->status;
     char flag = toupper(c);
     proxy_wstat_t *pwt = proxy_wstat_tbl;
     while (pwt->bit) {
         if (flag == pwt->flag) {
-            if (set)
-                *status |= pwt->bit;
-            else
-                *status &= ~(pwt->bit);
+            /*
+             * The status word is shared by every process and thread, and is
+             * changed from several places at once (balancer-manager, health
+             * checks, ...), each setting only its own bit.
+             * A plain |= / &= can lose another one's change in between its
+             * read and its write.
+             */
+            apr_uint32_t old, upd;
+            do {
+                old = *status;
+                upd = set ? (old | pwt->bit) : (old & ~(apr_uint32_t)pwt->bit);
+            } while (apr_atomic_cas32(status, upd, old) != old);
             return APR_SUCCESS;
         }
         pwt++;
