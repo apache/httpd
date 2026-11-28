@@ -5,7 +5,7 @@ import pytest
 from pyhttpd.backport import not_backported
 from pyhttpd.conf import HttpdConf
 
-STRICT = not_backported("r1939129", "strict BufferSize parsing")
+STRICT = not_backported("r1939129", "strict BufferSize parsing", backported_in="2.4.72")
 
 
 class TestBufferSize:
