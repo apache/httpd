@@ -85,7 +85,8 @@ class ProxyTestSetup(HttpdTestSetup):
                           "proxy_connect", "lbmethod_byrequests", "remoteip"])
         # Modules only some tests use: a build without one skips those
         # tests (env.require()) instead of failing setup for the package.
-        self.add_optional_modules(["proxy_hcheck", "proxy_scgi", "proxy_ajp",
+        self.add_optional_modules(["proxy_hcheck", "proxy_beacon",
+                                   "proxy_scgi", "proxy_ajp",
                                    "proxy_uwsgi", "proxy_fcgi"])
 
 

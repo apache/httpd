@@ -20,6 +20,7 @@
 #include <apr_want.h>
 
 #include <httpd.h>
+#include <http_core.h>
 #include <http_protocol.h>
 #include <http_request.h>
 #include <http_log.h>
@@ -129,10 +130,80 @@ static int aptest_getline_echo(request_rec *r)
     return OK;
 }
 
+/*
+ * Handler "aptest-pool-probe": return how many bytes something else took
+ * from the process pool since mod_watchdog started its threads in this
+ * child, and from pconf since the end of child_init (other modules' own
+ * child_init legitimately use it), or since the last probe.  A pool moving
+ * to another block shows as a negative or very large value.  The probe
+ * allocates from both itself, so it must not run where others do: it is
+ * only set up when the config has "Define APTEST_POOL_PROBE".
+ */
+static char *pconf_mark, *process_mark;
+
+static void aptest_child_init_process(apr_pool_t *pchild, server_rec *s)
+{
+    if (ap_exists_config_define("APTEST_POOL_PROBE")) {
+        process_mark = apr_palloc(s->process->pool, 8);
+    }
+}
+
+static void aptest_child_init_pconf(apr_pool_t *pchild, server_rec *s)
+{
+    if (ap_exists_config_define("APTEST_POOL_PROBE")) {
+        pconf_mark = apr_palloc(s->process->pconf, 8);
+    }
+}
+
+#if !APR_POOL_DEBUG
+static apr_int64_t aptest_pool_delta(apr_pool_t *p, char **last)
+{
+    char *mark = apr_palloc(p, 8);
+    apr_int64_t delta = (apr_int64_t)(apr_uintptr_t)mark
+                        - (apr_int64_t)(apr_uintptr_t)*last - 8;
+
+    *last = mark;
+    return delta;
+}
+#endif
+
+static int aptest_pool_probe(request_rec *r)
+{
+#if !APR_POOL_DEBUG
+    apr_int64_t pconf, process;
+#endif
+
+    if (strcmp(r->handler, "aptest-pool-probe")) {
+        return DECLINED;
+    }
+    if (!pconf_mark || !process_mark) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "aptest-pool-probe: no Define APTEST_POOL_PROBE");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+#if APR_POOL_DEBUG
+    /* Every allocation is a separate block: nothing to measure. */
+    return HTTP_NOT_IMPLEMENTED;
+#else
+    pconf = aptest_pool_delta(r->server->process->pconf, &pconf_mark);
+    process = aptest_pool_delta(r->server->process->pool, &process_mark);
+    ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r,
+                  "aptest-pool-probe: pconf=%" APR_INT64_T_FMT
+                  " process=%" APR_INT64_T_FMT, pconf, process);
+    ap_set_content_type(r, "text/plain");
+    ap_rprintf(r, "pconf=%" APR_INT64_T_FMT " process=%" APR_INT64_T_FMT "\n",
+               pconf, process);
+    return OK;
+#endif
+}
+
 /* Install this module into the apache2 infrastructure.
  */
 static void aptest_hooks(apr_pool_t *pool)
 {
+    /* The watchdog threads start in mod_watchdog's child_init. */
+    static const char * const before_watchdog[] = { "mod_watchdog.c", NULL };
+
     ap_log_perror(APLOG_MARK, APLOG_TRACE1, 0, pool,
                   "installing hooks and handlers");
 
@@ -141,6 +212,11 @@ static void aptest_hooks(apr_pool_t *pool)
                               NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(aptest_allow_methods, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(aptest_getline_echo, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(aptest_child_init_process, NULL, before_watchdog,
+                       APR_HOOK_REALLY_LAST);
+    ap_hook_child_init(aptest_child_init_pconf, NULL, NULL,
+                       APR_HOOK_REALLY_LAST);
+    ap_hook_handler(aptest_pool_probe, NULL, NULL, APR_HOOK_MIDDLE);
 
 }
 
