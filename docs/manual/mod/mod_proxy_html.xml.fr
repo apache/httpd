@@ -2,6 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1933850 -->
+<!-- $LastChangedRevision$ -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -480,6 +481,33 @@ leur ensemble), il sera plus efficace de définir une taille de
 tampon initiale plus grande afin d'éviter d'avoir à le redimensionner
 dynamiquement au cours du traitement d'une requête.
 </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyHTMLMaxBufSize</name>
+<description>Définition de la taille maximale d’un script, d’une feuille de
+style ou d’un commentaire en ligne qui est réécrit.</description>
+<syntax>ProxyHTMLMaxBufSize <var>bytes</var></syntax>
+<default>ProxyHTMLMaxBufSize 1M</default>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+</contextlist>
+<compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP
+Apache.</compatibility>
+<usage>
+<p>Si la directive <directive
+module="mod_proxy_html">ProxyHTMLExtended</directive> est activée,
+<module>mod_proxy_html</module> copie en mémoire chaque script, feuille de style
+ou commentaire en ligne avant de le réécrire. Cette directive permet de limiter
+la taille de ce tampon. Un script, feuille de style ou commentaire dont la
+taille est supérieure à <var>bytes</var> est transmis tel qu’il est reçu du
+serveur dorsal sans qu’aucune règle <directive module="mod_proxy_html"
+>ProxyHTMLURLMap</directive> n’y soit appliquée, et un avertissement est
+consigné dans les journaux.</p>
+<p>La valeur peut être suivie de <code>K</code>, <code>M</code> ou
+<code>G</code> pour Ko, Mo ou Go. Une valeur de <code>0</code> supprime la
+limite.</p>
 </usage>
 </directivesynopsis>
 
