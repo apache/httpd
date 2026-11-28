@@ -2231,6 +2231,11 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
                                                apr_interval_time_t *timeout,
                                                const char *default_time_unit);
 
+#ifndef APR_ERANGE
+/* APR_ERANGE is not defined before APR 1.6. */
+#define APR_ERANGE ERANGE
+#endif
+
 /**
  * Parse a configuration parameter as a base 10 apr_off_t. The number may be
  * followed by a single optional suffix, 'b'/'B' (bytes), 'k'/'K' (multiply
