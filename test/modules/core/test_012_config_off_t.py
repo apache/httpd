@@ -15,9 +15,10 @@ DIRECTIVES = [
     "CacheSocacheReadTime",
 ]
 
-OFF_T = not_backported("r1939129, r1939163", "strict size parsing for off_t directives")
+OFF_T = not_backported("r1939129, r1939163", "strict size parsing for off_t directives",
+                       backported_in="2.4.72")
 OFF_T_WIN = not_backported("r1939129, r1939163", "strict size parsing for off_t directives",
-                           platform="win32")
+                           platform="win32", backported_in="2.4.72")
 
 # Without the change (2.4.x), these directives take the number at the start of
 # a value and ignore the rest, and these also take a value without one;

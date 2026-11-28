@@ -27,7 +27,8 @@ class TestLimitXMLRequestBody:
     # (without the change, only "-1" was rejected)
     @pytest.mark.parametrize("value", [
         pytest.param(v, marks=not_backported(
-            "r1939121", "rejecting invalid LimitXMLRequestBody values"))
+            "r1939121", "rejecting invalid LimitXMLRequestBody values",
+            backported_in="2.4.72"))
         for v in ["abc123", "123abc", "123foo456", "1.5", "0x10", "+", "-"]
     ] + ["-1"])
     def test_core_010_002(self, env, value):
@@ -41,7 +42,7 @@ class TestLimitXMLRequestBody:
     ])
     @not_backported("r1939121", "rejecting LimitXMLRequestBody values beyond a "
                     "32-bit long, which atol() truncates on Windows",
-                    platform="win32")
+                    platform="win32", backported_in="2.4.72")
     def test_core_010_003(self, env, value):
         r = self.check_config(env, value)
         assert r.exit_code != 0, f"{value} was accepted"
