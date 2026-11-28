@@ -3,6 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- English Revision: 1864135 -->
+<!-- $LastChangedRevision$ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -106,6 +107,10 @@ serveur(s) Redis.</description>
     
     <p>Les valeurs valides pour <directive>RedisTimeout</directive> sont des
     durées limitées à 1 heure. 0 signifie aucune limite.</p>
+
+    <p>Le délai de lecture/écriture du client Redis est précis à la seconde
+    près. Une valeur positive avec une partie fractionnaire est arrondie à la
+    seconde supérieure.</p>
 
     <note><p>Par défaut, l'unité de ces valeurs est la seconde, mais on peut
     spécifier via un suffixe des valeurs en millisecondes (ms), en secondes (s),
