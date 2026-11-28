@@ -2,6 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1939425 -->
+<!-- $LastChangedRevision$ -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -4270,6 +4271,19 @@ verrou pour tous les mutex ou seulement les mutex spécifiés</description>
             <td><code>ldap-cache</code></td>
             <td><module>mod_ldap</module></td>
             <td>cache de résultat de recherche LDAP</td>
+	</tr>
+         <tr>
+            <td><code>proxy</code></td>
+            <td><module>mod_proxy</module></td>
+            <td>aucune : accepté à titre de compatibilité, il n’a aucun effet
+	    (les processus d'exécution sont protégés par un mutex local à chaque
+	    processus enfant)</td>
+	</tr>
+        <tr>
+            <td><code>proxy-balancer-shm</code></td>
+            <td><module>mod_proxy_balancer</module></td>
+            <td>les membres ajoutés à un répartiteur de charge à l’exécution en
+	    mémoire partagée (gestionnaire du répartiteur de charge)</td>
 	</tr>
         <tr>
             <td><code>rewrite-map</code></td>
