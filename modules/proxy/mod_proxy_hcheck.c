@@ -97,7 +97,9 @@ static void *hc_create_config(apr_pool_t *p, server_rec *s)
     apr_pool_tag(ctx->p, "proxy_hcheck");
     ctx->templates = apr_array_make(p, 10, sizeof(hc_template_t));
     ctx->conditions = apr_table_make(p, 10);
-    ctx->hcworkers = apr_hash_make(p);
+    /* Filled by the watchdog at run time, while other threads allocate from
+     * pconf (balancers' workers arrays): keep it in our own pool. */
+    ctx->hcworkers = apr_hash_make(ctx->p);
     return ctx;
 }
 
