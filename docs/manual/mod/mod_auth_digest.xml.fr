@@ -2,6 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 1933503 -->
+<!-- $LastChangedRevision$ -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -261,7 +262,7 @@ concernant l'authentification à base de condensés</description>
 <description>La quantité de mémoire partagée à allouer afin de conserver
 les informations à propos des clients</description>
 <syntax>AuthDigestShmemSize <var>taille</var></syntax>
-<default>AuthDigestShmemSize 1000</default>
+<default>AuthDigestShmemSize 8192</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -275,6 +276,14 @@ les informations à propos des clients</description>
     pouvez simplement définir <directive>AuthDigestShmemSize</directive>
     à <code>0</code> et consulter le message d'erreur que renverra le
     serveur lorsqu'on essaiera de le démarrer.</p>
+
+    <p>La valeur par défaut permet de gérer environ 140 clients. Un client qui
+    est supprimé afin de laisser sa place à un autre ne se voit pas interdit
+    d’accès : un nouveau nombre à valeur unique (nonce) avec
+    <code>stale=true</code>est généré, ce qui entraîne une requête
+    supplémentaire. Notez qu’une requête qui n’authentifie pas mobilise aussi
+    une entrée, car le défi qui lui est renvoyé contient l’identifiant sous
+    lequel le client est suivi.</p>
 
     <p>L'argument <var>size</var> s'exprime par défaut en octets, mais
     vous pouvez suffixer le nombre par un <code>K</code> ou un
