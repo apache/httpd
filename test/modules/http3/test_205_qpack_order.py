@@ -67,19 +67,21 @@ class _Client(QuicConnectionProtocol):
 
 class TestQpackOrder:
 
-    @pytest.fixture(autouse=True, scope="class")
-    @classmethod
-    def _class_scope(cls, env):
-        # a new value per response: each header block needs a fresh insert
-        H3Conf(env).add_h3_vhost(directives=[
-            'Header always set Cache-Control "expr=max-age=%{QUERY_STRING}"',
-        ]).install()
-        assert env.apache_restart() == 0
-
-    def test_h3_205_01_inserts_sent_before_header_blocks(self, env):
+    @pytest.mark.parametrize("cap", [0, -1])
+    def test_h3_205_01_inserts_sent_before_header_blocks(self, env, cap):
         env.require(env.has_python_package("aioquic"),
                     "python package 'aioquic' is not installed",
                     dep="aioquic")
+        directives = [
+            'Header always set Cache-Control "expr=max-age=%{QUERY_STRING}"',
+        ]
+        if cap != 0:
+            # Explicit -1 enables nghttp3/client dynamic table; 0 tests the default
+            directives.insert(0, f"H3QpackEncoderTableCapacity {cap}")
+
+        H3Conf(env).add_h3_vhost(directives=directives).install()
+        assert env.apache_restart() == 0
+        
         authority = env.h3_domain
         seq = itertools.count()
 
@@ -108,12 +110,18 @@ class TestQpackOrder:
             hdrs = client.headers.get(sid, {})
             assert hdrs.get(b":status") == b"200", f"stream {sid}: {hdrs}"
             assert hdrs.get(b"cache-control") == value, f"stream {sid}: {hdrs}"
-        # Without the dynamic table (aioquic >= 1.8 turns it off) nothing can
-        # be blocked, and the check below would pass whatever the server does.
-        assert client.http.dynamic >= len(expected) // 2, \
-            f"only {client.http.dynamic} of {len(expected)} header blocks " \
-            f"used the QPACK dynamic table"
-        # A header block sent ahead of the encoder stream data it depends on
-        # stalls the stream, and a client that closes it then loses the response.
+            
+        if cap == 0:
+            # Default static-only mode: server must never emit dynamic inserts
+            assert client.http.dynamic == 0, \
+                f"expected 0 dynamic header blocks when cap=0, got {client.http.dynamic}"
+        else:  
+            # Without the dynamic table (aioquic >= 1.8 turns it off) nothing can
+            # be blocked, and the check below would pass whatever the server does.
+            assert client.http.dynamic >= len(expected) // 2, \
+                f"only {client.http.dynamic} of {len(expected)} header blocks " \
+                f"used the QPACK dynamic table"
+            # A header block sent ahead of the encoder stream data it depends on
+            # stalls the stream, and a client that closes it then loses the response.
         assert client.http.blocked == 0, \
             f"{client.http.blocked} of {len(expected)} header blocks were blocked"

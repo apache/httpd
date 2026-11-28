@@ -90,7 +90,9 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, h3q_conn* q
     CHECK(conf, return APR_EGENERAL;);
     settings.qpack_max_dtable_capacity = conf->h3_qpack_table_capacity;
     settings.qpack_blocked_streams = conf->h3_qpack_blocked_streams;
-
+    if(conf->h3_qpack_encoder_table_capacity > -1)
+	settings.qpack_encoder_max_dtable_capacity = (size_t) conf->h3_qpack_encoder_table_capacity;
+    
     if (s->limit_req_fields > 0 && s->limit_req_fieldsize > 0)
     {
         settings.max_field_section_size = (uint64_t)s->limit_req_fields * ((uint64_t)s->limit_req_fieldsize + 32);
@@ -174,7 +176,7 @@ apr_status_t h3_session_create_control_streams(h3_session* session)
     }
 
     track_stream(session, cs[0].id, cs[0].st);
-    track_stream(session, cs[1].id, cs[1].st);
+    session->qpack_encoder_stream = track_stream(session, cs[1].id, cs[1].st);
     track_stream(session, cs[2].id, cs[2].st);
     session->control_streams_created = 1;
     return APR_SUCCESS;
@@ -192,7 +194,7 @@ void h3_session_destroy(h3_session* session)
         nghttp3_conn_del(session->ngh3);
         session->ngh3 = NULL;
     }
-    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+    for (apr_hash_index_t* hi = apr_hash_first(session->pool, session->streams); hi; hi = apr_hash_next(hi))
     {
         h3_stream* stream = apr_hash_this_val(hi);
         if (stream)
@@ -240,7 +242,7 @@ apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, s
     while (offset < len)
     {
         apr_thread_mutex_lock(session->lock);
-        while (stream->response_buffered >= stream->response_buffer_limit && !stream->response_cancelled && !session->aborted && !session->ngh3_dead)
+        while (stream->response_buffered >= stream->response_buffer_limit && !stream->response_cancelled && !apr_atomic_read32(&session->aborted) && !apr_atomic_read32(&session->ngh3_dead))
         {
             apr_status_t rv = apr_thread_cond_timedwait(stream->response_cond, session->lock, apr_time_from_msec(100));
             if (rv != APR_SUCCESS && !APR_STATUS_IS_TIMEUP(rv))
@@ -249,7 +251,7 @@ apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, s
                 return rv;
             }
         }
-        if (stream->response_cancelled || session->aborted || session->ngh3_dead || !session->ngh3)
+        if (stream->response_cancelled || apr_atomic_read32(&session->aborted) || apr_atomic_read32(&session->ngh3_dead) || !session->ngh3)
         {
             apr_thread_mutex_unlock(session->lock);
             return APR_ECONNABORTED;
@@ -311,22 +313,27 @@ apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, s
     return APR_SUCCESS;
 }
 
-void h3_stream_response_complete(h3_stream* stream)
+size_t h3_stream_response_complete(h3_stream* stream)
 {
     if (!stream)
     {
-        return;
+        return 0;
     }
     h3_session* session = stream->session;
+    size_t resplen = 0;
     apr_thread_mutex_lock(session->lock);
     stream->response_complete = 1;
-    if (stream->response_submitted && session->ngh3 && !session->ngh3_dead)
+    if (stream->response_submitted && session->ngh3 && !apr_atomic_read32(&session->ngh3_dead))
     {
         (void)nghttp3_conn_resume_stream(session->ngh3, stream->stream_id);
     }
+
+    resplen = stream->response_len;
     apr_thread_cond_broadcast(stream->response_cond);
     apr_thread_mutex_unlock(session->lock);
     h3_session_wake(session);
+
+    return resplen;
 }
 
 void h3_stream_response_ack_locked(h3_stream* stream, uint64_t datalen)

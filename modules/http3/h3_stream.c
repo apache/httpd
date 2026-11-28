@@ -52,11 +52,20 @@ static void mark_ngh3_dead(h3_session* session, const char* op, int64_t stream_i
 /* Re-enable write-blocked streams once their QUIC send buffer has room. */
 static void unblock_writable_streams(h3_session* session)
 {
-    if (session->blocked_streams <= 0)
+    if (!session || session->blocked_streams <= 0 || !session->ngh3)
     {
         return;
     }
-    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+    
+    apr_pool_t* tmp_pool = NULL;
+    if (apr_pool_create(&tmp_pool, session->pool) != APR_SUCCESS)
+    {
+        return;
+    }
+    
+    apr_array_header_t* unblocked = apr_array_make(tmp_pool, 4, sizeof(h3_stream*));
+    
+    for (apr_hash_index_t* hi = apr_hash_first(tmp_pool, session->streams); hi; hi = apr_hash_next(hi))
     {
         h3_stream* h3s = apr_hash_this_val(hi);
         if (!h3s || !h3s->write_blocked)
@@ -67,17 +76,35 @@ static void unblock_writable_streams(h3_session* session)
         {
             continue; /* still full */
         }
+	*(h3_stream**)apr_array_push(unblocked) = h3s;
+    }
+    
+    for (int i = 0; i < unblocked->nelts; i++)
+    {
+        h3_stream* h3s = ((h3_stream**)unblocked->elts)[i];
+        if (!h3s || !h3s->write_blocked || !session->ngh3)
+        {
+            continue;
+        }
         h3s->write_blocked = 0;
-        session->blocked_streams--;
+	session->blocked_streams--;
         nghttp3_conn_unblock_stream(session->ngh3, h3s->stream_id);
     }
+    
+    apr_pool_destroy(tmp_pool);
 }
 
 void flush_nghttp3(h3_session* session)
 {
     CHECK(session);
-    CHECK(!session->ngh3_dead, return;);
+    CHECK(!apr_atomic_read32(&session->ngh3_dead), return;);
     unblock_writable_streams(session);
+
+    if (session->qpack_encoder_stream && session->qpack_encoder_stream->write_blocked)
+    {
+        goto drain_pending_free;
+    }
+    
     for (;;)
     {
         nghttp3_vec vec[16] = {0};
@@ -137,7 +164,7 @@ void flush_nghttp3(h3_session* session)
                 session->blocked_streams++;
             }
             nghttp3_conn_block_stream(session->ngh3, sid);
-            if (res.conn_blocked)
+            if (res.conn_blocked || h3s == session->qpack_encoder_stream)
             {
                 /* A stream written later in this pass could overtake this one,
                  * e.g. HEADERS overtaking the QPACK inserts they reference. */
@@ -146,6 +173,8 @@ void flush_nghttp3(h3_session* session)
             continue;
         }
     }
+
+ drain_pending_free:
     if (session->pending_free->nelts > 0)
     {
         while (session->pending_free->nelts > 0)
@@ -191,10 +220,17 @@ h3_stream* track_stream(h3_session* session, int64_t sid, h3q_stream* qstream)
 
 static void mark_ngh3_dead(h3_session* session, const char* op, int64_t stream_id, nghttp3_ssize liberr)
 {
-    session->ngh3_dead = 1;
-    session->abort_quic_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
-    session->abort_reason = nghttp3_strerror((int)liberr);
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "%s failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, op, (apr_int64_t)stream_id, session->abort_reason, (apr_int64_t)liberr, (apr_uint64_t)session->abort_quic_error_code);
+    uint64_t code = nghttp3_err_infer_quic_app_error_code((int)liberr);
+    const char* reason = nghttp3_strerror((int)liberr);
+
+    if (apr_atomic_cas32(&session->ngh3_dead, 1, 0) == 0)
+    {
+        session->abort_quic_error_code = code;
+        session->abort_reason = reason;
+        apr_atomic_set32(&session->aborted, 1);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "%s failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, op, (apr_int64_t)stream_id, reason, (apr_int64_t)liberr, (apr_uint64_t)code);
 }
 
 /* nghttp3 reports an RFC 9114 4.x header violation as one of these non-fatal read errors. */
@@ -237,7 +273,7 @@ static void reject_malformed_stream(h3_session* session, h3_stream* h3s, nghttp3
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, session->s, "closing HTTP/3 connection after %u client-caused stream errors (H3MaxStreamErrors %u)", (unsigned)session->stream_errors, (unsigned)limit);
         session->abort_quic_error_code = NGHTTP3_H3_EXCESSIVE_LOAD;
         session->abort_reason = "too many malformed requests";
-        session->ngh3_dead = 1;
+        apr_atomic_set32(&session->ngh3_dead,1);
     }
 }
 
@@ -401,12 +437,12 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
     unsigned int total_streams = apr_hash_count(session->streams);
     unsigned int iterations = 0;
     apr_array_header_t* snapshot = apr_array_make(loop_pool, 8, sizeof(h3_stream*));
-    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+    for (apr_hash_index_t* hi = apr_hash_first(loop_pool, session->streams); hi; hi = apr_hash_next(hi))
     {
         if (++iterations > total_streams + 100)
         {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "hash iteration did not terminate after %u entries (hash reports %u) - hash corruption, aborting connection", iterations, total_streams);
-            session->aborted = 1;
+            apr_atomic_set32(&session->aborted,1);
             break;
         }
         h3_stream* h3s = apr_hash_this_val(hi);
@@ -421,7 +457,7 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
     size_t start = snapshot->nelts > 0 ? session->stream_drain_cursor % (size_t)snapshot->nelts : 0;
     for (int offset = 0; offset < snapshot->nelts; offset++)
     {
-        if (session->ngh3_dead)
+        if (apr_atomic_read32(&session->ngh3_dead))
         {
             break;
         }
@@ -436,7 +472,7 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         {
             continue;
         }
-        if (drain_one_stream(session, h3s, data_read, &reads_remaining, &bytes_remaining) && !session->ngh3_dead)
+        if (drain_one_stream(session, h3s, data_read, &reads_remaining, &bytes_remaining) && !apr_atomic_read32(&session->ngh3_dead))
         {
             h3_stream** slot = (h3_stream**)apr_array_push(completed);
             *slot = h3s;
@@ -497,7 +533,7 @@ void h3_stream_acked(void* user, int64_t stream_id, size_t len)
 {
     h3_session* session = user;
     apr_thread_mutex_lock(session->lock);
-    if (!session->ngh3_dead)
+    if (!apr_atomic_read32(&session->ngh3_dead))
     {
         (void)nghttp3_conn_add_ack_offset(session->ngh3, stream_id, len);
     }

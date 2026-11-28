@@ -58,11 +58,11 @@ struct h3_session
     apr_thread_mutex_t* lock;
 
     apr_hash_t* streams;
-    int aborted;
+    volatile apr_uint32_t aborted;
     /* Number of streams write-blocked in nghttp3 (see flush_nghttp3). */
     int blocked_streams;
 
-    int ngh3_dead;
+    volatile apr_uint32_t ngh3_dead;
     uint64_t abort_quic_error_code;
     const char* abort_reason;
 
@@ -90,6 +90,8 @@ struct h3_session
         int64_t sid;
         h3_stream* h3s;
     } pending;
+	
+    h3_stream* qpack_encoder_stream;
 };
 
 struct h3_stream
@@ -201,7 +203,7 @@ nghttp3_ssize h3_session_read_data(nghttp3_conn* conn, int64_t stream_id, nghttp
 apr_status_t h3_stream_response_append(h3_stream* stream, const uint8_t* data, size_t len);
 
 /** Mark the response producer complete and resume a blocked nghttp3 reader. */
-void h3_stream_response_complete(h3_stream* stream);
+size_t h3_stream_response_complete(h3_stream* stream);
 
 /**
  * Account application response bytes acknowledged by nghttp3. The session

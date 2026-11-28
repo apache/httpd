@@ -73,7 +73,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread started");
     int work_pending = 0;
     int listener_failed = 0;
-    while (io->thread_running || io->active_sessions->nelts > 0)
+    while (apr_atomic_read32(&io->thread_running) || io->active_sessions->nelts > 0)
     {
         if (!work_pending)
         {
@@ -103,7 +103,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             } while (pumped > 0 && ++pump_rounds < H3_PUMP_BUDGET);
         }
 
-        if (io->thread_running)
+        if (apr_atomic_read32(&io->thread_running))
         {
             for (;;)
             {
@@ -113,7 +113,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
                     break;
                 }
                 /* The engine has already answered these clients: refuse them, or they wait out their idle timeout. */
-                if (io->draining)
+                if (apr_atomic_read32(&io->draining))
                 {
                     h3q_conn_refuse(io->qengine, conn); /* no new connections during a graceful stop */
                     continue;
@@ -132,7 +132,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
                 }
             }
         }
-        if (io->thread_running)
+        if (apr_atomic_read32(&io->thread_running))
         {
             /* Also while draining: a pending handshake counts as an MPM connection, so it must finish or time out. */
             progress_pending_handshakes(io);
@@ -156,7 +156,7 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
              * stream limit change in the engine, no worker output. The sweep still
              * serves it once a second, for its idle and stream timeouts. Every session
              * keeps its control streams, so a stream count cannot tell idle sessions. */
-            if (!io->draining && io->thread_running && !session->aborted
+            if (!apr_atomic_read32(&io->draining) && apr_atomic_read32(&io->thread_running) && !apr_atomic_read32(&session->aborted)
                 && apr_atomic_read32(&session->active_tasks) == 0
                 && !h3q_conn_take_activity(session->qconn)
                 && !apr_atomic_xchg32(&session->wake, 0)
@@ -167,16 +167,16 @@ void* APR_THREAD_FUNC h3_event_thread(apr_thread_t* thread, void* data)
             }
             session->next_sweep = now + apr_time_from_sec(1);
 
-            if (!session->aborted && service_session_pass(io, session))
+            if (!apr_atomic_read32(&session->aborted) && service_session_pass(io, session))
             {
                 work_pending = 1;
                 apr_atomic_set32(&session->wake, 1); /* the pass ran out of budget: serve it again next round */
             }
 
-            if (session->aborted)
+            if (apr_atomic_read32(&session->aborted))
             {
-                int is_rapid = (!io->thread_running || io->draining);
-                int shutdown_done = h3q_conn_shutdown(session->qconn, is_rapid, session->abort_quic_error_code, session->ngh3_dead ? session->abort_reason : NULL);
+                int is_rapid = (!apr_atomic_read32(&io->thread_running) || apr_atomic_read32(&io->draining));
+                int shutdown_done = h3q_conn_shutdown(session->qconn, is_rapid, session->abort_quic_error_code, apr_atomic_read32(&session->ngh3_dead) ? session->abort_reason : NULL);
 
                 if (shutdown_done && apr_atomic_read32(&session->active_tasks) == 0)
                 {

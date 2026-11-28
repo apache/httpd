@@ -60,7 +60,8 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     h3_server_conf* merged = apr_pcalloc(p, sizeof(h3_server_conf));
     h3_server_conf* base = (h3_server_conf*)base_conf;
     h3_server_conf* new = (h3_server_conf*)new_conf;
-
+    
+    merged->h3_enabled = new->h3_enabled != H3_FLAG_UNSET ? new->h3_enabled : base->h3_enabled;
     merged->h3_port = new->h3_port ? new->h3_port : base->h3_port;
     merged->h3_max_concurrent_streams = new->h3_max_concurrent_streams ? new->h3_max_concurrent_streams : base->h3_max_concurrent_streams;
     merged->h3_max_connections = new->h3_max_connections ? new->h3_max_connections : base->h3_max_connections;
@@ -80,6 +81,8 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_max_stream_errors = new->h3_max_stream_errors ? new->h3_max_stream_errors : base->h3_max_stream_errors;
     merged->h3_qpack_capacity_set = new->h3_qpack_capacity_set ? new->h3_qpack_capacity_set : base->h3_qpack_capacity_set;
     merged->h3_qpack_table_capacity = new->h3_qpack_capacity_set ? new->h3_qpack_table_capacity : base->h3_qpack_table_capacity;
+    merged->h3_qpack_encoder_capacity_set = new->h3_qpack_encoder_capacity_set ? new->h3_qpack_encoder_capacity_set : base->h3_qpack_encoder_capacity_set;
+    merged->h3_qpack_encoder_table_capacity = new->h3_qpack_encoder_capacity_set ? new->h3_qpack_encoder_table_capacity : base->h3_qpack_encoder_table_capacity;
     merged->h3_qpack_blocked_set = new->h3_qpack_blocked_set ? new->h3_qpack_blocked_set : base->h3_qpack_blocked_set;
     merged->h3_qpack_blocked_streams = new->h3_qpack_blocked_set ? new->h3_qpack_blocked_streams : base->h3_qpack_blocked_streams;
     merged->h3_min_workers = new->h3_min_workers ? new->h3_min_workers : base->h3_min_workers;
@@ -94,6 +97,17 @@ static int mpm_query(int code)
 {
     int value = 0;
     return ap_mpm_query(code, &value) == APR_SUCCESS ? value : -1;
+}
+
+static const char* set_h3_engine(cmd_parms* cmd, void* dummy H3_UNUSED, int flag)
+{
+     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+     if (err != NULL)
+	 return err;
+     h3_server_conf *conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+     CHECK(conf);
+     conf->h3_enabled = flag ? H3_FLAG_ON : H3_FLAG_OFF;
+     return NULL;
 }
 
 static const char* set_h3_port(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
@@ -315,6 +329,42 @@ static const char* set_h3_qpack_table_capacity(cmd_parms* cmd, void* dummy H3_UN
     CHECK(conf);
     conf->h3_qpack_table_capacity = (apr_uint32_t)val;
     conf->h3_qpack_capacity_set = 1;
+    return NULL;
+}
+
+static const char* set_h3_qpack_encoder_table_capacity(cmd_parms* cmd, void* dummy H3_UNUSED, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3QpackEncoderTableCapacity: empty value";
+    }
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    
+    if (strcmp(arg, "-1") == 0 || strcasecmp(arg, "auto") == 0)
+    {
+        conf->h3_qpack_encoder_table_capacity = -1;
+        conf->h3_qpack_encoder_capacity_set = 1;
+        return NULL;
+    }
+    
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv == APR_EINVAL)
+    {
+        return apr_psprintf(cmd->pool, "H3QpackEncoderTableCapacity: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3QpackEncoderTableCapacity: '%s' is out of representable range", arg);
+    }
+    if (val > H3_QPACK_TABLE_CAPACITY_MAX)
+    {
+        return apr_psprintf(cmd->pool, "H3QpackEncoderTableCapacity: '%s' is out of allowed range (0-%lu)", arg, (unsigned long)H3_QPACK_TABLE_CAPACITY_MAX);
+    }
+    
+    conf->h3_qpack_encoder_table_capacity = (apr_int32_t)val;
+    conf->h3_qpack_encoder_capacity_set = 1;
     return NULL;
 }
 
@@ -646,8 +696,22 @@ static int h3_sni_select_cert(SSL* ssl, void* arg)
     return 1; /* no match: the listener's own certificate */
 }
 
+int h3_is_enabled(const server_rec *s)
+{
+    server_rec *base = s ? s : ap_server_conf;
+    h3_server_conf *conf = ap_get_module_config(base->module_config, &http3_module);
+    
+    return conf ? conf->h3_enabled != H3_FLAG_OFF : 1;
+}
+
 int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp, server_rec* s)
 {
+    if (!h3_is_enabled(s)) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+			"mod_http3: inhibited globally via H3Engine Off");
+        return OK;
+    }
+	
     CHECK(p);
     CHECK(ptemp);
     CHECK(s);
@@ -687,6 +751,10 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
                 e->ctx = vc->ssl_ctx;
             }
             vc->host_port = get_server_port(vs);
+	    if (vc->h3_enabled == H3_FLAG_UNSET)
+            {
+                vc->h3_enabled = H3_FLAG_ON;
+            }
             if (vc->h3_port == 0)
             {
                 vc->h3_port = vc->host_port;
@@ -718,6 +786,10 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog H3_UNUSED, apr_pool_t* ptemp,
             if (!vc->h3_qpack_capacity_set)
             {
                 vc->h3_qpack_table_capacity = H3_QPACK_TABLE_CAPACITY_DEFAULT;
+            }
+	    if (!vc->h3_qpack_encoder_capacity_set)
+            {
+                vc->h3_qpack_encoder_table_capacity = 0;
             }
             if (!vc->h3_qpack_blocked_set)
             {
@@ -811,6 +883,8 @@ void* h3_merge_dir_config(apr_pool_t* p H3_UNUSED, void* base, void* add H3_UNUS
 }
 
 const command_rec h3_cmds[] = {
+    AP_INIT_FLAG("H3Engine", set_h3_engine, NULL, RSRC_CONF,
+		    "Enable or inhibit mod_http3 globally (on|off)"),
     AP_INIT_TAKE1("H3Port", set_h3_port, NULL, RSRC_CONF, "UDP port to listen on for QUIC/HTTP-3 (default: same as main server)"),
     AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 100)"),
     AP_INIT_TAKE1("H3MaxConnections", set_h3_max_connections, NULL, RSRC_CONF, "Maximum concurrent QUIC/HTTP/3 connections per child process (default: 256)"),
@@ -829,6 +903,7 @@ const command_rec h3_cmds[] = {
     AP_INIT_TAKE1("H3StreamTimeout", set_h3_stream_timeout, NULL, RSRC_CONF, "Seconds a response may make no progress before the stream is aborted (default: the server Timeout)"),
     AP_INIT_TAKE1("H3MaxStreamErrors", set_h3_max_stream_errors, NULL, RSRC_CONF, "Stream errors one connection may cause before it is closed with H3_EXCESSIVE_LOAD (default: 8)"),
     AP_INIT_TAKE1("H3QpackTableCapacity", set_h3_qpack_table_capacity, NULL, RSRC_CONF, "Bytes of QPACK dynamic table a client may use for request headers; 0 disables it (default: 4096)"),
+    AP_INIT_TAKE1("H3QpackEncoderTableCapacity", set_h3_qpack_encoder_table_capacity, NULL, RSRC_CONF, "Maximum QPACK dynamic table capacity used by the server encoder, -1 don't set a value : keep nghttp3 default settings (default: 0)"),
     AP_INIT_TAKE1("H3QpackBlockedStreams", set_h3_qpack_blocked_streams, NULL, RSRC_CONF, "Requests that may wait on a QPACK table insert that has not arrived; each one is unbounded memory (default: 0)"),
     AP_INIT_TAKE1("H3MinWorkers", set_h3_min_workers, NULL, RSRC_CONF, "Request worker threads started per child process (default: 16)"),
     AP_INIT_TAKE1("H3MaxWorkers", set_h3_max_workers, NULL, RSRC_CONF, "Maximum request worker threads per child process (default: 64)"),
