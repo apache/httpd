@@ -54,6 +54,7 @@
   <modulefile>mod_example_hooks.xml</modulefile>
   <modulefile>mod_expires.xml</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
+  <modulefile>mod_fcgid.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_firehose.xml</modulefile>
