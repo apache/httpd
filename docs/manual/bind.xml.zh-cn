@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1933438 $ -->
+<!-- Simplified Chinese translation : Isidore Wang <me@singledog.org> -->
+<!-- Reviewed by : He-TW -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="bind.xml.meta">
+
+  <title>绑定指定地址与端口</title>
+
+  <summary>
+    <p>配置Apache HTTP Server监听特定地址和端口。</p>
+  </summary>
+
+  <seealso><a href="vhosts/">虚拟主机</a></seealso>
+  <seealso><a href="dns-caveats.html">DNS问题</a></seealso>
+
+  <section id="overview">
+    <title>概览</title>
+
+    <related>
+      <modulelist>
+        <module>core</module>
+        <module>mpm_common</module>
+      </modulelist>
+      <directivelist>
+        <directive module="core" type="section">VirtualHost</directive>
+        <directive module="mpm_common">Listen</directive>
+      </directivelist>
+    </related>
+
+
+    <p>httpd在启动时会绑定到本地机器的某些端口和地址，以接受入站请求。
+    默认情况下，httpd会监听本地机器的所有地址。不过，有时可能需要对其进行配置，
+    指定它监听哪些端口、仅监听哪些特定地址，或者同时指定端口和地址。
+    这通常会与<a href="vhosts/">虚拟主机</a>功能结合使用，决定<code>httpd</code>如何响应发往
+    不同IP地址、主机名、端口的请求。</p>
+
+    <p><directive module="mpm_common">Listen</directive>指令用于指示服务器仅接受发往特定端口或
+    特定地址、端口组合的请求。如果仅在<directive module="mpm_common">Listen</directive>处指定
+    端口，那么服务器将会在所有接口上监听此端口的请求。如果同时指定了IP地址和端口，那么服务器将会监听
+    指定端口和接口。也可以使用多个<directive module="mpm_common">Listen</directive>指令指示服务器
+    监听多个地址和端口，服务器会响应任何来自列在<directive module="mpm_common">Listen</directive>指令中
+    端口和地址的请求。</p>
+
+    <p>例如，如果按下面的配置设置，服务器会接受所有接口中来自80、8000端口的连接：</p>
+
+    <example>
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
+    </example>
+
+    <p>通过下面的设置，可以让服务器在一个接口上监听80端口，在另一个接口上监听8000端口。</p>
+
+    <example>
+    <highlight language="config">
+Listen 192.0.2.1:80
+Listen 192.0.2.5:8000
+    </highlight>
+    </example>
+
+    <p>IPv6地址必须包含在下例所示的方括号内：</p>
+
+    <example>
+    <highlight language="config">
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
+    </example>
+
+    <note type="warning"><p>相互重叠或冲突的<directive
+    module="mpm_common">Listen</directive>指令会产生致命错误，从而导致服务器无法正常启动。</p>
+
+    <example>
+      (48)Address already in use: make_sock: could not bind to address [::]:80
+    </example>
+
+    <p>请查阅<a
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki上的相关讨论</a>
+    以进一步了解如何排查问题。</p>
+
+</note>
+
+  </section>
+
+  <section id="reload">
+    <title>Changing Listen configuration on restart</title>
+
+    <p>重启httpd时，需要特别注意与<directive module="mpm_common">Listen</directive>指令相关的更改。
+    重启过程中，httpd会保持原有绑定端口（即原始配置中指示服务器绑定的端口）的绑定状态不变以避免其他客户端在尝试连接
+    服务器时出现“Connection refused”错误。如果修改后的<directive module="mpm_common">Listen</directive>指令与原有配置冲突，
+    那么服务器将会停止运行。</p>
+
+    <p>例如下面的配置</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>修改为下面的配置可能会失败，因为在所有IP地址绑定80端口与仅在127.0.0.1绑定端口相冲突。</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>如果想要此类修改生效，就必须先停止服务器，然后再重新启动服务器。</p>
+    
+  </section>
+
+    <section id="ipv6">
+    <title>IPv6特别注意事项</title>
+
+    <p>越来越多的平台开始支持IPv6，而<glossary>APR</glossary>在大多数平台上也都支持IPv6，
+    这使得httpd可以分配IPv6套接字，并能够处理通过IPv6发送的请求。
+
+    对于httpd管理员而言，有一个比较复杂的问题，即IPv6套接字是否能够同时处理IPv4和IPv6连接。
+    在大多数平台上，默认情况下可以使用IPv4映射的IPv6地址来在IPv6套接字上处理IPv4连接。为保持与
+    FreeBSD、NetBSD、OpenBSD的系统策略一致，在这些平台上默认是禁止使用IPv4映射的IPv6地址的。对于禁止
+    使用IPv4映射的IPv6地址的系统上，可以使用一个特殊的<program>configure</program>参数来改变httpd的行为。</p>
+
+    <p>此外，在某些平台（例如Linux和Tru64）上则是<strong>只能</strong>使用IPv4映射的IPv6地址来同时处理IPv6和IPv4连接。
+    如果您希望使用尽可能少的套接字来处理IPv4和IPv6连接，请指定<code>--enable-v4-mapped</code><program>
+    configure</program>选项以启用IPv4映射的IPv6地址。</p>
+
+    <p>除FreeBSD、NetBSD、OpenBSD外，所有平台都默认启用<code>--enable-v4-mapped</code>。</p>
+
+    <p>如果您希望httpd不考虑平台和APR支持的功能，只处理IPv4连接，请如下例所示，在所有<directive module="mpm_common">Listen</directive>
+    指令处指定IPv4地址。</p>
+
+    <example>
+    <highlight language="config">
+Listen 0.0.0.0:80
+Listen 192.0.2.1:80
+    </highlight>
+    </example>
+
+    <p>如果您正在使用的平台支持，且您希望httpd通过独立的套接字处理IPv4和IPv6连接（即禁用IPv4映射的IPv6地址），
+    请指定<program>configure</program>的<code>--disable-v4-mapped</code>选项。在FreeBSD、NetBSD、OpenBSD上，
+    <code>--disable-v4-mapped</code>是默认选项。</p>
+  </section>
+
+  <section id="protocol">
+    <title>指定监听的协议</title>
+    <p><directive module="mpm_common">Listen</directive>指令中可选的第二个参数，大多数情况下不是必须的。
+    如果没有指定，443端口的默认协议是<code>https</code>，其他端口的默认协议则是<code>http</code>。该参数用于
+    确定由哪个模块处理请求，以及适用通过<directive module="core">AcceptFilter</directive>指令设置的针对特定协议的优化。</p>
+
+    <p>只有在使用非标准端口时，才需要设置协议参数。例如，在8443端口上运行一个<code>https</code>网站。</p>
+
+    <example>
+    <highlight language="config">
+      Listen 192.170.2.1:8443 https
+    </highlight>
+    </example>
+  </section>
+
+  <section id="virtualhost">
+    <title>虚拟主机如何工作</title>
+
+    <p><directive
+    module="mpm_common">Listen</directive>指令本身不能实现虚拟主机的功能，它仅用于告知主服务器需要监听哪些地址和端口。
+    如果没有指定<directive module="core" type="section">VirtualHost</directive>指令，那么服务器将以相同方式处理接收到的所有请求。
+    可以使用<directive module="core" type="section">VirtualHost</directive>指令来为一个或多个特定的地址或端口给服务器设置不同的行为。
+    要实现虚拟主机功能，首先需要指示服务器监听所要使用的地址和端口。然后设置<directive module="core" type="section">VirtualHost</directive>
+    区块，为该虚拟主机设置相应的地址、端口，以及服务器处理请求时的行为。
+    注意，如果<directive module="core" type="section">VirtualHost</directive>中指示的地址和端口并未被服务器监听，那么客户端无法访问虚拟主机。</p>
+  </section>
+</manualpage>
