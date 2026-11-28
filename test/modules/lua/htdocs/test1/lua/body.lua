@@ -5,12 +5,16 @@
 --   filemax  the body stored to a file with a 100 byte limit
 --   fileover the body stored over the file left by an earlier request
 
+-- 0 where there is no /proc, as on macOS.
 local function rss()
     collectgarbage()
-    for line in io.lines("/proc/self/status") do
+    local f = io.open("/proc/self/status")
+    if not f then return 0 end
+    for line in f:lines() do
         local kb = line:match("^VmRSS:%s+(%d+)")
-        if kb then return tonumber(kb) end
+        if kb then f:close() return tonumber(kb) end
     end
+    f:close()
     return 0
 end
 
