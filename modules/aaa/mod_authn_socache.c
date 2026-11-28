@@ -333,14 +333,86 @@ static const char *construct_key(request_rec *r, const char *context,
     }
 }
 
-static void ap_authn_cache_store(request_rec *r, const char *module,
-                                 const char *user, const char *realm,
-                                 const char* data)
+/* Size of the buffer the lookups below read a cached value into,
+ * room for its terminating NUL included.
+ */
+#define MAX_VAL_LEN 256
+
+/* The cached value is the provider's data followed, for each variable
+ * in env, by a NUL, its name, a NUL and its value. None of them can hold
+ * a NUL, and a value without one is the data alone.
+ */
+static unsigned char *cache_value(apr_pool_t *p, const char *data,
+                                  const apr_table_t *env, apr_size_t *len)
+{
+    const apr_array_header_t *arr;
+    const apr_table_entry_t *elts;
+    apr_size_t datalen = strlen(data);
+    unsigned char *val, *pos;
+    int i;
+
+    if (env == NULL || apr_is_empty_table(env)) {
+        *len = datalen;
+        return (unsigned char *)data;
+    }
+    arr = apr_table_elts(env);
+    elts = (const apr_table_entry_t *)arr->elts;
+
+    *len = datalen;
+    for (i = 0; i < arr->nelts; i++) {
+        *len += 1 + strlen(elts[i].key) + 1 + strlen(elts[i].val);
+    }
+
+    pos = val = apr_palloc(p, *len);
+    memcpy(pos, data, datalen);
+    pos += datalen;
+    for (i = 0; i < arr->nelts; i++) {
+        apr_size_t keylen = strlen(elts[i].key);
+        apr_size_t vallen = strlen(elts[i].val);
+
+        *pos++ = '\0';
+        memcpy(pos, elts[i].key, keylen);
+        pos += keylen;
+        *pos++ = '\0';
+        memcpy(pos, elts[i].val, vallen);
+        pos += vallen;
+    }
+    return val;
+}
+
+/* Terminate the data of a cached value of vallen bytes in place, with
+ * val[vallen] available for that, and set the variables stored with it.
+ */
+static void restore_cached_env(request_rec *r, unsigned char *val,
+                               unsigned int vallen)
+{
+    const char *end = (const char *)val + vallen;
+    const char *pos;
+
+    val[vallen] = '\0';
+    pos = (const char *)val + strlen((const char *)val);
+    while (pos < end) {
+        const char *key = pos + 1;
+        const char *value = key + strlen(key) + 1;
+
+        if (value > end) {
+            break;
+        }
+        apr_table_set(r->subprocess_env, key, value);
+        pos = value + strlen(value);
+    }
+}
+
+static void ap_authn_cache_store_env(request_rec *r, const char *module,
+                                     const char *user, const char *realm,
+                                     const char *data, const apr_table_t *env)
 {
     apr_status_t rv;
     authn_cache_dircfg *dcfg;
     const char *key;
     apr_time_t expiry;
+    unsigned char *val;
+    apr_size_t vallen;
 
     /* first check whether we're caching for this module */
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
@@ -348,6 +420,16 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
         return;
     }
     if (!ap_array_str_contains(dcfg->providers, module)) {
+        return;
+    }
+
+    val = cache_value(r->pool, data, env, &vallen);
+    if (env != NULL && vallen >= MAX_VAL_LEN) {
+        /* Cached, it would be read back without its variables */
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(10701)
+                      "authn credentials for %s not cached: %" APR_SIZE_T_FMT
+                      " bytes with their variables, over the cache value "
+                      "limit", user, vallen);
         return;
     }
 
@@ -374,7 +456,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     /* store it */
     rv = socache_provider->store(socache_instance, r->server,
                                  (unsigned char*)key, strlen(key), expiry,
-                                 (unsigned char*)data, strlen(data), r->pool);
+                                 val, vallen, r->pool);
     if (rv == APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01681)
                       "Cached authn credentials for %s in %s",
@@ -393,7 +475,13 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     }
 }
 
-#define MAX_VAL_LEN 256
+static void ap_authn_cache_store(request_rec *r, const char *module,
+                                 const char *user, const char *realm,
+                                 const char* data)
+{
+    ap_authn_cache_store_env(r, module, user, realm, data, NULL);
+}
+
 static authn_status check_password(request_rec *r, const char *user,
                                    const char *password)
 {
@@ -444,7 +532,7 @@ static authn_status check_password(request_rec *r, const char *user,
         /* OK, we got a value */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01685)
                       "Authn cache: found credentials for %s", user);
-        val[vallen] = 0;
+        restore_cached_env(r, val, vallen);
     }
     else {
         /* error: give up and pass the buck */
@@ -499,6 +587,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
         /* OK, we got a value */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01688)
                       "Authn cache: found credentials for %s", user);
+        restore_cached_env(r, val, vallen);
     }
     else {
         /* error: give up and pass the buck */
@@ -507,7 +596,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
                       "Error accessing authentication cache");
         return AUTH_USER_NOT_FOUND;
     }
-    *rethash = apr_pstrmemdup(r->pool, (char *)val, vallen);
+    *rethash = apr_pstrdup(r->pool, (char *)val);
 
     return AUTH_USER_FOUND;
 }
@@ -524,6 +613,7 @@ static void register_hooks(apr_pool_t *p)
                               AUTHN_PROVIDER_VERSION,
                               &authn_cache_provider, AP_AUTH_INTERNAL_PER_CONF);
     APR_REGISTER_OPTIONAL_FN(ap_authn_cache_store);
+    APR_REGISTER_OPTIONAL_FN(ap_authn_cache_store_env);
     ap_hook_pre_config(authn_cache_precfg, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(authn_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(authn_cache_child_init, NULL, NULL, APR_HOOK_MIDDLE);

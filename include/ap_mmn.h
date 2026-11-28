@@ -745,6 +745,8 @@
  *                         connection_removed(), and ap_mpm_wait_for_extra_
  *                         connections(), to mpm_common.h
  * 20211221.36 (2.5.1-dev) Add ungrowable to struct proxy_balancer
+ * 20211221.37 (2.5.1-dev) Add the optional function ap_authn_cache_store_env()
+ *                         to mod_auth.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -752,7 +754,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 36             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 37             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
