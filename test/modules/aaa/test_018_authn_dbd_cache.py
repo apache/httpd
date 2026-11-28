@@ -97,3 +97,14 @@ class TestAuthnDbdSocacheCache:
             assert f"user={user}" in body
             assert f"role={AAATestEnv.DBD_LONG_ROLE}" in body, \
                 f"AUTHENTICATE_ROLE missing: {body!r}"
+
+    def test_authn_dbd_018_null_role_cached(self, env):
+        # A NULL role column sets AUTHENTICATE_ROLE to an empty value, on
+        # the first login and on the cache hit that follows it, rather than
+        # crashing the child.
+        user = AAATestEnv.DBD_NULL_USER
+        for _ in range(2):
+            body = self.whoami(env, user=user)
+            assert f"user={user}" in body
+            assert "role=\nrole_set=True\n" in body, \
+                f"AUTHENTICATE_ROLE not set and empty: {body!r}"

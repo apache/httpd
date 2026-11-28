@@ -42,6 +42,8 @@ class AAATestEnv(HttpdTestEnv):
     # A role too long to be cached with the password hash.
     DBD_LONG_USER = "dbdlonguser"
     DBD_LONG_ROLE = "r" * 300
+    # A user whose role column is SQL NULL.
+    DBD_NULL_USER = "dbdnulluser"
 
     def __init__(self, pytestconfig=None):
         super().__init__(pytestconfig=pytestconfig)
@@ -68,7 +70,8 @@ class AAATestEnv(HttpdTestEnv):
             digest = hashlib.sha1(self.DBD_PASSWORD.encode()).digest()
             pw_hash = "{SHA}" + base64.b64encode(digest).decode()
             for user, role in [(self.DBD_USER, self.DBD_ROLE),
-                               (self.DBD_LONG_USER, self.DBD_LONG_ROLE)]:
+                               (self.DBD_LONG_USER, self.DBD_LONG_ROLE),
+                               (self.DBD_NULL_USER, None)]:
                 con.execute("INSERT INTO users (user, password, role) "
                             "VALUES (?, ?, ?)", (user, pw_hash, role))
             con.commit()
